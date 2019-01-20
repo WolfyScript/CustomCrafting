@@ -1,0 +1,19 @@
+# Main Config - CustomCrafting v0.0.0.1
+
+debugging: true
+auto_Update: true
+language: de_DE
+
+spooky_workbench:
+  enable: true
+  jack_o_lantern: true
+
+workbench:
+  securityCode: "CODE HERE"
+  craft_sound: "block.lava.extinguish"
+
+data:
+  auto_save:
+    interval: 30
+recipes:
+  reload_after_save: false
