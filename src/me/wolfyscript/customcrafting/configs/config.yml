@@ -5,8 +5,8 @@ auto_Update: true
 language: de_DE
 
 spooky_workbench:
-  enable: true
-  jack_o_lantern: true
+  enable: false
+  jack_o_lantern: false
 
 workbench:
   securityCode: "CODE HERE"
