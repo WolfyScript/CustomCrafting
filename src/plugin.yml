@@ -2,4 +2,7 @@ name: CustomCrafting
 main: me.wolfyscript.customcrafting.CustomCrafting
 version: 0.0.0.1
 api-version: 1.13
+
+depend:
+  - WolfyUtilities
 description: Plugin to create your own crafting recipes

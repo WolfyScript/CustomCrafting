@@ -1,1 +1,24 @@
 # Crafting Recipe Config
+
+permissions: false
+advanced_workbench: true
+
+group: ""
+
+result:
+
+
+shapeless: true
+shape:
+  - ""
+  - ""
+  - ""
+
+ingredients:
+  A:
+    var1:
+      item:
+
+      data:
+
+

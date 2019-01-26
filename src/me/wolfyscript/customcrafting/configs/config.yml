@@ -2,14 +2,13 @@
 
 debugging: true
 auto_Update: true
-language: de_DE
+language: en_US
 
 spooky_workbench:
   enable: false
   jack_o_lantern: false
 
 workbench:
-  securityCode: "CODE HERE"
   craft_sound: "block.lava.extinguish"
 
 data:

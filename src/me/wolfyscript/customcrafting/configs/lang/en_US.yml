@@ -41,7 +41,7 @@ items:
       help: []
     back:
       name: '&5Back'
-    help: []
+      help: []
     close:
       name: '&4Close'
       help: []
