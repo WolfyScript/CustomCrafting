@@ -21,4 +21,10 @@ public class FurnaceCRecipe extends FurnaceRecipe {
     public ItemStack getSource() {
         return source;
     }
+
+    public boolean check(ItemStack source){
+        return getSource().getAmount() >= source.getAmount() && getSource().isSimilar(source);
+    }
+
+
 }

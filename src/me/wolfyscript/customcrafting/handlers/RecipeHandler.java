@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.recipes.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class RecipeHandler {
                 File[] files = workbench.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
                 if (files != null) {
                     for (File file : files) {
-                        api.sendConsoleMessage("        -> " + file.getParentFile().getName() + ":" + file.getName());
+                        api.sendConsoleMessage("        -> " + file.getParentFile().getParentFile().getName() + ":" + file.getName().split("\\.")[0]);
                         cachedConfigs.add(new CraftConfig(configAPI, file.getParentFile().getParentFile().getName().toLowerCase(), file.getName().split("\\.")[0].toLowerCase()));
                     }
                 }
@@ -59,7 +60,7 @@ public class RecipeHandler {
                 files = furnace.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
                 if (files != null) {
                     for (File file : files) {
-                        api.sendConsoleMessage("        -> " + file.getParentFile().getName() + ":" + file.getName());
+                        api.sendConsoleMessage("        -> " + file.getParentFile().getParentFile().getName() + ":" + file.getName().split("\\.")[0]);
                         cachedFurnaceConfigs.add(new FurnaceConfig(configAPI, file.getParentFile().getParentFile().getName().toLowerCase(), file.getName().split("\\.")[0].toLowerCase()));
                     }
                 }
@@ -92,6 +93,9 @@ public class RecipeHandler {
         }
     }
 
+    /*
+        Get all the ShapedRecipes from this group
+     */
     public List<ShapedCraftRecipe> getShapedRecipeGroup(String group){
         List<ShapedCraftRecipe> recipes = new ArrayList<>();
         for (ShapedCraftRecipe recipe : shapedRecipes) {
@@ -101,6 +105,9 @@ public class RecipeHandler {
         return recipes;
     }
 
+    /*
+        Get all the ShapedRecipes from the same group as the recipe
+     */
     public List<ShapedCraftRecipe> getShapedRecipeGroup(ShapedCraftRecipe recipe){
         List<ShapedCraftRecipe> group = getShapedRecipeGroup(recipe.getGroup());
         group.remove(recipe);
@@ -114,13 +121,6 @@ public class RecipeHandler {
             if (recipe.getGroup().equals(group))
                 recipes.add(recipe);
         }
-        return recipes;
-    }
-
-    public List<CraftingRecipe> getRecipeGroup(String group){
-        List<CraftingRecipe> recipes = new ArrayList<>();
-        recipes.addAll(getShapedRecipeGroup(group));
-        recipes.addAll(getShapelessRecipeGroup(group));
         return recipes;
     }
 
@@ -152,6 +152,35 @@ public class RecipeHandler {
         }
         return null;
     }
+
+    public List<CraftingRecipe> getRecipeGroup(String group){
+        List<CraftingRecipe> recipes = new ArrayList<>();
+        recipes.addAll(getShapedRecipeGroup(group));
+        recipes.addAll(getShapelessRecipeGroup(group));
+        return recipes;
+    }
+
+    public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source){
+        List<FurnaceCRecipe> recipes = new ArrayList<>();
+        for(FurnaceCRecipe recipe : furnaceRecipes){
+            if(recipe.getSource().getType() == source.getType()){
+                recipes.add(recipe);
+            }
+        }
+        return recipes;
+    }
+
+    public FurnaceCRecipe getFurnaceRecipe(ItemStack source){
+        List<FurnaceCRecipe> recipes = new ArrayList<>();
+        for(FurnaceCRecipe recipe : furnaceRecipes){
+            if(recipe.getSource().getType() == source.getType()){
+                return recipe;
+            }
+        }
+        return null;
+    }
+
+
 
 
 }
