@@ -3,10 +3,11 @@ package me.wolfyscript.customcrafting.data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class DataSet {
+public class DataSet implements Serializable {
 
     static final long serialVersionUID = -134354643112L;
 

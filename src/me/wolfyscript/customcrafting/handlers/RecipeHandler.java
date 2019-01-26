@@ -2,7 +2,9 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
 import me.wolfyscript.customcrafting.recipes.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -17,9 +19,11 @@ import java.util.List;
 public class RecipeHandler {
 
     private List<CraftConfig> cachedConfigs = new ArrayList<>();
+    private List<FurnaceConfig> cachedFurnaceConfigs = new ArrayList<>();
 
     private List<ShapedCraftRecipe> shapedRecipes = new ArrayList<>();
     private List<ShapelessCraftRecipe> shapelessRecipes = new ArrayList<>();
+    private List<FurnaceCRecipe> furnaceRecipes = new ArrayList<>();
 
     private ConfigAPI configAPI;
     private WolfyUtilities api;
@@ -41,35 +45,83 @@ public class RecipeHandler {
 
         if (subFolders != null) {
             for (File folder : subFolders) {
+                api.sendConsoleMessage("    loading Workbench configs...");
                 File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + folder.getName() + File.separator+ "workbench");
                 File[] files = workbench.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
                 if (files != null) {
                     for (File file : files) {
-                        api.sendConsoleMessage("    -> " + file.getParentFile().getName() + ":" + file.getName());
+                        api.sendConsoleMessage("        -> " + file.getParentFile().getName() + ":" + file.getName());
                         cachedConfigs.add(new CraftConfig(configAPI, file.getParentFile().getParentFile().getName().toLowerCase(), file.getName().split("\\.")[0].toLowerCase()));
+                    }
+                }
+                api.sendConsoleMessage("    loading Furnace configs...");
+                File furnace = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + folder.getName() + File.separator+ "furnace");
+                files = furnace.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
+                if (files != null) {
+                    for (File file : files) {
+                        api.sendConsoleMessage("        -> " + file.getParentFile().getName() + ":" + file.getName());
+                        cachedFurnaceConfigs.add(new FurnaceConfig(configAPI, file.getParentFile().getParentFile().getName().toLowerCase(), file.getName().split("\\.")[0].toLowerCase()));
                     }
                 }
 
             }
         }
-
-
     }
 
     public void loadRecipes() {
         api.sendConsoleMessage("loading Recipes...");
+        api.sendConsoleMessage("    loading Workbench recipes...");
         for (CraftConfig craftConfig : cachedConfigs) {
-            api.sendConsoleMessage("    -> " + craftConfig.getId());
+            api.sendConsoleMessage("        -> " + craftConfig.getId());
             if(craftConfig.isShapeless()){
                 ShapelessCraftRecipe recipe = new ShapelessCraftRecipe(craftConfig);
-
-
+                recipe.load();
+                registerCraftRecipe(recipe);
             }else{
                 ShapedCraftRecipe recipe = new ShapedCraftRecipe(craftConfig);
                 recipe.load();
                 registerCraftRecipe(recipe);
             }
         }
+        api.sendConsoleMessage("    loading Furnace recipes...");
+        for(FurnaceConfig furnaceConfig : cachedFurnaceConfigs){
+            api.sendConsoleMessage("        -> " + furnaceConfig.getId());
+            FurnaceCRecipe furnaceCRecipe = new FurnaceCRecipe(furnaceConfig);
+            furnaceRecipes.add(furnaceCRecipe);
+            Bukkit.addRecipe(furnaceCRecipe);
+        }
+    }
+
+    public List<ShapedCraftRecipe> getShapedRecipeGroup(String group){
+        List<ShapedCraftRecipe> recipes = new ArrayList<>();
+        for (ShapedCraftRecipe recipe : shapedRecipes) {
+            if (recipe.getGroup().equals(group))
+                recipes.add(recipe);
+        }
+        return recipes;
+    }
+
+    public List<ShapedCraftRecipe> getShapedRecipeGroup(ShapedCraftRecipe recipe){
+        List<ShapedCraftRecipe> group = getShapedRecipeGroup(recipe.getGroup());
+        group.remove(recipe);
+        return group;
+
+    }
+
+    public List<ShapelessCraftRecipe> getShapelessRecipeGroup(String group){
+        List<ShapelessCraftRecipe> recipes = new ArrayList<>();
+        for (ShapelessCraftRecipe recipe : shapelessRecipes) {
+            if (recipe.getGroup().equals(group))
+                recipes.add(recipe);
+        }
+        return recipes;
+    }
+
+    public List<CraftingRecipe> getRecipeGroup(String group){
+        List<CraftingRecipe> recipes = new ArrayList<>();
+        recipes.addAll(getShapedRecipeGroup(group));
+        recipes.addAll(getShapelessRecipeGroup(group));
+        return recipes;
     }
 
     public void registerCraftRecipe(CraftingRecipe recipe) {

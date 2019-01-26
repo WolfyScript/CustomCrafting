@@ -1,1 +1,12 @@
 # Furnace Recipe Config
+exp: 10
+cooking_time: 20
+
+group: ""
+
+source:
+
+source_data: []
+
+result:
+

@@ -81,37 +81,4 @@ public class CraftConfig extends Config {
         }
         return result;
     }
-
-    public void saveItem(String path, ItemStack itemStack){
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(itemMeta.getDisplayName().replace('§','&'));
-        List<String> newLore = new ArrayList<>();
-        for(String row : itemMeta.getLore()){
-            newLore.add(row.replace('§','&'));
-        }
-        itemMeta.setLore(newLore);
-        itemStack.setItemMeta(itemMeta);
-        set(path, itemStack.serialize());
-    }
-
-    public void saveItem(String path, String name, ItemStack itemStack){
-        saveItem(path+"."+name, itemStack);
-    }
-
-    public ItemStack getItem(String path){
-        ItemStack itemStack = ItemStack.deserialize(getConfig().getConfigurationSection(path).getValues(false));
-        if(itemStack.hasItemMeta()){
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(itemMeta.getDisplayName().replace('&','§'));
-            if(itemMeta.hasLore()){
-                List<String> newLore = new ArrayList<>();
-                for(String row : itemMeta.getLore()){
-                    newLore.add(row.replace('&','§'));
-                }
-                itemMeta.setLore(newLore);
-            }
-            itemStack.setItemMeta(itemMeta);
-        }
-        return itemStack;
-    }
 }
