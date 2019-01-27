@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting;
 
+import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.events.Events;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
@@ -15,6 +16,7 @@ public class CustomCrafting extends JavaPlugin {
     private static ConfigHandler configHandler;
     private static InventoryHandler invHandler;
     private static RecipeHandler recipeHandler;
+    private static Workbenches workbenches;
 
     public void onEnable() {
         instance = this;
@@ -36,6 +38,9 @@ public class CustomCrafting extends JavaPlugin {
         api.sendConsoleMessage("                                                       /___/ v"+instance.getDescription().getVersion());
 
         invHandler.init();
+
+        workbenches = new Workbenches(api);
+
         recipeHandler.loadConfigs();
         recipeHandler.loadRecipes();
 
@@ -44,10 +49,14 @@ public class CustomCrafting extends JavaPlugin {
 
 
     public void onDisable() {
+        workbenches.endTask();
+        workbenches.save();
 
     }
 
-
+    public static ConfigHandler getConfigHandler() {
+        return configHandler;
+    }
 
     public static Plugin getInst() {
         return instance;
@@ -59,5 +68,9 @@ public class CustomCrafting extends JavaPlugin {
 
     public static RecipeHandler getRecipeHandler() {
         return recipeHandler;
+    }
+
+    public static Workbenches getWorkbenches() {
+        return workbenches;
     }
 }

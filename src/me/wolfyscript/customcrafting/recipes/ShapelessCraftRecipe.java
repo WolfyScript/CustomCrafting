@@ -14,13 +14,14 @@ import java.util.Set;
 
 public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRecipe{
 
-    boolean permission;
-    boolean advancedWorkbench;
+    private boolean permission;
+    private boolean advancedWorkbench;
 
-    CraftConfig config;
-    String id;
-    ItemStack result;
-    HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
+    private CraftConfig config;
+    private String id;
+    private ItemStack result;
+    private String group;
+    private HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
 
     public ShapelessCraftRecipe(CraftConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
@@ -28,6 +29,9 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.id = config.getId();
         this.config = config;
         this.ingredients = config.getIngredients();
+        this.permission = config.needPerm();
+        this.advancedWorkbench = config.needWorkbench();
+        this.group = config.getGroup();
     }
 
     public void load(){
@@ -39,18 +43,26 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         }
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public boolean check(ItemStack[] matrix) {
+        return true;
     }
 
     public ItemStack getResult() {
         return result;
     }
 
+    @Override
+    public String getID() {
+        return id;
+    }
+
+    @Override
     public boolean needsPermission() {
         return permission;
     }
 
+    @Override
     public boolean needsAdvancedWorkbench() {
         return advancedWorkbench;
     }
@@ -59,4 +71,8 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         return config;
     }
 
+    @Override
+    public String getGroup() {
+        return group;
+    }
 }

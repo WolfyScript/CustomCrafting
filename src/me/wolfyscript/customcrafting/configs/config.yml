@@ -1,7 +1,6 @@
 # Main Config - CustomCrafting v0.0.0.1
 
-debugging: true
-auto_Update: true
+debugging: false
 language: en_US
 
 spooky_workbench:
@@ -9,10 +8,12 @@ spooky_workbench:
   jack_o_lantern: false
 
 workbench:
+  # Sound after successful crafting! Set to "none" to disable it
   craft_sound: "block.lava.extinguish"
 
 data:
   auto_save:
+    # Interval in minutes
     interval: 30
 recipes:
   reload_after_save: false

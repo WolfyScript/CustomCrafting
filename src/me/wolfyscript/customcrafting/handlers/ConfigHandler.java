@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.DataSet;
+import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -18,7 +17,8 @@ public class ConfigHandler {
     private ConfigAPI configAPI;
     private LanguageAPI languageAPI;
 
-    private DataSet dataSet = new DataSet();
+    private MainConfig mainConfig;
+
 
     public ConfigHandler(WolfyUtilities api){
         this.api = api;
@@ -28,9 +28,7 @@ public class ConfigHandler {
     }
 
     public void load(){
-        configAPI.registerConfig(new Config(configAPI, "me/wolfyscript/customcrafting/configs", instance.getDataFolder().getPath(),"config"));
-        configAPI.getConfig("config").loadDefaults();
-
+        this.mainConfig = new MainConfig(configAPI);
         loadLang();
     }
 
@@ -39,35 +37,7 @@ public class ConfigHandler {
         languageAPI.registerLanguage(new Language(chosenlang, new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenlang), configAPI));
     }
 
-    public void loadDataSet() throws IOException {
-        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "dataSet.dat");
-        if (file.exists()) {
-            FileInputStream fis = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            try {
-                api.sendConsoleMessage("Loading DataSet...");
-                Object object = ois.readObject();
-                if (object instanceof DataSet) {
-                    dataSet = (DataSet) object;
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            ois.close();
-        } else {
-            dataSet = new DataSet();
-        }
-    }
-
-    public void saveDataSet() {
-        api.sendConsoleMessage("Saving DataSet...");
-        try {
-            FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "dataSet.dat"));
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(dataSet);
-            oos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public MainConfig getConfig() {
+        return mainConfig;
     }
 }

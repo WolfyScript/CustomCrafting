@@ -14,16 +14,16 @@ import java.util.Set;
 
 public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
-    boolean permission;
-    boolean advancedWorkbench;
+    private boolean permission;
+    private boolean advancedWorkbench;
 
-    CraftConfig config;
-    String id;
-    String group;
-    ItemStack result;
-    HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
-    String[] shape;
-    String shapeLine;
+    private CraftConfig config;
+    private String id;
+    private String group;
+    private ItemStack result;
+    private HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
+    private String[] shape;
+    private String shapeLine;
 
     public ShapedCraftRecipe(CraftConfig config) {
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
@@ -33,6 +33,8 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.shape = config.getShape();
         this.ingredients = config.getIngredients();
         this.group = config.getGroup();
+        this.permission = config.needPerm();
+        this.advancedWorkbench = config.needWorkbench();
     }
 
     public void load() {
@@ -57,6 +59,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         shapeLine = stringBuilder.toString();
     }
 
+    @Override
     public boolean check(ItemStack[] matrix) {
         List<ItemStack> items = new ArrayList<>();
         for (ItemStack itemStack : matrix) {
@@ -83,24 +86,31 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         return true;
     }
 
-
-    public String getId() {
-        return id;
-    }
-
     public ItemStack getResult() {
         return result;
     }
 
+    public CraftConfig getConfig() {
+        return config;
+    }
+
+    @Override
+    public String getID() {
+        return id;
+    }
+
+    @Override
     public boolean needsPermission() {
         return permission;
     }
 
+    @Override
     public boolean needsAdvancedWorkbench() {
         return advancedWorkbench;
     }
 
-    public CraftConfig getConfig() {
-        return config;
+    @Override
+    public String getGroup() {
+        return group;
     }
 }

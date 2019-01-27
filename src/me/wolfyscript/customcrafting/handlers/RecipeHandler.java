@@ -11,6 +11,9 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,8 +25,7 @@ public class RecipeHandler {
     private List<CraftConfig> cachedConfigs = new ArrayList<>();
     private List<FurnaceConfig> cachedFurnaceConfigs = new ArrayList<>();
 
-    private List<ShapedCraftRecipe> shapedRecipes = new ArrayList<>();
-    private List<ShapelessCraftRecipe> shapelessRecipes = new ArrayList<>();
+    private List<CraftingRecipe> recipes = new ArrayList<>();
     private List<FurnaceCRecipe> furnaceRecipes = new ArrayList<>();
 
     private ConfigAPI configAPI;
@@ -93,71 +95,36 @@ public class RecipeHandler {
         }
     }
 
+    private void registerCraftRecipe(CraftingRecipe recipe) {
+        Bukkit.addRecipe(recipe);
+        recipes.add(recipe);
+    }
+
     /*
         Get all the ShapedRecipes from this group
      */
-    public List<ShapedCraftRecipe> getShapedRecipeGroup(String group){
-        List<ShapedCraftRecipe> recipes = new ArrayList<>();
-        for (ShapedCraftRecipe recipe : shapedRecipes) {
-            if (recipe.getGroup().equals(group))
-                recipes.add(recipe);
-        }
-        return recipes;
-    }
-
-    /*
-        Get all the ShapedRecipes from the same group as the recipe
-     */
-    public List<ShapedCraftRecipe> getShapedRecipeGroup(ShapedCraftRecipe recipe){
-        List<ShapedCraftRecipe> group = getShapedRecipeGroup(recipe.getGroup());
-        group.remove(recipe);
-        return group;
-
-    }
-
-    public List<ShapelessCraftRecipe> getShapelessRecipeGroup(String group){
-        List<ShapelessCraftRecipe> recipes = new ArrayList<>();
-        for (ShapelessCraftRecipe recipe : shapelessRecipes) {
-            if (recipe.getGroup().equals(group))
-                recipes.add(recipe);
-        }
-        return recipes;
-    }
-
-    public void registerCraftRecipe(CraftingRecipe recipe) {
-        Bukkit.addRecipe(recipe);
-        if (recipe instanceof ShapelessCraftRecipe) {
-            if (!shapelessRecipes.contains(recipe)) {
-                shapelessRecipes.add((ShapelessCraftRecipe) recipe);
-            }
-        } else if (recipe instanceof ShapedCraftRecipe) {
-            if (!shapedRecipes.contains(recipe)) {
-                shapedRecipes.add((ShapedCraftRecipe) recipe);
-            }
-        }
-    }
-
-    public ShapedCraftRecipe getShapedRecipe(String id) {
-        for (ShapedCraftRecipe recipe : shapedRecipes) {
-            if (recipe.getId().equals(id))
-                return recipe;
-        }
-        return null;
-    }
-
-    public ShapelessCraftRecipe getShapelessRecipe(String id) {
-        for (ShapelessCraftRecipe recipe : shapelessRecipes) {
-            if (recipe.getId().equals(id))
-                return recipe;
-        }
-        return null;
-    }
-
     public List<CraftingRecipe> getRecipeGroup(String group){
-        List<CraftingRecipe> recipes = new ArrayList<>();
-        recipes.addAll(getShapedRecipeGroup(group));
-        recipes.addAll(getShapelessRecipeGroup(group));
-        return recipes;
+        List<CraftingRecipe> groupRecipes = new ArrayList<>();
+        for (CraftingRecipe recipe : recipes) {
+            if (recipe.getGroup().equals(group))
+                groupRecipes.add(recipe);
+        }
+        return groupRecipes;
+    }
+
+    public List<CraftingRecipe> getRecipeGroup(CraftingRecipe recipe){
+        List<CraftingRecipe> groupRecipes = new ArrayList<>(getRecipeGroup(recipe.getID()));
+        groupRecipes.remove(recipe);
+        return groupRecipes;
+    }
+
+    public CraftingRecipe getRecipe(Recipe recipe){
+        for(CraftingRecipe craftingRecipe : recipes){
+            if(craftingRecipe.getID().equals(recipe instanceof ShapedRecipe ? ((ShapedRecipe) recipe).getKey().toString() : recipe instanceof ShapelessRecipe ? ((ShapelessRecipe) recipe).getKey().toString() : "")){
+                return craftingRecipe;
+            }
+        }
+        return null;
     }
 
     public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source){

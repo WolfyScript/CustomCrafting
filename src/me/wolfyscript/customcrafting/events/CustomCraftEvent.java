@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.events;
 
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ShapelessCraftRecipe;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -11,43 +12,43 @@ import org.bukkit.inventory.Recipe;
 public class CustomCraftEvent extends Event implements Cancellable{
 
     private static final HandlerList handlers = new HandlerList();
-    private ItemStack outPut;
+    private ItemStack result;
     private CraftingInventory craftingInventory;
-    private Recipe recipe;
+    private Recipe bukkitRecipe;
     private boolean isRepair;
     private boolean cancelled;
-    private ShapelessCraftRecipe shapelessCraftRecipe;
+    private CraftingRecipe craftingRecipe;
 
-    public CustomCraftEvent(boolean isRepair, ShapelessCraftRecipe shapelessCraftRecipe, Recipe recipe, CraftingInventory craftingInventory){
-        this.shapelessCraftRecipe = shapelessCraftRecipe;
-        this.recipe = recipe;
+    public CustomCraftEvent(boolean isRepair, CraftingRecipe craftingRecipe, Recipe recipe, CraftingInventory craftingInventory){
+        this.bukkitRecipe = recipe;
+        this.craftingRecipe = craftingRecipe;
         this.craftingInventory = craftingInventory;
         this.isRepair = isRepair;
-        this.outPut = recipe.getResult();
+        this.result = craftingRecipe.getResult();
     }
 
-    public Recipe getRecipe() {
-        return recipe;
+    public Recipe getBukkitRecipe() {
+        return bukkitRecipe;
     }
 
     public CraftingInventory getCraftingInventory() {
         return craftingInventory;
     }
 
-    public ItemStack getOutPut() {
-        return outPut;
+    public ItemStack getResult() {
+        return result;
     }
 
-    public void setOutPut(ItemStack outPut) {
-        this.outPut = outPut;
+    public void setResult(ItemStack result) {
+        this.result = result;
     }
 
     public boolean isRepair() {
         return isRepair;
     }
 
-    public ShapelessCraftRecipe getCustomRecipe(){
-        return this.shapelessCraftRecipe;
+    public CraftingRecipe getRecipe() {
+        return craftingRecipe;
     }
 
     @Override

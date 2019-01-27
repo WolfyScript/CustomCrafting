@@ -34,7 +34,11 @@ public class CraftConfig extends Config {
     }
 
     public boolean needPerm(){
-        return getBoolean("permission");
+        return getBoolean("permissions");
+    }
+
+    public boolean needWorkbench(){
+        return getBoolean("advanced_workbench");
     }
 
     public String getGroup(){
