@@ -8,8 +8,6 @@ import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import org.bukkit.plugin.Plugin;
 
-import java.io.*;
-
 public class ConfigHandler {
 
     private Plugin instance;
@@ -34,7 +32,9 @@ public class ConfigHandler {
 
     public void loadLang(){
         String chosenlang = configAPI.getConfig("config").getString("language");
-        languageAPI.registerLanguage(new Language(chosenlang, new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenlang), configAPI));
+        Config langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenlang);
+        langConf.loadDefaults();
+        languageAPI.registerLanguage(new Language(chosenlang, langConf, configAPI));
     }
 
     public MainConfig getConfig() {

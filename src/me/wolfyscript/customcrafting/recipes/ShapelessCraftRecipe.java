@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import net.minecraft.server.v1_13_R2.Item;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -45,7 +46,22 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     @Override
     public boolean check(ItemStack[] matrix) {
-        return true;
+        List<Character> allKeys = new ArrayList<>(ingredients.keySet());
+        List<Character> usedKeys = new ArrayList<>();
+        for(ItemStack itemStack : matrix){
+            for(char key : allKeys){
+                for (ItemStack ingredient : ingredients.get(key).keySet()){
+                    if(ingredient.getType().equals(itemStack.getType())){
+                        //TODO: EXTRA DATA CHECK!
+                        if (ingredient.getAmount() >= itemStack.getAmount() && ingredient.isSimilar(itemStack)) {
+                            usedKeys.add(key);
+                            allKeys.remove(key);
+                        }
+                    }
+                }
+            }
+        }
+        return usedKeys.containsAll(ingredients.keySet());
     }
 
     public ItemStack getResult() {

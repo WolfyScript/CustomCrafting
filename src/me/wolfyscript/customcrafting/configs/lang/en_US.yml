@@ -31,7 +31,7 @@ config-main-debug: 'Just for testing purpose'
 
 
 items:
-  general:
+  none:
     glass_gray:
       name: '&4'
     glass_red:
@@ -47,25 +47,90 @@ items:
       help: []
     gui_help:
       name: '&2Help'
+      lore:
+        - "Help"
       help: []
+
   main_menu:
+    craft_recipe:
+      name: "&6Workbench Recipe"
+      help:
+        - ""
+    furnace_recipe:
+      name: "&6Furnace Recipe"
+      help:
+        - ""
+    item_creator:
+      name: '&6Item Creator'
+      help:
+        - '&7Create items and save them'
+        - '&6They can be used in recipes'
+
     create_recipe:
       name: '&6Create Recipe'
       help:
         - '&7Create your own recipe'
     edit_recipe:
-      name: '&6Edit Recipe'
+      name: '&7Edit Recipe'
       help:
         - '&7Edit a existing recipe'
     delete_recipe:
       name: '&4Delete Recipe'
       help:
         - '&7Delete a existing recipe'
-    item_creator:
-      name: '&6Item Creator'
-      help:
-        - '&7Create items and save them'
-        - '&6They can be used in recipes'
+    recipe_list:
+      name: "&2Recipe List"
+      help: []
+  recipe_mainmenu:
+  item_mainmenu:
+    item_name:
+      name: '&6Change name'
+      help: []
+    item_enchantments:
+      name: '&6Enchantments'
+      help: []
+    item_lore:
+      name: '&6Edit Lore'
+      help: []
+    item_flags:
+      name: '&6Set Flags'
+      help: []
+    skull_owner:
+      name: '&6Set skull owner'
+      help: []
+    skull_texture:
+      name: '&6Set skull texture'
+      help: []
+    attributes_modifiers:
+      name: '&6Set Attributes'
+      help: []
+    unbreakable_on:
+      name: '&aUnbreakable'
+      help: []
+    unbreakable_off:
+      name: '&cBreakable'
+      help: []
+    item_advanced:
+      name: '&6Options for grid'
+      help: []
+    save_item:
+      help: []
+      name: '&aSave item'
+  furnace_mainmenu:
+
+  craft_editor_main:
+    save:
+      name: "&3Save"
+      help: []
+    permissions:
+      name: "%C%Permissions"
+      help: []
+    adv_workbench:
+      name: "%C%Advanced Workbench"
+      help: []
+  craft_editor_result:
+  craft_editor_ingredient:
+
   recipes_mainmenu:
     grid_options:
       name: '&8Grid Settings'
@@ -266,40 +331,7 @@ items:
     item_file:
       name: '&6Set Item File'
       help: []
-  item_mainmenu:
-    item_name:
-      name: '&6Change name'
-      help: []
-    item_enchantments:
-      name: '&6Enchantments'
-      help: []
-    item_lore:
-      name: '&6Edit Lore'
-      help: []
-    item_flags:
-      name: '&6Set Flags'
-      help: []
-    skull_owner:
-      name: '&6Set skull owner'
-      help: []
-    skull_texture:
-      name: '&6Set skull texture'
-      help: []
-    attributes_modifiers:
-      name: '&6Set Attributes'
-      help: []
-    unbreakable_on:
-      name: '&aUnbreakable'
-      help: []
-    unbreakable_off:
-      name: '&cBreakable'
-      help: []
-    item_advanced:
-      name: '&6Options for grid'
-      help: []
-    save_item:
-      name: '&aSave item'
-      help: []
+
   item_advanced_options:
     'null':
       name: NONE
@@ -446,3 +478,29 @@ items:
     set_amount:
       name: '&aAmount: &6%NUMBER%'
       help: []
+
+inventories:
+  main_menu: '&6CustomCrafting'
+  item_mainmenu: "&2Item Creator"
+  recipe_mainmenu: "&2Recipe Creator"
+  furnace_mainmenu: "&2Furnace Recipe Creator"
+  craft_editor_main: "&6Workbench Recipe Editor"
+  craft_editor_ingredient: "&6"
+
+  editor_result: "&6Edit Result"
+  recipe_list: "&6Recipe List"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

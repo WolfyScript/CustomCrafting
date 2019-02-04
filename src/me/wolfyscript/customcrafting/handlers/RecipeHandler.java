@@ -16,9 +16,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class RecipeHandler {
 
@@ -93,6 +91,7 @@ public class RecipeHandler {
             furnaceRecipes.add(furnaceCRecipe);
             Bukkit.addRecipe(furnaceCRecipe);
         }
+
     }
 
     private void registerCraftRecipe(CraftingRecipe recipe) {
@@ -137,6 +136,14 @@ public class RecipeHandler {
         return recipes;
     }
 
+    public List<FurnaceCRecipe> getFurnaceRecipes() {
+        return furnaceRecipes;
+    }
+
+    public List<CraftingRecipe> getRecipes() {
+        return recipes;
+    }
+
     public FurnaceCRecipe getFurnaceRecipe(ItemStack source){
         List<FurnaceCRecipe> recipes = new ArrayList<>();
         for(FurnaceCRecipe recipe : furnaceRecipes){
@@ -145,6 +152,23 @@ public class RecipeHandler {
             }
         }
         return null;
+    }
+
+    public HashMap<String, List<String>> getCraftRecipes(){
+        HashMap<String, List<String>> recipes = new HashMap<>();
+        for(CraftingRecipe recipe : getRecipes()){
+            String folder = recipe.getID().split(":")[0];
+            String recipeNmn = recipe.getID().split(":")[1];
+
+            if(!recipes.containsKey(folder)){
+                recipes.put(folder, new ArrayList<>(Collections.singleton(recipeNmn)));
+            }else{
+                List<String> list = recipes.get(folder);
+                list.add(recipeNmn);
+                recipes.put(folder, list);
+            }
+        }
+        return recipes;
     }
 
 

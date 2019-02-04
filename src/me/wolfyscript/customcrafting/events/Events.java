@@ -86,9 +86,7 @@ public class Events implements Listener {
     }
 
     private boolean checkWorkbenchAndPerm(Player player, Location location, CraftingRecipe recipe) {
-        System.out.println("loc: " + location);
         if (!recipe.needsAdvancedWorkbench() || (location != null && CustomCrafting.getWorkbenches().isWorkbench(location))) {
-            System.out.println("Workbench correct!");
             return !recipe.needsPermission() || (player.hasPermission("customcrafting.craft.*") || player.hasPermission("customcrafting.craft." + recipe.getID()) || player.hasPermission("customcrafting.craft." + recipe.getID().split(":")[0]));
         }
         return false;
@@ -112,7 +110,6 @@ public class Events implements Listener {
             }
         }
     }
-
 
     private CraftingRecipe getAllowedRecipe(List<CraftingRecipe> group, ItemStack[] matrix) {
         if (!group.isEmpty()) {

@@ -72,7 +72,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
             if (!letter.equals(' ')) {
                 boolean contains = false;
                 for (ItemStack itemStack : ingredients.get(letter).keySet()) {
-                    //TODO: SPACE FOR EXTRA DATA CHECK!
+                    //TODO: EXTRA DATA CHECK!
                     if (items.get(index).getAmount() >= itemStack.getAmount() && items.get(index).isSimilar(itemStack)) {
                         contains = true;
                     }

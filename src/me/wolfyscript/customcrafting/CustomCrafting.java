@@ -1,17 +1,24 @@
 package me.wolfyscript.customcrafting;
 
+import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.events.Events;
+import me.wolfyscript.customcrafting.gui.PlayerSettings;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomCrafting extends JavaPlugin {
 
     private static Plugin instance;
+    private static List<PlayerSettings> playerSettingsList = new ArrayList<>();
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
     private static InventoryHandler invHandler;
@@ -28,6 +35,7 @@ public class CustomCrafting extends JavaPlugin {
         recipeHandler = new RecipeHandler(api);
 
         getServer().getPluginManager().registerEvents(new Events(api), this);
+        getServer().getPluginCommand("cc").setExecutor(new CommandCC());
 
         configHandler.load();
 
@@ -72,5 +80,23 @@ public class CustomCrafting extends JavaPlugin {
 
     public static Workbenches getWorkbenches() {
         return workbenches;
+    }
+
+    public static boolean hasPlayerSettings(Player player){
+        for(PlayerSettings playerSettings : playerSettingsList){
+            if(playerSettings.getUuid().equals(player.getUniqueId()))
+                return true;
+        }
+        return false;
+    }
+
+    public static PlayerSettings getPlayerSettings(Player player){
+        for(PlayerSettings playerSettings : playerSettingsList){
+            if(playerSettings.getUuid().equals(player.getUniqueId()))
+                return playerSettings;
+        }
+        PlayerSettings playerSettings = new PlayerSettings(player.getUniqueId());
+        playerSettingsList.add(playerSettings);
+        return playerSettings;
     }
 }

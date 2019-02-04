@@ -6,3 +6,8 @@ api-version: 1.13
 depend:
   - WolfyUtilities
 description: Plugin to create your own crafting recipes
+
+commands:
+  cc:
+    usage: /cc
+    description: Something
