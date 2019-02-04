@@ -3,10 +3,8 @@ package me.wolfyscript.customcrafting.gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.inventory.ItemStack;
 
 public class MainMenu extends GuiWindow {
 
@@ -59,18 +57,18 @@ public class MainMenu extends GuiWindow {
     @Override
     public boolean onAction(GuiAction guiAction) {
         String action = guiAction.getAction();
-        PlayerSettings playerSettings = CustomCrafting.getPlayerSettings(guiAction.getPlayer());
+        PlayerCache playerCache = CustomCrafting.getPlayerSettings(guiAction.getPlayer());
         switch (action){
             case "craft_recipe":
-                playerSettings.setSetting(Setting.CRAFT_RECIPE);
+                playerCache.setSetting(Setting.CRAFT_RECIPE);
                 guiAction.getGuiHandler().changeToInv("recipe_mainmenu");
                 break;
             case "furnace_recipe":
-                playerSettings.setSetting(Setting.FURNACE_RECIPE);
+                playerCache.setSetting(Setting.FURNACE_RECIPE);
                 guiAction.getGuiHandler().changeToInv("furnace_mainmenu");
                 break;
             case "item_creator":
-                playerSettings.setSetting(Setting.ITEMS);
+                playerCache.setSetting(Setting.ITEMS);
                 guiAction.getGuiHandler().changeToInv("item_mainmenu");
                 break;
         }

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class PlayerSettings {
+public class PlayerCache {
 
     private UUID uuid;
     private Setting setting;
@@ -16,7 +16,7 @@ public class PlayerSettings {
     private List<ItemStack> cachedCraftIngredients;
     private ItemStack cachedResult = new ItemStack(Material.AIR);
 
-    public PlayerSettings(UUID uuid){
+    public PlayerCache(UUID uuid){
         this.uuid = uuid;
         this.setting = Setting.MAIN_MENU;
         this.cachedCraftIngredients = Arrays.asList(new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR));

@@ -1,12 +1,11 @@
 package me.wolfyscript.customcrafting.gui.craft;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.gui.PlayerSettings;
+import me.wolfyscript.customcrafting.gui.PlayerCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.ItemStack;
 
 public class CraftRecipeEditorGui extends GuiWindow {
 
@@ -25,15 +24,17 @@ public class CraftRecipeEditorGui extends GuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event){
         if(event.verify(this)){
-            PlayerSettings playerSettings = CustomCrafting.getPlayerSettings(event.getPlayer());
-            if(!playerSettings.getCachedCraftIngredients().isEmpty()){
+            PlayerCache playerCache = CustomCrafting.getPlayerSettings(event.getPlayer());
+            if(!playerCache.getCachedCraftIngredients().isEmpty()){
                 int slot;
                 for(int i = 0; i < 9 ; i++){
                     slot = 19 + i + (i/3)*6;
-                    event.setItem(slot, playerSettings.getCachedCraftIngredients().get(i));
+                    event.setItem(slot, playerCache.getCachedCraftIngredients().get(i));
                 }
             }
-            event.setItem(33, playerSettings.getCachedResult());
+            event.setItem(33, playerCache.getCachedResult());
+            event.setItem(50,"permissions");
+            event.setItem(51,"adv_workbench");
             event.setItem(53, "save");
         }
     }
