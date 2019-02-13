@@ -5,6 +5,7 @@ public enum Setting {
     MAIN_MENU,
     CRAFT_RECIPE,
     FURNACE_RECIPE,
-    ITEMS;
+    ITEMS,
+    LIST;
 
 }

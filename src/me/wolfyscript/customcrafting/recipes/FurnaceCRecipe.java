@@ -7,24 +7,44 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class FurnaceCRecipe extends FurnaceRecipe {
+public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
 
     private ItemStack source;
+    private String id;
+    private boolean needsAdvancedFurnace;
     private List<String> sourceData;
 
     public FurnaceCRecipe(FurnaceConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), config.getSource().getType(), config.getXP(), config.getCookingTime());
+        this.id = config.getId();
         this.source = config.getSource();
         this.sourceData = config.getSourceData();
+        this.needsAdvancedFurnace = config.needsAdvancedFurnace();
     }
 
     public ItemStack getSource() {
         return source;
     }
 
-    public boolean check(ItemStack source){
-        return getSource().getAmount() >= source.getAmount() && getSource().isSimilar(source);
+    public boolean needsAdvancedFurnace() {
+        return needsAdvancedFurnace;
     }
 
+    public boolean check(ItemStack source){
+        return source.getAmount() >= getSource().getAmount() && getSource().isSimilar(source);
+    }
+
+    @Override
+    public String getID() {
+        return this.id;
+    }
+
+    @Override
+    public void load() { }
+
+    @Override
+    public void save() {
+
+    }
 
 }

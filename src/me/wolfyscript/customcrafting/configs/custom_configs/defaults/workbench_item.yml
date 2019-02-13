@@ -1,0 +1,15 @@
+item:
+  v: 1631
+  type: CRAFTING_TABLE
+  meta:
+    ==: ItemMeta
+    meta-type: UNSPECIFIC
+    display-name: '&6Advanced Workbench&:&c&c&_&w&o&r&k&b&e&n&c&h'
+    lore:
+      - '&7Workbench for advanced crafting'
+    enchants:
+      FIRE_ASPECT: 9
+    ItemFlags:
+      - HIDE_ENCHANTS
+
+extra_data: []

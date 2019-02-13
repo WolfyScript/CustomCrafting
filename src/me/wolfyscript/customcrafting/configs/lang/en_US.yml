@@ -36,6 +36,10 @@ items:
       name: '&4'
     glass_red:
       name: '&4'
+    glass_green:
+      name: '&4'
+    glass_white:
+      name: '&4'
     minimize:
       name: '&3Minimize'
       help: []
@@ -60,7 +64,7 @@ items:
       name: "&6Furnace Recipe"
       help:
         - ""
-    item_creator:
+    item_editor:
       name: '&6Item Creator'
       help:
         - '&7Create items and save them'
@@ -81,8 +85,21 @@ items:
     recipe_list:
       name: "&2Recipe List"
       help: []
-  recipe_mainmenu:
-  item_mainmenu:
+
+  item_editor:
+    load_item:
+      name: "&6Load"
+      help: []
+    create_item:
+      name: "&6Create"
+      help: []
+    edit_item:
+      name: "&7Edit"
+      help: []
+    delete_item:
+      name: "&4Delete"
+      help: []
+  item_creator:
     item_name:
       name: '&6Change name'
       help: []
@@ -95,11 +112,11 @@ items:
     item_flags:
       name: '&6Set Flags'
       help: []
-    skull_owner:
-      name: '&6Set skull owner'
+    skull_setting_on:
+      name: '&6Skull Settings'
       help: []
-    skull_texture:
-      name: '&6Set skull texture'
+    skull_setting_off:
+      name: '&8Skull Settings'
       help: []
     attributes_modifiers:
       name: '&6Set Attributes'
@@ -110,26 +127,186 @@ items:
     unbreakable_off:
       name: '&cBreakable'
       help: []
-    item_advanced:
-      name: '&6Options for grid'
-      help: []
     save_item:
+      name: '&aSave Item'
       help: []
-      name: '&aSave item'
-  furnace_mainmenu:
+    apply_item:
+      name: "&aApply Item"
+      help: []
+    set_displayname:
+      name: "&6Set Display Name"
+      help: []
+    allow_displayname_on:
+      name: "&3DisplayName Enabled"
+      help: []
+    allow_displayname_off:
+      name: "&4DisplayName Disabled"
+      help: []
+    skull_texture:
+      name: "&6Apply Texture"
+      help: []
+    skull_owner:
+      name: "&6Set Skull Owner"
+      help: []
+    potion_effects:
+      name: "&6Potion Effects"
+      help: []
+    destroys:
+      name: "&6Destroys"
+      help: []
+    placed_on:
+      name: "&6Placed On"
+      help: []
 
-  craft_editor_main:
+    potion_add:
+      name: "&3Add Potion Effect"
+      help: []
+    potion_remove:
+      name: "&4Remove Potion Effect"
+      help: []
+    enchant_add:
+      name: '&6Add Enchantment'
+      help: []
+    enchant_remove:
+      name: '&4Remove Enchantment'
+      help: []
+    lore_add:
+      name: '&6Add Lore'
+      help: []
+    lore_remove:
+      name: "&4Remove Lore"
+      help: []
+    destroys_add:
+      name: "&3Add Block"
+      help: []
+    destroys_remove:
+      name: "&4Remove Block"
+      help: []
+    placed_on_add:
+      name: "&3Add Block"
+      help: []
+    placed_on_remove:
+      name: "&4Remove Block"
+      help: []
+    flag_enchants:
+      name: '%C%Hide Enchants'
+      help: []
+    flag_attributes:
+      name: '%C%Hide Attributes'
+      help: []
+    flag_unbreakable:
+      name: '%C%Hide Unbreakable'
+      help: []
+    flag_destroys:
+      name: '%C%Hide Destroys'
+      help: []
+    flag_placed_on:
+      name: '%C%Hide Placed On'
+      help: []
+    flag_potion_effects:
+      name: '%C%Hide Potions'
+      help: []
+    attribute_max_health:
+      name: '&6GENERIC_MAX_HEALTH'
+      help: []
+    attribute_follow_range:
+      name: '&6GENERIC_FOLLOW_RANGE'
+      help: []
+    attribute_knockback_resistance:
+      name: '&6GENERIC_KNOCKBACK_RESISTANCE'
+      help: []
+    attribute_movement_speed:
+      name: '&6GENERIC_MOVEMENT_SPEED'
+      help: []
+    attribute_flying_speed:
+      name: '&6GENERIC_FLYING_SPEED'
+      help: []
+    attribute_attack_damage:
+      name: '&6GENERIC_ATTACK_DAMAGE'
+      help: []
+    attribute_attack_speed:
+      name: '&6GENERIC_ATTACK_SPEED'
+      help: []
+    attribute_armor:
+      name: '&6GENERIC_ARMOR'
+      help: []
+    attribute_armor_toughness:
+      name: '&6GENERIC_ARMOR_TOUGHNESS'
+      help: []
+    attribute_luck:
+      name: '&6GENERIC_LUCK'
+      help: []
+    attribute_horse_jump_strength:
+      name: '&6HORSE_JUMP_STRENGTH'
+      help: []
+    attribute_zombie_spawn_reinforcements:
+      name: '&6ZOMBIE_SPAWN_REINFORCEMENTS'
+      help: []
+
+    operation_add_number:
+      name: '%C%Add number'
+      help: []
+    operation_add_scalar:
+      name: '%C%Multiply number'
+      help: []
+    operation_multiply_scalar_1:
+      name: '%C%Add percentage'
+      help: []
+    slot_hand:
+      name: '&6Hand'
+      help: []
+    slot_off_hand:
+      name: '&6Off_Hand'
+      help: []
+    slot_feet:
+      name: '&6Feet'
+      help: []
+    slot_legs:
+      name: '&6Legs'
+      help: []
+    slot_chest:
+      name: '&6Chest'
+      help: []
+    slot_head:
+      name: '&6Head'
+      help: []
+    attribute_save:
+      name: '&aAdd Attribute'
+      help: []
+    attribute_delete:
+      name: '&cRemove Attribute'
+      help: []
+    set_amount:
+      name: '&aAmount: &6%NUMBER%'
+      help: []
+
+  recipe_editor:
+  recipe_creator:
     save:
       name: "&3Save"
       help: []
-    permissions:
-      name: "%C%Permissions"
+    permissions_on:
+      name: "&3Permissions"
       help: []
-    adv_workbench:
-      name: "%C%Advanced Workbench"
+    permissions_off:
+      name: "&4No Permissions"
       help: []
-  craft_editor_result:
-  craft_editor_ingredient:
+    adv_workbench_on:
+      name: "&3Advanced Workbench"
+      help: []
+    adv_workbench_off:
+      name: "&4Every Workbench"
+      help: []
+    shapeless_off:
+      name: '&3Shaped Recipe'
+      help:
+        - '&7Recipe has a shape!'
+    shapeless_on:
+      name: '&3Shapeless Recipe'
+      help:
+        - '&7Recipe is shapeless!'
+
+  recipe_list:
 
   recipes_mainmenu:
     grid_options:
@@ -142,35 +319,6 @@ items:
       help:
         - '&7This option is disabled!'
         - '&6Set to shaped recipe to use this option!'
-    shapeless_wrong:
-      name: '&3Shaped Recipe'
-      help:
-        - '&7Recipe has a shape!'
-    shapeless_right:
-      name: '&3Shapeless Recipe'
-      help:
-        - '&7Recipe is shapeless!'
-    recipe_save:
-      name: '&2Save Recipe'
-      help:
-        - '&7Save current recipe'
-    permission_true:
-      name: '&aNeeds Permission'
-      help:
-        - '&7Players need permission to craft'
-    permission_false:
-      name: '&cNo Permission'
-      help:
-        - '&7No permissions needed'
-    workbench_true:
-      name: '&aNeeds Advanced Workbench'
-      help:
-        - '&7Recipe can only be crafted'
-        - '&7in a advanced workbench!'
-    workbench_false:
-      name: '&cNo Advanced Workbench'
-      help:
-        - '&7Recipe can be crafted everywhere!'
   recipes_slot_options:
     item_name:
       name: '&6Change name'
@@ -332,162 +480,15 @@ items:
       name: '&6Set Item File'
       help: []
 
-  item_advanced_options:
-    'null':
-      name: NONE
-  enchant_options:
-    enchantment_add:
-      name: '&6Add Enchantment'
-      help: []
-    enchantment_remove:
-      name: '&4Remove Enchantment'
-      help: []
-  lore_options:
-    remove_lore:
-      name: '&4Remove Lore'
-      help: []
-    add_lore:
-      name: '&6Add Lore'
-      help: []
-  flags_options:
-    flag_enchants:
-      name: '&4Hide Enchants'
-      help: []
-    flag_enchants_true:
-      name: '&2Enabled'
-      help: []
-    flag_enchants_false:
-      name: '&4Disabled'
-      help: []
-    flag_attributes:
-      name: '&4Hide Attributes'
-      help: []
-    flag_attributes_true:
-      name: '&2Enabled'
-      help: []
-    flag_attributes_false:
-      name: '&4Disabled'
-      help: []
-    flag_unbreakable:
-      name: '&4Hide Unbreakable'
-      help: []
-    flag_unbreakable_true:
-      name: '&2Enabled'
-      help: []
-    flag_unbreakable_false:
-      name: '&4Disabled'
-      help: []
-    flag_destroys:
-      name: '&4Hide Destroys'
-      help: []
-    flag_destroys_true:
-      name: '&2Enabled'
-      help: []
-    flag_destroys_false:
-      name: '&4Disabled'
-      help: []
-    flag_placed_on:
-      name: '&4Hide Placed On'
-      help: []
-    flag_placed_on_true:
-      name: '&2Enabled'
-      help: []
-    flag_placed_on_false:
-      name: '&4Disabled'
-      help: []
-    flag_potion_effects:
-      name: '&4Hide Potions'
-      help: []
-    flag_potion_effects_true:
-      name: '&2Enabled'
-      help: []
-    flag_potion_effects_false:
-      name: '&4Disabled'
-      help: []
-  attribute_options:
-    attribute_max_health:
-      name: '&6GENERIC_MAX_HEALTH'
-      help: []
-    attribute_follow_range:
-      name: '&6GENERIC_FOLLOW_RANGE'
-      help: []
-    attribute_knockback_resistance:
-      name: '&6GENERIC_KNOCKBACK_RESISTANCE'
-      help: []
-    attribute_movement_speed:
-      name: '&6GENERIC_MOVEMENT_SPEED'
-      help: []
-    attribute_flying_speed:
-      name: '&6GENERIC_FLYING_SPEED'
-      help: []
-    attribute_attack_damage:
-      name: '&6GENERIC_ATTACK_DAMAGE'
-      help: []
-    attribute_attack_speed:
-      name: '&6GENERIC_ATTACK_SPEED'
-      help: []
-    attribute_armor:
-      name: '&6GENERIC_ARMOR'
-      help: []
-    attribute_armor_toughness:
-      name: '&6GENERIC_ARMOR_TOUGHNESS'
-      help: []
-    attribute_luck:
-      name: '&6GENERIC_LUCK'
-      help: []
-    attribute_horse_jump_strength:
-      name: '&6HORSE_JUMP_STRENGTH'
-      help: []
-    attribute_zombie_spawn_reinforcements:
-      name: '&6ZOMBIE_SPAWN_REINFORCEMENTS'
-      help: []
-  attribute_values:
-    operation_add_number:
-      name: '%C%Add number'
-      help: []
-    operation_add_scalar:
-      name: '%C%Multiply number'
-      help: []
-    operation_multiply_scalar_1:
-      name: '%C%Add percentage'
-      help: []
-    slot_hand:
-      name: '&6Hand'
-      help: []
-    slot_off_hand:
-      name: '&6Off_Hand'
-      help: []
-    slot_feet:
-      name: '&6Feet'
-      help: []
-    slot_legs:
-      name: '&6Legs'
-      help: []
-    slot_chest:
-      name: '&6Chest'
-      help: []
-    slot_head:
-      name: '&6Head'
-      help: []
-    attribute_save:
-      name: '&aAdd Attribute'
-      help: []
-    attribute_delete:
-      name: '&cRemove Attribute'
-      help: []
-    set_amount:
-      name: '&aAmount: &6%NUMBER%'
-      help: []
-
 inventories:
   main_menu: '&6CustomCrafting'
-  item_mainmenu: "&2Item Creator"
-  recipe_mainmenu: "&2Recipe Creator"
-  furnace_mainmenu: "&2Furnace Recipe Creator"
-  craft_editor_main: "&6Workbench Recipe Editor"
-  craft_editor_ingredient: "&6"
 
-  editor_result: "&6Edit Result"
+  item_editor: "&2Item Editor"
+  item_creator: "&2Item Creator"
+
+  recipe_editor: "&4Recipe Editor"
+  recipe_creator: "&4Recipe Creator"
+
   recipe_list: "&6Recipe List"
 
 

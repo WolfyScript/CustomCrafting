@@ -1,12 +1,12 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
-public interface CraftingRecipe extends Recipe {
+import org.bukkit.inventory.ItemStack;
+
+public interface CraftingRecipe extends CustomRecipe{
+
     boolean needsPermission();
     boolean needsAdvancedWorkbench();
-    String getID();
-    String getGroup();
     boolean check(ItemStack[] matrix);
+
 }

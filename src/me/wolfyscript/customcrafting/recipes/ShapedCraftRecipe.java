@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
+public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
 
     private boolean permission;
     private boolean advancedWorkbench;
@@ -37,6 +37,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.advancedWorkbench = config.needWorkbench();
     }
 
+    @Override
     public void load() {
         shape(shape);
         for (Character itemKey : ingredients.keySet()) {
@@ -57,6 +58,11 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
             }
         }
         shapeLine = stringBuilder.toString();
+    }
+
+    @Override
+    public void save() {
+
     }
 
     @Override

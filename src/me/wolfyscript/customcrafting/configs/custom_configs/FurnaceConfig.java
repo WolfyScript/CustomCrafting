@@ -1,35 +1,18 @@
 package me.wolfyscript.customcrafting.configs.custom_configs;
 
-import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class FurnaceConfig extends Config {
+public class FurnaceConfig extends CustomConfig {
 
-    private String folder;
-    private String name;
-    private String id;
+    public FurnaceConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
+        super(configAPI, defaultName, folder, "furnace", name);
+    }
 
     public FurnaceConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs", "furnace_config", configAPI.getPlugin().getDataFolder().getPath()+"/recipes/"+folder+"/furnace", name);
-        this.id = folder+":"+name;
-        this.name = name;
-        this.folder = folder;
-    }
-
-    public String getFolder() {
-        return folder;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String getName() {
-        return name;
+        this(configAPI, "furnace_config", folder, name);
     }
 
     public float getXP(){
@@ -50,5 +33,9 @@ public class FurnaceConfig extends Config {
 
     public List<String> getSourceData(){
         return getStringList("source_data");
+    }
+
+    public boolean needsAdvancedFurnace(){
+        return getBoolean("advanced_furnace");
     }
 }

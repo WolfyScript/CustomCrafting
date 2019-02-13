@@ -1,32 +1,20 @@
 package me.wolfyscript.customcrafting.configs.custom_configs;
 
-import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class CraftConfig extends Config {
+public class CraftConfig extends CustomConfig {
 
-    private String folder;
-    private String name;
-    private String id;
-
-    public CraftConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs", "craft_config", configAPI.getPlugin().getDataFolder().getPath()+"/recipes/"+folder+"/workbench", name);
-        this.id = folder+":"+name;
-        this.name = name;
-        this.folder = folder;
+    public CraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
+        super(configAPI, defaultName, folder, "workbench", name);
     }
 
-    @Override
-    public void init() {
-        saveAfterSet(true);
-        loadDefaults();
+    public CraftConfig(ConfigAPI configAPI, String folder, String name) {
+        this(configAPI, "craft_config", folder, name);
     }
 
     public boolean isShapeless(){
@@ -43,18 +31,6 @@ public class CraftConfig extends Config {
 
     public String getGroup(){
         return getString("group");
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getFolder() {
-        return folder;
     }
 
     public String[] getShape(){

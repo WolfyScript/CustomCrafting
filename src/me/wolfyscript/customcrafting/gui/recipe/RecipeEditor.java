@@ -1,14 +1,15 @@
-package me.wolfyscript.customcrafting.gui.craft;
+package me.wolfyscript.customcrafting.gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.event.EventHandler;
 
-public class CraftRecipeMainMenu extends GuiWindow {
+public class RecipeEditor extends GuiWindow {
 
-    public CraftRecipeMainMenu(InventoryAPI inventoryAPI) {
-        super("recipe_mainmenu", inventoryAPI, 54);
+    public RecipeEditor(InventoryAPI inventoryAPI) {
+        super("recipe_editor", inventoryAPI, 54);
     }
 
     @Override
@@ -30,10 +31,16 @@ public class CraftRecipeMainMenu extends GuiWindow {
     @Override
     public boolean onAction(GuiAction guiAction) {
         String action = guiAction.getAction();
-        if(action.equals("recipe_list")){
-            guiAction.getGuiHandler().changeToInv("recipe_list");
-        }else if(action.equals("create_recipe")){
-            guiAction.getGuiHandler().changeToInv("craft_editor_main");
+        if(action.equals("back")){
+            guiAction.getGuiHandler().openLastInv();
+        }else{
+            //TODO: Functions for different recipe types
+            if(action.equals("recipe_list")){
+                guiAction.getGuiHandler().changeToInv("recipe_list");
+            }else if(action.equals("create_recipe")){
+                guiAction.getGuiHandler().changeToInv("recipe_creator");
+            }
+
         }
         return true;
     }
@@ -42,5 +49,11 @@ public class CraftRecipeMainMenu extends GuiWindow {
     public boolean onClick(GuiClick guiClick) {
 
         return true;
+    }
+
+    @Override
+    public boolean parseChatMessage(int id, String message, GuiHandler guiHandler) {
+
+        return false;
     }
 }

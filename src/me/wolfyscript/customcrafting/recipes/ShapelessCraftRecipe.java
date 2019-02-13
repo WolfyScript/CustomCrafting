@@ -35,6 +35,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.group = config.getGroup();
     }
 
+    @Override
     public void load(){
         for(Character itemKey : ingredients.keySet()){
             Set<ItemStack> items = ingredients.get(itemKey).keySet();
@@ -42,6 +43,11 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
             items.forEach(itemStack -> materials.add(itemStack.getType()));
             addIngredient(new RecipeChoice.MaterialChoice(materials));
         }
+    }
+
+    @Override
+    public void save() {
+
     }
 
     @Override

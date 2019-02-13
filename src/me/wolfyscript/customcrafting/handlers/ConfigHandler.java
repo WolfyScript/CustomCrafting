@@ -1,6 +1,10 @@
 package me.wolfyscript.customcrafting.handlers;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -26,6 +30,12 @@ public class ConfigHandler {
     }
 
     public void load(){
+        if (!instance.getDataFolder().exists()) {
+            ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(), "defaults/workbench_item", "customcrafting", "workbench_item");
+            ItemConfig itemConfig2 = new ItemConfig(api.getConfigAPI(), "defaults/furnace_item", "customcrafting", "furnace_item");
+            CustomConfig config = new CraftConfig(api.getConfigAPI(), "defaults/workbench_craft", "customcrafting", "workbench");
+            CustomConfig config2 = new CraftConfig(api.getConfigAPI(), "defaults/furnace_recipe", "customcrafting", "furnace");
+        }
         this.mainConfig = new MainConfig(configAPI);
         loadLang();
     }

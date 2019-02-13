@@ -17,3 +17,4 @@ data:
     interval: 30
 recipes:
   reload_after_save: false
+  disable_vanilla_recipes: []

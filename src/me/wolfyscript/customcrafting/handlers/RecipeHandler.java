@@ -2,14 +2,15 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
-import me.wolfyscript.customcrafting.recipes.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
+import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -20,11 +21,8 @@ import java.util.*;
 
 public class RecipeHandler {
 
-    private List<CraftConfig> cachedConfigs = new ArrayList<>();
-    private List<FurnaceConfig> cachedFurnaceConfigs = new ArrayList<>();
-
-    private List<CraftingRecipe> recipes = new ArrayList<>();
-    private List<FurnaceCRecipe> furnaceRecipes = new ArrayList<>();
+    private List<CustomRecipe> customRecipes = new ArrayList<>();
+    private List<CustomItem> customItems = new ArrayList<>();
 
     private ConfigAPI configAPI;
     private WolfyUtilities api;
@@ -34,102 +32,119 @@ public class RecipeHandler {
         this.api = api;
     }
 
+    private void loadConfig(String subfolder, String type) {
+        File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
+        File[] files = workbench.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
+        if (files != null) {
+            api.sendConsoleMessage("    "+type+":");
+            for (File file : files) {
+                String key = file.getParentFile().getParentFile().getName().toLowerCase();
+                String name = file.getName().split("\\.")[0].toLowerCase();
+                try {
+                    switch (type) {
+                        case "workbench":
+                            CraftConfig config = new CraftConfig(configAPI, key, name);
+                            if (config.isShapeless()) {
+                                ShapelessCraftRecipe recipe = new ShapelessCraftRecipe(config);
+                                recipe.load();
+                                registerRecipe(recipe);
+                            } else {
+                                ShapedCraftRecipe recipe = new ShapedCraftRecipe(config);
+                                recipe.load();
+                                registerRecipe(recipe);
+                            }
+                            break;
+                        case "furnace":
+                            FurnaceCRecipe furnaceCRecipe = new FurnaceCRecipe(new FurnaceConfig(configAPI, key, name));
+                            registerRecipe(furnaceCRecipe);
+                            break;
+                        case "items":
+                            customItems.add(new CustomItem(new ItemConfig(configAPI, key, name)));
+                            break;
+                        case "fuel":
+
+                            break;
+                    }
+                } catch (Exception ex) {
+                    api.sendConsoleMessage("-------------------------------------------------");
+                    api.sendConsoleMessage("Error loading Contents for: " + key+":"+name);
+                    api.sendConsoleMessage("    Type: " + type);
+                    api.sendConsoleMessage("    Message: " + ex.getMessage());
+                    api.sendConsoleMessage("    Cause: " + ex.getCause());
+                    api.sendConsoleMessage("You should check the config for empty settings " +
+                            "\ne.g. No set Result or Source Item!");
+                    api.sendConsoleMessage("-------------------------------------------------");
+                }
+                api.sendConsoleMessage("      - "+name);
+            }
+        }
+    }
 
     public void loadConfigs() {
-        api.sendConsoleMessage("loading Recipe configs...");
+
+        if(!CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().isEmpty()){
+            api.sendConsoleMessage("      - [Remove Vanilla Recipes] -");
+            Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+            while(recipeIterator.hasNext()){
+                Recipe recipe = recipeIterator.next();
+                if(CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().contains(recipe.getResult().getType())){
+                    recipeIterator.remove();
+                }
+            }
+        }
+        api.sendConsoleMessage("________[Loading Recipes/Items]________");
         File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
         List<File> subFolders = null;
         File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
         if (dirs != null) {
             subFolders = new ArrayList<>(Arrays.asList(dirs));
         }
-
         if (subFolders != null) {
             for (File folder : subFolders) {
-                api.sendConsoleMessage("    loading Workbench configs...");
-                File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + folder.getName() + File.separator+ "workbench");
-                File[] files = workbench.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
-                if (files != null) {
-                    for (File file : files) {
-                        api.sendConsoleMessage("        -> " + file.getParentFile().getParentFile().getName() + ":" + file.getName().split("\\.")[0]);
-                        cachedConfigs.add(new CraftConfig(configAPI, file.getParentFile().getParentFile().getName().toLowerCase(), file.getName().split("\\.")[0].toLowerCase()));
-                    }
-                }
-                api.sendConsoleMessage("    loading Furnace configs...");
-                File furnace = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + folder.getName() + File.separator+ "furnace");
-                files = furnace.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
-                if (files != null) {
-                    for (File file : files) {
-                        api.sendConsoleMessage("        -> " + file.getParentFile().getParentFile().getName() + ":" + file.getName().split("\\.")[0]);
-                        cachedFurnaceConfigs.add(new FurnaceConfig(configAPI, file.getParentFile().getParentFile().getName().toLowerCase(), file.getName().split("\\.")[0].toLowerCase()));
-                    }
-                }
-
+                api.sendConsoleMessage("loading - " + folder.getName()+" -");
+                loadConfig(folder.getName(), "items");
+                loadConfig(folder.getName(), "workbench");
+                loadConfig(folder.getName(), "furnace");
             }
         }
     }
 
-    public void loadRecipes() {
-        api.sendConsoleMessage("loading Recipes...");
-        api.sendConsoleMessage("    loading Workbench recipes...");
-        for (CraftConfig craftConfig : cachedConfigs) {
-            api.sendConsoleMessage("        -> " + craftConfig.getId());
-            if(craftConfig.isShapeless()){
-                ShapelessCraftRecipe recipe = new ShapelessCraftRecipe(craftConfig);
-                recipe.load();
-                registerCraftRecipe(recipe);
-            }else{
-                ShapedCraftRecipe recipe = new ShapedCraftRecipe(craftConfig);
-                recipe.load();
-                registerCraftRecipe(recipe);
-            }
-        }
-        api.sendConsoleMessage("    loading Furnace recipes...");
-        for(FurnaceConfig furnaceConfig : cachedFurnaceConfigs){
-            api.sendConsoleMessage("        -> " + furnaceConfig.getId());
-            FurnaceCRecipe furnaceCRecipe = new FurnaceCRecipe(furnaceConfig);
-            furnaceRecipes.add(furnaceCRecipe);
-            Bukkit.addRecipe(furnaceCRecipe);
-        }
-
-    }
-
-    private void registerCraftRecipe(CraftingRecipe recipe) {
+    private void registerRecipe(CustomRecipe recipe) {
         Bukkit.addRecipe(recipe);
-        recipes.add(recipe);
+        customRecipes.add(recipe);
     }
 
     /*
         Get all the ShapedRecipes from this group
      */
-    public List<CraftingRecipe> getRecipeGroup(String group){
-        List<CraftingRecipe> groupRecipes = new ArrayList<>();
-        for (CraftingRecipe recipe : recipes) {
+    public List<CustomRecipe> getRecipeGroup(String group) {
+        List<CustomRecipe> groupRecipes = new ArrayList<>();
+        for (CustomRecipe recipe : customRecipes) {
             if (recipe.getGroup().equals(group))
                 groupRecipes.add(recipe);
         }
         return groupRecipes;
     }
 
-    public List<CraftingRecipe> getRecipeGroup(CraftingRecipe recipe){
-        List<CraftingRecipe> groupRecipes = new ArrayList<>(getRecipeGroup(recipe.getID()));
+    public List<CustomRecipe> getRecipeGroup(CraftingRecipe recipe) {
+        List<CustomRecipe> groupRecipes = new ArrayList<>(getRecipeGroup(recipe.getID()));
         groupRecipes.remove(recipe);
         return groupRecipes;
     }
 
-    public CraftingRecipe getRecipe(Recipe recipe){
-        for(CraftingRecipe craftingRecipe : recipes){
-            if(craftingRecipe.getID().equals(recipe instanceof ShapedRecipe ? ((ShapedRecipe) recipe).getKey().toString() : recipe instanceof ShapelessRecipe ? ((ShapelessRecipe) recipe).getKey().toString() : "")){
-                return craftingRecipe;
+    public CraftingRecipe getRecipe(Recipe recipe) {
+        for (CustomRecipe craftingRecipe : customRecipes) {
+            if (craftingRecipe.getID().equals(recipe instanceof ShapedRecipe ? ((ShapedRecipe) recipe).getKey().toString() : recipe instanceof ShapelessRecipe ? ((ShapelessRecipe) recipe).getKey().toString() : "")) {
+                return (CraftingRecipe) craftingRecipe;
             }
         }
         return null;
     }
 
-    public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source){
+    public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source) {
         List<FurnaceCRecipe> recipes = new ArrayList<>();
-        for(FurnaceCRecipe recipe : furnaceRecipes){
-            if(recipe.getSource().getType() == source.getType()){
+        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
+            if (recipe.getSource().getType() == source.getType()) {
                 recipes.add(recipe);
             }
         }
@@ -137,41 +152,46 @@ public class RecipeHandler {
     }
 
     public List<FurnaceCRecipe> getFurnaceRecipes() {
-        return furnaceRecipes;
-    }
-
-    public List<CraftingRecipe> getRecipes() {
+        List<FurnaceCRecipe> recipes = new ArrayList<>();
+        for (CustomRecipe recipe : customRecipes) {
+            if (recipe instanceof FurnaceCRecipe) {
+                recipes.add((FurnaceCRecipe) recipe);
+            }
+        }
         return recipes;
     }
 
-    public FurnaceCRecipe getFurnaceRecipe(ItemStack source){
-        List<FurnaceCRecipe> recipes = new ArrayList<>();
-        for(FurnaceCRecipe recipe : furnaceRecipes){
-            if(recipe.getSource().getType() == source.getType()){
+    public List<CustomRecipe> getRecipes() {
+        return customRecipes;
+    }
+
+    public FurnaceCRecipe getFurnaceRecipe(ItemStack source) {
+        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
+            if (recipe.getSource().getType() == source.getType()) {
                 return recipe;
             }
         }
         return null;
     }
 
-    public HashMap<String, List<String>> getCraftRecipes(){
-        HashMap<String, List<String>> recipes = new HashMap<>();
-        for(CraftingRecipe recipe : getRecipes()){
-            String folder = recipe.getID().split(":")[0];
-            String recipeNmn = recipe.getID().split(":")[1];
-
-            if(!recipes.containsKey(folder)){
-                recipes.put(folder, new ArrayList<>(Collections.singleton(recipeNmn)));
-            }else{
-                List<String> list = recipes.get(folder);
-                list.add(recipeNmn);
-                recipes.put(folder, list);
-            }
-        }
-        return recipes;
+    public List<CustomItem> getCustomItems() {
+        return customItems;
     }
 
+    public CustomItem getCustomItem(String key){
+        for(CustomItem customItem : customItems){
+            if(customItem.getId().equals(key)){
+                return customItem;
+            }
+        }
+        return null;
+    }
 
+    public void addCustomItem(CustomItem item){
+        customItems.add(item);
+    }
 
-
+    public CustomItem getCustomItem(String key, String name){
+        return getCustomItem(key+":"+name);
+    }
 }
