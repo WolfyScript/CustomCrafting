@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipe;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.PlayerCache;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Bukkit;
@@ -97,14 +98,23 @@ public class RecipeCreator extends GuiWindow {
             if(guiClick.getClickedInventory().equals(player.getOpenInventory().getTopInventory())){
                 if(guiClick.getClickType().equals(ClickType.SHIFT_RIGHT) && !guiClick.getCurrentItem().getType().equals(Material.AIR)){
                     if((slot >= 19 && slot < 22) || (slot >= 28 && slot < 31) || (slot >= 37 && slot < 40)){
-                        //TODO: CACHE Ingredients Tag! AND USE IT!
                         int craftSlot = (slot-19) - 6*(((slot-19)/4)/2);
-                        playerCache.setItemTag("ingredient:"+craftSlot);
+                        String id = ItemUtils.getCustomItemID(playerCache.getCraftIngredients().get(craftSlot));
+                        if(id.isEmpty()){
+                            playerCache.setItemTag("ingredient:"+craftSlot+";not_saved;null");
+                        }else{
+                            playerCache.setItemTag("ingredient:"+craftSlot+";saved;"+id);
+                        }
                         guiClick.getGuiHandler().changeToInv("item_editor");
                         return true;
                     }else{
                         //TODO: CACHE Result Tag! AND USE IT!
-                        playerCache.setItemTag("result");
+                        String id = ItemUtils.getCustomItemID(playerCache.getCraftResult());
+                        if(id.isEmpty()){
+                            playerCache.setItemTag("result"+";not_saved;null");
+                        }else{
+                            playerCache.setItemTag("result"+";saved;"+id);
+                        }
                         guiClick.getGuiHandler().changeToInv("item_editor");
                         return true;
                     }

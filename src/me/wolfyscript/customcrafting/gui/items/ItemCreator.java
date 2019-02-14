@@ -3,7 +3,9 @@ package me.wolfyscript.customcrafting.gui.items;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
 import me.wolfyscript.customcrafting.gui.PlayerCache;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import me.wolfyscript.utilities.api.utils.Legacy;
@@ -116,11 +118,10 @@ public class ItemCreator extends GuiWindow {
             event.setItem(14, "none", "glass_white");
             event.setItem(22, "none", "glass_white");
 
-            if (cache.getItemTag().startsWith("ingredient:")) {
+            if (!cache.getItemTag().isEmpty()) {
                 event.setItem(3, "apply_item");
             }
             event.setItem(5, "save_item");
-
 
             event.setItem(9, "item_name");
             event.setItem(10, "item_lore");
@@ -242,11 +243,25 @@ public class ItemCreator extends GuiWindow {
     @Override
     public boolean onAction(GuiAction guiAction) {
         String action = guiAction.getAction();
+        Player player = guiAction.getPlayer();
         PlayerCache cache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
         if (action.equals("back")) {
             guiAction.getGuiHandler().openLastInv();
         } else if (action.equals("save_item") && !cache.getCustomItem().getType().equals(Material.AIR)) {
-            runChat(0, "&3Type in the name of the folder and item! &6e.g. example your_item", guiAction.getGuiHandler());
+            if(cache.getItemTag(0).equals("items") && CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2)) != null){
+                ItemUtils.saveItem(cache.getItemTag(2), cache.getCustomItem());
+                api.sendPlayerMessage(player, "&aItem saved to &6" + cache.getItemTag(2).split(":")[0] + "/items/" + cache.getItemTag(2).split(":")[1]);
+            }else{
+                runChat(0, "&3Type in the name of the folder and item! &6e.g. example your_item", guiAction.getGuiHandler());
+            }
+        } else if (action.equals("apply") && !cache.getCustomItem().getType().equals(Material.AIR)) {
+            ItemStack itemStack = cache.getCustomItem();
+            if(cache.getItemTag(1).equals("saved")) {
+                ItemUtils.saveItem(cache.getItemTag(2), CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2)));
+                itemStack = CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2)).getIDItem();
+            }
+            ItemUtils.applyItem(itemStack, cache);
+            guiAction.getGuiHandler().changeToInv("recipe_creator");
         } else {
             ItemStack itemStack = cache.getCustomItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -353,9 +368,7 @@ public class ItemCreator extends GuiWindow {
         switch (id) {
             case 0:
                 if (args.length > 1) {
-                    ItemConfig config = new ItemConfig(api.getConfigAPI(), args[0], args[1]);
-                    config.setCustomItem(cache.getCustomItem().clone());
-                    CustomCrafting.getRecipeHandler().addCustomItem(new CustomItem(config));
+                    ItemUtils.saveItem(args[0]+":"+args[1], cache.getCustomItem());
                     api.sendPlayerMessage(player, "&aItem saved to &6" + args[0] + "/items/" + args[1]);
                 } else {
                     return true;
@@ -455,7 +468,7 @@ public class ItemCreator extends GuiWindow {
                 if (type != null) {
                     PotionEffect potionEffect = new PotionEffect(type, duration, amplifier, ambient, particles);
                     ((PotionMeta) itemMeta).addCustomEffect(potionEffect, true);
-                    api.sendPlayerMessage(player, "&aAdded Potion Effect &6"+type.getName()+", "+duration+", "+amplifier+", "+ambient+", "+particles);
+                    api.sendPlayerMessage(player, "&aAdded Potion Effect &6" + type.getName() + ", " + duration + ", " + amplifier + ", " + ambient + ", " + particles);
                     cache.getCustomItem().setItemMeta(itemMeta);
                     return false;
 
@@ -474,7 +487,7 @@ public class ItemCreator extends GuiWindow {
                     cache.getCustomItem().setItemMeta(itemMeta);
                     return false;
                 }
-                api.sendPlayerMessage(player, "&cInvalid name! &4"+args[0]+"&c does not exist!");
+                api.sendPlayerMessage(player, "&cInvalid name! &4" + args[0] + "&c does not exist!");
                 return true;
         }
         return false;

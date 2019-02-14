@@ -53,9 +53,6 @@ public class CustomCrafting extends JavaPlugin {
             System.out.println("Found old CustomCrafting data! renaming folder...");
             if (getDataFolder().renameTo(new File(getDataFolder().getParentFile(), "CustomCrafting_old"))) {
                 System.out.println("Renamed to CustomCrafting_old!");
-
-                //System.out.println("Restart server to load the new Data!");
-                //Bukkit.getPluginManager().disablePlugin(this);
             }
         }
 

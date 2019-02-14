@@ -25,7 +25,7 @@ public class PlayerCache {
 
         setCustomItem(placeHolder);
         setItemName(true);
-        setItemTag("");
+        setItemTag("null;null;null");
 
         setCraftIngredients(Arrays.asList(new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
         setCraftResult(placeHolder);
@@ -167,12 +167,21 @@ public class PlayerCache {
         return ((Boolean) getObject("item","name"));
     }
 
+    //TAG in which the current item that is edited is saved! <type:[slot]>;<is_saved>;<item_id/null>
     public void setItemTag(String tag){
         setObject("item", "tag", tag);
     }
 
     public String getItemTag(){
         return (String) getObject("item","tag");
+    }
+
+    public String[] getItemTags(){
+        return getItemTag().split(";");
+    }
+
+    public String getItemTag(int index){
+        return getItemTags()[index];
     }
 
 }

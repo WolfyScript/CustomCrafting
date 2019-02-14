@@ -191,6 +191,14 @@ public class RecipeHandler {
         customItems.add(item);
     }
 
+    public void removeCustomItem(String id){
+        customItems.remove(getCustomItem(id));
+    }
+
+    public void removeCustomItem(CustomItem item){
+        customItems.remove(item);
+    }
+
     public CustomItem getCustomItem(String key, String name){
         return getCustomItem(key+":"+name);
     }
