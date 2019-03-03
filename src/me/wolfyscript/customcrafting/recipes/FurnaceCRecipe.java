@@ -12,13 +12,11 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
     private ItemStack source;
     private String id;
     private boolean needsAdvancedFurnace;
-    private List<String> sourceData;
 
     public FurnaceCRecipe(FurnaceConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), config.getSource().getType(), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.source = config.getSource();
-        this.sourceData = config.getSourceData();
         this.needsAdvancedFurnace = config.needsAdvancedFurnace();
     }
 

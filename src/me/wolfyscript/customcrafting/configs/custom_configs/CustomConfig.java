@@ -1,7 +1,10 @@
 package me.wolfyscript.customcrafting.configs.custom_configs;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import org.bukkit.inventory.ItemStack;
 
 public class CustomConfig extends Config {
 
@@ -39,5 +42,23 @@ public class CustomConfig extends Config {
 
     public String getType() {
         return type;
+    }
+
+    public void saveCustomItem(String path, CustomItem customItem){
+        if(customItem != null){
+            if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
+                set(path+".item_key", customItem.getId());
+            }else {
+                saveItem(path+".item", customItem);
+            }
+        }
+    }
+
+    public ItemStack getCustomItem(String path){
+        String id = getString(path+".item_key");
+        if(id != null && !id.isEmpty()){
+            return CustomCrafting.getRecipeHandler().getCustomItem(id);
+        }
+        return getItem("result.item");
     }
 }

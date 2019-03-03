@@ -1,10 +1,13 @@
 package me.wolfyscript.customcrafting.gui.list;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -13,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class RecipeList extends GuiWindow {
+public class RecipeList extends ExtendedGuiWindow {
 
     private HashMap<String, List<CustomRecipe>> cachedRecipes = new HashMap<>();
 
@@ -23,8 +26,7 @@ public class RecipeList extends GuiWindow {
 
     @Override
     public void onInit() {
-
-
+        createItem("page_back", WolfyUtilities.getCustomHead(""));
     }
 
     @EventHandler
@@ -68,6 +70,7 @@ public class RecipeList extends GuiWindow {
                         listItems.add(itemStack);
                     }
                 }
+                event.setItem(45, "page_back");
             }
             listItems.sort(Comparator.comparing(o -> o.getItemMeta().getDisplayName()));
             int slot = 10;
@@ -83,7 +86,9 @@ public class RecipeList extends GuiWindow {
         String action = guiAction.getAction();
         if(action.equals("back")){
             guiAction.getGuiHandler().openLastInv();
-        }else{
+        }else if(action.equals("page_back")){
+            PlayerCache cache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
+            String setting = cache.getRecipeListSetting();
 
         }
         return true;

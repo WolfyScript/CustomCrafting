@@ -1,9 +1,8 @@
 package me.wolfyscript.customcrafting.gui.items;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
-import me.wolfyscript.customcrafting.gui.PlayerCache;
-import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -25,9 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemCreator extends GuiWindow {
-
-    private WolfyUtilities api = CustomCrafting.getApi();
+public class ItemCreator extends ExtendedGuiWindow {
 
     public ItemCreator(InventoryAPI inventoryAPI) {
         super("item_creator", inventoryAPI, 54);
@@ -118,7 +115,7 @@ public class ItemCreator extends GuiWindow {
             event.setItem(14, "none", "glass_white");
             event.setItem(22, "none", "glass_white");
 
-            if (!cache.getItemTag().isEmpty()) {
+            if (!cache.getItemTag(0).equals("items")) {
                 event.setItem(3, "apply_item");
             }
             event.setItem(5, "save_item");
@@ -130,7 +127,7 @@ public class ItemCreator extends GuiWindow {
             event.setItem(19, "item_flags");
 
             event.setItem(20, "unbreakable_off");
-            if (cache.getCustomItem().hasItemMeta() && cache.getCustomItem().getItemMeta().isUnbreakable()) {
+            if (cache.getCustomItem() != null && cache.getCustomItem().hasItemMeta() && cache.getCustomItem().getItemMeta().isUnbreakable()) {
                 event.setItem(20, "unbreakable_on");
             }
 
@@ -141,7 +138,7 @@ public class ItemCreator extends GuiWindow {
             event.setItem(25, "destroys");
             event.setItem(26, "skull_setting_on");
 
-            ItemStack itemStack = cache.getCustomItem();
+            CustomItem itemStack = cache.getCustomItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (!itemStack.getType().equals(Material.AIR)) {
                 //DRAW Sections
@@ -249,21 +246,21 @@ public class ItemCreator extends GuiWindow {
             guiAction.getGuiHandler().openLastInv();
         } else if (action.equals("save_item") && !cache.getCustomItem().getType().equals(Material.AIR)) {
             if(cache.getItemTag(0).equals("items") && CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2)) != null){
-                ItemUtils.saveItem(cache.getItemTag(2), cache.getCustomItem());
+                ItemUtils.saveItem(cache, cache.getItemTag(2), cache.getCustomItem());
                 api.sendPlayerMessage(player, "&aItem saved to &6" + cache.getItemTag(2).split(":")[0] + "/items/" + cache.getItemTag(2).split(":")[1]);
             }else{
                 runChat(0, "&3Type in the name of the folder and item! &6e.g. example your_item", guiAction.getGuiHandler());
             }
-        } else if (action.equals("apply") && !cache.getCustomItem().getType().equals(Material.AIR)) {
-            ItemStack itemStack = cache.getCustomItem();
+        } else if (action.equals("apply_item") && !cache.getCustomItem().getType().equals(Material.AIR)) {
+            CustomItem customItem = cache.getCustomItem();
             if(cache.getItemTag(1).equals("saved")) {
-                ItemUtils.saveItem(cache.getItemTag(2), CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2)));
-                itemStack = CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2)).getIDItem();
+                ItemUtils.saveItem(cache, cache.getItemTag(2), customItem);
+                customItem = CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2));
             }
-            ItemUtils.applyItem(itemStack, cache);
+            ItemUtils.applyItem(customItem, cache);
             guiAction.getGuiHandler().changeToInv("recipe_creator");
         } else {
-            ItemStack itemStack = cache.getCustomItem();
+            CustomItem itemStack = cache.getCustomItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (!itemStack.getType().equals(Material.AIR) && itemMeta != null) {
                 switch (action) {
@@ -319,6 +316,22 @@ public class ItemCreator extends GuiWindow {
                         runChat(7, "&2Type in the Potion name you want to remove!", guiAction.getGuiHandler());
                         break;
 
+                    //DESTROYS
+                    case "destroys_add":
+
+                        break;
+                    case "destroys_remove":
+
+                        break;
+
+                    //Placed ON
+                    case "placed_on_add":
+
+                        break;
+                    case "placed_on_remove":
+
+                        break;
+
                 }
 
                 //Flag and attribute section
@@ -350,10 +363,9 @@ public class ItemCreator extends GuiWindow {
         PlayerCache cache = CustomCrafting.getPlayerCache(guiClick.getPlayer());
         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
             ItemStack item = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(13);
-            cache.setCustomItem(item != null ? item : new ItemStack(Material.AIR));
+            cache.setCustomItem(new CustomItem(item != null ? item : new ItemStack(Material.AIR)));
             update(guiClick.getGuiHandler());
         }, 1);
-
         return false;
     }
 
@@ -368,7 +380,8 @@ public class ItemCreator extends GuiWindow {
         switch (id) {
             case 0:
                 if (args.length > 1) {
-                    ItemUtils.saveItem(args[0]+":"+args[1], cache.getCustomItem());
+                    ItemUtils.saveItem(cache,args[0]+":"+args[1], cache.getCustomItem());
+
                     api.sendPlayerMessage(player, "&aItem saved to &6" + args[0] + "/items/" + args[1]);
                 } else {
                     return true;

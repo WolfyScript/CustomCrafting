@@ -39,7 +39,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
 
     @Override
     public void load() {
-        shape(shape);
+        this.shape(shape);
         for (Character itemKey : ingredients.keySet()) {
             Set<ItemStack> items = ingredients.get(itemKey).keySet();
             List<Material> materials = new ArrayList<>();
@@ -63,6 +63,8 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
     @Override
     public void save() {
 
+
+
     }
 
     @Override
@@ -78,8 +80,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
             if (!letter.equals(' ')) {
                 boolean contains = false;
                 for (ItemStack itemStack : ingredients.get(letter).keySet()) {
-                    //TODO: EXTRA DATA CHECK!
-                    if (items.get(index).getAmount() >= itemStack.getAmount() && items.get(index).isSimilar(itemStack)) {
+                    if (items.get(index).getAmount() >= itemStack.getAmount() && itemStack.isSimilar(items.get(index))) {
                         contains = true;
                     }
                 }
@@ -92,6 +93,35 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
         return true;
     }
 
+    @Override
+    public void setPermission(boolean perm) {
+        this.permission = perm;
+    }
+
+    @Override
+    public void setAdvancedWorkbench(boolean workbench) {
+        this.advancedWorkbench = workbench;
+    }
+
+    public void setIngredients(HashMap<Character, HashMap<ItemStack, List<String>>> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public HashMap<Character, HashMap<ItemStack, List<String>>> getIngredients() {
+        return ingredients;
+    }
+
+    @Override
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public void setResult(ItemStack result) {
+        this.result = result;
+    }
+
+    @Override
     public ItemStack getResult() {
         return result;
     }

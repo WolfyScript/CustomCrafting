@@ -1,9 +1,8 @@
 package me.wolfyscript.customcrafting.configs.custom_configs;
 
+import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class FurnaceConfig extends CustomConfig {
 
@@ -15,24 +14,40 @@ public class FurnaceConfig extends CustomConfig {
         this(configAPI, "furnace_config", folder, name);
     }
 
+    public void setXP(float xp){
+        set("exp", xp);
+    }
+
     public float getXP(){
         return (float) getDouble("exp");
     }
 
+    public void setCookingTime(int time){
+        set("cooking_time", time);
+    }
+
     public int getCookingTime(){
-        return getInt("cookingtime");
+        return getInt("cooking_time");
+    }
+
+    public void setSource(CustomItem source){
+        saveCustomItem("source", source);
     }
 
     public ItemStack getSource(){
-        return getItem("source");
+        return getCustomItem("source");
+    }
+
+    public void setResult(CustomItem result){
+        saveCustomItem("result", result);
     }
 
     public ItemStack getResult(){
-        return getItem("result");
+        return getCustomItem("result");
     }
 
-    public List<String> getSourceData(){
-        return getStringList("source_data");
+    public void setAdvancedFurnace(boolean furnace){
+        set("advanced_furnace", furnace);
     }
 
     public boolean needsAdvancedFurnace(){

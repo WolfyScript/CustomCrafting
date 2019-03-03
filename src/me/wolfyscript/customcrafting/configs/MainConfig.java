@@ -24,17 +24,29 @@ public class MainConfig extends Config {
         return getInt("data.auto_save.interval");
     }
 
-    public List<Material> getVanillaRecipes(){
-        List<String> names = getStringList("recipes.disable_vanilla_recipes");
-        List<Material> materials = new ArrayList<>();
-        for(String name : names){
-            Material material = Material.matchMaterial(name);
-            if(material != null){
-                materials.add(material);
-            }else{
-                CustomCrafting.getApi().sendConsoleMessage("Error getting Material: "+ name);
-            }
-        }
-        return materials;
+    public List<String> getVanillaRecipes(){
+        return getStringList("recipes.disable_vanilla_recipes");
     }
+
+    public boolean saveContents(){
+        return getBoolean("workbench.contents.save_contents");
+    }
+
+    public boolean displayContents(){
+        return getBoolean("workbench.contents.display_items");
+    }
+
+    public boolean displayOnlyAdvanced(){
+        return getBoolean("workbench.contents.only_advanced_workbenches");
+    }
+
+    public List<String> getCommandsSuccessCrafted(){
+        return getStringList("workbench.commands.successful_craft");
+    }
+
+    public List<String> getCommandsDeniedCraft(){
+        return getStringList("workbench.commands.denied_craft");
+    }
+
+
 }

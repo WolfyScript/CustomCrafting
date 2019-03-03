@@ -1,25 +1,30 @@
 package me.wolfyscript.customcrafting;
 
 import me.wolfyscript.customcrafting.commands.CommandCC;
-import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
 import me.wolfyscript.customcrafting.data.Workbenches;
-import me.wolfyscript.customcrafting.events.Events;
-import me.wolfyscript.customcrafting.gui.PlayerCache;
+import me.wolfyscript.customcrafting.events.*;
+import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -47,6 +52,13 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("It's incomplete, unstable, contains bugs and doesn't represent the final Plugin!");
         System.out.println("--------------------------------------------------------------------------------");
 
+        if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null){
+            System.out.println("WolfyUtilities is not installed!");
+            System.out.println("You can download it here: ");
+            System.out.println("    https://www.spigotmc.org/resources/wolfyutilities.64124/");
+            System.out.println("--------------------------------------------------------------------------------");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
 
         File mainConfig = new File(getDataFolder(), "Main-Config.yml");
         if (mainConfig.exists()) {
@@ -62,15 +74,24 @@ public class CustomCrafting extends JavaPlugin {
 
         configHandler.load();
 
+        loadPlayerCache();
+
+        getServer().getPluginManager().registerEvents(new PlayerEvent(), this);
         getServer().getPluginManager().registerEvents(new Events(api), this);
+        getServer().getPluginManager().registerEvents(new BlockEvents(), this);
+        getServer().getPluginManager().registerEvents(new FurnaceEvents(), this);
+        getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
         getServer().getPluginCommand("cc").setExecutor(new CommandCC());
 
         invHandler.init();
 
         workbenches = new Workbenches(api);
 
-        recipeHandler.loadConfigs();
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceHolder().register();
+        }
 
+        recipeHandler.loadConfigs();
 
     }
 
@@ -78,6 +99,7 @@ public class CustomCrafting extends JavaPlugin {
         workbenches.endTask();
         workbenches.save();
 
+        savePlayerCache();
 
     }
 
@@ -101,7 +123,7 @@ public class CustomCrafting extends JavaPlugin {
         return workbenches;
     }
 
-    public static boolean hasPlayerSettings(Player player) {
+    public static boolean hasPlayerCache(Player player) {
         for (PlayerCache playerCache : playerCacheList) {
             if (playerCache.getUuid().equals(player.getUniqueId()))
                 return true;
@@ -109,13 +131,65 @@ public class CustomCrafting extends JavaPlugin {
         return false;
     }
 
+    public static PlayerCache renewPlayerCache(Player player){
+        if(hasPlayerCache(player)){
+            PlayerCache playerCache = getPlayerCache(player);
+            playerCacheList.remove(playerCache);
+        }
+        return getPlayerCache(player);
+    }
+
     public static PlayerCache getPlayerCache(Player player) {
+        return getPlayerCache(player.getUniqueId());
+    }
+
+    public static PlayerCache getPlayerCache(UUID uuid) {
         for (PlayerCache playerCache : playerCacheList) {
-            if (playerCache.getUuid().equals(player.getUniqueId()))
+            if (playerCache.getUuid().equals(uuid))
                 return playerCache;
         }
-        PlayerCache playerCache = new PlayerCache(player.getUniqueId());
+        PlayerCache playerCache = new PlayerCache(uuid);
         playerCacheList.add(playerCache);
         return playerCache;
+    }
+
+    public static void savePlayerCache(){
+        HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
+        for(PlayerCache playerCache : playerCacheList){
+            caches.put(playerCache.getUuid(), playerCache.getStats());
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat"));
+            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
+            oos.writeObject(caches);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadPlayerCache(){
+        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
+        if (file.exists()) {
+            FileInputStream fis;
+            try {
+                fis = new FileInputStream(file);
+                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
+                try {
+                    Object object = ois.readObject();
+                    if (object instanceof HashMap) {
+                        HashMap<UUID, HashMap<String, Object>> stats = (HashMap<UUID, HashMap<String, Object>>) object;
+                        for(UUID uuid : stats.keySet()){
+                            playerCacheList.add(new PlayerCache(uuid, stats.get(uuid)));
+                        }
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

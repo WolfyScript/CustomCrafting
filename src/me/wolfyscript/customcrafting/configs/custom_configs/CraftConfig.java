@@ -1,11 +1,13 @@
 package me.wolfyscript.customcrafting.configs.custom_configs;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CraftConfig extends CustomConfig {
 
@@ -17,20 +19,40 @@ public class CraftConfig extends CustomConfig {
         this(configAPI, "craft_config", folder, name);
     }
 
+    public void setShapeless(boolean shapeless){
+        set("shapeless", shapeless);
+    }
+
     public boolean isShapeless(){
         return getBoolean("shapeless");
+    }
+
+    public void setPermission(boolean perm){
+        set("permissions", perm);
     }
 
     public boolean needPerm(){
         return getBoolean("permissions");
     }
 
+    public void setNeedWorkbench(boolean workbench){
+        set("advanced_workbench", workbench);
+    }
+
     public boolean needWorkbench(){
         return getBoolean("advanced_workbench");
     }
 
+    public void setGroup(String group){
+        set("group", group);
+    }
+
     public String getGroup(){
         return getString("group");
+    }
+
+    public void setShape(String... shape){
+        set("shape", WolfyUtilities.formatShape(shape));
     }
 
     public String[] getShape(){
@@ -42,8 +64,34 @@ public class CraftConfig extends CustomConfig {
         return shape;
     }
 
+    public void setResult(CustomItem itemStack){
+        saveCustomItem("result", itemStack);
+    }
+
     public ItemStack getResult(){
-        return getItem("result");
+        return getCustomItem("result");
+    }
+
+    public List<String> getResultData(){
+        return getStringList("result.data");
+    }
+
+    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients){
+        for(char key : ingredients.keySet()){
+            int variant = 0;
+            for(CustomItem customItem : ingredients.get(key)){
+
+                //TODO: VARIANT COMPATIBILITY!!!!
+
+                if(customItem != null && !customItem.getType().equals(Material.AIR)){
+                    if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
+                        set("ingredients."+key+".var"+(variant++)+".item_key", customItem.getId());
+                    }else{
+                        saveItem("ingredients."+key+".var"+variant+".item", customItem);
+                    }
+                }
+            }
+        }
     }
 
     public HashMap<Character, HashMap<ItemStack, List<String>>> getIngredients(){
@@ -53,12 +101,21 @@ public class CraftConfig extends CustomConfig {
             Set<String> itemKeys = getConfig().getConfigurationSection("ingredients."+key).getKeys(false);
             HashMap<ItemStack, List<String>> data = new HashMap<>();
             for(String itemKey : itemKeys){
-                List<String> additionalData = getStringList("ingredients."+key+"."+itemKey+".data");
-                ItemStack itemStack = getItem("ingredients."+key+"."+itemKey+".item");
+                ItemStack itemStack;
+                List<String> additionalData = new ArrayList<>();
+                String id = getString("ingredients."+key+"."+itemKey+".item_key");
+                if(id != null && !id.isEmpty()){
+                    itemStack = CustomCrafting.getRecipeHandler().getCustomItem(id);
+                }else{
+                    additionalData = getStringList("ingredients."+key+"."+itemKey+".data");
+                    itemStack = getItem("ingredients."+key+"."+itemKey+".item");
+                }
                 data.put(itemStack, additionalData);
             }
             result.put(key.charAt(0), data);
         }
         return result;
     }
+
+
 }

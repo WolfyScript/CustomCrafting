@@ -52,9 +52,8 @@ items:
     gui_help:
       name: '&2Help'
       lore:
-        - "Help"
+        - "&7-Click Me-"
       help: []
-
   main_menu:
     craft_recipe:
       name: "&6Workbench Recipe"
@@ -85,7 +84,6 @@ items:
     recipe_list:
       name: "&2Recipe List"
       help: []
-
   item_editor:
     load_item:
       name: "&6Load"
@@ -279,7 +277,6 @@ items:
     set_amount:
       name: '&aAmount: &6%NUMBER%'
       help: []
-
   recipe_editor:
   recipe_creator:
     save:
@@ -291,205 +288,58 @@ items:
     permissions_off:
       name: "&4No Permissions"
       help: []
-    adv_workbench_on:
-      name: "&3Advanced Workbench"
-      help: []
-    adv_workbench_off:
-      name: "&4Every Workbench"
-      help: []
-    shapeless_off:
-      name: '&3Shaped Recipe'
-      help:
-        - '&7Recipe has a shape!'
-    shapeless_on:
-      name: '&3Shapeless Recipe'
-      help:
-        - '&7Recipe is shapeless!'
-
+    workbench:
+      adv_workbench_on:
+        name: "&3Advanced Workbench"
+        help: []
+      adv_workbench_off:
+        name: "&4Every Workbench"
+        help: []
+      shapeless_off:
+        name: '&3Shaped Recipe'
+        help:
+          - '&7Recipe has a shape!'
+      shapeless_on:
+        name: '&3Shapeless Recipe'
+        help:
+          - '&7Recipe is shapeless!'
+    furnace:
+      adv_furnace_on:
+        name: "&3Advanced Furnace"
+        help: []
+      adv_furnace_off:
+        name: "&4Every Furnace"
+        help: []
+      xp:
+        name: "&3Experience"
+        help: []
+        lore:
+          - "&6%XP% Exp"
+      cooking_time:
+        name: "&6Cooking Time"
+        help: []
+        lore:
+          - "&6%TIME% ticks"
   recipe_list:
-
-  recipes_mainmenu:
-    grid_options:
-      name: '&8Grid Settings'
-      help:
-        - '&7Set the recipe dimensions'
-        - '&7Create &62x2&7, &61x3&7, etc. recipes'
-    grid_options_off:
-      name: '&8&mGrid Settings'
-      help:
-        - '&7This option is disabled!'
-        - '&6Set to shaped recipe to use this option!'
-  recipes_slot_options:
-    item_name:
-      name: '&6Change name'
-      help: []
-    item_lore:
-      name: '&6Edit Lore'
-      help: []
-    item_flags:
-      name: '&6Set Flags'
-      help:
-        - '&7Configure the flags to hide attributes:'
-        - '&7Hide &6enchants&7,&6 unbreakable&7,&6 etc.'
-    item_enchantments:
-      name: '&6Enchantments'
-      help:
-        - '&7Set the enchants of the item'
-    item_advanced:
-      name: '&6Advanced options'
-      help:
-        - '&7More detailed options!'
-        - 'e.g. variant items, skull textures'
-  delete_menu:
-    delete_right:
-      name: '&aYes'
-      help: []
-    delete_wrong:
-      name: '&4No'
-      help: []
-    recipe_name:
-      name: '%RECIPE_NAME%'
-      help:
-        - '- The recipe name! -'
-  recipes_item_list:
-    last_page:
-      name: '&5Last page'
+    page_back:
+      name: "&2Last Page"
+      lore: []
       help: []
     next_page:
-      name: '&5Next page'
-      help: []
-    remove_:
-      name: '&4Remove %ITEM_ID%'
-      help: []
-  recipes_grid_options:
-    grid_times:
-      name: '&3'
-      help: []
-    grid_height_1:
-      name: '&3Height 1'
-      help: []
-    grid_height_2:
-      name: '&3Height 2'
-      help: []
-    grid_height_3:
-      name: '&3Height 3'
-      help: []
-    grid_width_1:
-      name: '&3Width 1'
-      help: []
-    grid_width_2:
-      name: '&3Width 2'
-      help: []
-    grid_width_3:
-      name: '&3Width 3'
-      help: []
-  recipes_advanced_slot_options:
-    display_names_list:
-      name: '&aAllowed display names'
-      help: []
-    display_name_add:
-      name: '&6Add name'
-      help: []
-    display_name_remove:
-      name: '&6Remove name'
-      help: []
-    display_name_on_true:
-      name: '&2Display name | enabled'
-      help: []
-    display_name_on_false:
-      name: '&4Display name | disabled'
-      help: []
-    skull_owners_list:
-      name: '&aAllowed skull owners'
-      help: []
-    skull_owner_add:
-      name: '&6Add owner'
-      help: []
-    skull_owner_remove:
-      name: '&6Remove owner'
-      help: []
-    skull_textures_list:
-      name: '&aAllowed skull textures'
-      help: []
-    skull_texture_add:
-      name: '&6Add texture'
-      help: []
-    skull_texture_remove:
-      name: '&6Remove texture'
-      help: []
-    lore_list:
-      name: '&aAllowed lore'
-      help: []
-    lore_add:
-      name: '&6Add lore'
-      help: []
-    lore_remove:
-      name: '&6Remove lore'
-      help: []
-    enchants_list:
-      name: '&aAllowed enchants'
-      help: []
-    enchant_add:
-      name: '&6Add enchantment'
-      help: []
-    enchant_remove:
-      name: '&6Remove enchantment'
-      help: []
-    variant_items_list:
-      name: '&aAllowed variants'
-      help: []
-    variant_item_add:
-      name: '&6Add variant'
-      help: []
-    variant_item_remove:
-      name: '&6Remove variant'
-      help: []
-  add_skull_texture:
-    use_chat:
-      name: '&6Type URL in Chat'
-      help: []
-  result_options:
-    item_name:
-      name: '&6Change name'
-      help: []
-    item_enchantments:
-      name: '&6Enchantments'
-      help: []
-    item_lore:
-      name: '&6Edit Lore'
-      help: []
-    item_flags:
-      name: '&6Set Flags'
-      help: []
-    skull_owner:
-      name: '&6Set skull owner'
-      help: []
-    skull_texture:
-      name: '&6Set skull texture'
-      help: []
-    attributes_modifiers:
-      name: '&6Set Attributes'
-      help: []
-    unbreakable_on:
-      name: '&aUnbreakable'
-      help: []
-    unbreakable_off:
-      name: '&cBreakable'
-      help: []
-    item_file:
-      name: '&6Set Item File'
+      name: "&2Next Page"
+      lore: []
       help: []
 
 inventories:
-  main_menu: '&6CustomCrafting'
+  main_menu: '&3&lCustomCrafting'
 
-  item_editor: "&2Item Editor"
-  item_creator: "&2Item Creator"
+  item_editor: "&0&lItem Editor"
+  item_creator: "&0&lItem Creator"
 
-  recipe_editor: "&4Recipe Editor"
-  recipe_creator: "&4Recipe Creator"
+  recipe_editor: "&4&lRecipe Editor"
+  recipe_creator: "&4&lRecipe Creator"
 
-  recipe_list: "&6Recipe List"
+  recipe_list: "&8&lRecipe List"
 
 
 

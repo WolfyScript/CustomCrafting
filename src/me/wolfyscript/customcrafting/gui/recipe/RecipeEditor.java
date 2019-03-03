@@ -1,12 +1,14 @@
 package me.wolfyscript.customcrafting.gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.*;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
-public class RecipeEditor extends GuiWindow {
+public class RecipeEditor extends ExtendedGuiWindow {
 
     public RecipeEditor(InventoryAPI inventoryAPI) {
         super("recipe_editor", inventoryAPI, 54);
@@ -35,12 +37,21 @@ public class RecipeEditor extends GuiWindow {
             guiAction.getGuiHandler().openLastInv();
         }else{
             //TODO: Functions for different recipe types
-            if(action.equals("recipe_list")){
-                guiAction.getGuiHandler().changeToInv("recipe_list");
-            }else if(action.equals("create_recipe")){
-                guiAction.getGuiHandler().changeToInv("recipe_creator");
+            Player player = guiAction.getPlayer();
+            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            switch (action){
+                case "recipe_list":
+                    guiAction.getGuiHandler().changeToInv("recipe_list");
+                    break;
+                case "create_recipe":
+                    guiAction.getGuiHandler().changeToInv("recipe_creator");
+                    break;
+                case "edit_recipe":
+                    runChat(0, "&3Type in the name of the folder and item! &6e.g. example your_recipe", guiAction.getGuiHandler());
+                    break;
+                case "delete_recipe":
+                    runChat(1, "&3Type in the name of the folder and item! &6e.g. example your_recipe", guiAction.getGuiHandler());
             }
-
         }
         return true;
     }
@@ -53,7 +64,15 @@ public class RecipeEditor extends GuiWindow {
 
     @Override
     public boolean parseChatMessage(int id, String message, GuiHandler guiHandler) {
+        String[] args = message.split(" ");
+        if(args.length > 1){
+            CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0]+":"+args[1]);
+            if(recipe != null){
+                if(id == 0){
 
+                }
+            }
+        }
         return false;
     }
 }

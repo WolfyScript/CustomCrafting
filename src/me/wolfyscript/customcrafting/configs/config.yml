@@ -1,20 +1,41 @@
 # Main Config - CustomCrafting v0.0.0.1
 
+#PlaceholderAPI:
+# Identifier: customcrafting
+# Placeholders:
+#   - amount_crafted -> returns the number of crafted custom recipes!
+#
+
+#This should be disabled! That are a lot of Messages!
 debugging: false
+
+#The language you want use. The context: <language>_<country>
+#If you have any language file you want to be added to this plugin, then feel free to contact me.
 language: en_US
 
-spooky_workbench:
-  enable: false
-  jack_o_lantern: false
-
 workbench:
-  # Sound after successful crafting! Set to "none" to disable it
-  craft_sound: "block.lava.extinguish"
+  contents:
+    #Saves the items placed in a workbench. When enabled only one player at a time can use the workbench!
+    save_contents: false
+    #Displays the items on the workbench using ArmorStands. Save contents must be enabled in order to use it!
+    display_items: false
+
+  # Sound after successful crafting!
+  craft_sound:
+    enable: false
+    sound: "block.lava.extinguish"
+
+  commands:
+    #The commands that are called after successful craft!
+    successful_craft: []
+    #The commands that are called when the recipe was denied! Caution! It could cause spam!
+    denied_craft: []
 
 data:
   auto_save:
     # Interval in minutes
     interval: 30
+
 recipes:
   reload_after_save: false
   disable_vanilla_recipes: []

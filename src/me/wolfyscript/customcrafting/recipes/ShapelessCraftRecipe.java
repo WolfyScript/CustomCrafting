@@ -55,19 +55,49 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> allKeys = new ArrayList<>(ingredients.keySet());
         List<Character> usedKeys = new ArrayList<>();
         for(ItemStack itemStack : matrix){
-            for(char key : allKeys){
-                for (ItemStack ingredient : ingredients.get(key).keySet()){
-                    if(ingredient.getType().equals(itemStack.getType())){
-                        //TODO: EXTRA DATA CHECK!
-                        if (ingredient.getAmount() >= itemStack.getAmount() && ingredient.isSimilar(itemStack)) {
-                            usedKeys.add(key);
-                            allKeys.remove(key);
+            if(itemStack != null && !itemStack.getType().equals(Material.AIR)){
+                for(char key : allKeys){
+                    for (ItemStack ingredient : ingredients.get(key).keySet()){
+                        if(ingredient.getType().equals(itemStack.getType())){
+                            //TODO: EXTRA DATA CHECK!
+                            if (itemStack.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(itemStack)) {
+                                usedKeys.add(key);
+                                //allKeys.remove(Character.valueOf(key));
+                            }
                         }
                     }
                 }
             }
         }
         return usedKeys.containsAll(ingredients.keySet());
+    }
+
+    public void setIngredients(HashMap<Character, HashMap<ItemStack, List<String>>> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    @Override
+    public HashMap<Character, HashMap<ItemStack, List<String>>> getIngredients() {
+        return ingredients;
+    }
+
+    public void setResult(ItemStack result) {
+        this.result = result;
+    }
+
+    @Override
+    public void setAdvancedWorkbench(boolean advancedWorkbench) {
+        this.advancedWorkbench = advancedWorkbench;
+    }
+
+    @Override
+    public void setPermission(boolean permission) {
+        this.permission = permission;
+    }
+
+    @Override
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public ItemStack getResult() {

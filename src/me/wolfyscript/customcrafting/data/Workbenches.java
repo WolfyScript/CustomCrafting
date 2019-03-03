@@ -5,14 +5,18 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Shulker;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Consumer;
 import org.bukkit.util.EulerAngle;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.*;
 import java.util.*;
@@ -24,7 +28,7 @@ public class Workbenches {
     private int task;
     private int particles;
 
-    private HashMap<String, List<Map<String, Object>>> workbenches = new HashMap<>();
+    private HashMap<String, List<ItemStack>> workbenches = new HashMap<>();
     private List<String> furnaces = new ArrayList<>();
 
     public Workbenches(WolfyUtilities api) {
@@ -41,39 +45,13 @@ public class Workbenches {
                 Location location = stringToLocation(loc);
                 World world = location.getWorld();
                 world.spawnParticle(Particle.ENCHANTMENT_TABLE, location.clone().add(0.5, 1.3, 0.5), 4, 0, 0, 0, 0.5);
-                Collection<Entity> entities = world.getNearbyEntities(BoundingBox.of(location, 1d, 1d, 1d), entity -> (entity instanceof ArmorStand) && !entity.getCustomName().isEmpty() && entity.getCustomName().startsWith("cc:"));
-                if(entities.isEmpty()){
-                    List<ItemStack> contents = getContents(location);
-                    if(!contents.isEmpty()){
-                        for(int i = 0; i < 9; i++){
-                            ItemStack item = contents.get(i);
-                            if(!item.getType().equals(Material.AIR)){
-                                ArmorStand itemStand = world.spawn(location, ArmorStand.class, armorStand -> {
-                                    armorStand.setVisible(true);
-                                    armorStand.setCustomName("cc:"+item.getType().toString());
-                                    armorStand.setCustomNameVisible(false);
-                                    armorStand.setSmall(true);
-                                    armorStand.setArms(true);
-                                    armorStand.setLeftArmPose(new EulerAngle(3.141593,0,0));
-                                    armorStand.setGravity(false);
-                                    armorStand.getEquipment().setItemInOffHand(item);
-                                });
-                                int j = (i - ((i/3)*3));
-                                int k = i/3;
-                                float x = 0.185f * j;
-                                float z = 0.185f * k;
-                                itemStand.teleport(itemStand.getLocation().add(0.125 + x, 0.04, 0.45 + z));
-                            }
-                        }
-                    }else{
-                        for (Entity entity : entities){
-                            entity.remove();
-                        }
-                    }
-                }
             }
         }, 10, 2);
 
+    }
+
+    public HashMap<String, List<ItemStack>> getWorkbenches() {
+        return workbenches;
     }
 
     public void addWorkbench(Location location) {
@@ -88,13 +66,13 @@ public class Workbenches {
 
     public void setContents(Location location, ItemStack[] matrix) {
         if (workbenches.containsKey(locationToString(location))) {
-            List<Map<String, Object>> items = new ArrayList<>();
+            List<ItemStack> items = new ArrayList<>();
             for (ItemStack itemStack : matrix) {
                 if (itemStack == null) {
                     ItemStack newItem = new ItemStack(Material.AIR);
-                    items.add(newItem.serialize());
+                    items.add(newItem);
                 } else {
-                    items.add(itemStack.serialize());
+                    items.add(new ItemStack(itemStack));
                 }
             }
             workbenches.put(locationToString(location), items);
@@ -102,15 +80,12 @@ public class Workbenches {
     }
 
     public List<ItemStack> getContents(Location location){
-        List<ItemStack> itemStacks = new ArrayList<>();
         if (workbenches.containsKey(locationToString(location))) {
-            List<Map<String, Object>> items = workbenches.get(locationToString(location));
-            for(Map<String, Object> map : items){
-                itemStacks.add(ItemStack.deserialize(map));
-            }
+            return new ArrayList<>(workbenches.get(locationToString(location)));
         }
-        return itemStacks;
+        return new ArrayList<>();
     }
+
 
     public boolean isWorkbench(Location location) {
         return workbenches.containsKey(locationToString(location));
@@ -142,7 +117,7 @@ public class Workbenches {
     public void save() {
         try {
             FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "workbenches.dat"));
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
             oos.writeObject(workbenches);
             oos.writeObject(furnaces);
             oos.close();
@@ -157,13 +132,15 @@ public class Workbenches {
             FileInputStream fis;
             try {
                 fis = new FileInputStream(file);
-                ObjectInputStream ois = new ObjectInputStream(fis);
+                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
                 try {
                     Object object = ois.readObject();
                     if (object instanceof HashMap) {
-                        this.workbenches = (HashMap<String, List<Map<String, Object>>>) object;
-                    } else if (object instanceof List) {
-                        this.furnaces = (List<String>) object;
+                        this.workbenches = (HashMap<String, List<ItemStack>>) object;
+                    }
+                    Object object2 = ois.readObject();
+                    if (object2 instanceof List) {
+                        this.furnaces = (List<String>) object2;
                     }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -202,6 +179,22 @@ public class Workbenches {
 
     public void endTask() {
         Bukkit.getScheduler().cancelTask(task);
+    }
+
+    public Map<String, Object> serialize(ItemStack itemStack) {
+        Map<String, Object> result = new LinkedHashMap();
+        result.put("v", Bukkit.getUnsafe().getDataVersion());
+        result.put("type", itemStack.getType().name());
+        if (itemStack.getAmount() != 1) {
+            result.put("amount", itemStack.getAmount());
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+        if (!Bukkit.getItemFactory().equals(meta, (ItemMeta)null)) {
+            result.put("meta", meta.serialize());
+        }
+
+        return result;
     }
 
 }

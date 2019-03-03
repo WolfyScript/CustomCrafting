@@ -1,16 +1,14 @@
 package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class MainMenu extends GuiWindow {
+public class MainMenu extends ExtendedGuiWindow {
 
     private WolfyUtilities api = CustomCrafting.getApi();
 
@@ -22,7 +20,6 @@ public class MainMenu extends GuiWindow {
     public void onInit() {
         createItem("craft_recipe", Material.CRAFTING_TABLE);
         createItem("furnace_recipe", Material.FURNACE);
-
 
         createItem("item_editor", Material.CHEST);
         createItem("recipe_list", Material.WRITTEN_BOOK);
@@ -59,8 +56,6 @@ public class MainMenu extends GuiWindow {
             if(event.getGuiHandler().getCurrentInv().getSize() > 8){
                 event.setItem(8, "gui_help", true);
             }
-            //event.setItem(7, "minimize", true);
-            //event.setItem(8, "close", true);
         }
     }
 
@@ -73,15 +68,15 @@ public class MainMenu extends GuiWindow {
         switch (action) {
             case "item_editor":
                 playerCache.setSetting(Setting.ITEMS);
-                playerCache.setItemTag("");
+                playerCache.setItemTag("items", "not_saved", "null");
                 guiAction.getGuiHandler().changeToInv("item_editor");
                 break;
             case "recipe_list":
+                api.sendPlayerMessage(guiAction.getPlayer(), "&cThis features is WIP! It's unstable and not finished!");
                 playerCache.setSetting(Setting.LIST);
                 playerCache.setRecipeListSetting("");
                 guiAction.getGuiHandler().changeToInv("recipe_list");
                 break;
-
             case "craft_recipe":
                 playerCache.setSetting(Setting.CRAFT_RECIPE);
                 guiAction.getGuiHandler().changeToInv("recipe_editor");

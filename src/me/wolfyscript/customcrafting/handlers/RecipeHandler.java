@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -36,7 +37,7 @@ public class RecipeHandler {
         File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
         File[] files = workbench.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
         if (files != null) {
-            api.sendConsoleMessage("    "+type+":");
+            api.sendConsoleMessage("    " + type + ":");
             for (File file : files) {
                 String key = file.getParentFile().getParentFile().getName().toLowerCase();
                 String name = file.getName().split("\\.")[0].toLowerCase();
@@ -67,28 +68,30 @@ public class RecipeHandler {
                     }
                 } catch (Exception ex) {
                     api.sendConsoleMessage("-------------------------------------------------");
-                    api.sendConsoleMessage("Error loading Contents for: " + key+":"+name);
+                    api.sendConsoleMessage("Error loading Contents for: " + key + ":" + name);
                     api.sendConsoleMessage("    Type: " + type);
                     api.sendConsoleMessage("    Message: " + ex.getMessage());
                     api.sendConsoleMessage("    Cause: " + ex.getCause());
-                    api.sendConsoleMessage("You should check the config for empty settings " +
-                            "\ne.g. No set Result or Source Item!");
+                    api.sendConsoleMessage("You should check the config for empty settings ");
+                    api.sendConsoleMessage("e.g. No set Result or Source Item!");
                     api.sendConsoleMessage("-------------------------------------------------");
                 }
-                api.sendConsoleMessage("      - "+name);
+                api.sendConsoleMessage("      - " + name);
             }
         }
     }
 
     public void loadConfigs() {
 
-        if(!CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().isEmpty()){
+        if (!CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().isEmpty()) {
             api.sendConsoleMessage("      - [Remove Vanilla Recipes] -");
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-            while(recipeIterator.hasNext()){
+            while (recipeIterator.hasNext()) {
                 Recipe recipe = recipeIterator.next();
-                if(CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().contains(recipe.getResult().getType())){
-                    recipeIterator.remove();
+                if(recipe instanceof Keyed){
+                    if (CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().contains(((Keyed) recipe).getKey().toString())) {
+                        recipeIterator.remove();
+                    }
                 }
             }
         }
@@ -100,12 +103,21 @@ public class RecipeHandler {
             subFolders = new ArrayList<>(Arrays.asList(dirs));
         }
         if (subFolders != null) {
+
+            api.sendConsoleMessage("");
+            api.sendConsoleMessage("---------[ITEMS]---------");
             for (File folder : subFolders) {
-                api.sendConsoleMessage("loading - " + folder.getName()+" -");
+                api.sendConsoleMessage("- " + folder.getName());
                 loadConfig(folder.getName(), "items");
+            }
+            api.sendConsoleMessage("");
+            api.sendConsoleMessage("--------[RECIPES]--------");
+            for (File folder : subFolders) {
+                api.sendConsoleMessage("- " + folder.getName());
                 loadConfig(folder.getName(), "workbench");
                 loadConfig(folder.getName(), "furnace");
             }
+
         }
     }
 
@@ -132,10 +144,21 @@ public class RecipeHandler {
         return groupRecipes;
     }
 
-    public CraftingRecipe getRecipe(Recipe recipe) {
+    public CustomRecipe getRecipe(Recipe recipe) {
         for (CustomRecipe craftingRecipe : customRecipes) {
-            if (craftingRecipe.getID().equals(recipe instanceof ShapedRecipe ? ((ShapedRecipe) recipe).getKey().toString() : recipe instanceof ShapelessRecipe ? ((ShapelessRecipe) recipe).getKey().toString() : "")) {
-                return (CraftingRecipe) craftingRecipe;
+            if (recipe instanceof Keyed) {
+                if (craftingRecipe.getID().equals(((Keyed) recipe).getKey().toString())) {
+                    return craftingRecipe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public CustomRecipe getRecipe(String key) {
+        for (CustomRecipe craftingRecipe : customRecipes) {
+            if (craftingRecipe.getID().equals(key)) {
+                return craftingRecipe;
             }
         }
         return null;
@@ -165,6 +188,21 @@ public class RecipeHandler {
         return customRecipes;
     }
 
+    public void unregisterRecipe(CustomRecipe customRecipe) {
+        customRecipes.remove(customRecipe);
+        Iterator<Recipe> recipes = Bukkit.recipeIterator();
+        Bukkit.clearRecipes();
+        while (recipes.hasNext()) {
+            Recipe recipe = recipes.next();
+            if (recipe instanceof Keyed && ((Keyed) recipe).getKey().toString().equals(customRecipe.getID())) {
+                recipes.remove();
+            } else {
+                Bukkit.addRecipe(recipe);
+            }
+        }
+
+    }
+
     public FurnaceCRecipe getFurnaceRecipe(ItemStack source) {
         for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
             if (recipe.getSource().getType() == source.getType()) {
@@ -178,28 +216,28 @@ public class RecipeHandler {
         return customItems;
     }
 
-    public CustomItem getCustomItem(String key){
-        for(CustomItem customItem : customItems){
-            if(customItem.getId().equals(key)){
+    public CustomItem getCustomItem(String key) {
+        for (CustomItem customItem : customItems) {
+            if (customItem.getId().equals(key)) {
                 return customItem;
             }
         }
         return null;
     }
 
-    public void addCustomItem(CustomItem item){
+    public void addCustomItem(CustomItem item) {
         customItems.add(item);
     }
 
-    public void removeCustomItem(String id){
+    public void removeCustomItem(String id) {
         customItems.remove(getCustomItem(id));
     }
 
-    public void removeCustomItem(CustomItem item){
+    public void removeCustomItem(CustomItem item) {
         customItems.remove(item);
     }
 
-    public CustomItem getCustomItem(String key, String name){
-        return getCustomItem(key+":"+name);
+    public CustomItem getCustomItem(String key, String name) {
+        return getCustomItem(key + ":" + name);
     }
 }
