@@ -54,11 +54,11 @@ public class CustomConfig extends Config {
         }
     }
 
-    public ItemStack getCustomItem(String path){
+    public CustomItem getCustomItem(String path){
         String id = getString(path+".item_key");
         if(id != null && !id.isEmpty()){
             return CustomCrafting.getRecipeHandler().getCustomItem(id);
         }
-        return getItem("result.item");
+        return new CustomItem(getItem("result.item"));
     }
 }

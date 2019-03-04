@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import net.minecraft.server.v1_13_R2.Item;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -20,7 +21,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     private CraftConfig config;
     private String id;
-    private ItemStack result;
+    private CustomItem result;
     private String group;
     private HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
 
@@ -82,7 +83,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     public void setResult(ItemStack result) {
-        this.result = result;
+        this.result = new CustomItem(result);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.group = group;
     }
 
-    public ItemStack getResult() {
+    public CustomItem getResult() {
         return result;
     }
 

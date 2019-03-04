@@ -42,7 +42,7 @@ public class FurnaceConfig extends CustomConfig {
         saveCustomItem("result", result);
     }
 
-    public ItemStack getResult(){
+    public CustomItem getResult(){
         return getCustomItem("result");
     }
 

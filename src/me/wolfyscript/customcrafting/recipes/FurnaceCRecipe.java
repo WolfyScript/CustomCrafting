@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
 
+    private CustomItem result;
     private ItemStack source;
     private String id;
     private boolean needsAdvancedFurnace;
@@ -16,6 +18,7 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
     public FurnaceCRecipe(FurnaceConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), config.getSource().getType(), config.getXP(), config.getCookingTime());
         this.id = config.getId();
+        this.result = config.getResult();
         this.source = config.getSource();
         this.needsAdvancedFurnace = config.needsAdvancedFurnace();
     }
@@ -30,6 +33,11 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
 
     public boolean check(ItemStack source){
         return source.getAmount() >= getSource().getAmount() && getSource().isSimilar(source);
+    }
+
+    @Override
+    public CustomItem getResult() {
+        return result;
     }
 
     @Override

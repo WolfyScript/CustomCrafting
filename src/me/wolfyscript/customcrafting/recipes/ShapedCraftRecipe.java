@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
     private CraftConfig config;
     private String id;
     private String group;
-    private ItemStack result;
+    private CustomItem result;
     private HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
     private String[] shape;
     private String shapeLine;
@@ -118,11 +119,11 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
 
     @Override
     public void setResult(ItemStack result) {
-        this.result = result;
+        this.result = new CustomItem(result);
     }
 
     @Override
-    public ItemStack getResult() {
+    public CustomItem getResult() {
         return result;
     }
 

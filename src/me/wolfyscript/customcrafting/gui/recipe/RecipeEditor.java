@@ -3,7 +3,9 @@ package me.wolfyscript.customcrafting.gui.recipe;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,11 +67,36 @@ public class RecipeEditor extends ExtendedGuiWindow {
     @Override
     public boolean parseChatMessage(int id, String message, GuiHandler guiHandler) {
         String[] args = message.split(" ");
+        Player player = guiHandler.getPlayer();
+        PlayerCache cache = CustomCrafting.getPlayerCache(guiHandler.getPlayer());
         if(args.length > 1){
             CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0]+":"+args[1]);
             if(recipe != null){
                 if(id == 0){
+                    switch (cache.getSetting()){
+                        case CRAFT_RECIPE:
+                            if (recipe instanceof CraftingRecipe){
+                                cache.setCraftResult(recipe.getResult());
+                                /*
+                                TODO: LOAD RECIPES!
+                                TODO LOAD SHAPE AND OTHER TYPE OF RECIPES!
+                                */
+                                cache.setWorkbench(((CraftingRecipe) recipe).needsAdvancedWorkbench());
+                                cache.setPermission(((CraftingRecipe) recipe).needsPermission());
+                                guiHandler.changeToInv("");
+                                return false;
+                            }
+                            api.sendPlayerMessage(player, "This recipe is not a Craft Recipe!");
+                            return true;
+                        case FURNACE_RECIPE:
+                            if(recipe instanceof FurnaceCRecipe){
 
+                                return false;
+                            }
+
+                            api.sendPlayerMessage(player, "This recipe is not a Furnace Recipe!");
+                            return true;
+                    }
                 }
             }
         }
