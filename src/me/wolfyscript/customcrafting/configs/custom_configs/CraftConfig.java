@@ -117,5 +117,13 @@ public class CraftConfig extends CustomConfig {
         return result;
     }
 
+    public List<String> getOverrides(){
+        return getStringList("override");
+    }
+
+    public String getExtend(){
+        return getString("extend");
+    }
+
 
 }

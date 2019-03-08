@@ -4,6 +4,8 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class FurnaceConfig extends CustomConfig {
 
     public FurnaceConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
@@ -52,5 +54,13 @@ public class FurnaceConfig extends CustomConfig {
 
     public boolean needsAdvancedFurnace(){
         return getBoolean("advanced_furnace");
+    }
+
+    public List<String> getOverrides(){
+        return getStringList("override");
+    }
+
+    public String getExtend(){
+        return getString("extend");
     }
 }

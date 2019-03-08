@@ -4,6 +4,8 @@ import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
+public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     private boolean permission;
     private boolean advancedWorkbench;
@@ -64,8 +66,6 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
     @Override
     public void save() {
 
-
-
     }
 
     @Override
@@ -76,22 +76,78 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe{
                 items.add(itemStack);
             }
         }
-        int index = 0;
-        for (Character letter : shapeLine.toCharArray()) {
-            if (!letter.equals(' ')) {
-                boolean contains = false;
-                for (ItemStack itemStack : ingredients.get(letter).keySet()) {
-                    if (items.get(index).getAmount() >= itemStack.getAmount() && itemStack.isSimilar(items.get(index))) {
-                        contains = true;
-                    }
-                }
-                if (!contains) {
+        char[] keys = shapeLine.toCharArray();
+        for (int i = 0; i < keys.length; i++) {
+            if (keys[i] != ' ') {
+                if(checkIngredient(keys[i], items.get(i)) == null)
                     return false;
-                }
             }
-            index++;
         }
         return true;
+    }
+
+    public ItemStack checkIngredient(Character key, ItemStack item) {
+        for (ItemStack itemStack : ingredients.get(key).keySet()) {
+            if (item.getAmount() >= itemStack.getAmount() && itemStack.isSimilar(item)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public CraftResult removeIngredients(ItemStack[] matrix, int totalAmount) {
+        List<ItemStack> items = new ArrayList<>();
+        ArrayList<ItemStack> results = new ArrayList<>();
+        for (ItemStack itemStack : matrix) {
+            if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
+                items.add(itemStack);
+            }
+        }
+        char[] keys = shapeLine.toCharArray();
+        for (int i = 0; i < keys.length; i++) {
+            if (keys[i] != ' ') {
+                ItemStack itemStack = items.get(i);
+                ItemStack result = checkIngredient(keys[i], itemStack);
+                if(result != null){
+                    if(itemStack.getMaxStackSize() > 1){
+                        int amount = itemStack.getAmount() - result.getAmount()*totalAmount + 1;
+                        itemStack.setAmount(amount);
+                    }
+                    //TEST FOR BUCKETS AND OTHER ITEMS!?
+                    if(itemStack.getAmount() <= 0)
+                        results.add(new ItemStack(Material.AIR));
+                    else
+                        results.add(itemStack);
+                }else{
+                    results.add(new ItemStack(Material.AIR));
+                }
+            }
+        }
+        return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
+    }
+
+    @Override
+    public int getAmountCraftable(ItemStack[] matrix) {
+        List<ItemStack> items = new ArrayList<>();
+        int totalAmount = -1;
+        for (ItemStack itemStack : matrix) {
+            if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
+                items.add(itemStack);
+            }
+        }
+        char[] keys = shapeLine.toCharArray();
+        for (int i = 0; i < keys.length; i++) {
+            if (keys[i] != ' ') {
+                ItemStack result = checkIngredient(keys[i], items.get(i));
+                if(result != null){
+                    int possible = items.get(i).getAmount() / result.getAmount();
+                    if(possible < totalAmount || totalAmount == -1)
+                        totalAmount = possible;
+                }
+            }
+        }
+        return totalAmount;
     }
 
     @Override

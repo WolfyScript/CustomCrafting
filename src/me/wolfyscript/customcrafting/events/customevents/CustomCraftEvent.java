@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.events;
+package me.wolfyscript.customcrafting.events.customevents;
 
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ShapelessCraftRecipe;
@@ -15,15 +15,13 @@ public class CustomCraftEvent extends Event implements Cancellable{
     private ItemStack result;
     private CraftingInventory craftingInventory;
     private Recipe bukkitRecipe;
-    private boolean isRepair;
     private boolean cancelled;
     private CraftingRecipe craftingRecipe;
 
-    public CustomCraftEvent(boolean isRepair, CraftingRecipe craftingRecipe, Recipe recipe, CraftingInventory craftingInventory){
+    public CustomCraftEvent(CraftingRecipe craftingRecipe, Recipe recipe, CraftingInventory craftingInventory){
         this.bukkitRecipe = recipe;
         this.craftingRecipe = craftingRecipe;
         this.craftingInventory = craftingInventory;
-        this.isRepair = isRepair;
         this.result = craftingRecipe.getResult();
     }
 
@@ -41,10 +39,6 @@ public class CustomCraftEvent extends Event implements Cancellable{
 
     public void setResult(ItemStack result) {
         this.result = result;
-    }
-
-    public boolean isRepair() {
-        return isRepair;
     }
 
     public CraftingRecipe getRecipe() {

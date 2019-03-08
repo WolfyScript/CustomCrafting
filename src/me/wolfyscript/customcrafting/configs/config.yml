@@ -38,4 +38,4 @@ data:
 
 recipes:
   reload_after_save: false
-  disable_vanilla_recipes: []
+  disabled_recipes: []

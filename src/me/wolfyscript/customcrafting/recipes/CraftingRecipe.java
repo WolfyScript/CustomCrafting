@@ -2,6 +2,8 @@ package me.wolfyscript.customcrafting.recipes;
 
 
 import me.wolfyscript.customcrafting.items.CustomItem;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -20,6 +22,10 @@ public interface CraftingRecipe extends CustomRecipe{
     boolean needsAdvancedWorkbench();
 
     boolean check(ItemStack[] matrix);
+
+    CraftResult removeIngredients(ItemStack[] matrix, int totalAmount);
+
+    int getAmountCraftable(ItemStack[] matrix);
 
     void setPermission(boolean perm);
 

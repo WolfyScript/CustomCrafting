@@ -10,8 +10,12 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -58,6 +62,7 @@ public class CustomCrafting extends JavaPlugin {
             System.out.println("    https://www.spigotmc.org/resources/wolfyutilities.64124/");
             System.out.println("--------------------------------------------------------------------------------");
             Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
 
         File mainConfig = new File(getDataFolder(), "Main-Config.yml");
@@ -65,6 +70,7 @@ public class CustomCrafting extends JavaPlugin {
             System.out.println("Found old CustomCrafting data! renaming folder...");
             if (getDataFolder().renameTo(new File(getDataFolder().getParentFile(), "CustomCrafting_old"))) {
                 System.out.println("Renamed to CustomCrafting_old!");
+                System.out.println("Creating new folder");
             }
         }
 
@@ -77,7 +83,7 @@ public class CustomCrafting extends JavaPlugin {
         loadPlayerCache();
 
         getServer().getPluginManager().registerEvents(new PlayerEvent(), this);
-        getServer().getPluginManager().registerEvents(new Events(api), this);
+        getServer().getPluginManager().registerEvents(new CraftEvents(api), this);
         getServer().getPluginManager().registerEvents(new BlockEvents(), this);
         getServer().getPluginManager().registerEvents(new FurnaceEvents(), this);
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
@@ -96,6 +102,7 @@ public class CustomCrafting extends JavaPlugin {
         }
 
         recipeHandler.loadConfigs();
+
 
     }
 

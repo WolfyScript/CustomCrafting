@@ -1,18 +1,18 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import net.minecraft.server.v1_13_R2.Item;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRecipe{
 
@@ -38,8 +38,8 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     @Override
     public void load(){
-        for(Character itemKey : ingredients.keySet()){
-            Set<ItemStack> items = ingredients.get(itemKey).keySet();
+        for(Character itemKey : getIngredients().keySet()){
+            Set<ItemStack> items = getIngredients().get(itemKey).keySet();
             List<Material> materials = new ArrayList<>();
             items.forEach(itemStack -> materials.add(itemStack.getType()));
             addIngredient(new RecipeChoice.MaterialChoice(materials));
@@ -53,24 +53,75 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     @Override
     public boolean check(ItemStack[] matrix) {
-        List<Character> allKeys = new ArrayList<>(ingredients.keySet());
+        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         for(ItemStack itemStack : matrix){
-            if(itemStack != null && !itemStack.getType().equals(Material.AIR)){
-                for(char key : allKeys){
-                    for (ItemStack ingredient : ingredients.get(key).keySet()){
+            ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+            if(result == null){
+                return false;
+            }
+        }
+        return usedKeys.containsAll(getIngredients().keySet());
+    }
+
+    @Override
+    public CraftResult removeIngredients(ItemStack[] matrix, int totalAmount) {
+        //MAYBE IMPROVEMENTS?!
+        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
+        List<Character> usedKeys = new ArrayList<>();
+        ArrayList<ItemStack> results = new ArrayList<>();
+        for(ItemStack itemStack : matrix){
+            ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+            if(result != null){
+                if(itemStack.getMaxStackSize() > 1){
+                    int amount = itemStack.getAmount() - result.getAmount()*totalAmount + 1;
+                    itemStack.setAmount(amount);
+                }
+                //TEST FOR BUCKETS AND OTHER ITEMS!?
+                if(itemStack.getAmount() <= 0)
+                    results.add(new ItemStack(Material.AIR));
+                else
+                    results.add(itemStack);
+            }else{
+                results.add(new ItemStack(Material.AIR));
+            }
+        }
+        return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
+    }
+
+    @Override
+    public int getAmountCraftable(ItemStack[] matrix) {
+        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
+        List<Character> usedKeys = new ArrayList<>();
+        int totalAmount = -1;
+        for(ItemStack itemStack : matrix){
+            ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+            if(result != null){
+                int possible = itemStack.getAmount() / result.getAmount();
+                if(possible < totalAmount || totalAmount == -1)
+                    totalAmount = possible;
+            }
+        }
+        return totalAmount;
+    }
+
+    private ItemStack checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack itemStack){
+        if(itemStack != null && !itemStack.getType().equals(Material.AIR)){
+            for(char key : allKeys){
+                if(!usedKeys.contains(key)){
+                    for (ItemStack ingredient : getIngredients().get((char)key).keySet()){
                         if(ingredient.getType().equals(itemStack.getType())){
-                            //TODO: EXTRA DATA CHECK!
                             if (itemStack.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(itemStack)) {
                                 usedKeys.add(key);
-                                //allKeys.remove(Character.valueOf(key));
+                                //System.out.println("ingr. : "+ingredient.getAmount());
+                                return new ItemStack(ingredient);
                             }
                         }
                     }
                 }
             }
         }
-        return usedKeys.containsAll(ingredients.keySet());
+        return null;
     }
 
     public void setIngredients(HashMap<Character, HashMap<ItemStack, List<String>>> ingredients) {

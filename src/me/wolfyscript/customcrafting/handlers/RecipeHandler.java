@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
@@ -12,9 +11,10 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.io.File;
@@ -24,6 +24,10 @@ public class RecipeHandler {
 
     private List<CustomRecipe> customRecipes = new ArrayList<>();
     private List<CustomItem> customItems = new ArrayList<>();
+
+    private ArrayList<String> disabledRecipes = new ArrayList<>();
+    private HashMap<String, List<String>> overrideRecipes = new HashMap<>();
+    private HashMap<String, List<String>> extendRecipes = new HashMap<>();
 
     private ConfigAPI configAPI;
     private WolfyUtilities api;
@@ -45,6 +49,8 @@ public class RecipeHandler {
                     switch (type) {
                         case "workbench":
                             CraftConfig config = new CraftConfig(configAPI, key, name);
+                            addOverrideRecipe(config.getId(), config.getOverrides());
+                            addExtendRecipe(config.getId(), config.getExtend());
                             if (config.isShapeless()) {
                                 ShapelessCraftRecipe recipe = new ShapelessCraftRecipe(config);
                                 recipe.load();
@@ -56,7 +62,10 @@ public class RecipeHandler {
                             }
                             break;
                         case "furnace":
-                            FurnaceCRecipe furnaceCRecipe = new FurnaceCRecipe(new FurnaceConfig(configAPI, key, name));
+                            FurnaceConfig furnaceConfig = new FurnaceConfig(configAPI, key, name);
+                            addOverrideRecipe(furnaceConfig.getId(), furnaceConfig.getOverrides());
+                            addExtendRecipe(furnaceConfig.getId(), furnaceConfig.getExtend());
+                            FurnaceCRecipe furnaceCRecipe = new FurnaceCRecipe(furnaceConfig);
                             registerRecipe(furnaceCRecipe);
                             break;
                         case "items":
@@ -82,18 +91,8 @@ public class RecipeHandler {
     }
 
     public void loadConfigs() {
-
-        if (!CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().isEmpty()) {
-            api.sendConsoleMessage("      - [Remove Vanilla Recipes] -");
-            Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-            while (recipeIterator.hasNext()) {
-                Recipe recipe = recipeIterator.next();
-                if(recipe instanceof Keyed){
-                    if (CustomCrafting.getConfigHandler().getConfig().getVanillaRecipes().contains(((Keyed) recipe).getKey().toString())) {
-                        recipeIterator.remove();
-                    }
-                }
-            }
+        if (!CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
+            disabledRecipes.addAll(CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes());
         }
         api.sendConsoleMessage("________[Loading Recipes/Items]________");
         File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
@@ -119,6 +118,15 @@ public class RecipeHandler {
             }
 
         }
+        System.out.println("Overrides: "+overrideRecipes);
+        System.out.println("Extends: "+extendRecipes);
+
+        ShapelessRecipe shapelessRecipe = new ShapelessRecipe(new NamespacedKey(CustomCrafting.getInst(),"itemstack"),new ItemStack(Material.BEDROCK, 3));
+        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
+        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
+        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
+        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
+        Bukkit.addRecipe(shapelessRecipe);
     }
 
     private void registerRecipe(CustomRecipe recipe) {
@@ -164,6 +172,11 @@ public class RecipeHandler {
         return null;
     }
 
+    public CraftingRecipe getCraftingRecipe(String key) {
+        CustomRecipe customRecipe = getRecipe(key);
+        return customRecipe instanceof CraftingRecipe ? (CraftingRecipe) customRecipe : null;
+    }
+
     public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source) {
         List<FurnaceCRecipe> recipes = new ArrayList<>();
         for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
@@ -200,7 +213,6 @@ public class RecipeHandler {
                 Bukkit.addRecipe(recipe);
             }
         }
-
     }
 
     public FurnaceCRecipe getFurnaceRecipe(ItemStack source) {
@@ -240,4 +252,39 @@ public class RecipeHandler {
     public CustomItem getCustomItem(String key, String name) {
         return getCustomItem(key + ":" + name);
     }
+
+    public ArrayList<String> getDisabledRecipes() {
+        return disabledRecipes;
+    }
+
+    public HashMap<String, List<String>> getOverrideRecipes() {
+        return overrideRecipes;
+    }
+
+    public void addOverrideRecipe(String key, List<String> toOverride) {
+        if(!toOverride.isEmpty()){
+            for (String override : toOverride) {
+                List<String> overrides = overrideRecipes.getOrDefault(override, new ArrayList<>());
+                if (!overrides.contains(key))
+                    overrides.add(key);
+                overrideRecipes.put(override, overrides);
+            }
+        }
+    }
+
+    public HashMap<String, List<String>> getExtendRecipes() {
+        return extendRecipes;
+    }
+
+    public void addExtendRecipe(String key, String toExtend) {
+        if(!toExtend.isEmpty()){
+            List<String> extendsList = extendRecipes.getOrDefault(toExtend, new ArrayList<>());
+            System.out.println("Register: "+ key +" extends "+toExtend +" + "+extendsList);
+            if(!extendsList.contains(key))
+                extendsList.add(key);
+            extendRecipes.put(toExtend, extendsList);
+        }
+    }
+
+
 }

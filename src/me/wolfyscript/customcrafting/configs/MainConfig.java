@@ -24,8 +24,8 @@ public class MainConfig extends Config {
         return getInt("data.auto_save.interval");
     }
 
-    public List<String> getVanillaRecipes(){
-        return getStringList("recipes.disable_vanilla_recipes");
+    public List<String> getDisabledRecipes(){
+        return getStringList("recipes.disabled_recipes");
     }
 
     public boolean saveContents(){

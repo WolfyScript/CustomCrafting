@@ -76,22 +76,6 @@ public class WorkbenchContents implements Listener {
             if(isWorkbench(block)){
                 updateContents(block.getLocation(), ((CraftingInventory) e.getInventory()).getMatrix());
             }
-            if(e.getClickedInventory() != null && e.getClickedInventory().equals(e.getView().getTopInventory()) && e.getSlot() == 0 && !e.getCurrentItem().getType().equals(Material.AIR)){
-                CraftingInventory craftingInventory = (CraftingInventory) e.getView().getTopInventory();
-
-                if(config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()){
-                    for(String command : config.getCommandsSuccessCrafted()){
-                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", e.getWhoClicked().getName()).replace("%UUID%", e.getWhoClicked().getUniqueId().toString()));
-                    }
-                }
-                PlayerCache cache = CustomCrafting.getPlayerCache((Player) e.getWhoClicked());
-                cache.addAmountCrafted(1);
-                if(isWorkbench(block)){
-                    cache.addAmountAdvancedCrafted(1);
-                }else{
-                    cache.addAmountNormalCrafted(1);
-                }
-            }
         }
     }
 

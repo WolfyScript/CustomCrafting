@@ -38,6 +38,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         CustomCrafting.renewPlayerCache(p);
                     }
                 }
+                //TODO RELOAD
 
             }
         }
