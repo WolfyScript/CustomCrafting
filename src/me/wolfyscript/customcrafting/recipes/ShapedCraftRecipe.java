@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.inventory.ClickType;
@@ -24,7 +25,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     private String id;
     private String group;
     private CustomItem result;
-    private HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
+    private HashMap<Character, List<CustomItem>> ingredients;
     private String[] shape;
     private String shapeLine;
 
@@ -33,7 +34,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.result = config.getResult();
         this.id = config.getId();
         this.config = config;
-        this.shape = config.getShape();
+        this.shape = WolfyUtilities.formatShape(config.getShape()).toArray(new String[0]);
         this.ingredients = config.getIngredients();
         this.group = config.getGroup();
         this.permission = config.needPerm();
@@ -44,7 +45,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     public void load() {
         this.shape(shape);
         for (Character itemKey : ingredients.keySet()) {
-            Set<ItemStack> items = ingredients.get(itemKey).keySet();
+            List<CustomItem> items = ingredients.get(itemKey);
             List<Material> materials = new ArrayList<>();
             items.forEach(itemStack -> materials.add(itemStack.getType()));
             setIngredient(itemKey, new RecipeChoice.MaterialChoice(materials));
@@ -87,7 +88,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     public ItemStack checkIngredient(Character key, ItemStack item) {
-        for (ItemStack itemStack : ingredients.get(key).keySet()) {
+        for (CustomItem itemStack : ingredients.get(key)) {
             if (item.getAmount() >= itemStack.getAmount() && itemStack.isSimilar(item)) {
                 return item;
             }
@@ -160,11 +161,13 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.advancedWorkbench = workbench;
     }
 
-    public void setIngredients(HashMap<Character, HashMap<ItemStack, List<String>>> ingredients) {
+    @Override
+    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public HashMap<Character, HashMap<ItemStack, List<String>>> getIngredients() {
+    @Override
+    public HashMap<Character, List<CustomItem>> getIngredients() {
         return ingredients;
     }
 
@@ -200,6 +203,11 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     @Override
     public boolean needsAdvancedWorkbench() {
         return advancedWorkbench;
+    }
+
+    @Override
+    public boolean isShapeless() {
+        return true;
     }
 
     @Override

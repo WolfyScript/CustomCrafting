@@ -3,12 +3,21 @@ package me.wolfyscript.customcrafting.gui.recipe;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
+import me.wolfyscript.customcrafting.recipes.ShapedCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
@@ -77,23 +86,42 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         case CRAFT_RECIPE:
                             if (recipe instanceof CraftingRecipe){
                                 cache.setCraftResult(recipe.getResult());
-                                /*
-                                TODO: LOAD RECIPES!
-                                TODO LOAD SHAPE AND OTHER TYPE OF RECIPES!
-                                */
+                                HashMap<Character, List<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
+                                for(int i = 0; i < 9; i++){
+                                    cache.addCraftIngredient(i, new CustomItem(new ItemStack(Material.AIR)));
+                                }
+                                for(Character key : ingredients.keySet()){
+                                    int i = 0;
+                                    ArrayList<CustomItem> items = new ArrayList<>(ingredients.get(key));
+                                    for(CustomItem customItem : items){
+                                        if(i==0){
+                                            cache.addCraftIngredient(key, customItem);
+                                        }else{
+                                            cache.setCraftIngredient(key, i,customItem);
+                                        }
+                                        i++;
+                                    }
+                                }
+                                cache.setCraftIngredients(((CraftingRecipe) recipe).getIngredients());
+                                cache.setCraftResult(recipe.getResult());
+                                cache.setShape(((CraftingRecipe) recipe).isShapeless());
                                 cache.setWorkbench(((CraftingRecipe) recipe).needsAdvancedWorkbench());
                                 cache.setPermission(((CraftingRecipe) recipe).needsPermission());
-                                guiHandler.changeToInv("");
+                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
                             api.sendPlayerMessage(player, "This recipe is not a Craft Recipe!");
                             return true;
                         case FURNACE_RECIPE:
                             if(recipe instanceof FurnaceCRecipe){
-
+                                cache.setAdvancedFurnace(((FurnaceCRecipe) recipe).needsAdvancedFurnace());
+                                cache.setFurnaceSource(((FurnaceCRecipe) recipe).getSource());
+                                cache.setFurnaceResult(recipe.getResult());
+                                cache.setXP(((FurnaceCRecipe) recipe).getExperience());
+                                cache.setCookingTime(((FurnaceCRecipe) recipe).getCookingTime());
+                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
-
                             api.sendPlayerMessage(player, "This recipe is not a Furnace Recipe!");
                             return true;
                     }

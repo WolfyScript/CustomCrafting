@@ -37,6 +37,9 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     if (CustomCrafting.hasPlayerCache(p)) {
                         CustomCrafting.renewPlayerCache(p);
                     }
+                } else if(args[0].equalsIgnoreCase("recipes")){
+                    CustomCrafting.getApi().getInventoryAPI().openGui(p);
+                    CustomCrafting.getApi().getInventoryAPI().getGuiHandler(p).changeToInv("recipes_list");
                 }
                 //TODO RELOAD
 

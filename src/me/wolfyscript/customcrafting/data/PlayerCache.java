@@ -224,6 +224,10 @@ public class PlayerCache {
         getCraftIngredients().put(key, ingredient);
     }
 
+    public void addCraftIngredient(int slot, CustomItem itemStack){
+        addCraftIngredient(letters[slot], itemStack);
+    }
+
     public void setCraftIngredient(int slot, CustomItem itemStack){
         setCraftIngredient(letters[slot], itemStack);
     }

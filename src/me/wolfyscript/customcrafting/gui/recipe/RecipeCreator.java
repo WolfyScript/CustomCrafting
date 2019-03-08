@@ -61,7 +61,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                         int slot;
                         for (int i = 0; i < 9; i++) {
                             slot = 19 + i + (i / 3) * 6;
-                            event.setItem(slot, cache.getCraftIngredients().isEmpty() ? new ItemStack(Material.AIR) : cache.getCraftIngredient(i).getIDItem());
+                            event.setItem(slot, cache.getCraftIngredients().isEmpty() ? new ItemStack(Material.AIR) : cache.getCraftIngredient(i) != null ? cache.getCraftIngredient(i).getIDItem() : new ItemStack(Material.AIR));
                         }
                     }
                     event.setItem(31, cache.getShape() ? "workbench.shapeless_off" : "workbench.shapeless_on");
@@ -123,7 +123,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
         String action = guiAction.getAction();
         PlayerCache cache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
         updateInv(guiAction.getPlayer().getOpenInventory().getTopInventory(), cache);
-
         switch (cache.getSetting()) {
             case CRAFT_RECIPE:
                 if (action.startsWith("workbench.shapeless_")) {

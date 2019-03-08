@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.handlers;
 
+import me.wolfyscript.customcrafting.gui.RecipesList;
 import me.wolfyscript.customcrafting.gui.items.ItemCreator;
 import me.wolfyscript.customcrafting.gui.list.RecipeList;
 import me.wolfyscript.customcrafting.gui.recipe.RecipeCreator;
@@ -45,6 +46,8 @@ public class InventoryHandler {
         invAPI.registerGuiWindow(new RecipeCreator(invAPI));
 
         invAPI.registerGuiWindow(new RecipeList(invAPI));
+
+        invAPI.registerGuiWindow(new RecipesList(invAPI));
 
         invAPI.setMainmenu("main_menu");
     }

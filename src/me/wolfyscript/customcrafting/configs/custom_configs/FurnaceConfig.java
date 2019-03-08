@@ -36,7 +36,7 @@ public class FurnaceConfig extends CustomConfig {
         saveCustomItem("source", source);
     }
 
-    public ItemStack getSource(){
+    public CustomItem getSource(){
         return getCustomItem("source");
     }
 

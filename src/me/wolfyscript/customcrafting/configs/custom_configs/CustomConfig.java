@@ -59,6 +59,6 @@ public class CustomConfig extends Config {
         if(id != null && !id.isEmpty()){
             return CustomCrafting.getRecipeHandler().getCustomItem(id);
         }
-        return new CustomItem(getItem("result.item"));
+        return new CustomItem(getItem(path+".item"));
     }
 }

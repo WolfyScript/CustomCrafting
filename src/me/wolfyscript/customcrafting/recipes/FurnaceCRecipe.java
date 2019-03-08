@@ -11,7 +11,7 @@ import java.util.List;
 public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
 
     private CustomItem result;
-    private ItemStack source;
+    private CustomItem source;
     private String id;
     private boolean needsAdvancedFurnace;
 
@@ -23,7 +23,7 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
         this.needsAdvancedFurnace = config.needsAdvancedFurnace();
     }
 
-    public ItemStack getSource() {
+    public CustomItem getSource() {
         return source;
     }
 

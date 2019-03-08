@@ -329,6 +329,15 @@ items:
       name: "&2Next Page"
       lore: []
       help: []
+  recipes_list:
+    previous_page:
+      name: "&2Previous Page"
+      lore: []
+      help: []
+    next_page:
+      name: "&2Next Page"
+      lore: []
+      help: []
 
 inventories:
   main_menu: '&3&lCustomCrafting'
@@ -340,6 +349,8 @@ inventories:
   recipe_creator: "&4&lRecipe Creator"
 
   recipe_list: "&8&lRecipe List"
+
+  recipes_list: "&8&lRecipe List"
 
 
 

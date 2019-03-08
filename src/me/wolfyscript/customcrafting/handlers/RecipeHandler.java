@@ -22,6 +22,8 @@ import java.util.*;
 
 public class RecipeHandler {
 
+    private List<Recipe> allRecipes = new ArrayList<>();
+
     private List<CustomRecipe> customRecipes = new ArrayList<>();
     private List<CustomItem> customItems = new ArrayList<>();
 
@@ -84,6 +86,7 @@ public class RecipeHandler {
                     api.sendConsoleMessage("You should check the config for empty settings ");
                     api.sendConsoleMessage("e.g. No set Result or Source Item!");
                     api.sendConsoleMessage("-------------------------------------------------");
+                    ex.printStackTrace();
                 }
                 api.sendConsoleMessage("      - " + name);
             }
@@ -102,7 +105,6 @@ public class RecipeHandler {
             subFolders = new ArrayList<>(Arrays.asList(dirs));
         }
         if (subFolders != null) {
-
             api.sendConsoleMessage("");
             api.sendConsoleMessage("---------[ITEMS]---------");
             for (File folder : subFolders) {
@@ -116,17 +118,11 @@ public class RecipeHandler {
                 loadConfig(folder.getName(), "workbench");
                 loadConfig(folder.getName(), "furnace");
             }
-
         }
-        System.out.println("Overrides: "+overrideRecipes);
-        System.out.println("Extends: "+extendRecipes);
-
-        ShapelessRecipe shapelessRecipe = new ShapelessRecipe(new NamespacedKey(CustomCrafting.getInst(),"itemstack"),new ItemStack(Material.BEDROCK, 3));
-        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
-        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
-        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
-        shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(new ItemStack(Material.OAK_WOOD)));
-        Bukkit.addRecipe(shapelessRecipe);
+        Iterator<Recipe> iterator = Bukkit.recipeIterator();
+        while(iterator.hasNext()){
+            allRecipes.add(iterator.next());
+        }
     }
 
     private void registerRecipe(CustomRecipe recipe) {
@@ -286,5 +282,7 @@ public class RecipeHandler {
         }
     }
 
-
+    public List<Recipe> getAllRecipes() {
+        return allRecipes;
+    }
 }

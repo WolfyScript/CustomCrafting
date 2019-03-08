@@ -21,6 +21,8 @@ public interface CraftingRecipe extends CustomRecipe{
      */
     boolean needsAdvancedWorkbench();
 
+    boolean isShapeless();
+
     boolean check(ItemStack[] matrix);
 
     CraftResult removeIngredients(ItemStack[] matrix, int totalAmount);
@@ -39,9 +41,9 @@ public interface CraftingRecipe extends CustomRecipe{
 
     CustomItem getResult();
 
-    void setIngredients(HashMap<Character, HashMap<ItemStack, List<String>>> ingredients);
+    void setIngredients(HashMap<Character, List<CustomItem>> ingredients);
 
-    HashMap<Character, HashMap<ItemStack, List<String>>> getIngredients();
+    HashMap<Character, List<CustomItem>> getIngredients();
 
 
 

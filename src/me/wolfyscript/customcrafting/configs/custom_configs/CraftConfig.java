@@ -53,7 +53,7 @@ public class CraftConfig extends CustomConfig {
     }
 
     public void setShape(String... shape) {
-        set("shape", WolfyUtilities.formatShape(shape));
+        set("shape", shape);
     }
 
     public String[] getShape() {
@@ -94,23 +94,16 @@ public class CraftConfig extends CustomConfig {
         }
     }
 
-    public HashMap<Character, HashMap<ItemStack, List<String>>> getIngredients() {
-        HashMap<Character, HashMap<ItemStack, List<String>>> result = new HashMap<>();
+    public HashMap<Character, List<CustomItem>> getIngredients() {
+        HashMap<Character, List<CustomItem>> result = new HashMap<>();
         Set<String> keys = getConfig().getConfigurationSection("ingredients").getKeys(false);
         for (String key : keys) {
             Set<String> itemKeys = getConfig().getConfigurationSection("ingredients." + key).getKeys(false);
-            HashMap<ItemStack, List<String>> data = new HashMap<>();
+            List<CustomItem> data = new ArrayList<>();
             for (String itemKey : itemKeys) {
-                ItemStack itemStack;
-                List<String> additionalData = new ArrayList<>();
-                String id = getString("ingredients." + key + "." + itemKey + ".item_key");
-                if (id != null && !id.isEmpty()) {
-                    itemStack = CustomCrafting.getRecipeHandler().getCustomItem(id);
-                } else {
-                    additionalData = getStringList("ingredients." + key + "." + itemKey + ".data");
-                    itemStack = getItem("ingredients." + key + "." + itemKey + ".item");
-                }
-                data.put(itemStack, additionalData);
+                CustomItem itemStack;
+                itemStack = getCustomItem("ingredients." + key + "." + itemKey);
+                data.add(itemStack);
             }
             result.put(key.charAt(0), data);
         }

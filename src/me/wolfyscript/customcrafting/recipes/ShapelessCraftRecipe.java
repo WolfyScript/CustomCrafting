@@ -23,7 +23,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     private String id;
     private CustomItem result;
     private String group;
-    private HashMap<Character, HashMap<ItemStack, List<String>>> ingredients;
+    private HashMap<Character, List<CustomItem>> ingredients;
 
     public ShapelessCraftRecipe(CraftConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
@@ -39,7 +39,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     @Override
     public void load(){
         for(Character itemKey : getIngredients().keySet()){
-            Set<ItemStack> items = getIngredients().get(itemKey).keySet();
+            List<CustomItem> items = getIngredients().get(itemKey);
             List<Material> materials = new ArrayList<>();
             items.forEach(itemStack -> materials.add(itemStack.getType()));
             addIngredient(new RecipeChoice.MaterialChoice(materials));
@@ -109,7 +109,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         if(itemStack != null && !itemStack.getType().equals(Material.AIR)){
             for(char key : allKeys){
                 if(!usedKeys.contains(key)){
-                    for (ItemStack ingredient : getIngredients().get((char)key).keySet()){
+                    for (CustomItem ingredient : getIngredients().get((char)key)){
                         if(ingredient.getType().equals(itemStack.getType())){
                             if (itemStack.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(itemStack)) {
                                 usedKeys.add(key);
@@ -124,12 +124,12 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         return null;
     }
 
-    public void setIngredients(HashMap<Character, HashMap<ItemStack, List<String>>> ingredients) {
+    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
     @Override
-    public HashMap<Character, HashMap<ItemStack, List<String>>> getIngredients() {
+    public HashMap<Character, List<CustomItem>> getIngredients() {
         return ingredients;
     }
 
@@ -169,6 +169,11 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     @Override
     public boolean needsAdvancedWorkbench() {
         return advancedWorkbench;
+    }
+
+    @Override
+    public boolean isShapeless() {
+        return true;
     }
 
     public CraftConfig getConfig() {
