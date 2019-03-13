@@ -1,46 +1,46 @@
 # Crafting Recipe Config
 
-permissions: true
-advanced_workbench: false
+permissions: false
+advanced_workbench: true
+override: []
+extend: ''
 group: ''
 shapeless: false
 shape:
-  - RIR
-  - IFI
-  - RIR
+  - ABC
+  - DEF
+  - GHI
+result:
+  item_key: customcrafting:furnace
 ingredients:
-  F:
-    var1:
+  A:
+    var0:
+      item_key: customcrafting:compressed_cobblestone
+  B:
+    var0:
+      item_key: customcrafting:compressed_cobblestone
+  C:
+    var0:
+      item_key: customcrafting:compressed_cobblestone
+  D:
+    var0:
+      item_key: customcrafting:compressed_cobblestone
+  E:
+    var0:
       item:
         v: 1631
         type: FURNACE
-        amount: 1
-      data: []
+  F:
+    var0:
+      item_key: customcrafting:compressed_cobblestone
+  G:
+    var0:
+      item_key: customcrafting:compressed_cobblestone
+  H:
+    var0:
+      item:
+        v: 1631
+        type: LAVA_BUCKET
   I:
-    var1:
-      item:
-        v: 1631
-        type: IRON_INGOT
-        amount: 1
-      data: []
-  R:
-    var1:
-      item:
-        v: 1631
-        type: REDSTONE
-        amount: 1
-      data: []
-result:
-  v: 1631
-  type: FURNACE
-  amount: 1
-  meta:
-    ==: ItemMeta
-    meta-type: UNSPECIFIC
-    display-name: '&6Advanced Furnace&:&c&c&_&f&u&r&n&a&c&e'
-    lore:
-      - '&7Furnace for advanced smelting'
-    enchants:
-      FIRE_ASPECT: 9
-    ItemFlags:
-      - HIDE_ENCHANTS
+    var0:
+      item_key: customcrafting:compressed_cobblestone

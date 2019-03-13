@@ -1,9 +1,11 @@
 # Language: en_US
+author: "WolfyScript"
+version: "1.0.0"
+info:
+  - "YouTube:"
+  - "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
 
-translated_by: 'WolfyScript yt: https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g'
 # ######################################################################################################
-loading-languages: '&3Loading languages...'
-loading-recipes: '&3Loading recipes.....'
 loading-recipe-file: 'Loading recipe out of&6 %FILE% ...'
 loading-recipe-successful: 'Successfully loaded recipe&6 %RECIPE%'
 loading-complete: '                &3Everything successfully loaded!'
@@ -14,21 +16,11 @@ error-recipe-material: 'Cause: can''t get Material: %MATERIAL%'
 error-recipe-output: 'Cause: can''t load output item!'
 error-recipe: 'ERROR loading Custom recipe: %RECIPE%'
 # ######################################################################################################
-config-example-api: 'This number is for the future, when the config settings change!
-                      Then there will be a Converter which will migrate the old configs to the new version!'
-config-example-permission: 'Here you can set if the players need to have permission
-                             in order to use the recipe! The permission is build as follows -> customcrafting.craft.<recipe_ID>'
-config-example-workbench: 'You can also set if the recipe can be crafted in the normal
-  workbench! If want so, set it to false and then it can be crafted in the normal
-  workbench!'
-config-example-enchantments: 'Every enchantment > Name_ID:Level < The Enchantment_IDs
-  can be found here -> https://minecraft.gamepedia.com/Java_Edition_data_values#Enchantment_IDs'
-config-example-materials-0: 'Use the name_ID from minecraft or use the Spigot Materials
-  names'
-config-example-materials-1: 'When Shapeless recipe add materials with any key you want!'
-config-main-debug: 'Just for testing purpose'
 
-
+msg:
+  auto_save:
+    start:    "   Auto save data   "
+    complete: " Auto save complete "
 
 items:
   none:
@@ -134,11 +126,8 @@ items:
     set_displayname:
       name: "&6Set Display Name"
       help: []
-    allow_displayname_on:
-      name: "&3DisplayName Enabled"
-      help: []
-    allow_displayname_off:
-      name: "&4DisplayName Disabled"
+    remove_displayname:
+      name: "&3Remove Display Name"
       help: []
     skull_texture:
       name: "&6Apply Texture"
@@ -149,13 +138,15 @@ items:
     potion_effects:
       name: "&6Potion Effects"
       help: []
-    destroys:
-      name: "&6Destroys"
+    variants:
+      name: "&6Variants"
       help: []
-    placed_on:
-      name: "&6Placed On"
+    up:
+      name: "&7Page Up"
       help: []
-
+    down:
+      name: "&7Page Down"
+      help: []
     potion_add:
       name: "&3Add Potion Effect"
       help: []
@@ -174,17 +165,11 @@ items:
     lore_remove:
       name: "&4Remove Lore"
       help: []
-    destroys_add:
-      name: "&3Add Block"
+    variant_add:
+      name: "&3Add Variant"
       help: []
-    destroys_remove:
-      name: "&4Remove Block"
-      help: []
-    placed_on_add:
-      name: "&3Add Block"
-      help: []
-    placed_on_remove:
-      name: "&4Remove Block"
+    variant_remove:
+      name: "&4Remove Variant"
       help: []
     flag_enchants:
       name: '%C%Hide Enchants'
@@ -288,6 +273,9 @@ items:
     permissions_off:
       name: "&4No Permissions"
       help: []
+    extends:
+      name: "&3Extends: %EXT%"
+      help: []
     workbench:
       adv_workbench_on:
         name: "&3Advanced Workbench"
@@ -321,15 +309,6 @@ items:
         lore:
           - "&6%TIME% ticks"
   recipe_list:
-    page_back:
-      name: "&2Last Page"
-      lore: []
-      help: []
-    next_page:
-      name: "&2Next Page"
-      lore: []
-      help: []
-  recipes_list:
     previous_page:
       name: "&2Previous Page"
       lore: []
@@ -341,28 +320,8 @@ items:
 
 inventories:
   main_menu: '&3&lCustomCrafting'
-
   item_editor: "&0&lItem Editor"
   item_creator: "&0&lItem Creator"
-
   recipe_editor: "&4&lRecipe Editor"
   recipe_creator: "&4&lRecipe Creator"
-
   recipe_list: "&8&lRecipe List"
-
-  recipes_list: "&8&lRecipe List"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

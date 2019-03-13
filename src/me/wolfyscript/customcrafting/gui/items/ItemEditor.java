@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.items;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
@@ -9,6 +10,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.Inventory;
@@ -31,8 +33,7 @@ public class ItemEditor extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
-
-            if(!cache.getItemTag(0).equals("items")){
+            if(!cache.getItems().getType().equals("items")){
                 event.setItem(20, "load_item");
                 event.setItem(22, "create_item");
                 event.setItem(24, "edit_item");
@@ -52,16 +53,15 @@ public class ItemEditor extends ExtendedGuiWindow {
             guiAction.getGuiHandler().openLastInv();
         } else {
             PlayerCache cache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
+            Items items = cache.getItems();
             switch (action) {
                 case "edit_item":
-                    if(!cache.getItemTag(0).equals("items")){
-                        if(cache.getItemTag(1).equals("saved")){
-                            cache.setCustomItem(CustomCrafting.getRecipeHandler().getCustomItem(cache.getItemTag(2)));
+                    if(!items.getType().equals("items")){
+                        if(items.isSaved()){
+                            items.setItem(CustomCrafting.getRecipeHandler().getCustomItem(items.getId()));
                             guiAction.getGuiHandler().changeToInv("item_creator");
                         }else{
-                            if (cache.getItemTag(0).equals("result")) {
-                                guiAction.getGuiHandler().changeToInv("item_creator");
-                            } else if (cache.getItemTag(0).startsWith("ingredient:")) {
+                            if (items.getType().equals("result") || items.getType().equals("ingredient")) {
                                 guiAction.getGuiHandler().changeToInv("item_creator");
                             }
                         }
@@ -93,6 +93,7 @@ public class ItemEditor extends ExtendedGuiWindow {
         String[] args = message.split(" ");
         Player player = guiHandler.getPlayer();
         PlayerCache cache = CustomCrafting.getPlayerCache(guiHandler.getPlayer());
+        Items items = cache.getItems();
         if (args.length > 1) {
             CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(args[0], args[1]);
             if (customItem == null) {
@@ -105,7 +106,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                     customItem.getConfig().getConfigFile().deleteOnExit();
                     break;
                 case 1:
-                    if(cache.getItemTag(0).equals("items")){
+                    if(items.getType().equals("items")){
                         Inventory inv = Bukkit.createInventory(player, 9,"       §cID ITEM     §3ORIGINAL ITEM");
                         api.sendPlayerMessage(guiHandler.getPlayer(), "&aItem added to your Inventory!");
                         inv.setItem(2, customItem.getIDItem());
@@ -121,8 +122,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                     }
                     break;
                 case 2:
-                    cache.setCustomItem(customItem);
-                    cache.setItemTag("items", "saved", customItem.getId());
+                    items.setItem("items", customItem);
                     api.sendPlayerMessage(guiHandler.getPlayer(), "&aThis item can now be edited!");
                     Bukkit.getScheduler().runTask(api.getPlugin(), ()->guiHandler.changeToInv("item_creator"));
                     break;

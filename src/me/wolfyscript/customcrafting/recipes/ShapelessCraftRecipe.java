@@ -21,6 +21,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     private CraftConfig config;
     private String id;
+    private String extend;
     private CustomItem result;
     private String group;
     private HashMap<Character, List<CustomItem>> ingredients;
@@ -28,6 +29,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     public ShapelessCraftRecipe(CraftConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
         this.result = config.getResult();
+        this.extend = config.getExtends();
         this.id = config.getId();
         this.config = config;
         this.ingredients = config.getIngredients();
@@ -152,8 +154,13 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.group = group;
     }
 
-    public CustomItem getResult() {
+    public CustomItem getCustomResult() {
         return result;
+    }
+
+    @Override
+    public String getExtends() {
+        return extend;
     }
 
     @Override

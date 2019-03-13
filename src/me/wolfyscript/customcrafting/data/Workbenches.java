@@ -35,9 +35,9 @@ public class Workbenches {
         this.api = api;
         load();
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
-            api.sendConsoleMessage("[Auto save Workbenches]");
+            api.sendConsoleMessage("[$msg.auto_save.start$]");
             save();
-            api.sendConsoleMessage("[ Auto save complete! ]");
+            api.sendConsoleMessage("[$msg.auto_save.complete$]");
         }, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
 
         particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {

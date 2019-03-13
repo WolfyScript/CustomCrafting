@@ -1,6 +1,7 @@
-package me.wolfyscript.customcrafting.gui;
+package me.wolfyscript.customcrafting.gui.list;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiAction;
 import me.wolfyscript.utilities.api.inventory.GuiClick;
@@ -13,6 +14,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -25,13 +27,13 @@ public class RecipesList extends ExtendedGuiWindow {
     private HashMap<UUID, Integer> pages = new HashMap<>();
 
     public RecipesList(InventoryAPI inventoryAPI) {
-        super("recipes_list", inventoryAPI, 54);
+        super("recipe_list", inventoryAPI, 54);
     }
 
     @Override
     public void onInit() {
-        createItem("next_page", WolfyUtilities.getCustomHead(""));
-        createItem("previous_page", WolfyUtilities.getCustomHead(""));
+        createItem("next_page", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzg2MTg1YjFkNTE5YWRlNTg1ZjE4NGMzNGYzZjNlMjBiYjY0MWRlYjg3OWU4MTM3OGU0ZWFmMjA5Mjg3In19fQ=="));
+        createItem("previous_page", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWQ3M2NmNjZkMzFiODNjZDhiODY0NGMxNTk1OGMxYjczYzhkOTczMjNiODAxMTcwYzFkODg2NGJiNmE4NDZkIn19fQ=="));
     }
 
     @EventHandler
@@ -43,9 +45,10 @@ public class RecipesList extends ExtendedGuiWindow {
             if(!pages.containsKey(event.getPlayer().getUniqueId())){
                 pages.put(event.getPlayer().getUniqueId(), 0);
             }
-            int item = -1;
-            for(int i = 35 * pages.get(event.getPlayer().getUniqueId()); item < 35 && i < recipes.size(); i++){
-                item++;
+
+            int item = 0;
+            for(int i = 36 * pages.get(event.getPlayer().getUniqueId()); item < 36 && i < recipes.size(); i++){
+
                 Recipe recipe = recipes.get(i);
                 if(recipe instanceof Keyed){
                     ItemStack itemStack = recipe.getResult().clone();
@@ -60,6 +63,11 @@ public class RecipesList extends ExtendedGuiWindow {
                         }
                         ItemMeta itemMeta = itemStack.getItemMeta();
                         List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+                        if(recipe instanceof FurnaceRecipe){
+                            lore.add("§7§lFurnace");
+                        }else{
+                            lore.add("§7§lWorkbench");
+                        }
                         lore.add(WolfyUtilities.hideString(((Keyed) recipe).getKey().toString()));
                         if(CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())){
                             lore.add("§7§l[§c§lDISABLED§7§l]");
@@ -71,23 +79,30 @@ public class RecipesList extends ExtendedGuiWindow {
                         event.setItem(9+item, itemStack);
                     }
                 }
+                item++;
             }
         }
     }
 
     @Override
     public boolean onAction(GuiAction guiAction) {
-        Player player = guiAction.getPlayer();
-        UUID uuid = player.getUniqueId();
-        if(!pages.containsKey(player.getUniqueId())){
-            pages.put(uuid, 0);
-        }
-        if(guiAction.getAction().equals("previous_page")){
-            if(pages.get(uuid) > 0){
-                pages.put(uuid, pages.get(uuid)-1);
+        if (guiAction.getAction().equals("back")) {
+            guiAction.getGuiHandler().openLastInv();
+        }else{
+            Player player = guiAction.getPlayer();
+            UUID uuid = player.getUniqueId();
+            if(!pages.containsKey(player.getUniqueId())){
+                pages.put(uuid, 0);
             }
-        }else if(guiAction.getAction().equals("next_page")){
-            pages.put(uuid, pages.get(uuid)+1);
+            if(guiAction.getAction().equals("previous_page")){
+                if(pages.get(uuid) > 0){
+                    pages.put(uuid, pages.get(uuid)-1);
+                }
+            }else if(guiAction.getAction().equals("next_page")){
+                if(pages.get(uuid)+1 < getMaxPages()){
+                    pages.put(uuid, pages.get(uuid)+1);
+                }
+            }
         }
         return false;
     }
@@ -110,5 +125,9 @@ public class RecipesList extends ExtendedGuiWindow {
         }
         update(guiClick.getGuiHandler());
         return true;
+    }
+
+    private int getMaxPages(){
+        return CustomCrafting.getRecipeHandler().getAllRecipes().size()/36 + (CustomCrafting.getRecipeHandler().getAllRecipes().size() % 36 > 0 ? 1 : 0);
     }
 }

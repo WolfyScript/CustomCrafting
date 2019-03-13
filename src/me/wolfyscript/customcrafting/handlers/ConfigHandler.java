@@ -12,6 +12,8 @@ import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+
 public class ConfigHandler {
 
     private Plugin instance;
@@ -30,9 +32,11 @@ public class ConfigHandler {
     }
 
     public void load(){
-        if (!instance.getDataFolder().exists()) {
-            ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(), "defaults/workbench_item", "customcrafting", "workbench_item");
-            ItemConfig itemConfig2 = new ItemConfig(api.getConfigAPI(), "defaults/furnace_item", "customcrafting", "furnace_item");
+        File recipes = new File(instance.getDataFolder(), "recipes");
+        if (!instance.getDataFolder().exists() || !recipes.exists()) {
+            ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(), "defaults/workbench_item", "customcrafting", "workbench");
+            ItemConfig itemConfig2 = new ItemConfig(api.getConfigAPI(), "defaults/furnace_item", "customcrafting", "furnace");
+            ItemConfig itemConfig3 = new ItemConfig(api.getConfigAPI(), "defaults/compressed_cobble", "customcrafting", "compressed_cobblestone");
             CustomConfig config = new CraftConfig(api.getConfigAPI(), "defaults/workbench_craft", "customcrafting", "workbench");
             CustomConfig config2 = new CraftConfig(api.getConfigAPI(), "defaults/furnace_recipe", "customcrafting", "furnace");
         }
@@ -44,6 +48,7 @@ public class ConfigHandler {
         String chosenlang = configAPI.getConfig("config").getString("language");
         Config langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenlang);
         langConf.loadDefaults();
+        System.out.println("Loading language \""+chosenlang+"\" v"+ langConf.getString("version") +" translated by "+langConf.getString("author"));
         languageAPI.registerLanguage(new Language(chosenlang, langConf, configAPI));
     }
 

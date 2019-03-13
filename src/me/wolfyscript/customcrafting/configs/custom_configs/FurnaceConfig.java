@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.configs.custom_configs;
 
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 

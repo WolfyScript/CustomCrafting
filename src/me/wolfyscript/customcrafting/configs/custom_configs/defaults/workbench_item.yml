@@ -11,5 +11,3 @@ item:
       FIRE_ASPECT: 9
     ItemFlags:
       - HIDE_ENCHANTS
-
-extra_data: []

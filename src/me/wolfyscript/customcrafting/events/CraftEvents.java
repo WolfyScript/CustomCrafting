@@ -5,27 +5,23 @@ import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.events.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.events.customevents.CustomPreCraftEvent;
+import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CraftEvents implements Listener {
 
@@ -52,7 +48,6 @@ public class CraftEvents implements Listener {
             ItemStack result = event.getInventory().getResult();
             if (result != null && !result.getType().equals(Material.AIR) && precraftedRecipes.containsKey(event.getWhoClicked().getUniqueId()) && precraftedRecipes.get(event.getWhoClicked().getUniqueId()) != null) {
                 String key = precraftedRecipes.get(event.getWhoClicked().getUniqueId());
-                precraftedRecipes.put(event.getWhoClicked().getUniqueId(), null);
                 CraftingRecipe recipe = CustomCrafting.getRecipeHandler().getCraftingRecipe(key);
                 if (recipe != null) {
                     Player player = (Player) event.getWhoClicked();
@@ -72,19 +67,30 @@ public class CraftEvents implements Listener {
                             cache.addAmountNormalCrafted(1);
                         }
                         int amount = recipe.getAmountCraftable(event.getInventory().getMatrix());
-                        ItemStack resultItem = recipe.getResult().clone();
+                        ItemStack resultItem = recipe.getCustomResult().clone();
                         if (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT)) {
-                            resultItem.setAmount(resultItem.getAmount() * amount);
-                            event.getInventory().setMatrix(recipe.removeIngredients(event.getInventory().getMatrix(), amount).getMatrix());
+                            //Check if player has space left in his inventory
+                            int space = ItemUtils.getInventorySpace(player, resultItem);
+                            int possible = space / resultItem.getAmount() - 1;
+                            if(possible > amount){
+                                possible = amount - 1;
+                            }
+                            //Remove the amount possible and give the specific items to the player
+                            event.getInventory().setMatrix(recipe.removeIngredients(event.getInventory().getMatrix(), possible).getMatrix());
+                            for(int i = 0; i < possible-1; i++){
+                                player.getInventory().addItem(resultItem);
+                            }
                             event.setCurrentItem(resultItem);
                         } else {
-                            event.getInventory().setMatrix(recipe.removeIngredients(event.getInventory().getMatrix(), 1).getMatrix());
+                            ItemStack[] matrix = recipe.removeIngredients(event.getInventory().getMatrix(), 1).getMatrix();
+                            event.getInventory().setMatrix(matrix);
                             event.setCurrentItem(resultItem);
                         }
                     }
                 }
             }
         }
+        precraftedRecipes.put(event.getWhoClicked().getUniqueId(), null);
     }
 
     @EventHandler
@@ -92,16 +98,22 @@ public class CraftEvents implements Listener {
         if (e.getRecipe() != null) {
             if (e.getRecipe() instanceof Keyed) {
                 try {
+                    RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
                     Player player = (Player) e.getView().getPlayer();
                     final String key = ((Keyed) e.getRecipe()).getKey().toString();
+
                     List<CraftingRecipe> recipesToCheck = new ArrayList<>();
-                    boolean disabled = false;
-                    if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(key)) {
-                        disabled = true;
-                        e.getInventory().setResult(new ItemStack(Material.AIR));
-                    } else {
-                        if (CustomCrafting.getRecipeHandler().getCraftingRecipe(key) != null)
-                            recipesToCheck.add(CustomCrafting.getRecipeHandler().getCraftingRecipe(key));
+
+                    CraftingRecipe keyRecipe = recipeHandler.getCraftingRecipe(key);
+                    if (keyRecipe != null) {
+                        recipesToCheck.add(keyRecipe);
+                        if (!keyRecipe.getExtends().isEmpty()) {
+                            CraftingRecipe extendRecipe = recipeHandler.getCraftingRecipe(keyRecipe.getExtends());
+                            if (extendRecipe != null) {
+                                recipesToCheck.add(extendRecipe);
+                            }
+                        }
+                        Collections.reverse(recipesToCheck);
                     }
                     if (CustomCrafting.getRecipeHandler().getExtendRecipes().containsKey(key)) {
                         for (String recipeKey : CustomCrafting.getRecipeHandler().getExtendRecipes().get(key)) {
@@ -111,19 +123,26 @@ public class CraftEvents implements Listener {
                             }
                         }
                     }
-                    if (CustomCrafting.getRecipeHandler().getOverrideRecipes().containsKey(key)) {
-                        recipesToCheck.clear();
-                        for (String recipeKey : CustomCrafting.getRecipeHandler().getOverrideRecipes().get(key)) {
-                            CraftingRecipe craftingRecipe = CustomCrafting.getRecipeHandler().getCraftingRecipe(recipeKey);
-                            if (craftingRecipe != null) {
-                                recipesToCheck.add(craftingRecipe);
+                    //Check for Overrides!
+                    for (CraftingRecipe recipe : new ArrayList<>(recipesToCheck)) {
+                        if (recipeHandler.getOverrideRecipes().get(recipe.getID()) != null && recipeHandler.getOverrideRecipes().get(recipe.getID()).isEmpty()) {
+                            recipesToCheck.remove(recipe);
+                            for (String recipeKey : recipeHandler.getOverrideRecipes().get(recipe.getID())) {
+                                CraftingRecipe craftingRecipe = recipeHandler.getCraftingRecipe(recipeKey);
+                                if (craftingRecipe != null) {
+                                    recipesToCheck.add(craftingRecipe);
+                                }
                             }
                         }
                     }
                     if (!recipesToCheck.isEmpty()) {
+                        System.out.println("Recipes to check: ");
+                        for(CraftingRecipe recipe : recipesToCheck){
+                            System.out.println("    "+recipe.getID());
+                        }
                         CustomPreCraftEvent customPreCraftEvent = null;
                         for (CraftingRecipe recipe : recipesToCheck) {
-                            if (recipe != null) {
+                            if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getID())) {
                                 if (recipe.check(e.getInventory().getMatrix()) && checkWorkbenchAndPerm(player, e.getView().getPlayer().getTargetBlock(null, 5).getLocation(), recipe)) {
                                     customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getRecipe(), e.getInventory());
                                     Bukkit.getPluginManager().callEvent(customPreCraftEvent);
@@ -131,17 +150,23 @@ public class CraftEvents implements Listener {
                                 }
                             }
                         }
-                        if (customPreCraftEvent != null && !customPreCraftEvent.isCancelled()) {
-                            //ALLOW
-                            precraftedRecipes.put(player.getUniqueId(), customPreCraftEvent.getRecipe().getID());
-                            e.getInventory().setResult(customPreCraftEvent.getResult());
+                        if (customPreCraftEvent != null) {
+                            if(!customPreCraftEvent.isCancelled()){
+                                //ALLOW
+                                precraftedRecipes.put(player.getUniqueId(), customPreCraftEvent.getRecipe().getID());
+                                e.getInventory().setResult(customPreCraftEvent.getResult());
+                            }else{
+                                e.getInventory().setResult(new ItemStack(Material.AIR));
+                            }
                         } else {
-                            e.getInventory().setResult(new ItemStack(Material.AIR));
+                            if(recipeHandler.getDisabledRecipes().contains(key)){
+                                System.out.println("Disabled: "+key);
+                                e.getInventory().setResult(new ItemStack(Material.AIR));
+                            }
                         }
-                    } else {
-                        if (disabled) {
-                            e.getInventory().setResult(new ItemStack(Material.AIR));
-                        }
+                    }else if(recipeHandler.getDisabledRecipes().contains(key)){
+                        System.out.println("Disabled: "+key);
+                        e.getInventory().setResult(new ItemStack(Material.AIR));
                     }
                 } catch (Exception ex) {
                     System.out.println("WHAT HAPPENED? Please report!");

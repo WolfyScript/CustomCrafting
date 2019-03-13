@@ -28,6 +28,10 @@ public class MainConfig extends Config {
         return getStringList("recipes.disabled_recipes");
     }
 
+    public void setDisabledrecipes(List<String> recipes){
+        set("recipes.disabled_recipes", recipes);
+    }
+
     public boolean saveContents(){
         return getBoolean("workbench.contents.save_contents");
     }

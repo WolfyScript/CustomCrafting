@@ -78,6 +78,7 @@ public class CraftConfig extends CustomConfig {
     }
 
     public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
+        set("ingredients", new HashMap<String, Object>());
         for (char key : ingredients.keySet()) {
             int variant = 0;
             if (!ItemUtils.isEmpty(ingredients.get((char) key))) {

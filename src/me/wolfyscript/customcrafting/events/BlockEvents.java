@@ -43,6 +43,7 @@ public class BlockEvents implements Listener {
             if (CustomCrafting.getWorkbenches().isFurnace(location)) {
                 CustomCrafting.getWorkbenches().removeFurnace(location);
             } else if (CustomCrafting.getWorkbenches().isWorkbench(location)) {
+                /*
                 Collection<Entity> entities = event.getBlock().getWorld().getNearbyEntities(BoundingBox.of(event.getBlock()), entity -> (entity instanceof ArmorStand) && !entity.getCustomName().isEmpty() && entity.getCustomName().startsWith("cc:"));
                 for (Entity entity : entities) {
                     entity.remove();
@@ -53,8 +54,9 @@ public class BlockEvents implements Listener {
                             location.getWorld().dropItemNaturally(location.clone().add(0.5,0, 0.5), itemStack);
                     }
                 }
+                */
+                //WorkbenchContents.close(location);
                 CustomCrafting.getWorkbenches().removeWorkbench(location);
-                WorkbenchContents.close(location);
             }
         }
     }

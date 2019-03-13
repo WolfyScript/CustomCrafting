@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
@@ -12,12 +13,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
 
 import java.io.File;
+import java.security.Key;
 import java.util.*;
 
 public class RecipeHandler {
@@ -67,7 +66,10 @@ public class RecipeHandler {
                             FurnaceConfig furnaceConfig = new FurnaceConfig(configAPI, key, name);
                             addOverrideRecipe(furnaceConfig.getId(), furnaceConfig.getOverrides());
                             addExtendRecipe(furnaceConfig.getId(), furnaceConfig.getExtend());
+
                             FurnaceCRecipe furnaceCRecipe = new FurnaceCRecipe(furnaceConfig);
+
+
                             registerRecipe(furnaceCRecipe);
                             break;
                         case "items":
@@ -91,6 +93,11 @@ public class RecipeHandler {
                 api.sendConsoleMessage("      - " + name);
             }
         }
+    }
+
+    public void onSave(){
+        CustomCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
+        CustomCrafting.getConfigHandler().getConfig().save();
     }
 
     public void loadConfigs() {
@@ -119,15 +126,46 @@ public class RecipeHandler {
                 loadConfig(folder.getName(), "furnace");
             }
         }
-        Iterator<Recipe> iterator = Bukkit.recipeIterator();
-        while(iterator.hasNext()){
-            allRecipes.add(iterator.next());
+    }
+
+    public void registerRecipe(CustomRecipe recipe) {
+        Bukkit.addRecipe(recipe);
+        customRecipes.add(recipe);
+    }
+
+    public void injectRecipe(CustomRecipe recipe){
+        unregisterRecipe(recipe);
+        Bukkit.addRecipe(recipe);
+        customRecipes.add(recipe);
+    }
+
+    public void unregisterRecipe(String key){
+        CustomRecipe customRecipe = getRecipe(key);
+        if(customRecipe != null){
+            customRecipes.remove(customRecipe);
         }
     }
 
-    private void registerRecipe(CustomRecipe recipe) {
-        Bukkit.addRecipe(recipe);
-        customRecipes.add(recipe);
+    public void unregisterRecipe(CustomRecipe customRecipe) {
+        customRecipes.remove(customRecipe);
+        Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+        List<Recipe> recipes = new ArrayList<>();
+
+        while(recipeIterator.hasNext()){
+            Recipe recipe = recipeIterator.next();
+            if(!((Keyed) recipe).getKey().toString().equals(customRecipe.getID())){
+                recipes.add(recipe);
+            }
+        }
+        Bukkit.clearRecipes();
+
+        Collections.reverse(recipes);
+
+        for(Recipe recipe : recipes){
+            Bukkit.addRecipe(recipe);
+        }
+
+
     }
 
     /*
@@ -197,18 +235,15 @@ public class RecipeHandler {
         return customRecipes;
     }
 
-    public void unregisterRecipe(CustomRecipe customRecipe) {
-        customRecipes.remove(customRecipe);
-        Iterator<Recipe> recipes = Bukkit.recipeIterator();
-        Bukkit.clearRecipes();
-        while (recipes.hasNext()) {
-            Recipe recipe = recipes.next();
-            if (recipe instanceof Keyed && ((Keyed) recipe).getKey().toString().equals(customRecipe.getID())) {
-                recipes.remove();
-            } else {
-                Bukkit.addRecipe(recipe);
+
+
+    public FurnaceCRecipe getFurnaceRecipe(String key) {
+        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
+            if (recipe.getID().equals(key)) {
+                return recipe;
             }
         }
+        return null;
     }
 
     public FurnaceCRecipe getFurnaceRecipe(ItemStack source) {
@@ -275,7 +310,6 @@ public class RecipeHandler {
     public void addExtendRecipe(String key, String toExtend) {
         if(!toExtend.isEmpty()){
             List<String> extendsList = extendRecipes.getOrDefault(toExtend, new ArrayList<>());
-            System.out.println("Register: "+ key +" extends "+toExtend +" + "+extendsList);
             if(!extendsList.contains(key))
                 extendsList.add(key);
             extendRecipes.put(toExtend, extendsList);
@@ -283,6 +317,14 @@ public class RecipeHandler {
     }
 
     public List<Recipe> getAllRecipes() {
+        allRecipes.clear();
+        Iterator<Recipe> iterator = Bukkit.recipeIterator();
+        while(iterator.hasNext()){
+            Recipe recipe = iterator.next();
+            if(!(recipe instanceof FurnaceRecipe)){
+                allRecipes.add(recipe);
+            }
+        }
         return allRecipes;
     }
 }

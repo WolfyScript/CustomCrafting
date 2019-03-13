@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,24 +23,18 @@ public class CommandCC implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-
+            InventoryAPI invAPI = CustomCrafting.getApi().getInventoryAPI();
             if (args.length == 0) {
-                printInfo(p);
+                invAPI.openGui(p);
             } else {
-                if (args[0].equalsIgnoreCase("studio")) {
-                    CustomCrafting.getApi().getInventoryAPI().openGui(p);
-                } else if (args[0].equalsIgnoreCase("info")) {
+                if (args[0].equalsIgnoreCase("info")) {
                     printInfo(p);
-
                 } else if (args[0].equalsIgnoreCase("help")) {
                     printHelp(p);
                 } else if (args[0].equalsIgnoreCase("clear")) {
                     if (CustomCrafting.hasPlayerCache(p)) {
                         CustomCrafting.renewPlayerCache(p);
                     }
-                } else if(args[0].equalsIgnoreCase("recipes")){
-                    CustomCrafting.getApi().getInventoryAPI().openGui(p);
-                    CustomCrafting.getApi().getInventoryAPI().getGuiHandler(p).changeToInv("recipes_list");
                 }
                 //TODO RELOAD
 
@@ -65,17 +60,17 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         WolfyUtilities api = CustomCrafting.getApi();
         api.sendPlayerMessage(p, "~*~*~*~*&8[&3&lCustomCrafting&8]&7~*~*~*~*~");
         api.sendPlayerMessage(p, "");
-        api.sendPlayerMessage(p, "            §3/cc §6<label>");
+        api.sendPlayerMessage(p, "                §3/cc §6<label>");
         api.sendPlayerMessage(p, "");
-        api.sendPlayerMessage(p, "  §6help    §7-  §3Displays list of commands");
-        api.sendPlayerMessage(p, "  §6clear   §7-  §3Resets the player cache (§cClears Studio contents!§3)");
-        api.sendPlayerMessage(p, "  §6studio  §7-  §3Opens the Studio");
-        api.sendPlayerMessage(p, "  §6info    §7-  §3Displays info about this plugin");
-        api.sendPlayerMessage(p, "  §6vanilla §7-  §3Displays info about this plugin");
+        api.sendPlayerMessage(p, "  §6help     §7-  §3Displays list of commands");
+        api.sendPlayerMessage(p, "  §6clear    §7-  §3Resets Player cache");
+        api.sendPlayerMessage(p, "  §6studio   §7-  §3Opens the Studio");
+        api.sendPlayerMessage(p, "  §6info      §7-  §3Displays info about this plugin");
+        api.sendPlayerMessage(p, "  §6recipes §7-  §3Opens a list of all recipes!");
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMPLETIONS = Arrays.asList("help", "clear", "studio", "info", "vanilla");
+    private final List<String> COMPLETIONS = Arrays.asList("help", "clear", "info");
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {

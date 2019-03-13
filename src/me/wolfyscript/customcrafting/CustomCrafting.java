@@ -53,14 +53,14 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("                                                       /___/ v" + instance.getDescription().getVersion());
         System.out.println(" ");
         System.out.println("This is a technical Test! It's not for use on production servers!");
-        System.out.println("It's incomplete, unstable, contains bugs and doesn't represent the final Plugin!");
-        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("This version is incomplete, unstable, contains bugs and errors!");
+        System.out.println("------------------------------------------------------------------------");
 
         if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null){
             System.out.println("WolfyUtilities is not installed!");
             System.out.println("You can download it here: ");
             System.out.println("    https://www.spigotmc.org/resources/wolfyutilities.64124/");
-            System.out.println("--------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -79,6 +79,8 @@ public class CustomCrafting extends JavaPlugin {
         recipeHandler = new RecipeHandler(api);
 
         configHandler.load();
+
+        System.out.println("------------------------------------------------------------------------");
 
         loadPlayerCache();
 
@@ -103,13 +105,13 @@ public class CustomCrafting extends JavaPlugin {
 
         recipeHandler.loadConfigs();
 
-
+        System.out.println("------------------------------------------------------------------------");
     }
 
     public void onDisable() {
         workbenches.endTask();
         workbenches.save();
-
+        getRecipeHandler().onSave();
         savePlayerCache();
 
     }

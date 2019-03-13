@@ -68,13 +68,13 @@ public class MainMenu extends ExtendedGuiWindow {
         switch (action) {
             case "item_editor":
                 playerCache.setSetting(Setting.ITEMS);
-                playerCache.setItemTag("items", "not_saved", "null");
+                playerCache.getItems().setType("items");
+                playerCache.getItems().setSaved(false);
+                playerCache.getItems().setId("");
                 guiAction.getGuiHandler().changeToInv("item_editor");
                 break;
             case "recipe_list":
-                api.sendPlayerMessage(guiAction.getPlayer(), "&cThis features is WIP! It's unstable and not finished!");
                 playerCache.setSetting(Setting.LIST);
-                playerCache.setRecipeListSetting("");
                 guiAction.getGuiHandler().changeToInv("recipe_list");
                 break;
             case "craft_recipe":

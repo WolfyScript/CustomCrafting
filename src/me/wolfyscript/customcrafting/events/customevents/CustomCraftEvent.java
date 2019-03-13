@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.events.customevents;
 
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.ShapelessCraftRecipe;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -22,7 +21,7 @@ public class CustomCraftEvent extends Event implements Cancellable{
         this.bukkitRecipe = recipe;
         this.craftingRecipe = craftingRecipe;
         this.craftingInventory = craftingInventory;
-        this.result = craftingRecipe.getResult();
+        this.result = craftingRecipe.getCustomResult();
     }
 
     public Recipe getBukkitRecipe() {

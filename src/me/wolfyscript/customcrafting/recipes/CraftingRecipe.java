@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.recipes;
 
 
+import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.CraftingInventory;
@@ -10,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface CraftingRecipe extends CustomRecipe{
+
+    CraftConfig getConfig();
 
     /*
     Return true if the recipe needs Permission!
@@ -39,7 +43,7 @@ public interface CraftingRecipe extends CustomRecipe{
 
     void setResult(ItemStack result);
 
-    CustomItem getResult();
+    CustomItem getCustomResult();
 
     void setIngredients(HashMap<Character, List<CustomItem>> ingredients);
 

@@ -44,6 +44,14 @@ public class CustomConfig extends Config {
         return type;
     }
 
+    public String getExtends(){
+        return getString("extend");
+    }
+
+    public void setExtends(String extend){
+        set("extend", extend);
+    }
+
     public void saveCustomItem(String path, CustomItem customItem){
         if(customItem != null){
             if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){

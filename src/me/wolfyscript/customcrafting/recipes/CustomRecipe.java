@@ -8,7 +8,8 @@ public interface CustomRecipe extends Recipe {
     String getID();
     String getGroup();
 
-    CustomItem getResult();
+    CustomItem getCustomResult();
+    String getExtends();
 
     void load();
     void save();

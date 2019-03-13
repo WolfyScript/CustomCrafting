@@ -27,15 +27,11 @@ public class CustomItem extends ItemStack{
         super(itemStack);
         this.config = null;
         this.customData = new ArrayList<>();
-        this.id = "NULL";
+        this.id = "";
     }
 
     public CustomItem(Material material){
         this(new ItemStack(material));
-    }
-
-    public List<String> getCustomData() {
-        return customData;
     }
 
     public void setCustomData(List<String> customData) {
@@ -50,13 +46,24 @@ public class CustomItem extends ItemStack{
         return config;
     }
 
+    public ItemStack getHiddenIDItem(){
+        if(getType().equals(Material.AIR)){
+            return new ItemStack(Material.AIR);
+        }
+        ItemStack idItem = new ItemStack(this.clone());
+        ItemMeta idItemMeta = idItem.getItemMeta();
+        idItemMeta.setDisplayName((idItemMeta.hasDisplayName() ? idItemMeta.getDisplayName() : WordUtils.capitalizeFully(idItem.getType().name().replace("_", " "))) + WolfyUtilities.hideString(";/id:"+getId()));
+        idItem.setItemMeta(idItemMeta);
+        return idItem;
+    }
+
     public ItemStack getIDItem(){
         if(getType().equals(Material.AIR)){
            return new ItemStack(Material.AIR);
         }
         ItemStack idItem = new ItemStack(this.clone());
         ItemMeta idItemMeta = idItem.getItemMeta();
-        if(idItemMeta.hasDisplayName() && !idItemMeta.getDisplayName().endsWith(":id_item")){
+        if(idItemMeta.hasDisplayName() && !WolfyUtilities.unhideString(idItemMeta.getDisplayName()).endsWith(":id_item")){
             idItemMeta.setDisplayName(idItemMeta.getDisplayName()+ WolfyUtilities.hideString(":id_item"));
         }else{
             idItemMeta.setDisplayName(WolfyUtilities.hideString("%NO_NAME%")+"§r"+WordUtils.capitalizeFully(idItem.getType().name().replace("_", " ")) + WolfyUtilities.hideString(":id_item"));
@@ -70,4 +77,7 @@ public class CustomItem extends ItemStack{
         idItem.setItemMeta(idItemMeta);
         return idItem;
     }
+
+
+
 }
