@@ -2,8 +2,12 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.items.CustomItem;
 import org.bukkit.Material;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.inventory.EquipmentSlot;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
 
 public class Items implements Serializable {
 
@@ -15,12 +19,24 @@ public class Items implements Serializable {
     private int craftSlot;
     private boolean saved;
 
+    private EquipmentSlot attributeSlot;
+    private AttributeModifier.Operation attribOperation;
+    private double attribAmount;
+    private String attributeUUID;
+    private String attributeName;
+
     public Items(){
         this.item = new CustomItem(Material.AIR);
         this.type = "";
         this.id = "";
         this.saved = false;
         this.craftSlot = -1;
+
+        this.attributeSlot = EquipmentSlot.HAND;
+        this.attribOperation = AttributeModifier.Operation.ADD_NUMBER;
+        this.attribAmount = 0.5;
+        this.attributeUUID = "";
+        this.attributeName = "";
     }
 
     public void setItem(String type, CustomItem customItem){
@@ -87,7 +103,53 @@ public class Items implements Serializable {
         this.craftSlot = craftSlot;
     }
 
-    public enum Type{
+    public EquipmentSlot getAttributeSlot() {
+        return attributeSlot;
+    }
+
+    public void setAttributeSlot(EquipmentSlot attributeSlot) {
+        this.attributeSlot = attributeSlot;
+    }
+
+    public AttributeModifier.Operation getAttribOperation() {
+        return attribOperation;
+    }
+
+    public void setAttribOperation(AttributeModifier.Operation attribOperation) {
+        this.attribOperation = attribOperation;
+    }
+
+    public double getAttribAmount() {
+        return attribAmount;
+    }
+
+    public void setAttribAmount(double attribAmount) {
+        this.attribAmount = attribAmount;
+    }
+
+    public String getAttributeUUID() {
+        return attributeUUID;
+    }
+
+    public void setAttributeUUID(String attributeUUID) {
+        this.attributeUUID = attributeUUID;
+    }
+
+    public String getAttributeName() {
+        return attributeName;
+    }
+
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
+    }
+
+    public AttributeModifier getAttributeModifier(){
+        double amount = getAttribAmount();
+        EquipmentSlot slot = getAttributeSlot();
+        String name = getAttributeName().isEmpty() ? "customcrafting" : getAttributeName();
+        UUID uuid = getAttributeUUID().isEmpty() ? UUID.randomUUID() : UUID.fromString(getAttributeUUID());
+        AttributeModifier.Operation operation = getAttribOperation();
+        return new AttributeModifier(uuid, name, amount, operation, slot);
 
     }
 }

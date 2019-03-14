@@ -12,9 +12,12 @@ import me.wolfyscript.utilities.api.utils.Legacy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,6 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ItemCreator extends ExtendedGuiWindow {
 
@@ -223,8 +227,6 @@ public class ItemCreator extends ExtendedGuiWindow {
 
                     event.setItem(40, "attribute_save");
                     event.setItem(49, "attribute_delete");
-
-
                 }
 
             }
@@ -318,7 +320,31 @@ public class ItemCreator extends ExtendedGuiWindow {
                     case "variant_remove":
 
                         break;
-
+                    //Attribute Settings
+                    case "slot_head":
+                    case "slot_chest":
+                    case "slot_legs":
+                    case "slot_feet":
+                    case "slot_hand":
+                    case "slot_off_hand":
+                        items.setAttributeSlot(EquipmentSlot.valueOf(action.substring("slot_".length()).toUpperCase()));
+                        break;
+                    case "operation_add_number":
+                    case "operation_add_scalar":
+                    case "operation_multiply_scalar_1":
+                        items.setAttribOperation(AttributeModifier.Operation.valueOf(action.substring("operation_".length()).toUpperCase()));
+                        break;
+                    case "set_amount":
+                        runChat(8, "§3Type in the amount you want! For example§6 0.4",guiAction.getGuiHandler());
+                        break;
+                    case "attribute_save":
+                        itemMeta.addAttributeModifier(Attribute.valueOf("GENERIC_"+cache.getSubSetting().substring("attribute_".length()).toUpperCase()), items.getAttributeModifier());
+                        break;
+                    case "attribute_delete":
+                        if(itemMeta.hasAttributeModifiers()){
+                            itemMeta.removeAttributeModifier(Attribute.valueOf("GENERIC_"+cache.getSubSetting().substring("attribute_".length()).toUpperCase()), items.getAttributeModifier());
+                        }
+                        break;
                 }
 
                 //Flag and attribute section
@@ -490,6 +516,14 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 api.sendPlayerMessage(player, "&cInvalid name! &4" + args[0] + "&c does not exist!");
                 return true;
+            case 8:
+                try {
+                    items.setAttribAmount(Double.parseDouble(args[0]));
+                } catch (NumberFormatException e) {
+                    api.sendPlayerMessage(player, "&cError getting the line! Is it a number? It should be!");
+                    return true;
+                }
+                return false;
         }
         return false;
     }
