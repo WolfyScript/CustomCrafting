@@ -45,11 +45,11 @@ public class ConfigHandler {
     }
 
     public void loadLang(){
-        String chosenlang = configAPI.getConfig("config").getString("language");
-        Config langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenlang);
+        String chosenLang = configAPI.getConfig("config").getString("language");
+        Config langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenLang, true);
         langConf.loadDefaults();
-        System.out.println("Loading language \""+chosenlang+"\" v"+ langConf.getString("version") +" translated by "+langConf.getString("author"));
-        languageAPI.registerLanguage(new Language(chosenlang, langConf, configAPI));
+        System.out.println("Loading language \""+chosenLang+"\" v"+ langConf.getString("version") +" translated by "+langConf.getString("author"));
+        languageAPI.registerLanguage(new Language(chosenLang, langConf, configAPI));
     }
 
     public MainConfig getConfig() {

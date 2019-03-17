@@ -136,9 +136,9 @@ public class CraftEvents implements Listener {
                         }
                     }
                     if (!recipesToCheck.isEmpty()) {
-                        System.out.println("Recipes to check: ");
+                        api.sendDebugMessage("Recipes to check: ");
                         for(CraftingRecipe recipe : recipesToCheck){
-                            System.out.println("    "+recipe.getID());
+                            api.sendDebugMessage("    "+recipe.getID());
                         }
                         CustomPreCraftEvent customPreCraftEvent = null;
                         for (CraftingRecipe recipe : recipesToCheck) {
@@ -160,12 +160,12 @@ public class CraftEvents implements Listener {
                             }
                         } else {
                             if(recipeHandler.getDisabledRecipes().contains(key)){
-                                System.out.println("Disabled: "+key);
+                                api.sendDebugMessage("Disabled: "+key);
                                 e.getInventory().setResult(new ItemStack(Material.AIR));
                             }
                         }
                     }else if(recipeHandler.getDisabledRecipes().contains(key)){
-                        System.out.println("Disabled: "+key);
+                        api.sendDebugMessage("Disabled: "+key);
                         e.getInventory().setResult(new ItemStack(Material.AIR));
                     }
                 } catch (Exception ex) {

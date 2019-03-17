@@ -16,7 +16,7 @@ public class ExtendedGuiWindow extends GuiWindow {
 
     @Override
     public boolean onAction(GuiAction guiAction) {
-        if (guiAction.getAction().equals("gui_help")) {
+        if (guiAction.getAction().startsWith("gui_help_")) {
             guiAction.getGuiHandler().setHelpEnabled(!guiAction.getGuiHandler().isHelpEnabled());
             return true;
         }

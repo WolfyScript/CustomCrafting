@@ -7,6 +7,7 @@ import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.inventory.ItemStack;
 
 public class MainMenu extends ExtendedGuiWindow {
 
@@ -35,7 +36,13 @@ public class MainMenu extends ExtendedGuiWindow {
             for (int i = 0; i < 54; i++) {
                 event.setItem(i, "glass_gray", true);
             }
-            event.setItem(8, "gui_help", true);
+
+            if (event.getGuiHandler().isHelpEnabled()) {
+                event.setItem(8, "gui_help_on", true);
+            } else {
+                event.setItem(8, "gui_help_off", true);
+            }
+
             event.setItem(0, "glass_white", true);
 
             event.setItem(11, "craft_recipe");
@@ -53,15 +60,19 @@ public class MainMenu extends ExtendedGuiWindow {
                 event.setItem(i, "glass_gray", true);
             }
             event.setItem(0, "back", true);
-            if(event.getGuiHandler().getCurrentInv().getSize() > 8){
-                event.setItem(8, "gui_help", true);
+            if (event.getGuiHandler().getCurrentInv().getSize() > 8) {
+                if (event.getGuiHandler().isHelpEnabled()) {
+                    event.setItem(8, "gui_help_on", true);
+                } else {
+                    event.setItem(8, "gui_help_off", true);
+                }
             }
         }
     }
 
     @Override
     public boolean onAction(GuiAction guiAction) {
-        if(!super.onAction(guiAction)){
+        if (!super.onAction(guiAction)) {
             String action = guiAction.getAction();
             PlayerCache playerCache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
             switch (action) {

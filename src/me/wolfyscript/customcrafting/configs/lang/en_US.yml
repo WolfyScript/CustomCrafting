@@ -98,10 +98,17 @@ items:
     close:
       name: '&4Close'
       help: []
-    gui_help:
+    gui_help_on:
       name: '&2Help'
       lore:
         - "&7-Click Me-"
+        - "&7[&aEnabled&7]"
+      help: []
+    gui_help_off:
+      name: '&2Help'
+      lore:
+        - "&7-Click Me-"
+        - "&7[&cDisabled&7]"
       help: []
   main_menu:
     craft_recipe:
@@ -339,16 +346,26 @@ items:
         help: []
       delete:
         name: '&cRemove Attribute'
-        help: []
+        help:
+          - "&7Removes the attribute modifier"
+          - "&7with these set settings."
+          - "&cUUID must be equal!"
       set_amount:
         name: '&aAmount: &6%NUMBER%'
-        help: []
+        help:
+          - "&7Sets the amount of this modifier"
+          - "&7Input: &3<amount>"
       set_name:
         name: "&3Name:&7 %NAME%"
-        help: []
+        help:
+          - "&7Sets the name of this modifier"
+          - "&7Input: &3<name>"
       set_uuid:
         name: "&3UUID:&7 %UUID%"
-        help: []
+        help:
+          - "&7Sets the uuid of this modifier"
+          - "&cMust be a valid UUID format!"
+          - "&7Input: &3<uuid>"
   recipe_editor:
   recipe_creator:
     save:
@@ -356,10 +373,13 @@ items:
       help: []
     permissions_on:
       name: "&3Permissions"
-      help: []
+      help:
+        - "&7Players need permission to craft"
+        - "&7Perm: &3customcrafting.craft.<recipe_id>"
     permissions_off:
       name: "&4No Permissions"
-      help: []
+      help:
+        - "&7Players don't need any permission to craft"
     extends:
       name: "&3Extends: %EXT%"
       help:
@@ -406,7 +426,7 @@ items:
   recipe_list:
     lores:
       disabled: "&7&l[&c&lDISABLED&7&l]"
-      enabled: "&7&l[&c&lDISABLED&7&l]"
+      enabled: "&7&l[&a&lENABLED&7&l]"
     previous_page:
       name: "&2Previous Page"
       help: []

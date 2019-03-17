@@ -52,8 +52,8 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("\\___/\\_,_/___|__/\\___/_/_/_/\\___/_/  \\_,_/_/ \\__/_/_//_/\\_, / ");
         System.out.println("                                                       /___/ v" + instance.getDescription().getVersion());
         System.out.println(" ");
-        System.out.println("This is a technical Test! It's not for use on production servers!");
-        System.out.println("This version is incomplete, unstable, contains bugs and errors!");
+        System.out.println("This is a Beta-Test!");
+        System.out.println("This version may contain bugs or/and errors!");
         System.out.println("------------------------------------------------------------------------");
 
         if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null){
