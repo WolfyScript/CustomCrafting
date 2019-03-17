@@ -4,24 +4,81 @@ version: "1.0.0"
 info:
   - "YouTube:"
   - "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
-
-# ######################################################################################################
-loading-recipe-file: 'Loading recipe out of&6 %FILE% ...'
-loading-recipe-successful: 'Successfully loaded recipe&6 %RECIPE%'
-loading-complete: '                &3Everything successfully loaded!'
-# ######################################################################################################
-error-workbench-material: 'Cause: can''t get Material: %MATERIAL%'
-error-workbench: 'ERROR loading Workbench crafting recipe!'
-error-recipe-material: 'Cause: can''t get Material: %MATERIAL%'
-error-recipe-output: 'Cause: can''t load output item!'
-error-recipe: 'ERROR loading Custom recipe: %RECIPE%'
-# ######################################################################################################
-
+######################################################################
 msg:
   auto_save:
     start:    "   Auto save data   "
     complete: " Auto save complete "
-
+  startup:
+    playerstats: "Loading Player Stats"
+    inventories: "Initiating Inventory GUIs"
+    placeholder: "Registering PlaceHolder"
+    recipes:
+      title:   "________[Loading Recipes/Items]________"
+      items:   "---------[ITEMS]---------"
+      recipes: "--------[RECIPES]--------"
+  gui:
+    item_creator:
+      save:
+        input:
+          line1: "&3Type in the name of the folder and item"
+          line2: "&6e.g. example your_item"
+        success: "&aItem saved to:"
+      display_name: "&2Type in the name! Use &6& &2for formatting codes!"
+      enchant:
+        add: "&2Type in the enchantment and level! &6unbreaking 5"
+        remove: "&2Type in the enchantment! &6unbreaking"
+        invalid_lvl: "&cInvalid level! It's not a number!"
+        invalid_enchant: "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!"
+        no_lvl: "&cNo level set!"
+      lore:
+        add: "&2Type in the lore! Use &6& &2for formatting codes!"
+        remove: "&2Type in the line of the lore you want to remove!"
+        no_number: "&cError getting the line! Is it a number? It should be!"
+        error: "&cError the line &4%NUM%&c does not exist!"
+        success: "&aRemoved Lore in line &6%NUM%"
+      potion:
+        add: "&2Type in the Potion name, level, time in ticks! e.g. &6speed 5 1200"
+        remove: "&2Type in the Potion name you want to remove!"
+        error_number: "&cError parsing Numbers! &4<name> <duration> <level> [<ambient> <particles>]"
+        wrong_args: "&cWrong arguments or invalid name! &4<name> <duration> <level> [<ambient> <particles>]"
+        success: "&aAdded Potion Effect &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%"
+        invalid_name: "&cInvalid name! &4%NAME%&c does not exist!"
+      variant:
+      attribute:
+        amount:
+          input: "§3Type in the amount you want! For example§6 0.4"
+          error: "&cError parsing number! Is it a number? It should be!"
+        name:
+          input: "§3Type in the name!"
+        uuid:
+          input: "§3Type in the uuid for the attribute! Must be a valid UUID!"
+          error:
+            line1: "&cInvalid UUID: &4%UUID%"
+            line2: "&cType in a valid UUID!"
+      skull_owner:
+        input: "§3Type in the Player Name!"
+    item_editor:
+      input: "&3Type in the folder and name of the item! &6example your_item"
+      error: "&cThis item does not exist or is not loaded!"
+      item_gui_title: "       §cID ITEM     §3ORIGINAL ITEM"
+      item_applied: "&aItem successfully applied to recipe!"
+      item_editable: "&aThis item can now be edited!"
+      no_name: "&cYou need to type in the item name!"
+    recipe_creator:
+      extends: "&3type the namespace and key from the recipe!"
+      furnace:
+        xp: "&3Type in the amount of experience. e.g. 0.5"
+        cooking_time: "&3Type in the cooking time in ticks. e.g. 20"
+      save:
+        input: "&3Type in the name of the folder and item! &6e.g. example your_recipe"
+        empty: "&cCannot save a empty recipe! Check the Result and the Source/ingredients"
+        success: "&aRecipe successfully saved to:"
+      error_loading: "&cError occurred while loading recipe &4%REC%"
+      valid_number: "&cType in a valid number!"
+    recipe_editor:
+      input: "&3Type in the name of the folder and recipe! &6example your_recipe"
+      invalid_recipe: "This recipe is not a %RECIPE_TYPE%!"
 items:
   none:
     glass_gray:
@@ -58,9 +115,8 @@ items:
     item_editor:
       name: '&6Item Creator'
       help:
-        - '&7Create items and save them'
-        - '&6They can be used in recipes'
-
+        - '&7Create, Save custom Items'
+        - '&6Use them inside of your recipes'
     create_recipe:
       name: '&6Create Recipe'
       help:
@@ -75,11 +131,14 @@ items:
         - '&7Delete a existing recipe'
     recipe_list:
       name: "&2Recipe List"
-      help: []
+      help:
+        - "&7List of recipes"
+        - "&6Toggle Recipes on/off"
   item_editor:
     load_item:
       name: "&6Load"
-      help: []
+      help:
+        - "&7Load a Recipe"
     create_item:
       name: "&6Create"
       help: []
@@ -102,11 +161,8 @@ items:
     item_flags:
       name: '&6Set Flags'
       help: []
-    skull_setting_on:
+    skull_setting:
       name: '&6Skull Settings'
-      help: []
-    skull_setting_off:
-      name: '&8Skull Settings'
       help: []
     attributes_modifiers:
       name: '&6Set Attributes'
@@ -189,79 +245,85 @@ items:
     flag_potion_effects:
       name: '%C%Hide Potions'
       help: []
-    attribute_max_health:
-      name: '&6GENERIC_MAX_HEALTH'
-      help: []
-    attribute_follow_range:
-      name: '&6GENERIC_FOLLOW_RANGE'
-      help: []
-    attribute_knockback_resistance:
-      name: '&6GENERIC_KNOCKBACK_RESISTANCE'
-      help: []
-    attribute_movement_speed:
-      name: '&6GENERIC_MOVEMENT_SPEED'
-      help: []
-    attribute_flying_speed:
-      name: '&6GENERIC_FLYING_SPEED'
-      help: []
-    attribute_attack_damage:
-      name: '&6GENERIC_ATTACK_DAMAGE'
-      help: []
-    attribute_attack_speed:
-      name: '&6GENERIC_ATTACK_SPEED'
-      help: []
-    attribute_armor:
-      name: '&6GENERIC_ARMOR'
-      help: []
-    attribute_armor_toughness:
-      name: '&6GENERIC_ARMOR_TOUGHNESS'
-      help: []
-    attribute_luck:
-      name: '&6GENERIC_LUCK'
-      help: []
-    attribute_horse_jump_strength:
-      name: '&6HORSE_JUMP_STRENGTH'
-      help: []
-    attribute_zombie_spawn_reinforcements:
-      name: '&6ZOMBIE_SPAWN_REINFORCEMENTS'
-      help: []
-
-    operation_add_number:
-      name: '%C%Add number'
-      help: []
-    operation_add_scalar:
-      name: '%C%Multiply number'
-      help: []
-    operation_multiply_scalar_1:
-      name: '%C%Add percentage'
-      help: []
-    slot_hand:
-      name: '&6Hand'
-      help: []
-    slot_off_hand:
-      name: '&6Off_Hand'
-      help: []
-    slot_feet:
-      name: '&6Feet'
-      help: []
-    slot_legs:
-      name: '&6Legs'
-      help: []
-    slot_chest:
-      name: '&6Chest'
-      help: []
-    slot_head:
-      name: '&6Head'
-      help: []
-    attribute_save:
-      name: '&aAdd Attribute'
-      help: []
-    attribute_delete:
-      name: '&cRemove Attribute'
-      help: []
-    set_amount:
-      name: '&aAmount: &6%NUMBER%'
-      help: []
+    attribute:
+      generic_max_health:
+        name: '&6GENERIC_MAX_HEALTH'
+        help: []
+      generic_follow_range:
+        name: '&6GENERIC_FOLLOW_RANGE'
+        help: []
+      generic_knockback_resistance:
+        name: '&6GENERIC_KNOCKBACK_RESISTANCE'
+        help: []
+      generic_movement_speed:
+        name: '&6GENERIC_MOVEMENT_SPEED'
+        help: []
+      generic_flying_speed:
+        name: '&6GENERIC_FLYING_SPEED'
+        help: []
+      generic_attack_damage:
+        name: '&6GENERIC_ATTACK_DAMAGE'
+        help: []
+      generic_attack_speed:
+        name: '&6GENERIC_ATTACK_SPEED'
+        help: []
+      generic_armor:
+        name: '&6GENERIC_ARMOR'
+        help: []
+      generic_armor_toughness:
+        name: '&6GENERIC_ARMOR_TOUGHNESS'
+        help: []
+      generic_luck:
+        name: '&6GENERIC_LUCK'
+        help: []
+      horse_jump_strength:
+        name: '&6HORSE_JUMP_STRENGTH'
+        help: []
+      zombie_spawn_reinforcements:
+        name: '&6ZOMBIE_SPAWN_REINFORCEMENTS'
+        help: []
+      add_number:
+        name: '%C%Add number'
+        help: []
+      add_scalar:
+        name: '%C%Multiply number'
+        help: []
+      multiply_scalar_1:
+        name: '%C%Add percentage'
+        help: []
+      slot_hand:
+        name: '&6Hand'
+        help: []
+      slot_off_hand:
+        name: '&6Off_Hand'
+        help: []
+      slot_feet:
+        name: '&6Feet'
+        help: []
+      slot_legs:
+        name: '&6Legs'
+        help: []
+      slot_chest:
+        name: '&6Chest'
+        help: []
+      slot_head:
+        name: '&6Head'
+        help: []
+      save:
+        name: '&aAdd Attribute'
+        help: []
+      delete:
+        name: '&cRemove Attribute'
+        help: []
+      set_amount:
+        name: '&aAmount: &6%NUMBER%'
+        help: []
+      set_name:
+        name: "&3Name:&7 %NAME%"
+        help: []
+      set_uuid:
+        name: "&3UUID:&7 %UUID%"
+        help: []
   recipe_editor:
   recipe_creator:
     save:
@@ -305,17 +367,21 @@ items:
           - "&6%XP% Exp"
       cooking_time:
         name: "&6Cooking Time"
-        help: []
+        help:
+          - "&7Set the time how long the item"
+          - "&7needs to cook in ticks"
+          - "&3Tip: 20ticks = 1sec"
         lore:
           - "&6%TIME% ticks"
   recipe_list:
+    lores:
+      disabled: "&7&l[&c&lDISABLED&7&l]"
+      enabled: "&7&l[&c&lDISABLED&7&l]"
     previous_page:
       name: "&2Previous Page"
-      lore: []
       help: []
     next_page:
       name: "&2Next Page"
-      lore: []
       help: []
 
 inventories:

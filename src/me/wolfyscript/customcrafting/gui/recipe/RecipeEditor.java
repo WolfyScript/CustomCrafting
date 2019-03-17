@@ -43,27 +43,30 @@ public class RecipeEditor extends ExtendedGuiWindow {
 
     @Override
     public boolean onAction(GuiAction guiAction) {
-        String action = guiAction.getAction();
-        if(action.equals("back")){
-            guiAction.getGuiHandler().openLastInv();
-        }else{
-            //TODO: Functions for different recipe types
-            Player player = guiAction.getPlayer();
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
-            switch (action){
-                case "recipe_list":
-                    guiAction.getGuiHandler().changeToInv("recipe_list");
-                    break;
-                case "create_recipe":
-                    guiAction.getGuiHandler().changeToInv("recipe_creator");
-                    break;
-                case "edit_recipe":
-                    runChat(0, "&3Type in the name of the folder and item! &6e.g. example your_recipe", guiAction.getGuiHandler());
-                    break;
-                case "delete_recipe":
-                    runChat(1, "&3Type in the name of the folder and item! &6e.g. example your_recipe", guiAction.getGuiHandler());
+        if (!super.onAction(guiAction)) {
+            String action = guiAction.getAction();
+            if (action.equals("back")) {
+                guiAction.getGuiHandler().openLastInv();
+            } else {
+                //TODO: Functions for different recipe types
+                Player player = guiAction.getPlayer();
+                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                switch (action) {
+                    case "recipe_list":
+                        guiAction.getGuiHandler().changeToInv("recipe_list");
+                        break;
+                    case "create_recipe":
+                        guiAction.getGuiHandler().changeToInv("recipe_creator");
+                        break;
+                    case "edit_recipe":
+                        runChat(0, "$msg.gui.recipe_editor.input$", guiAction.getGuiHandler());
+                        break;
+                    case "delete_recipe":
+                        runChat(1, "$msg.gui.recipe_editor.input$", guiAction.getGuiHandler());
+                }
             }
         }
+
         return true;
     }
 
@@ -80,26 +83,23 @@ public class RecipeEditor extends ExtendedGuiWindow {
         PlayerCache cache = CustomCrafting.getPlayerCache(guiHandler.getPlayer());
         Workbench workbench = cache.getWorkbench();
         Furnace furnace = cache.getFurnace();
-        if(args.length > 1){
-            CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0]+":"+args[1]);
-            if(recipe != null){
-                if(id == 0){
-                    switch (cache.getSetting()){
+        if (args.length > 1) {
+            CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
+            if (recipe != null) {
+                if (id == 0) {
+                    switch (cache.getSetting()) {
                         case CRAFT_RECIPE:
-                            if (recipe instanceof CraftingRecipe){
+                            if (recipe instanceof CraftingRecipe) {
                                 workbench.setResult(recipe.getCustomResult());
                                 HashMap<Character, List<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
                                 workbench.setIngredients(Arrays.asList(new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR))));
-
-                                System.out.println(ingredients);
-                                for(String row : ((CraftingRecipe) recipe).getConfig().getShape()){
-                                    for(char key : row.toCharArray()){
-                                        if(key != ' '){
-                                            workbench.setIngredients(key, ingredients.get((char)key));
+                                for (String row : ((CraftingRecipe) recipe).getConfig().getShape()) {
+                                    for (char key : row.toCharArray()) {
+                                        if (key != ' ') {
+                                            workbench.setIngredients(key, ingredients.get((char) key));
                                         }
                                     }
                                 }
-                                System.out.println("Ingrd: "+workbench.getIngredients());
                                 workbench.setResult(recipe.getCustomResult());
                                 workbench.setExtend(recipe.getExtends());
                                 workbench.setShapeless(((CraftingRecipe) recipe).isShapeless());
@@ -108,10 +108,10 @@ public class RecipeEditor extends ExtendedGuiWindow {
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
-                            api.sendPlayerMessage(player, "This recipe is not a Craft Recipe!");
+                            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
                             return true;
                         case FURNACE_RECIPE:
-                            if(recipe instanceof FurnaceCRecipe){
+                            if (recipe instanceof FurnaceCRecipe) {
                                 furnace.setAdvFurnace(((FurnaceCRecipe) recipe).needsAdvancedFurnace());
                                 furnace.setSource(((FurnaceCRecipe) recipe).getSource());
                                 furnace.setResult(recipe.getCustomResult());
@@ -120,7 +120,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
-                            api.sendPlayerMessage(player, "This recipe is not a Furnace Recipe!");
+                            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
                             return true;
                     }
                 }

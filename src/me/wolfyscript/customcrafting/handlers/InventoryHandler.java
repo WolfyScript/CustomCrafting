@@ -22,6 +22,7 @@ public class InventoryHandler {
     }
 
     public void init(){
+        api.sendConsoleMessage("$msg.startup.inventories$");
         invAPI.registerItem("none", "glass_gray", new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         invAPI.registerItem("none", "glass_red", new ItemStack(Material.RED_STAINED_GLASS_PANE));
         invAPI.registerItem("none", "glass_green", new ItemStack(Material.GREEN_STAINED_GLASS_PANE));

@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -28,8 +29,6 @@ public class BlockEvents implements Listener {
                     String verify = name.split(":")[1];
                     if (verify.equals("cc_workbench")) {
                         CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
-                    } else if (verify.equals("cc_furnace")) {
-                        CustomCrafting.getWorkbenches().addFurnace(event.getBlockPlaced().getLocation());
                     }
                 }
             }
@@ -39,24 +38,12 @@ public class BlockEvents implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (!event.isCancelled()) {
-            Location location = event.getBlock().getLocation();
-            if (CustomCrafting.getWorkbenches().isFurnace(location)) {
-                CustomCrafting.getWorkbenches().removeFurnace(location);
-            } else if (CustomCrafting.getWorkbenches().isWorkbench(location)) {
-                /*
-                Collection<Entity> entities = event.getBlock().getWorld().getNearbyEntities(BoundingBox.of(event.getBlock()), entity -> (entity instanceof ArmorStand) && !entity.getCustomName().isEmpty() && entity.getCustomName().startsWith("cc:"));
-                for (Entity entity : entities) {
-                    entity.remove();
-                }
-                if(!WorkbenchContents.isOpen(location)){
-                    for (ItemStack itemStack : CustomCrafting.getWorkbenches().getContents(location)) {
-                        if(!itemStack.getType().equals(Material.AIR))
-                            location.getWorld().dropItemNaturally(location.clone().add(0.5,0, 0.5), itemStack);
-                    }
-                }
-                */
-                //WorkbenchContents.close(location);
+            Block block = event.getBlock();
+            Location location = block.getLocation();
+            if (CustomCrafting.getWorkbenches().isWorkbench(location)) {
                 CustomCrafting.getWorkbenches().removeWorkbench(location);
+                block.getWorld().dropItemNaturally(block.getLocation().clone(), CustomCrafting.getRecipeHandler().getCustomItem("customcrafting","workbench"));
+                event.setDropItems(false);
             }
         }
     }

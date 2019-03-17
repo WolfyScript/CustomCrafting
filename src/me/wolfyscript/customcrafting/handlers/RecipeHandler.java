@@ -104,7 +104,7 @@ public class RecipeHandler {
         if (!CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
             disabledRecipes.addAll(CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes());
         }
-        api.sendConsoleMessage("________[Loading Recipes/Items]________");
+        api.sendConsoleMessage("$msg.startup.recipes.title$");
         File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
         List<File> subFolders = null;
         File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
@@ -113,13 +113,13 @@ public class RecipeHandler {
         }
         if (subFolders != null) {
             api.sendConsoleMessage("");
-            api.sendConsoleMessage("---------[ITEMS]---------");
+            api.sendConsoleMessage("$msg.startup.recipes.items$");
             for (File folder : subFolders) {
                 api.sendConsoleMessage("- " + folder.getName());
                 loadConfig(folder.getName(), "items");
             }
             api.sendConsoleMessage("");
-            api.sendConsoleMessage("--------[RECIPES]--------");
+            api.sendConsoleMessage("$msg.startup.recipes.recipes$");
             for (File folder : subFolders) {
                 api.sendConsoleMessage("- " + folder.getName());
                 loadConfig(folder.getName(), "workbench");

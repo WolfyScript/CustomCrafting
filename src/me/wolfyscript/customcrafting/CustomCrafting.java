@@ -100,6 +100,7 @@ public class CustomCrafting extends JavaPlugin {
         workbenches = new Workbenches(api);
 
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            api.sendConsoleMessage("$msg.startup.placeholder$");
             new PlaceHolder().register();
         }
 
@@ -182,6 +183,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public static void loadPlayerCache(){
+        api.sendConsoleMessage("$msg.startup.playerstats$");
         File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
         if (file.exists()) {
             FileInputStream fis;

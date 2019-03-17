@@ -61,30 +61,30 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @Override
     public boolean onAction(GuiAction guiAction) {
-        String action = guiAction.getAction();
-
-        PlayerCache playerCache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
-
-        switch (action) {
-            case "item_editor":
-                playerCache.setSetting(Setting.ITEMS);
-                playerCache.getItems().setType("items");
-                playerCache.getItems().setSaved(false);
-                playerCache.getItems().setId("");
-                guiAction.getGuiHandler().changeToInv("item_editor");
-                break;
-            case "recipe_list":
-                playerCache.setSetting(Setting.LIST);
-                guiAction.getGuiHandler().changeToInv("recipe_list");
-                break;
-            case "craft_recipe":
-                playerCache.setSetting(Setting.CRAFT_RECIPE);
-                guiAction.getGuiHandler().changeToInv("recipe_editor");
-                break;
-            case "furnace_recipe":
-                playerCache.setSetting(Setting.FURNACE_RECIPE);
-                guiAction.getGuiHandler().changeToInv("recipe_editor");
-                break;
+        if(!super.onAction(guiAction)){
+            String action = guiAction.getAction();
+            PlayerCache playerCache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
+            switch (action) {
+                case "item_editor":
+                    playerCache.setSetting(Setting.ITEMS);
+                    playerCache.getItems().setType("items");
+                    playerCache.getItems().setSaved(false);
+                    playerCache.getItems().setId("");
+                    guiAction.getGuiHandler().changeToInv("item_editor");
+                    break;
+                case "recipe_list":
+                    playerCache.setSetting(Setting.LIST);
+                    guiAction.getGuiHandler().changeToInv("recipe_list");
+                    break;
+                case "craft_recipe":
+                    playerCache.setSetting(Setting.CRAFT_RECIPE);
+                    guiAction.getGuiHandler().changeToInv("recipe_editor");
+                    break;
+                case "furnace_recipe":
+                    playerCache.setSetting(Setting.FURNACE_RECIPE);
+                    guiAction.getGuiHandler().changeToInv("recipe_editor");
+                    break;
+            }
         }
 
         return true;

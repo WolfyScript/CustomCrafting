@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.UUID;
 public class Items implements Serializable {
 
     private static final long serialVersionUID = 420L;
+
+    private ItemStack skullSetting;
 
     private CustomItem item;
     private String type;
@@ -26,13 +29,15 @@ public class Items implements Serializable {
     private String attributeName;
 
     public Items(){
+        this.skullSetting = new ItemStack(Material.AIR);
+
         this.item = new CustomItem(Material.AIR);
         this.type = "";
         this.id = "";
         this.saved = false;
         this.craftSlot = -1;
 
-        this.attributeSlot = EquipmentSlot.HAND;
+        this.attributeSlot = null;
         this.attribOperation = AttributeModifier.Operation.ADD_NUMBER;
         this.attribAmount = 0.5;
         this.attributeUUID = "";
@@ -151,5 +156,13 @@ public class Items implements Serializable {
         AttributeModifier.Operation operation = getAttribOperation();
         return new AttributeModifier(uuid, name, amount, operation, slot);
 
+    }
+
+    public ItemStack getSkullSetting() {
+        return skullSetting;
+    }
+
+    public void setSkullSetting(ItemStack skullSetting) {
+        this.skullSetting = skullSetting;
     }
 }

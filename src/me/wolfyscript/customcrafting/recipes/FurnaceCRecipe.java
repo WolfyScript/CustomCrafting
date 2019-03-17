@@ -21,7 +21,7 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
     private boolean needsAdvancedFurnace;
 
     public FurnaceCRecipe(FurnaceConfig config){
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), config.getXP(), config.getCookingTime());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource().clone()), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.extend = config.getExtend();
         this.result = config.getResult();
