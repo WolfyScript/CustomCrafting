@@ -4,16 +4,14 @@ import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.ItemUtils;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 public class PlayerCache {
 
     private UUID uuid;
+    private Setting setting;
+    private String subSetting;
 
     private HashMap<String, Object> CACHE = new HashMap<>();
 
@@ -25,13 +23,11 @@ public class PlayerCache {
 
     public PlayerCache(UUID uuid) {
         this.uuid = uuid;
-        setSetting(Setting.MAIN_MENU);
+        this.setting = Setting.MAIN_MENU;
+        this.subSetting = "";
 
-        setSubSetting("");
-
-        CACHE.put("stats", new HashMap<String, Object>());
         setAmountCrafted(0);
-        setAmountAvancedCrafted(0);
+        setAmountAdvancedCrafted(0);
         setAmountNormalCrafted(0);
 
     }
@@ -43,10 +39,6 @@ public class PlayerCache {
 
     public UUID getUuid() {
         return uuid;
-    }
-
-    public HashMap<String, Object> getCACHE() {
-        return CACHE;
     }
 
     public Workbench getWorkbench() {
@@ -61,6 +53,25 @@ public class PlayerCache {
         return furnace;
     }
 
+    //Player Stats
+    //Main Settings
+    public Setting getSetting() {
+        return setting;
+    }
+
+    public void setSetting(Setting setting) {
+        this.setting = setting;
+    }
+
+    //Sub-Settings for GUIs
+    public String getSubSetting() {
+        return subSetting;
+    }
+
+    public void setSubSetting(String setting) {
+        this.subSetting = setting;
+    }
+
     public void setFurnace(Furnace furnace) {
         this.furnace = furnace;
     }
@@ -73,31 +84,24 @@ public class PlayerCache {
         this.items = items;
     }
 
-    private Object getObject(String key, String subKey) {
-        return ((HashMap<String, Object>) CACHE.getOrDefault(key, new HashMap<String, Object>())).get(subKey);
-    }
-
-    private void setObject(String key, String subKey, Object object) {
-        HashMap<String, Object> map = (HashMap<String, Object>) CACHE.get(key);
-        map.put(subKey, object);
-        CACHE.put(key, map);
-    }
-
     private Object getObject(String key) {
         return CACHE.get(key);
+    }
+
+    private Object getObjectOrDefault(String key, Object defaultValue) {
+        return CACHE.getOrDefault(key, defaultValue);
     }
 
     private void setObject(String key, Object object) {
         CACHE.put(key, object);
     }
 
-    //Player Stats
     public HashMap<String, Object> getStats(){
-        return (HashMap<String, Object>) getObject("stats");
+        return CACHE;
     }
 
     public void setStats(HashMap<String, Object> stats){
-        setObject("stats",stats);
+        CACHE = stats;
     }
 
     public void addAmountCrafted(int amount){
@@ -105,23 +109,23 @@ public class PlayerCache {
     }
 
     public void setAmountCrafted(int amount){
-        setObject("stats", "amount_crafted", amount);
+        setObject("amount_crafted", amount);
     }
 
     public int getAmountCrafted(){
-        return (int) getObject("stats","amount_crafted");
+        return (int) getObjectOrDefault("amount_crafted", 0);
     }
 
     public void addAmountAdvancedCrafted(int amount){
-        setAmountAvancedCrafted(getAmountAdvancedCrafted()+amount);
+        setAmountAdvancedCrafted(getAmountAdvancedCrafted()+amount);
     }
 
-    public void setAmountAvancedCrafted(int amount){
-        setObject("stats", "amount_advanced_crafted", amount);
+    public void setAmountAdvancedCrafted(int amount){
+        setObject("amount_advanced_crafted", amount);
     }
 
     public int getAmountAdvancedCrafted(){
-        return (int) getObject("stats","amount_advanced_crafted");
+        return (int) getObjectOrDefault("amount_advanced_crafted", 0);
     }
 
     public void addAmountNormalCrafted(int amount){
@@ -129,30 +133,26 @@ public class PlayerCache {
     }
 
     public void setAmountNormalCrafted(int amount){
-        setObject("stats", "amount_normal_crafted", amount);
+        setObject("amount_normal_crafted", amount);
     }
 
     public int getAmountNormalCrafted(){
-        return (int) getObject("stats","amount_normal_crafted");
+        return (int) getObjectOrDefault("amount_normal_crafted", 0);
     }
 
-
-    //Main Settings
-    public Setting getSetting() {
-        return (Setting) getObject("setting");
+    public HashMap<String, Integer> getRecipeCrafts(){
+        return (HashMap<String, Integer>) getObjectOrDefault("recipe_crafts", new HashMap<String, Integer>());
     }
 
-    public void setSetting(Setting setting) {
-        setObject("setting", setting);
+    public void setRecipeCrafts(String key, int amount){
+        HashMap<String, Integer> recipeCrafts = (HashMap<String, Integer>) getObject("recipe_crafts");
+        recipeCrafts.put(key, amount);
+        setObject("recipe_crafts", recipeCrafts);
     }
 
-    //Sub-Settings for GUIs
-    public String getSubSetting() {
-        return (String) getObject("sub_setting");
-    }
-
-    public void setSubSetting(String setting) {
-        setObject("sub_setting", setting);
+    public int getRecipeCrafts(String key){
+        HashMap<String, Integer> recipeCrafts = (HashMap<String, Integer>) getObject("recipe_crafts");
+        return recipeCrafts.getOrDefault(key, 0);
     }
 
 }

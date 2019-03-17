@@ -138,65 +138,90 @@ items:
     load_item:
       name: "&6Load"
       help:
-        - "&7Load a Recipe"
+        - "&7Load a existing Item"
     create_item:
       name: "&6Create"
-      help: []
+      help:
+        - "&7Create a custom Item"
     edit_item:
       name: "&7Edit"
-      help: []
+      help:
+        - "&7Edit a existing Item"
     delete_item:
       name: "&4Delete"
-      help: []
+      help:
+        - "&7Delete a custom Item"
   item_creator:
     item_name:
       name: '&6Change name'
-      help: []
+      help:
+        - "&7Edit Display Name"
     item_enchantments:
       name: '&6Enchantments'
-      help: []
+      help:
+        - "&7Edit Enchantments"
     item_lore:
       name: '&6Edit Lore'
-      help: []
+      help:
+        - "&7Add or Remove Lore lines"
     item_flags:
       name: '&6Set Flags'
-      help: []
+      help:
+        - "&7Set HIDE Flags"
+        - "&7e.g. Hide Enchants"
     skull_setting:
       name: '&6Skull Settings'
-      help: []
+      help:
+        - "&7Add Textures to Player Heads"
     attributes_modifiers:
       name: '&6Set Attributes'
-      help: []
+      help:
+        - "&7Add or remove Attribute Modifiers"
     unbreakable_on:
       name: '&aUnbreakable'
-      help: []
+      help:
+        - "&7Toggle Unbreakable"
     unbreakable_off:
       name: '&cBreakable'
-      help: []
+      help:
+        - "&7Toggle Unbreakable"
     save_item:
       name: '&aSave Item'
-      help: []
+      help:
+        - "&7Save the item to File"
+        - "&7input: &3<folder> <file_name>"
     apply_item:
       name: "&aApply Item"
-      help: []
+      help:
+        - "Applies the Item to the recipe"
     set_displayname:
       name: "&6Set Display Name"
-      help: []
+      help:
+        - "&7Change Display Name"
     remove_displayname:
       name: "&3Remove Display Name"
-      help: []
+      help:
+        - "&7Removes Display Name and"
+        - "&7reset it to default"
     skull_texture:
       name: "&6Apply Texture"
-      help: []
+      help:
+        - "&7Applies the texture of the Player Head"
+        - "<- Input"
     skull_owner:
       name: "&6Set Skull Owner"
-      help: []
+      help:
+        - "&7Sets the Skull Owner"
+        - "&7Input: &3<UUID or Player Name>"
     potion_effects:
       name: "&6Potion Effects"
-      help: []
+      help:
+        - "&7Configure Potion Effects"
     variants:
       name: "&6Variants"
-      help: []
+      help:
+        - "&7Sets the variants of ingredients"
+        - "&7[&cWork in Progress&7]"
     up:
       name: "&7Page Up"
       help: []
@@ -337,14 +362,20 @@ items:
       help: []
     extends:
       name: "&3Extends: %EXT%"
-      help: []
+      help:
+        - "&7Sets the recipe this recipe extends of"
+        - "&7Input: &3<namespace> <recipe_name>"
     workbench:
       adv_workbench_on:
         name: "&3Advanced Workbench"
-        help: []
+        help:
+          - "&7Can only be crafted in"
+          - "&7Advanced Workbenches"
+          - ""
       adv_workbench_off:
         name: "&4Every Workbench"
-        help: []
+        help:
+          - "&7Can be crafted in every Workbench"
       shapeless_off:
         name: '&3Shaped Recipe'
         help:
@@ -359,7 +390,6 @@ items:
         help: []
       adv_furnace_off:
         name: "&4Every Furnace"
-        help: []
       xp:
         name: "&3Experience"
         help: []

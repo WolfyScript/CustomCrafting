@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.events;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
+import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +22,7 @@ public class PlayerEvent implements Listener {
             CustomCrafting.getApi().sendConsoleMessage("Initializing new cache for "+player.getDisplayName());
         }
         PlayerCache playerCache = CustomCrafting.getPlayerCache(player);
+        InventoryAPI inventoryAPI = CustomCrafting.getApi().getInventoryAPI();
 
     }
 
