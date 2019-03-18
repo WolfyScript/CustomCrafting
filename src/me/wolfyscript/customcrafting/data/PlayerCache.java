@@ -144,6 +144,10 @@ public class PlayerCache {
         return (HashMap<String, Integer>) getObjectOrDefault("recipe_crafts", new HashMap<String, Integer>());
     }
 
+    public void addRecipeCrafts(String key){
+        setRecipeCrafts(key, getRecipeCrafts(key)+1);
+    }
+
     public void setRecipeCrafts(String key, int amount){
         HashMap<String, Integer> recipeCrafts = (HashMap<String, Integer>) getObject("recipe_crafts");
         recipeCrafts.put(key, amount);

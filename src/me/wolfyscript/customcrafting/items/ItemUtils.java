@@ -20,7 +20,6 @@ public class ItemUtils {
 
     public static CustomItem getCustomItem(ItemStack itemStack) {
         String id = "";
-        List<String> data = new ArrayList<>();
         ItemStack clearedItem = itemStack.clone();
         if (isIDItem(itemStack) && itemStack.getItemMeta().hasLore()) {
             ItemMeta clearedMeta = clearedItem.getItemMeta();
@@ -43,19 +42,13 @@ public class ItemUtils {
             }
             clearedItem.setItemMeta(clearedMeta);
             if (id.isEmpty()) {
-                CustomItem customItem = new CustomItem(clearedItem);
-                customItem.setCustomData(data);
-                return customItem;
+                return new CustomItem(clearedItem);
             }
         }
         if (id.isEmpty()) {
-            CustomItem customItem = new CustomItem(itemStack.clone());
-            customItem.setCustomData(data);
-            return customItem;
+            return new CustomItem(itemStack.clone());
         }
-        CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(id);
-        customItem.setCustomData(data);
-        return customItem;
+        return CustomCrafting.getRecipeHandler().getCustomItem(id);
     }
 
     public static boolean isIDItem(ItemStack itemStack) {

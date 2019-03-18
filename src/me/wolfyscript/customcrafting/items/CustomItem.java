@@ -13,29 +13,21 @@ public class CustomItem extends ItemStack{
 
     private ItemConfig config;
     private String id;
-    private List<String> customData;
 
     public CustomItem(ItemConfig config){
         super(config.getCustomItem());
         this.config = config;
-        this.customData = new ArrayList<>();
         this.id = config.getId();
-        this.customData.add("id::"+this.id);
     }
 
     public CustomItem(ItemStack itemStack){
         super(itemStack);
         this.config = null;
-        this.customData = new ArrayList<>();
         this.id = "";
     }
 
     public CustomItem(Material material){
         this(new ItemStack(material));
-    }
-
-    public void setCustomData(List<String> customData) {
-        this.customData = customData;
     }
 
     public String getId() {
@@ -62,19 +54,21 @@ public class CustomItem extends ItemStack{
            return new ItemStack(Material.AIR);
         }
         ItemStack idItem = new ItemStack(this.clone());
-        ItemMeta idItemMeta = idItem.getItemMeta();
-        if(idItemMeta.hasDisplayName() && !WolfyUtilities.unhideString(idItemMeta.getDisplayName()).endsWith(":id_item")){
-            idItemMeta.setDisplayName(idItemMeta.getDisplayName()+ WolfyUtilities.hideString(":id_item"));
-        }else{
-            idItemMeta.setDisplayName(WolfyUtilities.hideString("%NO_NAME%")+"§r"+WordUtils.capitalizeFully(idItem.getType().name().replace("_", " ")) + WolfyUtilities.hideString(":id_item"));
-        }
-        List<String> lore = idItemMeta.hasLore() ? idItemMeta.getLore() : new ArrayList<>();
-        lore.add("");
-        lore.add("§7[§3§lID_ITEM§r§7]");
-        lore.add("§3"+this.id);
+        if(!this.id.isEmpty()){
+            ItemMeta idItemMeta = idItem.getItemMeta();
+            if(idItemMeta.hasDisplayName() && !WolfyUtilities.unhideString(idItemMeta.getDisplayName()).endsWith(":id_item")){
+                idItemMeta.setDisplayName(idItemMeta.getDisplayName()+ WolfyUtilities.hideString(":id_item"));
+            }else{
+                idItemMeta.setDisplayName(WolfyUtilities.hideString("%NO_NAME%")+"§r"+WordUtils.capitalizeFully(idItem.getType().name().replace("_", " ")) + WolfyUtilities.hideString(":id_item"));
+            }
+            List<String> lore = idItemMeta.hasLore() ? idItemMeta.getLore() : new ArrayList<>();
+            lore.add("");
+            lore.add("§7[§3§lID_ITEM§r§7]");
+            lore.add("§3"+this.id);
 
-        idItemMeta.setLore(lore);
-        idItem.setItemMeta(idItemMeta);
+            idItemMeta.setLore(lore);
+            idItem.setItemMeta(idItemMeta);
+        }
         return idItem;
     }
 

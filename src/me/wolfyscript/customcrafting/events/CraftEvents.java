@@ -60,6 +60,7 @@ public class CraftEvents implements Listener {
                                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getID()));
                             }
                         }
+                        cache.addRecipeCrafts(customCraftEvent.getRecipe().getID());
                         cache.addAmountCrafted(1);
                         if (CustomCrafting.getWorkbenches().isWorkbench(block.getLocation())) {
                             cache.addAmountAdvancedCrafted(1);

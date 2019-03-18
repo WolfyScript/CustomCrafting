@@ -299,11 +299,11 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     row++;
                                 }
                             }
-                            System.out.println("SHAPE: ");
+                            api.sendDebugMessage("SHAPE: ");
                             for(String gadg : shape){
-                                System.out.println(gadg);
+                                api.sendDebugMessage(gadg);
                             }
-                            System.out.println(ingredients);
+                            api.sendDebugMessage(String.valueOf(ingredients));
                             config.setShape(shape);
                             config.setIngredients(workbench.getIngredients());
                             config.setExtends(workbench.getExtend());
@@ -341,6 +341,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(new FurnaceCRecipe(furnaceConfig)), 1);
                             } catch (Exception ex) {
                                 api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", furnaceConfig.getId()});
+                                ex.printStackTrace();
                                 return false;
                             }
                             return false;

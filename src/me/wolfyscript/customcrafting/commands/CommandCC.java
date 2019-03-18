@@ -32,11 +32,12 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                 } else if (args[0].equalsIgnoreCase("help")) {
                     printHelp(p);
                 } else if (args[0].equalsIgnoreCase("clear")) {
-                    if (CustomCrafting.hasPlayerCache(p)) {
-                        CustomCrafting.renewPlayerCache(p);
-                    }
+                    CustomCrafting.renewPlayerCache(p);
+                } else if (args[0].equalsIgnoreCase("reload")) {
+                    //TODO RELOAD
+                    CustomCrafting.getApi().sendPlayerMessage(p, "§cYeah you found it! Unfortunately it's not implemented yet! :(");
+
                 }
-                //TODO RELOAD
 
             }
         }
@@ -64,9 +65,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "");
         api.sendPlayerMessage(p, "  §6help     §7-  §3Displays list of commands");
         api.sendPlayerMessage(p, "  §6clear    §7-  §3Resets Player cache");
-        api.sendPlayerMessage(p, "  §6studio   §7-  §3Opens the Studio");
         api.sendPlayerMessage(p, "  §6info      §7-  §3Displays info about this plugin");
-        api.sendPlayerMessage(p, "  §6recipes §7-  §3Opens a list of all recipes!");
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 

@@ -16,10 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
@@ -76,6 +73,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
         return true;
     }
 
+    private HashMap<UUID, CustomRecipe> recipeToDelete = new HashMap<>();
+
     @Override
     public boolean parseChatMessage(int id, String message, GuiHandler guiHandler) {
         String[] args = message.split(" ");
@@ -123,6 +122,16 @@ public class RecipeEditor extends ExtendedGuiWindow {
                             api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
                             return true;
                     }
+                }else if(id == 1){
+                    recipeToDelete.put(player.getUniqueId(), recipe);
+                    api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete_confirm$", new String[]{"%RECIPE%",recipe.getID()});
+                    Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> runChat(11, "", guiHandler), 1);
+                }
+            }
+        }else{
+            if(id == 11){
+                if(recipeToDelete.containsKey(player.getUniqueId())){
+                    CustomRecipe customRecipe = recipeToDelete.get(player.getUniqueId());
                 }
             }
         }

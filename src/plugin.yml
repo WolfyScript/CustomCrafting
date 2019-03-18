@@ -1,6 +1,6 @@
 name: CustomCrafting
 main: me.wolfyscript.customcrafting.CustomCrafting
-version: 0.0.7.83
+version: 0.0.9.3
 api-version: 1.13
 
 depend:

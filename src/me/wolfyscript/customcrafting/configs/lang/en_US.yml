@@ -5,6 +5,7 @@ info:
   - "YouTube:"
   - "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
 ######################################################################
+#Test
 msg:
   auto_save:
     start:    "   Auto save data   "
@@ -79,6 +80,7 @@ msg:
     recipe_editor:
       input: "&3Type in the name of the folder and recipe! &6example your_recipe"
       invalid_recipe: "This recipe is not a %RECIPE_TYPE%!"
+      delete_confirm: "&7Do you really want to delete &6%RECIPE%"
 items:
   none:
     glass_gray:

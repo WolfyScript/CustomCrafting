@@ -145,12 +145,12 @@ public class CustomCrafting extends JavaPlugin {
         return false;
     }
 
-    public static PlayerCache renewPlayerCache(Player player){
+    public static void renewPlayerCache(Player player){
         if(hasPlayerCache(player)){
             PlayerCache playerCache = getPlayerCache(player);
             playerCacheList.remove(playerCache);
         }
-        return getPlayerCache(player);
+        playerCacheList.add(new PlayerCache(player.getUniqueId()));
     }
 
     public static PlayerCache getPlayerCache(Player player) {
