@@ -64,6 +64,7 @@ public class Workbenches {
         workbenches.remove(locationToString(location));
     }
 
+    @Deprecated
     public void setContents(Location location, ItemStack[] matrix) {
         if (workbenches.containsKey(locationToString(location))) {
             List<ItemStack> items = new ArrayList<>();
@@ -79,6 +80,7 @@ public class Workbenches {
         }
     }
 
+    @Deprecated
     public List<ItemStack> getContents(Location location){
         if (workbenches.containsKey(locationToString(location))) {
             return new ArrayList<>(workbenches.get(locationToString(location)));

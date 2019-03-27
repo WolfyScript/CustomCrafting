@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.configs.custom_configs;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.inventory.ItemStack;
@@ -44,14 +45,6 @@ public class CustomConfig extends Config {
         return type;
     }
 
-    public String getExtends(){
-        return getString("extend");
-    }
-
-    public void setExtends(String extend){
-        set("extend", extend);
-    }
-
     public void saveCustomItem(String path, CustomItem customItem){
         if(customItem != null){
             if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
@@ -68,5 +61,17 @@ public class CustomConfig extends Config {
             return CustomCrafting.getRecipeHandler().getCustomItem(id);
         }
         return new CustomItem(getItem(path+".item"));
+    }
+
+    public RecipePriority getPriority(){
+        try {
+            return RecipePriority.valueOf(getString("priority"));
+        }catch (IllegalArgumentException e){
+            return RecipePriority.NORMAL;
+        }
+    }
+
+    public void setPriority(RecipePriority recipePriority){
+        set("priority", recipePriority.name());
     }
 }

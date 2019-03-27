@@ -36,15 +36,15 @@ public class RecipesList extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
-            event.setItem(47, "previous_page");
-            event.setItem(51, "next_page");
+            event.setItem(2, "previous_page");
+            event.setItem(6, "next_page");
             List<Recipe> recipes = CustomCrafting.getRecipeHandler().getAllRecipes();
             if (!pages.containsKey(event.getPlayer().getUniqueId())) {
                 pages.put(event.getPlayer().getUniqueId(), 0);
             }
 
             int item = 0;
-            for (int i = 36 * pages.get(event.getPlayer().getUniqueId()); item < 36 && i < recipes.size(); i++) {
+            for (int i = 45 * pages.get(event.getPlayer().getUniqueId()); item < 45 && i < recipes.size(); i++) {
 
                 Recipe recipe = recipes.get(i);
                 if (recipe instanceof Keyed) {
@@ -59,12 +59,15 @@ public class RecipesList extends ExtendedGuiWindow {
                     }
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+                    /*
                     if (recipe instanceof FurnaceRecipe) {
                         lore.add("§7§lFurnace");
                     } else {
                         lore.add("§7§lWorkbench");
                     }
-                    lore.add(WolfyUtilities.hideString(((Keyed) recipe).getKey().toString()));
+                    */
+                    lore.add(" ");
+                    lore.add("§7"+((Keyed) recipe).getKey().toString()+""+WolfyUtilities.hideString(";;"+((Keyed) recipe).getKey().toString()));
                     if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
                         lore.add(ChatColor.translateAlternateColorCodes('&', api.getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_list.lores.disabled$")));
                     } else {
@@ -108,7 +111,7 @@ public class RecipesList extends ExtendedGuiWindow {
     public boolean onClick(GuiClick guiClick) {
         ItemStack itemStack = guiClick.getCurrentItem();
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
-            String id = WolfyUtilities.unhideString(itemStack.getItemMeta().getLore().get(itemStack.getItemMeta().getLore().size() - 2));
+            String id = WolfyUtilities.unhideString(itemStack.getItemMeta().getLore().get(itemStack.getItemMeta().getLore().size() - 2)).split(";;")[1];
             if (!id.isEmpty() && id.contains(":")) {
                 if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
                     CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(id);
@@ -125,6 +128,6 @@ public class RecipesList extends ExtendedGuiWindow {
     }
 
     private int getMaxPages() {
-        return CustomCrafting.getRecipeHandler().getAllRecipes().size() / 36 + (CustomCrafting.getRecipeHandler().getAllRecipes().size() % 36 > 0 ? 1 : 0);
+        return CustomCrafting.getRecipeHandler().getAllRecipes().size() / 45 + (CustomCrafting.getRecipeHandler().getAllRecipes().size() % 45 > 0 ? 1 : 0);
     }
 }

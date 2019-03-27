@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,6 +26,7 @@ public class Workbench implements Serializable {
     private boolean shapeless;
     private boolean saved;
     private String id;
+    private RecipePriority priority;
 
     public Workbench(){
         this.ingredients = new HashMap<>();
@@ -37,6 +39,7 @@ public class Workbench implements Serializable {
         this.shapeless = false;
         this.saved = false;
         this.id = "";
+        this.priority = RecipePriority.NORMAL;
     }
 
     public HashMap<Character, List<CustomItem>> getIngredients() {
@@ -140,11 +143,11 @@ public class Workbench implements Serializable {
         return saved;
     }
 
-    public void setExtend(String extend) {
+    public void setOverride(String extend) {
         this.extend = extend;
     }
 
-    public String getExtend() {
+    public String getOverride() {
         return extend;
     }
 
@@ -162,5 +165,13 @@ public class Workbench implements Serializable {
 
     public String getId() {
         return id;
+    }
+
+    public RecipePriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(RecipePriority priority) {
+        this.priority = priority;
     }
 }

@@ -49,6 +49,9 @@ public interface CraftingRecipe extends CustomRecipe{
 
     HashMap<Character, List<CustomItem>> getIngredients();
 
+    boolean isSimilar(CraftingRecipe recipe);
+
+    boolean appliesToMatrix(ItemStack[] matrix);
 
 
 

@@ -31,9 +31,11 @@ public class FurnaceEvents implements Listener {
         }
     }
 
+    /*
     private boolean checkFurnace(Location location, FurnaceCRecipe recipe) {
         return !recipe.needsAdvancedFurnace() || (location != null && CustomCrafting.getWorkbenches().isFurnace(location));
     }
+    */
 
     private FurnaceCRecipe getAllowedFurnaceRecipe(List<FurnaceCRecipe> group, ItemStack source) {
         if (!group.isEmpty()) {

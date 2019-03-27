@@ -11,8 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class MainMenu extends ExtendedGuiWindow {
 
-    private WolfyUtilities api = CustomCrafting.getApi();
-
     public MainMenu(InventoryAPI inventoryAPI) {
         super("main_menu", inventoryAPI, 54);
     }

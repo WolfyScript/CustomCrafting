@@ -49,8 +49,16 @@ public class PlayerCache {
         this.workbench = workbench;
     }
 
+    public void resetWorkbench(){
+        this.workbench = new Workbench();
+    }
+
     public Furnace getFurnace() {
         return furnace;
+    }
+
+    public void resetFurnace(){
+        this.furnace = new Furnace();
     }
 
     //Player Stats
@@ -149,13 +157,13 @@ public class PlayerCache {
     }
 
     public void setRecipeCrafts(String key, int amount){
-        HashMap<String, Integer> recipeCrafts = (HashMap<String, Integer>) getObject("recipe_crafts");
+        HashMap<String, Integer> recipeCrafts = getRecipeCrafts();
         recipeCrafts.put(key, amount);
         setObject("recipe_crafts", recipeCrafts);
     }
 
     public int getRecipeCrafts(String key){
-        HashMap<String, Integer> recipeCrafts = (HashMap<String, Integer>) getObject("recipe_crafts");
+        HashMap<String, Integer> recipeCrafts = getRecipeCrafts();
         return recipeCrafts.getOrDefault(key, 0);
     }
 

@@ -1,9 +1,7 @@
 # Furnace Recipe Config
 exp: 10
 cooking_time: 20
-advanced_furnace: true
-override: []
-extend: ""
+priority: "NORMAL"
 
 group: ""
 

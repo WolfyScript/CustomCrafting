@@ -345,10 +345,10 @@ public class ItemCreator extends ExtendedGuiWindow {
 
                         //Potion
                         case "potion_add":
-                            runChat(6, "$msg.gui.item_creator.potion.$", guiAction.getGuiHandler());
+                            runChat(6, "$msg.gui.item_creator.potion.add$", guiAction.getGuiHandler());
                             break;
                         case "potion_remove":
-                            runChat(7, "$msg.gui.item_creator.potion.input$", guiAction.getGuiHandler());
+                            runChat(7, "$msg.gui.item_creator.potion.remove$", guiAction.getGuiHandler());
                             break;
 
                         //VARIANTS
@@ -358,7 +358,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                         case "variant_remove":
 
                             break;
-                        //$gui.item_creator.$
                         //Attribute Settings
                         case "attribute.slot_head":
                         case "attribute.slot_chest":
@@ -513,7 +512,11 @@ public class ItemCreator extends ExtendedGuiWindow {
             //Lore ADD
             case 4:
                 lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
-                lore.add(ChatColor.translateAlternateColorCodes('&', message));
+                if(message.equals("&empty")){
+                    lore.add("");
+                }else{
+                    lore.add(ChatColor.translateAlternateColorCodes('&', message));
+                }
                 itemMeta.setLore(lore);
                 items.getItem().setItemMeta(itemMeta);
                 break;
@@ -539,6 +542,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 itemMeta.setLore(lore);
                 items.getItem().setItemMeta(itemMeta);
                 api.sendPlayerMessage(player, "$msg.gui.item_creator.lore.success$", new String[]{"%NUM%", args[0]});
+                return false;
                 //Potion
             case 6:
                 if (!(itemMeta instanceof PotionMeta)) {

@@ -2,14 +2,10 @@
 
 permissions: false
 advanced_workbench: true
-override: []
-extend: ""
-
+priority: "NORMAL"
 group: ""
 
-
 result:
-
 
 shapeless: true
 shape:

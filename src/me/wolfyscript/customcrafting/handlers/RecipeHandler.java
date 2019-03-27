@@ -28,7 +28,6 @@ public class RecipeHandler {
 
     private ArrayList<String> disabledRecipes = new ArrayList<>();
     private HashMap<String, List<String>> overrideRecipes = new HashMap<>();
-    private HashMap<String, List<String>> extendRecipes = new HashMap<>();
 
     private ConfigAPI configAPI;
     private WolfyUtilities api;
@@ -50,27 +49,17 @@ public class RecipeHandler {
                     switch (type) {
                         case "workbench":
                             CraftConfig config = new CraftConfig(configAPI, key, name);
-                            addOverrideRecipe(config.getId(), config.getOverrides());
-                            addExtendRecipe(config.getId(), config.getExtend());
+                            CraftingRecipe craftingRecipe;
                             if (config.isShapeless()) {
-                                ShapelessCraftRecipe recipe = new ShapelessCraftRecipe(config);
-                                recipe.load();
-                                registerRecipe(recipe);
+                                craftingRecipe = new ShapelessCraftRecipe(config);
                             } else {
-                                ShapedCraftRecipe recipe = new ShapedCraftRecipe(config);
-                                recipe.load();
-                                registerRecipe(recipe);
+                                craftingRecipe = new ShapedCraftRecipe(config);
                             }
+                            craftingRecipe.load();
+                            registerRecipe(craftingRecipe);
                             break;
                         case "furnace":
-                            FurnaceConfig furnaceConfig = new FurnaceConfig(configAPI, key, name);
-                            addOverrideRecipe(furnaceConfig.getId(), furnaceConfig.getOverrides());
-                            addExtendRecipe(furnaceConfig.getId(), furnaceConfig.getExtend());
-
-                            FurnaceCRecipe furnaceCRecipe = new FurnaceCRecipe(furnaceConfig);
-
-
-                            registerRecipe(furnaceCRecipe);
+                            registerRecipe(new FurnaceCRecipe(new FurnaceConfig(configAPI, key, name)));
                             break;
                         case "items":
                             customItems.add(new CustomItem(new ItemConfig(configAPI, key, name)));
@@ -125,6 +114,7 @@ public class RecipeHandler {
                 loadConfig(folder.getName(), "workbench");
                 loadConfig(folder.getName(), "furnace");
             }
+            getRecipes().sort((o1, o2) -> Integer.compare(o2.getPriority().getOrder(), o1.getPriority().getOrder()));
         }
     }
 
@@ -137,35 +127,28 @@ public class RecipeHandler {
         unregisterRecipe(recipe);
         Bukkit.addRecipe(recipe);
         customRecipes.add(recipe);
+        getRecipes().sort((o1, o2) -> Integer.compare(o2.getPriority().getOrder(), o1.getPriority().getOrder()));
     }
 
     public void unregisterRecipe(String key){
-        CustomRecipe customRecipe = getRecipe(key);
-        if(customRecipe != null){
-            customRecipes.remove(customRecipe);
+        Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+        List<Recipe> recipes = new ArrayList<>();
+        while(recipeIterator.hasNext()){
+            Recipe recipe = recipeIterator.next();
+            if(!((Keyed) recipe).getKey().toString().equals(key)){
+                recipes.add(recipe);
+            }
+        }
+        Bukkit.clearRecipes();
+        Collections.reverse(recipes);
+        for(Recipe recipe : recipes){
+            Bukkit.addRecipe(recipe);
         }
     }
 
     public void unregisterRecipe(CustomRecipe customRecipe) {
         customRecipes.remove(customRecipe);
-        Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-        List<Recipe> recipes = new ArrayList<>();
-
-        while(recipeIterator.hasNext()){
-            Recipe recipe = recipeIterator.next();
-            if(!((Keyed) recipe).getKey().toString().equals(customRecipe.getID())){
-                recipes.add(recipe);
-            }
-        }
-        Bukkit.clearRecipes();
-
-        Collections.reverse(recipes);
-
-        for(Recipe recipe : recipes){
-            Bukkit.addRecipe(recipe);
-        }
-
-
+        unregisterRecipe(customRecipe.getID());
     }
 
     /*
@@ -206,20 +189,56 @@ public class RecipeHandler {
         return null;
     }
 
+    //CRAFTING RECIPES
+
     public CraftingRecipe getCraftingRecipe(String key) {
         CustomRecipe customRecipe = getRecipe(key);
         return customRecipe instanceof CraftingRecipe ? (CraftingRecipe) customRecipe : null;
     }
 
-    public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source) {
-        List<FurnaceCRecipe> recipes = new ArrayList<>();
-        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
-            if (recipe.getSource().getType() == source.getType()) {
-                recipes.add(recipe);
+    public List<CraftingRecipe> getCraftingRecipes() {
+        List<CraftingRecipe> recipes = new ArrayList<>();
+        for(CustomRecipe customRecipe : getRecipes()){
+            if(customRecipe instanceof CraftingRecipe){
+                recipes.add((CraftingRecipe) customRecipe);
             }
         }
         return recipes;
     }
+
+    public List<ShapedCraftRecipe> getShapedCraftRecipes() {
+        List<ShapedCraftRecipe> recipes = new ArrayList<>();
+        for(CustomRecipe customRecipe : getRecipes()){
+            if(customRecipe instanceof ShapedCraftRecipe){
+                recipes.add((ShapedCraftRecipe) customRecipe);
+            }
+        }
+        return recipes;
+    }
+
+    public List<ShapelessCraftRecipe> getShapelessCraftRecipes() {
+        List<ShapelessCraftRecipe> recipes = new ArrayList<>();
+        for(CustomRecipe customRecipe : getRecipes()){
+            if(customRecipe instanceof ShapelessCraftRecipe){
+                recipes.add((ShapelessCraftRecipe) customRecipe);
+            }
+        }
+        return recipes;
+    }
+
+    public List<CraftingRecipe> getSimilarRecipes(CraftingRecipe craftingRecipe){
+        List<CraftingRecipe> similar = new ArrayList<>();
+        for(CraftingRecipe recipe : getCraftingRecipes()){
+            if(recipe.isSimilar(craftingRecipe)){
+
+            }
+        }
+        return similar;
+    }
+
+
+
+    //FURNACE RECIPES
 
     public List<FurnaceCRecipe> getFurnaceRecipes() {
         List<FurnaceCRecipe> recipes = new ArrayList<>();
@@ -255,6 +274,18 @@ public class RecipeHandler {
         return null;
     }
 
+    public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source) {
+        List<FurnaceCRecipe> recipes = new ArrayList<>();
+        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
+            if (recipe.getSource().getType() == source.getType()) {
+                recipes.add(recipe);
+            }
+        }
+        return recipes;
+    }
+
+    //CUSTOM ITEMS
+
     public List<CustomItem> getCustomItems() {
         return customItems;
     }
@@ -284,6 +315,9 @@ public class RecipeHandler {
         return getCustomItem(key + ":" + name);
     }
 
+
+    //DISABLED RECIPES AND GET ALL RECIPES
+
     public ArrayList<String> getDisabledRecipes() {
         return disabledRecipes;
     }
@@ -292,28 +326,18 @@ public class RecipeHandler {
         return overrideRecipes;
     }
 
-    public void addOverrideRecipe(String key, List<String> toOverride) {
-        if(!toOverride.isEmpty()){
-            for (String override : toOverride) {
-                List<String> overrides = overrideRecipes.getOrDefault(override, new ArrayList<>());
-                if (!overrides.contains(key))
-                    overrides.add(key);
-                overrideRecipes.put(override, overrides);
-            }
-        }
+    public void setOverrideRecipe(String original, List<String> overrides) {
+        overrideRecipes.put(original, overrides);
     }
 
-    public HashMap<String, List<String>> getExtendRecipes() {
-        return extendRecipes;
+    public void addOverrideRecipe(String original, String override){
+        List<String> overrides = overrideRecipes.getOrDefault(original, new ArrayList<>());
+        overrides.add(override);
+        setOverrideRecipe(original, overrides);
     }
 
-    public void addExtendRecipe(String key, String toExtend) {
-        if(!toExtend.isEmpty()){
-            List<String> extendsList = extendRecipes.getOrDefault(toExtend, new ArrayList<>());
-            if(!extendsList.contains(key))
-                extendsList.add(key);
-            extendRecipes.put(toExtend, extendsList);
-        }
+    public void removeOverrideRecipe(String override){
+
     }
 
     public List<Recipe> getAllRecipes() {
@@ -327,4 +351,68 @@ public class RecipeHandler {
         }
         return allRecipes;
     }
+
+    public static List<List<ItemStack>> getIngredients(ItemStack[] ingredients){
+        List<List<ItemStack>> items = new ArrayList<>();
+        int j = 0;
+        int r = 0;
+        List<String> empty = new ArrayList<>();
+        List<ItemStack> row = new ArrayList<>();
+        for(ItemStack item : ingredients){
+            row.add(item);
+            if(++j / 3 > 0){
+                if(row.get(0) == null && row.get(1) == null && row.get(2) == null){
+                    empty.add("r"+r);
+                }
+                items.add(new ArrayList<>(row));
+                row.clear();
+                j = 0;
+                r++;
+            }
+        }
+        for(int i = 0; i < 3; i++){
+            if(items.get(0).get(i) == null && items.get(1).get(i) == null && items.get(2).get(i) == null){
+                empty.add("c"+i);
+            }
+        }
+        ListIterator<List<ItemStack>> iterator = items.listIterator();
+        while(iterator.hasNext()){
+            int index = iterator.nextIndex();
+            List<ItemStack> list = iterator.next();
+            if(empty.contains("r"+index)){
+                if(index == 1){
+                    if(empty.contains("r0") || empty.contains("r2")){
+                        iterator.remove();
+                    }
+                }else{
+                    iterator.remove();
+                }
+            }else{
+                ListIterator<ItemStack> rowIterator = list.listIterator();
+                while (rowIterator.hasNext()){
+                    int cIndex = rowIterator.nextIndex();
+                    ItemStack c = rowIterator.next();
+                    if(empty.contains("c"+cIndex)){
+                        if(cIndex == 1){
+                            if(empty.contains("c0") || empty.contains("c2")){
+                                rowIterator.remove();
+                            }
+                        }else{
+                            rowIterator.remove();
+                        }
+                    }
+                }
+                //iterator.set(list);
+            }
+        }
+        System.out.println("Result:");
+        for(List<ItemStack> itemStacks : items){
+            System.out.print(" - ");
+            for(ItemStack itemStack : itemStacks){
+                System.out.print(itemStack);
+            }
+        }
+        return items;
+    }
+
 }

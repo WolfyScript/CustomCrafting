@@ -5,16 +5,14 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
@@ -23,17 +21,16 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     private CraftConfig config;
     private String id;
-    private String extend;
     private String group;
     private CustomItem result;
     private HashMap<Character, List<CustomItem>> ingredients;
     private String[] shape;
     private String shapeLine;
+    private RecipePriority priority;
 
     public ShapedCraftRecipe(CraftConfig config) {
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
         this.result = config.getResult();
-        this.extend = config.getExtends();
         this.id = config.getId();
         this.config = config;
         this.shape = WolfyUtilities.formatShape(config.getShape()).toArray(new String[0]);
@@ -41,6 +38,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.group = config.getGroup();
         this.permission = config.needPerm();
         this.advancedWorkbench = config.needWorkbench();
+        this.priority = config.getPriority();
     }
 
     @Override
@@ -57,7 +55,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         shapeLine = stringBuilder.toString();
 
         for (Character itemKey : shapeLine.toCharArray()) {
-            if(itemKey != ' '){
+            if (itemKey != ' ') {
                 List<CustomItem> items = ingredients.get(itemKey);
                 List<Material> materials = new ArrayList<>();
                 items.forEach(itemStack -> materials.add(itemStack.getType()));
@@ -76,16 +74,18 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     @Override
     public boolean check(ItemStack[] matrix) {
+        System.out.println("Recipe: "+getID());
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         for (ItemStack input : matrix) {
-            if(input != null){
+            if (input != null) {
+                System.out.println("check: "+input);
                 if (checkIngredient(input, allKeys, usedKeys) == null) {
                     return false;
                 }
             }
         }
-        return true;
+        return usedKeys.containsAll(getIngredients().keySet());
     }
 
     public ItemStack checkIngredient(ItemStack item, List<Character> allKeys, List<Character> usedKeys) {
@@ -108,12 +108,11 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         List<Character> usedKeys = new ArrayList<>();
         ArrayList<ItemStack> results = new ArrayList<>();
         for (ItemStack input : matrix) {
-            if(input != null){
+            if (input != null) {
                 ItemStack result = checkIngredient(input, allKeys, usedKeys);
                 if (result != null) {
                     if (input.getMaxStackSize() > 1) {
-                        int amount = input.getAmount() - result.getAmount() * totalAmount +1;
-                        System.out.println("Amount: "+amount);
+                        int amount = input.getAmount() - result.getAmount() * totalAmount + 1;
                         input.setAmount(amount);
                     }
                     //TEST FOR BUCKETS AND OTHER ITEMS!?
@@ -138,7 +137,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         for (ItemStack input : matrix) {
-            if(input != null){
+            if (input != null) {
                 ItemStack result = checkIngredient(input, allKeys, usedKeys);
                 if (result != null) {
                     int possible = input.getAmount() / result.getAmount();
@@ -171,6 +170,34 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
+    public boolean isSimilar(CraftingRecipe recipe) {
+        if (recipe.equals(this))
+            return true;
+
+        if (recipe instanceof ShapedCraftRecipe) {
+            ShapedCraftRecipe craftRecipe = (ShapedCraftRecipe) recipe;
+            if (craftRecipe.getShape().length == this.getShape().length && (craftRecipe.getShape()[0].length() == this.getShape()[0].length())) {
+                if (craftRecipe.getIngredients().keySet().containsAll(this.getIngredients().keySet())) {
+
+
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean appliesToMatrix(ItemStack[] matrix) {
+        List<Character> foundKeys = new ArrayList<>();
+        for (ItemStack input : matrix) {
+            if (input != null) {
+
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void setGroup(String group) {
         this.group = group;
     }
@@ -183,11 +210,6 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     @Override
     public CustomItem getCustomResult() {
         return result;
-    }
-
-    @Override
-    public String getExtends() {
-        return extend;
     }
 
     public CraftConfig getConfig() {
@@ -217,5 +239,10 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     @Override
     public String getGroup() {
         return group;
+    }
+
+    @Override
+    public RecipePriority getPriority() {
+        return priority;
     }
 }

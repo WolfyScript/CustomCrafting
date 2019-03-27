@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
@@ -105,6 +106,9 @@ public class CustomCrafting extends JavaPlugin {
         }
 
         recipeHandler.loadConfigs();
+
+        Metrics metrics = new Metrics(this);
+
 
         System.out.println("------------------------------------------------------------------------");
     }

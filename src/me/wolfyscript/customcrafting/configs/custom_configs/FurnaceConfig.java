@@ -47,6 +47,7 @@ public class FurnaceConfig extends CustomConfig {
         return getCustomItem("result");
     }
 
+    /*
     public void setAdvancedFurnace(boolean furnace){
         set("advanced_furnace", furnace);
     }
@@ -55,11 +56,12 @@ public class FurnaceConfig extends CustomConfig {
         return getBoolean("advanced_furnace");
     }
 
-    public List<String> getOverrides(){
+    public List<String> getOverride(){
         return getStringList("override");
     }
 
-    public String getExtend(){
+    public String getOverride(){
         return getString("extend");
     }
+    */
 }

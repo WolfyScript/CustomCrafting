@@ -25,23 +25,41 @@ public class CommandCC implements CommandExecutor, TabCompleter {
             Player p = (Player) sender;
             InventoryAPI invAPI = CustomCrafting.getApi().getInventoryAPI();
             if (args.length == 0) {
-                invAPI.openGui(p);
+                if(checkPerm(p, "customcrafting.cmd.studio")){
+                    invAPI.openGui(p);
+                }
             } else {
                 if (args[0].equalsIgnoreCase("info")) {
-                    printInfo(p);
+                    if(checkPerm(p, "customcrafting.cmd.info")){
+                        printInfo(p);
+                    }
                 } else if (args[0].equalsIgnoreCase("help")) {
-                    printHelp(p);
+                    if(checkPerm(p, "customcrafting.cmd.help")){
+                        printHelp(p);
+                    }
                 } else if (args[0].equalsIgnoreCase("clear")) {
-                    CustomCrafting.renewPlayerCache(p);
+                    if(checkPerm(p, "customcrafting.cmd.clear")){
+                        CustomCrafting.renewPlayerCache(p);
+                    }
                 } else if (args[0].equalsIgnoreCase("reload")) {
-                    //TODO RELOAD
-                    CustomCrafting.getApi().sendPlayerMessage(p, "§cYeah you found it! Unfortunately it's not implemented yet! :(");
-
+                    if(checkPerm(p, "customcrafting.cmd.reload")){
+                        //TODO RELOAD
+                        CustomCrafting.getApi().sendPlayerMessage(p, "§cYeah you found it! Unfortunately it's not implemented yet! :(");
+                    }
                 }
 
             }
         }
         return true;
+    }
+
+    public boolean checkPerm(Player player, String perm){
+        WolfyUtilities api = CustomCrafting.getApi();
+        if(WolfyUtilities.hasPermission(player, perm)){
+            return true;
+        }
+        api.sendPlayerMessage(player, "$msg.denied_perm", new String[]{"%PERM%", perm});
+        return false;
     }
 
     public void printInfo(Player p) {

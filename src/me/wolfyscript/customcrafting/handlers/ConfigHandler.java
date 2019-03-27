@@ -35,10 +35,8 @@ public class ConfigHandler {
         File recipes = new File(instance.getDataFolder(), "recipes");
         if (!instance.getDataFolder().exists() || !recipes.exists()) {
             ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(), "defaults/workbench_item", "customcrafting", "workbench");
-            ItemConfig itemConfig2 = new ItemConfig(api.getConfigAPI(), "defaults/furnace_item", "customcrafting", "furnace");
             ItemConfig itemConfig3 = new ItemConfig(api.getConfigAPI(), "defaults/compressed_cobble", "customcrafting", "compressed_cobblestone");
             CustomConfig config = new CraftConfig(api.getConfigAPI(), "defaults/workbench_craft", "customcrafting", "workbench");
-            CustomConfig config2 = new CraftConfig(api.getConfigAPI(), "defaults/furnace_recipe", "customcrafting", "furnace");
         }
         this.mainConfig = new MainConfig(configAPI);
         loadLang();

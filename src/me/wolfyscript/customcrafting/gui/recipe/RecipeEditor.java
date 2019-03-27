@@ -80,8 +80,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
         String[] args = message.split(" ");
         Player player = guiHandler.getPlayer();
         PlayerCache cache = CustomCrafting.getPlayerCache(guiHandler.getPlayer());
-        Workbench workbench = cache.getWorkbench();
-        Furnace furnace = cache.getFurnace();
+
+
         if (args.length > 1) {
             CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
             if (recipe != null) {
@@ -89,6 +89,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
                     switch (cache.getSetting()) {
                         case CRAFT_RECIPE:
                             if (recipe instanceof CraftingRecipe) {
+                                cache.resetWorkbench();
+                                Workbench workbench = cache.getWorkbench();
                                 workbench.setResult(recipe.getCustomResult());
                                 HashMap<Character, List<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
                                 workbench.setIngredients(Arrays.asList(new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR))));
@@ -100,10 +102,10 @@ public class RecipeEditor extends ExtendedGuiWindow {
                                     }
                                 }
                                 workbench.setResult(recipe.getCustomResult());
-                                workbench.setExtend(recipe.getExtends());
                                 workbench.setShapeless(((CraftingRecipe) recipe).isShapeless());
                                 workbench.setAdvWorkbench(((CraftingRecipe) recipe).needsAdvancedWorkbench());
                                 workbench.setPermissions(((CraftingRecipe) recipe).needsPermission());
+                                workbench.setPriority(recipe.getPriority());
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
@@ -111,7 +113,9 @@ public class RecipeEditor extends ExtendedGuiWindow {
                             return true;
                         case FURNACE_RECIPE:
                             if (recipe instanceof FurnaceCRecipe) {
-                                furnace.setAdvFurnace(((FurnaceCRecipe) recipe).needsAdvancedFurnace());
+                                cache.resetFurnace();
+                                Furnace furnace = cache.getFurnace();
+                                //furnace.setAdvFurnace(((FurnaceCRecipe) recipe).needsAdvancedFurnace());
                                 furnace.setSource(((FurnaceCRecipe) recipe).getSource());
                                 furnace.setResult(recipe.getCustomResult());
                                 furnace.setExperience(((FurnaceCRecipe) recipe).getExperience());

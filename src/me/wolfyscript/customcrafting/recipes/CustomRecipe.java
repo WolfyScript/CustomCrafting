@@ -9,7 +9,7 @@ public interface CustomRecipe extends Recipe {
     String getGroup();
 
     CustomItem getCustomResult();
-    String getExtends();
+    RecipePriority getPriority();
 
     void load();
     void save();

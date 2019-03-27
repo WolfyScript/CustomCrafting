@@ -18,6 +18,7 @@ msg:
       title:   "________[Loading Recipes/Items]________"
       items:   "---------[ITEMS]---------"
       recipes: "--------[RECIPES]--------"
+  denied_perm: "&cYou lack the permission &4%PERM%&c!"
   gui:
     item_creator:
       save:
@@ -25,22 +26,22 @@ msg:
           line1: "&3Type in the name of the folder and item"
           line2: "&6e.g. example your_item"
         success: "&aItem saved to:"
-      display_name: "&2Type in the name! Use &6& &2for formatting codes!"
+      display_name: "&3Type in the name! Use &6& &3for formatting codes!"
       enchant:
-        add: "&2Type in the enchantment and level! &6unbreaking 5"
-        remove: "&2Type in the enchantment! &6unbreaking"
+        add: "&3Type in the enchantment and level! &6unbreaking 5"
+        remove: "&3Type in the enchantment! &6unbreaking"
         invalid_lvl: "&cInvalid level! It's not a number!"
         invalid_enchant: "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!"
         no_lvl: "&cNo level set!"
       lore:
-        add: "&2Type in the lore! Use &6& &2for formatting codes!"
-        remove: "&2Type in the line of the lore you want to remove!"
+        add: "&3Type in the lore! Use &6& &3for formatting codes!"
+        remove: "&3Type in the line of the lore you want to remove!"
         no_number: "&cError getting the line! Is it a number? It should be!"
         error: "&cError the line &4%NUM%&c does not exist!"
         success: "&aRemoved Lore in line &6%NUM%"
       potion:
-        add: "&2Type in the Potion name, level, time in ticks! e.g. &6speed 5 1200"
-        remove: "&2Type in the Potion name you want to remove!"
+        add: "&3Type in the Potion! &6<name> <duration> <level> [<ambient> <particles>]"
+        remove: "&3Type in the Potion name you want to remove!"
         error_number: "&cError parsing Numbers! &4<name> <duration> <level> [<ambient> <particles>]"
         wrong_args: "&cWrong arguments or invalid name! &4<name> <duration> <level> [<ambient> <particles>]"
         success: "&aAdded Potion Effect &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%"
@@ -67,7 +68,7 @@ msg:
       item_editable: "&aThis item can now be edited!"
       no_name: "&cYou need to type in the item name!"
     recipe_creator:
-      extends: "&3type the namespace and key from the recipe!"
+      override: "&3type the namespace and key from the recipe!"
       furnace:
         xp: "&3Type in the amount of experience. e.g. 0.5"
         cooking_time: "&3Type in the cooking time in ticks. e.g. 20"
@@ -230,6 +231,7 @@ items:
       name: "&6Variants"
       help:
         - "&7Sets the variants of ingredients"
+        - "&7[&3Coming SOON&7]"
         - "&7[&cWork in Progress&7]"
     up:
       name: "&7Page Up"
@@ -239,10 +241,14 @@ items:
       help: []
     potion_add:
       name: "&3Add Potion Effect"
-      help: []
+      help:
+        - "&7Add a Potion Effect"
+        - "&7Input: &3<name> <duration> <level> [<ambient> <particles>]"
     potion_remove:
       name: "&4Remove Potion Effect"
-      help: []
+      help:
+        - "&7Remove a Potion Effect"
+        - "&7Input: &3<name>"
     enchant_add:
       name: '&6Add Enchantment'
       help: []
@@ -372,7 +378,9 @@ items:
   recipe_creator:
     save:
       name: "&3Save"
-      help: []
+      help:
+        - "&7Save the recipe"
+        - "&7Input: &3<namespace> <recipe_name>"
     permissions_on:
       name: "&3Permissions"
       help:
@@ -382,11 +390,17 @@ items:
       name: "&4No Permissions"
       help:
         - "&7Players don't need any permission to craft"
-    extends:
-      name: "&3Extends: %EXT%"
+    priority:
+      name: "&3Priority:&7 %PRI%"
       help:
-        - "&7Sets the recipe this recipe extends of"
-        - "&7Input: &3<namespace> <recipe_name>"
+        - "&7Sets the priority of this recipe!"
+        - "&7Priorities: "
+        - "&9LOWEST&7: will be checked first"
+        - "&bLOW&7"
+        - "&3NORMAL&7: normal priority"
+        - "&cHIGH&7"
+        - "&4HIGHEST&7: will be checked last"
+
     workbench:
       adv_workbench_on:
         name: "&3Advanced Workbench"

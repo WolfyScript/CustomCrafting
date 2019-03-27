@@ -46,7 +46,7 @@ public class PlaceHolder extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer p, String params) {
         if(p != null){
             PlayerCache cache = CustomCrafting.getPlayerCache(p.getUniqueId());
-            if(params.contains(":")){
+            if(params.contains(";")){
                 //Params with %ccrafting_<option>;<recipe_id>%
                 String recipeID = params.split(";")[1];
                 CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(recipeID);

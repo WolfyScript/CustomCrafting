@@ -1,46 +1,44 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import net.minecraft.server.v1_13_R2.Item;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.*;
 
-public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRecipe{
+public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRecipe {
 
     private boolean permission;
     private boolean advancedWorkbench;
 
+    private RecipePriority priority;
+
     private CraftConfig config;
     private String id;
-    private String extend;
     private CustomItem result;
     private String group;
     private HashMap<Character, List<CustomItem>> ingredients;
 
-    public ShapelessCraftRecipe(CraftConfig config){
+    public ShapelessCraftRecipe(CraftConfig config) {
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
         this.result = config.getResult();
-        this.extend = config.getExtends();
         this.id = config.getId();
         this.config = config;
         this.ingredients = config.getIngredients();
         this.permission = config.needPerm();
         this.advancedWorkbench = config.needWorkbench();
         this.group = config.getGroup();
+        this.priority = config.getPriority();
     }
 
     @Override
-    public void load(){
-        for(Character itemKey : getIngredients().keySet()){
+    public void load() {
+        for (Character itemKey : getIngredients().keySet()) {
             List<CustomItem> items = getIngredients().get(itemKey);
             List<Material> materials = new ArrayList<>();
             items.forEach(itemStack -> materials.add(itemStack.getType()));
@@ -57,13 +55,29 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     public boolean check(ItemStack[] matrix) {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
-        for(ItemStack itemStack : matrix){
-            ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-            if(result == null){
-                return false;
+        for (ItemStack itemStack : matrix) {
+            if (itemStack != null) {
+                ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+                if (result == null) {
+                    return false;
+                }
             }
         }
         return usedKeys.containsAll(getIngredients().keySet());
+    }
+
+    private ItemStack checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack item) {
+        for (Character key : allKeys) {
+            if (!usedKeys.contains(key)) {
+                for (CustomItem ingredient : ingredients.get(key)) {
+                    if (item.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(item)) {
+                        usedKeys.add(key);
+                        return ingredient;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -72,22 +86,27 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         ArrayList<ItemStack> results = new ArrayList<>();
-        for(ItemStack itemStack : matrix){
-            ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-            if(result != null){
-                if(itemStack.getMaxStackSize() > 1){
-                    int amount = itemStack.getAmount() - result.getAmount()*totalAmount + 1;
-                    itemStack.setAmount(amount);
-                }
-                //TEST FOR BUCKETS AND OTHER ITEMS!?
-                if(itemStack.getAmount() <= 0)
+        for (ItemStack itemStack : matrix) {
+            if (itemStack != null) {
+                ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+                if (result != null) {
+                    if (itemStack.getMaxStackSize() > 1) {
+                        int amount = itemStack.getAmount() - result.getAmount() * totalAmount + 1;
+                        itemStack.setAmount(amount);
+                    }
+                    //TEST FOR BUCKETS AND OTHER ITEMS!?
+                    if (itemStack.getAmount() <= 0)
+                        results.add(new ItemStack(Material.AIR));
+                    else
+                        results.add(itemStack);
+                } else {
                     results.add(new ItemStack(Material.AIR));
-                else
-                    results.add(itemStack);
+                }
             }else{
                 results.add(new ItemStack(Material.AIR));
             }
         }
+        System.out.println(results.size());
         return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
     }
 
@@ -96,34 +115,18 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         int totalAmount = -1;
-        for(ItemStack itemStack : matrix){
-            ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-            if(result != null){
-                int possible = itemStack.getAmount() / result.getAmount();
-                if(possible < totalAmount || totalAmount == -1)
-                    totalAmount = possible;
+        for (ItemStack itemStack : matrix) {
+            if (itemStack != null) {
+                ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+                if (result != null) {
+                    int possible = itemStack.getAmount() / result.getAmount();
+                    if (possible < totalAmount || totalAmount == -1)
+                        totalAmount = possible;
+                }
+
             }
         }
         return totalAmount;
-    }
-
-    private ItemStack checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack itemStack){
-        if(itemStack != null && !itemStack.getType().equals(Material.AIR)){
-            for(char key : allKeys){
-                if(!usedKeys.contains(key)){
-                    for (CustomItem ingredient : getIngredients().get((char)key)){
-                        if(ingredient.getType().equals(itemStack.getType())){
-                            if (itemStack.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(itemStack)) {
-                                usedKeys.add(key);
-                                //System.out.println("ingr. : "+ingredient.getAmount());
-                                return new ItemStack(ingredient);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
@@ -133,6 +136,16 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     @Override
     public HashMap<Character, List<CustomItem>> getIngredients() {
         return ingredients;
+    }
+
+    @Override
+    public boolean isSimilar(CraftingRecipe recipe) {
+        return false;
+    }
+
+    @Override
+    public boolean appliesToMatrix(ItemStack[] matrix) {
+        return false;
     }
 
     public void setResult(ItemStack result) {
@@ -156,11 +169,6 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     public CustomItem getCustomResult() {
         return result;
-    }
-
-    @Override
-    public String getExtends() {
-        return extend;
     }
 
     @Override
@@ -190,5 +198,10 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     @Override
     public String getGroup() {
         return group;
+    }
+
+    @Override
+    public RecipePriority getPriority() {
+        return priority;
     }
 }

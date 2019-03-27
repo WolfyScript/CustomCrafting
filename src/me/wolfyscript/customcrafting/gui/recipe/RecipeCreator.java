@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.*;
@@ -15,19 +16,16 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class RecipeCreator extends ExtendedGuiWindow {
 
@@ -41,7 +39,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
 
         createItem("permissions_on", Material.GREEN_CONCRETE);
         createItem("permissions_off", Material.RED_CONCRETE);
-        createItem("extends", WolfyUtilities.getSkullByValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjBiNTVmNzQ2ODFjNjgyODNhMWMxY2U1MWYxYzgzYjUyZTI5NzFjOTFlZTM0ZWZjYjU5OGRmMzk5MGE3ZTcifX19"));
+
+        createItem("priority", WolfyUtilities.getSkullViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d"));
 
         createItem("workbench.adv_workbench_on", Material.GREEN_CONCRETE);
         createItem("workbench.adv_workbench_off", Material.RED_CONCRETE);
@@ -63,6 +62,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
             Workbench workbench = cache.getWorkbench();
             Furnace furnace = cache.getFurnace();
 
+            event.setItem(35, event.getItem("priority", "%PRI%", workbench.getPriority().name()));
 
             switch (cache.getSetting()) {
                 case CRAFT_RECIPE:
@@ -73,9 +73,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             event.setItem(slot, workbench.getIngredients().isEmpty() ? new ItemStack(Material.AIR) : workbench.getIngredient(i) != null ? workbench.getIngredient(i).getIDItem() : new ItemStack(Material.AIR));
                         }
                     }
-
-                    event.setItem(35, event.getItem("extends", "%EXT%", workbench.getExtend()));
-                    event.setItem(31, !workbench.isShapeless() ? "workbench.shapeless_off" : "workbench.shapeless_on");
+                    event.setItem(31, workbench.isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
                     event.setItem(33, workbench.getResult().getIDItem());
                     event.setItem(3, workbench.isPermissions() ? "permissions_on" : "permissions_off");
                     event.setItem(5, workbench.isAdvWorkbench() ? "workbench.adv_workbench_on" : "workbench.adv_workbench_off");
@@ -86,7 +84,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     event.setItem(20, furnace.getSource().getIDItem());
                     event.setItem(21, "none", "glass_white");
                     event.setItem(29, "none", "glass_white");
-
 
                     event.setItem(24, "none", "glass_white");
                     event.setItem(32, "none", "glass_white");
@@ -121,8 +118,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     }
                     time.setItemMeta(timeMeta);
                     event.setItem(38, time);
-                    event.setItem(30, furnace.isAdvFurnace() ? "furnace.adv_furnace_on" : "furnace.adv_furnace_off");
-
                     break;
             }
             event.setItem(53, "save");
@@ -131,7 +126,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
 
     @Override
     public boolean onAction(GuiAction guiAction) {
-        if(!super.onAction(guiAction)){
+        if (!super.onAction(guiAction)) {
             String action = guiAction.getAction();
             PlayerCache cache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
             updateInv(guiAction.getPlayer().getOpenInventory().getTopInventory(), cache);
@@ -144,8 +139,15 @@ public class RecipeCreator extends ExtendedGuiWindow {
                         workbench.setPermissions(!workbench.isPermissions());
                     } else if (action.startsWith("workbench.adv_workbench_")) {
                         workbench.setAdvWorkbench(!workbench.isAdvWorkbench());
-                    } else if(action.equals("extends")){
-                        runChat(2, "$msg.gui.recipe_creator.extends$", guiAction.getGuiHandler());
+                    } else if (action.equals("priority")) {
+                        RecipePriority recipePriority = workbench.getPriority();
+                        int order = recipePriority.getOrder();
+                        if(order < 2){
+                            order++;
+                        }else{
+                            order = -2;
+                        }
+                        workbench.setPriority(RecipePriority.getByOrder(order));
                     }
                     break;
                 case FURNACE_RECIPE:
@@ -160,7 +162,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     break;
 
             }
-
             if (action.equals("back")) {
                 guiAction.getGuiHandler().openLastInv();
             } else if (action.equals("save")) {
@@ -214,9 +215,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             return true;
                         }
                     case FURNACE_RECIPE:
-                        if(slot == 20){
+                        if (slot == 20) {
                             items.setSource(customItem);
-                        }else{
+                        } else {
                             items.setResult(customItem);
                         }
                         guiClick.getGuiHandler().changeToInv("item_editor");
@@ -242,6 +243,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 workbench.setIngredients(ingredients);
                 if (inv.getItem(33) != null) {
                     workbench.setResult(ItemUtils.getCustomItem(inv.getItem(33)));
+                }else{
+                    workbench.setResult(new CustomItem(Material.AIR));
                 }
                 break;
             case FURNACE_RECIPE:
@@ -299,16 +302,12 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     row++;
                                 }
                             }
-                            api.sendDebugMessage("SHAPE: ");
-                            for(String gadg : shape){
-                                api.sendDebugMessage(gadg);
-                            }
-                            api.sendDebugMessage(String.valueOf(ingredients));
                             config.setShape(shape);
                             config.setIngredients(workbench.getIngredients());
-                            config.setExtends(workbench.getExtend());
+                            config.setPriority(workbench.getPriority());
                             config.save();
                             config.load();
+                            cache.resetWorkbench();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
                             api.sendPlayerMessage(player, "§6recipes/" + args[0] + "/workbench/" + args[1]);
                             try {
@@ -329,12 +328,14 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             return false;
                         case FURNACE_RECIPE:
                             FurnaceConfig furnaceConfig = new FurnaceConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
-                            furnaceConfig.setAdvancedFurnace(furnace.isAdvFurnace());
+                            //furnaceConfig.setAdvancedFurnace(furnace.isAdvFurnace());
                             furnaceConfig.setCookingTime(furnace.getCookingTime());
                             furnaceConfig.setXP(furnace.getExperience());
                             furnaceConfig.setResult(furnace.getResult());
                             furnaceConfig.setSource(furnace.getSource());
                             furnaceConfig.save();
+                            furnaceConfig.load();
+                            cache.resetFurnace();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
                             api.sendPlayerMessage(player, "§6recipes/" + args[0] + "/furnace/" + args[1]);
                             try {
@@ -365,18 +366,16 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     return true;
                 }
                 furnace.setCookingTime(time);
-            }else if(id == 2){
+            } else if (id == 2) {
                 if (args.length > 1) {
-                    workbench.setExtend(args[0]+":"+args[1]);
-                }else{
-                    workbench.setExtend("");
+                    workbench.setOverride(args[0] + ":" + args[1]);
+                } else {
+                    workbench.setOverride("");
                     return true;
                 }
             }
 
         }
-
-
         return false;
     }
 }

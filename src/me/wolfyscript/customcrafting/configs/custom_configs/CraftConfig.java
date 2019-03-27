@@ -73,10 +73,6 @@ public class CraftConfig extends CustomConfig {
         return getCustomItem("result");
     }
 
-    public List<String> getResultData() {
-        return getStringList("result.data");
-    }
-
     public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
         set("ingredients", new HashMap<String, Object>());
         for (char key : ingredients.keySet()) {
@@ -110,14 +106,5 @@ public class CraftConfig extends CustomConfig {
         }
         return result;
     }
-
-    public List<String> getOverrides(){
-        return getStringList("override");
-    }
-
-    public String getExtend(){
-        return getString("extend");
-    }
-
 
 }

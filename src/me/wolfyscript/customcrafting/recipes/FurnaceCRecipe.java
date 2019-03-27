@@ -14,28 +14,31 @@ import java.util.List;
 
 public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
 
+    private RecipePriority recipePriority;
     private CustomItem result;
     private CustomItem source;
-    private String extend;
     private String id;
-    private boolean needsAdvancedFurnace;
+    //private boolean needsAdvancedFurnace;
 
     public FurnaceCRecipe(FurnaceConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource().clone()), config.getXP(), config.getCookingTime());
         this.id = config.getId();
-        this.extend = config.getExtend();
+        //this.extend = config.getOverride();
         this.result = config.getResult();
         this.source = config.getSource();
-        this.needsAdvancedFurnace = config.needsAdvancedFurnace();
+        this.recipePriority = config.getPriority();
+        //this.needsAdvancedFurnace = config.needsAdvancedFurnace();
     }
 
     public CustomItem getSource() {
         return source;
     }
 
+    /*
     public boolean needsAdvancedFurnace() {
         return needsAdvancedFurnace;
     }
+    */
 
     public boolean check(ItemStack source){
         return source.getAmount() >= getSource().getAmount() && getSource().isSimilar(source);
@@ -56,8 +59,8 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
     }
 
     @Override
-    public String getExtends() {
-        return extend;
+    public RecipePriority getPriority() {
+        return recipePriority;
     }
 
     @Override
