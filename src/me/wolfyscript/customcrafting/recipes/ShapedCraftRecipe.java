@@ -73,76 +73,74 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public boolean check(ItemStack[] matrix) {
+    public boolean check(List<List<ItemStack>> matrix) {
         System.out.println("Recipe: "+getID());
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
-        for (ItemStack input : matrix) {
-            if (input != null) {
-                System.out.println("check: "+input);
-                if (checkIngredient(input, allKeys, usedKeys) == null) {
+        List<Character> containedKeys = new ArrayList<>();
+        for(int i = 0; i < matrix.size(); i++){
+            for(int j = 0; j < matrix.get(i).size(); j++){
+                if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
+                    if(checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j))) == null){
+                        return false;
+                    }else{
+                        containedKeys.add(getShape()[i].charAt(j));
+                    }
+                }else if(!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')){
                     return false;
                 }
             }
         }
-        return usedKeys.containsAll(getIngredients().keySet());
+        return containedKeys.containsAll(getIngredients().keySet());
     }
 
-    public ItemStack checkIngredient(ItemStack item, List<Character> allKeys, List<Character> usedKeys) {
-        for (Character key : allKeys) {
-            if (!usedKeys.contains(key)) {
-                for (CustomItem itemStack : ingredients.get(key)) {
-                    if (item.getAmount() >= itemStack.getAmount() && itemStack.isSimilar(item)) {
-                        usedKeys.add(key);
-                        return itemStack;
-                    }
-                }
+    public ItemStack checkIngredient(ItemStack input, List<CustomItem> ingredients) {
+        for(CustomItem ingredient : ingredients){
+            if(input.getAmount() >= ingredient.getAmount() && input.isSimilar(ingredient)){
+                return ingredient.clone();
             }
         }
         return null;
     }
 
     @Override
-    public CraftResult removeIngredients(ItemStack[] matrix, int totalAmount) {
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
+    public CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount) {
         ArrayList<ItemStack> results = new ArrayList<>();
-        for (ItemStack input : matrix) {
-            if (input != null) {
-                ItemStack result = checkIngredient(input, allKeys, usedKeys);
-                if (result != null) {
-                    if (input.getMaxStackSize() > 1) {
-                        int amount = input.getAmount() - result.getAmount() * totalAmount + 1;
-                        input.setAmount(amount);
-                    }
-                    //TEST FOR BUCKETS AND OTHER ITEMS!?
-                    if (input.getAmount() <= 0)
+        for(int i = 0; i < matrix.size(); i++){
+            for(int j = 0; j < matrix.get(i).size(); j++){
+                if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
+                    ItemStack item = checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j)));
+                    if(item != null){
+                        if (item.getMaxStackSize() > 1) {
+                            int amount = item.getAmount() - result.getAmount() * totalAmount + 1;
+                            item.setAmount(amount);
+                        }
+                        //TEST FOR BUCKETS AND OTHER ITEMS!?
+                        if (item.getAmount() <= 0)
+                            results.add(new ItemStack(Material.AIR));
+                        else
+                            results.add(item);
+                    }else{
                         results.add(new ItemStack(Material.AIR));
-                    else
-                        results.add(input);
-                } else {
+                    }
+                }else if(!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')){
                     results.add(new ItemStack(Material.AIR));
                 }
-            } else {
-                results.add(new ItemStack(Material.AIR));
             }
-
         }
         return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
     }
 
     @Override
-    public int getAmountCraftable(ItemStack[] matrix) {
+    public int getAmountCraftable(List<List<ItemStack>> matrix) {
         int totalAmount = -1;
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
-        for (ItemStack input : matrix) {
-            if (input != null) {
-                ItemStack result = checkIngredient(input, allKeys, usedKeys);
-                if (result != null) {
-                    int possible = input.getAmount() / result.getAmount();
-                    if (possible < totalAmount || totalAmount == -1)
-                        totalAmount = possible;
+        for(int i = 0; i < matrix.size(); i++){
+            for(int j = 0; j < matrix.get(i).size(); j++){
+                if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
+                    ItemStack item = checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j)));
+                    if(item != null){
+                        int possible = item.getAmount() / result.getAmount();
+                        if (possible < totalAmount || totalAmount == -1)
+                            totalAmount = possible;
+                    }
                 }
             }
         }

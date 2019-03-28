@@ -27,11 +27,11 @@ public interface CraftingRecipe extends CustomRecipe{
 
     boolean isShapeless();
 
-    boolean check(ItemStack[] matrix);
+    boolean check(List<List<ItemStack>> matrix);
 
-    CraftResult removeIngredients(ItemStack[] matrix, int totalAmount);
+    CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount);
 
-    int getAmountCraftable(ItemStack[] matrix);
+    int getAmountCraftable(List<List<ItemStack>> matrix);
 
     void setPermission(boolean perm);
 

@@ -180,6 +180,30 @@ public class RecipeHandler {
         return null;
     }
 
+    public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items){
+        List<CraftingRecipe> recipes = new ArrayList<>();
+        for(CraftingRecipe customRecipe : getCraftingRecipes()){
+            if(customRecipe instanceof ShapedCraftRecipe){
+                if(items.size() == ((ShapedCraftRecipe) customRecipe).getShape().length && items.get(0).size() == ((ShapedCraftRecipe) customRecipe).getShape()[0].length()){
+                    recipes.add(customRecipe);
+                }
+            }else{
+                int i = 0;
+                for(List<ItemStack> row : items){
+                    for(ItemStack c : row){
+                        if(c != null){
+                            i++;
+                        }
+                    }
+                }
+                if(customRecipe.getIngredients().keySet().size() == i){
+                    recipes.add(customRecipe);
+                }
+            }
+        }
+        return recipes;
+    }
+
     public CustomRecipe getRecipe(String key) {
         for (CustomRecipe craftingRecipe : customRecipes) {
             if (craftingRecipe.getID().equals(key)) {
@@ -351,6 +375,14 @@ public class RecipeHandler {
         }
         return allRecipes;
     }
+
+    /*
+
+    "D  "
+    "   "  -> "D"
+    "  D"     "D"
+
+     */
 
     public static List<List<ItemStack>> getIngredients(ItemStack[] ingredients){
         List<List<ItemStack>> items = new ArrayList<>();

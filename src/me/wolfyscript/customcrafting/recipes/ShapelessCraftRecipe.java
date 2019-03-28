@@ -52,14 +52,16 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     @Override
-    public boolean check(ItemStack[] matrix) {
+    public boolean check(List<List<ItemStack>> matrix) {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
-        for (ItemStack itemStack : matrix) {
-            if (itemStack != null) {
-                ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-                if (result == null) {
-                    return false;
+        for (List<ItemStack> items : matrix) {
+            for(ItemStack itemStack : items){
+                if (itemStack != null) {
+                    ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+                    if (result == null) {
+                        return false;
+                    }
                 }
             }
         }
@@ -81,49 +83,52 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     @Override
-    public CraftResult removeIngredients(ItemStack[] matrix, int totalAmount) {
+    public CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount) {
         //MAYBE IMPROVEMENTS?!
+        //TODO TEST IF IT WORKS!
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         ArrayList<ItemStack> results = new ArrayList<>();
-        for (ItemStack itemStack : matrix) {
-            if (itemStack != null) {
-                ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-                if (result != null) {
-                    if (itemStack.getMaxStackSize() > 1) {
-                        int amount = itemStack.getAmount() - result.getAmount() * totalAmount + 1;
-                        itemStack.setAmount(amount);
-                    }
-                    //TEST FOR BUCKETS AND OTHER ITEMS!?
-                    if (itemStack.getAmount() <= 0)
+        for(List<ItemStack> items : matrix){
+            for(ItemStack itemStack : items){
+                if (itemStack != null) {
+                    ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+                    if (result != null) {
+                        if (itemStack.getMaxStackSize() > 1) {
+                            int amount = itemStack.getAmount() - result.getAmount() * totalAmount + 1;
+                            itemStack.setAmount(amount);
+                        }
+                        //TEST FOR BUCKETS AND OTHER ITEMS!?
+                        if (itemStack.getAmount() <= 0)
+                            results.add(new ItemStack(Material.AIR));
+                        else
+                            results.add(itemStack);
+                    } else {
                         results.add(new ItemStack(Material.AIR));
-                    else
-                        results.add(itemStack);
-                } else {
+                    }
+                }else{
                     results.add(new ItemStack(Material.AIR));
                 }
-            }else{
-                results.add(new ItemStack(Material.AIR));
             }
         }
-        System.out.println(results.size());
         return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
     }
 
     @Override
-    public int getAmountCraftable(ItemStack[] matrix) {
+    public int getAmountCraftable(List<List<ItemStack>> matrix) {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         int totalAmount = -1;
-        for (ItemStack itemStack : matrix) {
-            if (itemStack != null) {
-                ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-                if (result != null) {
-                    int possible = itemStack.getAmount() / result.getAmount();
-                    if (possible < totalAmount || totalAmount == -1)
-                        totalAmount = possible;
+        for(List<ItemStack> items : matrix){
+            for(ItemStack itemStack : items){
+                if (itemStack != null) {
+                    ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+                    if (result != null) {
+                        int possible = itemStack.getAmount() / result.getAmount();
+                        if (possible < totalAmount || totalAmount == -1)
+                            totalAmount = possible;
+                    }
                 }
-
             }
         }
         return totalAmount;
