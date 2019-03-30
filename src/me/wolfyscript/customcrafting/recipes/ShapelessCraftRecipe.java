@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -23,6 +24,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     private CustomItem result;
     private String group;
     private HashMap<Character, List<CustomItem>> ingredients;
+    private WolfyUtilities api;
 
     public ShapelessCraftRecipe(CraftConfig config) {
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
@@ -34,6 +36,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.advancedWorkbench = config.needWorkbench();
         this.group = config.getGroup();
         this.priority = config.getPriority();
+        this.api = CustomCrafting.getApi();
     }
 
     @Override
@@ -56,7 +59,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         for (List<ItemStack> items : matrix) {
-            for(ItemStack itemStack : items){
+            for (ItemStack itemStack : items) {
                 if (itemStack != null) {
                     ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
                     if (result == null) {
@@ -84,25 +87,24 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     @Override
     public CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount) {
-        //MAYBE IMPROVEMENTS?!
-        //TODO TEST IF IT WORKS!
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         ArrayList<ItemStack> results = new ArrayList<>();
-        for(List<ItemStack> items : matrix){
-            for(ItemStack itemStack : items){
-                if (itemStack != null) {
-                    ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (i < matrix.size() && j < matrix.get(i).size()) {
+                    ItemStack input = matrix.get(i).get(j);
+                    ItemStack result = checkIngredient(allKeys, usedKeys, input);
                     if (result != null) {
-                        if (itemStack.getMaxStackSize() > 1) {
-                            int amount = itemStack.getAmount() - result.getAmount() * totalAmount + 1;
-                            itemStack.setAmount(amount);
+                        if (result.getMaxStackSize() > 1) {
+                            int amount = input.getAmount() - result.getAmount() * totalAmount + 1;
+                            input.setAmount(amount);
                         }
                         //TEST FOR BUCKETS AND OTHER ITEMS!?
-                        if (itemStack.getAmount() <= 0)
+                        if (input.getAmount() <= 0)
                             results.add(new ItemStack(Material.AIR));
                         else
-                            results.add(itemStack);
+                            results.add(input);
                     } else {
                         results.add(new ItemStack(Material.AIR));
                     }
@@ -111,6 +113,8 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                 }
             }
         }
+        api.sendDebugMessage("MATRIX: ");
+        results.forEach(itemStack -> api.sendDebugMessage(" - "+itemStack));
         return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
     }
 
@@ -119,8 +123,8 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         int totalAmount = -1;
-        for(List<ItemStack> items : matrix){
-            for(ItemStack itemStack : items){
+        for (List<ItemStack> items : matrix) {
+            for (ItemStack itemStack : items) {
                 if (itemStack != null) {
                     ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
                     if (result != null) {

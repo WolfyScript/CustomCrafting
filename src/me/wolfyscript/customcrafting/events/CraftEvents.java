@@ -45,13 +45,14 @@ public class CraftEvents implements Listener {
 
     @EventHandler
     public void onCraft(CraftItemEvent event) {
-        if (event.getRecipe() != null && event.getRecipe() instanceof Keyed) {
+        if (event.getRecipe() instanceof Keyed) {
             ItemStack result = event.getInventory().getResult();
             if (result != null && !result.getType().equals(Material.AIR) && precraftedRecipes.containsKey(event.getWhoClicked().getUniqueId()) && precraftedRecipes.get(event.getWhoClicked().getUniqueId()) != null) {
                 String key = precraftedRecipes.get(event.getWhoClicked().getUniqueId());
                 CraftingRecipe recipe = CustomCrafting.getRecipeHandler().getCraftingRecipe(key);
                 ItemStack[] matrix = event.getInventory().getMatrix();
-                List<List<ItemStack>> ingredients = RecipeHandler.getIngredients(matrix);
+                RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+                List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
                 if (recipe != null) {
                     Player player = (Player) event.getWhoClicked();
                     Block block = player.getTargetBlock(null, 5);
@@ -88,15 +89,6 @@ public class CraftEvents implements Listener {
                             event.setCurrentItem(resultItem);
                         } else {
                             ItemStack[] matrixRes = recipe.removeIngredients(ingredients, 1).getMatrix();
-                            //TODO: LIST TO MATRIX
-                            //ItemStack[] resultMatrix =
-                            /*
-                            for(int i = 0; i < 3; i++){
-                                for(int j = 0; j < 3; j++){
-
-                                }
-                            }
-                            */
                             event.getInventory().setMatrix(matrixRes);
                             event.setCurrentItem(resultItem);
                         }
@@ -112,26 +104,24 @@ public class CraftEvents implements Listener {
         if (e.getRecipe() != null) {
             if (e.getRecipe() instanceof Keyed) {
                 try {
-                    //TODO! SHAPE CHECKER!!!
-                    //TODO TEST IF IT WORKS!
                     ItemStack[] matrix = e.getInventory().getMatrix();
-                    List<List<ItemStack>> ingredients = RecipeHandler.getIngredients(matrix);
                     RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+                    List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
                     Player player = (Player) e.getView().getPlayer();
                     List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
-                    System.out.println("Recipes:");
-                    recipesToCheck.forEach(craftingRecipe -> System.out.println(" - "+craftingRecipe.getID()));
+                    api.sendDebugMessage("Recipes:");
+                    recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - "+craftingRecipe.getID()));
                     boolean allow = false;
                     if (!recipesToCheck.isEmpty()) {
                         CustomPreCraftEvent customPreCraftEvent;
                         for (CraftingRecipe recipe : recipesToCheck) {
                             if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getID())) {
-                                System.out.println("check recipe: "+recipe.getID());
+                                api.sendDebugMessage("check recipe: "+recipe.getID());
                                 customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getRecipe(), e.getInventory());
                                 boolean perm = checkWorkbenchAndPerm(player, e.getView().getPlayer().getTargetBlock(null, 5).getLocation(), recipe);
                                 boolean check = recipe.check(ingredients);
-                                System.out.println(" "+perm);
-                                System.out.println(" "+check);
+                                api.sendDebugMessage(" "+perm);
+                                api.sendDebugMessage(" "+check);
                                 if (!(perm && check) || recipeHandler.getDisabledRecipes().contains(recipe.getID())) {
                                     customPreCraftEvent.setCancelled(true);
                                 }
@@ -151,7 +141,9 @@ public class CraftEvents implements Listener {
                     }
                     if(!allow){
                         CraftingRecipe recipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
-                        if(recipe == null && !recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString())){
+                        if(recipe != null || recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString())){
+                            e.getInventory().setResult(new ItemStack(Material.AIR));
+                        }else{
                             e.getInventory().setResult(e.getRecipe().getResult());
                         }
                     }

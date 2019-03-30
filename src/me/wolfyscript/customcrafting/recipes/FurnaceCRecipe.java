@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -18,12 +19,14 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
     private CustomItem result;
     private CustomItem source;
     private String id;
+    private FurnaceConfig config;
     //private boolean needsAdvancedFurnace;
 
     public FurnaceCRecipe(FurnaceConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource().clone()), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         //this.extend = config.getOverride();
+        this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
         this.recipePriority = config.getPriority();
@@ -74,6 +77,11 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe{
     @Override
     public void save() {
 
+    }
+
+    @Override
+    public CustomConfig getConfig() {
+        return config;
     }
 
 }

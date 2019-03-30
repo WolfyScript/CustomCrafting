@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -27,6 +28,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     private String[] shape;
     private String shapeLine;
     private RecipePriority priority;
+    private WolfyUtilities api;
 
     public ShapedCraftRecipe(CraftConfig config) {
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
@@ -39,6 +41,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.permission = config.needPerm();
         this.advancedWorkbench = config.needWorkbench();
         this.priority = config.getPriority();
+        this.api = CustomCrafting.getApi();
     }
 
     @Override
@@ -74,10 +77,12 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     @Override
     public boolean check(List<List<ItemStack>> matrix) {
-        System.out.println("Recipe: "+getID());
+        api.sendDebugMessage("Recipe: "+getID());
         List<Character> containedKeys = new ArrayList<>();
         for(int i = 0; i < matrix.size(); i++){
             for(int j = 0; j < matrix.get(i).size(); j++){
+                api.sendDebugMessage("  - "+getShape()[i].charAt(j));
+                api.sendDebugMessage("    - "+matrix.get(i).get(j) +" <-> "+ getIngredients().get(getShape()[i].charAt(j)));
                 if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
                     if(checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j))) == null){
                         return false;
@@ -94,7 +99,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     public ItemStack checkIngredient(ItemStack input, List<CustomItem> ingredients) {
         for(CustomItem ingredient : ingredients){
-            if(input.getAmount() >= ingredient.getAmount() && input.isSimilar(ingredient)){
+            if(input.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(input)){
                 return ingredient.clone();
             }
         }
@@ -104,28 +109,35 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     @Override
     public CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount) {
         ArrayList<ItemStack> results = new ArrayList<>();
-        for(int i = 0; i < matrix.size(); i++){
-            for(int j = 0; j < matrix.get(i).size(); j++){
-                if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
-                    ItemStack item = checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j)));
-                    if(item != null){
-                        if (item.getMaxStackSize() > 1) {
-                            int amount = item.getAmount() - result.getAmount() * totalAmount + 1;
-                            item.setAmount(amount);
-                        }
-                        //TEST FOR BUCKETS AND OTHER ITEMS!?
-                        if (item.getAmount() <= 0)
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                if(i < matrix.size() && j < matrix.get(i).size()){
+                    if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
+                        ItemStack input = matrix.get(i).get(j);
+                        ItemStack item = checkIngredient(input, getIngredients().get(getShape()[i].charAt(j)));
+                        if(item != null){
+                            if (item.getMaxStackSize() > 1) {
+                                int amount = input.getAmount() - item.getAmount() * totalAmount + 1;
+                                input.setAmount(amount);
+                            }
+                            //TEST FOR BUCKETS AND OTHER ITEMS!?
+                            if (input.getAmount() <= 0)
+                                results.add(new ItemStack(Material.AIR));
+                            else
+                                results.add(input);
+                        }else{
                             results.add(new ItemStack(Material.AIR));
-                        else
-                            results.add(item);
-                    }else{
+                        }
+                    }else if(!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')){
                         results.add(new ItemStack(Material.AIR));
                     }
-                }else if(!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')){
+                }else{
                     results.add(new ItemStack(Material.AIR));
                 }
             }
         }
+        api.sendDebugMessage("MATRIX: ");
+        results.forEach(itemStack -> api.sendDebugMessage(" - "+itemStack));
         return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
     }
 

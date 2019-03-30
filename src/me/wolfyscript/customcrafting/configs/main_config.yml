@@ -1,4 +1,4 @@
-# Main Config - CustomCrafting v0.0.0.1
+# Main Config - CustomCrafting v0.0.9.141
 
 #PlaceholderAPI:
 # Identifier: customcrafting
@@ -7,7 +7,7 @@
 #
 
 #This should be disabled! That are a lot of Messages!
-debugging: false
+debug: false
 
 #The language you want use. The context: <language>_<country>
 #If you have any language file you want to be added to this plugin, then feel free to contact me.
@@ -37,5 +37,4 @@ data:
     interval: 30
 
 recipes:
-  reload_after_save: false
   disabled_recipes: []

@@ -73,15 +73,20 @@ msg:
         xp: "&3Type in the amount of experience. e.g. 0.5"
         cooking_time: "&3Type in the cooking time in ticks. e.g. 20"
       save:
-        input: "&3Type in the name of the folder and item! &6e.g. example your_recipe"
+        input: "&3Type in the name of the folder and item! &6folder recipe_name"
         empty: "&cCannot save a empty recipe! Check the Result and the Source/ingredients"
         success: "&aRecipe successfully saved to:"
       error_loading: "&cError occurred while loading recipe &4%REC%"
       valid_number: "&cType in a valid number!"
     recipe_editor:
+      not_existing: "&cThe recipe &6%RECIPE% &cdoesn't exist!"
       input: "&3Type in the name of the folder and recipe! &6example your_recipe"
       invalid_recipe: "This recipe is not a %RECIPE_TYPE%!"
-      delete_confirm: "&7Do you really want to delete &6%RECIPE%"
+      delete:
+        confirm: "&7Do you really want to delete &6%RECIPE%"
+        confirmed: "&7[&aYES&7]  "
+        declined: "&7[&cNO&7]"
+
 items:
   none:
     glass_gray:

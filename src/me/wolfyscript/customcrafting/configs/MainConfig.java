@@ -11,7 +11,7 @@ import java.util.List;
 public class MainConfig extends Config {
 
     public MainConfig(ConfigAPI configAPI) {
-        super(configAPI, "me/wolfyscript/customcrafting/configs", CustomCrafting.getInst().getDataFolder().getPath(),"config");
+        super(configAPI, "me/wolfyscript/customcrafting/configs", CustomCrafting.getInst().getDataFolder().getPath(),"main_config");
     }
 
     @Override

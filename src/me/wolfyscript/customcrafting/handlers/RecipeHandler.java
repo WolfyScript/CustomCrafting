@@ -378,13 +378,16 @@ public class RecipeHandler {
 
     /*
 
-    "D  "
-    "   "  -> "D"
-    "  D"     "D"
+    "D  "     "D"  |  "D  "    "D  "
+    "D  "  -> "D"  |  "   " -> "   "
+    "   "          |  "  D"    "  D"
+                   |
+    "D  "    "D "  |  " D "    "D"
+    " D " -> " D"  |  " D " -> "D"
+    "   "          |  " D "    "D"
 
      */
-
-    public static List<List<ItemStack>> getIngredients(ItemStack[] ingredients){
+    public List<List<ItemStack>> getIngredients(ItemStack[] ingredients){
         List<List<ItemStack>> items = new ArrayList<>();
         int j = 0;
         int r = 0;
@@ -403,8 +406,10 @@ public class RecipeHandler {
             }
         }
         for(int i = 0; i < 3; i++){
-            if(items.get(0).get(i) == null && items.get(1).get(i) == null && items.get(2).get(i) == null){
-                empty.add("c"+i);
+            if(i < items.get(0).size()){
+                if(items.get(0).get(i) == null && items.get(1).get(i) == null && items.get(2).get(i) == null){
+                    empty.add("c"+i);
+                }
             }
         }
         ListIterator<List<ItemStack>> iterator = items.listIterator();
@@ -420,9 +425,9 @@ public class RecipeHandler {
                     iterator.remove();
                 }
             }else{
-                ListIterator<ItemStack> rowIterator = list.listIterator();
+                Iterator<ItemStack> rowIterator = list.iterator();
+                int cIndex = 0;
                 while (rowIterator.hasNext()){
-                    int cIndex = rowIterator.nextIndex();
                     ItemStack c = rowIterator.next();
                     if(empty.contains("c"+cIndex)){
                         if(cIndex == 1){
@@ -433,15 +438,16 @@ public class RecipeHandler {
                             rowIterator.remove();
                         }
                     }
+                    cIndex++;
                 }
                 //iterator.set(list);
             }
         }
-        System.out.println("Result:");
+        api.sendDebugMessage("Result:");
         for(List<ItemStack> itemStacks : items){
-            System.out.print(" - ");
+            api.sendDebugMessage(" - ");
             for(ItemStack itemStack : itemStacks){
-                System.out.print(itemStack);
+                api.sendDebugMessage(""+itemStack);
             }
         }
         return items;

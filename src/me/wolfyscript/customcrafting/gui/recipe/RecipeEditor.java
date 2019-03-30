@@ -9,7 +9,10 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
+import me.wolfyscript.utilities.api.utils.chat.ClickAction;
+import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -128,15 +131,23 @@ public class RecipeEditor extends ExtendedGuiWindow {
                     }
                 }else if(id == 1){
                     recipeToDelete.put(player.getUniqueId(), recipe);
-                    api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete_confirm$", new String[]{"%RECIPE%",recipe.getID()});
-                    Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> runChat(11, "", guiHandler), 1);
+                    api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new String[]{"%RECIPE%",recipe.getID()});
+                    api.sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                        CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
+                        if(recipe.getConfig().getConfigFile().delete()){
+                            player1.sendMessage("§aRecipe deleted!");
+                        }else{
+                            player1.sendMessage("§cCould not delete recipe!");
+                        }
+                        guiHandler.openLastInv();
+                    })), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> {
+                        guiHandler.openLastInv();
+                    }));
+                    guiHandler.cancelChatEvent();
+                    return true;
                 }
-            }
-        }else{
-            if(id == 11){
-                if(recipeToDelete.containsKey(player.getUniqueId())){
-                    CustomRecipe customRecipe = recipeToDelete.get(player.getUniqueId());
-                }
+            }else{
+                api.sendPlayerMessage(player, "$msg.gui.recipe_editor.not_existing$", new String[]{"%RECIPE%", args[0] + ":" + args[1]});
             }
         }
         return false;
