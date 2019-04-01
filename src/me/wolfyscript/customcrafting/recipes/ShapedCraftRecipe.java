@@ -243,7 +243,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     @Override
     public boolean isShapeless() {
-        return true;
+        return false;
     }
 
     @Override

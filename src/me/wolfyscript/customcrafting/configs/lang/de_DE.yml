@@ -1,4 +1,4 @@
-# Language: en_US
+# Language: de_DE
 author: "WolfyScript"
 version: "1.0.0"
 info:
@@ -11,25 +11,25 @@ msg:
     start:    "   Auto save data   "
     complete: " Auto save complete "
   startup:
-    playerstats: "Loading Player Stats"
-    inventories: "Initiating Inventory GUIs"
-    placeholder: "Registering PlaceHolder"
+    playerstats: "Lade Spieler Statistiks"
+    inventories: "Initialisiere Inventar GUIs"
+    placeholder: "Registriere PlaceHolder"
     recipes:
-      title:   "________[Loading Recipes/Items]________"
-      items:   "---------[ITEMS]---------"
-      recipes: "--------[RECIPES]--------"
-  denied_perm: "&cYou lack the permission &4%PERM%&c!"
+      title:   "________[Rezepte/Items werden geladen]________"
+      items:   "----------------[ITEMS]---------------"
+      recipes: "--------------[Rezepte]--------------"
+  denied_perm: "&cDu bezitzt nicht die Berechtigung &4%PERM%&c!"
   gui:
     item_creator:
       save:
         input:
-          line1: "&3Type in the name of the folder and item"
-          line2: "&6e.g. example your_item"
-        success: "&aItem saved to:"
-      display_name: "&3Type in the name! Use &6& &3for formatting codes!"
+          line1: "&3Gebe den Namen und Ordner vom Item ein"
+          line2: "&6e.g. ordner item_name"
+        success: "&aItem gespeichert in:"
+      display_name: "&3Gebe den Namen ein! Nutze &6& &3für formatierungs codes!"
       enchant:
-        add: "&3Type in the enchantment and level! &6unbreaking 5"
-        remove: "&3Type in the enchantment! &6unbreaking"
+        add: "&3Gebe die Verzauberung und Level ein! &6unbreaking 5"
+        remove: "&3Gebe die Verzauberung ein! &6unbreaking"
         invalid_lvl: "&cInvalid level! It's not a number!"
         invalid_enchant: "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!"
         no_lvl: "&cNo level set!"

@@ -273,7 +273,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 if (args.length > 1) {
                     switch (cache.getSetting()) {
                         case CRAFT_RECIPE:
-                            CraftConfig config = new CraftConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                            final CraftConfig config = new CraftConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
                             config.setPermission(workbench.isPermissions());
                             config.setNeedWorkbench(workbench.isAdvWorkbench());
                             config.setShapeless(workbench.isShapeless());
@@ -306,7 +306,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             config.setIngredients(workbench.getIngredients());
                             config.setPriority(workbench.getPriority());
                             config.save();
-                            config.load();
                             cache.resetWorkbench();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
                             api.sendPlayerMessage(player, "§6recipes/" + args[0] + "/workbench/" + args[1]);
@@ -318,9 +317,12 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     customRecipe = new ShapedCraftRecipe(config);
                                 }
                                 customRecipe.load();
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(customRecipe), 1);
+                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                    CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
+                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
+                                }, 1);
                             } catch (Exception ex) {
-                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", config.getId()});
+                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.error$", new String[]{"%REC%", config.getId()});
                                 ex.printStackTrace();
                                 return false;
                             }
