@@ -28,6 +28,8 @@ public class Items implements Serializable {
     private String attributeUUID;
     private String attributeName;
 
+    private CustomItem variantItem;
+
     public Items(){
         this.skullSetting = new ItemStack(Material.AIR);
 
@@ -42,6 +44,8 @@ public class Items implements Serializable {
         this.attribAmount = 0.5;
         this.attributeUUID = "";
         this.attributeName = "";
+
+        this.variantItem = new CustomItem(Material.AIR);
     }
 
     public void setItem(String type, CustomItem customItem){
@@ -164,5 +168,13 @@ public class Items implements Serializable {
 
     public void setSkullSetting(ItemStack skullSetting) {
         this.skullSetting = skullSetting;
+    }
+
+    public CustomItem getVariantItem() {
+        return variantItem;
+    }
+
+    public void setVariantItem(CustomItem variantItem) {
+        this.variantItem = variantItem;
     }
 }

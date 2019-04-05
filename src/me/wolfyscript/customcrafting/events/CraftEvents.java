@@ -51,6 +51,7 @@ public class CraftEvents implements Listener {
                 String key = precraftedRecipes.get(event.getWhoClicked().getUniqueId());
                 CraftingRecipe recipe = CustomCrafting.getRecipeHandler().getCraftingRecipe(key);
                 ItemStack[] matrix = event.getInventory().getMatrix();
+                boolean small = matrix.length < 9;
                 RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
                 List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
                 if (recipe != null) {
@@ -81,14 +82,14 @@ public class CraftEvents implements Listener {
                             }
                             //Remove the amount possible and give the specific items to the player
                             if(possible > 1){
-                                event.getInventory().setMatrix(recipe.removeIngredients(ingredients, possible).getMatrix());
+                                event.getInventory().setMatrix(recipe.removeIngredients(ingredients, matrix, small, possible).getMatrix());
                             }
                             for(int i = 0; i < possible-1; i++){
                                 player.getInventory().addItem(resultItem);
                             }
                             event.setCurrentItem(resultItem);
                         } else {
-                            ItemStack[] matrixRes = recipe.removeIngredients(ingredients, 1).getMatrix();
+                            ItemStack[] matrixRes = recipe.removeIngredients(ingredients, matrix, small, 1).getMatrix();
                             event.getInventory().setMatrix(matrixRes);
                             event.setCurrentItem(resultItem);
                         }
@@ -101,13 +102,13 @@ public class CraftEvents implements Listener {
 
     @EventHandler
     public void onPreCraft(PrepareItemCraftEvent e) {
+        Player player = (Player) e.getView().getPlayer();
         if (e.getRecipe() != null) {
             if (e.getRecipe() instanceof Keyed) {
                 try {
                     ItemStack[] matrix = e.getInventory().getMatrix();
                     RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
                     List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
-                    Player player = (Player) e.getView().getPlayer();
                     List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
                     api.sendDebugMessage("Recipes:");
                     recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - "+craftingRecipe.getID()));
@@ -140,6 +141,7 @@ public class CraftEvents implements Listener {
                         }
                     }
                     if(!allow){
+                        precraftedRecipes.remove(player.getUniqueId());
                         CraftingRecipe recipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
                         if(recipe != null || recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString())){
                             e.getInventory().setResult(new ItemStack(Material.AIR));
@@ -151,6 +153,7 @@ public class CraftEvents implements Listener {
                     System.out.println("WHAT HAPPENED? Please report!");
                     ex.printStackTrace();
                     System.out.println("WHAT HAPPENED? Please report!");
+                    precraftedRecipes.remove(player.getUniqueId());
                     e.getInventory().setResult(new ItemStack(Material.AIR));
                 }
             }

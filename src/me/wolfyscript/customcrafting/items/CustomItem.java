@@ -34,6 +34,10 @@ public class CustomItem extends ItemStack{
         return id;
     }
 
+    public boolean hasID(){
+        return !id.isEmpty();
+    }
+
     public ItemConfig getConfig() {
         return config;
     }

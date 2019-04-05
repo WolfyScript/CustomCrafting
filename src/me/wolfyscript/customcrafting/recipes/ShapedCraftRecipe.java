@@ -107,38 +107,52 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount) {
-        ArrayList<ItemStack> results = new ArrayList<>();
-        for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-                if(i < matrix.size() && j < matrix.get(i).size()){
-                    if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
-                        ItemStack input = matrix.get(i).get(j);
-                        ItemStack item = checkIngredient(input, getIngredients().get(getShape()[i].charAt(j)));
-                        if(item != null){
-                            if (item.getMaxStackSize() > 1) {
-                                int amount = input.getAmount() - item.getAmount() * totalAmount + 1;
-                                input.setAmount(amount);
-                            }
-                            //TEST FOR BUCKETS AND OTHER ITEMS!?
-                            if (input.getAmount() <= 0)
-                                results.add(new ItemStack(Material.AIR));
-                            else
-                                results.add(input);
-                        }else{
-                            results.add(new ItemStack(Material.AIR));
-                        }
-                    }else if(!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')){
-                        results.add(new ItemStack(Material.AIR));
-                    }
-                }else{
-                    results.add(new ItemStack(Material.AIR));
+    public CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount) {
+        ItemStack[] shape = small ? new ItemStack[]{null,null, null,null} : new ItemStack[]{null,null,null, null,null,null, null,null,null};
+        int startIndex = 0;
+        if(matrix.size() < 3){
+            for(int i = 0; i < original.length; i++){
+                if(original[i] != null){
+                    startIndex = i;
+                    break;
                 }
             }
         }
+        int r = 0;
+        int c = 0;
+        for(int x = startIndex; x < shape.length; x++){
+            api.sendDebugMessage("r: "+r+" c: "+c);
+            if(r < matrix.size() && c < matrix.get(r).size()){
+                if((matrix.get(r).get(c) != null && getShape()[r].charAt(c) != ' ')){
+                    ItemStack input = matrix.get(r).get(c);
+                    ItemStack item = checkIngredient(input, getIngredients().get(getShape()[r].charAt(c)));
+                    if(item != null){
+                        if (item.getMaxStackSize() > 1) {
+                            int amount = input.getAmount() - item.getAmount() * totalAmount + 1;
+                            input.setAmount(amount);
+                        }
+                        //TEST FOR BUCKETS AND OTHER ITEMS!?
+                        if (input.getAmount() > 0){
+                            shape[x] = input;
+                        }
+                    }
+                }
+            }
+            c++;
+            if(c >= matrix.get(r).size()){
+                c=0;
+                r++;
+                if(r >= matrix.size()){
+                    break;
+                }
+            }
+
+        }
         api.sendDebugMessage("MATRIX: ");
-        results.forEach(itemStack -> api.sendDebugMessage(" - "+itemStack));
-        return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
+        for(ItemStack item : shape){
+            api.sendDebugMessage("- "+item);
+        }
+        return new CraftResult(shape, totalAmount);
     }
 
     @Override
@@ -194,17 +208,6 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean appliesToMatrix(ItemStack[] matrix) {
-        List<Character> foundKeys = new ArrayList<>();
-        for (ItemStack input : matrix) {
-            if (input != null) {
-
-            }
-        }
-        return true;
     }
 
     @Override

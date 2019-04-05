@@ -251,9 +251,13 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 Furnace furnace = cache.getFurnace();
                 if (inv.getItem(33) != null) {
                     furnace.setResult(ItemUtils.getCustomItem(inv.getItem(33)));
+                }else{
+                    furnace.setResult(new CustomItem(Material.AIR));
                 }
                 if (inv.getItem(20) != null) {
                     furnace.setSource(ItemUtils.getCustomItem(inv.getItem(20)));
+                }else{
+                    furnace.setSource(new CustomItem(Material.AIR));
                 }
                 break;
         }

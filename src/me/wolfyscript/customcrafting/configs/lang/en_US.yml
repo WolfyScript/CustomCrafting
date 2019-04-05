@@ -47,6 +47,10 @@ msg:
         success: "&aAdded Potion Effect &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%"
         invalid_name: "&cInvalid name! &4%NAME%&c does not exist!"
       variant:
+        remove:
+          msg: "&3Choose the Item you want to remove!"
+          line: " &6%NUM%. &7%ITEM%"
+          success: "&aRemoved &6%ITEM%&a from variants&a!"
       attribute:
         amount:
           input: "§3Type in the amount you want! For example§6 0.4"
@@ -240,11 +244,10 @@ items:
         - "&7Sets the variants of ingredients"
         - "&7[&3Coming SOON&7]"
         - "&7[&cWork in Progress&7]"
-    up:
-      name: "&7Page Up"
-      help: []
-    down:
-      name: "&7Page Down"
+    variants_list:
+      name: "&6Variants"
+      lore:
+        - "&6%NUM%. &7%ITEM%"
       help: []
     potion_add:
       name: "&3Add Potion Effect"

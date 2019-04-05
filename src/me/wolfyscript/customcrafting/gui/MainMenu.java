@@ -53,7 +53,7 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onUpdateGuis(GuiUpdateEvent event) {
-        if (event.getWolfyUtilities().equals(CustomCrafting.getApi())) {
+        if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null) {
             for (int i = 0; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
                 event.setItem(i, "glass_gray", true);
             }

@@ -86,7 +86,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     @Override
-    public CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount) {
+    public CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount) {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         ArrayList<ItemStack> results = new ArrayList<>();
@@ -149,11 +149,6 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     @Override
     public boolean isSimilar(CraftingRecipe recipe) {
-        return false;
-    }
-
-    @Override
-    public boolean appliesToMatrix(ItemStack[] matrix) {
         return false;
     }
 

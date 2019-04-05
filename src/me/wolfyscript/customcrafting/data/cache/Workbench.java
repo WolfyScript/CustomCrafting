@@ -89,6 +89,10 @@ public class Workbench implements Serializable {
         getIngredients().put(key, ingredients);
     }
 
+    public void setIngredients(int slot, List<CustomItem> ingredients){
+        setIngredients(LETTERS[slot],ingredients);
+    }
+
     public void addIngredient(char key, CustomItem itemStack){
         List<CustomItem> ingredient = getIngredients(key);
         ingredient.add(itemStack);

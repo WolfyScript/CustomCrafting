@@ -29,7 +29,7 @@ public interface CraftingRecipe extends CustomRecipe{
 
     boolean check(List<List<ItemStack>> matrix);
 
-    CraftResult removeIngredients(List<List<ItemStack>> matrix, int totalAmount);
+    CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount);
 
     int getAmountCraftable(List<List<ItemStack>> matrix);
 
@@ -50,8 +50,6 @@ public interface CraftingRecipe extends CustomRecipe{
     HashMap<Character, List<CustomItem>> getIngredients();
 
     boolean isSimilar(CraftingRecipe recipe);
-
-    boolean appliesToMatrix(ItemStack[] matrix);
 
 
 

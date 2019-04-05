@@ -9,6 +9,8 @@ import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import me.wolfyscript.utilities.api.utils.Legacy;
+import me.wolfyscript.utilities.api.utils.chat.ClickAction;
+import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -63,8 +65,7 @@ public class ItemCreator extends ExtendedGuiWindow {
 
         createItem("variant_add", Material.GREEN_CONCRETE);
         createItem("variant_remove", Material.RED_CONCRETE);
-        createItem("up", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWFkNmM4MWY4OTlhNzg1ZWNmMjZiZTFkYzQ4ZWFlMmJjZmU3NzdhODYyMzkwZjU3ODVlOTViZDgzYmQxNGQifX19"));
-        createItem("down", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODgyZmFmOWE1ODRjNGQ2NzZkNzMwYjIzZjg5NDJiYjk5N2ZhM2RhZDQ2ZDRmNjVlMjg4YzM5ZWI0NzFjZTcifX19"));
+        createItem("variants_list", Material.BOOKSHELF);
 
         createItem("set_displayname", Material.GREEN_CONCRETE);
         createItem("remove_displayname", Material.RED_CONCRETE);
@@ -202,16 +203,25 @@ public class ItemCreator extends ExtendedGuiWindow {
                         break;
                     case "variants":
                         if (items.getType().equals("ingredient") || items.getType().equals("source")) {
-                            event.setItem(30, "variant_add");
-                            event.setItem(32, "variant_remove");
-                            for (int i = 0; i < 7; i++) {
-                                event.setItem(37 + i, new ItemStack(Material.AIR));
+                            //TODO: GET corresponding item
+                            event.setItem(37, "variant_add");
+                            event.setItem(38, items.getVariantItem());
+                            event.setItem(40, "variant_remove");
+
+                            ItemStack listItem = event.getItem("variants_list");
+                            ItemMeta listItemMeta = listItem.getItemMeta();
+                            String row = WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKey("items.item_creator.variants_list.lore").get(0));
+                            List<String> lore = new ArrayList<>();
+                            List<CustomItem> ingredients = cache.getWorkbench().getIngredients(items.getCraftSlot());
+                            for(int i = 1; i < ingredients.size(); i++){
+                                CustomItem customItem = ingredients.get(i);
+                                String line = row.replace("%ITEM%", customItem.hasID() ? customItem.getId() : customItem.getType().getKey().toString()).replace("%NUM%", ""+i);
+                                lore.add(line);
                             }
-                            for (int i = 0; i < 7; i++) {
-                                event.setItem(46 + i, new ItemStack(Material.AIR));
-                            }
-                            event.setItem(44, "up");
-                            event.setItem(53, "down");
+                            listItemMeta.setLore(lore);
+                            listItem.setItemMeta(listItemMeta);
+                            event.setItem(42, listItem);
+
                         } else {
                             event.setItem(40, new ItemStack(Material.BARRIER));
                         }
@@ -351,13 +361,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                             runChat(7, "$msg.gui.item_creator.potion.remove$", guiAction.getGuiHandler());
                             break;
 
-                        //VARIANTS
-                        case "variant_add":
-
-                            break;
-                        case "variant_remove":
-
-                            break;
                         //Attribute Settings
                         case "attribute.slot_head":
                         case "attribute.slot_chest":
@@ -403,6 +406,29 @@ public class ItemCreator extends ExtendedGuiWindow {
                             break;
                         case "skull_owner":
                             runChat(11, "$msg.gui.item_creator.skull_owner.input$", guiAction.getGuiHandler());
+
+                        //VARIANTS
+                        case "variant_add":
+                            if(items.getVariantItem() != null){
+                                cache.getWorkbench().getIngredients(items.getCraftSlot()).add(items.getVariantItem());
+                            }
+                            break;
+                        case "variant_remove":
+                            api.sendPlayerMessage(player, "$msg.gui.item_creator.variant.remove.msg$");
+                            guiAction.getGuiHandler().close();
+                            String line = WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_creator.variant.remove.line$"));
+                            List<CustomItem> ingredients = cache.getWorkbench().getIngredients(items.getCraftSlot());
+                            for(int i = 1; i < ingredients.size(); i++){
+                                int finalI = i;
+                                CustomItem customItem = ingredients.get(i);
+                                String id = customItem.hasID() ? customItem.getId() : customItem.getType().getKey().toString();
+                                api.sendActionMessage(player, new ClickData(line.replace("%NUM%", ""+i).replace("%ITEM%", id), (wolfyUtilities, player1) -> {
+                                    ingredients.remove(finalI);
+                                    api.sendPlayerMessage(player, "$msg.gui.item_creator.variant.remove.success$", new String[]{"%ITEM%",id});
+                                    guiAction.getGuiHandler().openLastInv();
+                                }));
+                            }
+                            return true;
                     }
 
                     //Flag and attribute section
@@ -422,11 +448,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                     itemStack.setItemMeta(itemMeta);
                     items.setItem(itemStack);
                     update(guiAction.getGuiHandler());
-
                 }
-
             }
-
         }
         return true;
     }
@@ -443,6 +466,13 @@ public class ItemCreator extends ExtendedGuiWindow {
                     }
                 } else {
                     cache.getItems().setSkullSetting(new ItemStack(Material.AIR));
+                }
+            }else if(cache.getSubSetting().equals("variants")){
+                ItemStack item = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
+                if (item != null) {
+                    cache.getItems().setVariantItem(ItemUtils.getCustomItem(item));
+                }else{
+                    cache.getItems().setVariantItem(new CustomItem(Material.AIR));
                 }
             }
             ItemStack item = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(13);
@@ -515,7 +545,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 if(message.equals("&empty")){
                     lore.add("");
                 }else{
-                    lore.add(ChatColor.translateAlternateColorCodes('&', message));
+                    lore.add(WolfyUtilities.translateColorCodes(message));
                 }
                 itemMeta.setLore(lore);
                 items.getItem().setItemMeta(itemMeta);
@@ -625,7 +655,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                     ((SkullMeta) itemMeta).setOwningPlayer(Bukkit.getOfflinePlayer(args[0]));
                 }
                 items.getItem().setItemMeta(itemMeta);
-
+                return false;
+            case 20:
 
         }
         return false;
