@@ -20,6 +20,10 @@ public class MainConfig extends Config {
         configAPI.registerConfig(this);
     }
 
+    public boolean isAdvancedWorkbenchEnabled(){
+        return getBoolean("workbench.enable");
+    }
+
     public int getAutosaveInterval(){
         return getInt("data.auto_save.interval");
     }
@@ -32,16 +36,8 @@ public class MainConfig extends Config {
         set("recipes.disabled_recipes", recipes);
     }
 
-    public boolean saveContents(){
-        return getBoolean("workbench.contents.save_contents");
-    }
-
     public boolean displayContents(){
         return getBoolean("workbench.contents.display_items");
-    }
-
-    public boolean displayOnlyAdvanced(){
-        return getBoolean("workbench.contents.only_advanced_workbenches");
     }
 
     public List<String> getCommandsSuccessCrafted(){
@@ -51,6 +47,5 @@ public class MainConfig extends Config {
     public List<String> getCommandsDeniedCraft(){
         return getStringList("workbench.commands.denied_craft");
     }
-
 
 }

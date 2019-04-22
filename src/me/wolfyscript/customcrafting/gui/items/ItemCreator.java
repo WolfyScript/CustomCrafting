@@ -23,10 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -73,6 +70,11 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("item_damage", Material.DIAMOND_SWORD);
         createItem("damage_set", Material.GREEN_CONCRETE);
         createItem("damage_reset", Material.RED_CONCRETE);
+
+        //TODO: Item rapair cost
+        createItem("repair_cost", Material.EXPERIENCE_BOTTLE);
+        createItem("repair_set", Material.GREEN_CONCRETE);
+        createItem("repair_reset", Material.RED_CONCRETE);
 
         createItem("set_displayname", Material.GREEN_CONCRETE);
         createItem("remove_displayname", Material.RED_CONCRETE);
@@ -140,19 +142,19 @@ public class ItemCreator extends ExtendedGuiWindow {
 
             event.setItem(18, "item_enchantments");
             event.setItem(19, "item_flags");
-
             event.setItem(20, "unbreakable_off");
             if (items.getItem() != null && items.getItem().hasItemMeta() && items.getItem().getItemMeta().isUnbreakable()) {
                 event.setItem(20, "unbreakable_on");
             }
 
+            event.setItem(15, "repair_cost");
             event.setItem(16, "potion_effects");
             event.setItem(17, "attributes_modifiers");
 
+            event.setItem(24, "item_damage");
             event.setItem(25, "variants");
             event.setItem(26, "skull_setting");
 
-            event.setItem(24, "item_damage");
 
             CustomItem itemStack = items.getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -243,7 +245,13 @@ public class ItemCreator extends ExtendedGuiWindow {
                         } else {
                             event.setItem(40, "invalid_type");
                         }
-
+                    case "repair_cost":
+                        if(itemMeta instanceof Repairable){
+                            event.setItem(39, "repair_set");
+                            event.setItem(41, "repair_reset");
+                        }else{
+                            event.setItem(40, "invalid_type");
+                        }
                 }
                 if (cache.getSubSetting().startsWith("GENERIC_") || cache.getSubSetting().startsWith("HORSE_") || cache.getSubSetting().startsWith("ZOMBIE_")) {
 
@@ -339,6 +347,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         case "item_enchantments":
                         case "potion_effects":
                         case "item_damage":
+                        case "repair_cost":
                         case "variants":
                             cache.setSubSetting(action);
                             break;
@@ -460,6 +469,17 @@ public class ItemCreator extends ExtendedGuiWindow {
                             if(itemMeta instanceof Damageable){
                                 ((Damageable) itemMeta).setDamage(0);
                             }
+                        //REPAIR COST
+                        case "repair_set":
+                            if(itemMeta instanceof Repairable){
+                                runChat(30, "$msg.gui.item_creator.repair.set$", guiAction.getGuiHandler());
+                            }else{
+                                api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.invalid_type$");
+                            }
+                        case "repair_reset":
+                            if(itemMeta instanceof Repairable){
+                                ((Repairable) itemMeta).setRepairCost(0);
+                            }
                     }
 
                     //Flag and attribute section
@@ -474,8 +494,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                     } else if (action.startsWith("attribute.generic") || action.startsWith("attribute.horse_") || action.startsWith("attribute.zombie_")) {
                         cache.setSubSetting(action.split("\\.")[1].toUpperCase());
                     }
-
-
                     itemStack.setItemMeta(itemMeta);
                     items.setItem(itemStack);
                     update(guiAction.getGuiHandler());
@@ -698,6 +716,19 @@ public class ItemCreator extends ExtendedGuiWindow {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.damage.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
                 }catch (NumberFormatException e){
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.damage.invalid_value$", new String[]{"%VALUE%", message});
+                    return true;
+                }
+            case 30:
+                if(!(itemMeta instanceof Repairable)){
+                    return true;
+                }
+                try {
+                    int value = Integer.parseInt(message);
+                    ((Repairable) itemMeta).setRepairCost(value);
+                    items.getItem().setItemMeta(itemMeta);
+                    api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
+                }catch (NumberFormatException e){
+                    api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
         }

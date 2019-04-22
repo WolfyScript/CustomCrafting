@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -33,6 +34,25 @@ public class CraftEvents implements Listener {
 
     public CraftEvents(WolfyUtilities api) {
         this.api = api;
+    }
+
+    @EventHandler
+    public void onAdvancedWorkbench(CustomPreCraftEvent event){
+        if(!event.isCancelled() && event.getRecipe().getID().equals("customcrafting:workbench")){
+            if(CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()){
+                String name = api.getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$");
+                List<String> lore = api.getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore");
+                lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
+                ItemStack itemStack = event.getRecipe().getCustomResult().clone();
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(name);
+                itemMeta.setLore(lore);
+                itemStack.setItemMeta(itemMeta);
+                event.setResult(itemStack);
+            }else{
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler

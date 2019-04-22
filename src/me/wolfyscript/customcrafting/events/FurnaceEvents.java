@@ -32,7 +32,7 @@ public class FurnaceEvents implements Listener {
     public void onDiscover(PlayerRecipeDiscoverEvent event){
         FurnaceCRecipe recipe = CustomCrafting.getRecipeHandler().getFurnaceRecipe(event.getRecipe().toString());
         if(recipe != null){
-            event.setCancelled(true);
+            //event.setCancelled(true);
         }
     }
 

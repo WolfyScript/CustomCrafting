@@ -13,9 +13,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
 
 import java.util.Collection;
+import java.util.List;
 
 public class BlockEvents implements Listener {
 
@@ -33,6 +35,10 @@ public class BlockEvents implements Listener {
                             CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
                         }
                     }
+                }else if(itemStack.getItemMeta().hasLore()){
+                    if(WolfyUtilities.unhideString(itemStack.getItemMeta().getLore().get(0)).equals("cc_workbench")){
+                        CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
+                    }
                 }
             }
         }
@@ -45,7 +51,15 @@ public class BlockEvents implements Listener {
             Location location = block.getLocation();
             if (CustomCrafting.getWorkbenches().isWorkbench(location)) {
                 CustomCrafting.getWorkbenches().removeWorkbench(location);
-                block.getWorld().dropItemNaturally(block.getLocation().clone(), CustomCrafting.getRecipeHandler().getCustomItem("customcrafting", "workbench"));
+                String name = CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$");
+                List<String> lore = CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore");
+                lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
+                ItemStack itemStack = CustomCrafting.getRecipeHandler().getCustomItem("customcrafting", "workbench").clone();
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(name);
+                itemMeta.setLore(lore);
+                itemStack.setItemMeta(itemMeta);
+                block.getWorld().dropItemNaturally(block.getLocation().clone(), itemStack);
                 event.setDropItems(false);
             }
         }

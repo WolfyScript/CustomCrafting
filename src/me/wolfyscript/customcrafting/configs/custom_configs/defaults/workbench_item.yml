@@ -6,8 +6,10 @@ item:
     meta-type: UNSPECIFIC
     display-name: '&6Advanced Workbench'
     lore:
-      - '&7Workbench for advanced crafting'
-      - '&c&c&_&w&o&r&k&b&e&n&c&h'
+      - 'Workbench for advanced crafting'
+      - 'The Name and Lore will be overridden!'
+      - 'Only the Enchantments and ItemFlags will stay!'
+      - 'Name and Lore can be configured in the language file!'
     enchants:
       FIRE_ASPECT: 9
     ItemFlags:
