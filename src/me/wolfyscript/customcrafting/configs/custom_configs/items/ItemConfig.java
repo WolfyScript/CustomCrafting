@@ -1,5 +1,6 @@
-package me.wolfyscript.customcrafting.configs.custom_configs;
+package me.wolfyscript.customcrafting.configs.custom_configs.items;
 
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.inventory.ItemStack;
 

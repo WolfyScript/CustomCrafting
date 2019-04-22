@@ -15,7 +15,7 @@ public class CustomConfig extends Config {
     private String type;
 
     public CustomConfig(ConfigAPI configAPI, String defaultName, String folder, String type, String name) {
-        super(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs", defaultName, configAPI.getPlugin().getDataFolder().getPath()+"/recipes/"+folder+"/"+type, name);
+        super(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs/"+type, defaultName, configAPI.getPlugin().getDataFolder().getPath()+"/recipes/"+folder+"/"+type, name);
         this.folder = folder;
         this.name = name;
         this.id = folder+":"+name;

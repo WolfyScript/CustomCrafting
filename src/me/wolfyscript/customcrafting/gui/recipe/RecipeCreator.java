@@ -1,17 +1,19 @@
 package me.wolfyscript.customcrafting.gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.ShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Bukkit;
@@ -282,7 +284,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             config.setNeedWorkbench(workbench.isAdvWorkbench());
                             config.setShapeless(workbench.isShapeless());
                             config.setResult(workbench.getResult());
-                            HashMap<Character, List<CustomItem>> ingredients = workbench.getIngredients();
+                            HashMap<Character, ArrayList<CustomItem>> ingredients = workbench.getIngredients();
                             String[] shape = new String[3];
                             int index = 0;
                             int row = 0;

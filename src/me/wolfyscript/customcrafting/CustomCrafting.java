@@ -13,19 +13,19 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemFactory;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +54,7 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("                                                       /___/ v" + instance.getDescription().getVersion());
         System.out.println(" ");
         System.out.println("This is a Beta-Test!");
-        System.out.println("This version may contain bugs or/and errors!");
+        System.out.println("This version may contain bugs or errors!");
         System.out.println("------------------------------------------------------------------------");
 
         if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null){
@@ -75,11 +75,12 @@ public class CustomCrafting extends JavaPlugin {
             }
         }
 
+
         configHandler = new ConfigHandler(api);
         invHandler = new InventoryHandler(api);
         recipeHandler = new RecipeHandler(api);
-
         configHandler.load();
+
 
         System.out.println("------------------------------------------------------------------------");
 
@@ -104,12 +105,19 @@ public class CustomCrafting extends JavaPlugin {
             api.sendConsoleMessage("$msg.startup.placeholder$");
             new PlaceHolder().register();
         }
-
         recipeHandler.loadConfigs();
+        Thread updater = new Thread(this::checkUpdate);
+        updater.start();
 
         Metrics metrics = new Metrics(this);
-
-
+        metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
+        metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
+            if(WolfyUtilities.hasSpigot()){
+                return "Spigot";
+            }else{
+                return Bukkit.getServer().getName();
+            }
+        }));
         System.out.println("------------------------------------------------------------------------");
     }
 
@@ -118,7 +126,19 @@ public class CustomCrafting extends JavaPlugin {
         workbenches.save();
         getRecipeHandler().onSave();
         savePlayerCache();
+    }
 
+    public void checkUpdate(){
+        try {
+            HttpURLConnection con = (HttpURLConnection) new URL(
+                    "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
+            String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+            if(!version.isEmpty() && !version.equals(instance.getDescription().getVersion())){
+                api.sendConsoleWarning("$msg.startup.outdated$");
+            }
+        } catch (Exception ex) {
+            api.sendConsoleWarning("$msg.startup.update_check_fail$");
+        }
     }
 
     public static ConfigHandler getConfigHandler() {

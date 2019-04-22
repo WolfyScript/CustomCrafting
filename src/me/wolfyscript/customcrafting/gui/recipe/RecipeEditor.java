@@ -6,12 +6,10 @@ import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
-import me.wolfyscript.utilities.api.utils.chat.ClickAction;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -95,7 +93,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                                 cache.resetWorkbench();
                                 Workbench workbench = cache.getWorkbench();
                                 workbench.setResult(recipe.getCustomResult());
-                                HashMap<Character, List<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
+                                HashMap<Character, ArrayList<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
                                 workbench.setIngredients(Arrays.asList(new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR))));
                                 for (String row : ((CraftingRecipe) recipe).getConfig().getShape()) {
                                     for (char key : row.toCharArray()) {

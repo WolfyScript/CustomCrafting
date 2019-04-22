@@ -59,13 +59,6 @@ public class RecipesList extends ExtendedGuiWindow {
                     }
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
-                    /*
-                    if (recipe instanceof FurnaceRecipe) {
-                        lore.add("§7§lFurnace");
-                    } else {
-                        lore.add("§7§lWorkbench");
-                    }
-                    */
                     lore.add(" ");
                     lore.add("§7"+((Keyed) recipe).getKey().toString()+""+WolfyUtilities.hideString(";;"+((Keyed) recipe).getKey().toString()));
                     if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {

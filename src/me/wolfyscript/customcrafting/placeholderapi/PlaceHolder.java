@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.placeholderapi;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;

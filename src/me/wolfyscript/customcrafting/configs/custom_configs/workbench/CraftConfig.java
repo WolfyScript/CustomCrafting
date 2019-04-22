@@ -1,6 +1,7 @@
-package me.wolfyscript.customcrafting.configs.custom_configs;
+package me.wolfyscript.customcrafting.configs.custom_configs.workbench;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -73,7 +74,7 @@ public class CraftConfig extends CustomConfig {
         return getCustomItem("result");
     }
 
-    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
+    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
         set("ingredients", new HashMap<String, Object>());
         for (char key : ingredients.keySet()) {
             int variant = 0;
@@ -91,12 +92,12 @@ public class CraftConfig extends CustomConfig {
         }
     }
 
-    public HashMap<Character, List<CustomItem>> getIngredients() {
-        HashMap<Character, List<CustomItem>> result = new HashMap<>();
+    public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
+        HashMap<Character, ArrayList<CustomItem>> result = new HashMap<>();
         Set<String> keys = getConfig().getConfigurationSection("ingredients").getKeys(false);
         for (String key : keys) {
             Set<String> itemKeys = getConfig().getConfigurationSection("ingredients." + key).getKeys(false);
-            List<CustomItem> data = new ArrayList<>();
+            ArrayList<CustomItem> data = new ArrayList<>();
             for (String itemKey : itemKeys) {
                 CustomItem itemStack;
                 itemStack = getCustomItem("ingredients." + key + "." + itemKey);

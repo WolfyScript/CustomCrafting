@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.items;
 
-import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;

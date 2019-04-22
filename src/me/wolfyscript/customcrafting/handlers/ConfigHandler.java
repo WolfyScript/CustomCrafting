@@ -2,9 +2,9 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -20,9 +20,7 @@ public class ConfigHandler {
     private WolfyUtilities api;
     private ConfigAPI configAPI;
     private LanguageAPI languageAPI;
-
     private MainConfig mainConfig;
-
 
     public ConfigHandler(WolfyUtilities api){
         this.api = api;
@@ -44,9 +42,15 @@ public class ConfigHandler {
 
     public void loadLang(){
         String chosenLang = configAPI.getConfig("main_config").getString("language");
-        Config langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenLang, true);
+        Config langConf;
+        if(CustomCrafting.getInst().getResource("me/wolfyscript/customcrafting/configs/lang" + "/" + chosenLang + ".yml") != null){
+            langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath()+"/lang", chosenLang, true);
+        }else{
+            langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", "en_US", instance.getDataFolder().getPath()+"/lang", chosenLang, false);
+        }
         langConf.loadDefaults();
         System.out.println("Loading language \""+chosenLang+"\" v"+ langConf.getString("version") +" translated by "+langConf.getString("author"));
+
         languageAPI.registerLanguage(new Language(chosenLang, langConf, configAPI));
     }
 

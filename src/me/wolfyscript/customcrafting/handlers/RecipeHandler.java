@@ -1,22 +1,21 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.FurnaceConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.ItemConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.ShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.craftrecipes.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 
 import java.io.File;
-import java.security.Key;
 import java.util.*;
 
 public class RecipeHandler {
@@ -288,9 +287,11 @@ public class RecipeHandler {
     }
 
     public FurnaceCRecipe getFurnaceRecipe(ItemStack source) {
-        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
+        for (FurnaceCRecipe recipe : getFurnaceRecipes(source)) {
             if (recipe.getSource().getType() == source.getType()) {
-                return recipe;
+                if(recipe.getSource().isSimilar(source)){
+                    return recipe;
+                }
             }
         }
         return null;
@@ -386,7 +387,7 @@ public class RecipeHandler {
 
      */
     public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {
-        api.sendDebugMessage("-getting Ingredients-");
+        api.sendDebugMessage("-----[getting Ingredients]-----");
         List<List<ItemStack>> items = new ArrayList<>();
         int j = 0;
         int r = 0;
@@ -468,7 +469,7 @@ public class RecipeHandler {
                 api.sendDebugMessage("- " + itemStack);
             }
         }
-        api.sendDebugMessage("---------------------");
+        api.sendDebugMessage("------------------------------");
         return items;
     }
 

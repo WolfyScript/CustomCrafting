@@ -1,8 +1,9 @@
-package me.wolfyscript.customcrafting.recipes;
+package me.wolfyscript.customcrafting.recipes.craftrecipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -11,7 +12,6 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     private String id;
     private String group;
     private CustomItem result;
-    private HashMap<Character, List<CustomItem>> ingredients;
+    private HashMap<Character, ArrayList<CustomItem>> ingredients;
     private String[] shape;
     private String shapeLine;
     private RecipePriority priority;
@@ -77,19 +77,19 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     @Override
     public boolean check(List<List<ItemStack>> matrix) {
-        api.sendDebugMessage("Recipe: "+getID());
+        api.sendDebugMessage("Recipe: " + getID());
         List<Character> containedKeys = new ArrayList<>();
-        for(int i = 0; i < matrix.size(); i++){
-            for(int j = 0; j < matrix.get(i).size(); j++){
-                api.sendDebugMessage("  - "+getShape()[i].charAt(j));
-                api.sendDebugMessage("    - "+matrix.get(i).get(j) +" <-> "+ getIngredients().get(getShape()[i].charAt(j)));
-                if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
-                    if(checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j))) == null){
+        for (int i = 0; i < matrix.size(); i++) {
+            for (int j = 0; j < matrix.get(i).size(); j++) {
+                api.sendDebugMessage("  - " + getShape()[i].charAt(j));
+                api.sendDebugMessage("    - " + matrix.get(i).get(j) + " <-> " + getIngredients().get(getShape()[i].charAt(j)));
+                if ((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')) {
+                    if (checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j))) == null) {
                         return false;
-                    }else{
+                    } else {
                         containedKeys.add(getShape()[i].charAt(j));
                     }
-                }else if(!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')){
+                } else if (!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')) {
                     return false;
                 }
             }
@@ -98,8 +98,8 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     public ItemStack checkIngredient(ItemStack input, List<CustomItem> ingredients) {
-        for(CustomItem ingredient : ingredients){
-            if(input.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(input)){
+        for (CustomItem ingredient : ingredients) {
+            if (input.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(input)) {
                 return ingredient.clone();
             }
         }
@@ -108,49 +108,61 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     @Override
     public CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount) {
-        ItemStack[] shape = small ? new ItemStack[]{null,null, null,null} : new ItemStack[]{null,null,null, null,null,null, null,null,null};
+        ItemStack[] shape = small ? new ItemStack[]{null, null, null, null} : new ItemStack[]{null, null, null, null, null, null, null, null, null};
         int startIndex = 0;
-        if(matrix.size() < 3){
-            for(int i = 0; i < original.length; i++){
-                if(original[i] != null){
-                    startIndex = i;
+        for (int i = 0; i < original.length; i++) {
+            if (original[i] != null) {
+                startIndex = i;
+                break;
+            }
+        }
+        if(matrix.get(0).size() > 1){
+            for(int i = 0; i < matrix.get(0).size(); i++){
+                ItemStack item = matrix.get(0).get(i);
+                if(item != null){
+                    startIndex = startIndex-i;
                     break;
                 }
             }
         }
+        api.sendDebugMessage("Start Index: " + startIndex);
+        api.sendDebugMessage("Rows Amount: "+matrix.size());
+        api.sendDebugMessage("Row length: "+matrix.get(0).size());
         int r = 0;
         int c = 0;
-        for(int x = startIndex; x < shape.length; x++){
-            api.sendDebugMessage("r: "+r+" c: "+c);
-            if(r < matrix.size() && c < matrix.get(r).size()){
-                if((matrix.get(r).get(c) != null && getShape()[r].charAt(c) != ' ')){
+        for (int x = startIndex; x < shape.length; x++) {
+            api.sendDebugMessage("r: " + r + " c: " + c);
+            if (r < matrix.size() && c < matrix.get(r).size()) {
+                if ((matrix.get(r).get(c) != null && getShape()[r].charAt(c) != ' ')) {
                     ItemStack input = matrix.get(r).get(c);
                     ItemStack item = checkIngredient(input, getIngredients().get(getShape()[r].charAt(c)));
-                    if(item != null){
+                    if (item != null) {
                         if (item.getMaxStackSize() > 1) {
                             int amount = input.getAmount() - item.getAmount() * totalAmount + 1;
+                            api.sendDebugMessage("  ->" + amount);
                             input.setAmount(amount);
                         }
                         //TEST FOR BUCKETS AND OTHER ITEMS!?
-                        if (input.getAmount() > 0){
+                        if (input.getAmount() > 0) {
                             shape[x] = input;
                         }
                     }
                 }
             }
             c++;
-            if(c >= matrix.get(r).size()){
-                c=0;
+            if (c >= matrix.get(r).size()) {
+                c = 0;
                 r++;
-                if(r >= matrix.size()){
+                x = x + (3 - (matrix.get(0).size()-1)) - 1;
+                if (r >= matrix.size()) {
                     break;
                 }
             }
 
         }
         api.sendDebugMessage("MATRIX: ");
-        for(ItemStack item : shape){
-            api.sendDebugMessage("- "+item);
+        for (ItemStack item : shape) {
+            api.sendDebugMessage("- " + item);
         }
         return new CraftResult(shape, totalAmount);
     }
@@ -158,12 +170,12 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     @Override
     public int getAmountCraftable(List<List<ItemStack>> matrix) {
         int totalAmount = -1;
-        for(int i = 0; i < matrix.size(); i++){
-            for(int j = 0; j < matrix.get(i).size(); j++){
-                if((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')){
+        for (int i = 0; i < matrix.size(); i++) {
+            for (int j = 0; j < matrix.get(i).size(); j++) {
+                if ((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')) {
                     ItemStack item = checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j)));
-                    if(item != null){
-                        int possible = item.getAmount() / result.getAmount();
+                    if (item != null) {
+                        int possible = matrix.get(i).get(j).getAmount() / item.getAmount();
                         if (possible < totalAmount || totalAmount == -1)
                             totalAmount = possible;
                     }
@@ -184,12 +196,12 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
+    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
     @Override
-    public HashMap<Character, List<CustomItem>> getIngredients() {
+    public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
         return ingredients;
     }
 

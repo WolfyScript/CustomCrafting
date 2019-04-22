@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.recipes;
+package me.wolfyscript.customcrafting.recipes.craftrecipes;
 
 import org.bukkit.inventory.ItemStack;
 

@@ -4,9 +4,10 @@ item:
   meta:
     ==: ItemMeta
     meta-type: UNSPECIFIC
-    display-name: '&6Advanced Workbench&:&c&c&_&w&o&r&k&b&e&n&c&h'
+    display-name: '&6Advanced Workbench'
     lore:
       - '&7Workbench for advanced crafting'
+      - '&c&c&_&w&o&r&k&b&e&n&c&h'
     enchants:
       FIRE_ASPECT: 9
     ItemFlags:

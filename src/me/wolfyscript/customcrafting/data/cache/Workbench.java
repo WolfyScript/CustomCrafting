@@ -7,17 +7,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Workbench implements Serializable {
 
     private static final long serialVersionUID = 421L;
     private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
-    private HashMap<Character, List<CustomItem>> ingredients;
+    private HashMap<Character, ArrayList<CustomItem>> ingredients;
     private CustomItem result;
     private String extend;
     private List<String> overrides;
@@ -42,15 +39,15 @@ public class Workbench implements Serializable {
         this.priority = RecipePriority.NORMAL;
     }
 
-    public HashMap<Character, List<CustomItem>> getIngredients() {
+    public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
+    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public List<CustomItem> getIngredients(char key){
+    public ArrayList<CustomItem> getIngredients(char key){
         return getIngredients().getOrDefault(key, new ArrayList<>());
     }
 
@@ -68,7 +65,12 @@ public class Workbench implements Serializable {
 
     public void setIngredients(List<ItemStack> ingredients) {
         for(int i = 0; i < ingredients.size(); i++){
-            setIngredient(i, ItemUtils.getCustomItem(ingredients.get(i)));
+            CustomItem customItem = ItemUtils.getCustomItem(ingredients.get(i));
+            if(customItem.getType().equals(Material.AIR)){
+                setIngredients(i, new ArrayList<>(Collections.singleton(customItem)));
+            }else{
+                setIngredient(i, customItem);
+            }
         }
     }
 
@@ -77,7 +79,7 @@ public class Workbench implements Serializable {
     }
 
     public void setIngredient(char key, int variant, CustomItem itemStack){
-        List<CustomItem> ingredient = getIngredients(key);
+        ArrayList<CustomItem> ingredient = (ArrayList<CustomItem>) getIngredients(key);
         if(variant < ingredient.size())
             ingredient.set(variant, itemStack);
         else
@@ -85,16 +87,16 @@ public class Workbench implements Serializable {
         getIngredients().put(key, ingredient);
     }
 
-    public void setIngredients(char key, List<CustomItem> ingredients){
+    public void setIngredients(char key, ArrayList<CustomItem> ingredients){
         getIngredients().put(key, ingredients);
     }
 
-    public void setIngredients(int slot, List<CustomItem> ingredients){
-        setIngredients(LETTERS[slot],ingredients);
+    public void setIngredients(int slot, ArrayList<CustomItem> ingredients){
+        setIngredients(LETTERS[slot], ingredients);
     }
 
     public void addIngredient(char key, CustomItem itemStack){
-        List<CustomItem> ingredient = getIngredients(key);
+        ArrayList<CustomItem> ingredient = getIngredients(key);
         ingredient.add(itemStack);
         getIngredients().put(key, ingredient);
     }

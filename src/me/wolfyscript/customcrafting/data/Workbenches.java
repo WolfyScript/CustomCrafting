@@ -43,8 +43,12 @@ public class Workbenches {
         particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
             for (String loc : workbenches.keySet()) {
                 Location location = stringToLocation(loc);
-                World world = location.getWorld();
-                world.spawnParticle(Particle.ENCHANTMENT_TABLE, location.clone().add(0.5, 1.3, 0.5), 4, 0, 0, 0, 0.5);
+                if(location != null){
+                    World world = location.getWorld();
+                    if(world != null){
+                        world.spawnParticle(Particle.ENCHANTMENT_TABLE, location.clone().add(0.5, 1.3, 0.5), 4, 0, 0, 0, 0.5);
+                    }
+                }
             }
         }, 10, 2);
 
@@ -93,25 +97,39 @@ public class Workbenches {
         return workbenches.containsKey(locationToString(location));
     }
 
+    /*
     public void addFurnace(Location location) {
-        if (!furnaces.contains(locationToString(location))) {
-            furnaces.add(locationToString(location));
+        if (!isFurnaceSaved(location)) {
+            furnaces.put(locationToString(location), 0f);
         }
+    }
+
+    public void addToStoredExp(Location location, float xp){
+        setStoredExp(location, getStoredExp(location)+xp);
+    }
+
+    private void setStoredExp(Location location, float xp){
+        furnaces.put(locationToString(location), xp);
     }
 
     public void removeFurnace(Location location) {
         furnaces.remove(locationToString(location));
     }
 
-    public boolean isFurnace(Location location) {
-        return furnaces.contains(locationToString(location));
+    public float getStoredExp(Location location){
+        return furnaces.getOrDefault(locationToString(location), 0f);
     }
 
-    public String locationToString(Location location) {
+    public boolean isFurnaceSaved(Location location) {
+        return furnaces.containsKey(locationToString(location));
+    }
+    */
+
+    private String locationToString(Location location) {
         return location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
     }
 
-    public Location stringToLocation(String loc) {
+    private Location stringToLocation(String loc) {
         String[] args = loc.split(";");
         return new Location(Bukkit.getWorld(UUID.fromString(args[0])), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
     }

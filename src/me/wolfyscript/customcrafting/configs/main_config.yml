@@ -1,5 +1,5 @@
 # Main Config - CustomCrafting v0.0.9.141
-
+#
 #PlaceholderAPI:
 # Identifier: customcrafting
 # Placeholders:
@@ -14,11 +14,7 @@ debug: false
 language: en_US
 
 workbench:
-  contents:
-    #Saves the items placed in a workbench. When enabled only one player at a time can use the workbench!
-    save_contents: false
-    #Displays the items on the workbench using ArmorStands. Save contents must be enabled in order to use it!
-    display_items: false
+  enable: true
 
   # Sound after successful crafting!
   craft_sound:

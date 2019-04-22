@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.data.cache.Items;
+import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.Setting;
 
@@ -16,6 +17,8 @@ public class PlayerCache {
     private HashMap<String, Object> CACHE = new HashMap<>();
 
     private Items items = new Items();
+
+    private KnowledgeBook knowledgeBook = new KnowledgeBook();
 
     //LIST OF ALL RECIPE CACHES
     private Workbench workbench =  new Workbench();
@@ -82,6 +85,14 @@ public class PlayerCache {
 
     public void setFurnace(Furnace furnace) {
         this.furnace = furnace;
+    }
+
+    public KnowledgeBook getKnowledgeBook() {
+        return knowledgeBook;
+    }
+
+    public void setKnowledgeBook(KnowledgeBook knowledgeBook) {
+        this.knowledgeBook = knowledgeBook;
     }
 
     public Items getItems() {

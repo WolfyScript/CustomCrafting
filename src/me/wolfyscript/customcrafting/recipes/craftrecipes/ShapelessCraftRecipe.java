@@ -1,8 +1,9 @@
-package me.wolfyscript.customcrafting.recipes;
+package me.wolfyscript.customcrafting.recipes.craftrecipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -23,7 +24,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     private String id;
     private CustomItem result;
     private String group;
-    private HashMap<Character, List<CustomItem>> ingredients;
+    private HashMap<Character, ArrayList<CustomItem>> ingredients;
     private WolfyUtilities api;
 
     public ShapelessCraftRecipe(CraftConfig config) {
@@ -89,33 +90,46 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     public CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount) {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
-        ArrayList<ItemStack> results = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        ItemStack[] results = small ? new ItemStack[]{null, null, null, null} : new ItemStack[]{null, null, null, null, null, null, null, null, null};
+        int passes = small ? 2 : 3;
+        int index = 0;
+        for (int i = 0; i < original.length; i++) {
+            if (original[i] != null) {
+                index = i;
+                break;
+            }
+        }
+        for (int i = 0; i < passes; i++) {
+            for (int j = 0; j < passes; j++) {
                 if (i < matrix.size() && j < matrix.get(i).size()) {
-                    ItemStack input = matrix.get(i).get(j);
-                    ItemStack result = checkIngredient(allKeys, usedKeys, input);
-                    if (result != null) {
-                        if (result.getMaxStackSize() > 1) {
-                            int amount = input.getAmount() - result.getAmount() * totalAmount + 1;
-                            input.setAmount(amount);
+                    ItemStack input = original[index];
+                    if(input != null){
+                        ItemStack result = checkIngredient(allKeys, usedKeys, input);
+                        if (result != null) {
+                            if (result.getMaxStackSize() > 1) {
+                                int amount = input.getAmount() - result.getAmount() * totalAmount + 1;
+                                input.setAmount(amount);
+                            }
+                            //TEST FOR BUCKETS AND OTHER ITEMS!?
+                            if (input.getAmount() > 0)
+                                results[index] = input;
                         }
-                        //TEST FOR BUCKETS AND OTHER ITEMS!?
-                        if (input.getAmount() <= 0)
-                            results.add(new ItemStack(Material.AIR));
-                        else
-                            results.add(input);
-                    } else {
-                        results.add(new ItemStack(Material.AIR));
                     }
-                }else{
-                    results.add(new ItemStack(Material.AIR));
                 }
+                index++;
+                if(index >= results.length){
+                    break;
+                }
+            }
+            if(index >= results.length){
+                break;
             }
         }
         api.sendDebugMessage("MATRIX: ");
-        results.forEach(itemStack -> api.sendDebugMessage(" - "+itemStack));
-        return new CraftResult(results.toArray(new ItemStack[0]), totalAmount);
+        for(ItemStack item : results){
+            api.sendDebugMessage(" - "+item);
+        }
+        return new CraftResult(results, totalAmount);
     }
 
     @Override
@@ -138,12 +152,12 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         return totalAmount;
     }
 
-    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
+    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
     @Override
-    public HashMap<Character, List<CustomItem>> getIngredients() {
+    public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
         return ingredients;
     }
 

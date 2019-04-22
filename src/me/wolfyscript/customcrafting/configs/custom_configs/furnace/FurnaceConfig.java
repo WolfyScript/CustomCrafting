@@ -1,5 +1,6 @@
-package me.wolfyscript.customcrafting.configs.custom_configs;
+package me.wolfyscript.customcrafting.configs.custom_configs.furnace;
 
+import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 
@@ -46,22 +47,4 @@ public class FurnaceConfig extends CustomConfig {
     public CustomItem getResult(){
         return getCustomItem("result");
     }
-
-    /*
-    public void setAdvancedFurnace(boolean furnace){
-        set("advanced_furnace", furnace);
-    }
-
-    public boolean needsAdvancedFurnace(){
-        return getBoolean("advanced_furnace");
-    }
-
-    public List<String> getOverride(){
-        return getStringList("override");
-    }
-
-    public String getOverride(){
-        return getString("extend");
-    }
-    */
 }

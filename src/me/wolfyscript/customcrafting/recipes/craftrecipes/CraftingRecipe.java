@@ -1,17 +1,16 @@
-package me.wolfyscript.customcrafting.recipes;
+package me.wolfyscript.customcrafting.recipes.craftrecipes;
 
 
-import me.wolfyscript.customcrafting.configs.custom_configs.CraftConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.CraftingInventory;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public interface CraftingRecipe extends CustomRecipe{
+public interface CraftingRecipe extends CustomRecipe {
 
     CraftConfig getConfig();
 
@@ -45,9 +44,9 @@ public interface CraftingRecipe extends CustomRecipe{
 
     CustomItem getCustomResult();
 
-    void setIngredients(HashMap<Character, List<CustomItem>> ingredients);
+    void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients);
 
-    HashMap<Character, List<CustomItem>> getIngredients();
+    HashMap<Character, ArrayList<CustomItem>> getIngredients();
 
     boolean isSimilar(CraftingRecipe recipe);
 
