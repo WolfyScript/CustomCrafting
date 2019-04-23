@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.recipes.craftrecipes;
+package me.wolfyscript.customcrafting.recipes.workbench;
 
 import java.util.HashMap;
 

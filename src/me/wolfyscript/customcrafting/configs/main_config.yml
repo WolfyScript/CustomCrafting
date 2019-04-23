@@ -13,6 +13,10 @@ debug: false
 #If you have any language file you want to be added to this plugin, then feel free to contact me.
 language: en_US
 
+#This can be set to false if you have conflicting plugins that also use the alias /cc
+commands:
+  cc: true
+
 workbench:
   enable: true
 

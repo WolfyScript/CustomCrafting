@@ -92,9 +92,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         }
                     }
                 }
-
             }
-        } else if(sender instanceof ConsoleCommandSender){
+        } else {
             if (args[0].equalsIgnoreCase("give")) {
                 //   /cc give <player> <namespace:key> [amount]
                 if (args.length >= 3) {

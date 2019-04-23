@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiAction;

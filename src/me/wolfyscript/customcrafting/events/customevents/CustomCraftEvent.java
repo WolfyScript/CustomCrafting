@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.events.customevents;
 
-import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

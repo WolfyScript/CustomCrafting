@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.events;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.recipes.FurnaceCRecipe;
+import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;

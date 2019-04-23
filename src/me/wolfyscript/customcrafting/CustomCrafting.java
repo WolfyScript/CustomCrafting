@@ -92,8 +92,10 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FurnaceEvents(), this);
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
         CommandCC commandCC = new CommandCC();
-        getServer().getPluginCommand("cc").setExecutor(commandCC);
-        getServer().getPluginCommand("cc").setTabCompleter(commandCC);
+        if(configHandler.getConfig().isCCenabled()){
+            getServer().getPluginCommand("cc").setExecutor(commandCC);
+            getServer().getPluginCommand("cc").setTabCompleter(commandCC);
+        }
         getServer().getPluginCommand("customcrafting").setExecutor(commandCC);
         getServer().getPluginCommand("customcrafting").setTabCompleter(commandCC);
 

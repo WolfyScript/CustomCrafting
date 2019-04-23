@@ -1,14 +1,17 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_configs.fuel.FurnaceFuelConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.*;
-import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.craftrecipes.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.craftrecipes.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
+import me.wolfyscript.customcrafting.recipes.furnace.FurnaceFuel;
+import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
@@ -25,6 +28,8 @@ public class RecipeHandler {
     private List<CustomRecipe> customRecipes = new ArrayList<>();
     private List<CustomItem> customItems = new ArrayList<>();
 
+    private List<FurnaceFuel> customFuels = new ArrayList<>();
+
     private ArrayList<String> disabledRecipes = new ArrayList<>();
     private HashMap<String, List<String>> overrideRecipes = new HashMap<>();
 
@@ -38,7 +43,9 @@ public class RecipeHandler {
 
     private void loadConfig(String subfolder, String type) {
         File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
-        File[] files = workbench.listFiles((dir, name) -> name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml") && !name.split("\\.")[0].equals("example"));
+
+        File[] files = workbench.listFiles((dir, name) -> (name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml")));
+
         if (files != null) {
             api.sendConsoleMessage("    " + type + ":");
             for (File file : files) {
@@ -64,7 +71,7 @@ public class RecipeHandler {
                             customItems.add(new CustomItem(new ItemConfig(configAPI, key, name)));
                             break;
                         case "fuel":
-
+                            customFuels.add(new FurnaceFuel(new FurnaceFuelConfig(configAPI, key, name)));
                             break;
                     }
                 } catch (Exception ex) {
@@ -473,4 +480,7 @@ public class RecipeHandler {
         return items;
     }
 
+    public List<FurnaceFuel> getCustomFuels() {
+        return customFuels;
+    }
 }

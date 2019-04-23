@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,9 +36,13 @@ public class BlockEvents implements Listener {
                             CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
                         }
                     }
-                }else if(itemStack.getItemMeta().hasLore()){
-                    if(WolfyUtilities.unhideString(itemStack.getItemMeta().getLore().get(0)).equals("cc_workbench")){
-                        CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
+                }
+                if(itemStack.getItemMeta().hasLore()){
+                    if(itemStack.getItemMeta().getLore().size() > 0){
+                        String code = WolfyUtilities.unhideString(itemStack.getItemMeta().getLore().get(itemStack.getItemMeta().getLore().size()-1));
+                        if(code.equals("cc_workbench")){
+                            CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
+                        }
                     }
                 }
             }
@@ -51,10 +56,13 @@ public class BlockEvents implements Listener {
             Location location = block.getLocation();
             if (CustomCrafting.getWorkbenches().isWorkbench(location)) {
                 CustomCrafting.getWorkbenches().removeWorkbench(location);
-                String name = CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$");
-                List<String> lore = CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore");
+                String name = WolfyUtilities.translateColorCodes(CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$"));
+                List<String> lore = new ArrayList<>();
+                for(String line : CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore")){
+                    lore.add(WolfyUtilities.translateColorCodes(line));
+                }
                 lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
-                ItemStack itemStack = CustomCrafting.getRecipeHandler().getCustomItem("customcrafting", "workbench").clone();
+                ItemStack itemStack = CustomCrafting.getRecipeHandler().getCustomItem("customcrafting:workbench").clone();
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(name);
                 itemMeta.setLore(lore);

@@ -20,32 +20,35 @@ public class MainConfig extends Config {
         configAPI.registerConfig(this);
     }
 
-    public boolean isAdvancedWorkbenchEnabled(){
+    public boolean isAdvancedWorkbenchEnabled() {
         return getBoolean("workbench.enable");
     }
 
-    public int getAutosaveInterval(){
+    public int getAutosaveInterval() {
         return getInt("data.auto_save.interval");
     }
 
-    public List<String> getDisabledRecipes(){
+    public List<String> getDisabledRecipes() {
         return getStringList("recipes.disabled_recipes");
     }
 
-    public void setDisabledrecipes(List<String> recipes){
+    public void setDisabledrecipes(List<String> recipes) {
         set("recipes.disabled_recipes", recipes);
     }
 
-    public boolean displayContents(){
+    public boolean displayContents() {
         return getBoolean("workbench.contents.display_items");
     }
 
-    public List<String> getCommandsSuccessCrafted(){
+    public List<String> getCommandsSuccessCrafted() {
         return getStringList("workbench.commands.successful_craft");
     }
 
-    public List<String> getCommandsDeniedCraft(){
+    public List<String> getCommandsDeniedCraft() {
         return getStringList("workbench.commands.denied_craft");
     }
 
+    public boolean isCCenabled() {
+        return getBoolean("commands.cc");
+    }
 }

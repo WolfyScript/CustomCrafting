@@ -7,7 +7,7 @@ import me.wolfyscript.customcrafting.events.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.events.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.items.ItemUtils;
-import me.wolfyscript.customcrafting.recipes.craftrecipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -40,8 +40,11 @@ public class CraftEvents implements Listener {
     public void onAdvancedWorkbench(CustomPreCraftEvent event){
         if(!event.isCancelled() && event.getRecipe().getID().equals("customcrafting:workbench")){
             if(CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()){
-                String name = api.getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$");
-                List<String> lore = api.getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore");
+                String name = WolfyUtilities.translateColorCodes(CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$"));
+                List<String> lore = new ArrayList<>();
+                for(String line : CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore")){
+                    lore.add(WolfyUtilities.translateColorCodes(line));
+                }
                 lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
                 ItemStack itemStack = event.getRecipe().getCustomResult().clone();
                 ItemMeta itemMeta = itemStack.getItemMeta();
@@ -49,6 +52,7 @@ public class CraftEvents implements Listener {
                 itemMeta.setLore(lore);
                 itemStack.setItemMeta(itemMeta);
                 event.setResult(itemStack);
+                api.sendDebugMessage("Craft Advanced!");
             }else{
                 event.setCancelled(true);
             }
@@ -92,7 +96,7 @@ public class CraftEvents implements Listener {
                             cache.addAmountNormalCrafted(1);
                         }
                         int amount = recipe.getAmountCraftable(ingredients);
-                        ItemStack resultItem = recipe.getCustomResult().clone();
+                        ItemStack resultItem = event.getCurrentItem();
 
                         if (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT)) {
                             api.sendDebugMessage("SHIFT-CLICK!");

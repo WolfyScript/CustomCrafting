@@ -97,34 +97,6 @@ public class Workbenches {
         return workbenches.containsKey(locationToString(location));
     }
 
-    /*
-    public void addFurnace(Location location) {
-        if (!isFurnaceSaved(location)) {
-            furnaces.put(locationToString(location), 0f);
-        }
-    }
-
-    public void addToStoredExp(Location location, float xp){
-        setStoredExp(location, getStoredExp(location)+xp);
-    }
-
-    private void setStoredExp(Location location, float xp){
-        furnaces.put(locationToString(location), xp);
-    }
-
-    public void removeFurnace(Location location) {
-        furnaces.remove(locationToString(location));
-    }
-
-    public float getStoredExp(Location location){
-        return furnaces.getOrDefault(locationToString(location), 0f);
-    }
-
-    public boolean isFurnaceSaved(Location location) {
-        return furnaces.containsKey(locationToString(location));
-    }
-    */
-
     private String locationToString(Location location) {
         return location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
     }

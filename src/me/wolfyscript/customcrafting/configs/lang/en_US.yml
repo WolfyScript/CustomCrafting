@@ -10,7 +10,7 @@ crafting:
   workbench:
     name: "&6Advanced Workbench"
     lore:
-      - ""
+      - "&7Workbench for advanced crafting"
 msg:
   auto_save:
     start:    "   Auto save data   "
