@@ -76,6 +76,11 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("repair_set", Material.GREEN_CONCRETE);
         createItem("repair_reset", Material.RED_CONCRETE);
 
+        //TODO: FUEL
+        createItem("furnace.fuel", Material.COAL);
+        createItem("furnace.burn_time", Material.GREEN_CONCRETE);
+        createItem("furnace.burn_time_reset", Material.RED_CONCRETE);
+
         createItem("set_displayname", Material.GREEN_CONCRETE);
         createItem("remove_displayname", Material.RED_CONCRETE);
 
@@ -139,6 +144,7 @@ public class ItemCreator extends ExtendedGuiWindow {
 
             event.setItem(9, "item_name");
             event.setItem(10, "item_lore");
+            event.setItem(11, "attributes_modifiers");
 
             event.setItem(18, "item_enchantments");
             event.setItem(19, "item_flags");
@@ -149,12 +155,11 @@ public class ItemCreator extends ExtendedGuiWindow {
 
             event.setItem(15, "repair_cost");
             event.setItem(16, "potion_effects");
-            event.setItem(17, "attributes_modifiers");
+            event.setItem(17, event.getItem("furnace.fuel", "%C%", items.getItem().getBurnTime() > 0 ? "§a" : "§4"));
 
             event.setItem(24, "item_damage");
             event.setItem(25, "variants");
             event.setItem(26, "skull_setting");
-
 
             CustomItem itemStack = items.getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -245,6 +250,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         } else {
                             event.setItem(40, "invalid_type");
                         }
+                        break;
                     case "repair_cost":
                         if(itemMeta instanceof Repairable){
                             event.setItem(39, "repair_set");
@@ -252,6 +258,10 @@ public class ItemCreator extends ExtendedGuiWindow {
                         }else{
                             event.setItem(40, "invalid_type");
                         }
+                        break;
+                    case "furnace.fuel":
+                        event.setItem(39, event.getItem("furnace.burn_time", "%VAR%", items.getItem().getBurnTime()+""));
+                        event.setItem(41, "furnace.burn_time_reset");
                 }
                 if (cache.getSubSetting().startsWith("GENERIC_") || cache.getSubSetting().startsWith("HORSE_") || cache.getSubSetting().startsWith("ZOMBIE_")) {
 
@@ -348,6 +358,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         case "potion_effects":
                         case "item_damage":
                         case "repair_cost":
+                        case "furnace.fuel":
                         case "variants":
                             cache.setSubSetting(action);
                             break;
@@ -480,6 +491,11 @@ public class ItemCreator extends ExtendedGuiWindow {
                             if(itemMeta instanceof Repairable){
                                 ((Repairable) itemMeta).setRepairCost(0);
                             }
+                        //FUEL
+                        case "furnace.burn_time":
+                            runChat(40, "$msg.gui.item_creator.fuel.set$", guiAction.getGuiHandler());
+                        case "furnace.burn_time_reset":
+                            itemStack.setBurnTime(0);
                     }
 
                     //Flag and attribute section
@@ -537,6 +553,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         PlayerCache cache = CustomCrafting.getPlayerCache(player);
         Items items = cache.getItems();
         String[] args = message.split(" ");
+        CustomItem customItem = items.getItem();
         ItemMeta itemMeta = items.getItem().getItemMeta();
         List<String> lore;
         PotionEffectType type;
@@ -729,6 +746,15 @@ public class ItemCreator extends ExtendedGuiWindow {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
                 }catch (NumberFormatException e){
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.invalid_value$", new String[]{"%VALUE%", message});
+                    return true;
+                }
+            case 40:
+                try {
+                    int value = Integer.parseInt(message);
+                    customItem.setBurnTime(value);
+                    api.sendPlayerMessage(player, "$msg.gui.item_creator.fuel.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
+                }catch (NumberFormatException e){
+                    api.sendPlayerMessage(player, "$msg.gui.item_creator.fuel.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
         }

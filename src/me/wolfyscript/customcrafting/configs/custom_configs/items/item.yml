@@ -1,2 +1,5 @@
-extra_data: []
 item:
+
+fuel:
+  burntime: 0
+  allowed_blocks: []

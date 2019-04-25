@@ -14,16 +14,23 @@ public class CustomItem extends ItemStack{
     private ItemConfig config;
     private String id;
 
+    private int burnTime;
+    private ArrayList<Material> allowedBlocks;
+
     public CustomItem(ItemConfig config){
         super(config.getCustomItem());
         this.config = config;
         this.id = config.getId();
+        this.burnTime = config.getBurnTime();
+        this.allowedBlocks = config.getAllowedBlocks();
     }
 
     public CustomItem(ItemStack itemStack){
         super(itemStack);
         this.config = null;
         this.id = "";
+        this.burnTime = 0;
+        this.allowedBlocks = new ArrayList<>();
     }
 
     public CustomItem(Material material){
@@ -76,6 +83,19 @@ public class CustomItem extends ItemStack{
         return idItem;
     }
 
+    public int getBurnTime() {
+        return burnTime;
+    }
 
+    public void setBurnTime(int burnTime) {
+        this.burnTime = burnTime;
+    }
 
+    public ArrayList<Material> getAllowedBlocks() {
+        return allowedBlocks;
+    }
+
+    public void setAllowedBlocks(ArrayList<Material> allowedBlocks) {
+        this.allowedBlocks = allowedBlocks;
+    }
 }

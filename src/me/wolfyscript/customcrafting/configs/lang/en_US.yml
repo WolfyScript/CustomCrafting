@@ -82,6 +82,11 @@ msg:
         invalid_type: "&cThe current item does not support repair cost!"
         value_success: "&aSet repair cost to &6%VALUE%&a!"
         invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
+      fuel:
+        set: "&3Type in the Burn Time in ticks!"
+        value_success: "&aSet Burn Time to &6%VALUE% ticks&a!"
+        invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
+
     item_editor:
       input: "&3Type in the folder and name of the item! &6example your_item"
       error: "&cThis item does not exist or is not loaded!"
@@ -450,6 +455,26 @@ items:
       name: "&cReset Repair Cost"
       help:
         - "Resets Repair Cost to 0"
+    furnace:
+      fuel:
+        name: "%C%Fuel Settings"
+        lore:
+          - "&cThe Item must be saved in order to"
+          - "&cbe added as a fuel"
+      burn_time:
+        name: "&aBurn Time: &7%VAR% ticks"
+        help:
+          - "&7Sets the burn time in ticks!"
+          - "&720 ticks = 1 second"
+          - "&cSet it to 0 will disable this to be"
+          - "&csaved as a fuel!"
+      burn_time_reset:
+        name: "&cReset Burn Time"
+        lore:
+          - "&7The item item will not be saved"
+          - "&7as a fuel anymore!"
+
+
 
   recipe_editor:
   recipe_creator:
