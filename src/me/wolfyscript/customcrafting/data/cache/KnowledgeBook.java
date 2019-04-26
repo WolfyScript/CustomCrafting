@@ -22,6 +22,9 @@ public class KnowledgeBook {
 
     private HashMap<Character, ArrayList<CustomItem>> ingredients;
 
+    private CustomItem source;
+    private CustomItem result;
+
     public KnowledgeBook(){
         this.page = 0;
         this.setting = Setting.MAIN_MENU;
@@ -67,5 +70,21 @@ public class KnowledgeBook {
     public CustomItem getIngredient(int slot){
         List<CustomItem> list = getIngredients(slot);
         return list.size() > 0 ? list.get(0) : null;
+    }
+
+    public CustomItem getSource() {
+        return source;
+    }
+
+    public void setSource(CustomItem source) {
+        this.source = source;
+    }
+
+    public CustomItem getResult() {
+        return result;
+    }
+
+    public void setResult(CustomItem result) {
+        this.result = result;
     }
 }

@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -29,7 +30,7 @@ import java.util.List;
 public class RecipeBook extends ExtendedGuiWindow {
 
     public RecipeBook(InventoryAPI inventoryAPI) {
-        super("recipe_book", inventoryAPI, 54);
+        super("recipe_book", inventoryAPI, 45);
     }
 
     @Override
@@ -47,10 +48,16 @@ public class RecipeBook extends ExtendedGuiWindow {
             Player player = event.getPlayer();
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
+            for(int i = 36; i < 45; i++){
+                event.setItem(i,"none", "glass_white");
+            }
             if(!knowledgeBook.getSetting().equals(Setting.MAIN_MENU)){
+                for(int i = 1; i < 9; i++){
+                    event.setItem(i,"none", "glass_white");
+                }
                 if(knowledgeBook.getRecipeID().isEmpty()){
-                    event.setItem(2, "previous_page");
-                    event.setItem(6, "next_page");
+                    event.setItem(38, "previous_page");
+                    event.setItem(42, "next_page");
                     List<CustomRecipe> recipes = new ArrayList<>();
                     switch (knowledgeBook.getSetting()){
                         case CRAFT_RECIPE:
@@ -67,7 +74,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                         knowledgeBook.setPage(0);
                     }
                     int item = 0;
-                    for (int i = 45 * knowledgeBook.getPage(); item < 45 && i < recipes.size(); i++) {
+                    for (int i = 36 * knowledgeBook.getPage(); item < 36 && i < recipes.size(); i++) {
                         Recipe recipe = recipes.get(i);
                         if (recipe instanceof Keyed) {
                             ItemStack itemStack = recipe.getResult();
@@ -94,11 +101,17 @@ public class RecipeBook extends ExtendedGuiWindow {
                             if (!knowledgeBook.getIngredients().isEmpty()) {
                                 int slot;
                                 for (int i = 0; i < 9; i++) {
-                                    slot = 19 + i + (i / 3) * 6;
+                                    slot = 10 + i + (i / 3) * 6;
                                     event.setItem(slot, knowledgeBook.getIngredients().isEmpty() ? new ItemStack(Material.AIR) : knowledgeBook.getIngredient(i) != null ? knowledgeBook.getIngredient(i) : new ItemStack(Material.AIR));
                                 }
+                                event.setItem(24, knowledgeBook.getResult());
                             }
                             break;
+                        case FURNACE_RECIPE:
+                            if(knowledgeBook.getSource() != null){
+                                event.setItem(20, knowledgeBook.getSource());
+                                event.setItem(24, knowledgeBook.getResult());
+                            }
                     }
                 }
             }else{
@@ -119,11 +132,9 @@ public class RecipeBook extends ExtendedGuiWindow {
         if(itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()){
             List<String> lore = itemStack.getItemMeta().getLore();
             String line = lore.get(lore.size()-1);
-            api.sendDebugMessage("Test for lore");
             if(line.startsWith(WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_book.lores.click$")))){
                 String code = WolfyUtilities.unhideString(line);
                 String id = code.split(";;")[1];
-                api.sendDebugMessage("Test for id: "+id);
                 if(code.contains(";;") && id.contains(":")){
                     book.setRecipeID(id);
                     if(!book.getRecipeID().isEmpty()){
@@ -131,10 +142,12 @@ public class RecipeBook extends ExtendedGuiWindow {
                         if(recipe != null){
                             switch (book.getSetting()){
                                 case CRAFT_RECIPE:
-                                    api.sendDebugMessage("Set Ingredients");
                                     book.setIngredients(((CraftingRecipe) recipe).getIngredients());
+                                    book.setResult(recipe.getCustomResult());
                                     break;
                                 case FURNACE_RECIPE:
+                                    book.setSource(((FurnaceCRecipe) recipe).getSource());
+                                    book.setResult(recipe.getCustomResult());
                                     break;
                             }
                         }

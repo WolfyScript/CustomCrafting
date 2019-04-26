@@ -57,7 +57,6 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     //   /cc give <player> <namespace:key> [amount]
                     if (checkPerm(p, "customcrafting.cmd.give")) {
                         if (args.length >= 3) {
-
                             Player target = Bukkit.getPlayer(args[1]);
                             if (target == null) {
                                 api.sendPlayerMessage(p, "$msg.commands.give.player_offline$", new String[]{"%PLAYER%", args[1]});
