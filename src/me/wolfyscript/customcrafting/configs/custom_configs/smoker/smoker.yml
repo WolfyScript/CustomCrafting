@@ -1,0 +1,10 @@
+# Smoker Recipe Config
+exp: 10
+cooking_time: 20
+priority: "NORMAL"
+
+group: ""
+
+source:
+
+result:

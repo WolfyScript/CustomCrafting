@@ -32,7 +32,6 @@ public class PlayerCache {
         setAmountCrafted(0);
         setAmountAdvancedCrafted(0);
         setAmountNormalCrafted(0);
-
     }
 
     public PlayerCache(UUID uuid, HashMap<String, Object> stats){

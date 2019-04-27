@@ -51,10 +51,8 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println(" / ___/_ _____/ /____  __ _  / ___/______ _/ _/ /_(_)__  ___ _");
         System.out.println("/ /__/ // (_-< __/ _ \\/  ' \\/ /__/ __/ _ `/ _/ __/ / _ \\/ _ `/");
         System.out.println("\\___/\\_,_/___|__/\\___/_/_/_/\\___/_/  \\_,_/_/ \\__/_/_//_/\\_, / ");
-        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion());
+        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion()+"-beta");
         System.out.println(" ");
-        System.out.println("This is a Beta-Test!");
-        System.out.println("This version may contain bugs or errors!");
         System.out.println("------------------------------------------------------------------------");
 
         if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null){
@@ -74,7 +72,6 @@ public class CustomCrafting extends JavaPlugin {
                 System.out.println("Creating new folder");
             }
         }
-
 
         configHandler = new ConfigHandler(api);
         invHandler = new InventoryHandler(api);
