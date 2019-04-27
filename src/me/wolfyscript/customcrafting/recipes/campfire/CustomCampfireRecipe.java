@@ -1,17 +1,14 @@
 package me.wolfyscript.customcrafting.recipes.campfire;
 
-import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CampfireRecipe;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
-public class CustomCampfireRecipe extends CampfireRecipe implements CustomRecipe {
+public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookingRecipe<CampfireConfig>{
 
     private RecipePriority recipePriority;
     private CustomItem result;
@@ -33,7 +30,7 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomRecipe
     }
 
     @Override
-    public String getID() {
+    public String getId() {
         return id;
     }
 
@@ -58,7 +55,7 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomRecipe
     }
 
     @Override
-    public CustomConfig getConfig() {
+    public CampfireConfig getConfig() {
         return config;
     }
 }

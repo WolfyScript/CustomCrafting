@@ -6,7 +6,7 @@ import org.bukkit.inventory.Recipe;
 
 public interface CustomRecipe extends Recipe {
 
-    String getID();
+    String getId();
     String getGroup();
 
     CustomItem getCustomResult();

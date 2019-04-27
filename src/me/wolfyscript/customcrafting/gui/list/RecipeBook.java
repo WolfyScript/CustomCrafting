@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
+import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -146,7 +146,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                     book.setResult(recipe.getCustomResult());
                                     break;
                                 case FURNACE_RECIPE:
-                                    book.setSource(((FurnaceCRecipe) recipe).getSource());
+                                    book.setSource(((CustomFurnaceRecipe) recipe).getSource());
                                     book.setResult(recipe.getCustomResult());
                                     break;
                             }

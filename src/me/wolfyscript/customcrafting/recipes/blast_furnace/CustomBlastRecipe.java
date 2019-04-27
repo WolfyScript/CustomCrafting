@@ -4,15 +4,16 @@ import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.RecipeChoice;
 
-public class CustomBlastRecipe extends BlastingRecipe implements CustomRecipe {
+public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRecipe<BlastingConfig> {
 
-    private RecipePriority recipePriority;
+    private RecipePriority priority;
     private CustomItem result;
     private CustomItem source;
     private String id;
@@ -24,26 +25,12 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomRecipe {
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
-        this.recipePriority = config.getPriority();
-    }
-
-    public CustomItem getSource() {
-        return source;
-    }
-
-    @Override
-    public String getID() {
-        return id;
-    }
-
-    @Override
-    public CustomItem getCustomResult() {
-        return result;
+        this.priority = config.getPriority();
     }
 
     @Override
     public RecipePriority getPriority() {
-        return recipePriority;
+        return priority;
     }
 
     @Override
@@ -57,7 +44,22 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomRecipe {
     }
 
     @Override
-    public CustomConfig getConfig() {
+    public CustomItem getCustomResult() {
+        return result;
+    }
+
+    @Override
+    public CustomItem getSource() {
+        return source;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public BlastingConfig getConfig() {
         return config;
     }
 }

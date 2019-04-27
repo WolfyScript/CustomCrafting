@@ -1,30 +1,29 @@
 package me.wolfyscript.customcrafting.recipes.furnace;
 
-import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
-public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe {
+public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingRecipe<FurnaceConfig> {
 
-    private RecipePriority recipePriority;
+    private RecipePriority priority;
     private CustomItem result;
     private CustomItem source;
     private String id;
     private FurnaceConfig config;
 
-    public FurnaceCRecipe(FurnaceConfig config){
+    public CustomFurnaceRecipe(FurnaceConfig config){
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), 0f, config.getCookingTime());
         this.id = config.getId();
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
-        this.recipePriority = config.getPriority();
+        this.priority = config.getPriority();
     }
 
     public CustomItem getSource() {
@@ -42,23 +41,31 @@ public class FurnaceCRecipe extends FurnaceRecipe implements CustomRecipe {
 
     @Override
     public RecipePriority getPriority() {
-        return recipePriority;
+        return priority;
     }
 
     @Override
-    public String getID() {
-        return this.id;
+    public void load() {
+
     }
 
     @Override
-    public void load() { }
+    public void save() {
+
+    }
 
     @Override
-    public void save() { }
+    public CustomItem getResult() {
+        return result;
+    }
 
     @Override
-    public CustomConfig getConfig() {
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public FurnaceConfig getConfig() {
         return config;
     }
-
 }

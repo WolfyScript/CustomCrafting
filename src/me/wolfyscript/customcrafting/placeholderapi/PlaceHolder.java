@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
+import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -56,7 +56,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                         if(recipe instanceof CraftingRecipe){
                             return "workbench";
                         }
-                        if(recipe instanceof FurnaceCRecipe){
+                        if(recipe instanceof CustomFurnaceRecipe){
                             return "furnace";
                         }
                         break;

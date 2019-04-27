@@ -190,7 +190,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     @Override
-    public String getID() {
+    public String getId() {
         return id;
     }
 

@@ -11,7 +11,7 @@ import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.*;
-import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
+import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
@@ -348,7 +348,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
                             api.sendPlayerMessage(player, "§6recipes/" + args[0] + "/furnace/" + args[1]);
                             try {
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(new FurnaceCRecipe(furnaceConfig)), 1);
+                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(new CustomFurnaceRecipe(furnaceConfig)), 1);
                             } catch (Exception ex) {
                                 api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", furnaceConfig.getId()});
                                 ex.printStackTrace();

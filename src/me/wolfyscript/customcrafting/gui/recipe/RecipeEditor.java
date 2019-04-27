@@ -6,9 +6,9 @@ import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
 import me.wolfyscript.utilities.api.inventory.*;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
@@ -113,14 +113,14 @@ public class RecipeEditor extends ExtendedGuiWindow {
                             api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
                             return true;
                         case FURNACE_RECIPE:
-                            if (recipe instanceof FurnaceCRecipe) {
+                            if (recipe instanceof CustomFurnaceRecipe) {
                                 cache.resetFurnace();
                                 Furnace furnace = cache.getFurnace();
-                                //furnace.setAdvFurnace(((FurnaceCRecipe) recipe).needsAdvancedFurnace());
-                                furnace.setSource(((FurnaceCRecipe) recipe).getSource());
+                                //furnace.setAdvFurnace(((CustomFurnaceRecipe) recipe).needsAdvancedFurnace());
+                                furnace.setSource(((CustomFurnaceRecipe) recipe).getSource());
                                 furnace.setResult(recipe.getCustomResult());
-                                furnace.setExperience(((FurnaceCRecipe) recipe).getExperience());
-                                furnace.setCookingTime(((FurnaceCRecipe) recipe).getCookingTime());
+                                furnace.setExperience(((CustomFurnaceRecipe) recipe).getExperience());
+                                furnace.setCookingTime(((CustomFurnaceRecipe) recipe).getCookingTime());
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
@@ -129,7 +129,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                     }
                 }else if(id == 1){
                     recipeToDelete.put(player.getUniqueId(), recipe);
-                    api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new String[]{"%RECIPE%",recipe.getID()});
+                    api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new String[]{"%RECIPE%",recipe.getId()});
                     api.sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
                         if(recipe.getConfig().getConfigFile().delete()){

@@ -77,7 +77,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     @Override
     public boolean check(List<List<ItemStack>> matrix) {
-        api.sendDebugMessage("Recipe: " + getID());
+        api.sendDebugMessage("Recipe: " + getId());
         List<Character> containedKeys = new ArrayList<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
@@ -242,7 +242,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public String getID() {
+    public String getId() {
         return id;
     }
 

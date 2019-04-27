@@ -1,12 +1,18 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.*;
-import me.wolfyscript.customcrafting.recipes.furnace.FurnaceCRecipe;
+import me.wolfyscript.customcrafting.recipes.blast_furnace.CustomBlastRecipe;
+import me.wolfyscript.customcrafting.recipes.campfire.CustomCampfireRecipe;
+import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
@@ -61,7 +67,16 @@ public class RecipeHandler {
                             registerRecipe(craftingRecipe);
                             break;
                         case "furnace":
-                            registerRecipe(new FurnaceCRecipe(new FurnaceConfig(configAPI, key, name)));
+                            registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, key, name)));
+                            break;
+                        case "blast_furnace":
+                            registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, key, name)));
+                            break;
+                        case "smoker":
+                            registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, key, name)));
+                            break;
+                        case "campfire":
+                            registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, key, name)));
                             break;
                         case "items":
                             customItems.add(new CustomItem(new ItemConfig(configAPI, key, name)));
@@ -146,8 +161,8 @@ public class RecipeHandler {
     }
 
     public void unregisterRecipe(CustomRecipe customRecipe) {
-        customRecipes.removeIf(customRecipe1 -> customRecipe1.getID().equals(customRecipe.getID()));
-        unregisterRecipe(customRecipe.getID());
+        customRecipes.removeIf(customRecipe1 -> customRecipe1.getId().equals(customRecipe.getId()));
+        unregisterRecipe(customRecipe.getId());
     }
 
     /*
@@ -163,7 +178,7 @@ public class RecipeHandler {
     }
 
     public List<CustomRecipe> getRecipeGroup(CraftingRecipe recipe) {
-        List<CustomRecipe> groupRecipes = new ArrayList<>(getRecipeGroup(recipe.getID()));
+        List<CustomRecipe> groupRecipes = new ArrayList<>(getRecipeGroup(recipe.getId()));
         groupRecipes.remove(recipe);
         return groupRecipes;
     }
@@ -171,7 +186,7 @@ public class RecipeHandler {
     public CustomRecipe getRecipe(Recipe recipe) {
         for (CustomRecipe craftingRecipe : customRecipes) {
             if (recipe instanceof Keyed) {
-                if (craftingRecipe.getID().equals(((Keyed) recipe).getKey().toString())) {
+                if (craftingRecipe.getId().equals(((Keyed) recipe).getKey().toString())) {
                     return craftingRecipe;
                 }
             }
@@ -205,7 +220,7 @@ public class RecipeHandler {
 
     public CustomRecipe getRecipe(String key) {
         for (CustomRecipe craftingRecipe : customRecipes) {
-            if (craftingRecipe.getID().equals(key)) {
+            if (craftingRecipe.getId().equals(key)) {
                 return craftingRecipe;
             }
         }
@@ -262,11 +277,11 @@ public class RecipeHandler {
 
     //FURNACE RECIPES
 
-    public List<FurnaceCRecipe> getFurnaceRecipes() {
-        List<FurnaceCRecipe> recipes = new ArrayList<>();
+    public List<CustomFurnaceRecipe> getFurnaceRecipes() {
+        List<CustomFurnaceRecipe> recipes = new ArrayList<>();
         for (CustomRecipe recipe : customRecipes) {
-            if (recipe instanceof FurnaceCRecipe) {
-                recipes.add((FurnaceCRecipe) recipe);
+            if (recipe instanceof CustomFurnaceRecipe) {
+                recipes.add((CustomFurnaceRecipe) recipe);
             }
         }
         return recipes;
@@ -277,17 +292,17 @@ public class RecipeHandler {
     }
 
 
-    public FurnaceCRecipe getFurnaceRecipe(String key) {
-        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
-            if (recipe.getID().equals(key)) {
+    public CustomFurnaceRecipe getFurnaceRecipe(String key) {
+        for (CustomFurnaceRecipe recipe : getFurnaceRecipes()) {
+            if (recipe.getId().equals(key)) {
                 return recipe;
             }
         }
         return null;
     }
 
-    public FurnaceCRecipe getFurnaceRecipe(ItemStack source) {
-        for (FurnaceCRecipe recipe : getFurnaceRecipes(source)) {
+    public CustomFurnaceRecipe getFurnaceRecipe(ItemStack source) {
+        for (CustomFurnaceRecipe recipe : getFurnaceRecipes(source)) {
             if (recipe.getSource().getType() == source.getType()) {
                 if(recipe.getSource().isSimilar(source)){
                     return recipe;
@@ -297,9 +312,9 @@ public class RecipeHandler {
         return null;
     }
 
-    public List<FurnaceCRecipe> getFurnaceRecipes(ItemStack source) {
-        List<FurnaceCRecipe> recipes = new ArrayList<>();
-        for (FurnaceCRecipe recipe : getFurnaceRecipes()) {
+    public List<CustomFurnaceRecipe> getFurnaceRecipes(ItemStack source) {
+        List<CustomFurnaceRecipe> recipes = new ArrayList<>();
+        for (CustomFurnaceRecipe recipe : getFurnaceRecipes()) {
             if (recipe.getSource().getType() == source.getType()) {
                 recipes.add(recipe);
             }
