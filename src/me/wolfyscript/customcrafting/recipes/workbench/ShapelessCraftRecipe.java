@@ -161,11 +161,6 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         return ingredients;
     }
 
-    @Override
-    public boolean isSimilar(CraftingRecipe recipe) {
-        return false;
-    }
-
     public void setResult(ItemStack result) {
         this.result = new CustomItem(result);
     }

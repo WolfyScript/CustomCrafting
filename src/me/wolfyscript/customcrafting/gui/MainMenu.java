@@ -7,7 +7,8 @@ import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.inventory.ItemStack;
+
+import java.util.Locale;
 
 public class MainMenu extends ExtendedGuiWindow {
 
@@ -20,6 +21,11 @@ public class MainMenu extends ExtendedGuiWindow {
         createItem("craft_recipe", Material.CRAFTING_TABLE);
         createItem("furnace_recipe", Material.FURNACE);
 
+        if(WolfyUtilities.hasVillagePillageUpdate()){
+            createItem("blast_furnace", Material.BLAST_FURNACE);
+            createItem("smoker", Material.SMOKER);
+            createItem("campfire", Material.CAMPFIRE);
+        }
         createItem("item_editor", Material.CHEST);
         createItem("recipe_list", Material.WRITTEN_BOOK);
 
@@ -34,7 +40,7 @@ public class MainMenu extends ExtendedGuiWindow {
             for (int i = 0; i < 54; i++) {
                 event.setItem(i, "glass_gray", true);
             }
-
+            api.sendDebugMessage("Test is working!");
             if (event.getGuiHandler().isHelpEnabled()) {
                 event.setItem(8, "gui_help_on", true);
             } else {
@@ -43,8 +49,13 @@ public class MainMenu extends ExtendedGuiWindow {
 
             event.setItem(0, "glass_white", true);
 
-            event.setItem(11, "craft_recipe");
-            event.setItem(13, "furnace_recipe");
+            event.setItem(10, "craft_recipe");
+            event.setItem(12, "furnace_recipe");
+            if(WolfyUtilities.hasVillagePillageUpdate()){
+                event.setItem(14, "blast_furnace");
+                event.setItem(16, "smoker");
+                event.setItem(20, "campfire");
+            }
 
             event.setItem(39, "item_editor");
             event.setItem(41, "recipe_list");
@@ -82,15 +93,15 @@ public class MainMenu extends ExtendedGuiWindow {
                     guiAction.getGuiHandler().changeToInv("item_editor");
                     break;
                 case "recipe_list":
-                    playerCache.setSetting(Setting.LIST);
                     guiAction.getGuiHandler().changeToInv("recipe_list");
+                    playerCache.setSetting(Setting.RECIPE_LIST);
                     break;
+                case "blast_furnace":
+                case "smoker":
+                case "campfire":
                 case "craft_recipe":
-                    playerCache.setSetting(Setting.CRAFT_RECIPE);
-                    guiAction.getGuiHandler().changeToInv("recipe_editor");
-                    break;
                 case "furnace_recipe":
-                    playerCache.setSetting(Setting.FURNACE_RECIPE);
+                    playerCache.setSetting(Setting.valueOf(action.toUpperCase(Locale.ROOT)));
                     guiAction.getGuiHandler().changeToInv("recipe_editor");
                     break;
             }

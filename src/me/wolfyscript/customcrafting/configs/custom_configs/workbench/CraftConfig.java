@@ -1,20 +1,25 @@
 package me.wolfyscript.customcrafting.configs.custom_configs.workbench;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 public class CraftConfig extends CustomConfig {
 
+    public CraftConfig(ConfigAPI configAPI, String defaultpath, String defaultName, String folder, String name, boolean override) {
+        super(configAPI, defaultpath, defaultName, folder, "workbench", name, override);
+    }
+
+    public CraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name, boolean override) {
+        super(configAPI, defaultName, folder, "workbench", name, override);
+    }
+
     public CraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
-        super(configAPI, defaultName, folder, "workbench", name);
+        this(configAPI, defaultName, folder, name, false);
     }
 
     public CraftConfig(ConfigAPI configAPI, String folder, String name) {

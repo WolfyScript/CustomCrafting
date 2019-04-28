@@ -14,12 +14,20 @@ import java.util.Locale;
 
 public class ItemConfig extends CustomConfig {
 
-    public ItemConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, "item", folder, name);
+    public ItemConfig(ConfigAPI configAPI, String defaultpath, String defaultName, String folder, String name, boolean override) {
+        super(configAPI, defaultpath, defaultName, folder, "items", name, override);
+    }
+
+    public ItemConfig(ConfigAPI configAPI, String defaultName, String folder, String name, boolean override) {
+        super(configAPI, defaultName, folder, "items", name, override);
     }
 
     public ItemConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
-        super(configAPI, defaultName, folder, "items", name);
+        this(configAPI, defaultName, folder, name, false);
+    }
+
+    public ItemConfig(ConfigAPI configAPI, String folder, String name) {
+        this(configAPI, "item", folder, name);
     }
 
     public ItemStack getCustomItem(){
@@ -29,12 +37,15 @@ public class ItemConfig extends CustomConfig {
     public void setCustomItem(CustomItem itemStack){
         saveItem("item", itemStack);
         setBurnTime(itemStack.getBurnTime());
-        //TODO: CHANGE IN 1.14!
         if(itemStack.getAllowedBlocks().isEmpty()){
             setAllowedBlocks(new ArrayList<>(Collections.singleton(Material.FURNACE)));
         }else{
             setAllowedBlocks(itemStack.getAllowedBlocks());
         }
+    }
+
+    public void setItem(ItemStack itemStack){
+        saveItem("item", itemStack);
     }
 
     public void setAllowedBlocks(ArrayList<Material> furnaces){

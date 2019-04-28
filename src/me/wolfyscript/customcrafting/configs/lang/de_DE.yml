@@ -429,10 +429,10 @@ items:
           - '&7Recipe is shapeless!'
     furnace:
       adv_furnace_on:
-        name: "&3Advanced Furnace"
+        name: "&3Advanced CookingData"
         help: []
       adv_furnace_off:
-        name: "&4Every Furnace"
+        name: "&4Every CookingData"
       xp:
         name: "&3Experience"
         help: []

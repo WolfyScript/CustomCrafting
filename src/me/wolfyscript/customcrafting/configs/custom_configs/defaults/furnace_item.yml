@@ -4,7 +4,7 @@ item:
   meta:
     ==: ItemMeta
     meta-type: TILE_ENTITY
-    display-name: '&6Advanced Furnace&:&c&c&_&f&u&r&n&a&c&e'
+    display-name: '&6Advanced CookingData&:&c&c&_&f&u&r&n&a&c&e'
     lore:
       - '&7Furnace for advanced smelting'
     enchants:

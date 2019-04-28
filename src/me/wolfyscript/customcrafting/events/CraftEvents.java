@@ -38,22 +38,8 @@ public class CraftEvents implements Listener {
 
     @EventHandler
     public void onAdvancedWorkbench(CustomPreCraftEvent event){
-        if(!event.isCancelled() && event.getRecipe().getID().equals("customcrafting:workbench")){
-            if(CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()){
-                String name = WolfyUtilities.translateColorCodes(CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$"));
-                List<String> lore = new ArrayList<>();
-                for(String line : CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore")){
-                    lore.add(WolfyUtilities.translateColorCodes(line));
-                }
-                lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
-                ItemStack itemStack = event.getRecipe().getCustomResult().clone();
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName(name);
-                itemMeta.setLore(lore);
-                itemStack.setItemMeta(itemMeta);
-                event.setResult(itemStack);
-                api.sendDebugMessage("Craft Advanced!");
-            }else{
+        if(!event.isCancelled() && event.getRecipe().getId().equals("customcrafting:workbench")){
+            if(!CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()){
                 event.setCancelled(true);
             }
         }
@@ -85,10 +71,10 @@ public class CraftEvents implements Listener {
                     if (!customCraftEvent.isCancelled()) {
                         if (config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()) {
                             for (String command : config.getCommandsSuccessCrafted()) {
-                                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getID()));
+                                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getId()));
                             }
                         }
-                        cache.addRecipeCrafts(customCraftEvent.getRecipe().getID());
+                        cache.addRecipeCrafts(customCraftEvent.getRecipe().getId());
                         cache.addAmountCrafted(1);
                         if (CustomCrafting.getWorkbenches().isWorkbench(block.getLocation())) {
                             cache.addAmountAdvancedCrafted(1);
@@ -132,6 +118,7 @@ public class CraftEvents implements Listener {
     public void onPreCraft(PrepareItemCraftEvent e) {
         Player player = (Player) e.getView().getPlayer();
         if (e.getRecipe() != null) {
+            api.sendDebugMessage("  detected recipe: " + ((Keyed) e.getRecipe()).getKey().toString());
             if (e.getRecipe() instanceof Keyed) {
                 try {
                     api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey().toString());
@@ -140,25 +127,25 @@ public class CraftEvents implements Listener {
                     List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
                     List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
                     api.sendDebugMessage("Similar Recipes:");
-                    recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - " + craftingRecipe.getID()));
+                    recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - " + craftingRecipe.getId()));
                     boolean allow = false;
                     if (!recipesToCheck.isEmpty()) {
                         CustomPreCraftEvent customPreCraftEvent;
                         for (CraftingRecipe recipe : recipesToCheck) {
-                            if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getID())) {
-                                api.sendDebugMessage("check recipe: " + recipe.getID());
+                            if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
+                                api.sendDebugMessage("check recipe: " + recipe.getId());
                                 customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getRecipe(), e.getInventory(), ingredients);
                                 boolean perm = checkWorkbenchAndPerm(player, e.getView().getPlayer().getTargetBlock(null, 5).getLocation(), recipe);
                                 boolean check = recipe.check(ingredients);
                                 api.sendDebugMessage(" " + perm);
                                 api.sendDebugMessage(" " + check);
-                                if (!(perm && check) || recipeHandler.getDisabledRecipes().contains(recipe.getID())) {
+                                if (!(perm && check) || recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
                                     customPreCraftEvent.setCancelled(true);
                                 }
                                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                                 if (!customPreCraftEvent.isCancelled()) {
                                     //ALLOW
-                                    precraftedRecipes.put(player.getUniqueId(), customPreCraftEvent.getRecipe().getID());
+                                    precraftedRecipes.put(player.getUniqueId(), customPreCraftEvent.getRecipe().getId());
                                     e.getInventory().setResult(customPreCraftEvent.getResult());
                                     allow = true;
                                     break;
@@ -194,8 +181,8 @@ public class CraftEvents implements Listener {
 
     private boolean checkWorkbenchAndPerm(Player player, Location location, CraftingRecipe recipe) {
         if (!recipe.needsAdvancedWorkbench() || (location != null && CustomCrafting.getWorkbenches().isWorkbench(location))) {
-            String perm = "customcrafting.craft."+recipe.getID();
-            String perm2 = "customcrafting.craft."+recipe.getID().split(":")[0];
+            String perm = "customcrafting.craft."+recipe.getId();
+            String perm2 = "customcrafting.craft."+recipe.getId().split(":")[0];
 
             if(recipe.needsPermission()){
                 if(!player.hasPermission("customcrafting.craft.*")){

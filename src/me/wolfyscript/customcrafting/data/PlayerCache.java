@@ -1,9 +1,6 @@
 package me.wolfyscript.customcrafting.data;
 
-import me.wolfyscript.customcrafting.data.cache.Furnace;
-import me.wolfyscript.customcrafting.data.cache.Items;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
-import me.wolfyscript.customcrafting.data.cache.Workbench;
+import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.gui.Setting;
 
 import java.util.*;
@@ -20,9 +17,13 @@ public class PlayerCache {
 
     private KnowledgeBook knowledgeBook = new KnowledgeBook();
 
-    //LIST OF ALL RECIPE CACHES
+    //RECIPE_LIST OF ALL RECIPE CACHES
     private Workbench workbench =  new Workbench();
     private Furnace furnace = new Furnace();
+    private BlastingFurnace blastingFurnace = new BlastingFurnace();
+    private Smoker smoker = new Smoker();
+    private Campfire campfire = new Campfire();
+
 
     public PlayerCache(UUID uuid) {
         this.uuid = uuid;
@@ -82,8 +83,46 @@ public class PlayerCache {
         this.subSetting = setting;
     }
 
+    public CookingData getCookingData(){
+        switch (getSetting()){
+            case BLAST_FURNACE:
+                return getBlastingFurnace();
+            case SMOKER:
+                return getSmoker();
+            case CAMPFIRE:
+                return getCampfire();
+            case FURNACE_RECIPE:
+                return getFurnace();
+        }
+        return null;
+    }
+
     public void setFurnace(Furnace furnace) {
         this.furnace = furnace;
+    }
+
+    public BlastingFurnace getBlastingFurnace() {
+        return blastingFurnace;
+    }
+
+    public void setBlastingFurnace(BlastingFurnace blastingFurnace) {
+        this.blastingFurnace = blastingFurnace;
+    }
+
+    public Smoker getSmoker() {
+        return smoker;
+    }
+
+    public void setSmoker(Smoker smoker) {
+        this.smoker = smoker;
+    }
+
+    public Campfire getCampfire() {
+        return campfire;
+    }
+
+    public void setCampfire(Campfire campfire) {
+        this.campfire = campfire;
     }
 
     public KnowledgeBook getKnowledgeBook() {

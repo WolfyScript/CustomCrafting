@@ -62,7 +62,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                     switch (knowledgeBook.getSetting()){
                         case CRAFT_RECIPE:
                             for(CraftingRecipe recipe : CustomCrafting.getRecipeHandler().getCraftingRecipes()){
-                                if(!recipe.needsPermission() || (player.hasPermission("customcrafting.craft.*") || player.hasPermission("customcrafting.craft." + recipe.getID()) || player.hasPermission("customcrafting.craft." + recipe.getID().split(":")[0]))){
+                                if(!recipe.needsPermission() || (player.hasPermission("customcrafting.craft.*") || player.hasPermission("customcrafting.craft." + recipe.getId()) || player.hasPermission("customcrafting.craft." + recipe.getId().split(":")[0]))){
                                     recipes.add(recipe);
                                 }
                             }

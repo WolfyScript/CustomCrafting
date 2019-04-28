@@ -20,7 +20,7 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     private BlastingConfig config;
 
     public CustomBlastRecipe(BlastingConfig config) {
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), 0f, config.getCookingTime());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.config = config;
         this.result = config.getResult();

@@ -18,7 +18,7 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     private FurnaceConfig config;
 
     public CustomFurnaceRecipe(FurnaceConfig config){
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), 0f, config.getCookingTime());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.config = config;
         this.result = config.getResult();

@@ -206,23 +206,6 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public boolean isSimilar(CraftingRecipe recipe) {
-        if (recipe.equals(this))
-            return true;
-
-        if (recipe instanceof ShapedCraftRecipe) {
-            ShapedCraftRecipe craftRecipe = (ShapedCraftRecipe) recipe;
-            if (craftRecipe.getShape().length == this.getShape().length && (craftRecipe.getShape()[0].length() == this.getShape()[0].length())) {
-                if (craftRecipe.getIngredients().keySet().containsAll(this.getIngredients().keySet())) {
-
-
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
     public void setGroup(String group) {
         this.group = group;
     }

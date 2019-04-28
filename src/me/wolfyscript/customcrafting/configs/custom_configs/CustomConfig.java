@@ -14,8 +14,20 @@ public class CustomConfig extends Config {
     private String id;
     private String type;
 
+    public CustomConfig(ConfigAPI configAPI, String defaultName, String type, String name) {
+        this(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs/"+type, defaultName, type, name, false);
+    }
+
     public CustomConfig(ConfigAPI configAPI, String defaultName, String folder, String type, String name) {
-        super(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs/"+type, defaultName, configAPI.getPlugin().getDataFolder().getPath()+"/recipes/"+folder+"/"+type, name);
+        this(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs/"+type, defaultName, folder, type, name, false);
+    }
+
+    public CustomConfig(ConfigAPI configAPI, String defaultName, String folder, String type, String name, boolean override) {
+        this(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs/"+type, defaultName, folder, type, name, override);
+    }
+
+    public CustomConfig(ConfigAPI configAPI, String defaultPath, String defaultName, String folder, String type, String name, boolean override) {
+        super(configAPI, defaultPath, defaultName, configAPI.getPlugin().getDataFolder().getPath()+"/recipes/"+folder+"/"+type, name, override);
         this.folder = folder;
         this.name = name;
         this.id = folder+":"+name;

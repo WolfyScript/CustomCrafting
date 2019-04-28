@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Furnace;
+import me.wolfyscript.customcrafting.data.cache.CookingData;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
@@ -115,7 +115,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         case FURNACE_RECIPE:
                             if (recipe instanceof CustomFurnaceRecipe) {
                                 cache.resetFurnace();
-                                Furnace furnace = cache.getFurnace();
+                                CookingData furnace = cache.getFurnace();
                                 //furnace.setAdvFurnace(((CustomFurnaceRecipe) recipe).needsAdvancedFurnace());
                                 furnace.setSource(((CustomFurnaceRecipe) recipe).getSource());
                                 furnace.setResult(recipe.getCustomResult());

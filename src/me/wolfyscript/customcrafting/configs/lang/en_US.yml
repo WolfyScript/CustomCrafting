@@ -1,6 +1,6 @@
 # Language: en_US
 author: "WolfyScript"
-version: "1.0.0"
+version: "2.0.0"
 info:
   - "YouTube:"
   - "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
@@ -86,7 +86,11 @@ msg:
         set: "&3Type in the Burn Time in ticks!"
         value_success: "&aSet Burn Time to &6%VALUE% ticks&a!"
         invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
-
+      custom_model_data:
+        disabled: "&l&cDisabled"
+        set: "&3Type in the Custom Model Data!"
+        succes: "&aSet Model Data to &6%VALUE%&a!"
+        invalid_value: "&cThe value &4%VALUE%&c is not a valid Model Data number!"
     item_editor:
       input: "&3Type in the folder and name of the item! &6example your_item"
       error: "&cThis item does not exist or is not loaded!"
@@ -105,7 +109,7 @@ msg:
         success: "&aRecipe successfully saved to:"
       loading:
         error: "&cError occurred while loading recipe &4%REC%"
-        success: "&aLoaded and injected recipe successful!"
+        success: "&aLoaded and injected recipe successful! &cIt is better to restart the Server after you're done, to prevent recipes from not working correctly!"
       valid_number: "&cType in a valid number!"
     recipe_editor:
       not_existing: "&cThe recipe &6%RECIPE% &cdoesn't exist!"
@@ -173,6 +177,18 @@ items:
       name: "&6Furnace Recipe"
       help:
         - ""
+    blast_furnace:
+      name: "&6Blasting Recipe"
+      help:
+        - ""
+    smoker:
+      name: "&6Smoking Recipe"
+      help:
+        - ""
+    campfire:
+      name: "&6Campfire Recipe"
+      help:
+        - ""
     item_editor:
       name: '&6Item Creator'
       help:
@@ -218,6 +234,12 @@ items:
       lore:
         - "&7This Item is not compatible"
         - "&7with this setting!"
+    invalid_version:
+      name: "&cInvalid Minecraft Version"
+      lore:
+        - "&7This feature is not compatible"
+        - "&7with this current Minecraft version!"
+        - "&7You need at least 1.14 to use this feature!"
     item_name:
       name: '&6Change name'
       help:
@@ -473,8 +495,22 @@ items:
         lore:
           - "&7The item item will not be saved"
           - "&7as a fuel anymore!"
-
-
+    custom_model_data:
+      name: "&6Custom Model Data"
+      help:
+        - "&7Set the Custom Model Data"
+        - "&7Used for custom Models and Textures!"
+        - "&7Available since Minecraft 1.14"
+    set_custom_model_data:
+      name: "&7Model Data: &7%VAR%"
+      help:
+        - "&7Sets the Custom Model Data"
+        - "&7for this item!"
+    reset_custom_model_data:
+      name: "&cRemove Model Data"
+      help:
+        - "&7Removes the Custom Model Data"
+        - "&7from this item!"
 
   recipe_editor:
   recipe_creator:
@@ -524,10 +560,10 @@ items:
           - '&7Recipe is shapeless!'
     furnace:
       adv_furnace_on:
-        name: "&3Advanced Furnace"
+        name: "&3Advanced CookingData"
         help: []
       adv_furnace_off:
-        name: "&4Every Furnace"
+        name: "&4Every CookingData"
       xp:
         name: "&3Experience"
         help: []

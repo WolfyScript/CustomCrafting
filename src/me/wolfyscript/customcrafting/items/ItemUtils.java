@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.items;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Furnace;
+import me.wolfyscript.customcrafting.data.cache.CookingData;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
@@ -76,8 +76,11 @@ public class ItemUtils {
                 } else {
                     workbench.setIngredient(cache.getItems().getCraftSlot(), item);
                 }
+            case CAMPFIRE:
+            case SMOKER:
+            case BLAST_FURNACE:
             case FURNACE_RECIPE:
-                Furnace furnace = cache.getFurnace();
+                CookingData furnace = cache.getCookingData();
                 if (cache.getItems().getType().equals("result")) {
                     furnace.setResult(item);
                 } else {

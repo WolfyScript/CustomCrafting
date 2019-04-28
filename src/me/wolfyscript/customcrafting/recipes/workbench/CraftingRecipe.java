@@ -48,8 +48,4 @@ public interface CraftingRecipe extends CustomRecipe {
 
     HashMap<Character, ArrayList<CustomItem>> getIngredients();
 
-    boolean isSimilar(CraftingRecipe recipe);
-
-
-
 }

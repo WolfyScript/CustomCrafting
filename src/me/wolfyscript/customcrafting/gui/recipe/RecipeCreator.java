@@ -1,17 +1,24 @@
 package me.wolfyscript.customcrafting.gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_configs.CookingConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Furnace;
+import me.wolfyscript.customcrafting.data.cache.CookingData;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.blast_furnace.CustomBlastRecipe;
+import me.wolfyscript.customcrafting.recipes.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
@@ -63,7 +70,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
 
             Workbench workbench = cache.getWorkbench();
-            Furnace furnace = cache.getFurnace();
 
             event.setItem(35, event.getItem("priority", "%PRI%", workbench.getPriority().name()));
 
@@ -81,16 +87,20 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     event.setItem(3, workbench.isPermissions() ? "permissions_on" : "permissions_off");
                     event.setItem(5, workbench.isAdvWorkbench() ? "workbench.adv_workbench_on" : "workbench.adv_workbench_off");
                     break;
+                case BLAST_FURNACE:
+                case SMOKER:
+                case CAMPFIRE:
                 case FURNACE_RECIPE:
+                    CookingData cooking = cache.getCookingData();
                     event.setItem(11, "none", "glass_white");
                     event.setItem(19, "none", "glass_white");
-                    event.setItem(20, furnace.getSource().getIDItem());
+                    event.setItem(20, cooking.getSource().getIDItem());
                     event.setItem(21, "none", "glass_white");
                     event.setItem(29, "none", "glass_white");
 
                     event.setItem(24, "none", "glass_white");
                     event.setItem(32, "none", "glass_white");
-                    event.setItem(33, furnace.getResult().getIDItem());
+                    event.setItem(33, cooking.getResult().getIDItem());
                     event.setItem(34, "none", "glass_white");
                     event.setItem(42, "none", "glass_white");
 
@@ -103,7 +113,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     if (xpMeta.hasLore()) {
                         List<String> lore = xpMeta.getLore();
                         for (int i = 0; i < lore.size(); i++) {
-                            lore.set(i, lore.get(i).replace("%XP%", String.valueOf(furnace.getExperience())));
+                            lore.set(i, lore.get(i).replace("%XP%", String.valueOf(cooking.getExperience())));
                         }
                         xpMeta.setLore(lore);
                     }
@@ -115,7 +125,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     if (timeMeta.hasLore()) {
                         List<String> lore = timeMeta.getLore();
                         for (int i = 0; i < lore.size(); i++) {
-                            lore.set(i, lore.get(i).replace("%TIME%", String.valueOf(furnace.getCookingTime())));
+                            lore.set(i, lore.get(i).replace("%TIME%", String.valueOf(cooking.getCookingTime())));
                         }
                         timeMeta.setLore(lore);
                     }
@@ -145,16 +155,19 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     } else if (action.equals("priority")) {
                         RecipePriority recipePriority = workbench.getPriority();
                         int order = recipePriority.getOrder();
-                        if(order < 2){
+                        if (order < 2) {
                             order++;
-                        }else{
+                        } else {
                             order = -2;
                         }
                         workbench.setPriority(RecipePriority.getByOrder(order));
                     }
                     break;
+                case BLAST_FURNACE:
+                case SMOKER:
+                case CAMPFIRE:
                 case FURNACE_RECIPE:
-                    Furnace furnace = cache.getFurnace();
+                    CookingData furnace = cache.getCookingData();
                     if (action.startsWith("furnace.adv_furnace_")) {
                         furnace.setAdvFurnace(!furnace.isAdvFurnace());
                     } else if (action.equals("furnace.xp")) {
@@ -186,8 +199,11 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 Workbench workbench = cache.getWorkbench();
                 if (!workbench.getIngredients().isEmpty() && !workbench.getResult().getType().equals(Material.AIR))
                     return true;
+            case BLAST_FURNACE:
+            case SMOKER:
+            case CAMPFIRE:
             case FURNACE_RECIPE:
-                Furnace furnace = cache.getFurnace();
+                CookingData furnace = cache.getCookingData();
                 if (!furnace.getResult().getType().equals(Material.AIR) && !furnace.getSource().getType().equals(Material.AIR))
                     return true;
         }
@@ -217,6 +233,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             guiClick.getGuiHandler().changeToInv("item_editor");
                             return true;
                         }
+                    case BLAST_FURNACE:
+                    case SMOKER:
+                    case CAMPFIRE:
                     case FURNACE_RECIPE:
                         if (slot == 20) {
                             items.setSource(customItem);
@@ -246,21 +265,24 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 workbench.setIngredients(ingredients);
                 if (inv.getItem(33) != null) {
                     workbench.setResult(ItemUtils.getCustomItem(inv.getItem(33)));
-                }else{
+                } else {
                     workbench.setResult(new CustomItem(Material.AIR));
                 }
                 break;
+            case BLAST_FURNACE:
+            case SMOKER:
+            case CAMPFIRE:
             case FURNACE_RECIPE:
-                Furnace furnace = cache.getFurnace();
+                CookingData cooking = cache.getCookingData();
                 if (inv.getItem(33) != null) {
-                    furnace.setResult(ItemUtils.getCustomItem(inv.getItem(33)));
-                }else{
-                    furnace.setResult(new CustomItem(Material.AIR));
+                    cooking.setResult(ItemUtils.getCustomItem(inv.getItem(33)));
+                } else {
+                    cooking.setResult(new CustomItem(Material.AIR));
                 }
                 if (inv.getItem(20) != null) {
-                    furnace.setSource(ItemUtils.getCustomItem(inv.getItem(20)));
-                }else{
-                    furnace.setSource(new CustomItem(Material.AIR));
+                    cooking.setSource(ItemUtils.getCustomItem(inv.getItem(20)));
+                } else {
+                    cooking.setSource(new CustomItem(Material.AIR));
                 }
                 break;
         }
@@ -274,10 +296,11 @@ public class RecipeCreator extends ExtendedGuiWindow {
         PlayerCache cache = CustomCrafting.getPlayerCache(player);
         String[] args = message.split(" ");
         Workbench workbench = cache.getWorkbench();
-        Furnace furnace = cache.getFurnace();
+        CookingData furnace = cache.getCookingData();
         if (args.length > 0) {
             if (id == 0) {
                 if (args.length > 1) {
+                    CookingConfig cookingConfig = null;
                     switch (cache.getSetting()) {
                         case CRAFT_RECIPE:
                             final CraftConfig config = new CraftConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
@@ -335,22 +358,54 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             }
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                             return false;
+                        case BLAST_FURNACE:
+                            cookingConfig = new BlastingConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                        case SMOKER:
+                            if (cookingConfig == null) {
+                                cookingConfig = new SmokerConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                            }
+                        case CAMPFIRE:
+                            if (cookingConfig == null) {
+                                cookingConfig = new CampfireConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                            }
                         case FURNACE_RECIPE:
-                            FurnaceConfig furnaceConfig = new FurnaceConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                            if (cookingConfig == null) {
+                                cookingConfig = new FurnaceConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                            }
                             //furnaceConfig.setAdvancedFurnace(furnace.isAdvFurnace());
-                            furnaceConfig.setCookingTime(furnace.getCookingTime());
-                            furnaceConfig.setXP(furnace.getExperience());
-                            furnaceConfig.setResult(furnace.getResult());
-                            furnaceConfig.setSource(furnace.getSource());
-                            furnaceConfig.save();
-                            furnaceConfig.load();
+                            cookingConfig.setCookingTime(furnace.getCookingTime());
+                            cookingConfig.setXP(furnace.getExperience());
+                            cookingConfig.setResult(furnace.getResult());
+                            cookingConfig.setSource(furnace.getSource());
+                            cookingConfig.save();
+                            cookingConfig.load();
                             cache.resetFurnace();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
                             api.sendPlayerMessage(player, "§6recipes/" + args[0] + "/furnace/" + args[1]);
                             try {
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(new CustomFurnaceRecipe(furnaceConfig)), 1);
+                                CustomRecipe customRecipe = null;
+                                switch (cache.getSetting()) {
+                                    case SMOKER:
+                                        customRecipe = new CustomSmokerRecipe((SmokerConfig) cookingConfig);
+                                        break;
+                                    case CAMPFIRE:
+                                        customRecipe = new CustomCampfireRecipe((CampfireConfig) cookingConfig);
+                                        break;
+                                    case FURNACE_RECIPE:
+                                        customRecipe = new CustomFurnaceRecipe((FurnaceConfig) cookingConfig);
+                                        break;
+                                    case BLAST_FURNACE:
+                                        customRecipe = new CustomBlastRecipe((BlastingConfig) cookingConfig);
+
+                                }
+                                if(customRecipe != null){
+                                    CustomRecipe finalCustomRecipe = customRecipe;
+                                    Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
+                                }else{
+                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
+                                }
                             } catch (Exception ex) {
-                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", furnaceConfig.getId()});
+                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
                                 ex.printStackTrace();
                                 return false;
                             }

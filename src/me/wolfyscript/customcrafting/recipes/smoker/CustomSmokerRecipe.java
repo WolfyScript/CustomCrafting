@@ -17,14 +17,13 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
     private SmokerConfig config;
 
     public CustomSmokerRecipe(SmokerConfig config) {
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), 0f, config.getCookingTime());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
         this.priority = config.getPriority();
     }
-
 
     @Override
     public CustomItem getSource() {

@@ -15,10 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.spigotmc.SpigotCommand;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CommandCC implements CommandExecutor, TabCompleter {
 
@@ -31,65 +28,72 @@ public class CommandCC implements CommandExecutor, TabCompleter {
             if (args.length == 0) {
                 openGUI(p, invAPI);
             } else {
-                if (args[0].equalsIgnoreCase("studio")) {
-                    openGUI(p, invAPI);
-                } else if (args[0].equalsIgnoreCase("info")) {
-                    if (checkPerm(p, "customcrafting.cmd.info")) {
-                        printInfo(p);
-                    }
-                } else if (args[0].equalsIgnoreCase("help")) {
-                    if (checkPerm(p, "customcrafting.cmd.help")) {
-                        printHelp(p);
-                    }
-                } else if (args[0].equalsIgnoreCase("clear")) {
-                    if (checkPerm(p, "customcrafting.cmd.clear")) {
-                        CustomCrafting.renewPlayerCache(p);
-                    }
-                } else if (args[0].equalsIgnoreCase("reload")) {
-                    if (checkPerm(p, "customcrafting.cmd.reload")) {
-                        //TODO RELOAD
-                        CustomCrafting.getApi().sendPlayerMessage(p, "§cYeah you found it! Unfortunately it's not implemented yet! :(");
-                    }
-                } else if (args[0].equalsIgnoreCase("knowledge")) {
-                    invAPI.openGui(p);
-                    invAPI.getGuiHandler(p).changeToInv("recipe_book");
-                } else if (args[0].equalsIgnoreCase("give")) {
-                    //   /cc give <player> <namespace:key> [amount]
-                    if (checkPerm(p, "customcrafting.cmd.give")) {
-                        if (args.length >= 3) {
-                            Player target = Bukkit.getPlayer(args[1]);
-                            if (target == null) {
-                                api.sendPlayerMessage(p, "$msg.commands.give.player_offline$", new String[]{"%PLAYER%", args[1]});
-                                return true;
-                            }
-                            String namespacekey = args[2];
-                            int amount = 1;
-                            if (args.length > 3) {
-                                try {
-                                    amount = Integer.parseInt(args[3]);
-                                } catch (NumberFormatException ex) {
-                                    api.sendPlayerMessage(p, "$msg.commands.give.invalid_amount$");
+                switch (args[0].toLowerCase(Locale.ROOT)) {
+                    case "studio":
+                        openGUI(p, invAPI);
+                        break;
+                    case "info":
+                        if (checkPerm(p, "customcrafting.cmd.info")) {
+                            printInfo(p);
+                        }
+                        break;
+                    case "help":
+                        if (checkPerm(p, "customcrafting.cmd.help")) {
+                            printHelp(p);
+                        }
+                        break;
+                    case "clear":
+                        if (checkPerm(p, "customcrafting.cmd.clear")) {
+                            CustomCrafting.renewPlayerCache(p);
+                        }
+                        break;
+                    case "reload":
+                        if (checkPerm(p, "customcrafting.cmd.reload")) {
+                            //TODO RELOAD
+                            CustomCrafting.getApi().sendPlayerMessage(p, "§cYeah you found it! Unfortunately it's not implemented yet! :(");
+                        }
+                        break;
+                    case "knowledge":
+                        invAPI.openGui(p);
+                        invAPI.getGuiHandler(p).changeToInv("recipe_book");
+                        break;
+                    case "give":
+                        //   /cc give <player> <namespace:key> [amount]
+                        if (checkPerm(p, "customcrafting.cmd.give")) {
+                            if (args.length >= 3) {
+                                Player target = Bukkit.getPlayer(args[1]);
+                                if (target == null) {
+                                    api.sendPlayerMessage(p, "$msg.commands.give.player_offline$", new String[]{"%PLAYER%", args[1]});
+                                    return true;
                                 }
-                            }
-                            CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
-                            if (customItem != null) {
-                                if (ItemUtils.hasInventorySpace(target, customItem)) {
-                                    ItemStack itemStack = new ItemStack(customItem);
-                                    itemStack.setAmount(amount);
-                                    target.getInventory().addItem(itemStack);
-                                    if (amount > 1) {
-                                        api.sendPlayerMessage(p, "$msg.commands.give.success_amount$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]}, new String[]{"%AMOUNT%", args[3]});
+                                String namespacekey = args[2];
+                                int amount = 1;
+                                if (args.length > 3) {
+                                    try {
+                                        amount = Integer.parseInt(args[3]);
+                                    } catch (NumberFormatException ex) {
+                                        api.sendPlayerMessage(p, "$msg.commands.give.invalid_amount$");
+                                    }
+                                }
+                                CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
+                                if (customItem != null) {
+                                    if (ItemUtils.hasInventorySpace(target, customItem)) {
+                                        ItemStack itemStack = new ItemStack(customItem);
+                                        itemStack.setAmount(amount);
+                                        target.getInventory().addItem(itemStack);
+                                        if (amount > 1) {
+                                            api.sendPlayerMessage(p, "$msg.commands.give.success_amount$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]}, new String[]{"%AMOUNT%", args[3]});
+                                        } else {
+                                            api.sendPlayerMessage(p, "$msg.commands.give.success$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]});
+                                        }
                                     } else {
-                                        api.sendPlayerMessage(p, "$msg.commands.give.success$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]});
+                                        api.sendPlayerMessage(p, "$msg.commands.give.no_inv_space$");
                                     }
                                 } else {
-                                    api.sendPlayerMessage(p, "$msg.commands.give.no_inv_space$");
+                                    api.sendPlayerMessage(p, "$msg.commands.give.invalid_item$", new String[]{"%ITEM%", args[2]});
                                 }
-                            } else {
-                                api.sendPlayerMessage(p, "$msg.commands.give.invalid_item$", new String[]{"%ITEM%", args[2]});
                             }
                         }
-                    }
                 }
             }
         } else {
@@ -119,7 +123,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             if (amount > 1) {
                                 api.sendConsoleMessage("$msg.commands.give.success_amount$", args[3], args[2], args[1]);
                             } else {
-                                api.sendConsoleMessage("$msg.commands.give.success$",args[2], args[1]);
+                                api.sendConsoleMessage("$msg.commands.give.success$", args[2], args[1]);
                             }
                         } else {
                             api.sendConsoleMessage("$msg.commands.give.no_inv_space$");

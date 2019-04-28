@@ -3,9 +3,12 @@ package me.wolfyscript.customcrafting.gui;
 public enum Setting {
 
     MAIN_MENU,
+    RECIPE_LIST,
+    ITEMS,
     CRAFT_RECIPE,
     FURNACE_RECIPE,
-    ITEMS,
-    LIST;
+    BLAST_FURNACE,
+    SMOKER,
+    CAMPFIRE;
 
 }
