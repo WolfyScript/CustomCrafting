@@ -2,6 +2,7 @@
 
 permissions: false
 advanced_workbench: true
+exactItemMeta: true
 priority: "NORMAL"
 group: ""
 

@@ -50,14 +50,6 @@ public class CraftConfig extends CustomConfig {
         return getBoolean("advanced_workbench");
     }
 
-    public void setGroup(String group) {
-        set("group", group);
-    }
-
-    public String getGroup() {
-        return getString("group");
-    }
-
     public void setShape(String... shape) {
         set("shape", shape);
     }

@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.events.customevents;
+package me.wolfyscript.customcrafting.listeners.customevents;
 
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import org.bukkit.event.HandlerList;

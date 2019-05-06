@@ -10,6 +10,8 @@ import org.bukkit.inventory.SmokingRecipe;
 
 public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRecipe<SmokerConfig> {
 
+    private boolean exactMeta;
+
     private RecipePriority priority;
     private CustomItem result;
     private CustomItem source;
@@ -23,6 +25,8 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
         this.result = config.getResult();
         this.source = config.getSource();
         this.priority = config.getPriority();
+        this.exactMeta = config.isExactMeta();
+        setGroup(config.getGroup());
     }
 
     @Override
@@ -58,5 +62,10 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
     @Override
     public SmokerConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public boolean isExactMeta() {
+        return exactMeta;
     }
 }

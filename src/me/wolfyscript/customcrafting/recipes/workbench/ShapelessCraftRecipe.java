@@ -26,6 +26,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     private String group;
     private HashMap<Character, ArrayList<CustomItem>> ingredients;
     private WolfyUtilities api;
+    private boolean exactMeta;
 
     public ShapelessCraftRecipe(CraftConfig config) {
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
@@ -38,6 +39,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.group = config.getGroup();
         this.priority = config.getPriority();
         this.api = CustomCrafting.getApi();
+        this.exactMeta = config.isExactMeta();
     }
 
     @Override
@@ -76,9 +78,11 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : ingredients.get(key)) {
-                    if (item.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(item)) {
-                        usedKeys.add(key);
-                        return ingredient;
+                    if(item.getType().equals(ingredient.getType())){
+                        if (item.getAmount() >= ingredient.getAmount() && ((!exactMeta && !ingredient.hasItemMeta()) || ingredient.isSimilar(item))) {
+                            usedKeys.add(key);
+                            return ingredient;
+                        }
                     }
                 }
             }
@@ -216,5 +220,10 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     @Override
     public RecipePriority getPriority() {
         return priority;
+    }
+
+    @Override
+    public boolean isExactMeta() {
+        return exactMeta;
     }
 }

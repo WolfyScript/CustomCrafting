@@ -35,9 +35,13 @@ public class Workbenches {
         this.api = api;
         load();
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
-            api.sendConsoleMessage("[$msg.auto_save.start$]");
-            save();
-            api.sendConsoleMessage("[$msg.auto_save.complete$]");
+            if(CustomCrafting.getConfigHandler().getConfig().isAutoSaveMesage()){
+                api.sendConsoleMessage("[$msg.auto_save.start$]");
+                save();
+                api.sendConsoleMessage("[$msg.auto_save.complete$]");
+            }else{
+                save();
+            }
         }, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
 
         particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
@@ -52,10 +56,6 @@ public class Workbenches {
             }
         }, 10, 2);
 
-    }
-
-    public HashMap<String, List<ItemStack>> getWorkbenches() {
-        return workbenches;
     }
 
     public void addWorkbench(Location location) {
@@ -144,49 +144,8 @@ public class Workbenches {
         }
     }
 
-    public void migrate() {
-        DataSet dataSet = null;
-        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "dataSet.dat");
-        if (file.exists()) {
-            try {
-                FileInputStream fis = new FileInputStream(file);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                try {
-                    Object object = ois.readObject();
-                    if (object instanceof DataSet) {
-                        dataSet = (DataSet) object;
-                    }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                ois.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (dataSet != null) {
-            dataSet.getWorkbenches();
-        }
-    }
-
     public void endTask() {
         Bukkit.getScheduler().cancelTask(task);
-    }
-
-    public Map<String, Object> serialize(ItemStack itemStack) {
-        Map<String, Object> result = new LinkedHashMap();
-        result.put("v", Bukkit.getUnsafe().getDataVersion());
-        result.put("type", itemStack.getType().name());
-        if (itemStack.getAmount() != 1) {
-            result.put("amount", itemStack.getAmount());
-        }
-
-        ItemMeta meta = itemStack.getItemMeta();
-        if (!Bukkit.getItemFactory().equals(meta, (ItemMeta)null)) {
-            result.put("meta", meta.serialize());
-        }
-
-        return result;
     }
 
 }

@@ -24,6 +24,7 @@ public class Workbench implements Serializable {
     private boolean saved;
     private String id;
     private RecipePriority priority;
+    private boolean exactMeta;
 
     public Workbench(){
         this.ingredients = new HashMap<>();
@@ -31,12 +32,13 @@ public class Workbench implements Serializable {
         this.result = new CustomItem(Material.AIR);
         this.extend = "";
         this.overrides = new ArrayList<>();
-        this.advWorkbench = true;
+        this.advWorkbench = false;
         this.permissions = true;
         this.shapeless = false;
         this.saved = false;
         this.id = "";
         this.priority = RecipePriority.NORMAL;
+        this.exactMeta = true;
     }
 
     public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
@@ -179,5 +181,13 @@ public class Workbench implements Serializable {
 
     public void setPriority(RecipePriority priority) {
         this.priority = priority;
+    }
+
+    public boolean isExactMeta() {
+        return exactMeta;
+    }
+
+    public void setExactMeta(boolean exactMeta) {
+        this.exactMeta = exactMeta;
     }
 }

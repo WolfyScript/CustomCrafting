@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.CookingData;
+import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
@@ -76,6 +77,15 @@ public class ItemUtils {
                 } else {
                     workbench.setIngredient(cache.getItems().getCraftSlot(), item);
                 }
+                break;
+            case STONECUTTER:
+                Stonecutter stonecutter = cache.getStonecutter();
+                if (cache.getItems().getType().equals("result")) {
+                    stonecutter.setResult(item);
+                } else {
+                    stonecutter.setSource(item);
+                }
+                break;
             case CAMPFIRE:
             case SMOKER:
             case BLAST_FURNACE:

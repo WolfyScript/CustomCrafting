@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.smoker.SmokerConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.stonecutter.StonecutterConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
@@ -13,6 +14,7 @@ import me.wolfyscript.customcrafting.recipes.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.smoker.CustomSmokerRecipe;
+import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
@@ -79,6 +81,8 @@ public class RecipeHandler {
                         case "items":
                             customItems.add(new CustomItem(new ItemConfig(configAPI, key, name)));
                             break;
+                        case "stonecutter":
+                            registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, key, name)));
                     }
                 } catch (Exception ex) {
                     api.sendConsoleMessage("-------------------------------------------------");
@@ -125,6 +129,12 @@ public class RecipeHandler {
                 api.sendConsoleMessage("- " + folder.getName());
                 loadConfig(folder.getName(), "workbench");
                 loadConfig(folder.getName(), "furnace");
+                if(WolfyUtilities.hasVillagePillageUpdate()){
+                    loadConfig(folder.getName(), "blast_furnace");
+                    loadConfig(folder.getName(), "smoker");
+                    loadConfig(folder.getName(), "campfire");
+                    loadConfig(folder.getName(), "stonecutter");
+                }
             }
             getRecipes().sort((o1, o2) -> Integer.compare(o2.getPriority().getOrder(), o1.getPriority().getOrder()));
         }
@@ -144,10 +154,20 @@ public class RecipeHandler {
 
     public void unregisterRecipe(String key) {
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+        boolean inject = false;
         while (recipeIterator.hasNext()) {
             Recipe recipe = recipeIterator.next();
             if (((Keyed) recipe).getKey().toString().equals(key)) {
+                if(!inject){
+                    inject = true;
+                }
                 recipeIterator.remove();
+            }
+        }
+        if(inject){
+            Bukkit.resetRecipes();
+            while(recipeIterator.hasNext()){
+                Bukkit.addRecipe(recipeIterator.next());
             }
         }
     }

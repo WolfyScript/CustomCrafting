@@ -3,10 +3,13 @@ package me.wolfyscript.customcrafting.gui.recipe;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.CookingData;
+import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.*;
@@ -15,14 +18,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.StonecuttingRecipe;
 
 import java.util.*;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
     public RecipeEditor(InventoryAPI inventoryAPI) {
-        super("recipe_editor", inventoryAPI, 54);
+        super("recipe_editor", inventoryAPI, 45);
     }
 
     @Override
@@ -70,18 +75,14 @@ public class RecipeEditor extends ExtendedGuiWindow {
 
     @Override
     public boolean onClick(GuiClick guiClick) {
-
         return true;
     }
-
-    private HashMap<UUID, CustomRecipe> recipeToDelete = new HashMap<>();
 
     @Override
     public boolean parseChatMessage(int id, String message, GuiHandler guiHandler) {
         String[] args = message.split(" ");
         Player player = guiHandler.getPlayer();
         PlayerCache cache = CustomCrafting.getPlayerCache(guiHandler.getPlayer());
-
 
         if (args.length > 1) {
             CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
@@ -107,20 +108,36 @@ public class RecipeEditor extends ExtendedGuiWindow {
                                 workbench.setAdvWorkbench(((CraftingRecipe) recipe).needsAdvancedWorkbench());
                                 workbench.setPermissions(((CraftingRecipe) recipe).needsPermission());
                                 workbench.setPriority(recipe.getPriority());
+                                workbench.setExactMeta(recipe.isExactMeta());
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
                             api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
                             return true;
+                        case STONECUTTER:
+                            if(recipe instanceof CustomStonecutterRecipe){
+                                cache.resetStonecutter();
+                                Stonecutter stonecutter = cache.getStonecutter();
+                                stonecutter.setResult(recipe.getCustomResult());
+                                stonecutter.setSource(((CustomStonecutterRecipe)recipe).getSource());
+                                stonecutter.setExactMeta(recipe.isExactMeta());
+                                stonecutter.setPriority(recipe.getPriority());
+                            }
+                            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
+                            return false;
+                        case CAMPFIRE:
+                        case BLAST_FURNACE:
+                        case SMOKER:
                         case FURNACE_RECIPE:
-                            if (recipe instanceof CustomFurnaceRecipe) {
-                                cache.resetFurnace();
+                            if (recipe instanceof CustomCookingRecipe) {
+                                cache.resetCookingData();
                                 CookingData furnace = cache.getFurnace();
                                 //furnace.setAdvFurnace(((CustomFurnaceRecipe) recipe).needsAdvancedFurnace());
-                                furnace.setSource(((CustomFurnaceRecipe) recipe).getSource());
+                                furnace.setSource(((CustomCookingRecipe) recipe).getSource());
                                 furnace.setResult(recipe.getCustomResult());
-                                furnace.setExperience(((CustomFurnaceRecipe) recipe).getExperience());
-                                furnace.setCookingTime(((CustomFurnaceRecipe) recipe).getCookingTime());
+                                furnace.setExperience(((CustomCookingRecipe) recipe).getConfig().getXP());
+                                furnace.setCookingTime(((CustomCookingRecipe) recipe).getConfig().getCookingTime());
+                                furnace.setExactMeta(recipe.isExactMeta());
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
                                 return false;
                             }
@@ -128,7 +145,6 @@ public class RecipeEditor extends ExtendedGuiWindow {
                             return true;
                     }
                 }else if(id == 1){
-                    recipeToDelete.put(player.getUniqueId(), recipe);
                     api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new String[]{"%RECIPE%",recipe.getId()});
                     api.sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);

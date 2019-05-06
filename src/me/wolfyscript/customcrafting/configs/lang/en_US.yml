@@ -16,7 +16,7 @@ msg:
     start:    "   Auto save data   "
     complete: " Auto save complete "
   startup:
-    outdated: "Your version is outdated! There is a new version available! Download it here: https://www.spigotmc.org/resources/customcrafting-create-custom-recipes.55883/"
+    outdated: "Your version is outdated! There is a new version available! Download it here: https://www.spigotmc.org/resources/55883/"
     uptodate: "You are running the latest version of CustomCrafting!"
     update_check_fail: "Failed to check for a update on spigot"
     playerstats: "Loading Player Stats"
@@ -27,6 +27,12 @@ msg:
       items:   "---------[ITEMS]---------"
       recipes: "--------[RECIPES]--------"
   denied_perm: "&cYou lack the permission &4%PERM%&c!"
+  player:
+    outdated:
+      msg: "&cYour version is outdated! A new version is available!"
+      msg2: "&aDownload it now!"
+      link: " &7[&3Click Here&7]"
+
   gui:
     item_creator:
       save:
@@ -187,6 +193,10 @@ items:
         - ""
     campfire:
       name: "&6Campfire Recipe"
+      help:
+        - ""
+    stonecutter:
+      name: "&6Stonecutter Recipe"
       help:
         - ""
     item_editor:
@@ -538,6 +548,20 @@ items:
         - "&3NORMAL&7: normal priority"
         - "&cHIGH&7"
         - "&4HIGHEST&7: will be checked last"
+    exact_meta_on:
+      name: "&aExact Meta"
+      help: []
+      lore:
+        - "&7Items need to be exactly the same!"
+        - "&7That means if you put in a IronSword with no damage "
+        - "&7then IronSwords with damage won't be allowed!"
+    exact_meta_off:
+      name: "&3Ignore Meta"
+      help: []
+      lore:
+        - "&7Items without Meta will only"
+        - "&7be checked for their type!"
+        - "&7Items with Meta still need to be exact!"
 
     workbench:
       adv_workbench_on:

@@ -1,6 +1,3 @@
-# Furnace Recipe Config
-exp: 10
-cooking_time: 20
 priority: "NORMAL"
 exactItemMeta: true
 
@@ -9,4 +6,3 @@ group: ""
 source:
 
 result:
-

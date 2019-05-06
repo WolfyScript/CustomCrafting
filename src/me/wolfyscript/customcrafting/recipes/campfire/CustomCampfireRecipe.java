@@ -10,6 +10,8 @@ import org.bukkit.inventory.RecipeChoice;
 
 public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookingRecipe<CampfireConfig>{
 
+    private boolean exactMeta;
+
     private RecipePriority recipePriority;
     private CustomItem result;
     private CustomItem source;
@@ -23,6 +25,8 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
         this.result = config.getResult();
         this.source = config.getSource();
         this.recipePriority = config.getPriority();
+        this.exactMeta = config.isExactMeta();
+        setGroup(config.getGroup());
     }
 
     public CustomItem getSource() {
@@ -57,5 +61,10 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     @Override
     public CampfireConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public boolean isExactMeta() {
+        return exactMeta;
     }
 }

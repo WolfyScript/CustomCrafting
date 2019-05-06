@@ -13,7 +13,7 @@ import java.util.Locale;
 public class MainMenu extends ExtendedGuiWindow {
 
     public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 54);
+        super("main_menu", inventoryAPI, 45);
     }
 
     @Override
@@ -25,6 +25,7 @@ public class MainMenu extends ExtendedGuiWindow {
             createItem("blast_furnace", Material.BLAST_FURNACE);
             createItem("smoker", Material.SMOKER);
             createItem("campfire", Material.CAMPFIRE);
+            createItem("stonecutter", Material.STONECUTTER);
         }
         createItem("item_editor", Material.CHEST);
         createItem("recipe_list", Material.WRITTEN_BOOK);
@@ -37,10 +38,6 @@ public class MainMenu extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
-            for (int i = 0; i < 54; i++) {
-                event.setItem(i, "glass_gray", true);
-            }
-            api.sendDebugMessage("Test is working!");
             if (event.getGuiHandler().isHelpEnabled()) {
                 event.setItem(8, "gui_help_on", true);
             } else {
@@ -55,6 +52,7 @@ public class MainMenu extends ExtendedGuiWindow {
                 event.setItem(14, "blast_furnace");
                 event.setItem(16, "smoker");
                 event.setItem(20, "campfire");
+                event.setItem(22, "stonecutter");
             }
 
             event.setItem(39, "item_editor");
@@ -64,9 +62,15 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onUpdateGuis(GuiUpdateEvent event) {
-        if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null) {
-            for (int i = 0; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
+        if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null && event.getGuiHandler().getCurrentInv().equals(event.getGuiWindow())) {
+            for(int i = 0; i < 9; i++){
+                event.setItem(i, "glass_white", true);
+            }
+            for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize()-9; i++) {
                 event.setItem(i, "glass_gray", true);
+            }
+            for(int i = event.getGuiHandler().getCurrentInv().getSize()-9; i < event.getGuiHandler().getCurrentInv().getSize(); i++){
+                event.setItem(i, "glass_white", true);
             }
             event.setItem(0, "back", true);
             if (event.getGuiHandler().getCurrentInv().getSize() > 8) {
@@ -101,6 +105,7 @@ public class MainMenu extends ExtendedGuiWindow {
                 case "campfire":
                 case "craft_recipe":
                 case "furnace_recipe":
+                case "stonecutter":
                     playerCache.setSetting(Setting.valueOf(action.toUpperCase(Locale.ROOT)));
                     guiAction.getGuiHandler().changeToInv("recipe_editor");
                     break;

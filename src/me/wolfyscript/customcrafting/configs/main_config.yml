@@ -1,5 +1,5 @@
 # Main Config - CustomCrafting v0.0.9.141
-#
+# -
 #PlaceholderAPI:
 # Identifier: customcrafting
 # Placeholders:
@@ -19,7 +19,6 @@ commands:
 
 workbench:
   enable: true
-
   # Sound after successful crafting!
   craft_sound:
     enable: false
@@ -35,6 +34,7 @@ data:
   auto_save:
     # Interval in minutes
     interval: 30
+    message: true
 
 recipes:
   disabled_recipes: []

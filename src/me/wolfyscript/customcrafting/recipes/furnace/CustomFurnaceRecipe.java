@@ -11,6 +11,8 @@ import org.bukkit.inventory.RecipeChoice;
 
 public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingRecipe<FurnaceConfig> {
 
+    private boolean exactMeta;
+
     private RecipePriority priority;
     private CustomItem result;
     private CustomItem source;
@@ -18,12 +20,14 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     private FurnaceConfig config;
 
     public CustomFurnaceRecipe(FurnaceConfig config){
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), config.getXP(), config.getCookingTime());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), config.isExactMeta() ? new RecipeChoice.ExactChoice(config.getSource()) : new RecipeChoice.MaterialChoice(config.getSource().getType()), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
         this.priority = config.getPriority();
+        this.exactMeta = config.isExactMeta();
+        setGroup(config.getGroup());
     }
 
     public CustomItem getSource() {
@@ -67,5 +71,10 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     @Override
     public FurnaceConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public boolean isExactMeta() {
+        return exactMeta;
     }
 }

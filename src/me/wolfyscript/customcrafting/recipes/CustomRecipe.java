@@ -17,4 +17,6 @@ public interface CustomRecipe extends Recipe {
 
     CustomConfig getConfig();
 
+    boolean isExactMeta();
+
 }

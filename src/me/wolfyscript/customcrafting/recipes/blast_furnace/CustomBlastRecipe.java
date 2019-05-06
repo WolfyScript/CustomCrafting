@@ -13,6 +13,8 @@ import org.bukkit.inventory.RecipeChoice;
 
 public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRecipe<BlastingConfig> {
 
+    private boolean exactMeta;
+
     private RecipePriority priority;
     private CustomItem result;
     private CustomItem source;
@@ -26,6 +28,8 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
         this.result = config.getResult();
         this.source = config.getSource();
         this.priority = config.getPriority();
+        this.exactMeta = config.isExactMeta();
+        setGroup(config.getGroup());
     }
 
     @Override
@@ -61,5 +65,10 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     @Override
     public BlastingConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public boolean isExactMeta() {
+        return exactMeta;
     }
 }

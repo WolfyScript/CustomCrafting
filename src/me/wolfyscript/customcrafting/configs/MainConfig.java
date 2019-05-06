@@ -28,6 +28,10 @@ public class MainConfig extends Config {
         return getInt("data.auto_save.interval");
     }
 
+    public boolean isAutoSaveMesage() {
+        return getBoolean("data.auto_save.message");
+    }
+
     public List<String> getDisabledRecipes() {
         return getStringList("recipes.disabled_recipes");
     }

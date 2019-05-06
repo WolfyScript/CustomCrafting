@@ -1,10 +1,10 @@
-package me.wolfyscript.customcrafting.events;
+package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.events.customevents.CustomCraftEvent;
-import me.wolfyscript.customcrafting.events.customevents.CustomPreCraftEvent;
+import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
+import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
@@ -20,11 +20,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class CraftEvents implements Listener {
+public class CraftListener implements Listener {
 
     private WolfyUtilities api;
 
@@ -32,7 +31,7 @@ public class CraftEvents implements Listener {
 
     private HashMap<UUID, String> precraftedRecipes = new HashMap<>();
 
-    public CraftEvents(WolfyUtilities api) {
+    public CraftListener(WolfyUtilities api) {
         this.api = api;
     }
 

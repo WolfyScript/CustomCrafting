@@ -23,6 +23,7 @@ public class PlayerCache {
     private BlastingFurnace blastingFurnace = new BlastingFurnace();
     private Smoker smoker = new Smoker();
     private Campfire campfire = new Campfire();
+    private Stonecutter stonecutter = new Stonecutter();
 
 
     public PlayerCache(UUID uuid) {
@@ -60,10 +61,22 @@ public class PlayerCache {
         return furnace;
     }
 
-    public void resetFurnace(){
-        this.furnace = new Furnace();
+    public void resetCookingData(){
+        switch (getSetting()){
+            case BLAST_FURNACE:
+                this.blastingFurnace = new BlastingFurnace();
+            case SMOKER:
+                this.smoker = new Smoker();
+            case CAMPFIRE:
+                this.campfire = new Campfire();
+            case FURNACE_RECIPE:
+                this.furnace = new Furnace();
+        }
     }
 
+    public void resetStonecutter(){
+        this.stonecutter = new Stonecutter();
+    }
     //Player Stats
     //Main Settings
     public Setting getSetting() {
@@ -123,6 +136,14 @@ public class PlayerCache {
 
     public void setCampfire(Campfire campfire) {
         this.campfire = campfire;
+    }
+
+    public Stonecutter getStonecutter() {
+        return stonecutter;
+    }
+
+    public void setStonecutter(Stonecutter stonecutter) {
+        this.stonecutter = stonecutter;
     }
 
     public KnowledgeBook getKnowledgeBook() {
@@ -215,5 +236,7 @@ public class PlayerCache {
         HashMap<String, Integer> recipeCrafts = getRecipeCrafts();
         return recipeCrafts.getOrDefault(key, 0);
     }
+
+
 
 }

@@ -20,6 +20,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -317,7 +318,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                     event.setItem(40, "attribute.save");
                     event.setItem(49, "attribute.delete");
                 }
-
             }
         }
     }

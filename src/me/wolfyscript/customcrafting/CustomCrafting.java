@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting;
 
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.data.Workbenches;
-import me.wolfyscript.customcrafting.events.*;
+import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
@@ -10,22 +10,19 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.chat.ClickData;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemFactory;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,17 +38,18 @@ public class CustomCrafting extends JavaPlugin {
     private static RecipeHandler recipeHandler;
     private static Workbenches workbenches = null;
 
+    private static boolean outdated = false;
+
     public void onEnable() {
         instance = this;
         api = new WolfyUtilities(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");
-
         System.out.println("  _____        __             _____         _____  _          ");
         System.out.println(" / ___/_ _____/ /____  __ _  / ___/______ _/ _/ /_(_)__  ___ _");
         System.out.println("/ /__/ // (_-< __/ _ \\/  ' \\/ /__/ __/ _ `/ _/ __/ / _ \\/ _ `/");
         System.out.println("\\___/\\_,_/___|__/\\___/_/_/_/\\___/_/  \\_,_/_/ \\__/_/_//_/\\_, / ");
-        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion()+"-beta");
+        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion());
         System.out.println(" ");
         System.out.println("------------------------------------------------------------------------");
 
@@ -83,10 +81,10 @@ public class CustomCrafting extends JavaPlugin {
 
         loadPlayerCache();
 
-        getServer().getPluginManager().registerEvents(new PlayerEvent(), this);
-        getServer().getPluginManager().registerEvents(new CraftEvents(api), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftListener(api), this);
         getServer().getPluginManager().registerEvents(new BlockEvents(), this);
-        getServer().getPluginManager().registerEvents(new FurnaceEvents(), this);
+        getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
         CommandCC commandCC = new CommandCC();
         if(configHandler.getConfig().isCCenabled()){
@@ -105,8 +103,7 @@ public class CustomCrafting extends JavaPlugin {
             new PlaceHolder().register();
         }
         recipeHandler.loadConfigs();
-        Thread updater = new Thread(this::checkUpdate);
-        updater.start();
+        checkUpdate(null);
 
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
@@ -117,6 +114,8 @@ public class CustomCrafting extends JavaPlugin {
                 return Bukkit.getServer().getName();
             }
         }));
+        metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
+
         System.out.println("------------------------------------------------------------------------");
     }
 
@@ -127,17 +126,30 @@ public class CustomCrafting extends JavaPlugin {
         savePlayerCache();
     }
 
-    public void checkUpdate(){
-        try {
-            HttpURLConnection con = (HttpURLConnection) new URL(
-                    "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
-            String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-            if(!version.isEmpty() && !version.equals(instance.getDescription().getVersion())){
-                api.sendConsoleWarning("$msg.startup.outdated$");
+    public static void checkUpdate(@Nullable Player player){
+        Thread updater = new Thread(() -> {
+            try {
+                HttpURLConnection con = (HttpURLConnection) new URL(
+                        "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
+                String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+                if(!version.isEmpty() && !version.equals(instance.getDescription().getVersion())){
+                    outdated = true;
+                    api.sendConsoleWarning("$msg.startup.outdated$");
+                    if(player != null){
+                        api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
+                        api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+                    }
+                }
+            } catch (Exception ex) {
+                api.sendConsoleWarning("$msg.startup.update_check_fail$");
             }
-        } catch (Exception ex) {
-            api.sendConsoleWarning("$msg.startup.update_check_fail$");
-        }
+        });
+        updater.start();
+
+    }
+
+    public static boolean isOutdated() {
+        return outdated;
     }
 
     public static ConfigHandler getConfigHandler() {

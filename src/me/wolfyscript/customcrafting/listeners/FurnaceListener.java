@@ -1,8 +1,7 @@
-package me.wolfyscript.customcrafting.events;
+package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -12,14 +11,16 @@ import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
-public class FurnaceEvents implements Listener {
+public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onDiscover(PlayerRecipeDiscoverEvent event) {
+        /*
         CustomFurnaceRecipe recipe = CustomCrafting.getRecipeHandler().getFurnaceRecipe(event.getRecipe().toString());
         if (recipe != null) {
             event.setCancelled(true);
         }
+        */
     }
 
     @EventHandler

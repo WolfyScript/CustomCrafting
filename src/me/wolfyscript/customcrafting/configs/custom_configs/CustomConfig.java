@@ -14,10 +14,6 @@ public class CustomConfig extends Config {
     private String id;
     private String type;
 
-    public CustomConfig(ConfigAPI configAPI, String defaultName, String type, String name) {
-        this(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs/"+type, defaultName, type, name, false);
-    }
-
     public CustomConfig(ConfigAPI configAPI, String defaultName, String folder, String type, String name) {
         this(configAPI, "me/wolfyscript/customcrafting/configs/custom_configs/"+type, defaultName, folder, type, name, false);
     }
@@ -55,6 +51,22 @@ public class CustomConfig extends Config {
 
     public String getType() {
         return type;
+    }
+
+    public void setGroup(String group) {
+        set("group", group);
+    }
+
+    public String getGroup() {
+        return getString("group");
+    }
+
+    public void setExactMeta(boolean exactMeta) {
+        set("exactItemMeta", exactMeta);
+    }
+
+    public boolean isExactMeta() {
+        return getBoolean("exactItemMeta");
     }
 
     public void saveCustomItem(String path, CustomItem customItem){

@@ -1,13 +1,17 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.Material;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CookingData {
+public abstract class CookingData {
+
+    private boolean exactMeta;
+    private RecipePriority priority;
 
     private CustomItem source;
     private CustomItem result;
@@ -24,6 +28,8 @@ public class CookingData {
 
         this.advFurnace = true;
         this.cookingTime = 60;
+
+        this.exactMeta = true;
     }
 
     public void setSource(CustomItem source) {
@@ -64,5 +70,13 @@ public class CookingData {
 
     public void setExperience(float experience) {
         this.experience = experience;
+    }
+
+    public boolean isExactMeta() {
+        return exactMeta;
+    }
+
+    public void setExactMeta(boolean exactMeta) {
+        this.exactMeta = exactMeta;
     }
 }

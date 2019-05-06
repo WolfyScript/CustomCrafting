@@ -19,7 +19,7 @@ import org.bukkit.inventory.Inventory;
 public class ItemEditor extends ExtendedGuiWindow {
 
     public ItemEditor(InventoryAPI inventoryAPI) {
-        super("item_editor", inventoryAPI, 54);
+        super("item_editor", inventoryAPI, 45);
     }
 
     @Override

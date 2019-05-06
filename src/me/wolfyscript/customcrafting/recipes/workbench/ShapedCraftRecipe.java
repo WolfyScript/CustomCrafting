@@ -19,6 +19,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     private boolean permission;
     private boolean advancedWorkbench;
+    private boolean exactMeta;
 
     private CraftConfig config;
     private String id;
@@ -42,6 +43,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.advancedWorkbench = config.needWorkbench();
         this.priority = config.getPriority();
         this.api = CustomCrafting.getApi();
+        this.exactMeta = config.isExactMeta();
     }
 
     @Override
@@ -99,8 +101,10 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     public ItemStack checkIngredient(ItemStack input, List<CustomItem> ingredients) {
         for (CustomItem ingredient : ingredients) {
-            if (input.getAmount() >= ingredient.getAmount() && ingredient.isSimilar(input)) {
-                return ingredient.clone();
+            if (input.getType().equals(ingredient.getType())) {
+                if (input.getAmount() >= ingredient.getAmount() && ((!exactMeta && !ingredient.hasItemMeta()) || ingredient.isSimilar(input))) {
+                    return ingredient.clone();
+                }
             }
         }
         return null;
@@ -116,18 +120,18 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
                 break;
             }
         }
-        if(matrix.get(0).size() > 1){
-            for(int i = 0; i < matrix.get(0).size(); i++){
+        if (matrix.get(0).size() > 1) {
+            for (int i = 0; i < matrix.get(0).size(); i++) {
                 ItemStack item = matrix.get(0).get(i);
-                if(item != null){
-                    startIndex = startIndex-i;
+                if (item != null) {
+                    startIndex = startIndex - i;
                     break;
                 }
             }
         }
         api.sendDebugMessage("Start Index: " + startIndex);
-        api.sendDebugMessage("Rows Amount: "+matrix.size());
-        api.sendDebugMessage("Row length: "+matrix.get(0).size());
+        api.sendDebugMessage("Rows Amount: " + matrix.size());
+        api.sendDebugMessage("Row length: " + matrix.get(0).size());
         int r = 0;
         int c = 0;
         for (int x = startIndex; x < shape.length; x++) {
@@ -153,7 +157,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
             if (c >= matrix.get(r).size()) {
                 c = 0;
                 r++;
-                x = x + (3 - (matrix.get(0).size()-1)) - 1;
+                x = x + (3 - (matrix.get(0).size() - 1)) - 1;
                 if (r >= matrix.size()) {
                     break;
                 }
@@ -252,5 +256,10 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     @Override
     public RecipePriority getPriority() {
         return priority;
+    }
+
+    @Override
+    public boolean isExactMeta() {
+        return exactMeta;
     }
 }

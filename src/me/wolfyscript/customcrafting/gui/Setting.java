@@ -9,6 +9,7 @@ public enum Setting {
     FURNACE_RECIPE,
     BLAST_FURNACE,
     SMOKER,
-    CAMPFIRE;
+    CAMPFIRE,
+    STONECUTTER
 
 }
