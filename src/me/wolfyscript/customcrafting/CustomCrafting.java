@@ -83,7 +83,7 @@ public class CustomCrafting extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new CraftListener(api), this);
-        getServer().getPluginManager().registerEvents(new BlockEvents(), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
         CommandCC commandCC = new CommandCC();

@@ -31,17 +31,15 @@ public class PlayerListener implements Listener {
             CustomCrafting.renewPlayerCache(player);
         }
         InventoryAPI inventoryAPI = CustomCrafting.getApi().getInventoryAPI();
-
-        if(CustomCrafting.isOutdated()){
-            if(player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.auto_update")){
+        if(player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check")) {
+            if (CustomCrafting.isOutdated()) {
                 WolfyUtilities api = CustomCrafting.getApi();
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
                 api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+            } else {
+                CustomCrafting.checkUpdate(player);
             }
-        }else{
-            CustomCrafting.checkUpdate(player);
         }
-
     }
 
 }
