@@ -60,7 +60,7 @@ public class BlockListener implements Listener {
                     lore.add(WolfyUtilities.translateColorCodes(line));
                 }
                 lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
-                ItemStack itemStack = CustomCrafting.getRecipeHandler().getCustomItem("customcrafting:workbench").clone();
+                ItemStack itemStack = CustomCrafting.getRecipeHandler().getCustomItem("customcrafting:workbench");
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(name);
                 itemMeta.setLore(lore);

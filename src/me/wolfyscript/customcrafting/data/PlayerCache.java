@@ -17,6 +17,8 @@ public class PlayerCache {
 
     private KnowledgeBook knowledgeBook = new KnowledgeBook();
 
+    private ChatRecipeList chatRecipeList = new ChatRecipeList();
+
     //RECIPE_LIST OF ALL RECIPE CACHES
     private Workbench workbench =  new Workbench();
     private Furnace furnace = new Furnace();
@@ -77,6 +79,7 @@ public class PlayerCache {
     public void resetStonecutter(){
         this.stonecutter = new Stonecutter();
     }
+
     //Player Stats
     //Main Settings
     public Setting getSetting() {
@@ -237,6 +240,11 @@ public class PlayerCache {
         return recipeCrafts.getOrDefault(key, 0);
     }
 
+    public ChatRecipeList getChatRecipeList() {
+        return chatRecipeList;
+    }
 
-
+    public void resetChatRecipeList() {
+        this.chatRecipeList = new ChatRecipeList();
+    }
 }

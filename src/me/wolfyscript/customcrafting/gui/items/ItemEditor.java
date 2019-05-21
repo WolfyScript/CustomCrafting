@@ -114,7 +114,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                         inv.setItem(2, customItem.getIDItem());
                         inv.setItem(6, customItem);
                         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> player.openInventory(inv), 2);
-                        player.openInventory(inv);
+                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> player.openInventory(inv));
                     } else {
                         ItemUtils.applyItem(customItem, cache);
                         api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.item_editor.item_applied$");

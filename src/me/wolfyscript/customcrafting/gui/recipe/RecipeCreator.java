@@ -329,8 +329,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 }
                 break;
         }
-
-
     }
 
     @Override
@@ -354,6 +352,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             config.setPriority(workbench.getPriority());
                             config.setResult(workbench.getResult());
                             HashMap<Character, ArrayList<CustomItem>> ingredients = workbench.getIngredients();
+                            api.sendDebugMessage(" Ingredients: "+ingredients);
                             String[] shape = new String[3];
                             int index = 0;
                             int row = 0;

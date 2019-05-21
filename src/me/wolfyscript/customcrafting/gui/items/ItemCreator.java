@@ -81,6 +81,16 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("set_custom_model_data", Material.GREEN_CONCRETE);
         createItem("reset_custom_model_data", Material.RED_CONCRETE);
 
+        //TODO REPLACE AND DURABILITY CHANGE
+        createItem("replace_durability", Material.DROPPER);
+        createItem("replacement_apply", Material.GREEN_CONCRETE);
+            //Only available in ingredient menu!
+            createItem("disable_replacement", Material.RED_CONCRETE);
+            //
+        createItem("durability_change.increase", WolfyUtilities.getSkullViaURL("60b55f74681c68283a1c1ce51f1c83b52e2971c91ee34efcb598df3990a7e7"));
+        createItem("durability_change.decrease", WolfyUtilities.getSkullViaURL("c3e4b533e4ba2dff7c0fa90f67e8bef36428b6cb06c45262631b0b25db85b"));
+        //
+
         createItem("furnace.fuel", Material.COAL);
         createItem("furnace.burn_time", Material.GREEN_CONCRETE);
         createItem("furnace.burn_time_reset", Material.RED_CONCRETE);
@@ -269,7 +279,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                         break;
                     case "custom_model_data":
                         if(WolfyUtilities.hasVillagePillageUpdate()){
-                            //TODO
                             event.setItem(39, event.getItem("set_custom_model_data", "%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_creator.custom_model_data.disabled$"))) +""));
                             event.setItem(41, "reset_custom_model_data");
                         }else{
@@ -578,7 +587,6 @@ public class ItemCreator extends ExtendedGuiWindow {
             case 0:
                 if (args.length > 1) {
                     ItemUtils.saveItem(cache, args[0] + ":" + args[1], items.getItem());
-
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.save.success$");
                     api.sendPlayerMessage(player, "&6" + args[0] + "/items/" + args[1]);
                 } else {
@@ -752,7 +760,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.damage.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
-                break;
+                return false;
             case 30:
                 if(!(itemMeta instanceof Repairable)){
                     return true;
@@ -766,7 +774,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
-                break;
+                return false;
             case 40:
                 try {
                     int value = Integer.parseInt(message);
@@ -776,7 +784,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.fuel.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
-                break;
+                return false;
             case 50:
                 try {
                     int value = Integer.parseInt(message);
@@ -787,6 +795,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.custom_model_data.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
+                return false;
         }
         return false;
     }

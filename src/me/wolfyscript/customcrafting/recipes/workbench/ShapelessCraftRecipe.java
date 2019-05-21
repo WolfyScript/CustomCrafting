@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -63,26 +64,21 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> usedKeys = new ArrayList<>();
         for (List<ItemStack> items : matrix) {
             for (ItemStack itemStack : items) {
-                if (itemStack != null) {
-                    ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-                    if (result == null) {
-                        return false;
-                    }
-                }
+                if (itemStack == null)
+                    continue;
+                checkIngredient(allKeys, usedKeys, itemStack);
             }
         }
         return usedKeys.containsAll(getIngredients().keySet());
     }
 
-    private ItemStack checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack item) {
+    private CustomItem checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack item) {
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : ingredients.get(key)) {
-                    if(item.getType().equals(ingredient.getType())){
-                        if (item.getAmount() >= ingredient.getAmount() && ((!exactMeta && !ingredient.hasItemMeta()) || ingredient.isSimilar(item))) {
-                            usedKeys.add(key);
-                            return ingredient;
-                        }
+                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount() && !(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(item)) {
+                        usedKeys.add(key);
+                        return ingredient.clone();
                     }
                 }
             }
@@ -91,14 +87,13 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     @Override
-    public CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount) {
+    public void removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount) {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
-        ItemStack[] results = small ? new ItemStack[]{null, null, null, null} : new ItemStack[]{null, null, null, null, null, null, null, null, null};
         int passes = small ? 2 : 3;
         int index = 0;
-        for (int i = 0; i < original.length; i++) {
-            if (original[i] != null) {
+        for (int i = 0; i < inventory.getMatrix().length; i++) {
+            if (inventory.getMatrix()[i] != null) {
                 index = i;
                 break;
             }
@@ -106,34 +101,32 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         for (int i = 0; i < passes; i++) {
             for (int j = 0; j < passes; j++) {
                 if (i < matrix.size() && j < matrix.get(i).size()) {
-                    ItemStack input = original[index];
-                    if(input != null){
-                        ItemStack result = checkIngredient(allKeys, usedKeys, input);
-                        if (result != null) {
-                            if (result.getMaxStackSize() > 1) {
-                                int amount = input.getAmount() - result.getAmount() * totalAmount + 1;
-                                input.setAmount(amount);
-                            }
-                            //TEST FOR BUCKETS AND OTHER ITEMS!?
-                            if (input.getAmount() > 0)
-                                results[index] = input;
-                        }
+                    ItemStack input = matrix.get(i).get(j);
+                    if (input == null)
+                        continue;
+                    ItemStack result = checkIngredient(allKeys, usedKeys, input);
+                    if (result == null)
+                        continue;
+                    if (result.getMaxStackSize() > 1) {
+                        int amount = input.getAmount() - result.getAmount() * totalAmount;
+                        input.setAmount(amount);
+                    }
+                    //TEST FOR BUCKETS AND OTHER ITEMS!?
+                    if (input.getAmount() > 0){
+                        inventory.setItem(index, input);
+                    }else{
+                        inventory.setItem(index, new ItemStack(Material.AIR));
                     }
                 }
                 index++;
-                if(index >= results.length){
+                if (index >= inventory.getMatrix().length) {
                     break;
                 }
             }
-            if(index >= results.length){
+            if (index >= inventory.getMatrix().length) {
                 break;
             }
         }
-        api.sendDebugMessage("MATRIX: ");
-        for(ItemStack item : results){
-            api.sendDebugMessage(" - "+item);
-        }
-        return new CraftResult(results, totalAmount);
     }
 
     @Override

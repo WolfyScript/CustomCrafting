@@ -26,6 +26,7 @@ import org.bukkit.inventory.*;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class RecipeHandler {
 
@@ -255,6 +256,47 @@ public class RecipeHandler {
         return recipes;
     }
 
+    //SMOKER RECIPES
+    public List<CustomSmokerRecipe> getSmokerRecipes() {
+        List<CustomSmokerRecipe> recipes = new ArrayList<>();
+        for (CustomRecipe recipe : customRecipes) {
+            if (recipe instanceof CustomSmokerRecipe) {
+                recipes.add((CustomSmokerRecipe) recipe);
+            }
+        }
+        return recipes;
+    }
+
+    public List<CustomBlastRecipe> getBlastRecipes() {
+        List<CustomBlastRecipe> recipes = new ArrayList<>();
+        for (CustomRecipe recipe : customRecipes) {
+            if (recipe instanceof CustomBlastRecipe) {
+                recipes.add((CustomBlastRecipe) recipe);
+            }
+        }
+        return recipes;
+    }
+
+    public List<CustomCampfireRecipe> getCampfireRecipes() {
+        List<CustomCampfireRecipe> recipes = new ArrayList<>();
+        for (CustomRecipe recipe : customRecipes) {
+            if (recipe instanceof CustomCampfireRecipe) {
+                recipes.add((CustomCampfireRecipe) recipe);
+            }
+        }
+        return recipes;
+    }
+
+    public List<CustomStonecutterRecipe> getStonecutterRecipes() {
+        List<CustomStonecutterRecipe> recipes = new ArrayList<>();
+        for (CustomRecipe recipe : customRecipes) {
+            if (recipe instanceof CustomStonecutterRecipe) {
+                recipes.add((CustomStonecutterRecipe) recipe);
+            }
+        }
+        return recipes;
+    }
+
     public List<CustomRecipe> getRecipes() {
         return customRecipes;
     }
@@ -276,7 +318,7 @@ public class RecipeHandler {
     public CustomItem getCustomItem(String key) {
         for (CustomItem customItem : customItems) {
             if (customItem.getId().equals(key)) {
-                return customItem;
+                return customItem.clone();
             }
         }
         return null;
@@ -329,7 +371,6 @@ public class RecipeHandler {
 
      */
     public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {
-        api.sendDebugMessage("-----[getting Ingredients]-----");
         List<List<ItemStack>> items = new ArrayList<>();
         int j = 0;
         int r = 0;
@@ -354,11 +395,10 @@ public class RecipeHandler {
                 r++;
             }
         }
-        api.sendDebugMessage("items: " + items);
         for (int i = 0; i < items.get(0).size(); i++) {
             boolean blocked = false;
-            for (int e = 0; e < items.size(); e++) {
-                if (items.get(e).get(i) != null) {
+            for (List<ItemStack> item : items) {
+                if (item.get(i) != null) {
                     blocked = true;
                     break;
                 }
@@ -367,20 +407,16 @@ public class RecipeHandler {
                 empty.add("c" + i);
             }
         }
-        api.sendDebugMessage("Empty: " + empty);
         ListIterator<List<ItemStack>> iterator = items.listIterator();
         int index = 0;
         while (iterator.hasNext()) {
             List<ItemStack> list = iterator.next();
-            api.sendDebugMessage("row: " + index);
             if (empty.contains("r" + index)) {
                 if (index == 1) {
                     if (rowLength == 2 || (empty.contains("r0") || empty.contains("r2"))) {
                         iterator.remove();
-                        api.sendDebugMessage("  -> remove");
                     }
                 } else {
-                    api.sendDebugMessage("  -> remove");
                     iterator.remove();
                 }
             } else {
@@ -388,16 +424,13 @@ public class RecipeHandler {
                 int cIndex = 0;
                 while (rowIterator.hasNext()) {
                     ItemStack c = rowIterator.next();
-                    api.sendDebugMessage("column: " + cIndex);
                     if (empty.contains("c" + cIndex)) {
                         if (cIndex == 1) {
                             if (rowLength == 2 || (empty.contains("c0") || empty.contains("c2"))) {
                                 rowIterator.remove();
-                                api.sendDebugMessage("  -> remove");
                             }
                         } else {
                             rowIterator.remove();
-                            api.sendDebugMessage("  -> remove");
                         }
                     }
                     cIndex++;
@@ -405,13 +438,6 @@ public class RecipeHandler {
             }
             index++;
         }
-        api.sendDebugMessage("Result:");
-        for (List<ItemStack> itemStacks : items) {
-            for (ItemStack itemStack : itemStacks) {
-                api.sendDebugMessage("- " + itemStack);
-            }
-        }
-        api.sendDebugMessage("------------------------------");
         return items;
     }
 }

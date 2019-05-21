@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
@@ -79,12 +80,9 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     @Override
     public boolean check(List<List<ItemStack>> matrix) {
-        api.sendDebugMessage("Recipe: " + getId());
         List<Character> containedKeys = new ArrayList<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
-                api.sendDebugMessage("  - " + getShape()[i].charAt(j));
-                api.sendDebugMessage("    - " + matrix.get(i).get(j) + " <-> " + getIngredients().get(getShape()[i].charAt(j)));
                 if ((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')) {
                     if (checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j))) == null) {
                         return false;
@@ -99,76 +97,62 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         return containedKeys.containsAll(getIngredients().keySet());
     }
 
-    public ItemStack checkIngredient(ItemStack input, List<CustomItem> ingredients) {
+    public CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
         for (CustomItem ingredient : ingredients) {
-            if (input.getType().equals(ingredient.getType())) {
-                if (input.getAmount() >= ingredient.getAmount() && ((!exactMeta && !ingredient.hasItemMeta()) || ingredient.isSimilar(input))) {
-                    return ingredient.clone();
-                }
+            if (input.getType().equals(ingredient.getType()) && input.getAmount() >= ingredient.getAmount() && !(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(input)) {
+                return ingredient.clone();
             }
         }
         return null;
     }
 
     @Override
-    public CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount) {
-        ItemStack[] shape = small ? new ItemStack[]{null, null, null, null} : new ItemStack[]{null, null, null, null, null, null, null, null, null};
+    public void removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount) {
         int startIndex = 0;
-        for (int i = 0; i < original.length; i++) {
-            if (original[i] != null) {
+        for (int i = 0; i < inventory.getMatrix().length; i++) {
+            if (inventory.getMatrix()[i] != null) {
                 startIndex = i;
                 break;
             }
         }
         if (matrix.get(0).size() > 1) {
             for (int i = 0; i < matrix.get(0).size(); i++) {
-                ItemStack item = matrix.get(0).get(i);
-                if (item != null) {
+                if(matrix.get(0).get(i) != null){
                     startIndex = startIndex - i;
                     break;
                 }
             }
         }
-        api.sendDebugMessage("Start Index: " + startIndex);
-        api.sendDebugMessage("Rows Amount: " + matrix.size());
-        api.sendDebugMessage("Row length: " + matrix.get(0).size());
         int r = 0;
         int c = 0;
-        for (int x = startIndex; x < shape.length; x++) {
-            api.sendDebugMessage("r: " + r + " c: " + c);
+        for (int x = startIndex; x < inventory.getMatrix().length; x++) {
             if (r < matrix.size() && c < matrix.get(r).size()) {
                 if ((matrix.get(r).get(c) != null && getShape()[r].charAt(c) != ' ')) {
                     ItemStack input = matrix.get(r).get(c);
                     ItemStack item = checkIngredient(input, getIngredients().get(getShape()[r].charAt(c)));
                     if (item != null) {
                         if (item.getMaxStackSize() > 1) {
-                            int amount = input.getAmount() - item.getAmount() * totalAmount + 1;
-                            api.sendDebugMessage("  ->" + amount);
+                            int amount = input.getAmount() - item.getAmount() * totalAmount;
                             input.setAmount(amount);
                         }
                         //TEST FOR BUCKETS AND OTHER ITEMS!?
                         if (input.getAmount() > 0) {
-                            shape[x] = input;
+                            inventory.setItem(x, input);
+                        }else{
+                            inventory.setItem(x, new ItemStack(Material.AIR));
                         }
                     }
                 }
+            }
+            if (r >= matrix.size()) {
+                break;
             }
             c++;
             if (c >= matrix.get(r).size()) {
                 c = 0;
                 r++;
-                x = x + (3 - (matrix.get(0).size() - 1)) - 1;
-                if (r >= matrix.size()) {
-                    break;
-                }
             }
-
         }
-        api.sendDebugMessage("MATRIX: ");
-        for (ItemStack item : shape) {
-            api.sendDebugMessage("- " + item);
-        }
-        return new CraftResult(shape, totalAmount);
     }
 
     @Override

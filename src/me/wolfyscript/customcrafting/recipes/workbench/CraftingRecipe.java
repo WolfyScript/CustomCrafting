@@ -4,6 +4,7 @@ package me.wolfyscript.customcrafting.recipes.workbench;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public interface CraftingRecipe extends CustomRecipe {
 
     boolean check(List<List<ItemStack>> matrix);
 
-    CraftResult removeIngredients(List<List<ItemStack>> matrix, ItemStack[] original, boolean small, int totalAmount);
+    void removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount);
 
     int getAmountCraftable(List<List<ItemStack>> matrix);
 

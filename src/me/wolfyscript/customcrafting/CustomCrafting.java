@@ -38,6 +38,8 @@ public class CustomCrafting extends JavaPlugin {
     private static RecipeHandler recipeHandler;
     private static Workbenches workbenches = null;
 
+    private static final boolean betaVersion = false;
+
     private static boolean outdated = false;
 
     public void onEnable() {
@@ -49,8 +51,13 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println(" / ___/_ _____/ /____  __ _  / ___/______ _/ _/ /_(_)__  ___ _");
         System.out.println("/ /__/ // (_-< __/ _ \\/  ' \\/ /__/ __/ _ `/ _/ __/ / _ \\/ _ `/");
         System.out.println("\\___/\\_,_/___|__/\\___/_/_/_/\\___/_/  \\_,_/_/ \\__/_/_//_/\\_, / ");
-        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion());
+        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion()+(betaVersion ? "-beta" : ""));
         System.out.println(" ");
+        if(betaVersion){
+            System.out.println("This is a beta build! It may contain bugs and game breaking glitches!");
+            System.out.println("Do not use this version on production servers!");
+            System.out.println("It also always shows the outdated message!");
+        }
         System.out.println("------------------------------------------------------------------------");
 
         if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null){
@@ -137,7 +144,7 @@ public class CustomCrafting extends JavaPlugin {
                     api.sendConsoleWarning("$msg.startup.outdated$");
                     if(player != null){
                         api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
-                        api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+                        api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
                     }
                 }
             } catch (Exception ex) {

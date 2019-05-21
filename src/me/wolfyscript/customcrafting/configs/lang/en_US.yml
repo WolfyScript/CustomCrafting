@@ -32,7 +32,6 @@ msg:
       msg: "&cYour version is outdated! A new version is available!"
       msg2: "&aDownload it now!"
       link: " &7[&3Click Here&7]"
-
   gui:
     item_creator:
       save:
@@ -95,7 +94,7 @@ msg:
       custom_model_data:
         disabled: "&l&cDisabled"
         set: "&3Type in the Custom Model Data!"
-        succes: "&aSet Model Data to &6%VALUE%&a!"
+        success: "&aSet Model Data to &6%VALUE%&a!"
         invalid_value: "&cThe value &4%VALUE%&c is not a valid Model Data number!"
     item_editor:
       input: "&3Type in the folder and name of the item! &6example your_item"
@@ -521,6 +520,17 @@ items:
       help:
         - "&7Removes the Custom Model Data"
         - "&7from this item!"
+    replace_durability:
+      name: ""
+    replacement_apply:
+      name: ""
+    disable_replacement:
+      name: ""
+    durability_change:
+      increase:
+        name: ""
+      decrease:
+        name: ""
 
   recipe_editor:
   recipe_creator:

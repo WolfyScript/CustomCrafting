@@ -1,15 +1,18 @@
 package me.wolfyscript.customcrafting.items;
 
+import com.sun.istack.internal.NotNull;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class CustomItem extends ItemStack{
+public class CustomItem extends ItemStack implements Cloneable{
 
     private ItemConfig config;
     private String id;
@@ -17,12 +20,15 @@ public class CustomItem extends ItemStack{
     private int burnTime;
     private ArrayList<Material> allowedBlocks;
 
+    private CustomItem replacement;
+
     public CustomItem(ItemConfig config){
         super(config.getCustomItem());
         this.config = config;
         this.id = config.getId();
         this.burnTime = config.getBurnTime();
         this.allowedBlocks = config.getAllowedBlocks();
+        this.replacement = config.getReplacementItem();
     }
 
     public CustomItem(ItemStack itemStack){
@@ -31,6 +37,7 @@ public class CustomItem extends ItemStack{
         this.id = "";
         this.burnTime = 0;
         this.allowedBlocks = new ArrayList<>();
+        this.replacement = null;
     }
 
     public CustomItem(Material material){
@@ -41,8 +48,24 @@ public class CustomItem extends ItemStack{
         return id;
     }
 
+    public boolean hasReplacement(){
+        return replacement != null;
+    }
+
+    public CustomItem getReplacement() {
+        return replacement;
+    }
+
+    public void setReplacement(CustomItem replacement) {
+        this.replacement = replacement;
+    }
+
     public boolean hasID(){
         return !id.isEmpty();
+    }
+
+    public boolean hasConfig(){
+        return config != null;
     }
 
     public ItemConfig getConfig() {
@@ -95,7 +118,25 @@ public class CustomItem extends ItemStack{
         return allowedBlocks;
     }
 
-    public void setAllowedBlocks(ArrayList<Material> allowedBlocks) {
-        this.allowedBlocks = allowedBlocks;
+    @Override
+    public boolean isSimilar(ItemStack stack) {
+        if (stack == null){
+            return false;
+        } else if (stack == this) {
+            return true;
+        }else{
+            return getType() == stack.getType() && this.getDurability() == stack.getDurability() && this.hasItemMeta() == stack.hasItemMeta() && (!this.hasItemMeta() || Bukkit.getItemFactory().equals(this.getItemMeta(), stack.getItemMeta()));
+        }
+    }
+
+    @Override
+    public CustomItem clone() {
+        CustomItem customItem;
+        if(hasConfig()){
+            customItem = new CustomItem(getConfig());
+        }else{
+            customItem = new CustomItem(this);
+        }
+        return customItem;
     }
 }

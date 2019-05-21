@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.configs.custom_configs.items;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -48,6 +49,27 @@ public class ItemConfig extends CustomConfig {
         saveItem("item", itemStack);
     }
 
+    public void setReplacementItem(CustomItem customItem){
+        if(customItem != null){
+            if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
+                set("replacement.item_key", customItem.getId());
+            }else {
+                saveItem("replacement.item", customItem);
+            }
+        }
+    }
+
+    public CustomItem getReplacementItem(){
+        String id = getString("replacement.item_key");
+        if(id != null && !id.isEmpty()){
+            return CustomCrafting.getRecipeHandler().getCustomItem(id);
+        }else if(getConfig().get("replacement.item") != null){
+            return new CustomItem(getItem("replacement.item"));
+        }
+        return null;
+    }
+
+    //TODO Create option to set allowed Furnaces
     public void setAllowedBlocks(ArrayList<Material> furnaces){
         List<String> mats = new ArrayList<>();
         furnaces.forEach(material -> mats.add(material.name().toLowerCase(Locale.ROOT)));
