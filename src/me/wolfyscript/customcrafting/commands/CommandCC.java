@@ -29,6 +29,16 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                 openGUI(p, invAPI);
             } else {
                 switch (args[0].toLowerCase(Locale.ROOT)) {
+                    case "lockdown":
+                        if (checkPerm(p, "customcrafting.cmd.lockdown")) {
+                            CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
+                            if(CustomCrafting.getConfigHandler().getConfig().isLockedDown()){
+                                api.sendPlayerMessage(p, "$msg.commands.lockdown.enabled$");
+                            }else{
+                                api.sendPlayerMessage(p, "$msg.commands.lockdown.disabled$");
+                            }
+                        }
+                        break;
                     case "studio":
                         openGUI(p, invAPI);
                         break;
@@ -133,6 +143,13 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     }
                 }
 
+            }else if (args[0].equalsIgnoreCase("lockdown")){
+                CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
+                if(CustomCrafting.getConfigHandler().getConfig().isLockedDown()){
+                    api.sendConsoleMessage("$msg.commands.lockdown.enabled$");
+                }else{
+                    api.sendConsoleMessage("$msg.commands.lockdown.disabled$");
+                }
             }
         }
         return true;
@@ -147,7 +164,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         }
     }
 
-    public boolean checkPerm(Player player, String perm) {
+    public static boolean checkPerm(Player player, String perm) {
         WolfyUtilities api = CustomCrafting.getApi();
         if (WolfyUtilities.hasPermission(player, perm)) {
             return true;
@@ -180,7 +197,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give");
+    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] strings) {

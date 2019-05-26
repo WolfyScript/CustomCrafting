@@ -93,7 +93,6 @@ public class RecipeEditor extends ExtendedGuiWindow {
         }, true), new ClickData(" Recipes:", null));
 
         ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
-        //TODO CHAT MANAGEMENT!
         switch (cache.getSetting()) {
             case CRAFT_RECIPE:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getCraftingRecipes());
@@ -120,15 +119,15 @@ public class RecipeEditor extends ExtendedGuiWindow {
 
         for (int i = (currentPage - 1) * 16; i < (currentPage - 1) * 16 + 16 && i < customRecipes.size(); i++) {
             CustomRecipe recipe = customRecipes.get(i);
-            api.sendActionMessage(player, new ClickData(" - " + recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1])));
+            api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1]), new HoverEvent(recipe.getResult())));
         }
 
-        api.sendActionMessage(player, new ClickData("§7[§6< previous§7]", (wolfyUtilities1, p) -> {
+        api.sendActionMessage(player, new ClickData("§7[§6« previous§7]", (wolfyUtilities1, p) -> {
             if (currentPage > 1) {
                 cache.getChatRecipeList().setCurrentPage(cache.getChatRecipeList().getCurrentPage() - 1);
             }
             sendRecipeListExpanded(p);
-        }), new ClickData("  §a" + currentPage + "§7/§6" + maxPages + "  ", null), new ClickData("§7[§6next >§7]", (wolfyUtilities1, p) -> {
+        }), new ClickData("  §a" + currentPage + "§7/§6" + maxPages + "  ", null), new ClickData("§7[§6next »§7]", (wolfyUtilities1, p) -> {
             if (currentPage < maxPages) {
                 cache.getChatRecipeList().setCurrentPage(cache.getChatRecipeList().getCurrentPage() + 1);
             }

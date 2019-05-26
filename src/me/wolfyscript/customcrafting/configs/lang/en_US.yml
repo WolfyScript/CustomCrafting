@@ -17,7 +17,6 @@ msg:
     complete: " Auto save complete "
   startup:
     outdated: "Your version is outdated! There is a new version available! Download it here: https://www.spigotmc.org/resources/55883/"
-    uptodate: "You are running the latest version of CustomCrafting!"
     update_check_fail: "Failed to check for a update on spigot"
     playerstats: "Loading Player Stats"
     inventories: "Initiating Inventory GUIs"
@@ -135,6 +134,9 @@ msg:
       - "  &6info      &7-  &3Displays info about this plugin"
       - "  &6studio    &7-  &3Opens the GUI Studio"
     info: "&3type &6\"/cc help\" &3for help!"
+    lockdown:
+      enabled: "&7[&c&lLOCKDOWN&7] &aENABLED! &cRecipes will be blocked from now on!"
+      disabled: "&7[&c&lLOCKDOWN&7] &cDISABLED! &cRecipes will no longer be blocked!"
     give:
       player_offline: "&cThe player &4%PLAYER% &cis not online!"
       invalid_amount: "&cInvalid amount! Is it a number?"
@@ -142,6 +144,7 @@ msg:
       success_amount: "&aGave &e%AMOUNT%x %ITEM%&a to &e%PLAYER%"
       no_inv_space: "&cNo space in Inventory!"
       invalid_item: "&cThe item &4%ITEM%&c does not exist!"
+
 items:
   none:
     glass_gray:
@@ -174,6 +177,17 @@ items:
         - "&7[&cDisabled&7]"
       help: []
   main_menu:
+    lockdown:
+      enabled:
+        name: "&4&lLockDown!"
+        lore:
+          - "&7[&3Enabled&7]"
+          - "&4Recipes are being blocked!"
+      disabled:
+        name: "&4LockDown"
+        lore:
+          - "&7[&8Disabled&7]"
+          - "&7Recipes are not blocked!"
     craft_recipe:
       name: "&6Workbench Recipe"
       help:
@@ -520,18 +534,32 @@ items:
       help:
         - "&7Removes the Custom Model Data"
         - "&7from this item!"
-    replace_durability:
-      name: ""
-    replacement_apply:
-      name: ""
-    disable_replacement:
-      name: ""
-    durability_change:
-      increase:
-        name: ""
-      decrease:
-        name: ""
-
+    replacement_durability:
+      name: "&7Durability Cost & Replacement"
+      lore:
+        - "&4To use this feature, you need to save the item!"
+      help:
+        - "&7Set the Durability that gets"
+        - "&7removed when crafting!"
+        - "&7Set with which item this item gets replaced"
+        - "&7in the crafting grid."
+    durability_cost:
+      name: "&7Durability cost: &3%VAR%"
+      lore:
+        - "&7>0 = &3lose durability!"
+        - "&7 0 = &3removed completely! Use replacement to prevent it!"
+        - "&7<0 = &3gain durability!"
+    durability_cost_disabled:
+      name: "&7Durability cost: &4&lDisabled"
+      lore:
+        - "&cItem must not be stackable!"
+        - "&cReplacement must be disabled!"
+    replacement:
+      name: "&aReplacement enabled!"
+      lore:
+        - "&7Durability cost is blocked now!"
+    replacement_disabled:
+      name: "&cReplacement disabled!"
   recipe_editor:
   recipe_creator:
     save:
@@ -572,7 +600,6 @@ items:
         - "&7Items without Meta will only"
         - "&7be checked for their type!"
         - "&7Items with Meta still need to be exact!"
-
     workbench:
       adv_workbench_on:
         name: "&3Advanced Workbench"

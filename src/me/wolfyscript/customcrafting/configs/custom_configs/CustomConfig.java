@@ -70,9 +70,11 @@ public class CustomConfig extends Config {
     }
 
     public void saveCustomItem(String path, CustomItem customItem){
+        CustomCrafting.getApi().sendDebugMessage("Saving Item: "+customItem);
         if(customItem != null){
             if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
                 set(path+".item_key", customItem.getId());
+                set(path+".custom_amount", customItem.getAmount() != CustomCrafting.getRecipeHandler().getCustomItem(customItem.getId()).getAmount() ? customItem.getAmount() : 0);
             }else {
                 saveItem(path+".item", customItem);
             }
@@ -82,7 +84,14 @@ public class CustomConfig extends Config {
     public CustomItem getCustomItem(String path){
         String id = getString(path+".item_key");
         if(id != null && !id.isEmpty()){
-            return CustomCrafting.getRecipeHandler().getCustomItem(id);
+            CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(id);
+            if(getConfig().get(path+".custom_amount") != null){
+                int i = getInt(path+".custom_amount");
+                if(i != 0){
+                    customItem.setAmount(i);
+                }
+            }
+            return customItem;
         }
         return new CustomItem(getItem(path+".item"));
     }

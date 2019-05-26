@@ -13,7 +13,10 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -38,9 +41,10 @@ public class CustomCrafting extends JavaPlugin {
     private static RecipeHandler recipeHandler;
     private static Workbenches workbenches = null;
 
-    private static final boolean betaVersion = false;
+    private static final boolean betaVersion = true;
 
     private static boolean outdated = false;
+    private static boolean loaded = false;
 
     public void onEnable() {
         instance = this;
@@ -51,16 +55,29 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println(" / ___/_ _____/ /____  __ _  / ___/______ _/ _/ /_(_)__  ___ _");
         System.out.println("/ /__/ // (_-< __/ _ \\/  ' \\/ /__/ __/ _ `/ _/ __/ / _ \\/ _ `/");
         System.out.println("\\___/\\_,_/___|__/\\___/_/_/_/\\___/_/  \\_,_/_/ \\__/_/_//_/\\_, / ");
-        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion()+(betaVersion ? "-beta" : ""));
+        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion() + (betaVersion ? "-beta" : ""));
         System.out.println(" ");
-        if(betaVersion){
+        if (betaVersion) {
             System.out.println("This is a beta build! It may contain bugs and game breaking glitches!");
             System.out.println("Do not use this version on production servers!");
             System.out.println("It also always shows the outdated message!");
         }
         System.out.println("------------------------------------------------------------------------");
 
-        if(Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null){
+        try {
+            Class<?>[] clazzes = Class.forName("org.bukkit.inventory.RecipeChoice").getDeclaredClasses();
+            if (clazzes.length == 1) {
+                System.out.println("You are using an outdated Spigot version!");
+                System.out.println("You can get the latest Spigot version via BuildTools: ");
+                System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
+                System.out.println("------------------------------------------------------------------------");
+                return;
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
             System.out.println("WolfyUtilities is not installed!");
             System.out.println("You can download it here: ");
             System.out.println("    https://www.spigotmc.org/resources/wolfyutilities.64124/");
@@ -94,7 +111,7 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
         CommandCC commandCC = new CommandCC();
-        if(configHandler.getConfig().isCCenabled()){
+        if (configHandler.getConfig().isCCenabled()) {
             getServer().getPluginCommand("cc").setExecutor(commandCC);
             getServer().getPluginCommand("cc").setTabCompleter(commandCC);
         }
@@ -105,44 +122,49 @@ public class CustomCrafting extends JavaPlugin {
 
         workbenches = new Workbenches(api);
 
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             api.sendConsoleMessage("$msg.startup.placeholder$");
             new PlaceHolder().register();
         }
         recipeHandler.loadConfigs();
-        checkUpdate(null);
+        if(!betaVersion){
+            checkUpdate(null);
+        }
 
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
-            if(WolfyUtilities.hasSpigot()){
+            if (WolfyUtilities.hasSpigot()) {
                 return "Spigot";
-            }else{
+            } else {
                 return Bukkit.getServer().getName();
             }
         }));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
 
+        loaded = true;
         System.out.println("------------------------------------------------------------------------");
     }
 
     public void onDisable() {
-        workbenches.endTask();
-        workbenches.save();
-        getRecipeHandler().onSave();
-        savePlayerCache();
+        if (loaded) {
+            workbenches.endTask();
+            workbenches.save();
+            getRecipeHandler().onSave();
+            savePlayerCache();
+        }
     }
 
-    public static void checkUpdate(@Nullable Player player){
+    public static void checkUpdate(@Nullable Player player) {
         Thread updater = new Thread(() -> {
             try {
                 HttpURLConnection con = (HttpURLConnection) new URL(
                         "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
                 String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-                if(!version.isEmpty() && !version.equals(instance.getDescription().getVersion())){
+                if (!version.isEmpty() && !version.equals(instance.getDescription().getVersion())) {
                     outdated = true;
                     api.sendConsoleWarning("$msg.startup.outdated$");
-                    if(player != null){
+                    if (player != null) {
                         api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
                         api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
                     }
@@ -187,8 +209,8 @@ public class CustomCrafting extends JavaPlugin {
         return false;
     }
 
-    public static void renewPlayerCache(Player player){
-        if(hasPlayerCache(player)){
+    public static void renewPlayerCache(Player player) {
+        if (hasPlayerCache(player)) {
             PlayerCache playerCache = getPlayerCache(player);
             playerCacheList.remove(playerCache);
         }
@@ -209,9 +231,9 @@ public class CustomCrafting extends JavaPlugin {
         return playerCache;
     }
 
-    public static void savePlayerCache(){
+    public static void savePlayerCache() {
         HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
-        for(PlayerCache playerCache : playerCacheList){
+        for (PlayerCache playerCache : playerCacheList) {
             caches.put(playerCache.getUuid(), playerCache.getStats());
         }
         try {
@@ -224,7 +246,7 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    public static void loadPlayerCache(){
+    public static void loadPlayerCache() {
         api.sendConsoleMessage("$msg.startup.playerstats$");
         File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
         if (file.exists()) {
@@ -236,7 +258,7 @@ public class CustomCrafting extends JavaPlugin {
                     Object object = ois.readObject();
                     if (object instanceof HashMap) {
                         HashMap<UUID, HashMap<String, Object>> stats = (HashMap<UUID, HashMap<String, Object>>) object;
-                        for(UUID uuid : stats.keySet()){
+                        for (UUID uuid : stats.keySet()) {
                             playerCacheList.add(new PlayerCache(uuid, stats.get(uuid)));
                         }
                     }
@@ -251,4 +273,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
 
+    public static boolean isBetaVersion() {
+        return betaVersion;
+    }
 }

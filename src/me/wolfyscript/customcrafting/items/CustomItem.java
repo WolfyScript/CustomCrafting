@@ -8,6 +8,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
@@ -21,6 +22,7 @@ public class CustomItem extends ItemStack implements Cloneable{
     private ArrayList<Material> allowedBlocks;
 
     private CustomItem replacement;
+    private int durabilityCost;
 
     public CustomItem(ItemConfig config){
         super(config.getCustomItem());
@@ -29,6 +31,7 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.burnTime = config.getBurnTime();
         this.allowedBlocks = config.getAllowedBlocks();
         this.replacement = config.getReplacementItem();
+        this.durabilityCost = config.getDurabilityCost();
     }
 
     public CustomItem(ItemStack itemStack){
@@ -38,6 +41,7 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.burnTime = 0;
         this.allowedBlocks = new ArrayList<>();
         this.replacement = null;
+        this.durabilityCost = 0;
     }
 
     public CustomItem(Material material){
@@ -58,6 +62,14 @@ public class CustomItem extends ItemStack implements Cloneable{
 
     public void setReplacement(CustomItem replacement) {
         this.replacement = replacement;
+    }
+
+    public int getDurabilityCost() {
+        return durabilityCost;
+    }
+
+    public void setDurabilityCost(int durabilityCost) {
+        this.durabilityCost = durabilityCost;
     }
 
     public boolean hasID(){
@@ -83,9 +95,9 @@ public class CustomItem extends ItemStack implements Cloneable{
         return idItem;
     }
 
-    public ItemStack getIDItem(){
+    public ItemStack getIDItem(int amount){
         if(getType().equals(Material.AIR)){
-           return new ItemStack(Material.AIR);
+            return new ItemStack(Material.AIR);
         }
         ItemStack idItem = new ItemStack(this.clone());
         if(!this.id.isEmpty()){
@@ -103,7 +115,12 @@ public class CustomItem extends ItemStack implements Cloneable{
             idItemMeta.setLore(lore);
             idItem.setItemMeta(idItemMeta);
         }
+        idItem.setAmount(amount);
         return idItem;
+    }
+
+    public ItemStack getIDItem(){
+        return getIDItem(1);
     }
 
     public int getBurnTime() {
@@ -125,7 +142,18 @@ public class CustomItem extends ItemStack implements Cloneable{
         } else if (stack == this) {
             return true;
         }else{
-            return getType() == stack.getType() && this.getDurability() == stack.getDurability() && this.hasItemMeta() == stack.hasItemMeta() && (!this.hasItemMeta() || Bukkit.getItemFactory().equals(this.getItemMeta(), stack.getItemMeta()));
+            if(getDurabilityCost() != 0 && stack.hasItemMeta()){
+                if (stack.getItemMeta() instanceof Damageable) {
+                    ItemStack copy = stack.clone();
+                    ItemMeta copyMeta = copy.getItemMeta();
+                    ((Damageable) copyMeta).setDamage(((Damageable)this.getItemMeta()).getDamage());
+                    copy.setItemMeta(copyMeta);
+                    return getType() == copy.getType() && this.hasItemMeta() == copy.hasItemMeta() && (!this.hasItemMeta() || Bukkit.getItemFactory().equals(this.getItemMeta(), copyMeta));
+                }
+            }else{
+                return getType() == stack.getType() && this.hasItemMeta() == stack.hasItemMeta() && (!this.hasItemMeta() || Bukkit.getItemFactory().equals(this.getItemMeta(), stack.getItemMeta()));
+            }
+            return false;
         }
     }
 

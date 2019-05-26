@@ -25,6 +25,8 @@ public class Workbench implements Serializable {
     private String id;
     private RecipePriority priority;
     private boolean exactMeta;
+    private int resultCustomAmount;
+    private HashMap<Integer, Integer> ingredientsCustomAmount;
 
     public Workbench(){
         this.ingredients = new HashMap<>();
@@ -39,6 +41,8 @@ public class Workbench implements Serializable {
         this.id = "";
         this.priority = RecipePriority.NORMAL;
         this.exactMeta = true;
+        this.resultCustomAmount = 1;
+        this.ingredientsCustomAmount = new HashMap<>();
     }
 
     public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
@@ -189,5 +193,21 @@ public class Workbench implements Serializable {
 
     public void setExactMeta(boolean exactMeta) {
         this.exactMeta = exactMeta;
+    }
+
+    public int getResultCustomAmount() {
+        return resultCustomAmount;
+    }
+
+    public void setResultCustomAmount(int resultCustomAmount) {
+        this.resultCustomAmount = resultCustomAmount;
+    }
+
+    public HashMap<Integer, Integer> getIngredientsCustomAmount() {
+        return ingredientsCustomAmount;
+    }
+
+    public void setIngredientsCustomAmount(HashMap<Integer, Integer> ingredientsCustomAmount) {
+        this.ingredientsCustomAmount = ingredientsCustomAmount;
     }
 }

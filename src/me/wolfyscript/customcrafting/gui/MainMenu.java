@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
@@ -33,6 +34,9 @@ public class MainMenu extends ExtendedGuiWindow {
         createItem("create_recipe", Material.ITEM_FRAME);
         createItem("edit_recipe", Material.REDSTONE);
         createItem("delete_recipe", Material.BARRIER);
+
+        createItem("lockdown.enabled", Material.BARRIER);
+        createItem("lockdown.disabled", Material.BARRIER);
     }
 
     @EventHandler
@@ -57,6 +61,8 @@ public class MainMenu extends ExtendedGuiWindow {
 
             event.setItem(39, "item_editor");
             event.setItem(41, "recipe_list");
+
+            event.setItem(0, CustomCrafting.getConfigHandler().getConfig().isLockedDown() ? "lockdown.enabled" : "lockdown.disabled");
         }
     }
 
@@ -88,27 +94,33 @@ public class MainMenu extends ExtendedGuiWindow {
         if (!super.onAction(guiAction)) {
             String action = guiAction.getAction();
             PlayerCache playerCache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
-            switch (action) {
-                case "item_editor":
-                    playerCache.setSetting(Setting.ITEMS);
-                    playerCache.getItems().setType("items");
-                    playerCache.getItems().setSaved(false);
-                    playerCache.getItems().setId("");
-                    guiAction.getGuiHandler().changeToInv("item_editor");
-                    break;
-                case "recipe_list":
-                    guiAction.getGuiHandler().changeToInv("recipe_list");
-                    playerCache.setSetting(Setting.RECIPE_LIST);
-                    break;
-                case "blast_furnace":
-                case "smoker":
-                case "campfire":
-                case "craft_recipe":
-                case "furnace_recipe":
-                case "stonecutter":
-                    playerCache.setSetting(Setting.valueOf(action.toUpperCase(Locale.ROOT)));
-                    guiAction.getGuiHandler().changeToInv("recipe_editor");
-                    break;
+            if(action.startsWith("lockdown.")){
+                if (CommandCC.checkPerm(guiAction.getPlayer(), "customcrafting.cmd.lockdown")) {
+                    CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
+                }
+            }else{
+                switch (action) {
+                    case "item_editor":
+                        playerCache.setSetting(Setting.ITEMS);
+                        playerCache.getItems().setType("items");
+                        playerCache.getItems().setSaved(false);
+                        playerCache.getItems().setId("");
+                        guiAction.getGuiHandler().changeToInv("item_editor");
+                        break;
+                    case "recipe_list":
+                        guiAction.getGuiHandler().changeToInv("recipe_list");
+                        playerCache.setSetting(Setting.RECIPE_LIST);
+                        break;
+                    case "blast_furnace":
+                    case "smoker":
+                    case "campfire":
+                    case "craft_recipe":
+                    case "furnace_recipe":
+                    case "stonecutter":
+                        playerCache.setSetting(Setting.valueOf(action.toUpperCase(Locale.ROOT)));
+                        guiAction.getGuiHandler().changeToInv("recipe_editor");
+                        break;
+                }
             }
         }
 

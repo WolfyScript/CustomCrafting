@@ -38,6 +38,7 @@ public class ItemConfig extends CustomConfig {
     public void setCustomItem(CustomItem itemStack){
         saveItem("item", itemStack);
         setBurnTime(itemStack.getBurnTime());
+        setReplacementItem(itemStack.getReplacement());
         if(itemStack.getAllowedBlocks().isEmpty()){
             setAllowedBlocks(new ArrayList<>(Collections.singleton(Material.FURNACE)));
         }else{
@@ -47,6 +48,14 @@ public class ItemConfig extends CustomConfig {
 
     public void setItem(ItemStack itemStack){
         saveItem("item", itemStack);
+    }
+
+    public void setDurabilityCost(int durabilityCost){
+        set("durability_cost", durabilityCost);
+    }
+
+    public int getDurabilityCost(){
+        return getInt("durability_cost");
     }
 
     public void setReplacementItem(CustomItem customItem){

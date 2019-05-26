@@ -11,6 +11,8 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -41,6 +43,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.priority = config.getPriority();
         this.api = CustomCrafting.getApi();
         this.exactMeta = config.isExactMeta();
+        config.reload();
     }
 
     @Override
@@ -76,7 +79,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : ingredients.get(key)) {
-                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount() && !(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(item)) {
+                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount() && (!(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(item))) {
                         usedKeys.add(key);
                         return ingredient.clone();
                     }
@@ -90,41 +93,46 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     public void removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount) {
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
-        int passes = small ? 2 : 3;
-        int index = 0;
-        for (int i = 0; i < inventory.getMatrix().length; i++) {
-            if (inventory.getMatrix()[i] != null) {
-                index = i;
-                break;
-            }
-        }
-        for (int i = 0; i < passes; i++) {
-            for (int j = 0; j < passes; j++) {
-                if (i < matrix.size() && j < matrix.get(i).size()) {
-                    ItemStack input = matrix.get(i).get(j);
-                    if (input == null)
-                        continue;
-                    ItemStack result = checkIngredient(allKeys, usedKeys, input);
-                    if (result == null)
-                        continue;
-                    if (result.getMaxStackSize() > 1) {
-                        int amount = input.getAmount() - result.getAmount() * totalAmount;
+        for(int i = 0; i < inventory.getMatrix().length; i ++){
+            ItemStack input = inventory.getMatrix()[i];
+            if (input != null){
+                CustomItem item = checkIngredient(allKeys, usedKeys, input);
+                if (item != null){
+                    if (item.getMaxStackSize() > 1) {
+                        int amount = input.getAmount() - item.getAmount() * totalAmount;
                         input.setAmount(amount);
+                    }else{
+                        if (item.getMaxStackSize() > 1) {
+                            int amount = input.getAmount() - item.getAmount() * totalAmount;
+                            input.setAmount(amount);
+                        }else{
+                            if(item.hasConfig()){
+                                if(item.hasReplacement()){
+                                    ItemStack replace = item.getReplacement();
+                                    input.setType(replace.getType());
+                                    input.setItemMeta(replace.getItemMeta());
+                                    input.setData(replace.getData());
+                                    input.setAmount(replace.getAmount());
+                                }else if(item.getDurabilityCost() != 0){
+                                    ItemMeta itemMeta = input.getItemMeta();
+                                    if(itemMeta instanceof Damageable){
+                                        ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
+                                    }
+                                    input.setItemMeta(itemMeta);
+                                }else{
+                                    input.setAmount(0);
+                                }
+                            }else{
+                                if(input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.LAVA_BUCKET)){
+                                    input.setType(Material.BUCKET);
+                                }else{
+                                    input.setAmount(0);
+                                }
+                            }
+                        }
                     }
                     //TEST FOR BUCKETS AND OTHER ITEMS!?
-                    if (input.getAmount() > 0){
-                        inventory.setItem(index, input);
-                    }else{
-                        inventory.setItem(index, new ItemStack(Material.AIR));
-                    }
                 }
-                index++;
-                if (index >= inventory.getMatrix().length) {
-                    break;
-                }
-            }
-            if (index >= inventory.getMatrix().length) {
-                break;
             }
         }
     }

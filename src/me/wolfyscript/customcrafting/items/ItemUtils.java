@@ -46,7 +46,11 @@ public class ItemUtils {
         if (id.isEmpty()) {
             return new CustomItem(itemStack.clone());
         }
-        return CustomCrafting.getRecipeHandler().getCustomItem(id);
+        CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(id);
+        if(clearedItem.getAmount() != customItem.getAmount()){
+            customItem.setAmount(clearedItem.getAmount());
+        }
+        return customItem;
     }
 
     public static boolean isIDItem(ItemStack itemStack) {

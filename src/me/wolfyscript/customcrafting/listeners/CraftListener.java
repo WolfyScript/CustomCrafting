@@ -73,6 +73,8 @@ public class CraftListener implements Listener {
                     CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, event.getRecipe(), event.getInventory());
                     if (!customCraftEvent.isCancelled()) {
 
+
+
                         {//---------COMMANDS AND STATISTICS-------------
                             if (config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()) {
                                 for (String command : config.getCommandsSuccessCrafted()) {
@@ -110,6 +112,16 @@ public class CraftListener implements Listener {
                         } else {
                             api.sendDebugMessage("ONE-CLICK!");
                             recipe.removeMatrix(ingredients, event.getInventory(), small, 1);
+
+                            if(event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)){
+                                event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
+                            }else{
+                                event.getView().setCursor(resultItem);
+                            }
+                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(event.getInventory(), event.getView(), false);
+                                Bukkit.getPluginManager().callEvent(event1);
+                            }, 2);
                         }
                         event.setCurrentItem(new ItemStack(Material.AIR));
                     }
@@ -133,7 +145,7 @@ public class CraftListener implements Listener {
                     recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
 
                     boolean allow = false;
-                    if (!recipesToCheck.isEmpty()) {
+                    if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
                         CustomPreCraftEvent customPreCraftEvent;
                         for (CraftingRecipe recipe : recipesToCheck) {
                             if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getId())) {

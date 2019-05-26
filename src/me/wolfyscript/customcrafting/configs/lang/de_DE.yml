@@ -1,16 +1,23 @@
 # Language: de_DE
 author: "WolfyScript"
-version: "1.0.0"
+version: "2.0.0"
 info:
   - "YouTube:"
   - "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
 ######################################################################
 #Test
+crafting:
+  workbench:
+    name: "&6Erweiterte Werkbank"
+    lore:
+      - "&7Werkbank für erweitertes Handwerk"
 msg:
   auto_save:
-    start:    "   Auto save data   "
-    complete: " Auto save complete "
+    start:    "     Auto-Speichern    "
+    complete: " Auto-Speichern fertig "
   startup:
+    outdated: "Deine Version ist veraltet! Eine neue Version ist verfügbar! https://www.spigotmc.org/resources/55883/"
+    update_check_fail: "Failed to check for a update on spigot"
     playerstats: "Lade Spieler Statistiks"
     inventories: "Initialisiere Inventar GUIs"
     placeholder: "Registriere PlaceHolder"
@@ -19,12 +26,17 @@ msg:
       items:   "----------------[ITEMS]---------------"
       recipes: "--------------[Rezepte]--------------"
   denied_perm: "&cDu bezitzt nicht die Berechtigung &4%PERM%&c!"
+  player:
+    outdated:
+      msg: "&cDeine Version ist veraltet! Eine neue Version ist verfügbar!"
+      msg2: "&aLade es jetzt herunter!"
+      link: " &7[&3Klick Hier&7]"
   gui:
     item_creator:
       save:
         input:
           line1: "&3Gebe den Namen und Ordner vom Item ein"
-          line2: "&6e.g. ordner item_name"
+          line2: "&6e.g. <ordner> <item_name>"
         success: "&aItem gespeichert in:"
       display_name: "&3Gebe den Namen ein! Nutze &6& &3für formatierungs codes!"
       enchant:
@@ -34,11 +46,11 @@ msg:
         invalid_enchant: "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!"
         no_lvl: "&cNo level set!"
       lore:
-        add: "&3Type in the lore! Use &6& &3for formatting codes!"
-        remove: "&3Type in the line of the lore you want to remove!"
-        no_number: "&cError getting the line! Is it a number? It should be!"
-        error: "&cError the line &4%NUM%&c does not exist!"
-        success: "&aRemoved Lore in line &6%NUM%"
+        add: "&3Gebe die Lore ein! Nutze &6& &3für Formatierungs codes!"
+        remove: "&3Gebe die Zeile der Lore ein, die du entfernen möchtest!"
+        no_number: "&cError bei der Zeilennummer! Ist es ein Zahlenwert?"
+        error: "&cError die Zeile &4%NUM%&c existiert nicht!"
+        success: "&aLore in der Zeile &6%NUM% wurde entfernt!"
       potion:
         add: "&3Type in the Potion! &6<name> <duration> <level> [<ambient> <particles>]"
         remove: "&3Type in the Potion name you want to remove!"
@@ -47,6 +59,10 @@ msg:
         success: "&aAdded Potion Effect &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%"
         invalid_name: "&cInvalid name! &4%NAME%&c does not exist!"
       variant:
+        remove:
+          msg: "&3Wähle das Item, welches entfernt werden soll!"
+          line: " &6%NUM%. &7%ITEM%"
+          success: "&6%ITEM%&a entfernt von den Varianten&a!"
       attribute:
         amount:
           input: "§3Type in the amount you want! For example§6 0.4"
@@ -60,6 +76,25 @@ msg:
             line2: "&cType in a valid UUID!"
       skull_owner:
         input: "§3Type in the Player Name!"
+      damage:
+        set: "&3Type in the amount of damage!"
+        invalid_type: "&cThe current item does not support damage value!"
+        value_success: "&aSet item damage to &6%VALUE%&a!"
+        invalid_value: "&cThe value &4%VALUE%&c is not a number!"
+        repair:
+          set: "&3Type in the amount of cost"
+          invalid_type: "&cThe current item does not support repair cost!"
+          value_success: "&aSet repair cost to &6%VALUE%&a!"
+          invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
+        fuel:
+          set: "&3Type in the Burn Time in ticks!"
+          value_success: "&aSet Burn Time to &6%VALUE% ticks&a!"
+          invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
+        custom_model_data:
+          disabled: "&l&cDisabled"
+          set: "&3Type in the Custom Model Data!"
+          success: "&aSet Model Data to &6%VALUE%&a!"
+          invalid_value: "&cThe value &4%VALUE%&c is not a valid Model Data number!"
     item_editor:
       input: "&3Type in the folder and name of the item! &6example your_item"
       error: "&cThis item does not exist or is not loaded!"
@@ -88,6 +123,27 @@ msg:
         confirm: "&7Do you really want to delete &6%RECIPE%"
         confirmed: "&7[&aYES&7]  "
         declined: "&7[&cNO&7]"
+  commands:
+    help:
+      - ""
+      - "             &bHauptBefehl: &e/cc"
+      - ""
+      - "                &3/cc &6<label>"
+      - "  &6help     &7-  &3Displays list of commands"
+      - "  &6clear    &7-  &3Läd den Spieler cache neu!"
+      - "  &6info      &7-  &3Zeigt Infos über dieses Plugin an"
+      - "  &6studio    &7-  &3Öffnet den GUI Editor"
+    info: "&3gebe &6\"/cc help\" &3 für hilfe ein!"
+    lockdown:
+      enabled: "&7[&c&lLOCKDOWN&7] &aENABLED! &cRetepte werden jetzt alle geblockt!"
+      disabled: "&7[&c&lLOCKDOWN&7] &cDISABLED! &cRezepte werden nicht mehr geblockt!"
+    give:
+      player_offline: "&cDer Spieler &4%PLAYER% &cist nicht online!"
+      invalid_amount: "&cFalsche Anzahl! Ist es ein Zahlenwert?"
+      success: "&aGab &e%ITEM%&a an &e%PLAYER%"
+      success_amount: "&aGab &e%AMOUNT%x %ITEM%&a an &e%PLAYER%"
+      no_inv_space: "&cKein Platz im Inventar!"
+      invalid_item: "&cDas Item &4%ITEM%&c existiert nicht!"
 
 items:
   none:
@@ -100,40 +156,67 @@ items:
     glass_white:
       name: '&4'
     minimize:
-      name: '&3Minimize'
+      name: '&3Minimieren'
       help: []
     back:
-      name: '&5Back'
+      name: '&5Zurück'
       help: []
     close:
-      name: '&4Close'
+      name: '&4Schließen'
       help: []
     gui_help_on:
-      name: '&2Help'
+      name: '&2Hilfe'
       lore:
-        - "&7-Click Me-"
-        - "&7[&aEnabled&7]"
+        - "  &7-Klick Mich-"
+        - "&7[&aEingeschaltet&7]"
       help: []
     gui_help_off:
-      name: '&2Help'
+      name: '&2Hilfe'
       lore:
-        - "&7-Click Me-"
-        - "&7[&cDisabled&7]"
+        - "  &7-Klick Mich-"
+        - "&7[&cAusgeschaltet&7]"
       help: []
   main_menu:
+    lockdown:
+      enabled:
+        name: "&4&lLockDown!"
+        lore:
+          - "&7[&3Eingeschaltet&7]"
+          - "&4Rezepte werden geblockt!"
+      disabled:
+        name: "&4LockDown"
+        lore:
+          - "&7[&8Ausgeschaltet&7]"
+          - "&7Rezepte werden nicht geblockt!"
     craft_recipe:
-      name: "&6Workbench Recipe"
+      name: "&6Werkbank Rezept"
       help:
         - ""
     furnace_recipe:
-      name: "&6Furnace Recipe"
+      name: "&6Ofen Rezept"
+      help:
+        - ""
+    blast_furnace:
+      name: "&6Blasting Rezept"
+      help:
+        - ""
+    smoker:
+      name: "&6Smoking Rezept"
+      help:
+        - ""
+    campfire:
+      name: "&6Campfire Rezept"
+      help:
+        - ""
+    stonecutter:
+      name: "&6Stonecutter Rezept"
       help:
         - ""
     item_editor:
       name: '&6Item Creator'
       help:
         - '&7Create, Save custom Items'
-        - '&6Use them inside of your recipes'
+        - '&6Nutze die Items in deinen Rezepten'
     create_recipe:
       name: '&6Create Recipe'
       help:
@@ -169,6 +252,17 @@ items:
       help:
         - "&7Delete a custom Item"
   item_creator:
+    invalid_type:
+      name: "&cInvalid Item"
+      lore:
+        - "&7This Item is not compatible"
+        - "&7with this setting!"
+    invalid_version:
+      name: "&cInvalid Minecraft Version"
+      lore:
+        - "&7This feature is not compatible"
+        - "&7with this current Minecraft version!"
+        - "&7You need at least 1.14 to use this feature!"
     item_name:
       name: '&6Change name'
       help:
@@ -238,13 +332,12 @@ items:
       name: "&6Variants"
       help:
         - "&7Sets the variants of ingredients"
-        - "&7[&3Coming SOON&7]"
+      lore:
         - "&7[&cWork in Progress&7]"
-    up:
-      name: "&7Page Up"
-      help: []
-    down:
-      name: "&7Page Down"
+    variants_list:
+      name: "&6Variants"
+      lore:
+        - "&6%NUM%. &7%ITEM%"
       help: []
     potion_add:
       name: "&3Add Potion Effect"
@@ -381,6 +474,92 @@ items:
           - "&7Sets the uuid of this modifier"
           - "&cMust be a valid UUID format!"
           - "&7Input: &3<uuid>"
+    item_damage:
+      name: "&6Set Item Damage"
+      help:
+        - "&7Add a damage value to the Item"
+        - "&7This can be used for example"
+        - "&7for custom textures!"
+    damage_set:
+      name: "&6Set Damage"
+      help:
+        - "&7Set the damage value!"
+        - "&7Input: &3<value>"
+    damage_reset:
+      name: "&cReset Damage"
+      help:
+        - "&7Resets the damage value to 0"
+    repair_cost:
+      name: "&6Repair Cost"
+      help:
+        - "&7Set the repair cost for this item!"
+        - "&7e.g. to prevent repairing"
+    repair_set:
+      name: "&6Set Repair Cost"
+    repair_reset:
+      name: "&cReset Repair Cost"
+      help:
+        - "Resets Repair Cost to 0"
+    furnace:
+      fuel:
+        name: "%C%Fuel Settings"
+        lore:
+          - "&cThe Item must be saved in order to"
+          - "&cbe added as a fuel"
+      burn_time:
+        name: "&aBurn Time: &7%VAR% ticks"
+        help:
+          - "&7Sets the burn time in ticks!"
+          - "&720 ticks = 1 second"
+          - "&cSet it to 0 will disable this to be"
+          - "&csaved as a fuel!"
+      burn_time_reset:
+        name: "&cReset Burn Time"
+        lore:
+          - "&7The item item will not be saved"
+          - "&7as a fuel anymore!"
+    custom_model_data:
+      name: "&6Custom Model Data"
+      help:
+        - "&7Set the Custom Model Data"
+        - "&7Used for custom Models and Textures!"
+        - "&7Available since Minecraft 1.14"
+    set_custom_model_data:
+      name: "&7Model Data: &7%VAR%"
+      help:
+        - "&7Sets the Custom Model Data"
+        - "&7for this item!"
+    reset_custom_model_data:
+      name: "&cRemove Model Data"
+      help:
+        - "&7Removes the Custom Model Data"
+        - "&7from this item!"
+    replacement_durability:
+      name: "&7Durability Cost & Replacement"
+      lore:
+        - "&4To use this feature, you need to save the item!"
+      help:
+        - "&7Set the Durability that gets"
+        - "&7removed when crafting!"
+        - "&7Set with which item this item gets replaced"
+        - "&7in the crafting grid."
+    durability_cost:
+      name: "&7Durability cost: &3%VAR%"
+      lore:
+        - "&7>0 = &3lose durability!"
+        - "&7 0 = &3removed completely! Use replacement to prevent it!"
+        - "&7<0 = &3gain durability!"
+    durability_cost_disabled:
+      name: "&7Durability cost: &4&lDisabled"
+      lore:
+        - "&cItem must not be stackable!"
+        - "&cReplacement must be disabled!"
+    replacement:
+      name: "&aReplacement enabled!"
+      lore:
+        - "&7Durability cost is blocked now!"
+    replacement_disabled:
+      name: "&cReplacement disabled!"
   recipe_editor:
   recipe_creator:
     save:
@@ -407,7 +586,20 @@ items:
         - "&3NORMAL&7: normal priority"
         - "&cHIGH&7"
         - "&4HIGHEST&7: will be checked last"
-
+    exact_meta_on:
+      name: "&aExact Meta"
+      help: []
+      lore:
+        - "&7Items need to be exactly the same!"
+        - "&7That means if you put in a IronSword with no damage "
+        - "&7then IronSwords with damage won't be allowed!"
+    exact_meta_off:
+      name: "&3Ignore Meta"
+      help: []
+      lore:
+        - "&7Items without Meta will only"
+        - "&7be checked for their type!"
+        - "&7Items with Meta still need to be exact!"
     workbench:
       adv_workbench_on:
         name: "&3Advanced Workbench"
@@ -456,6 +648,21 @@ items:
     next_page:
       name: "&2Next Page"
       help: []
+  recipe_book:
+    lores:
+      click: "&7[&a&lClick for Recipe&r&7]"
+    previous_page:
+      name: "&2Previous Page"
+      help: []
+    next_page:
+      name: "&2Next Page"
+      help: []
+    craft_recipe:
+      name: "&6Workbench Recipes"
+      help: []
+    furnace_recipe:
+      name: "&6Furnace Recipes"
+      help: []
 
 inventories:
   main_menu: '&3&lCustomCrafting'
@@ -464,3 +671,4 @@ inventories:
   recipe_editor: "&4&lRecipe Editor"
   recipe_creator: "&4&lRecipe Creator"
   recipe_list: "&8&lRecipe List"
+  recipe_book: "&8&lRecipe knowledge Book"

@@ -37,4 +37,5 @@ data:
     message: true
 
 recipes:
+  lockdown: false
   disabled_recipes: []

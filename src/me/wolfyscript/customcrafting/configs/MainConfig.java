@@ -55,4 +55,16 @@ public class MainConfig extends Config {
     public boolean isCCenabled() {
         return getBoolean("commands.cc");
     }
+
+    public boolean isLockedDown(){
+        return getBoolean("recipes.lockdown");
+    }
+
+    public void toggleLockDown(){
+        setLockDown(!isLockedDown());
+    }
+
+    public void setLockDown(boolean lockdown){
+        set("recipes.lockdown", lockdown);
+    }
 }

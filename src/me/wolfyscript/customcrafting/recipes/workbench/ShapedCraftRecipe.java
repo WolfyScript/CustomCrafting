@@ -5,12 +5,15 @@ import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfi
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +48,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.priority = config.getPriority();
         this.api = CustomCrafting.getApi();
         this.exactMeta = config.isExactMeta();
+        config.reload();
     }
 
     @Override
@@ -99,7 +103,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     public CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
         for (CustomItem ingredient : ingredients) {
-            if (input.getType().equals(ingredient.getType()) && input.getAmount() >= ingredient.getAmount() && !(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(input)) {
+            if (input.getType().equals(ingredient.getType()) && input.getAmount() >= ingredient.getAmount() && (!(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(input))) {
                 return ingredient.clone();
             }
         }
@@ -129,18 +133,37 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
             if (r < matrix.size() && c < matrix.get(r).size()) {
                 if ((matrix.get(r).get(c) != null && getShape()[r].charAt(c) != ' ')) {
                     ItemStack input = matrix.get(r).get(c);
-                    ItemStack item = checkIngredient(input, getIngredients().get(getShape()[r].charAt(c)));
+                    CustomItem item = checkIngredient(input, getIngredients().get(getShape()[r].charAt(c)));
                     if (item != null) {
                         if (item.getMaxStackSize() > 1) {
                             int amount = input.getAmount() - item.getAmount() * totalAmount;
                             input.setAmount(amount);
+                        }else{
+                            if(item.hasConfig()){
+                                if(item.hasReplacement()){
+                                    ItemStack replace = item.getReplacement();
+                                    input.setType(replace.getType());
+                                    input.setItemMeta(replace.getItemMeta());
+                                    input.setData(replace.getData());
+                                    input.setAmount(replace.getAmount());
+                                }else if(item.getDurabilityCost() != 0){
+                                    ItemMeta itemMeta = input.getItemMeta();
+                                    if(itemMeta instanceof Damageable){
+                                        ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
+                                    }
+                                    input.setItemMeta(itemMeta);
+                                }else{
+                                    input.setAmount(0);
+                                }
+                            }else{
+                                if(input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.LAVA_BUCKET)){
+                                    input.setType(Material.BUCKET);
+                                }else{
+                                    input.setAmount(0);
+                                }
+                            }
                         }
                         //TEST FOR BUCKETS AND OTHER ITEMS!?
-                        if (input.getAmount() > 0) {
-                            inventory.setItem(x, input);
-                        }else{
-                            inventory.setItem(x, new ItemStack(Material.AIR));
-                        }
                     }
                 }
             }

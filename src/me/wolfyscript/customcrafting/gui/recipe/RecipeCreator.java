@@ -90,7 +90,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     event.setItem(26, workbench.isExactMeta() ? "exact_meta_on" : "exact_meta_off");
                     event.setItem(22, workbench.isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
 
-                    event.setItem(24, workbench.getResult().getIDItem());
+                    event.setItem(24, workbench.getResult().getIDItem(workbench.getResultCustomAmount()));
                     event.setItem(3, workbench.isPermissions() ? "permissions_on" : "permissions_off");
                     if(workbench.isAdvWorkbench()){
                         ItemStack advancedWorkbench = event.getItem("workbench.adv_workbench_on");
@@ -294,7 +294,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 }
                 workbench.setIngredients(ingredients);
                 if (inv.getItem(24) != null) {
-                    workbench.setResult(ItemUtils.getCustomItem(inv.getItem(24)));
+                    CustomItem customItem = ItemUtils.getCustomItem(inv.getItem(24));
+                    workbench.setResult(customItem);
+                    workbench.setResultCustomAmount(customItem.getAmount());
                 } else {
                     workbench.setResult(new CustomItem(Material.AIR));
                 }

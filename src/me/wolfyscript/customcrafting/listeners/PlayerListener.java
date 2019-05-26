@@ -31,7 +31,7 @@ public class PlayerListener implements Listener {
             CustomCrafting.renewPlayerCache(player);
         }
         InventoryAPI inventoryAPI = CustomCrafting.getApi().getInventoryAPI();
-        if(player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check")) {
+        if(!CustomCrafting.isBetaVersion() && player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check")) {
             if (CustomCrafting.isOutdated()) {
                 WolfyUtilities api = CustomCrafting.getApi();
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
