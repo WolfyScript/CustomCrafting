@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.workbench;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
@@ -105,6 +106,16 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                         if (item.getMaxStackSize() > 1) {
                             int amount = input.getAmount() - item.getAmount() * totalAmount;
                             input.setAmount(amount);
+                            if(item.hasReplacement()){
+                                ItemStack replacement = item.getReplacement();
+                                replacement.setAmount(replacement.getAmount() * totalAmount);
+                                //TODO: CHECK
+                                if(ItemUtils.hasInventorySpace(inventory, replacement)){
+                                    inventory.addItem(replacement);
+                                }else{
+                                    inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
+                                }
+                            }
                         }else{
                             if(item.hasConfig()){
                                 if(item.hasReplacement()){

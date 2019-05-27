@@ -9,6 +9,7 @@ import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -114,8 +115,12 @@ public class ItemUtils {
     }
 
     public static int getInventorySpace(Player p, ItemStack item) {
+        return getInventorySpace(p.getInventory(), item);
+    }
+
+    public static int getInventorySpace(Inventory inventory, ItemStack item) {
         int free = 0;
-        for (ItemStack i : p.getInventory().getStorageContents()) {
+        for (ItemStack i : inventory.getStorageContents()) {
             if (i == null || i.getType().equals(Material.AIR)) {
                 free += item.getMaxStackSize();
             } else if (i.isSimilar(item)) {
@@ -123,6 +128,10 @@ public class ItemUtils {
             }
         }
         return free;
+    }
+
+    public static boolean hasInventorySpace(Inventory inventory, ItemStack itemStack){
+        return getInventorySpace(inventory, itemStack) >= itemStack.getAmount();
     }
 
     public static boolean hasInventorySpace(Player p, ItemStack item) {
