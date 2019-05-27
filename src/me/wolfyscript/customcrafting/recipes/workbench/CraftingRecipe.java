@@ -29,7 +29,7 @@ public interface CraftingRecipe extends CustomRecipe {
 
     boolean check(List<List<ItemStack>> matrix);
 
-    void removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount);
+    List<ItemStack> removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount);
 
     int getAmountCraftable(List<List<ItemStack>> matrix);
 

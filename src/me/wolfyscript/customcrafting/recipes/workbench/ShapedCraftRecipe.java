@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -112,7 +113,8 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public void removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount) {
+    public List<ItemStack> removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount) {
+        List<ItemStack> replacements = new ArrayList<>();
         int startIndex = 0;
         for (int i = 0; i < inventory.getMatrix().length; i++) {
             if (inventory.getMatrix()[i] != null) {
@@ -142,12 +144,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
                             if(item.hasReplacement()){
                                 ItemStack replacement = item.getReplacement();
                                 replacement.setAmount(replacement.getAmount() * totalAmount);
-                                //TODO: CHECK
-                                if(ItemUtils.hasInventorySpace(inventory, replacement)){
-                                    inventory.addItem(replacement);
-                                }else{
-                                    inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
-                                }
+                                replacements.add(replacement);
                             }
                         }else{
                             if(item.hasConfig()){
@@ -187,6 +184,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
                 r++;
             }
         }
+        return replacements;
     }
 
     @Override

@@ -91,7 +91,8 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     @Override
-    public void removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount) {
+    public List<ItemStack> removeMatrix(List<List<ItemStack>> matrix, CraftingInventory inventory, boolean small, int totalAmount) {
+        List<ItemStack> replacements = new ArrayList<>();
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
         for(int i = 0; i < inventory.getMatrix().length; i ++){
@@ -102,6 +103,11 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                     if (item.getMaxStackSize() > 1) {
                         int amount = input.getAmount() - item.getAmount() * totalAmount;
                         input.setAmount(amount);
+                        if(item.hasReplacement()){
+                            ItemStack replacement = item.getReplacement();
+                            replacement.setAmount(replacement.getAmount() * totalAmount);
+                            replacements.add(replacement);
+                        }
                     }else{
                         if (item.getMaxStackSize() > 1) {
                             int amount = input.getAmount() - item.getAmount() * totalAmount;
@@ -146,6 +152,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                 }
             }
         }
+        return replacements;
     }
 
     @Override

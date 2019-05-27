@@ -57,7 +57,7 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     public CustomItem getReplacement() {
-        return replacement;
+        return replacement.clone();
     }
 
     public void setReplacement(CustomItem replacement) {
