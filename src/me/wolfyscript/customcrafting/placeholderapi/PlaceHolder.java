@@ -97,8 +97,8 @@ public class PlaceHolder extends PlaceholderExpansion {
                         if(p.isOnline()){
                             int i = 0;
                             Player player = Bukkit.getPlayer(p.getUniqueId());
-                            for(CustomRecipe recipe : CustomCrafting.getRecipeHandler().getRecipes()){
-                                if(WolfyUtilities.hasPermission(player, "customcrafting.craft."+recipe.getId())){
+                            for(String id : CustomCrafting.getRecipeHandler().getRecipes().keySet()){
+                                if(WolfyUtilities.hasPermission(player, "customcrafting.craft."+id)){
                                     i++;
                                 }
                             }

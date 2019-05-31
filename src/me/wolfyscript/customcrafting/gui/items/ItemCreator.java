@@ -82,16 +82,19 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("reset_custom_model_data", Material.RED_CONCRETE);
 
         createItem("replacement_durability", Material.ITEM_FRAME);
-        //TODO REPLACE AND DURABILITY CHANGE
         createItem("durability_cost", Material.DROPPER);
         createItem("durability_cost_disabled", Material.DROPPER);
         createItem("replacement", Material.GREEN_CONCRETE);
         createItem("replacement_disabled", Material.RED_CONCRETE);
-        //
 
         createItem("furnace.fuel", Material.COAL);
         createItem("furnace.burn_time", Material.GREEN_CONCRETE);
         createItem("furnace.burn_time_reset", Material.RED_CONCRETE);
+        createItem("furnace.furnace", Material.FURNACE);
+        if(WolfyUtilities.hasVillagePillageUpdate()){
+            createItem("furnace.blast_furnace", Material.BLAST_FURNACE);
+            createItem("furnace.smoker", Material.SMOKER);
+        }
 
         createItem("set_displayname", Material.GREEN_CONCRETE);
         createItem("remove_displayname", Material.RED_CONCRETE);
@@ -273,8 +276,14 @@ public class ItemCreator extends ExtendedGuiWindow {
                         }
                         break;
                     case "furnace.fuel":
+                        //TODO
                         event.setItem(39, event.getItem("furnace.burn_time", "%VAR%", items.getItem().getBurnTime()+""));
                         event.setItem(41, "furnace.burn_time_reset");
+                        event.setItem(44, "furnace.furnace");
+                        if(WolfyUtilities.hasVillagePillageUpdate()){
+                            event.setItem(46, "furnace.blast_furnace");
+                            event.setItem(48, "furnace.smoker");
+                        }
                         break;
                     case "custom_model_data":
                         if(WolfyUtilities.hasVillagePillageUpdate()){

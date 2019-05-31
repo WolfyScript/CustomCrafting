@@ -21,16 +21,15 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     private boolean permission;
     private boolean advancedWorkbench;
-
+    private boolean exactMeta;
     private RecipePriority priority;
 
     private CraftConfig config;
     private String id;
-    private CustomItem result;
     private String group;
+    private CustomItem result;
     private HashMap<Character, ArrayList<CustomItem>> ingredients;
     private WolfyUtilities api;
-    private boolean exactMeta;
 
     public ShapelessCraftRecipe(CraftConfig config) {
         super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
@@ -44,16 +43,17 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         this.priority = config.getPriority();
         this.api = CustomCrafting.getApi();
         this.exactMeta = config.isExactMeta();
-        config.reload();
+        load();
     }
 
     @Override
     public void load() {
+        api.sendDebugMessage("          -> "+getIngredients());
         for (Character itemKey : getIngredients().keySet()) {
             List<CustomItem> items = getIngredients().get(itemKey);
             List<Material> materials = new ArrayList<>();
             items.forEach(itemStack -> materials.add(itemStack.getType()));
-            addIngredient(new RecipeChoice.MaterialChoice(materials));
+            this.addIngredient(new RecipeChoice.MaterialChoice(materials));
         }
     }
 
@@ -68,8 +68,10 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> usedKeys = new ArrayList<>();
         for (List<ItemStack> items : matrix) {
             for (ItemStack itemStack : items) {
-                if (itemStack == null)
+                api.sendDebugMessage("  -> "+itemStack);
+                if (itemStack == null){
                     continue;
+                }
                 checkIngredient(allKeys, usedKeys, itemStack);
             }
         }
@@ -80,7 +82,10 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : ingredients.get(key)) {
-                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount() && (!(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(item))) {
+                    api.sendDebugMessage(item+"  <->  "+ingredient);
+                    //TODO: FUCKING VERSION NUMBERS!!!!!!!!!!
+                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount() && (!(exactMeta || ingredient.hasItemMeta()) || item.isSimilar(ingredient))) {
+                        api.sendDebugMessage("      - TRUE");
                         usedKeys.add(key);
                         return ingredient.clone();
                     }

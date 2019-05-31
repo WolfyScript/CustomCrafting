@@ -14,6 +14,7 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -60,7 +61,6 @@ public class CustomCrafting extends JavaPlugin {
         if (betaVersion) {
             System.out.println("This is a beta build! It may contain bugs and game breaking glitches!");
             System.out.println("Do not use this version on production servers!");
-            System.out.println("It also always shows the outdated message!");
         }
         System.out.println("------------------------------------------------------------------------");
 
@@ -100,7 +100,6 @@ public class CustomCrafting extends JavaPlugin {
         recipeHandler = new RecipeHandler(api);
         configHandler.load();
 
-
         System.out.println("------------------------------------------------------------------------");
 
         loadPlayerCache();
@@ -112,11 +111,17 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
         CommandCC commandCC = new CommandCC();
         if (configHandler.getConfig().isCCenabled()) {
-            getServer().getPluginCommand("cc").setExecutor(commandCC);
-            getServer().getPluginCommand("cc").setTabCompleter(commandCC);
+            PluginCommand command = getServer().getPluginCommand("cc");
+            if(command != null){
+                command.setExecutor(commandCC);
+                command.setTabCompleter(commandCC);
+            }
         }
-        getServer().getPluginCommand("customcrafting").setExecutor(commandCC);
-        getServer().getPluginCommand("customcrafting").setTabCompleter(commandCC);
+        PluginCommand command = getServer().getPluginCommand("customcrafting");
+        if(command != null){
+            command.setExecutor(commandCC);
+            command.setTabCompleter(commandCC);
+        }
 
         invHandler.init();
 
@@ -127,9 +132,8 @@ public class CustomCrafting extends JavaPlugin {
             new PlaceHolder().register();
         }
         recipeHandler.loadConfigs();
-        if(!betaVersion){
-            checkUpdate(null);
-        }
+        checkUpdate(null);
+
 
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));

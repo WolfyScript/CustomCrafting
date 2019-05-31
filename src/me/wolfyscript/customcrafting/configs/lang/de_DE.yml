@@ -518,6 +518,12 @@ items:
         lore:
           - "&7The item item will not be saved"
           - "&7as a fuel anymore!"
+      furnace:
+        name: "%C%Ofen"
+      blast_furnace:
+        name: "%C%Blast Furnace"
+      smoker:
+        name: "%C%Smoker"
     custom_model_data:
       name: "&6Custom Model Data"
       help:

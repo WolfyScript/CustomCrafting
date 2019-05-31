@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 public class CustomConfig extends Config {

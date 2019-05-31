@@ -26,6 +26,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     private boolean permission;
     private boolean advancedWorkbench;
     private boolean exactMeta;
+    private RecipePriority priority;
 
     private CraftConfig config;
     private String id;
@@ -34,7 +35,6 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     private HashMap<Character, ArrayList<CustomItem>> ingredients;
     private String[] shape;
     private String shapeLine;
-    private RecipePriority priority;
     private WolfyUtilities api;
 
     public ShapedCraftRecipe(CraftConfig config) {
@@ -50,7 +50,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         this.priority = config.getPriority();
         this.api = CustomCrafting.getApi();
         this.exactMeta = config.isExactMeta();
-        config.reload();
+        load();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         return containedKeys.containsAll(getIngredients().keySet());
     }
 
-    public CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
+    private CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
         for (CustomItem ingredient : ingredients) {
             if (input.getType().equals(ingredient.getType()) && input.getAmount() >= ingredient.getAmount() && (!(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(input))) {
                 return ingredient.clone();

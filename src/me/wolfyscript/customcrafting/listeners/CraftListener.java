@@ -111,16 +111,14 @@ public class CraftListener implements Listener {
                             }
                         } else {
                             api.sendDebugMessage("ONE-CLICK!");
-                            if(event.getView().getCursor() == null || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())){
+                            if(event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())){
                                 replacements = recipe.removeMatrix(ingredients, event.getInventory(), small, 1);
-
                                 if(event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)){
 
                                     event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
                                 }else{
                                     event.getView().setCursor(resultItem);
                                 }
-
                             }
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                 PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(event.getInventory(), event.getView(), false);

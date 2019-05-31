@@ -32,7 +32,7 @@ public class RecipeHandler {
 
     private List<Recipe> allRecipes = new ArrayList<>();
 
-    private List<CustomRecipe> customRecipes = new ArrayList<>();
+    private HashMap<String, CustomRecipe> customRecipes = new HashMap<>();
     private List<CustomItem> customItems = new ArrayList<>();
 
     private ArrayList<String> disabledRecipes = new ArrayList<>();
@@ -54,18 +54,16 @@ public class RecipeHandler {
             for (File file : files) {
                 String key = file.getParentFile().getParentFile().getName().toLowerCase();
                 String name = file.getName().split("\\.")[0].toLowerCase();
+                api.sendConsoleMessage("      - " + name);
                 try {
                     switch (type) {
                         case "workbench":
                             CraftConfig config = new CraftConfig(configAPI, key, name);
-                            CraftingRecipe craftingRecipe;
                             if (config.isShapeless()) {
-                                craftingRecipe = new ShapelessCraftRecipe(config);
+                                registerRecipe(new ShapelessCraftRecipe(config));
                             } else {
-                                craftingRecipe = new ShapedCraftRecipe(config);
+                                registerRecipe(new ShapedCraftRecipe(config));
                             }
-                            craftingRecipe.load();
-                            registerRecipe(craftingRecipe);
                             break;
                         case "furnace":
                             registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, key, name)));
@@ -96,7 +94,7 @@ public class RecipeHandler {
                     api.sendConsoleMessage("-------------------------------------------------");
                     ex.printStackTrace();
                 }
-                api.sendConsoleMessage("      - " + name);
+
             }
         }
     }
@@ -137,20 +135,18 @@ public class RecipeHandler {
                     loadConfig(folder.getName(), "stonecutter");
                 }
             }
-            getRecipes().sort((o1, o2) -> Integer.compare(o2.getPriority().getOrder(), o1.getPriority().getOrder()));
         }
     }
 
     public void registerRecipe(CustomRecipe recipe) {
         Bukkit.addRecipe(recipe);
-        customRecipes.add(recipe);
+        customRecipes.put(recipe.getId(), recipe);
     }
 
     public void injectRecipe(CustomRecipe recipe) {
         unregisterRecipe(recipe);
         Bukkit.addRecipe(recipe);
-        customRecipes.add(recipe);
-        getRecipes().sort((o1, o2) -> Integer.compare(o2.getPriority().getOrder(), o1.getPriority().getOrder()));
+        customRecipes.put(recipe.getId(), recipe);
     }
 
     public void unregisterRecipe(String key) {
@@ -174,7 +170,7 @@ public class RecipeHandler {
     }
 
     public void unregisterRecipe(CustomRecipe customRecipe) {
-        customRecipes.removeIf(customRecipe1 -> customRecipe1.getId().equals(customRecipe.getId()));
+        customRecipes.remove(customRecipe.getId());
         unregisterRecipe(customRecipe.getId());
     }
 
@@ -183,9 +179,9 @@ public class RecipeHandler {
      */
     public List<CustomRecipe> getRecipeGroup(String group) {
         List<CustomRecipe> groupRecipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes) {
-            if (recipe.getGroup().equals(group))
-                groupRecipes.add(recipe);
+        for (String id : customRecipes.keySet()) {
+            if (customRecipes.get(id).getGroup().equals(group))
+                groupRecipes.add(customRecipes.get(id));
         }
         return groupRecipes;
     }
@@ -221,12 +217,7 @@ public class RecipeHandler {
     }
 
     public CustomRecipe getRecipe(String key) {
-        for (CustomRecipe craftingRecipe : customRecipes) {
-            if (craftingRecipe.getId().equals(key)) {
-                return craftingRecipe;
-            }
-        }
-        return null;
+        return customRecipes.get(key);
     }
 
     //CRAFTING RECIPES
@@ -237,7 +228,8 @@ public class RecipeHandler {
 
     public List<CraftingRecipe> getCraftingRecipes() {
         List<CraftingRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe customRecipe : getRecipes()) {
+        for (String id : customRecipes.keySet()) {
+            CustomRecipe customRecipe = customRecipes.get(id);
             if (customRecipe instanceof CraftingRecipe) {
                 recipes.add((CraftingRecipe) customRecipe);
             }
@@ -248,7 +240,8 @@ public class RecipeHandler {
     //FURNACE RECIPES
     public List<CustomFurnaceRecipe> getFurnaceRecipes() {
         List<CustomFurnaceRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes) {
+        for (String id : customRecipes.keySet()) {
+            CustomRecipe recipe = customRecipes.get(id);
             if (recipe instanceof CustomFurnaceRecipe) {
                 recipes.add((CustomFurnaceRecipe) recipe);
             }
@@ -259,7 +252,8 @@ public class RecipeHandler {
     //SMOKER RECIPES
     public List<CustomSmokerRecipe> getSmokerRecipes() {
         List<CustomSmokerRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes) {
+        for (String id : customRecipes.keySet()) {
+            CustomRecipe recipe = customRecipes.get(id);
             if (recipe instanceof CustomSmokerRecipe) {
                 recipes.add((CustomSmokerRecipe) recipe);
             }
@@ -269,7 +263,8 @@ public class RecipeHandler {
 
     public List<CustomBlastRecipe> getBlastRecipes() {
         List<CustomBlastRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes) {
+        for (String id : customRecipes.keySet()) {
+            CustomRecipe recipe = customRecipes.get(id);
             if (recipe instanceof CustomBlastRecipe) {
                 recipes.add((CustomBlastRecipe) recipe);
             }
@@ -279,7 +274,8 @@ public class RecipeHandler {
 
     public List<CustomCampfireRecipe> getCampfireRecipes() {
         List<CustomCampfireRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes) {
+        for (String id : customRecipes.keySet()) {
+            CustomRecipe recipe = customRecipes.get(id);
             if (recipe instanceof CustomCampfireRecipe) {
                 recipes.add((CustomCampfireRecipe) recipe);
             }
@@ -289,7 +285,8 @@ public class RecipeHandler {
 
     public List<CustomStonecutterRecipe> getStonecutterRecipes() {
         List<CustomStonecutterRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes) {
+        for (String id : customRecipes.keySet()) {
+            CustomRecipe recipe = customRecipes.get(id);
             if (recipe instanceof CustomStonecutterRecipe) {
                 recipes.add((CustomStonecutterRecipe) recipe);
             }
@@ -297,7 +294,7 @@ public class RecipeHandler {
         return recipes;
     }
 
-    public List<CustomRecipe> getRecipes() {
+    public HashMap<String, CustomRecipe> getRecipes() {
         return customRecipes;
     }
 
