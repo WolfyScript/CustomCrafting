@@ -15,3 +15,4 @@ commands:
     description: Main command
   cc:
     usage : /cc <label>
+    description: Main Command alternativ

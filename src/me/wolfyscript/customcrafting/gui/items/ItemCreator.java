@@ -279,10 +279,10 @@ public class ItemCreator extends ExtendedGuiWindow {
                         //TODO
                         event.setItem(39, event.getItem("furnace.burn_time", "%VAR%", items.getItem().getBurnTime()+""));
                         event.setItem(41, "furnace.burn_time_reset");
-                        event.setItem(44, "furnace.furnace");
+                        event.setItem(44, event.getItem("furnace.furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.FURNACE) ? "§a" : "§c"));
                         if(WolfyUtilities.hasVillagePillageUpdate()){
-                            event.setItem(46, "furnace.blast_furnace");
-                            event.setItem(48, "furnace.smoker");
+                            event.setItem(46, event.getItem("furnace.blast_furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.BLAST_FURNACE) ? "§a" : "§c"));
+                            event.setItem(48, event.getItem("furnace.smoker", "%C%", items.getItem().getAllowedBlocks().contains(Material.SMOKER) ? "§a" : "§c"));
                         }
                         break;
                     case "custom_model_data":
@@ -536,6 +536,17 @@ public class ItemCreator extends ExtendedGuiWindow {
                             break;
                         case "furnace.burn_time_reset":
                             itemStack.setBurnTime(0);
+                            break;
+                        case "furnace.furnace":
+                        case "furnace.blast_furnace":
+                        case "furnace.smoker":
+                            Material material = Material.getMaterial(action.split("\\.")[1]);
+                            api.sendDebugMessage("Material: "+material);
+                            if(items.getItem().getAllowedBlocks().contains(material)){
+                                items.getItem().getAllowedBlocks().remove(material);
+                            }else{
+                                items.getItem().getAllowedBlocks().add(material);
+                            }
                             break;
                         //CUSTOM MODEL DATA
                         case "set_custom_model_data":

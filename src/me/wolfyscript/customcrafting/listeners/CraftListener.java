@@ -69,7 +69,6 @@ public class CraftListener implements Listener {
                     Player player = (Player) event.getWhoClicked();
                     Block block = player.getTargetBlock(null, 5);
                     PlayerCache cache = CustomCrafting.getPlayerCache(player);
-                    //TODO: BETTER PERFORMANCE! MAYBE NEW ALGORITHM?!
 
                     CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, event.getRecipe(), event.getInventory());
                     if (!customCraftEvent.isCancelled()) {
