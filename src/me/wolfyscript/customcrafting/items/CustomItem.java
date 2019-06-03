@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class CustomItem extends ItemStack implements Cloneable{
@@ -56,11 +57,12 @@ public class CustomItem extends ItemStack implements Cloneable{
         return replacement != null;
     }
 
+    @Nullable
     public CustomItem getReplacement() {
-        return replacement.clone();
+        return replacement != null ? replacement.clone() : null;
     }
 
-    public void setReplacement(CustomItem replacement) {
+    public void setReplacement(@Nullable CustomItem replacement) {
         this.replacement = replacement;
     }
 

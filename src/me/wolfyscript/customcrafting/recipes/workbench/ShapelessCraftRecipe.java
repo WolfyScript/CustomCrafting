@@ -48,7 +48,6 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
 
     @Override
     public void load() {
-        api.sendDebugMessage("          -> "+getIngredients());
         for (Character itemKey : getIngredients().keySet()) {
             List<CustomItem> items = getIngredients().get(itemKey);
             List<Material> materials = new ArrayList<>();
@@ -68,8 +67,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<Character> usedKeys = new ArrayList<>();
         for (List<ItemStack> items : matrix) {
             for (ItemStack itemStack : items) {
-                api.sendDebugMessage("  -> "+itemStack);
-                if (itemStack == null){
+                if (itemStack == null) {
                     continue;
                 }
                 checkIngredient(allKeys, usedKeys, itemStack);
@@ -82,10 +80,17 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : ingredients.get(key)) {
-                    api.sendDebugMessage(item+"  <->  "+ingredient);
-                    //TODO: FUCKING VERSION NUMBERS!!!!!!!!!!
-                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount() && (!(exactMeta || ingredient.hasItemMeta()) || item.isSimilar(ingredient))) {
-                        api.sendDebugMessage("      - TRUE");
+                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount()) {
+                        if (exactMeta || ingredient.hasItemMeta()) {
+                            if (ingredient.hasItemMeta() && !item.hasItemMeta()) {
+                                continue;
+                            }else if(!ingredient.hasItemMeta() && item.hasItemMeta()){
+                                continue;
+                            }
+                            if (!item.getItemMeta().equals(ingredient.getItemMeta())) {
+                                continue;
+                            }
+                        }
                         usedKeys.add(key);
                         return ingredient.clone();
                     }
@@ -100,54 +105,54 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         List<ItemStack> replacements = new ArrayList<>();
         List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
         List<Character> usedKeys = new ArrayList<>();
-        for(int i = 0; i < inventory.getMatrix().length; i ++){
+        for (int i = 0; i < inventory.getMatrix().length; i++) {
             ItemStack input = inventory.getMatrix()[i];
-            if (input != null){
+            if (input != null) {
                 CustomItem item = checkIngredient(allKeys, usedKeys, input);
-                if (item != null){
+                if (item != null) {
                     if (item.getMaxStackSize() > 1) {
                         int amount = input.getAmount() - item.getAmount() * totalAmount;
                         input.setAmount(amount);
-                        if(item.hasReplacement()){
+                        if (item.hasReplacement()) {
                             ItemStack replacement = item.getReplacement();
                             replacement.setAmount(replacement.getAmount() * totalAmount);
                             replacements.add(replacement);
                         }
-                    }else{
+                    } else {
                         if (item.getMaxStackSize() > 1) {
                             int amount = input.getAmount() - item.getAmount() * totalAmount;
                             input.setAmount(amount);
-                            if(item.hasReplacement()){
+                            if (item.hasReplacement()) {
                                 ItemStack replacement = item.getReplacement();
                                 replacement.setAmount(replacement.getAmount() * totalAmount);
                                 //TODO: CHECK
-                                if(ItemUtils.hasInventorySpace(inventory, replacement)){
+                                if (ItemUtils.hasInventorySpace(inventory, replacement)) {
                                     inventory.addItem(replacement);
-                                }else{
+                                } else {
                                     inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
                                 }
                             }
-                        }else{
-                            if(item.hasConfig()){
-                                if(item.hasReplacement()){
+                        } else {
+                            if (item.hasConfig()) {
+                                if (item.hasReplacement()) {
                                     ItemStack replace = item.getReplacement();
                                     input.setType(replace.getType());
                                     input.setItemMeta(replace.getItemMeta());
                                     input.setData(replace.getData());
                                     input.setAmount(replace.getAmount());
-                                }else if(item.getDurabilityCost() != 0){
+                                } else if (item.getDurabilityCost() != 0) {
                                     ItemMeta itemMeta = input.getItemMeta();
-                                    if(itemMeta instanceof Damageable){
+                                    if (itemMeta instanceof Damageable) {
                                         ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
                                     }
                                     input.setItemMeta(itemMeta);
-                                }else{
+                                } else {
                                     input.setAmount(0);
                                 }
-                            }else{
-                                if(input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.LAVA_BUCKET)){
+                            } else {
+                                if (input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.LAVA_BUCKET)) {
                                     input.setType(Material.BUCKET);
-                                }else{
+                                } else {
                                     input.setAmount(0);
                                 }
                             }

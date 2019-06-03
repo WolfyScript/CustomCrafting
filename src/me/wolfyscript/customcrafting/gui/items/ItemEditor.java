@@ -4,14 +4,16 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
+import me.wolfyscript.utilities.api.utils.chat.ClickData;
+import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
+import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.Inventory;
@@ -68,13 +70,19 @@ public class ItemEditor extends ExtendedGuiWindow {
                                 }
                             }
                         } else {
+                            cache.getChatLists().setCurrentPageItems(1);
+                            api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
                             runChat(2, "$msg.gui.item_editor.input$", guiAction.getGuiHandler());
                         }
                         break;
                     case "delete_item":
+                        cache.getChatLists().setCurrentPageItems(1);
+                        api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
                         runChat(0, "$msg.gui.item_editor.input$", guiAction.getGuiHandler());
                         break;
                     case "load_item":
+                        cache.getChatLists().setCurrentPageItems(1);
+                        api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
                         runChat(1, "$msg.gui.item_editor.input$", guiAction.getGuiHandler());
                         break;
                     case "create_item":
@@ -103,6 +111,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                 api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.item_editor.error$");
                 return true;
             }
+            cache.getChatLists().setLastUsedItem(customItem.getId());
             switch (id) {
                 case 0:
                     CustomCrafting.getRecipeHandler().removeCustomItem(customItem);
@@ -132,5 +141,51 @@ public class ItemEditor extends ExtendedGuiWindow {
             return true;
         }
         return false;
+    }
+
+    private void sendItemListExpanded(Player player) {
+        PlayerCache cache = CustomCrafting.getPlayerCache(player);
+        RecipeHandler recipeHdlr = CustomCrafting.getRecipeHandler();
+        for (int i = 0; i < 20; i++) {
+            player.sendMessage(" ");
+        }
+        api.sendActionMessage(player, new ClickData("§7§n[§c§n-§7§n]", (wolfyUtilities1, p) -> {
+            for (int i = 0; i < 20; i++) {
+                player.sendMessage(" ");
+            }
+            api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
+            api.sendPlayerMessage(player, "$msg.gui.item_editor.input$");
+        }, true), new ClickData("§n Items:", null));
+
+        int currentPage = cache.getChatLists().getCurrentPageItems();
+        int itemsPerPage = cache.getChatLists().getLastUsedItem().equals("") ? 15 : 13;
+        int maxPages = ((recipeHdlr.getCustomItems().size() % itemsPerPage) > 0 ? 1 : 0) + recipeHdlr.getCustomItems().size() / itemsPerPage;
+
+        for (int i = (currentPage - 1) * itemsPerPage; i < (currentPage - 1) * itemsPerPage + itemsPerPage && i < recipeHdlr.getCustomItems().size(); i++) {
+            CustomItem customItem = recipeHdlr.getCustomItems().get(i);
+            api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") +" - ", null), new ClickData(customItem.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, customItem.getId().split(":")[0] + " " + customItem.getId().split(":")[1]), new HoverEvent(customItem)));
+        }
+
+        api.sendActionMessage(player, new ClickData("§7[§6« previous§7]", (wolfyUtilities1, p) -> {
+            if (currentPage > 1) {
+                cache.getChatLists().setCurrentPageItems(cache.getChatLists().getCurrentPageItems() - 1);
+            }
+            sendItemListExpanded(p);
+        }), new ClickData("  §b" + currentPage + "§7 / §7" + maxPages + "  ", null), new ClickData("§7[§6next »§7]", (wolfyUtilities1, p) -> {
+            if (currentPage < maxPages) {
+                cache.getChatLists().setCurrentPageItems(cache.getChatLists().getCurrentPageItems() + 1);
+            }
+            sendItemListExpanded(p);
+        }));
+        if(!cache.getChatLists().getLastUsedItem().equals("")){
+            api.sendPlayerMessage(player, "§ePreviously used:");
+            CustomItem customItem = recipeHdlr.getCustomItem(cache.getChatLists().getLastUsedItem());
+            if(customItem != null){
+                api.sendActionMessage(player, new ClickData("§b - ", null), new ClickData(customItem.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, customItem.getId().split(":")[0] + " " + customItem.getId().split(":")[1]), new HoverEvent(customItem)));
+            }
+        }
+        api.sendPlayerMessage(player, "-------------------------------------------------");
+
+        api.sendPlayerMessage(player, "$msg.gui.item_editor.input$");
     }
 }

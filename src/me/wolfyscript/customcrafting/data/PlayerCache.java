@@ -17,7 +17,7 @@ public class PlayerCache {
 
     private KnowledgeBook knowledgeBook = new KnowledgeBook();
 
-    private ChatRecipeList chatRecipeList = new ChatRecipeList();
+    private ChatLists chatLists = new ChatLists();
 
     //RECIPE_LIST OF ALL RECIPE CACHES
     private Workbench workbench =  new Workbench();
@@ -240,11 +240,11 @@ public class PlayerCache {
         return recipeCrafts.getOrDefault(key, 0);
     }
 
-    public ChatRecipeList getChatRecipeList() {
-        return chatRecipeList;
+    public ChatLists getChatLists() {
+        return chatLists;
     }
 
     public void resetChatRecipeList() {
-        this.chatRecipeList = new ChatRecipeList();
+        this.chatLists = new ChatLists();
     }
 }

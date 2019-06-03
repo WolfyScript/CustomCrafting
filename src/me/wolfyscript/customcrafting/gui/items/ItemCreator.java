@@ -279,10 +279,11 @@ public class ItemCreator extends ExtendedGuiWindow {
                         //TODO
                         event.setItem(39, event.getItem("furnace.burn_time", "%VAR%", items.getItem().getBurnTime()+""));
                         event.setItem(41, "furnace.burn_time_reset");
-                        event.setItem(44, event.getItem("furnace.furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.FURNACE) ? "§a" : "§c"));
+
                         if(WolfyUtilities.hasVillagePillageUpdate()){
-                            event.setItem(46, event.getItem("furnace.blast_furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.BLAST_FURNACE) ? "§a" : "§c"));
-                            event.setItem(48, event.getItem("furnace.smoker", "%C%", items.getItem().getAllowedBlocks().contains(Material.SMOKER) ? "§a" : "§c"));
+                            event.setItem(47, event.getItem("furnace.furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.FURNACE) ? "§a" : "§c"));
+                            event.setItem(49, event.getItem("furnace.blast_furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.BLAST_FURNACE) ? "§a" : "§c"));
+                            event.setItem(51, event.getItem("furnace.smoker", "%C%", items.getItem().getAllowedBlocks().contains(Material.SMOKER) ? "§a" : "§c"));
                         }
                         break;
                     case "custom_model_data":
@@ -540,8 +541,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         case "furnace.furnace":
                         case "furnace.blast_furnace":
                         case "furnace.smoker":
-                            Material material = Material.getMaterial(action.split("\\.")[1]);
-                            api.sendDebugMessage("Material: "+material);
+                            Material material = Material.matchMaterial(action.split("\\.")[1]);
                             if(items.getItem().getAllowedBlocks().contains(material)){
                                 items.getItem().getAllowedBlocks().remove(material);
                             }else{

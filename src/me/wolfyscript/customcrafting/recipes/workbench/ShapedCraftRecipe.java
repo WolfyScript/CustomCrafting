@@ -105,7 +105,17 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     private CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
         for (CustomItem ingredient : ingredients) {
-            if (input.getType().equals(ingredient.getType()) && input.getAmount() >= ingredient.getAmount() && (!(exactMeta || ingredient.hasItemMeta()) || ingredient.isSimilar(input))) {
+            if (input.getType().equals(ingredient.getType()) && input.getAmount() >= ingredient.getAmount()) {
+                if (exactMeta || ingredient.hasItemMeta()) {
+                    if (ingredient.hasItemMeta() && !input.hasItemMeta()) {
+                        continue;
+                    }else if(!ingredient.hasItemMeta() && input.hasItemMeta()){
+                        continue;
+                    }
+                    if (!input.getItemMeta().equals(ingredient.getItemMeta())) {
+                        continue;
+                    }
+                }
                 return ingredient.clone();
             }
         }

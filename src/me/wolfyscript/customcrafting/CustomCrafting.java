@@ -38,11 +38,10 @@ public class CustomCrafting extends JavaPlugin {
     private static List<PlayerCache> playerCacheList = new ArrayList<>();
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
-    private static InventoryHandler invHandler;
     private static RecipeHandler recipeHandler;
     private static Workbenches workbenches = null;
 
-    private static final boolean betaVersion = true;
+    private static final boolean betaVersion = false;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
@@ -96,7 +95,7 @@ public class CustomCrafting extends JavaPlugin {
         }
 
         configHandler = new ConfigHandler(api);
-        invHandler = new InventoryHandler(api);
+        InventoryHandler invHandler = new InventoryHandler(api);
         recipeHandler = new RecipeHandler(api);
         configHandler.load();
 
@@ -111,17 +110,11 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
         CommandCC commandCC = new CommandCC();
         if (configHandler.getConfig().isCCenabled()) {
-            PluginCommand command = getServer().getPluginCommand("cc");
-            if(command != null){
-                command.setExecutor(commandCC);
-                command.setTabCompleter(commandCC);
-            }
+            Bukkit.getPluginCommand("cc").setExecutor(commandCC);
+            Bukkit.getPluginCommand("cc").setTabCompleter(commandCC);
         }
-        PluginCommand command = getServer().getPluginCommand("customcrafting");
-        if(command != null){
-            command.setExecutor(commandCC);
-            command.setTabCompleter(commandCC);
-        }
+        Bukkit.getPluginCommand("customcrafting").setExecutor(commandCC);
+        Bukkit.getPluginCommand("customcrafting").setTabCompleter(commandCC);
 
         invHandler.init();
 
@@ -133,7 +126,6 @@ public class CustomCrafting extends JavaPlugin {
         }
         recipeHandler.loadConfigs();
         checkUpdate(null);
-
 
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
@@ -235,7 +227,7 @@ public class CustomCrafting extends JavaPlugin {
         return playerCache;
     }
 
-    public static void savePlayerCache() {
+    private static void savePlayerCache() {
         HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
         for (PlayerCache playerCache : playerCacheList) {
             caches.put(playerCache.getUuid(), playerCache.getStats());
@@ -250,7 +242,7 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    public static void loadPlayerCache() {
+    private static void loadPlayerCache() {
         api.sendConsoleMessage("$msg.startup.playerstats$");
         File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
         if (file.exists()) {
@@ -274,10 +266,5 @@ public class CustomCrafting extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-    }
-
-
-    public static boolean isBetaVersion() {
-        return betaVersion;
     }
 }

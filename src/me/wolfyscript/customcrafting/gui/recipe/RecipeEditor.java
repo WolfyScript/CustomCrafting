@@ -8,24 +8,18 @@ import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
-import me.wolfyscript.utilities.api.utils.chat.ClickAction;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.StonecuttingRecipe;
 
 import java.util.*;
 
@@ -65,12 +59,12 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         guiAction.getGuiHandler().changeToInv("recipe_creator");
                         break;
                     case "edit_recipe":
-                        cache.getChatRecipeList().setCurrentPage(1);
+                        cache.getChatLists().setCurrentPageRecipes(1);
                         api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
                         runChat(0, "$msg.gui.recipe_editor.input$", guiAction.getGuiHandler());
                         break;
                     case "delete_recipe":
-                        cache.getChatRecipeList().setCurrentPage(1);
+                        cache.getChatLists().setCurrentPageRecipes(1);
                         api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
                         runChat(1, "$msg.gui.recipe_editor.input$", guiAction.getGuiHandler());
                 }
@@ -114,7 +108,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                 break;
         }
 
-        int currentPage = cache.getChatRecipeList().getCurrentPage();
+        int currentPage = cache.getChatLists().getCurrentPageRecipes();
         int maxPages = ((customRecipes.size() % 16) > 0 ? 1 : 0) + customRecipes.size() / 16;
 
         for (int i = (currentPage - 1) * 16; i < (currentPage - 1) * 16 + 16 && i < customRecipes.size(); i++) {
@@ -124,12 +118,12 @@ public class RecipeEditor extends ExtendedGuiWindow {
 
         api.sendActionMessage(player, new ClickData("§7[§6« previous§7]", (wolfyUtilities1, p) -> {
             if (currentPage > 1) {
-                cache.getChatRecipeList().setCurrentPage(cache.getChatRecipeList().getCurrentPage() - 1);
+                cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
             }
             sendRecipeListExpanded(p);
         }), new ClickData("  §a" + currentPage + "§7/§6" + maxPages + "  ", null), new ClickData("§7[§6next »§7]", (wolfyUtilities1, p) -> {
             if (currentPage < maxPages) {
-                cache.getChatRecipeList().setCurrentPage(cache.getChatRecipeList().getCurrentPage() + 1);
+                cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
             }
             sendRecipeListExpanded(p);
         }));

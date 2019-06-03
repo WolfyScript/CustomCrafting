@@ -1,7 +1,9 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -11,23 +13,26 @@ import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FurnaceListener implements Listener {
 
-    @EventHandler
-    public void onDiscover(PlayerRecipeDiscoverEvent event) {
-        /*
-        CustomFurnaceRecipe recipe = CustomCrafting.getRecipeHandler().getFurnaceRecipe(event.getRecipe().toString());
-        if (recipe != null) {
-            event.setCancelled(true);
+    List<InventoryType> invs = new ArrayList<>();
+
+    public FurnaceListener(){
+        invs.add(InventoryType.FURNACE);
+        if(WolfyUtilities.hasVillagePillageUpdate()){
+            invs.add(InventoryType.BLAST_FURNACE);
+            invs.add(InventoryType.SMOKER);
         }
-        */
     }
 
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() != null && event.getClickedInventory().getType().equals(InventoryType.FURNACE)) {
+        if (event.getClickedInventory() != null && invs.contains(event.getClickedInventory().getType())) {
             FurnaceInventory furnaceInventory = (FurnaceInventory) event.getClickedInventory();
-            if (event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
+            if (event.getSlot() == 1) {
                 Material material = Material.FURNACE;
                 if (event.getWhoClicked().getTargetBlockExact(6) != null) {
                     material = event.getWhoClicked().getTargetBlockExact(6).getType();

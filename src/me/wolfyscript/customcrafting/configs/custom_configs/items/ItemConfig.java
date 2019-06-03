@@ -38,7 +38,10 @@ public class ItemConfig extends CustomConfig {
     public void setCustomItem(CustomItem itemStack){
         saveItem("item", itemStack);
         setBurnTime(itemStack.getBurnTime());
-        setReplacementItem(itemStack.getReplacement());
+        if(itemStack.getReplacement() != null){
+            setReplacementItem(itemStack.getReplacement());
+        }
+        setDurabilityCost(itemStack.getDurabilityCost());
         if(itemStack.getAllowedBlocks().isEmpty()){
             setAllowedBlocks(new ArrayList<>(Collections.singleton(Material.FURNACE)));
         }else{
@@ -78,7 +81,6 @@ public class ItemConfig extends CustomConfig {
         return null;
     }
 
-    //TODO Create option to set allowed Furnaces
     public void setAllowedBlocks(ArrayList<Material> furnaces){
         List<String> mats = new ArrayList<>();
         furnaces.forEach(material -> mats.add(material.name().toLowerCase(Locale.ROOT)));
