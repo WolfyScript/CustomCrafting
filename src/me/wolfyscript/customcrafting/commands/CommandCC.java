@@ -1,8 +1,6 @@
 package me.wolfyscript.customcrafting.commands;
 
-import com.sun.istack.internal.NotNull;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -13,7 +11,6 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
-import org.spigotmc.SpigotCommand;
 
 import java.util.*;
 

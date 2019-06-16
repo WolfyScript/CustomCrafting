@@ -39,22 +39,11 @@ public class ConfigHandler {
         this.mainConfig = new MainConfig(configAPI);
         loadLang();
 
-        ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(),"me/wolfyscript/customcrafting/configs/custom_configs/defaults", "workbench_item", "customcrafting", "workbench", true);
-        String name = WolfyUtilities.translateColorCodes(CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$"));
-        List<String> lore = new ArrayList<>();
-        for(String line : CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore")){
-            lore.add(WolfyUtilities.translateColorCodes(line));
-        }
-        lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
-        ItemStack itemStack = itemConfig.getCustomItem();
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(name);
-        itemMeta.setLore(lore);
-        itemStack.setItemMeta(itemMeta);
-        itemConfig.setItem(itemStack);
-        itemConfig.save();
+        ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(),"me/wolfyscript/customcrafting/configs/custom_configs/defaults", "workbench_item", "customcrafting", "workbench", mainConfig.resetAdvancedWorkbenchItem());
+        mainConfig.setResetAdvancedWorkbenchItem(false);
 
-        CustomConfig config = new WorkbenchCraftConfig(api.getConfigAPI());
+        CustomConfig config = new WorkbenchCraftConfig(api.getConfigAPI(), mainConfig.resetAdvancedWorkbenchRecipe());
+        mainConfig.setResetAdvancedWorkbenchRecipe(false);
     }
 
     public void loadLang() {

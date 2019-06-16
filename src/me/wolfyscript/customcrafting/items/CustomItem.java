@@ -1,7 +1,5 @@
 package me.wolfyscript.customcrafting.items;
 
-import com.sun.istack.internal.NotNull;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.apache.commons.lang.WordUtils;
@@ -22,17 +20,24 @@ public class CustomItem extends ItemStack implements Cloneable{
     private int burnTime;
     private ArrayList<Material> allowedBlocks;
 
+    private boolean consumed;
     private CustomItem replacement;
+
     private int durabilityCost;
 
-    public CustomItem(ItemConfig config){
-        super(config.getCustomItem());
+    public CustomItem(ItemConfig config, boolean replace){
+        super(config.getCustomItem(replace));
         this.config = config;
         this.id = config.getId();
         this.burnTime = config.getBurnTime();
         this.allowedBlocks = config.getAllowedBlocks();
         this.replacement = config.getReplacementItem();
         this.durabilityCost = config.getDurabilityCost();
+        this.consumed = config.isConsumed();
+    }
+
+    public CustomItem(ItemConfig config){
+        this(config, false);
     }
 
     public CustomItem(ItemStack itemStack){
@@ -43,6 +48,7 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.allowedBlocks = new ArrayList<>();
         this.replacement = null;
         this.durabilityCost = 0;
+        this.consumed = true;
     }
 
     public CustomItem(Material material){
@@ -51,6 +57,10 @@ public class CustomItem extends ItemStack implements Cloneable{
 
     public String getId() {
         return id;
+    }
+
+    public CustomItem getRealItem(){
+        return new CustomItem(config, true);
     }
 
     public boolean hasReplacement(){
@@ -74,6 +84,14 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.durabilityCost = durabilityCost;
     }
 
+    public boolean isConsumed() {
+        return consumed;
+    }
+
+    public void setConsumed(boolean consumed) {
+        this.consumed = consumed;
+    }
+
     public boolean hasID(){
         return !id.isEmpty();
     }
@@ -84,17 +102,6 @@ public class CustomItem extends ItemStack implements Cloneable{
 
     public ItemConfig getConfig() {
         return config;
-    }
-
-    public ItemStack getHiddenIDItem(){
-        if(getType().equals(Material.AIR)){
-            return new ItemStack(Material.AIR);
-        }
-        ItemStack idItem = new ItemStack(this.clone());
-        ItemMeta idItemMeta = idItem.getItemMeta();
-        idItemMeta.setDisplayName((idItemMeta.hasDisplayName() ? idItemMeta.getDisplayName() : WordUtils.capitalizeFully(idItem.getType().name().replace("_", " "))) + WolfyUtilities.hideString(";/id:"+getId()));
-        idItem.setItemMeta(idItemMeta);
-        return idItem;
     }
 
     public ItemStack getIDItem(int amount){

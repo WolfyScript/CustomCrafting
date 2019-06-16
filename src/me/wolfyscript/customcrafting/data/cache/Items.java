@@ -15,6 +15,8 @@ public class Items implements Serializable {
 
     private static final long serialVersionUID = 420L;
 
+    private int page;
+
     private ItemStack skullSetting;
 
     private CustomItem item;
@@ -32,6 +34,7 @@ public class Items implements Serializable {
     private CustomItem variantItem;
 
     public Items(){
+        this.page = 0;
         this.skullSetting = new ItemStack(Material.AIR);
 
         this.item = new CustomItem(Material.AIR);
@@ -177,5 +180,13 @@ public class Items implements Serializable {
 
     public void setVariantItem(CustomItem variantItem) {
         this.variantItem = variantItem;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfi
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
@@ -294,8 +295,15 @@ public class RecipeHandler {
         return recipes;
     }
 
-    public HashMap<String, CustomRecipe> getRecipes() {
-        return customRecipes;
+    public List<CustomAnvilRecipe> getAnvilRecipes(){
+        List<CustomAnvilRecipe> recipes = new ArrayList<>();
+        for (String id : customRecipes.keySet()) {
+            CustomRecipe recipe = customRecipes.get(id);
+            if (recipe instanceof CustomAnvilRecipe) {
+                recipes.add((CustomAnvilRecipe) recipe);
+            }
+        }
+        return recipes;
     }
 
     public CustomFurnaceRecipe getFurnaceRecipe(String key) {
@@ -307,14 +315,24 @@ public class RecipeHandler {
         return null;
     }
 
+    public HashMap<String, CustomRecipe> getRecipes() {
+        return customRecipes;
+    }
+
     //CUSTOM ITEMS
     public List<CustomItem> getCustomItems() {
         return customItems;
     }
 
     public CustomItem getCustomItem(String key) {
+        return getCustomItem(key, true);
+    }
+
+    public CustomItem getCustomItem(String key, boolean replace) {
         for (CustomItem customItem : customItems) {
             if (customItem.getId().equals(key)) {
+                if(replace)
+                    return customItem.getRealItem();
                 return customItem.clone();
             }
         }
@@ -337,9 +355,11 @@ public class RecipeHandler {
         return getCustomItem(key + ":" + name);
     }
 
+    public CustomItem getCustomItem(String key, String name, boolean replace) {
+        return getCustomItem(key + ":" + name, replace);
+    }
 
     //DISABLED RECIPES AND GET ALL RECIPES
-
     public ArrayList<String> getDisabledRecipes() {
         return disabledRecipes;
     }
@@ -420,7 +440,7 @@ public class RecipeHandler {
                 Iterator<ItemStack> rowIterator = list.iterator();
                 int cIndex = 0;
                 while (rowIterator.hasNext()) {
-                    ItemStack c = rowIterator.next();
+                    rowIterator.next();
                     if (empty.contains("c" + cIndex)) {
                         if (cIndex == 1) {
                             if (rowLength == 2 || (empty.contains("c0") || empty.contains("c2"))) {

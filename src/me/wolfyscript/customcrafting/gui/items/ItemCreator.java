@@ -29,10 +29,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class ItemCreator extends ExtendedGuiWindow {
+
+    private final int pages = 1;
 
     public ItemCreator(InventoryAPI inventoryAPI) {
         super("item_creator", inventoryAPI, 54);
@@ -45,6 +48,9 @@ public class ItemCreator extends ExtendedGuiWindow {
 
         createItem("invalid_type", Material.BARRIER);
         createItem("invalid_version", Material.BARRIER);
+
+        createItem("page_next", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"));
+        createItem("page_previous", WolfyUtilities.getSkullViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"));
 
         createItem("item_name", Material.NAME_TAG);
         createItem("item_enchantments", Material.ENCHANTED_BOOK);
@@ -84,6 +90,8 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("replacement_durability", Material.ITEM_FRAME);
         createItem("durability_cost", Material.DROPPER);
         createItem("durability_cost_disabled", Material.DROPPER);
+        createItem("consume_item_enabled", Material.GREEN_CONCRETE);
+        createItem("consume_item_disabled", Material.RED_CONCRETE);
         createItem("replacement", Material.GREEN_CONCRETE);
         createItem("replacement_disabled", Material.RED_CONCRETE);
 
@@ -91,7 +99,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("furnace.burn_time", Material.GREEN_CONCRETE);
         createItem("furnace.burn_time_reset", Material.RED_CONCRETE);
         createItem("furnace.furnace", Material.FURNACE);
-        if(WolfyUtilities.hasVillagePillageUpdate()){
+        if (WolfyUtilities.hasVillagePillageUpdate()) {
             createItem("furnace.blast_furnace", Material.BLAST_FURNACE);
             createItem("furnace.smoker", Material.SMOKER);
         }
@@ -156,27 +164,41 @@ public class ItemCreator extends ExtendedGuiWindow {
                 event.setItem(3, "apply_item");
             }
             event.setItem(5, "save_item");
-
-            event.setItem(9, "item_name");
-            event.setItem(10, "item_lore");
-            event.setItem(11, "attributes_modifiers");
-
-            event.setItem(18, "item_enchantments");
-            event.setItem(19, "item_flags");
-            event.setItem(20, "custom_model_data");
-            event.setItem(21, "unbreakable_off");
-            if (items.getItem() != null && items.getItem().hasItemMeta() && items.getItem().getItemMeta().isUnbreakable()) {
-                event.setItem(21, "unbreakable_on");
+            if (items.getPage() > 0) {
+                event.setItem(6, "page_previous");
+            }
+            if (items.getPage() + 1 < pages) {
+                event.setItem(7, "page_next");
             }
 
-            event.setItem(15, "repair_cost");
-            event.setItem(16, "potion_effects");
-            event.setItem(17, event.getItem("furnace.fuel", "%C%", items.getItem().getBurnTime() > 0 ? "§a" : "§4"));
+            switch (items.getPage()) {
+                case 0:
+                    event.setItem(9, "item_name");
+                    event.setItem(10, "item_lore");
+                    event.setItem(11, "attributes_modifiers");
 
-            event.setItem(23, "replacement_durability");
-            event.setItem(24, "item_damage");
-            event.setItem(25, "variants");
-            event.setItem(26, "skull_setting");
+                    event.setItem(18, "item_enchantments");
+                    event.setItem(19, "item_flags");
+                    event.setItem(20, "custom_model_data");
+                    event.setItem(21, "unbreakable_off");
+                    if (items.getItem() != null && items.getItem().hasItemMeta() && items.getItem().getItemMeta().isUnbreakable()) {
+                        event.setItem(21, "unbreakable_on");
+                    }
+
+                    event.setItem(15, "repair_cost");
+                    event.setItem(16, "potion_effects");
+                    event.setItem(17, event.getItem("furnace.fuel", "%C%", items.getItem().getBurnTime() > 0 ? "§a" : "§4"));
+
+                    event.setItem(23, "replacement_durability");
+                    event.setItem(24, "item_damage");
+                    event.setItem(25, "variants");
+                    event.setItem(26, "skull_setting");
+                    break;
+                case 1:
+
+                    break;
+            }
+
 
             CustomItem itemStack = items.getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -247,9 +269,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                             String row = WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKey("items.item_creator.variants_list.lore").get(0));
                             List<String> lore = new ArrayList<>();
                             List<CustomItem> ingredients = cache.getWorkbench().getIngredients(items.getCraftSlot());
-                            for(int i = 1; i < ingredients.size(); i++){
+                            for (int i = 1; i < ingredients.size(); i++) {
                                 CustomItem customItem = ingredients.get(i);
-                                String line = row.replace("%ITEM%", customItem.hasID() ? customItem.getId() : customItem.getType().getKey().toString()).replace("%NUM%", ""+i);
+                                String line = row.replace("%ITEM%", customItem.hasID() ? customItem.getId() : customItem.getType().getKey().toString()).replace("%NUM%", "" + i);
                                 lore.add(line);
                             }
                             listItemMeta.setLore(lore);
@@ -268,40 +290,43 @@ public class ItemCreator extends ExtendedGuiWindow {
                         }
                         break;
                     case "repair_cost":
-                        if(itemMeta instanceof Repairable){
+                        if (itemMeta instanceof Repairable) {
                             event.setItem(39, "repair_set");
                             event.setItem(41, "repair_reset");
-                        }else{
+                        } else {
                             event.setItem(40, "invalid_type");
                         }
                         break;
                     case "furnace.fuel":
-                        //TODO
-                        event.setItem(39, event.getItem("furnace.burn_time", "%VAR%", items.getItem().getBurnTime()+""));
+                        event.setItem(39, event.getItem("furnace.burn_time", "%VAR%", items.getItem().getBurnTime() + ""));
                         event.setItem(41, "furnace.burn_time_reset");
 
-                        if(WolfyUtilities.hasVillagePillageUpdate()){
+                        if (WolfyUtilities.hasVillagePillageUpdate()) {
                             event.setItem(47, event.getItem("furnace.furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.FURNACE) ? "§a" : "§c"));
                             event.setItem(49, event.getItem("furnace.blast_furnace", "%C%", items.getItem().getAllowedBlocks().contains(Material.BLAST_FURNACE) ? "§a" : "§c"));
                             event.setItem(51, event.getItem("furnace.smoker", "%C%", items.getItem().getAllowedBlocks().contains(Material.SMOKER) ? "§a" : "§c"));
                         }
                         break;
                     case "custom_model_data":
-                        if(WolfyUtilities.hasVillagePillageUpdate()){
-                            event.setItem(39, event.getItem("set_custom_model_data", "%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_creator.custom_model_data.disabled$"))) +""));
+                        if (WolfyUtilities.hasVillagePillageUpdate()) {
+                            event.setItem(39, event.getItem("set_custom_model_data", "%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_creator.custom_model_data.disabled$"))) + ""));
                             event.setItem(41, "reset_custom_model_data");
-                        }else{
+                        } else {
                             event.setItem(40, "invalid_version");
                         }
                         break;
                     case "replacement_durability":
+                        event.setItem(31, items.getItem().isConsumed() ? "consume_item_enabled" : "consume_item_disabled");
+
                         event.setItem(38, items.getItem().hasReplacement() ? items.getItem().getReplacement() : new ItemStack(Material.AIR));
                         event.setItem(39, items.getItem().hasReplacement() ? "replacement" : "replacement_disabled");
-                        if(items.getItem().hasReplacement() || items.getItem().getMaxStackSize() > 1){
+
+                        if (items.getItem().hasReplacement() || items.getItem().getMaxStackSize() > 1) {
                             event.setItem(41, "durability_cost_disabled");
-                        }else{
-                            event.setItem(41, event.getItem("durability_cost", "%VAR%", ""+items.getItem().getDurabilityCost()));
+                        } else {
+                            event.setItem(41, event.getItem("durability_cost", "%VAR%", "" + items.getItem().getDurabilityCost()));
                         }
+
                         break;
                 }
                 if (cache.getSubSetting().startsWith("GENERIC_") || cache.getSubSetting().startsWith("HORSE_") || cache.getSubSetting().startsWith("ZOMBIE_")) {
@@ -360,16 +385,15 @@ public class ItemCreator extends ExtendedGuiWindow {
             if (action.equals("back")) {
                 guiAction.getGuiHandler().openLastInv();
             } else if (action.equals("save_item") && !items.getItem().getType().equals(Material.AIR)) {
-
                 if (items.getType().equals("items") && CustomCrafting.getRecipeHandler().getCustomItem(items.getId()) != null) {
                     ItemUtils.saveItem(cache, items.getId(), items.getItem());
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.save.success$");
                     api.sendPlayerMessage(player, "&6" + items.getId().split(":")[0] + "/items/" + items.getId().split(":")[1]);
                 } else {
+                    //TODO ITEM LIST
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.save.input.line1$");
                     runChat(0, "$msg.gui.item_creator.save.input.line2$", guiAction.getGuiHandler());
                 }
-
             } else if (action.equals("apply_item") && !items.getItem().getType().equals(Material.AIR)) {
                 CustomItem customItem = items.getItem();
                 if (items.isSaved()) {
@@ -485,7 +509,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                             break;
                         //VARIANTS
                         case "variant_add":
-                            if(items.getVariantItem() != null){
+                            if (items.getVariantItem() != null) {
                                 cache.getWorkbench().getIngredients(items.getCraftSlot()).add(items.getVariantItem());
                             }
                             break;
@@ -494,40 +518,40 @@ public class ItemCreator extends ExtendedGuiWindow {
                             guiAction.getGuiHandler().close();
                             String line = WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_creator.variant.remove.line$"));
                             List<CustomItem> ingredients = cache.getWorkbench().getIngredients(items.getCraftSlot());
-                            for(int i = 1; i < ingredients.size(); i++){
+                            for (int i = 1; i < ingredients.size(); i++) {
                                 int finalI = i;
                                 CustomItem customItem = ingredients.get(i);
                                 String id = customItem.hasID() ? customItem.getId() : customItem.getType().getKey().toString();
-                                api.sendActionMessage(player, new ClickData(line.replace("%NUM%", ""+i).replace("%ITEM%", id), (wolfyUtilities, player1) -> {
+                                api.sendActionMessage(player, new ClickData(line.replace("%NUM%", "" + i).replace("%ITEM%", id), (wolfyUtilities, player1) -> {
                                     ingredients.remove(finalI);
-                                    api.sendPlayerMessage(player, "$msg.gui.item_creator.variant.remove.success$", new String[]{"%ITEM%",id});
+                                    api.sendPlayerMessage(player, "$msg.gui.item_creator.variant.remove.success$", new String[]{"%ITEM%", id});
                                     guiAction.getGuiHandler().openLastInv();
                                 }));
                             }
                             return true;
                         //DAMAGE
                         case "damage_set":
-                            if(itemMeta instanceof Damageable){
+                            if (itemMeta instanceof Damageable) {
                                 runChat(20, "$msg.gui.item_creator.damage.set$", guiAction.getGuiHandler());
-                            }else{
+                            } else {
                                 api.sendPlayerMessage(player, "$msg.gui.item_creator.damage.invalid_type$");
                             }
                             break;
                         case "damage_reset":
-                            if(itemMeta instanceof Damageable){
+                            if (itemMeta instanceof Damageable) {
                                 ((Damageable) itemMeta).setDamage(0);
                             }
                             break;
                         //REPAIR COST
                         case "repair_set":
-                            if(itemMeta instanceof Repairable){
+                            if (itemMeta instanceof Repairable) {
                                 runChat(30, "$msg.gui.item_creator.repair.set$", guiAction.getGuiHandler());
-                            }else{
+                            } else {
                                 api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.invalid_type$");
                             }
                             break;
                         case "repair_reset":
-                            if(itemMeta instanceof Repairable){
+                            if (itemMeta instanceof Repairable) {
                                 ((Repairable) itemMeta).setRepairCost(0);
                             }
                             break;
@@ -542,9 +566,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                         case "furnace.blast_furnace":
                         case "furnace.smoker":
                             Material material = Material.matchMaterial(action.split("\\.")[1]);
-                            if(items.getItem().getAllowedBlocks().contains(material)){
+                            if (items.getItem().getAllowedBlocks().contains(material)) {
                                 items.getItem().getAllowedBlocks().remove(material);
-                            }else{
+                            } else {
                                 items.getItem().getAllowedBlocks().add(material);
                             }
                             break;
@@ -557,6 +581,13 @@ public class ItemCreator extends ExtendedGuiWindow {
                             break;
                         case "durability_cost":
                             runChat(60, "", guiAction.getGuiHandler());
+                            break;
+                        case "consume_item_enabled":
+                            items.getItem().setConsumed(false);
+                            break;
+                        case "consume_item_disabled":
+                            items.getItem().setConsumed(true);
+
                     }
 
                     //Flag and attribute section
@@ -584,11 +615,11 @@ public class ItemCreator extends ExtendedGuiWindow {
     public boolean onClick(GuiClick guiClick) {
         PlayerCache cache = CustomCrafting.getPlayerCache(guiClick.getPlayer());
         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-            if(guiClick.getClickedSlot() == 13){
+            if (guiClick.getClickedSlot() == 13) {
                 ItemStack item = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(13);
                 cache.getItems().setItem(new CustomItem(item != null ? item : new ItemStack(Material.AIR)));
-            }else{
-                switch (cache.getSubSetting()){
+            } else {
+                switch (cache.getSubSetting()) {
                     case "skull_setting":
                         ItemStack skull = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
                         if (skull != null) {
@@ -603,15 +634,15 @@ public class ItemCreator extends ExtendedGuiWindow {
                         ItemStack item = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
                         if (item != null) {
                             cache.getItems().setVariantItem(ItemUtils.getCustomItem(item));
-                        }else{
+                        } else {
                             cache.getItems().setVariantItem(new CustomItem(Material.AIR));
                         }
                         break;
                     case "replacement_durability":
                         ItemStack replacement = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
-                        if(replacement != null){
+                        if (replacement != null) {
                             cache.getItems().getItem().setReplacement(ItemUtils.getCustomItem(replacement));
-                        }else{
+                        } else {
                             cache.getItems().getItem().setReplacement(null);
                         }
                         break;
@@ -682,9 +713,9 @@ public class ItemCreator extends ExtendedGuiWindow {
             //Lore ADD
             case 4:
                 lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
-                if(message.equals("&empty")){
+                if (message.equals("&empty")) {
                     lore.add("");
-                }else{
+                } else {
                     lore.add(WolfyUtilities.translateColorCodes(message));
                 }
                 itemMeta.setLore(lore);
@@ -713,7 +744,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 items.getItem().setItemMeta(itemMeta);
                 api.sendPlayerMessage(player, "$msg.gui.item_creator.lore.success$", new String[]{"%NUM%", args[0]});
                 return false;
-                //Potion
+            //Potion
             case 6:
                 if (!(itemMeta instanceof PotionMeta)) {
                     return true;
@@ -797,7 +828,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 items.getItem().setItemMeta(itemMeta);
                 return false;
             case 20:
-                if(!(itemMeta instanceof Damageable)){
+                if (!(itemMeta instanceof Damageable)) {
                     return true;
                 }
                 try {
@@ -805,13 +836,13 @@ public class ItemCreator extends ExtendedGuiWindow {
                     ((Damageable) itemMeta).setDamage(value);
                     items.getItem().setItemMeta(itemMeta);
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.damage.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.damage.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
                 return false;
             case 30:
-                if(!(itemMeta instanceof Repairable)){
+                if (!(itemMeta instanceof Repairable)) {
                     return true;
                 }
                 try {
@@ -819,7 +850,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     ((Repairable) itemMeta).setRepairCost(value);
                     items.getItem().setItemMeta(itemMeta);
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.repair.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
@@ -829,7 +860,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(message);
                     customItem.setBurnTime(value);
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.fuel.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.fuel.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
@@ -840,7 +871,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     itemMeta.setCustomModelData(value);
                     customItem.setItemMeta(itemMeta);
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.custom_model_data.success$", new String[]{"%VALUE%", String.valueOf(value)});
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.custom_model_data.invalid_value$", new String[]{"%VALUE%", message});
                     return true;
                 }
@@ -850,7 +881,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(message);
                     items.getItem().setDurabilityCost(value);
                     //api.sendPlayerMessage(player, "", new String[]{"%VALUE%", String.valueOf(value)});
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     //api.sendPlayerMessage(player, "", new String[]{"%VALUE%", message});
                     return true;
                 }

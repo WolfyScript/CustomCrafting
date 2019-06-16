@@ -54,17 +54,7 @@ public class BlockListener implements Listener {
             Location location = block.getLocation();
             if (CustomCrafting.getWorkbenches().isWorkbench(location)) {
                 CustomCrafting.getWorkbenches().removeWorkbench(location);
-                String name = WolfyUtilities.translateColorCodes(CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$crafting.workbench.name$"));
-                List<String> lore = new ArrayList<>();
-                for(String line : CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKey("crafting.workbench.lore")){
-                    lore.add(WolfyUtilities.translateColorCodes(line));
-                }
-                lore.add("§c§c§_§w§o§r§k§b§e§n§c§h");
                 ItemStack itemStack = CustomCrafting.getRecipeHandler().getCustomItem("customcrafting:workbench");
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName(name);
-                itemMeta.setLore(lore);
-                itemStack.setItemMeta(itemMeta);
                 block.getWorld().dropItemNaturally(block.getLocation().clone(), itemStack);
                 event.setDropItems(false);
             }

@@ -106,7 +106,7 @@ public class ItemEditor extends ExtendedGuiWindow {
         PlayerCache cache = CustomCrafting.getPlayerCache(guiHandler.getPlayer());
         Items items = cache.getItems();
         if (args.length > 1) {
-            CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(args[0], args[1]);
+            CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(args[0], args[1], false);
             if (customItem == null) {
                 api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.item_editor.error$");
                 return true;

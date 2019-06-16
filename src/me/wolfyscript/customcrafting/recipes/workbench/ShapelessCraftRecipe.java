@@ -52,7 +52,9 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
             List<CustomItem> items = getIngredients().get(itemKey);
             List<Material> materials = new ArrayList<>();
             items.forEach(itemStack -> materials.add(itemStack.getType()));
-            this.addIngredient(new RecipeChoice.MaterialChoice(materials));
+            if (!materials.isEmpty()) {
+                this.addIngredient(new RecipeChoice.MaterialChoice(materials));
+            }
         }
     }
 
@@ -84,7 +86,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                         if (exactMeta || ingredient.hasItemMeta()) {
                             if (ingredient.hasItemMeta() && !item.hasItemMeta()) {
                                 continue;
-                            }else if(!ingredient.hasItemMeta() && item.hasItemMeta()){
+                            } else if (!ingredient.hasItemMeta() && item.hasItemMeta()) {
                                 continue;
                             }
                             if (!item.getItemMeta().equals(ingredient.getItemMeta())) {
@@ -112,53 +114,44 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                 if (item != null) {
                     if (item.getMaxStackSize() > 1) {
                         int amount = input.getAmount() - item.getAmount() * totalAmount;
-                        input.setAmount(amount);
+                        if(item.isConsumed()){
+                            input.setAmount(amount);
+                        }
                         if (item.hasReplacement()) {
                             ItemStack replacement = item.getReplacement();
                             replacement.setAmount(replacement.getAmount() * totalAmount);
-                            replacements.add(replacement);
+                            if (ItemUtils.hasInventorySpace(inventory, replacement)) {
+                                inventory.addItem(replacement);
+                            } else {
+                                inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
+                            }
                         }
                     } else {
-                        if (item.getMaxStackSize() > 1) {
-                            int amount = input.getAmount() - item.getAmount() * totalAmount;
-                            input.setAmount(amount);
+                        if (item.hasConfig()) {
+                            if (item.isConsumed()) {
+                                input.setAmount(0);
+                            }
                             if (item.hasReplacement()) {
-                                ItemStack replacement = item.getReplacement();
-                                replacement.setAmount(replacement.getAmount() * totalAmount);
-                                //TODO: CHECK
-                                if (ItemUtils.hasInventorySpace(inventory, replacement)) {
-                                    inventory.addItem(replacement);
-                                } else {
-                                    inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
+                                ItemStack replace = item.getReplacement();
+                                input.setType(replace.getType());
+                                input.setItemMeta(replace.getItemMeta());
+                                input.setData(replace.getData());
+                                input.setAmount(replace.getAmount());
+                            } else if (item.getDurabilityCost() != 0) {
+                                ItemMeta itemMeta = input.getItemMeta();
+                                if (itemMeta instanceof Damageable) {
+                                    ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
                                 }
+                                input.setItemMeta(itemMeta);
                             }
                         } else {
-                            if (item.hasConfig()) {
-                                if (item.hasReplacement()) {
-                                    ItemStack replace = item.getReplacement();
-                                    input.setType(replace.getType());
-                                    input.setItemMeta(replace.getItemMeta());
-                                    input.setData(replace.getData());
-                                    input.setAmount(replace.getAmount());
-                                } else if (item.getDurabilityCost() != 0) {
-                                    ItemMeta itemMeta = input.getItemMeta();
-                                    if (itemMeta instanceof Damageable) {
-                                        ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
-                                    }
-                                    input.setItemMeta(itemMeta);
-                                } else {
-                                    input.setAmount(0);
-                                }
+                            if (input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.WATER_BUCKET)) {
+                                input.setType(Material.BUCKET);
                             } else {
-                                if (input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.LAVA_BUCKET)) {
-                                    input.setType(Material.BUCKET);
-                                } else {
-                                    input.setAmount(0);
-                                }
+                                input.setAmount(0);
                             }
                         }
                     }
-                    //TEST FOR BUCKETS AND OTHER ITEMS!?
                 }
             }
         }

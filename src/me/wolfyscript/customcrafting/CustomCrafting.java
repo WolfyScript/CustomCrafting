@@ -64,16 +64,13 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("------------------------------------------------------------------------");
 
         try {
-            Class<?>[] clazzes = Class.forName("org.bukkit.inventory.RecipeChoice").getDeclaredClasses();
-            if (clazzes.length == 1) {
-                System.out.println("You are using an outdated Spigot version!");
-                System.out.println("You can get the latest Spigot version via BuildTools: ");
-                System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
-                System.out.println("------------------------------------------------------------------------");
-                return;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            RecipeChoice.ExactChoice exactChoice = new RecipeChoice.ExactChoice(new ItemStack(Material.DEBUG_STICK));
+        } catch (NoClassDefFoundError e) {
+            System.out.println("You are using an outdated Spigot version!");
+            System.out.println("You can get the latest Spigot version via BuildTools: ");
+            System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
+            System.out.println("------------------------------------------------------------------------");
+            return;
         }
 
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
@@ -108,6 +105,7 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
+        getServer().getPluginManager().registerEvents(new AnvilListener(), this);
         CommandCC commandCC = new CommandCC();
         if (configHandler.getConfig().isCCenabled()) {
             Bukkit.getPluginCommand("cc").setExecutor(commandCC);

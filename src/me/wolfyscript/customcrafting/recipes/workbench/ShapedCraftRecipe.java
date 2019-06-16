@@ -150,14 +150,25 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
                     if (item != null) {
                         if (item.getMaxStackSize() > 1) {
                             int amount = input.getAmount() - item.getAmount() * totalAmount;
-                            input.setAmount(amount);
-                            if(item.hasReplacement()){
+                            if(item.isConsumed()){
+                                input.setAmount(amount);
+                            }
+                            if (item.hasReplacement()) {
                                 ItemStack replacement = item.getReplacement();
                                 replacement.setAmount(replacement.getAmount() * totalAmount);
-                                replacements.add(replacement);
+                                if (ItemUtils.hasInventorySpace(inventory, replacement)) {
+                                    inventory.addItem(replacement);
+                                } else {
+                                    inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
+                                }
                             }
                         }else{
+                            api.sendDebugMessage("config: "+item.hasConfig());
                             if(item.hasConfig()){
+                                if(item.isConsumed()){
+                                    input.setAmount(0);
+                                }
+                                //TODO: Maybe add the possibility of having replacements together with durability cost?!
                                 if(item.hasReplacement()){
                                     ItemStack replace = item.getReplacement();
                                     input.setType(replace.getType());
@@ -170,18 +181,15 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
                                         ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
                                     }
                                     input.setItemMeta(itemMeta);
-                                }else{
-                                    input.setAmount(0);
                                 }
                             }else{
-                                if(input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.LAVA_BUCKET)){
+                                if(input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.WATER_BUCKET)){
                                     input.setType(Material.BUCKET);
                                 }else{
                                     input.setAmount(0);
                                 }
                             }
                         }
-                        //TEST FOR BUCKETS AND OTHER ITEMS!?
                     }
                 }
             }

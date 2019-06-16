@@ -31,13 +31,18 @@ public class ItemConfig extends CustomConfig {
         this(configAPI, "item", folder, name);
     }
 
+    public ItemStack getCustomItem(boolean replaceLang){
+        return getItem("item", replaceLang);
+    }
+
     public ItemStack getCustomItem(){
-        return getItem("item");
+        return getCustomItem(true);
     }
 
     public void setCustomItem(CustomItem itemStack){
         saveItem("item", itemStack);
         setBurnTime(itemStack.getBurnTime());
+        setConsumed(itemStack.isConsumed());
         if(itemStack.getReplacement() != null){
             setReplacementItem(itemStack.getReplacement());
         }
@@ -59,6 +64,14 @@ public class ItemConfig extends CustomConfig {
 
     public int getDurabilityCost(){
         return getInt("durability_cost");
+    }
+
+    public void setConsumed(boolean consumed){
+        set("consumed", consumed);
+    }
+
+    public boolean isConsumed(){
+        return getBoolean("consumed");
     }
 
     public void setReplacementItem(CustomItem customItem){

@@ -1,5 +1,5 @@
 # Main Config - CustomCrafting v0.0.9.141
-# -
+############################################
 #PlaceholderAPI:
 # Identifier: customcrafting
 # Placeholders:
@@ -19,6 +19,8 @@ commands:
 
 workbench:
   enable: true
+  reset_item: true
+  reset_recipe: true
   # Sound after successful crafting!
   craft_sound:
     enable: false

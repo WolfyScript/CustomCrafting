@@ -10,7 +10,7 @@ crafting:
   workbench:
     name: "&6Advanced Workbench"
     lore:
-      - "&7Workbench for advanced crafting"
+     - "&7Workbench for advanced crafting"
 msg:
   auto_save:
     start:    "   Auto save data   "
@@ -133,6 +133,7 @@ msg:
       - "  &6clear    &7-  &3Resets Player cache"
       - "  &6info      &7-  &3Displays info about this plugin"
       - "  &6studio    &7-  &3Opens the GUI Studio"
+      - "  &6give     &7-  &3Gives custom items to players"
     info: "&3type &6\"/cc help\" &3for help!"
     lockdown:
       enabled: "&7[&c&lLOCKDOWN&7] &aENABLED! &cRecipes will be blocked from now on!"
@@ -263,6 +264,14 @@ items:
         - "&7This feature is not compatible"
         - "&7with this current Minecraft version!"
         - "&7You need at least 1.14 to use this feature!"
+    page_next:
+      name: "&7Next Page"
+      lore:
+        - ""
+    page_previous:
+      name: "&7Previous Page"
+      lore:
+        - ""
     item_name:
       name: '&6Change name'
       help:
@@ -560,6 +569,14 @@ items:
       lore:
         - "&cItem must not be stackable!"
         - "&cReplacement must be disabled!"
+    consume_item_enabled:
+      name: "&aConsumed"
+      lore:
+        - "&7Item will be consumed!"
+    consume_item_disabled:
+      name: "&cNot Consumed"
+      lore:
+        - "&7The item wil not be consumed!"
     replacement:
       name: "&aReplacement enabled!"
       lore:
