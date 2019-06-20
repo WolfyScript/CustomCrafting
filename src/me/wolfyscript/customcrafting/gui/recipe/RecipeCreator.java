@@ -21,6 +21,7 @@ import me.wolfyscript.customcrafting.recipes.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.smoker.CustomSmokerRecipe;
+import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
@@ -410,7 +411,19 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             stonecutterConfig.setSource(stonecutter.getSource());
                             stonecutterConfig.setExactMeta(stonecutter.isExactMeta());
                             stonecutterConfig.setPriority(stonecutter.getPriority());
-                            return false;
+                            stonecutterConfig.save();
+                            cache.resetStonecutter();
+                            try {
+                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                    CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
+                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
+                                }, 1);
+                                return true;
+                            } catch (Exception ex) {
+                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", stonecutterConfig.getId()});
+                                ex.printStackTrace();
+                                return false;
+                            }
                         case BLAST_FURNACE:
                             cookingConfig = new BlastingConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
                         case SMOKER:
