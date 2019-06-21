@@ -163,7 +163,6 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
                                 }
                             }
                         }else{
-                            api.sendDebugMessage("config: "+item.hasConfig());
                             if(item.hasConfig()){
                                 if(item.isConsumed()){
                                     input.setAmount(0);

@@ -5,6 +5,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -165,6 +166,7 @@ public class CustomItem extends ItemStack implements Cloneable{
             }
             return true;
         }else{
+            //MAYBE NOT NECESSARY?!
             if(getDurabilityCost() != 0 && stack.hasItemMeta()){
                 if (stack.getItemMeta() instanceof Damageable) {
                     ItemStack copy = stack.clone();

@@ -132,11 +132,14 @@ public class CustomCrafting extends JavaPlugin {
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
+            String version = Bukkit.getServer().getName();
             if (WolfyUtilities.hasSpigot()) {
-                return "Spigot";
-            } else {
-                return Bukkit.getServer().getName();
+                version = "Spigot";
             }
+            if(WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLoader")){
+                version = "Paper";
+            }
+            return version;
         }));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
 

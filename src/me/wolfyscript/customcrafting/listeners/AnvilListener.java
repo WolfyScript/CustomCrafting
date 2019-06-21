@@ -96,6 +96,7 @@ public class AnvilListener implements Listener {
                     }
                 }
                 inventory.setItem(2, result);
+                //TODO: Input consume method
             }
         }
     }

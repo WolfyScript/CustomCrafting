@@ -418,12 +418,14 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
                                     api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
                                 }, 1);
-                                return true;
+
                             } catch (Exception ex) {
                                 api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", stonecutterConfig.getId()});
                                 ex.printStackTrace();
                                 return false;
                             }
+                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
+                            return false;
                         case BLAST_FURNACE:
                             cookingConfig = new BlastingConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
                         case SMOKER:
@@ -475,6 +477,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                 ex.printStackTrace();
                                 return false;
                             }
+                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                             return false;
                     }
                 }
