@@ -20,6 +20,14 @@ public class MainConfig extends Config {
         configAPI.registerConfig(this);
     }
 
+    public boolean isExperimentalFeatures() {
+        return getBoolean("experimental_features");
+    }
+
+    public void setExperimentalFeatures(boolean experimentalFeatures){
+        set("experimental_features", experimentalFeatures);
+    }
+
     public boolean isAdvancedWorkbenchEnabled() {
         return getBoolean("workbench.enable");
     }

@@ -10,7 +10,7 @@ public class CustomPrepareAnvilEvent extends PrepareAnvilEvent implements Cancel
 
     private boolean cancelled;
 
-    private CustomAnvilRecipe recipe;
+    private final CustomAnvilRecipe recipe;
 
     public CustomPrepareAnvilEvent(InventoryView transaction, ItemStack result, CustomAnvilRecipe recipe) {
         super(transaction, result);

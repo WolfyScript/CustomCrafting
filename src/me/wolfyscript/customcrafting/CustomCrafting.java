@@ -105,7 +105,11 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
         getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
         getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
-        getServer().getPluginManager().registerEvents(new AnvilListener(), this);
+
+        if(configHandler.getConfig().isExperimentalFeatures()){
+            getServer().getPluginManager().registerEvents(new AnvilListener(), this);
+        }
+
         CommandCC commandCC = new CommandCC();
         if (configHandler.getConfig().isCCenabled()) {
             Bukkit.getPluginCommand("cc").setExecutor(commandCC);

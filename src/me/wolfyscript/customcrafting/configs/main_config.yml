@@ -1,13 +1,15 @@
 # Main Config - CustomCrafting v0.0.9.141
-############################################
-#PlaceholderAPI:
+# -
+# PlaceholderAPI:
 # Identifier: customcrafting
 # Placeholders:
 #   - amount_crafted -> returns the number of crafted custom recipes!
 #
-
-#This should be disabled! That are a lot of Messages!
+#
+# This should be disabled! That are a lot of Messages!
 debug: false
+#Do NOT use it until you know what you are doing!
+experimental_features: false
 
 #The language you want use. The context: <language>_<country>
 #If you have any language file you want to be added to this plugin, then feel free to contact me.

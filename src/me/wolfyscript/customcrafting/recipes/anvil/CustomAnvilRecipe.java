@@ -14,12 +14,15 @@ public class CustomAnvilRecipe implements CustomRecipe {
 
     private boolean permission;
     private boolean exactMeta;
+    private boolean blockRepair;
+    private boolean blockRename;
+    private boolean blockEnchant;
     private RecipePriority priority;
 
     private String id;
     private AnvilConfig config;
 
-    private int mode;
+    private Mode mode;
     private int repairCost;
     private CustomItem result;
     private int durability;
@@ -31,6 +34,9 @@ public class CustomAnvilRecipe implements CustomRecipe {
         this.config = config;
         this.permission = config.needPerm();
         this.exactMeta = config.isExactMeta();
+        this.blockEnchant = config.isBlockEnchant();
+        this.blockRename = config.isBlockRename();
+        this.blockRepair = config.isBlockRepairing();
         this.priority = config.getPriority();
 
         this.id = config.getId();
@@ -39,12 +45,11 @@ public class CustomAnvilRecipe implements CustomRecipe {
         this.mode = config.getMode();
         this.durability = 0;
         this.result = null;
-        if(config.getMode() == 0){
+        if(config.getMode().equals(Mode.DURABILITY)){
             this.durability = config.getDurability();
-        }else if(config.getMode() == 1){
+        }else if(config.getMode().equals(Mode.RESULT)){
             this.result = config.getResult();
         }
-
         this.inputLeft = config.getInputLeft();
         this.inputRight = config.getInputRight();
     }
@@ -101,11 +106,11 @@ public class CustomAnvilRecipe implements CustomRecipe {
         this.priority = priority;
     }
 
-    public int getMode() {
+    public Mode getMode() {
         return mode;
     }
 
-    public void setMode(int mode) {
+    public void setMode(Mode mode) {
         this.mode = mode;
     }
 
@@ -149,6 +154,30 @@ public class CustomAnvilRecipe implements CustomRecipe {
         this.inputRight = inputRight;
     }
 
+    public boolean isBlockRepair() {
+        return blockRepair;
+    }
+
+    public void setBlockRepair(boolean blockRepair) {
+        this.blockRepair = blockRepair;
+    }
+
+    public boolean isBlockRename() {
+        return blockRename;
+    }
+
+    public void setBlockRename(boolean blockRename) {
+        this.blockRename = blockRename;
+    }
+
+    public boolean isBlockEnchant() {
+        return blockEnchant;
+    }
+
+    public void setBlockEnchant(boolean blockEnchant) {
+        this.blockEnchant = blockEnchant;
+    }
+
     @Override
     @Deprecated
     public ItemStack getResult() {
@@ -159,5 +188,10 @@ public class CustomAnvilRecipe implements CustomRecipe {
     @Deprecated
     public String getGroup() {
         return "";
+    }
+
+    public enum Mode{
+        DURABILITY, RESULT, NONE;
+
     }
 }

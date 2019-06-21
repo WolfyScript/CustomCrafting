@@ -145,10 +145,24 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     @Override
-    public boolean isSimilar(ItemStack stack) {
+    public boolean isSimilar(ItemStack stack){
+        return isSimilar(stack, true);
+    }
+
+    public boolean isSimilar(ItemStack stack, boolean exactMeta) {
         if (stack == null){
             return false;
         } else if (stack == this) {
+            return true;
+        }else if(stack.getType().equals(this.getType()) && stack.getAmount() >= this.getAmount()){
+            if (exactMeta || this.hasItemMeta()) {
+                if (this.hasItemMeta() && !stack.hasItemMeta()) {
+                    return false;
+                }else if(!this.hasItemMeta() && stack.hasItemMeta()){
+                    return false;
+                }
+                return stack.getItemMeta().equals(this.getItemMeta());
+            }
             return true;
         }else{
             if(getDurabilityCost() != 0 && stack.hasItemMeta()){

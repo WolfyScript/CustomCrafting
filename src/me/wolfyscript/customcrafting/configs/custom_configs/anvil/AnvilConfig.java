@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.configs.custom_configs.anvil;
 
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 import java.util.HashMap;
@@ -46,20 +47,20 @@ public class AnvilConfig extends CustomConfig {
     }
 
     public boolean isBlockEnchant(){
-        return getBoolean("block_rename");
+        return getBoolean("block_enchant");
     }
 
     public void setBlockEnchant(boolean blockEnchant){
         set("block_enchant", blockEnchant);
     }
 
-    public int getMode(){
+    public CustomAnvilRecipe.Mode getMode(){
         if(getConfig().get("mode.durability") != null){
-            return 0;
+            return CustomAnvilRecipe.Mode.DURABILITY;
         }else if(getConfig().getConfigurationSection("mode.result") != null){
-            return 1;
+            return CustomAnvilRecipe.Mode.RESULT;
         }
-        return -1;
+        return CustomAnvilRecipe.Mode.NONE;
     }
 
     public CustomItem getResult(){
