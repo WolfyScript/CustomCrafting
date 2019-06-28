@@ -191,7 +191,24 @@ public class CustomAnvilRecipe implements CustomRecipe {
     }
 
     public enum Mode{
-        DURABILITY, RESULT, NONE;
+        DURABILITY(1), RESULT(2), NONE(0);
 
+        private int id;
+
+        Mode(int id){
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public static Mode getById(int id){
+            for(Mode mode : Mode.values()){
+                if(mode.getId()==id)
+                    return mode;
+            }
+            return NONE;
+        }
     }
 }

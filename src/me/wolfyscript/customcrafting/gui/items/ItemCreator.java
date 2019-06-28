@@ -5,22 +5,20 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.ItemUtils;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import me.wolfyscript.utilities.api.utils.Legacy;
-import me.wolfyscript.utilities.api.utils.chat.ClickAction;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Skull;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -29,8 +27,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class ItemCreator extends ExtendedGuiWindow {
@@ -386,7 +384,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 guiAction.getGuiHandler().openLastInv();
             } else if (action.equals("save_item") && !items.getItem().getType().equals(Material.AIR)) {
                 if (items.getType().equals("items") && CustomCrafting.getRecipeHandler().getCustomItem(items.getId()) != null) {
-                    ItemUtils.saveItem(cache, items.getId(), items.getItem());
+                    CustomItem.saveItem(cache, items.getId(), items.getItem());
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.save.success$");
                     api.sendPlayerMessage(player, "&6" + items.getId().split(":")[0] + "/items/" + items.getId().split(":")[1]);
                 } else {
@@ -397,10 +395,10 @@ public class ItemCreator extends ExtendedGuiWindow {
             } else if (action.equals("apply_item") && !items.getItem().getType().equals(Material.AIR)) {
                 CustomItem customItem = items.getItem();
                 if (items.isSaved()) {
-                    ItemUtils.saveItem(cache, items.getId(), customItem);
+                    CustomItem.saveItem(cache, items.getId(), customItem);
                     customItem = CustomCrafting.getRecipeHandler().getCustomItem(items.getId());
                 }
-                ItemUtils.applyItem(customItem, cache);
+                CustomItem.applyItem(customItem, cache);
                 guiAction.getGuiHandler().changeToInv("recipe_creator");
             } else {
                 CustomItem itemStack = items.getItem();
@@ -446,11 +444,14 @@ public class ItemCreator extends ExtendedGuiWindow {
                             break;
 
                         //LORE
+                        //TODO: LORE MANAGER!
                         case "lore_add":
                             runChat(4, "$msg.gui.item_creator.lore.add$", guiAction.getGuiHandler());
                             break;
                         case "lore_remove":
-                            runChat(5, "$msg.gui.item_creator.lore.remove$", guiAction.getGuiHandler());
+                            ChatUtils.sendLoreManager(player);
+                            guiAction.getGuiHandler().close();
+                            //runChat(5, "$msg.gui.item_creator.lore.remove$", guiAction.getGuiHandler());
                             break;
 
                         //Potion
@@ -493,9 +494,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                             itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting()), items.getAttributeModifier());
                             break;
                         case "attribute.delete":
-                            if (itemMeta.hasAttributeModifiers()) {
-                                itemMeta.removeAttributeModifier(Attribute.valueOf(cache.getSubSetting()), items.getAttributeModifier());
-                            }
+                            ChatUtils.sendAttributeModifierManager(player);
+                            guiAction.getGuiHandler().close();
                             break;
                         //PLAYER SKULL SETTINGS
                         case "skull_texture":
@@ -633,7 +633,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     case "variants":
                         ItemStack item = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
                         if (item != null) {
-                            cache.getItems().setVariantItem(ItemUtils.getCustomItem(item));
+                            cache.getItems().setVariantItem(CustomItem.getCustomItem(item));
                         } else {
                             cache.getItems().setVariantItem(new CustomItem(Material.AIR));
                         }
@@ -641,7 +641,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     case "replacement_durability":
                         ItemStack replacement = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
                         if (replacement != null) {
-                            cache.getItems().getItem().setReplacement(ItemUtils.getCustomItem(replacement));
+                            cache.getItems().getItem().setReplacement(CustomItem.getCustomItem(replacement));
                         } else {
                             cache.getItems().getItem().setReplacement(null);
                         }
@@ -666,7 +666,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         switch (id) {
             case 0:
                 if (args.length > 1) {
-                    ItemUtils.saveItem(cache, args[0] + ":" + args[1], items.getItem());
+                    CustomItem.saveItem(cache, args[0] + ":" + args[1], items.getItem());
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.save.success$");
                     api.sendPlayerMessage(player, "&6" + args[0] + "/items/" + args[1]);
                 } else {
@@ -688,7 +688,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         api.sendPlayerMessage(player, "$msg.gui.item_creator.enchant.invalid_lvl$");
                         return true;
                     }
-                    Enchantment enchantment = Legacy.getEnchantment(args[0]);
+                    Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
                     if (enchantment != null) {
                         items.getItem().addUnsafeEnchantment(enchantment, level);
                     } else {
@@ -702,7 +702,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 break;
             //REMOVE
             case 3:
-                Enchantment enchantment = Legacy.getEnchantment(args[0]);
+                Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
                 if (enchantment != null) {
                     items.getItem().removeEnchantment(enchantment);
                 } else {
@@ -721,7 +721,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 itemMeta.setLore(lore);
                 items.getItem().setItemMeta(itemMeta);
                 break;
-            //REMOVE
+            //REMOVE LORE
             case 5:
                 if (!itemMeta.hasLore()) {
                     return false;

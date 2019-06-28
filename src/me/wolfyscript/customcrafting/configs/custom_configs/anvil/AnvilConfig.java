@@ -10,8 +10,8 @@ import java.util.Set;
 
 public class AnvilConfig extends CustomConfig {
 
-    public AnvilConfig(ConfigAPI configAPI, String defaultName, String folder, String type, String name) {
-        super(configAPI, defaultName, folder, type, name);
+    public AnvilConfig(ConfigAPI configAPI, String folder, String name) {
+        super(configAPI, "anvil", folder, "anvil", name);
     }
 
     public void setPermission(boolean perm) {

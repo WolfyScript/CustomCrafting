@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes.workbench;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.ItemUtils;
+import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;

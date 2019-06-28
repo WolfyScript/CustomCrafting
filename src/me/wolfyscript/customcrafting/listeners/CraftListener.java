@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
-import me.wolfyscript.customcrafting.items.ItemUtils;
+import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -16,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
@@ -150,8 +149,17 @@ public class CraftListener implements Listener {
 
                     List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
                     List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
+
+                    CraftingRecipe testRecipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
+                    if(testRecipe != null && !recipesToCheck.contains(testRecipe)){
+                        recipesToCheck.add(testRecipe);
+                    }
                     recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
 
+                    api.sendDebugMessage("---------------------------------");
+                    api.sendDebugMessage("Possible Custom Recipes detected:");
+                    recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - "+craftingRecipe.getId()));
+                    api.sendDebugMessage("");
                     boolean allow = false;
                     if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
                         CustomPreCraftEvent customPreCraftEvent;
@@ -166,6 +174,7 @@ public class CraftListener implements Listener {
                                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                                 if (!customPreCraftEvent.isCancelled()) {
                                     //ALLOW
+                                    api.sendDebugMessage("Recipe \""+customPreCraftEvent.getRecipe().getId() +"\" detected!");
                                     precraftedRecipes.put(player.getUniqueId(), customPreCraftEvent.getRecipe().getId());
                                     e.getInventory().setResult(customPreCraftEvent.getResult());
                                     allow = true;
@@ -175,12 +184,18 @@ public class CraftListener implements Listener {
                         }
                     }
                     if (!allow) {
+                        api.sendDebugMessage("No recipe valid!");
+                        api.sendDebugMessage("Detected recipe: "+((Keyed) e.getRecipe()).getKey());
                         precraftedRecipes.remove(player.getUniqueId());
                         CraftingRecipe recipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
                         if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString())) {
+                            api.sendDebugMessage("Recipe disabled! Set output to AIR");
                             e.getInventory().setResult(new ItemStack(Material.AIR));
                         } else if (recipe != null) {
+                            api.sendDebugMessage("Custom recipe! Set output to AIR");
                             e.getInventory().setResult(new ItemStack(Material.AIR));
+                        } else{
+                            api.sendDebugMessage("Use vanilla recipe output!");
                         }
                     }
                 } catch (Exception ex) {

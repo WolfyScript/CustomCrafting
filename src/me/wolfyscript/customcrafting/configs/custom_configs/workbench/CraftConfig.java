@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.configs.custom_configs.workbench;
 
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.ItemUtils;
+import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Material;
 

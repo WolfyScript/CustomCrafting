@@ -193,6 +193,10 @@ items:
       name: "&6Werkbank Rezept"
       help:
         - ""
+    anvil:
+      name: "&6Anvil Recipe"
+      help:
+        - ""
     furnace_recipe:
       name: "&6Ofen Rezept"
       help:
@@ -661,6 +665,34 @@ items:
           - "&3Tip: 20ticks = 1sec"
         lore:
           - "&6%TIME% ticks"
+    anvil:
+      mode:
+        name: "&7Mode:&6 %MODE%"
+        help:
+          - ""
+      repair_cost:
+        name: "&7Repair Cost:&6 %VAR%"
+        lore:
+          - ""
+      block_repair:
+        on:
+          name: "&aRepairing blocked"
+        off:
+          name: "&cRepairing allowed"
+      block_rename:
+        on:
+          name: "&aRenaming blocked"
+        off:
+          name: "&cRenaming allowed"
+      block_enchant:
+        on:
+          name: "&aEnchanting blocked"
+        off:
+          name: "&cEnchanting allowed"
+      durability:
+        name: "&7Durability:&6 %VAR%"
+        lore:
+          - ""
   recipe_list:
     lores:
       disabled: "&7&l[&c&lDISABLED&7&l]"

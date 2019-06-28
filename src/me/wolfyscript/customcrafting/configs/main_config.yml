@@ -4,11 +4,11 @@
 # Identifier: customcrafting
 # Placeholders:
 #   - amount_crafted -> returns the number of crafted custom recipes!
-#
-#
-# This should be disabled! That are a lot of Messages!
+# -
+# -
+# Debug should be disabled! That are a lot of Messages!
 debug: false
-#Do NOT use it until you know what you are doing!
+# Do NOT use it until you know what you are doing!
 experimental_features: false
 
 #The language you want use. The context: <language>_<country>

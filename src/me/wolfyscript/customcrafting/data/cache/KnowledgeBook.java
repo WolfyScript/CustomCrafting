@@ -2,13 +2,8 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.ItemUtils;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 

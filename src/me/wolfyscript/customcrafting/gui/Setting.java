@@ -7,6 +7,7 @@ public enum Setting {
     ITEMS,
     CRAFT_RECIPE,
     FURNACE_RECIPE,
+    ANVIL,
     BLAST_FURNACE,
     SMOKER,
     CAMPFIRE,

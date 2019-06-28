@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.utilities.api.inventory.*;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
@@ -125,7 +124,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> player.openInventory(inv), 2);
                         Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> player.openInventory(inv));
                     } else {
-                        ItemUtils.applyItem(customItem, cache);
+                        CustomItem.applyItem(customItem, cache);
                         api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.item_editor.item_applied$");
                         guiHandler.changeToInv("recipe_creator");
                     }

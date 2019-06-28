@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
@@ -21,6 +22,7 @@ public class MainMenu extends ExtendedGuiWindow {
     public void onInit() {
         createItem("craft_recipe", Material.CRAFTING_TABLE);
         createItem("furnace_recipe", Material.FURNACE);
+        createItem("anvil", Material.ANVIL);
 
         if(WolfyUtilities.hasVillagePillageUpdate()){
             createItem("blast_furnace", Material.BLAST_FURNACE);
@@ -52,11 +54,17 @@ public class MainMenu extends ExtendedGuiWindow {
 
             event.setItem(10, "craft_recipe");
             event.setItem(12, "furnace_recipe");
+
             if(WolfyUtilities.hasVillagePillageUpdate()){
                 event.setItem(14, "blast_furnace");
                 event.setItem(16, "smoker");
                 event.setItem(20, "campfire");
                 event.setItem(22, "stonecutter");
+                if(CustomCrafting.getConfigHandler().getConfig().isExperimentalFeatures()){
+                    event.setItem(24, "anvil");
+                }
+            }else if(CustomCrafting.getConfigHandler().getConfig().isExperimentalFeatures()){
+                event.setItem(14, "anvil");
             }
 
             event.setItem(39, "item_editor");
@@ -116,6 +124,7 @@ public class MainMenu extends ExtendedGuiWindow {
                     case "campfire":
                     case "craft_recipe":
                     case "furnace_recipe":
+                    case "anvil":
                     case "stonecutter":
                         playerCache.setSetting(Setting.valueOf(action.toUpperCase(Locale.ROOT)));
                         guiAction.getGuiHandler().changeToInv("recipe_editor");

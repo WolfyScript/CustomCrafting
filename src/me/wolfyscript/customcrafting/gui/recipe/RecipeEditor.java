@@ -11,6 +11,7 @@ import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.inventory.*;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
@@ -30,9 +31,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onInit() {
-
-    }
+    public void onInit() { }
 
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
@@ -60,74 +59,17 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         break;
                     case "edit_recipe":
                         cache.getChatLists().setCurrentPageRecipes(1);
-                        api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
+                        api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> ChatUtils.sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
                         runChat(0, "$msg.gui.recipe_editor.input$", guiAction.getGuiHandler());
                         break;
                     case "delete_recipe":
                         cache.getChatLists().setCurrentPageRecipes(1);
-                        api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
+                        api.sendActionMessage(guiAction.getPlayer(), new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> ChatUtils.sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
                         runChat(1, "$msg.gui.recipe_editor.input$", guiAction.getGuiHandler());
                 }
             }
         }
         return true;
-    }
-
-    private void sendRecipeListExpanded(Player player) {
-        PlayerCache cache = CustomCrafting.getPlayerCache(player);
-        for (int i = 0; i < 20; i++) {
-            player.sendMessage(" ");
-        }
-        api.sendActionMessage(player, new ClickData("§7[§c-§7]", (wolfyUtilities1, p) -> {
-            for (int i = 0; i < 20; i++) {
-                player.sendMessage(" ");
-            }
-            api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.input$");
-        }, true), new ClickData(" Recipes:", null));
-
-        ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
-        switch (cache.getSetting()) {
-            case CRAFT_RECIPE:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getCraftingRecipes());
-                break;
-            case FURNACE_RECIPE:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getFurnaceRecipes());
-                break;
-            case STONECUTTER:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getStonecutterRecipes());
-                break;
-            case SMOKER:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getSmokerRecipes());
-                break;
-            case BLAST_FURNACE:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getBlastRecipes());
-                break;
-            case CAMPFIRE:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getCampfireRecipes());
-                break;
-        }
-
-        int currentPage = cache.getChatLists().getCurrentPageRecipes();
-        int maxPages = ((customRecipes.size() % 16) > 0 ? 1 : 0) + customRecipes.size() / 16;
-
-        for (int i = (currentPage - 1) * 16; i < (currentPage - 1) * 16 + 16 && i < customRecipes.size(); i++) {
-            CustomRecipe recipe = customRecipes.get(i);
-            api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1]), new HoverEvent(recipe.getResult())));
-        }
-
-        api.sendActionMessage(player, new ClickData("§7[§6« previous§7]", (wolfyUtilities1, p) -> {
-            if (currentPage > 1) {
-                cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
-            }
-            sendRecipeListExpanded(p);
-        }), new ClickData("  §a" + currentPage + "§7/§6" + maxPages + "  ", null), new ClickData("§7[§6next »§7]", (wolfyUtilities1, p) -> {
-            if (currentPage < maxPages) {
-                cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
-            }
-            sendRecipeListExpanded(p);
-        }));
-        api.sendPlayerMessage(player, "$msg.gui.recipe_editor.input$");
     }
 
     @Override
@@ -170,6 +112,9 @@ public class RecipeEditor extends ExtendedGuiWindow {
                                 return false;
                             }
                             api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
+                            return true;
+                        case ANVIL:
+
                             return true;
                         case STONECUTTER:
                             if (recipe instanceof CustomStonecutterRecipe) {

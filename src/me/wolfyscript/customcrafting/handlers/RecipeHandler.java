@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_configs.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.smoker.SmokerConfig;
@@ -69,6 +70,9 @@ public class RecipeHandler {
                         case "furnace":
                             registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, key, name)));
                             break;
+                        case "anvil":
+                            registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, key, name)));
+                            break;
                         case "blast_furnace":
                             registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, key, name)));
                             break;
@@ -83,6 +87,7 @@ public class RecipeHandler {
                             break;
                         case "stonecutter":
                             registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, key, name)));
+                            break;
                     }
                 } catch (Exception ex) {
                     api.sendConsoleMessage("-------------------------------------------------");
@@ -95,7 +100,6 @@ public class RecipeHandler {
                     api.sendConsoleMessage("-------------------------------------------------");
                     ex.printStackTrace();
                 }
-
             }
         }
     }
@@ -140,13 +144,19 @@ public class RecipeHandler {
     }
 
     public void registerRecipe(CustomRecipe recipe) {
-        Bukkit.addRecipe(recipe);
+        if(!(recipe instanceof CustomAnvilRecipe)){
+            Bukkit.addRecipe(recipe);
+        }
         customRecipes.put(recipe.getId(), recipe);
     }
 
     public void injectRecipe(CustomRecipe recipe) {
+        api.sendDebugMessage("Inject Recipe:");
+        api.sendDebugMessage("  unregister old recipe:");
         unregisterRecipe(recipe);
+        api.sendDebugMessage("  add to Bukkit...");
         Bukkit.addRecipe(recipe);
+        api.sendDebugMessage("  add to cache...");
         customRecipes.put(recipe.getId(), recipe);
     }
 
@@ -171,7 +181,9 @@ public class RecipeHandler {
     }
 
     public void unregisterRecipe(CustomRecipe customRecipe) {
+        api.sendDebugMessage("      remove from cache...");
         customRecipes.remove(customRecipe.getId());
+        api.sendDebugMessage("      remove from Bukkit...");
         unregisterRecipe(customRecipe.getId());
     }
 

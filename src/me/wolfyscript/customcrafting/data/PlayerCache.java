@@ -22,6 +22,7 @@ public class PlayerCache {
     //RECIPE_LIST OF ALL RECIPE CACHES
     private Workbench workbench =  new Workbench();
     private Furnace furnace = new Furnace();
+    private Anvil anvil = new Anvil();
     private BlastingFurnace blastingFurnace = new BlastingFurnace();
     private Smoker smoker = new Smoker();
     private Campfire campfire = new Campfire();
@@ -115,6 +116,18 @@ public class PlayerCache {
 
     public void setFurnace(Furnace furnace) {
         this.furnace = furnace;
+    }
+
+    public Anvil getAnvil() {
+        return anvil;
+    }
+
+    public void setAnvil(Anvil anvil) {
+        this.anvil = anvil;
+    }
+
+    public void resetAnvil(){
+        this.anvil = new Anvil();
     }
 
     public BlastingFurnace getBlastingFurnace() {

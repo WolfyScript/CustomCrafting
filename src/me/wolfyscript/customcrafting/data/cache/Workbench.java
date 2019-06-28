@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -71,7 +70,7 @@ public class Workbench implements Serializable {
 
     public void setIngredients(List<ItemStack> ingredients) {
         for(int i = 0; i < ingredients.size(); i++){
-            CustomItem customItem = ItemUtils.getCustomItem(ingredients.get(i));
+            CustomItem customItem = CustomItem.getCustomItem(ingredients.get(i));
             if(customItem.getType().equals(Material.AIR)){
                 setIngredients(i, new ArrayList<>(Collections.singleton(customItem)));
             }else{
