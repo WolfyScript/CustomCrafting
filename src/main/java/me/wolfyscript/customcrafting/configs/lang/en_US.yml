@@ -1,4 +1,4 @@
-# Language: de_DE
+# Language: en_US
 author: "WolfyScript"
 version: "2.0.0"
 info:
@@ -8,49 +8,57 @@ info:
 #Test
 crafting:
   workbench:
-    name: "&6Erweiterte Werkbank"
+    name: "&6Advanced Workbench"
     lore:
-      - "&7Werkbank für erweitertes Handwerk"
+     - "&7Workbench for advanced crafting"
 msg:
   auto_save:
-    start:    "     Auto-Speichern    "
-    complete: " Auto-Speichern fertig "
+    start:    "   Auto save data   "
+    complete: " Auto save complete "
   startup:
-    outdated: "Deine Version ist veraltet! Eine neue Version ist verfügbar! https://www.spigotmc.org/resources/55883/"
+    outdated: "Your version is outdated! There is a new version available! Download it here: https://www.spigotmc.org/resources/55883/"
     update_check_fail: "Failed to check for a update on spigot"
-    playerstats: "Lade Spieler Statistiks"
-    inventories: "Initialisiere Inventar GUIs"
-    placeholder: "Registriere PlaceHolder"
+    playerstats: "Loading Player Stats"
+    inventories: "Initiating Inventory GUIs"
+    placeholder: "Registering PlaceHolder"
     recipes:
-      title:   "________[Rezepte/Items werden geladen]________"
-      items:   "----------------[ITEMS]---------------"
-      recipes: "--------------[Rezepte]--------------"
-  denied_perm: "&cDu bezitzt nicht die Berechtigung &4%PERM%&c!"
+      title:   "________[Loading Recipes/Items]________"
+      items:   "---------[ITEMS]---------"
+      recipes: "--------[RECIPES]--------"
+  denied_perm: "&cYou lack the permission &4%PERM%&c!"
   player:
     outdated:
-      msg: "&cDeine Version ist veraltet! Eine neue Version ist verfügbar!"
-      msg2: "&aLade es jetzt herunter!"
-      link: " &7[&3Klick Hier&7]"
+      msg: "&cYour version is outdated! A new version is available!"
+      msg2: "&aDownload it now!"
+      link: " &7[&3Click Here&7]"
+    error:
+      loading:
+        msg: "&cPlugin Disabled! The Plugin won't work!"
+        msg1: "Make sure you have the latest Spigot or Paper build!"
+        msg2: "&7- More information can be found here!"
+        msg3: "   &7[&6Spigot&7]"
+        msg4: "   &7[&3Paper&7]"
+        msg5: "&cIf this solution doesn't work and you get error messages on startup please contact me on Discord or SpigotMC!"
   gui:
     item_creator:
       save:
         input:
-          line1: "&3Gebe den Namen und Ordner vom Item ein"
-          line2: "&6e.g. <ordner> <item_name>"
-        success: "&aItem gespeichert in:"
-      display_name: "&3Gebe den Namen ein! Nutze &6& &3für formatierungs codes!"
+          line1: "&3Type in the name of the folder and item"
+          line2: "&6e.g. example your_item"
+        success: "&aItem saved to:"
+      display_name: "&3Type in the name! Use &6& &3for formatting codes!"
       enchant:
-        add: "&3Gebe die Verzauberung und Level ein! &6unbreaking 5"
-        remove: "&3Gebe die Verzauberung ein! &6unbreaking"
+        add: "&3Type in the enchantment and level! &6unbreaking 5"
+        remove: "&3Type in the enchantment! &6unbreaking"
         invalid_lvl: "&cInvalid level! It's not a number!"
         invalid_enchant: "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!"
         no_lvl: "&cNo level set!"
       lore:
-        add: "&3Gebe die Lore ein! Nutze &6& &3für Formatierungs codes!"
-        remove: "&3Gebe die Zeile der Lore ein, die du entfernen möchtest!"
-        no_number: "&cError bei der Zeilennummer! Ist es ein Zahlenwert?"
-        error: "&cError die Zeile &4%NUM%&c existiert nicht!"
-        success: "&aLore in der Zeile &6%NUM% wurde entfernt!"
+        add: "&3Type in the lore! Use &6& &3for formatting codes!"
+        remove: "&3Type in the line of the lore you want to remove!"
+        no_number: "&cError getting the line! Is it a number? It should be!"
+        error: "&cError the line &4%NUM%&c does not exist!"
+        success: "&aRemoved Lore in line &6%NUM%"
       potion:
         add: "&3Type in the Potion! &6<name> <duration> <level> [<ambient> <particles>]"
         remove: "&3Type in the Potion name you want to remove!"
@@ -60,45 +68,45 @@ msg:
         invalid_name: "&cInvalid name! &4%NAME%&c does not exist!"
       variant:
         remove:
-          msg: "&3Wähle das Item, welches entfernt werden soll!"
+          msg: "&3Choose the Item you want to remove!"
           line: " &6%NUM%. &7%ITEM%"
-          success: "&6%ITEM%&a entfernt von den Varianten&a!"
+          success: "&aRemoved &6%ITEM%&a from variants&a!"
       attribute:
         amount:
-          input: "§3Type in the amount you want! For example§6 0.4"
+          input: "&3Type in the amount you want! For example&6 0.4"
           error: "&cError parsing number! Is it a number? It should be!"
         name:
-          input: "§3Type in the name!"
+          input: "&3Type in the name!"
         uuid:
-          input: "§3Type in the uuid for the attribute! Must be a valid UUID!"
+          input: "&3Type in the uuid for the attribute! Must be a valid UUID!"
           error:
             line1: "&cInvalid UUID: &4%UUID%"
             line2: "&cType in a valid UUID!"
       skull_owner:
-        input: "§3Type in the Player Name!"
+        input: "&3Type in the Player Name!"
       damage:
         set: "&3Type in the amount of damage!"
         invalid_type: "&cThe current item does not support damage value!"
         value_success: "&aSet item damage to &6%VALUE%&a!"
         invalid_value: "&cThe value &4%VALUE%&c is not a number!"
-        repair:
-          set: "&3Type in the amount of cost"
-          invalid_type: "&cThe current item does not support repair cost!"
-          value_success: "&aSet repair cost to &6%VALUE%&a!"
-          invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
-        fuel:
-          set: "&3Type in the Burn Time in ticks!"
-          value_success: "&aSet Burn Time to &6%VALUE% ticks&a!"
-          invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
-        custom_model_data:
-          disabled: "&l&cDisabled"
-          set: "&3Type in the Custom Model Data!"
-          success: "&aSet Model Data to &6%VALUE%&a!"
-          invalid_value: "&cThe value &4%VALUE%&c is not a valid Model Data number!"
+      repair:
+        set: "&3Type in the amount of cost"
+        invalid_type: "&cThe current item does not support repair cost!"
+        value_success: "&aSet repair cost to &6%VALUE%&a!"
+        invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
+      fuel:
+        set: "&3Type in the Burn Time in ticks!"
+        value_success: "&aSet Burn Time to &6%VALUE% ticks&a!"
+        invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
+      custom_model_data:
+        disabled: "&l&cDisabled"
+        set: "&3Type in the Custom Model Data!"
+        success: "&aSet Model Data to &6%VALUE%&a!"
+        invalid_value: "&cThe value &4%VALUE%&c is not a valid Model Data number!"
     item_editor:
       input: "&3Type in the folder and name of the item! &6example your_item"
       error: "&cThis item does not exist or is not loaded!"
-      item_gui_title: "       §cID ITEM     §3ORIGINAL ITEM"
+      item_gui_title: "       &cID ITEM     &3ORIGINAL ITEM"
       item_applied: "&aItem successfully applied to recipe!"
       item_editable: "&aThis item can now be edited!"
       no_name: "&cYou need to type in the item name!"
@@ -113,7 +121,7 @@ msg:
         success: "&aRecipe successfully saved to:"
       loading:
         error: "&cError occurred while loading recipe &4%REC%"
-        success: "&aLoaded and injected recipe successful!"
+        success: "&aLoaded and injected recipe successful! &cIt is better to restart the Server after you're done, to prevent recipes from not working correctly!"
       valid_number: "&cType in a valid number!"
     recipe_editor:
       not_existing: "&cThe recipe &6%RECIPE% &cdoesn't exist!"
@@ -126,25 +134,25 @@ msg:
   commands:
     help:
       - ""
-      - "             &bHauptBefehl: &e/cc"
+      - "            &bMain command: &e/cc"
       - ""
       - "                &3/cc &6<label>"
       - "  &6help     &7-  &3Displays list of commands"
-      - "  &6clear    &7-  &3Läd den Spieler cache neu!"
-      - "  &6info      &7-  &3Zeigt Infos über dieses Plugin an"
-      - "  &6studio    &7-  &3Öffnet den GUI Editor"
-      - "  &6give     &7-  &3Gibt den Spieler Custom Items"
-    info: "&3gebe &6\"/cc help\" &3 für hilfe ein!"
+      - "  &6clear    &7-  &3Resets Player cache"
+      - "  &6info      &7-  &3Displays info about this plugin"
+      - "  &6studio    &7-  &3Opens the GUI Studio"
+      - "  &6give     &7-  &3Gives custom items to players"
+    info: "&3type &6\"/cc help\" &3for help!"
     lockdown:
-      enabled: "&7[&c&lLOCKDOWN&7] &aENABLED! &cRetepte werden jetzt alle geblockt!"
-      disabled: "&7[&c&lLOCKDOWN&7] &cDISABLED! &cRezepte werden nicht mehr geblockt!"
+      enabled: "&7[&c&lLOCKDOWN&7] &aENABLED! &cRecipes will be blocked from now on!"
+      disabled: "&7[&c&lLOCKDOWN&7] &cDISABLED! &cRecipes will no longer be blocked!"
     give:
-      player_offline: "&cDer Spieler &4%PLAYER% &cist nicht online!"
-      invalid_amount: "&cFalsche Anzahl! Ist es ein Zahlenwert?"
-      success: "&aGab &e%ITEM%&a an &e%PLAYER%"
-      success_amount: "&aGab &e%AMOUNT%x %ITEM%&a an &e%PLAYER%"
-      no_inv_space: "&cKein Platz im Inventar!"
-      invalid_item: "&cDas Item &4%ITEM%&c existiert nicht!"
+      player_offline: "&cThe player &4%PLAYER% &cis not online!"
+      invalid_amount: "&cInvalid amount! Is it a number?"
+      success: "&aGave &e%ITEM%&a to &e%PLAYER%"
+      success_amount: "&aGave &e%AMOUNT%x %ITEM%&a to &e%PLAYER%"
+      no_inv_space: "&cNo space in Inventory!"
+      invalid_item: "&cThe item &4%ITEM%&c does not exist!"
 
 items:
   none:
@@ -157,40 +165,40 @@ items:
     glass_white:
       name: '&4'
     minimize:
-      name: '&3Minimieren'
+      name: '&3Minimize'
       help: []
     back:
-      name: '&5Zurück'
+      name: '&5Back'
       help: []
     close:
-      name: '&4Schließen'
+      name: '&4Close'
       help: []
     gui_help_on:
-      name: '&2Hilfe'
+      name: '&2Help'
       lore:
-        - "  &7-Klick Mich-"
-        - "&7[&aEingeschaltet&7]"
+        - "&7-Click Me-"
+        - "&7[&aEnabled&7]"
       help: []
     gui_help_off:
-      name: '&2Hilfe'
+      name: '&2Help'
       lore:
-        - "  &7-Klick Mich-"
-        - "&7[&cAusgeschaltet&7]"
+        - "&7-Click Me-"
+        - "&7[&cDisabled&7]"
       help: []
   main_menu:
     lockdown:
       enabled:
         name: "&4&lLockDown!"
         lore:
-          - "&7[&3Eingeschaltet&7]"
-          - "&4Rezepte werden geblockt!"
+          - "&7[&3Enabled&7]"
+          - "&4Recipes are being blocked!"
       disabled:
         name: "&4LockDown"
         lore:
-          - "&7[&8Ausgeschaltet&7]"
-          - "&7Rezepte werden nicht geblockt!"
+          - "&7[&8Disabled&7]"
+          - "&7Recipes are not blocked!"
     craft_recipe:
-      name: "&6Werkbank Rezept"
+      name: "&6Workbench Recipe"
       help:
         - ""
     anvil:
@@ -198,30 +206,30 @@ items:
       help:
         - ""
     furnace_recipe:
-      name: "&6Ofen Rezept"
+      name: "&6Furnace Recipe"
       help:
         - ""
     blast_furnace:
-      name: "&6Blasting Rezept"
+      name: "&6Blasting Recipe"
       help:
         - ""
     smoker:
-      name: "&6Smoking Rezept"
+      name: "&6Smoking Recipe"
       help:
         - ""
     campfire:
-      name: "&6Campfire Rezept"
+      name: "&6Campfire Recipe"
       help:
         - ""
     stonecutter:
-      name: "&6Stonecutter Rezept"
+      name: "&6Stonecutter Recipe"
       help:
         - ""
     item_editor:
       name: '&6Item Creator'
       help:
         - '&7Create, Save custom Items'
-        - '&6Nutze die Items in deinen Rezepten'
+        - '&6Use them inside of your recipes'
     create_recipe:
       name: '&6Create Recipe'
       help:
@@ -269,11 +277,11 @@ items:
         - "&7with this current Minecraft version!"
         - "&7You need at least 1.14 to use this feature!"
     page_next:
-      name: "&7Nächste Seite"
+      name: "&7Next Page"
       lore:
         - ""
     page_previous:
-      name: "&7Vorherige Seite"
+      name: "&7Previous Page"
       lore:
         - ""
     item_name:
@@ -532,7 +540,7 @@ items:
           - "&7The item item will not be saved"
           - "&7as a fuel anymore!"
       furnace:
-        name: "%C%Ofen"
+        name: "%C%Furnace"
       blast_furnace:
         name: "%C%Blast Furnace"
       smoker:

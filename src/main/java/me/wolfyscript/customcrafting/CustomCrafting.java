@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting;
 
+import com.sun.istack.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.listeners.*;
@@ -14,7 +15,6 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -23,7 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -57,30 +56,14 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("\\___/\\_,_/___|__/\\___/_/_/_/\\___/_/  \\_,_/_/ \\__/_/_//_/\\_, / ");
         System.out.println("                                                       /___/ v" + instance.getDescription().getVersion() + (betaVersion ? "-beta" : ""));
         System.out.println(" ");
+
         if (betaVersion) {
             System.out.println("This is a beta build! It may contain bugs and game breaking glitches!");
             System.out.println("Do not use this version on production servers!");
         }
         System.out.println("------------------------------------------------------------------------");
 
-        try {
-            RecipeChoice.ExactChoice exactChoice = new RecipeChoice.ExactChoice(new ItemStack(Material.DEBUG_STICK));
-        } catch (NoClassDefFoundError e) {
-            System.out.println("You are using an outdated Spigot version!");
-            System.out.println("You can get the latest Spigot version via BuildTools: ");
-            System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
-            System.out.println("------------------------------------------------------------------------");
-            return;
-        }
-
-        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
-            System.out.println("WolfyUtilities is not installed!");
-            System.out.println("You can download it here: ");
-            System.out.println("    https://www.spigotmc.org/resources/wolfyutilities.64124/");
-            System.out.println("------------------------------------------------------------------------");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
+        loaded = canRun();
 
         File mainConfig = new File(getDataFolder(), "Main-Config.yml");
         if (mainConfig.exists()) {
@@ -96,54 +79,57 @@ public class CustomCrafting extends JavaPlugin {
         recipeHandler = new RecipeHandler(api);
         configHandler.load();
 
-        System.out.println("------------------------------------------------------------------------");
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 
-        loadPlayerCache();
+        if(loaded){
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new CraftListener(api), this);
-        getServer().getPluginManager().registerEvents(new BlockListener(), this);
-        getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
-        getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
+            getServer().getPluginManager().registerEvents(new CraftListener(api), this);
+            getServer().getPluginManager().registerEvents(new BlockListener(), this);
+            getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
+            getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
 
-        if(configHandler.getConfig().isExperimentalFeatures()){
-            getServer().getPluginManager().registerEvents(new AnvilListener(), this);
-        }
+            System.out.println("------------------------------------------------------------------------");
 
-        CommandCC commandCC = new CommandCC();
-        if (configHandler.getConfig().isCCenabled()) {
-            Bukkit.getPluginCommand("cc").setExecutor(commandCC);
-            Bukkit.getPluginCommand("cc").setTabCompleter(commandCC);
-        }
-        Bukkit.getPluginCommand("customcrafting").setExecutor(commandCC);
-        Bukkit.getPluginCommand("customcrafting").setTabCompleter(commandCC);
+            loadPlayerCache();
 
-        invHandler.init();
-
-        workbenches = new Workbenches(api);
-
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            api.sendConsoleMessage("$msg.startup.placeholder$");
-            new PlaceHolder().register();
-        }
-        recipeHandler.loadConfigs();
-        checkUpdate(null);
-
-        Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
-        metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
-            String version = Bukkit.getServer().getName();
-            if (WolfyUtilities.hasSpigot()) {
-                version = "Spigot";
+            if (configHandler.getConfig().isExperimentalFeatures()) {
+                getServer().getPluginManager().registerEvents(new AnvilListener(), this);
             }
-            if(WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLoader")){
-                version = "Paper";
-            }
-            return version;
-        }));
-        metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
 
-        loaded = true;
+            CommandCC commandCC = new CommandCC();
+            if (configHandler.getConfig().isCCenabled()) {
+                Bukkit.getPluginCommand("cc").setExecutor(commandCC);
+                Bukkit.getPluginCommand("cc").setTabCompleter(commandCC);
+            }
+            Bukkit.getPluginCommand("customcrafting").setExecutor(commandCC);
+            Bukkit.getPluginCommand("customcrafting").setTabCompleter(commandCC);
+
+            invHandler.init();
+
+            workbenches = new Workbenches(api);
+
+            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                api.sendConsoleMessage("$msg.startup.placeholder$");
+                new PlaceHolder().register();
+            }
+            recipeHandler.loadConfigs();
+            checkUpdate(null);
+
+            Metrics metrics = new Metrics(this);
+            metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
+            metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
+                String version = Bukkit.getServer().getName();
+                if (WolfyUtilities.hasSpigot()) {
+                    version = "Spigot";
+                }
+                if (WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLoader")) {
+                    version = "Paper";
+                }
+                return version;
+            }));
+            metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
+        }
+
         System.out.println("------------------------------------------------------------------------");
     }
 
@@ -178,8 +164,35 @@ public class CustomCrafting extends JavaPlugin {
 
     }
 
+    public static boolean canRun() {
+        try {
+            RecipeChoice.ExactChoice exactChoice = new RecipeChoice.ExactChoice(new ItemStack(Material.DEBUG_STICK));
+        } catch (NoClassDefFoundError e) {
+            System.out.println("You are using an outdated Spigot version!");
+            System.out.println("You can get the latest Spigot version via BuildTools: ");
+            System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
+            System.out.println("------------------------------------------------------------------------");
+            return false;
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
+            System.out.println("WolfyUtilities is not installed!");
+            System.out.println("You can download it here: ");
+            System.out.println("    https://www.spigotmc.org/resources/wolfyutilities.64124/");
+            System.out.println("------------------------------------------------------------------------");
+            Bukkit.getPluginManager().disablePlugin(instance);
+            return false;
+        }
+
+        return true;
+    }
+
     public static boolean isOutdated() {
         return outdated;
+    }
+
+    public static boolean isLoaded() {
+        return loaded;
     }
 
     public static ConfigHandler getConfigHandler() {

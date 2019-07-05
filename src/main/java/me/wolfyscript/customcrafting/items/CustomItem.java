@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.items;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.Anvil;
 import me.wolfyscript.customcrafting.data.cache.CookingData;
 import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
@@ -14,8 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import javax.annotation.Nullable;
+import com.sun.istack.internal.Nullable;
 import java.util.*;
 
 public class CustomItem extends ItemStack implements Cloneable{
@@ -268,6 +268,16 @@ public class CustomItem extends ItemStack implements Cloneable{
                     workbench.setIngredient(cache.getItems().getCraftSlot(), item);
                 }
                 break;
+            case ANVIL:
+                Anvil anvil = cache.getAnvil();
+                if (cache.getItems().getType().equals("result")) {
+                    anvil.setResult(item);
+                }else if(cache.getItems().getType().equals("inputLeft")){
+
+                }else if(cache.getItems().getType().equals("inputRight")){
+
+                }
+
             case STONECUTTER:
                 Stonecutter stonecutter = cache.getStonecutter();
                 if (cache.getItems().getType().equals("result")) {

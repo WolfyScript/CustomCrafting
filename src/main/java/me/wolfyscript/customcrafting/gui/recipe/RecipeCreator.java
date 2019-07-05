@@ -83,6 +83,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
         createItem("anvil.block_enchant.true", Material.ENCHANTING_TABLE);
         createItem("anvil.block_enchant.false", Material.ENCHANTING_TABLE);
         createItem("anvil.durability", Material.IRON_SWORD);
+
+        createItem("anvil.input.cancel", Material.BARRIER);
     }
 
     @EventHandler
@@ -119,24 +121,39 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     event.setItem(4, event.getItem("priority", "%PRI%", anvil.getPriority().name()));
                     event.setItem(2, anvil.isPermissions() ? "permissions_on" : "permissions_off");
 
-                    event.setItem(19, anvil.getInputLeft().isEmpty() ? new ItemStack(Material.AIR) : anvil.getInputLeft().keySet().toArray(new CustomItem[0])[0]);
-                    event.setItem(21, anvil.getInputRight().isEmpty() ? new ItemStack(Material.AIR) : anvil.getInputRight().keySet().toArray(new CustomItem[0])[0]);
+                    if(anvil.getMenu().equals(Anvil.Menu.MAINMENU)){
+                        event.setItem(19, anvil.getInputLeft().isEmpty() ? new ItemStack(Material.AIR) : anvil.getInputLeft().keySet().toArray(new CustomItem[0])[0]);
+                        event.setItem(21, anvil.getInputRight().isEmpty() ? new ItemStack(Material.AIR) : anvil.getInputRight().keySet().toArray(new CustomItem[0])[0]);
 
-                    if (anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                        event.setItem(25, anvil.getResult());
-                    } else if (anvil.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-                        event.setItem(25, event.getItem("anvil.durability", "%VAR%", String.valueOf(anvil.getDurability())));
-                    } else {
-                        event.setItem(25, new ItemStack(Material.BARRIER));
+                        if (anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+                            event.setItem(25, anvil.getResult());
+                        } else if (anvil.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
+                            event.setItem(25, event.getItem("anvil.durability", "%VAR%", String.valueOf(anvil.getDurability())));
+                        } else {
+                            event.setItem(25, new ItemStack(Material.BARRIER));
+                        }
+
+                        event.setItem(23, event.getItem("anvil.repair_cost", "%VAR%", String.valueOf(anvil.getRepairCost())));
+
+                        event.setItem(37, anvil.isBlockEnchant() ? "anvil.block_enchant.true" : "anvil.block_enchant.false");
+                        event.setItem(38, anvil.isBlockRename() ? "anvil.block_rename.true" : "anvil.block_rename.false");
+                        event.setItem(39, anvil.isBlockRepair() ? "anvil.block_repair.true" : "anvil.block_repair.false");
+                        event.setItem(41, event.getItem("anvil.mode", "%MODE%", anvil.getMode().name()));
+                    }else{
+                        HashMap<CustomItem, Boolean> input = anvil.getMenu().equals(Anvil.Menu.INPUT_LEFT) ? anvil.getInputLeft() : anvil.getInputRight();
+
+                        for(int i = 0; i < 9; i++){
+                            event.setItem(9+i, new ItemStack(Material.AIR));
+                        }
+
+
+
+                        event.setItem(40, "anvil.input.cancel");
                     }
 
-                    event.setItem(23, event.getItem("anvil.repair_cost", "%VAR%", String.valueOf(anvil.getRepairCost())));
 
-                    event.setItem(37, anvil.isBlockEnchant() ? "anvil.block_enchant.true" : "anvil.block_enchant.false");
-                    event.setItem(38, anvil.isBlockRename() ? "anvil.block_rename.true" : "anvil.block_rename.false");
-                    event.setItem(39, anvil.isBlockRepair() ? "anvil.block_repair.true" : "anvil.block_repair.false");
 
-                    event.setItem(41, event.getItem("anvil.mode", "%MODE%", anvil.getMode().name()));
+
                     break;
                 case STONECUTTER:
                     Stonecutter stonecutter = cache.getStonecutter();
@@ -220,7 +237,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     Anvil anvil = cache.getAnvil();
                     if (action.startsWith("anvil.")) {
                         action = action.substring("anvil.".length());
-                        switch (action.split("\\.")[0]) {
+                        switch (action.split("\\.", 1)[0]) {
                             case "block_enchant":
                                 anvil.setBlockEnchant(!anvil.isBlockEnchant());
                                 break;
@@ -245,6 +262,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     id = 0;
                                 }
                                 anvil.setMode(CustomAnvilRecipe.Mode.getById(id));
+                                break;
+                            case "input.cancel":
+                                anvil.setMenu(Anvil.Menu.MAINMENU);
                         }
                     } else if (action.equals("priority")) {
                         RecipePriority recipePriority = anvil.getPriority();
@@ -292,6 +312,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 if (!workbench.getIngredients().isEmpty() && !workbench.getResult().getType().equals(Material.AIR))
                     return true;
                 break;
+            case ANVIL:
+
+                break;
             case STONECUTTER:
                 Stonecutter stonecutter = cache.getStonecutter();
                 if (!stonecutter.getResult().getType().equals(Material.AIR) && !stonecutter.getSource().getType().equals(Material.AIR))
@@ -315,7 +338,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
         PlayerCache playerCache = CustomCrafting.getPlayerCache(player);
         Items items = playerCache.getItems();
         updateInv(player.getOpenInventory().getTopInventory(), playerCache);
-
         if (guiClick.getClickedInventory().equals(player.getOpenInventory().getTopInventory())) {
             if (guiClick.getClickType().equals(ClickType.SHIFT_RIGHT) && !guiClick.getCurrentItem().getType().equals(Material.AIR)) {
                 CustomItem customItem = CustomItem.getCustomItem(guiClick.getCurrentItem());
@@ -331,6 +353,19 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             guiClick.getGuiHandler().changeToInv("item_editor");
                             return true;
                         }
+                    case ANVIL:
+                        Anvil anvil = playerCache.getAnvil();
+                        if(slot == 19){
+                            anvil.setMenu(Anvil.Menu.INPUT_LEFT);
+                            update(guiClick.getGuiHandler());
+                        }else if(slot == 21){
+                            anvil.setMenu(Anvil.Menu.INPUT_RIGHT);
+                            update(guiClick.getGuiHandler());
+                        }else if (slot == 25){
+                            items.setResult(customItem);
+                            guiClick.getGuiHandler().changeToInv("item_editor");
+                        }
+                        return true;
                     case STONECUTTER:
                         if (slot == 20) {
                             items.setSource(customItem);
@@ -496,6 +531,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                             return false;
                         case ANVIL:
+                            //TODO
+
 
                             break;
                         case STONECUTTER:

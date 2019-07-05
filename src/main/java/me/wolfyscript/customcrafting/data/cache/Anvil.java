@@ -26,6 +26,9 @@ public class Anvil {
     private boolean blockRename;
     private boolean blockEnchant;
 
+    //GUI
+    private Menu menu;
+
     public Anvil(){
         this.inputLeft = new HashMap<>();
         this.inputRight = new HashMap<>();
@@ -40,6 +43,7 @@ public class Anvil {
         this.blockEnchant = false;
         this.blockRename = false;
         this.blockRepair = false;
+        this.menu = Menu.MAINMENU;
     }
 
     public boolean isExactMeta() {
@@ -136,5 +140,17 @@ public class Anvil {
 
     public void setBlockEnchant(boolean blockEnchant) {
         this.blockEnchant = blockEnchant;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    public enum Menu{
+        MAINMENU, INPUT_LEFT, INPUT_RIGHT;
     }
 }

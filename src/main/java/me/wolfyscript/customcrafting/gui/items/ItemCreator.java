@@ -683,7 +683,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 if (args.length > 1) {
                     int level;
                     try {
-                        level = Integer.parseInt(args[1]);
+                        level = Integer.parseInt(args[args.length-1]);
                     } catch (NumberFormatException ex) {
                         api.sendPlayerMessage(player, "$msg.gui.item_creator.enchant.invalid_lvl$");
                         return true;

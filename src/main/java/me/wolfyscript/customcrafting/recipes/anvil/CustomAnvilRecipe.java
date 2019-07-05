@@ -6,8 +6,8 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.inventory.ItemStack;
+import com.sun.istack.internal.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class CustomAnvilRecipe implements CustomRecipe {

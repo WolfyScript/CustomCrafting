@@ -135,11 +135,6 @@ public class ChatUtils {
                         new ClickData("§7[UUID]", null, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§7[§3Click to copy§7]\n"+modifier.getUniqueId()), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, ""+modifier.getUniqueId()))
                 );
             }
-
-
-
-
-
         }
 
 

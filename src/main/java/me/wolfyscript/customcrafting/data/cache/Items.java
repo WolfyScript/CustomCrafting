@@ -33,6 +33,8 @@ public class Items implements Serializable {
 
     private CustomItem variantItem;
 
+    private int anvilInput;
+
     public Items(){
         this.page = 0;
         this.skullSetting = new ItemStack(Material.AIR);
@@ -50,6 +52,8 @@ public class Items implements Serializable {
         this.attributeName = "";
 
         this.variantItem = new CustomItem(Material.AIR);
+
+        this.anvilInput = 0;
     }
 
     public void setItem(String type, CustomItem customItem){
@@ -61,6 +65,16 @@ public class Items implements Serializable {
             setId(customItem.getId());
             setSaved(true);
         }
+    }
+
+    public void setInputLeft(CustomItem customItem, int index){
+        this.anvilInput = index;
+        setItem("inputLeft", customItem);
+    }
+
+    public void setInputRight(CustomItem customItem, int index){
+        this.anvilInput = index;
+        setItem("inputRight", customItem);
     }
 
     public void setSource(CustomItem customItem){

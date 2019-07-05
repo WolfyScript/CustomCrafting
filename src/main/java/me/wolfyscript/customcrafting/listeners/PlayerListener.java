@@ -23,6 +23,18 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
+        WolfyUtilities api = CustomCrafting.getApi();
+        if(!CustomCrafting.isLoaded()){
+            api.sendPlayerMessage(player, "$msg.player.error.loading.msg$");
+            api.sendPlayerMessage(player, "$msg.player.error.loading.msg1$");
+            api.sendPlayerMessage(player, "$msg.player.error.loading.msg2$");
+            api.sendActionMessage(player,
+                    new ClickData("$msg.player.error.loading.msg3$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/wiki/buildtools/")),
+                    new ClickData("$msg.player.error.loading.msg4$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://papermc.io/downloads")));
+            api.sendPlayerMessage(player, "");
+            api.sendPlayerMessage(player, "$msg.player.error.loading.msg5$");
+        }
+
         for(CustomFurnaceRecipe customFurnaceRecipe : CustomCrafting.getRecipeHandler().getFurnaceRecipes()){
             player.undiscoverRecipe(new NamespacedKey(customFurnaceRecipe.getId().split(":")[0], customFurnaceRecipe.getId().split(":")[1]));
         }
@@ -33,7 +45,7 @@ public class PlayerListener implements Listener {
         InventoryAPI inventoryAPI = CustomCrafting.getApi().getInventoryAPI();
         if((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (CustomCrafting.isOutdated()) {
-                WolfyUtilities api = CustomCrafting.getApi();
+
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
                 api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
             } else {
