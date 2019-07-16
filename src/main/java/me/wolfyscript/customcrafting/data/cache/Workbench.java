@@ -70,7 +70,7 @@ public class Workbench implements Serializable {
 
     public void setIngredients(List<ItemStack> ingredients) {
         for(int i = 0; i < ingredients.size(); i++){
-            CustomItem customItem = CustomItem.getCustomItem(ingredients.get(i));
+            CustomItem customItem = CustomItem.getByItemStack(ingredients.get(i));
             if(customItem.getType().equals(Material.AIR)){
                 setIngredients(i, new ArrayList<>(Collections.singleton(customItem)));
             }else{

@@ -7,8 +7,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class Items implements Serializable {
@@ -23,6 +21,7 @@ public class Items implements Serializable {
     private String type;
     private String id;
     private int craftSlot;
+    private int anvilSlot;
     private boolean saved;
 
     private EquipmentSlot attributeSlot;
@@ -32,8 +31,6 @@ public class Items implements Serializable {
     private String attributeName;
 
     private CustomItem variantItem;
-
-    private int anvilInput;
 
     public Items(){
         this.page = 0;
@@ -53,7 +50,7 @@ public class Items implements Serializable {
 
         this.variantItem = new CustomItem(Material.AIR);
 
-        this.anvilInput = 0;
+        this.anvilSlot = 0;
     }
 
     public void setItem(String type, CustomItem customItem){
@@ -68,12 +65,12 @@ public class Items implements Serializable {
     }
 
     public void setInputLeft(CustomItem customItem, int index){
-        this.anvilInput = index;
+        this.anvilSlot = index;
         setItem("inputLeft", customItem);
     }
 
     public void setInputRight(CustomItem customItem, int index){
-        this.anvilInput = index;
+        this.anvilSlot = index;
         setItem("inputRight", customItem);
     }
 

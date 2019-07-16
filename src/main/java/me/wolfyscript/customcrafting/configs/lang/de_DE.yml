@@ -197,7 +197,7 @@ items:
         lore:
           - "&7[&8Ausgeschaltet&7]"
           - "&7Rezepte werden nicht geblockt!"
-    craft_recipe:
+    workbench:
       name: "&6Werkbank Rezept"
       help:
         - ""
@@ -205,7 +205,7 @@ items:
       name: "&6Anvil Recipe"
       help:
         - ""
-    furnace_recipe:
+    furnace:
       name: "&6Ofen Rezept"
       help:
         - ""
@@ -326,6 +326,20 @@ items:
       name: "&aApply Item"
       help:
         - "Applies the Item to the recipe"
+    meta_ignore:
+      name: "&7Mode: &3%VAR%"
+      lore:
+        - "&eChange the way this meta is checked!"
+        - "&7Ignore specific meta e.g. DisplayName"
+        - "&7Numeric meta can also be configured to"
+        - "&7only allow for Higher or Lower values!"
+      help:
+        - "&7----------------------------------------"
+        - "&3EXACT &7- Meta must be exactly the same!"
+        - "&3IGNORE &7- Meta is ignored and not needed!"
+        - "&7For numeric items:"
+        - "&3HIGHER &7- The value can be higher than the set value!"
+        - "&3LOWER &7- The value can be lower than the set value!"
     set_displayname:
       name: "&6Set Display Name"
       help:
@@ -573,9 +587,9 @@ items:
     durability_cost:
       name: "&7Durability cost: &3%VAR%"
       lore:
-        - "&7>0 = &3lose durability!"
+        - "&7>0 = &3decrease durability!"
         - "&7 0 = &3removed completely! Use replacement to prevent it!"
-        - "&7<0 = &3gain durability!"
+        - "&7<0 = &3increase durability!"
     durability_cost_disabled:
       name: "&7Durability cost: &4&lDisabled"
       lore:
@@ -701,6 +715,24 @@ items:
         name: "&7Durability:&6 %VAR%"
         lore:
           - ""
+      repair_apply:
+        on:
+          name: "&aApply to Result"
+          lore:
+            - "&7Applies the repair cost"
+            - "&7to the result's MetaData!"
+        off:
+          name: "&cNot Applied!"
+          lore:
+            - "&7The result's MetaData stays the same!"
+      repair_mode:
+        name: "&7RepairCost mode: &3%VAR%"
+        lore:
+          - "&eThe mode how the repaircost should be "
+          - "&eaffected by the input left!"
+          - "&3NONE &7- Not affected at all"
+          - "&3ADD &7- Gets added to recipe repaircost!"
+          - "&3MULTIPLY &7- Gets multiplied with recipe repaircost"
   recipe_list:
     lores:
       disabled: "&7&l[&c&lDISABLED&7&l]"
@@ -726,6 +758,28 @@ items:
     furnace_recipe:
       name: "&6Furnace Recipes"
       help: []
+    workbench:
+      name: "&6Workbench Recipes"
+      help: []
+    furnace:
+      name: "&6Furnace Recipes"
+      help: []
+    blast_furnace:
+      name: "&6Blasting Recipe"
+      help:
+        - ""
+    smoker:
+      name: "&6Smoking Recipe"
+      help:
+        - ""
+    campfire:
+      name: "&6Campfire Recipe"
+      help:
+        - ""
+    stonecutter:
+      name: "&6Stonecutter Recipe"
+      help:
+        - ""
 
 inventories:
   main_menu: '&3&lCustomCrafting'

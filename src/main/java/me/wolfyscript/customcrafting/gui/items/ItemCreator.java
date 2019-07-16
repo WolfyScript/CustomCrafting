@@ -5,6 +5,8 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.items.Meta;
+import me.wolfyscript.customcrafting.items.MetaSettings;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
@@ -61,6 +63,11 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("potion_effects", Material.POTION);
         createItem("variants", Material.BOOKSHELF);
 
+        createItem("set_displayname", Material.GREEN_CONCRETE);
+        createItem("remove_displayname", Material.RED_CONCRETE);
+
+        createItem("meta_ignore", Material.CYAN_CONCRETE);
+
         createItem("potion_add", Material.GREEN_CONCRETE);
         createItem("potion_remove", Material.RED_CONCRETE);
 
@@ -101,9 +108,6 @@ public class ItemCreator extends ExtendedGuiWindow {
             createItem("furnace.blast_furnace", Material.BLAST_FURNACE);
             createItem("furnace.smoker", Material.SMOKER);
         }
-
-        createItem("set_displayname", Material.GREEN_CONCRETE);
-        createItem("remove_displayname", Material.RED_CONCRETE);
 
         createItem("skull_texture", Material.GREEN_CONCRETE);
         createItem("skull_owner", Material.NAME_TAG);
@@ -200,20 +204,24 @@ public class ItemCreator extends ExtendedGuiWindow {
 
             CustomItem itemStack = items.getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
+            MetaSettings metaSettings = items.getItem().getMetaSettings();
             if (!itemStack.getType().equals(Material.AIR)) {
                 //DRAW Sections
                 switch (cache.getSubSetting()) {
                     case "item_name":
                         event.setItem(39, "set_displayname");
                         event.setItem(41, "remove_displayname");
+                        event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getNameMeta().getOption().toString()));
                         break;
                     case "item_enchantments":
                         event.setItem(39, "enchant_add");
                         event.setItem(41, "enchant_remove");
+                        event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getEnchantMeta().getOption().toString()));
                         break;
                     case "item_lore":
                         event.setItem(39, "lore_add");
                         event.setItem(41, "lore_remove");
+                        event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getLoreMeta().getOption().toString()));
                         break;
                     case "item_flags":
                         event.setItem(37, event.getItem("flag_attributes", "%C%", itemMeta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES) ? "§3" : "§4"));
@@ -222,6 +230,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setItem(43, event.getItem("flag_placed_on", "%C%", itemMeta.hasItemFlag(ItemFlag.HIDE_PLACED_ON) ? "§3" : "§4"));
                         event.setItem(47, event.getItem("flag_potion_effects", "%C%", itemMeta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS) ? "§3" : "§4"));
                         event.setItem(51, event.getItem("flag_enchants", "%C%", itemMeta.hasItemFlag(ItemFlag.HIDE_ENCHANTS) ? "§3" : "§4"));
+                        event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getFlagsMeta().getOption().toString()));
                         break;
                     case "attributes_modifiers":
                         event.setItem(36, "attribute.generic_max_health");
@@ -242,6 +251,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                             event.setItem(38, items.getSkullSetting());
                             event.setItem(39, "skull_texture");
                             event.setItem(41, "skull_owner");
+                            event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getPlayerHeadMeta().getOption().toString()));
                         } else {
                             event.setItem(40, "invalid_type");
                         }
@@ -250,6 +260,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         if (itemMeta instanceof PotionMeta) {
                             event.setItem(39, "potion_add");
                             event.setItem(41, "potion_remove");
+                            event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getPotionMeta().getOption().toString()));
                         } else {
                             event.setItem(40, "invalid_type");
                         }
@@ -283,6 +294,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         if (itemMeta instanceof Damageable) {
                             event.setItem(39, "damage_set");
                             event.setItem(41, "damage_reset");
+                            event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getDamageMeta().getOption().toString()));
                         } else {
                             event.setItem(40, "invalid_type");
                         }
@@ -291,6 +303,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         if (itemMeta instanceof Repairable) {
                             event.setItem(39, "repair_set");
                             event.setItem(41, "repair_reset");
+                            event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getRepairCostMeta().getOption().toString()));
                         } else {
                             event.setItem(40, "invalid_type");
                         }
@@ -309,6 +322,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         if (WolfyUtilities.hasVillagePillageUpdate()) {
                             event.setItem(39, event.getItem("set_custom_model_data", "%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_creator.custom_model_data.disabled$"))) + ""));
                             event.setItem(41, "reset_custom_model_data");
+                            event.setItem(45, event.getItem("meta_ignore", "%VAR%", metaSettings.getCustomModelDataMeta().getOption().toString()));
                         } else {
                             event.setItem(40, "invalid_version");
                         }
@@ -400,6 +414,14 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 CustomItem.applyItem(customItem, cache);
                 guiAction.getGuiHandler().changeToInv("recipe_creator");
+            } else if (action.equals("meta_ignore")) {
+                Meta meta = items.getItem().getMetaSettings().getMetaByCache(cache);
+                List<MetaSettings.Option> options = meta.getAvailableOptions();
+                int i = options.indexOf(meta.getOption())+1;
+                if(i >= options.size()){
+                    i = 0;
+                }
+                meta.setOption(options.get(i));
             } else {
                 CustomItem itemStack = items.getItem();
                 ItemMeta itemMeta = itemStack.getItemMeta();
@@ -633,7 +655,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     case "variants":
                         ItemStack item = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
                         if (item != null) {
-                            cache.getItems().setVariantItem(CustomItem.getCustomItem(item));
+                            cache.getItems().setVariantItem(CustomItem.getByItemStack(item));
                         } else {
                             cache.getItems().setVariantItem(new CustomItem(Material.AIR));
                         }
@@ -641,7 +663,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     case "replacement_durability":
                         ItemStack replacement = guiClick.getPlayer().getOpenInventory().getTopInventory().getItem(38);
                         if (replacement != null) {
-                            cache.getItems().getItem().setReplacement(CustomItem.getCustomItem(replacement));
+                            cache.getItems().getItem().setReplacement(CustomItem.getByItemStack(replacement));
                         } else {
                             cache.getItems().getItem().setReplacement(null);
                         }
@@ -666,9 +688,20 @@ public class ItemCreator extends ExtendedGuiWindow {
         switch (id) {
             case 0:
                 if (args.length > 1) {
-                    CustomItem.saveItem(cache, args[0] + ":" + args[1], items.getItem());
+                    String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
+                    String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
+                    if(!CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches()){
+                        api.sendPlayerMessage(player, "&cInvalid Namespace! Namespaces may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+                        return true;
+                    }
+                    if(!CustomCrafting.VALID_KEY.matcher(key).matches()){
+                        api.sendPlayerMessage(player, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+                        return true;
+                    }
+
+                    CustomItem.saveItem(cache, namespace + ":" + key, items.getItem());
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.save.success$");
-                    api.sendPlayerMessage(player, "&6" + args[0] + "/items/" + args[1]);
+                    api.sendPlayerMessage(player, "&6" + namespace + "/items/" + key);
                 } else {
                     return true;
                 }
@@ -683,7 +716,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 if (args.length > 1) {
                     int level;
                     try {
-                        level = Integer.parseInt(args[args.length-1]);
+                        level = Integer.parseInt(args[args.length - 1]);
                     } catch (NumberFormatException ex) {
                         api.sendPlayerMessage(player, "$msg.gui.item_creator.enchant.invalid_lvl$");
                         return true;

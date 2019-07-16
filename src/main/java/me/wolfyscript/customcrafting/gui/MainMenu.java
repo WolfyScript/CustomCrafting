@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
@@ -20,8 +21,8 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @Override
     public void onInit() {
-        createItem("craft_recipe", Material.CRAFTING_TABLE);
-        createItem("furnace_recipe", Material.FURNACE);
+        createItem("workbench", Material.CRAFTING_TABLE);
+        createItem("furnace", Material.FURNACE);
         createItem("anvil", Material.ANVIL);
 
         if(WolfyUtilities.hasVillagePillageUpdate()){
@@ -52,20 +53,17 @@ public class MainMenu extends ExtendedGuiWindow {
 
             event.setItem(0, "glass_white", true);
 
-            event.setItem(10, "craft_recipe");
-            event.setItem(12, "furnace_recipe");
+            event.setItem(10, "workbench");
+            event.setItem(12, "furnace");
+            event.setItem(14, "anvil");
 
             if(WolfyUtilities.hasVillagePillageUpdate()){
-                event.setItem(14, "blast_furnace");
-                event.setItem(16, "smoker");
-                event.setItem(20, "campfire");
-                event.setItem(22, "stonecutter");
-                if(CustomCrafting.getConfigHandler().getConfig().isExperimentalFeatures()){
-                    event.setItem(24, "anvil");
-                }
-            }else if(CustomCrafting.getConfigHandler().getConfig().isExperimentalFeatures()){
-                event.setItem(14, "anvil");
+                event.setItem(16, "blast_furnace");
+                event.setItem(20, "smoker");
+                event.setItem(22, "campfire");
+                event.setItem(24, "stonecutter");
             }
+
 
             event.setItem(39, "item_editor");
             event.setItem(41, "recipe_list");
@@ -103,7 +101,7 @@ public class MainMenu extends ExtendedGuiWindow {
             String action = guiAction.getAction();
             PlayerCache playerCache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
             if(action.startsWith("lockdown.")){
-                if (CommandCC.checkPerm(guiAction.getPlayer(), "customcrafting.cmd.lockdown")) {
+                if (ChatUtils.checkPerm(guiAction.getPlayer(), "customcrafting.cmd.lockdown")) {
                     CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
                 }
             }else{
@@ -122,8 +120,8 @@ public class MainMenu extends ExtendedGuiWindow {
                     case "blast_furnace":
                     case "smoker":
                     case "campfire":
-                    case "craft_recipe":
-                    case "furnace_recipe":
+                    case "workbench":
+                    case "furnace":
                     case "anvil":
                     case "stonecutter":
                         playerCache.setSetting(Setting.valueOf(action.toUpperCase(Locale.ROOT)));

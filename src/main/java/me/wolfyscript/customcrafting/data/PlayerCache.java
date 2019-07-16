@@ -72,7 +72,7 @@ public class PlayerCache {
                 this.smoker = new Smoker();
             case CAMPFIRE:
                 this.campfire = new Campfire();
-            case FURNACE_RECIPE:
+            case FURNACE:
                 this.furnace = new Furnace();
         }
     }
@@ -108,7 +108,7 @@ public class PlayerCache {
                 return getSmoker();
             case CAMPFIRE:
                 return getCampfire();
-            case FURNACE_RECIPE:
+            case FURNACE:
                 return getFurnace();
         }
         return null;

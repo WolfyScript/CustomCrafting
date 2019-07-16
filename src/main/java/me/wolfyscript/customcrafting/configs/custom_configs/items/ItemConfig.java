@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.configs.custom_configs.items;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.items.MetaSettings;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -41,6 +42,7 @@ public class ItemConfig extends CustomConfig {
 
     public void setCustomItem(CustomItem itemStack){
         saveItem("item", itemStack);
+        setMetaSettings(itemStack.getMetaSettings());
         setBurnTime(itemStack.getBurnTime());
         setConsumed(itemStack.isConsumed());
         if(itemStack.getReplacement() != null){
@@ -119,5 +121,13 @@ public class ItemConfig extends CustomConfig {
 
     public int getBurnTime(){
         return getInt("fuel.burntime");
+    }
+
+    public void setMetaSettings(MetaSettings metaSettings){
+        set("meta", metaSettings.toString());
+    }
+
+    public MetaSettings getMetaSettings(){
+        return new MetaSettings(getString("meta"));
     }
 }

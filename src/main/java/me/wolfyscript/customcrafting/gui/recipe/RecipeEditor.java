@@ -2,12 +2,14 @@ package me.wolfyscript.customcrafting.gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.Anvil;
 import me.wolfyscript.customcrafting.data.cache.CookingData;
 import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
+import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -87,66 +89,12 @@ public class RecipeEditor extends ExtendedGuiWindow {
             CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
             if (recipe != null) {
                 if (id == 0) {
-                    switch (cache.getSetting()) {
-                        case CRAFT_RECIPE:
-                            if (recipe instanceof CraftingRecipe) {
-                                cache.resetWorkbench();
-                                Workbench workbench = cache.getWorkbench();
-                                workbench.setResult(recipe.getCustomResult());
-                                HashMap<Character, ArrayList<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
-                                workbench.setIngredients(Arrays.asList(new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR))));
-                                for (String row : ((CraftingRecipe) recipe).getConfig().getShape()) {
-                                    for (char key : row.toCharArray()) {
-                                        if (key != ' ') {
-                                            workbench.setIngredients(key, ingredients.get((char) key));
-                                        }
-                                    }
-                                }
-                                workbench.setResult(recipe.getCustomResult());
-                                workbench.setShapeless(((CraftingRecipe) recipe).isShapeless());
-                                workbench.setAdvWorkbench(((CraftingRecipe) recipe).needsAdvancedWorkbench());
-                                workbench.setPermissions(((CraftingRecipe) recipe).needsPermission());
-                                workbench.setPriority(recipe.getPriority());
-                                workbench.setExactMeta(recipe.isExactMeta());
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
-                                return false;
-                            }
-                            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
-                            return true;
-                        case ANVIL:
-
-                            return true;
-                        case STONECUTTER:
-                            if (recipe instanceof CustomStonecutterRecipe) {
-                                cache.resetStonecutter();
-                                Stonecutter stonecutter = cache.getStonecutter();
-                                stonecutter.setResult(recipe.getCustomResult());
-                                stonecutter.setSource(((CustomStonecutterRecipe) recipe).getSource());
-                                stonecutter.setExactMeta(recipe.isExactMeta());
-                                stonecutter.setPriority(recipe.getPriority());
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
-                                return false;
-                            }
-                            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
-                            return false;
-                        case CAMPFIRE:
-                        case BLAST_FURNACE:
-                        case SMOKER:
-                        case FURNACE_RECIPE:
-                            if (recipe instanceof CustomCookingRecipe) {
-                                cache.resetCookingData();
-                                CookingData furnace = cache.getFurnace();
-                                //furnace.setAdvFurnace(((CustomFurnaceRecipe) recipe).needsAdvancedFurnace());
-                                furnace.setSource(((CustomCookingRecipe) recipe).getSource());
-                                furnace.setResult(recipe.getCustomResult());
-                                furnace.setExperience(((CustomCookingRecipe) recipe).getConfig().getXP());
-                                furnace.setCookingTime(((CustomCookingRecipe) recipe).getConfig().getCookingTime());
-                                furnace.setExactMeta(recipe.isExactMeta());
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
-                                return false;
-                            }
-                            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
-                            return false;
+                    if(CustomCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, player)){
+                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("recipe_creator"), 1);
+                        return false;
+                    }else{
+                        api.sendPlayerMessage(player, "$msg.gui.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", cache.getSetting().name()});
+                        return true;
                     }
                 } else if (id == 1) {
                     api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new String[]{"%RECIPE%", recipe.getId()});

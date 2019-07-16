@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.recipes.workbench;
 
-
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -12,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface CraftingRecipe extends CustomRecipe {
+
+    char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     CraftConfig getConfig();
 
@@ -49,4 +50,7 @@ public interface CraftingRecipe extends CustomRecipe {
 
     HashMap<Character, ArrayList<CustomItem>> getIngredients();
 
+    List<CustomItem> getIngredients(int slot);
+
+    CustomItem getIngredient(int slot);
 }

@@ -10,7 +10,7 @@ crafting:
   workbench:
     name: "&6Advanced Workbench"
     lore:
-     - "&7Workbench for advanced crafting"
+      - "&7Workbench for advanced crafting"
 msg:
   auto_save:
     start:    "   Auto save data   "
@@ -115,6 +115,9 @@ msg:
       furnace:
         xp: "&3Type in the amount of experience. e.g. 0.5"
         cooking_time: "&3Type in the cooking time in ticks. e.g. 20"
+      anvil:
+        durability: "&3Type in the amount of durability. &6>0 increase&7, <0 decrease"
+        repair_cost: "&3Type in the amount of repair_cost. &cMust be greater than 0!"
       save:
         input: "&3Type in the name of the folder and item! &6folder recipe_name"
         empty: "&cCannot save a empty recipe! Check the Result and the Source/ingredients"
@@ -153,6 +156,14 @@ msg:
       success_amount: "&aGave &e%AMOUNT%x %ITEM%&a to &e%PLAYER%"
       no_inv_space: "&cNo space in Inventory!"
       invalid_item: "&cThe item &4%ITEM%&c does not exist!"
+    recipes:
+      toggle:
+        enabled: ""
+        disabled: ""
+      edit:
+        invalid: ""
+      delete:
+        invalid: ""
 
 items:
   none:
@@ -197,7 +208,7 @@ items:
         lore:
           - "&7[&8Disabled&7]"
           - "&7Recipes are not blocked!"
-    craft_recipe:
+    workbench:
       name: "&6Workbench Recipe"
       help:
         - ""
@@ -205,7 +216,7 @@ items:
       name: "&6Anvil Recipe"
       help:
         - ""
-    furnace_recipe:
+    furnace:
       name: "&6Furnace Recipe"
       help:
         - ""
@@ -326,6 +337,20 @@ items:
       name: "&aApply Item"
       help:
         - "Applies the Item to the recipe"
+    meta_ignore:
+      name: "&7Mode: &3%VAR%"
+      lore:
+        - "&eChange the way this meta is checked!"
+        - "&7Ignore specific meta e.g. DisplayName"
+        - "&7Numeric meta can also be configured to"
+        - "&7only allow for Higher or Lower values!"
+      help:
+        - "&7----------------------------------------"
+        - "&3EXACT &7- Meta must be exactly the same!"
+        - "&3IGNORE &7- Meta is ignored and not needed!"
+        - "&7For numeric items:"
+        - "&3HIGHER &7- The value can be higher than the set value!"
+        - "&3LOWER &7- The value can be lower than the set value!"
     set_displayname:
       name: "&6Set Display Name"
       help:
@@ -573,9 +598,9 @@ items:
     durability_cost:
       name: "&7Durability cost: &3%VAR%"
       lore:
-        - "&7>0 = &3lose durability!"
+        - "&7>0 = &3decrease durability!"
         - "&7 0 = &3removed completely! Use replacement to prevent it!"
-        - "&7<0 = &3gain durability!"
+        - "&7<0 = &3increase durability!"
     durability_cost_disabled:
       name: "&7Durability cost: &4&lDisabled"
       lore:
@@ -701,6 +726,24 @@ items:
         name: "&7Durability:&6 %VAR%"
         lore:
           - ""
+      repair_apply:
+        on:
+          name: "&aApply to Result"
+          lore:
+            - "&7Applies the repair cost"
+            - "&7to the result's MetaData!"
+        off:
+          name: "&cNot Applied!"
+          lore:
+            - "&7The result's MetaData stays the same!"
+      repair_mode:
+        name: "&7RepairCost mode: &3%VAR%"
+        lore:
+          - "&eThe mode how the repaircost should be "
+          - "&eaffected by the input left!"
+          - "&3NONE &7- Not affected at all"
+          - "&3ADD &7- Gets added to recipe repaircost!"
+          - "&3MULTIPLY &7- Gets multiplied with recipe repaircost"
   recipe_list:
     lores:
       disabled: "&7&l[&c&lDISABLED&7&l]"
@@ -720,12 +763,28 @@ items:
     next_page:
       name: "&2Next Page"
       help: []
-    craft_recipe:
+    workbench:
       name: "&6Workbench Recipes"
       help: []
-    furnace_recipe:
+    furnace:
       name: "&6Furnace Recipes"
       help: []
+    blast_furnace:
+      name: "&6Blasting Recipe"
+      help:
+        - ""
+    smoker:
+      name: "&6Smoking Recipe"
+      help:
+        - ""
+    campfire:
+      name: "&6Campfire Recipe"
+      help:
+        - ""
+    stonecutter:
+      name: "&6Stonecutter Recipe"
+      help:
+        - ""
 
 inventories:
   main_menu: '&3&lCustomCrafting'

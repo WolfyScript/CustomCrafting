@@ -126,7 +126,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                     } else {
                         CustomItem.applyItem(customItem, cache);
                         api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.item_editor.item_applied$");
-                        guiHandler.changeToInv("recipe_creator");
+                        Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler.changeToInv("recipe_creator"));
                     }
                     break;
                 case 2:

@@ -9,11 +9,8 @@ import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.apache.commons.lang.WordUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.sun.istack.internal.Nullable;
 import java.util.*;
@@ -30,6 +27,7 @@ public class CustomItem extends ItemStack implements Cloneable{
     private CustomItem replacement;
 
     private int durabilityCost;
+    private MetaSettings metaSettings;
 
     public CustomItem(ItemConfig config, boolean replace){
         super(config.getCustomItem(replace));
@@ -40,6 +38,7 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.replacement = config.getReplacementItem();
         this.durabilityCost = config.getDurabilityCost();
         this.consumed = config.isConsumed();
+        this.metaSettings = config.getMetaSettings();
     }
 
     public CustomItem(ItemConfig config){
@@ -55,6 +54,7 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.replacement = null;
         this.durabilityCost = 0;
         this.consumed = true;
+        this.metaSettings = new MetaSettings();
     }
 
     public CustomItem(Material material){
@@ -98,6 +98,14 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.consumed = consumed;
     }
 
+    public MetaSettings getMetaSettings() {
+        return metaSettings;
+    }
+
+    public void setMetaSettings(MetaSettings metaSettings) {
+        this.metaSettings = metaSettings;
+    }
+
     public boolean hasID(){
         return !id.isEmpty();
     }
@@ -126,7 +134,6 @@ public class CustomItem extends ItemStack implements Cloneable{
             lore.add("");
             lore.add("§7[§3§lID_ITEM§r§7]");
             lore.add("§3"+this.id);
-
             idItemMeta.setLore(lore);
             idItem.setItemMeta(idItemMeta);
         }
@@ -167,24 +174,16 @@ public class CustomItem extends ItemStack implements Cloneable{
                 }else if(!this.hasItemMeta() && stack.hasItemMeta()){
                     return false;
                 }
-                return stack.getItemMeta().equals(this.getItemMeta());
+                ItemMeta stackMeta = stack.getItemMeta();
+                ItemMeta currentMeta = this.getItemMeta();
+                if(!getMetaSettings().checkMeta(stackMeta, currentMeta)){
+                    return false;
+                }
+                return stackMeta.equals(currentMeta);
             }
             return true;
-        }else{
-            //MAYBE NOT NECESSARY?!
-            if(getDurabilityCost() != 0 && stack.hasItemMeta()){
-                if (stack.getItemMeta() instanceof Damageable) {
-                    ItemStack copy = stack.clone();
-                    ItemMeta copyMeta = copy.getItemMeta();
-                    ((Damageable) copyMeta).setDamage(((Damageable)this.getItemMeta()).getDamage());
-                    copy.setItemMeta(copyMeta);
-                    return getType() == copy.getType() && this.hasItemMeta() == copy.hasItemMeta() && (!this.hasItemMeta() || Bukkit.getItemFactory().equals(this.getItemMeta(), copyMeta));
-                }
-            }else{
-                return getType() == stack.getType() && this.hasItemMeta() == stack.hasItemMeta() && (!this.hasItemMeta() || Bukkit.getItemFactory().equals(this.getItemMeta(), stack.getItemMeta()));
-            }
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -201,8 +200,7 @@ public class CustomItem extends ItemStack implements Cloneable{
     /*
     CustomItem static methods
      */
-
-    public static CustomItem getCustomItem(ItemStack itemStack) {
+    public static CustomItem getByItemStack(ItemStack itemStack) {
         String id = "";
         ItemStack clearedItem = itemStack.clone();
         if (isIDItem(itemStack) && itemStack.getItemMeta().hasLore()) {
@@ -260,7 +258,7 @@ public class CustomItem extends ItemStack implements Cloneable{
 
     public static void applyItem(CustomItem item, PlayerCache cache) {
         switch (cache.getSetting()) {
-            case CRAFT_RECIPE:
+            case WORKBENCH:
                 Workbench workbench = cache.getWorkbench();
                 if (cache.getItems().getType().equals("result")) {
                     workbench.setResult(item);
@@ -273,7 +271,7 @@ public class CustomItem extends ItemStack implements Cloneable{
                 if (cache.getItems().getType().equals("result")) {
                     anvil.setResult(item);
                 }else if(cache.getItems().getType().equals("inputLeft")){
-
+                    //TODO: CUSTOMITEMS IN VARIANT MENU!
                 }else if(cache.getItems().getType().equals("inputRight")){
 
                 }
@@ -289,7 +287,7 @@ public class CustomItem extends ItemStack implements Cloneable{
             case CAMPFIRE:
             case SMOKER:
             case BLAST_FURNACE:
-            case FURNACE_RECIPE:
+            case FURNACE:
                 CookingData furnace = cache.getCookingData();
                 if (cache.getItems().getType().equals("result")) {
                     furnace.setResult(item);

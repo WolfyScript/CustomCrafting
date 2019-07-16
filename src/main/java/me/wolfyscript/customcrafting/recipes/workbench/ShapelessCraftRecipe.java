@@ -82,20 +82,11 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : ingredients.get(key)) {
-                    if (item.getType().equals(ingredient.getType()) && item.getAmount() >= ingredient.getAmount()) {
-                        if (exactMeta || ingredient.hasItemMeta()) {
-                            if (ingredient.hasItemMeta() && !item.hasItemMeta()) {
-                                continue;
-                            } else if (!ingredient.hasItemMeta() && item.hasItemMeta()) {
-                                continue;
-                            }
-                            if (!item.getItemMeta().equals(ingredient.getItemMeta())) {
-                                continue;
-                            }
-                        }
-                        usedKeys.add(key);
-                        return ingredient.clone();
+                    if(!ingredient.isSimilar(item, exactMeta)){
+                        continue;
                     }
+                    usedKeys.add(key);
+                    return ingredient.clone();
                 }
             }
         }
@@ -185,6 +176,17 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     @Override
     public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
         return ingredients;
+    }
+
+    @Override
+    public List<CustomItem> getIngredients(int slot) {
+        return getIngredients().getOrDefault(LETTERS[slot], new ArrayList<>());
+    }
+
+    @Override
+    public CustomItem getIngredient(int slot) {
+        List<CustomItem> list = getIngredients(slot);
+        return list.size() > 0 ? list.get(0) : null;
     }
 
     public void setResult(ItemStack result) {

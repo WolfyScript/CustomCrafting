@@ -3,15 +3,14 @@ package me.wolfyscript.customcrafting.utils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
-import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -22,6 +21,18 @@ import java.util.List;
 public class ChatUtils {
 
     private static WolfyUtilities api = CustomCrafting.getApi();
+
+    public static boolean checkPerm(CommandSender sender, String perm) {
+        if (WolfyUtilities.hasPermission(sender, perm)) {
+            return true;
+        }
+        if(sender instanceof Player){
+            api.sendPlayerMessage((Player) sender, "$msg.denied_perm$", new String[]{"%PERM%", perm});
+        }else{
+            sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+        }
+        return false;
+    }
 
     public static void sendRecipeListExpanded(Player player) {
         PlayerCache cache = CustomCrafting.getPlayerCache(player);
@@ -38,11 +49,14 @@ public class ChatUtils {
 
         ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
         switch (cache.getSetting()) {
-            case CRAFT_RECIPE:
+            case WORKBENCH:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getCraftingRecipes());
                 break;
-            case FURNACE_RECIPE:
+            case FURNACE:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getFurnaceRecipes());
+                break;
+            case ANVIL:
+                customRecipes.addAll(CustomCrafting.getRecipeHandler().getAnvilRecipes());
                 break;
             case STONECUTTER:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getStonecutterRecipes());
@@ -121,23 +135,25 @@ public class ChatUtils {
         api.sendPlayerMessage(player, "");
         if(itemMeta.hasAttributeModifiers()){
             Collection<AttributeModifier> modifiers = itemMeta.getAttributeModifiers(Attribute.valueOf(cache.getSubSetting()));
-            api.sendPlayerMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
-            api.sendPlayerMessage(player, "");
-            for(AttributeModifier modifier : modifiers){
-                api.sendActionMessage(player,
-                        new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
-                            itemMeta.removeAttributeModifier(Attribute.valueOf(CustomCrafting.getPlayerCache(player1).getSubSetting()), modifier);
-                            CustomCrafting.getPlayerCache(player).getItems().getItem().setItemMeta(itemMeta);
-                            sendAttributeModifierManager(player1);
-                        }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT,"§c"+modifier.getName())),
-                        new ClickData("§e"+modifier.getName()+"  §b"+modifier.getAmount()+"  §6"+ (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3"+modifier.getOperation(), null),
-                        new ClickData("  ", null),
-                        new ClickData("§7[UUID]", null, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§7[§3Click to copy§7]\n"+modifier.getUniqueId()), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, ""+modifier.getUniqueId()))
-                );
+            if(modifiers != null){
+                api.sendPlayerMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
+                api.sendPlayerMessage(player, "");
+                for(AttributeModifier modifier : modifiers){
+                    api.sendActionMessage(player,
+                            new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
+                                itemMeta.removeAttributeModifier(Attribute.valueOf(CustomCrafting.getPlayerCache(player1).getSubSetting()), modifier);
+                                CustomCrafting.getPlayerCache(player).getItems().getItem().setItemMeta(itemMeta);
+                                sendAttributeModifierManager(player1);
+                            }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT,"§c"+modifier.getName())),
+                            new ClickData("§e"+modifier.getName()+"  §b"+modifier.getAmount()+"  §6"+ (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3"+modifier.getOperation(), null),
+                            new ClickData("  ", null),
+                            new ClickData("§7[UUID]", null, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§7[§3Click to copy§7]\n"+modifier.getUniqueId()), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, ""+modifier.getUniqueId()))
+                    );
+                }
+            }else{
+                api.sendPlayerMessage(player, "&cNo attributes set yet!");
             }
         }
-
-
 
         api.sendPlayerMessage(player, "");
         api.sendPlayerMessage(player, "-------------------------------------------------");

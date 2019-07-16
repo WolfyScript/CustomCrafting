@@ -5,14 +5,18 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPrepareAnvilEvent;
 import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
 
 import java.util.List;
 
@@ -25,79 +29,124 @@ public class AnvilListener implements Listener {
         List<CustomAnvilRecipe> recipes = CustomCrafting.getRecipeHandler().getAnvilRecipes();
 
         for (CustomAnvilRecipe recipe : recipes) {
-            CustomPrepareAnvilEvent anvilEvent = new CustomPrepareAnvilEvent(event.getView(), event.getResult(), recipe);
-            boolean left = true;
             if (recipe.hasInputLeft()) {
+                boolean left = false;
                 if (inventory.getItem(0) != null) {
-                    for (CustomItem customItem : recipe.getInputLeft().keySet()) {
-                        if (!customItem.isSimilar(inventory.getItem(0), recipe.isExactMeta())) {
-                            left = false;
-                        } else {
+                    for (CustomItem customItem : recipe.getInputLeft()) {
+                        if (customItem.isSimilar(inventory.getItem(0), recipe.isExactMeta())) {
                             left = true;
                             break;
                         }
                     }
+                    if (!left) {
+                        continue;
+                    }
                 } else {
-                    left = false;
+                    continue;
                 }
             }
-            boolean right = true;
-            if (recipe.hasInputRight() && left) {
+            if (recipe.hasInputRight()) {
+                boolean right = false;
                 if (inventory.getItem(1) != null) {
-                    for (CustomItem customItem : recipe.getInputRight().keySet()) {
-                        if (!customItem.isSimilar(inventory.getItem(1), recipe.isExactMeta())) {
-                            left = false;
-                        } else {
-                            left = true;
+                    for (CustomItem customItem : recipe.getInputRight()) {
+                        if (customItem.isSimilar(inventory.getItem(1), recipe.isExactMeta())) {
+                            right = true;
                             break;
                         }
                     }
+                    if (!right) {
+                        continue;
+                    }
                 } else {
-                    right = false;
+                    continue;
                 }
             }
-
-            if (!left || !right) {
-                anvilEvent.setCancelled(true);
-            }
-            Bukkit.getPluginManager().callEvent(anvilEvent);
-            if (anvilEvent.isCancelled()) {
-                continue;
-            }
+            ItemStack inputLeft = inventory.getItem(0);
+            ItemStack result;
             //RECIPE RESULTS!
-            inventory.setRepairCost(recipe.getRepairCost());
-
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                inventory.setItem(2, recipe.getCustomResult());
-            }else{
-                ItemStack inputLeft = inventory.getItem(0);
-                ItemStack result = inventory.getItem(2);
-                if(recipe.isBlockEnchant()){
-                    if(result.hasItemMeta() && result.getItemMeta().hasEnchants()){
-                        result.getItemMeta().getEnchants().clear();
-                        if(inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasEnchants()){
-                            result.addEnchantments(inputLeft.getEnchantments());
+                result = recipe.getCustomResult();
+            } else {
+                result = event.getResult();
+                if (result != null && result.hasItemMeta()) {
+                    if (recipe.isBlockEnchant()) {
+                        if (result.hasItemMeta() && result.getItemMeta().hasEnchants()) {
+                            for (Enchantment enchantment : result.getEnchantments().keySet()) {
+                                result.removeEnchantment(enchantment);
+                            }
+                            if (inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasEnchants()) {
+                                result.addUnsafeEnchantments(inputLeft.getEnchantments());
+                            }
+                        }
+                    }
+                    if (recipe.isBlockRename()) {
+                        ItemMeta itemMeta = result.getItemMeta();
+                        if (inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
+                            itemMeta.setDisplayName(inputLeft.getItemMeta().getDisplayName());
+                        } else {
+                            itemMeta.setDisplayName(null);
+                        }
+                        result.setItemMeta(itemMeta);
+                    }
+                    if (recipe.isBlockRepair()) {
+                        if (result instanceof Damageable) {
+                            if (inputLeft instanceof Damageable) {
+                                ((Damageable) result).setDamage(((Damageable) inputLeft).getDamage());
+                            }
                         }
                     }
                 }
-                if(recipe.isBlockRename()){
-                    ItemMeta itemMeta = result.getItemMeta();
-                    if(inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()){
-                        itemMeta.setDisplayName(inputLeft.getItemMeta().getDisplayName());
-                    }else{
-                        itemMeta.setDisplayName(null);
+                if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
+                    if (result instanceof Damageable) {
+                        ((Damageable) result).setDamage(((Damageable) result).getDamage() + recipe.getDurability());
                     }
                 }
-                if(recipe.isBlockRepair()){
-                    if(result instanceof Damageable){
-                        if(inputLeft instanceof Damageable){
-                            ((Damageable) result).setDamage(((Damageable) inputLeft).getDamage());
-                        }
-                    }
-                }
-                inventory.setItem(2, result);
-                //TODO: Input consume method
             }
+
+            int repairCost = recipe.getRepairCost();
+
+            ItemMeta inputMeta = inputLeft.getItemMeta();
+            if (inputMeta instanceof Repairable) {
+                if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.ADD)) {
+                    repairCost = repairCost + recipe.getRepairCost();
+                } else if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.MULTIPLY)) {
+                    repairCost = ((repairCost > 0 ? repairCost : 1) * recipe.getRepairCost());
+                }
+            }
+
+            if (recipe.isApplyRepairCost()) {
+                ItemMeta itemMeta = result.getItemMeta();
+                if (itemMeta instanceof Repairable) {
+                    ((Repairable) itemMeta).setRepairCost(repairCost);
+                    result.setItemMeta(itemMeta);
+                }
+            }
+
+            /*
+                 Set the values and result 1 tick after they are replaced by NMS.
+                 So the player will get the correct Item and the correct values are displayed!
+            */
+            final int finalRepairCost = repairCost;
+            ItemStack finalResult = result;
+            inventory.setRepairCost(finalRepairCost);
+            event.setResult(finalResult);
+            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                inventory.setRepairCost(finalRepairCost);
+                event.setResult(finalResult);
+                player.updateInventory();
+            }, 1);
         }
+    }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() instanceof AnvilInventory) {
+            AnvilInventory inventory = (AnvilInventory) event.getClickedInventory();
+            System.out.print("Took item: " + inventory.getItem(2));
+            System.out.print("c: " + event.isCancelled());
+            //TODO: Input consume method
+        }
+
+
     }
 }

@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -27,7 +28,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
             } else {
                 switch (args[0].toLowerCase(Locale.ROOT)) {
                     case "lockdown":
-                        if (checkPerm(p, "customcrafting.cmd.lockdown")) {
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.lockdown")) {
                             CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
                             if(CustomCrafting.getConfigHandler().getConfig().isLockedDown()){
                                 api.sendPlayerMessage(p, "$msg.commands.lockdown.enabled$");
@@ -40,33 +41,35 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         openGUI(p, invAPI);
                         break;
                     case "info":
-                        if (checkPerm(p, "customcrafting.cmd.info")) {
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.info")) {
                             printInfo(p);
                         }
                         break;
                     case "help":
-                        if (checkPerm(p, "customcrafting.cmd.help")) {
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.help")) {
                             printHelp(p);
                         }
                         break;
                     case "clear":
-                        if (checkPerm(p, "customcrafting.cmd.clear")) {
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.clear")) {
                             CustomCrafting.renewPlayerCache(p);
                         }
                         break;
                     case "reload":
-                        if (checkPerm(p, "customcrafting.cmd.reload")) {
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
                             //TODO RELOAD
                             CustomCrafting.getApi().sendPlayerMessage(p, "§cYeah you found it! Unfortunately it's not implemented yet! :(");
                         }
                         break;
                     case "knowledge":
-                        invAPI.openGui(p);
-                        invAPI.getGuiHandler(p).changeToInv("recipe_book");
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge")) {
+                            invAPI.openGui(p);
+                            invAPI.getGuiHandler(p).changeToInv("recipe_book");
+                        }
                         break;
                     case "give":
                         //   /cc give <player> <namespace:key> [amount]
-                        if (checkPerm(p, "customcrafting.cmd.give")) {
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.give")) {
                             if (args.length >= 3) {
                                 Player target = Bukkit.getPlayer(args[1]);
                                 if (target == null) {
@@ -153,21 +156,12 @@ public class CommandCC implements CommandExecutor, TabCompleter {
     }
 
     public void openGUI(Player p, InventoryAPI invAPI) {
-        if (checkPerm(p, "customcrafting.cmd.studio")) {
+        if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio")) {
             invAPI.openGui(p);
             if (invAPI.getGuiHandler(p).getCurrentInv() != null && invAPI.getGuiHandler(p).getCurrentInv().getNamespace().equals("recipe_book")) {
                 invAPI.getGuiHandler(p).changeToInv("main_menu");
             }
         }
-    }
-
-    public static boolean checkPerm(Player player, String perm) {
-        WolfyUtilities api = CustomCrafting.getApi();
-        if (WolfyUtilities.hasPermission(player, perm)) {
-            return true;
-        }
-        api.sendPlayerMessage(player, "$msg.denied_perm$", new String[]{"%PERM%", perm});
-        return false;
     }
 
     public void printInfo(Player p) {
@@ -194,7 +188,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown");
+    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] strings) {

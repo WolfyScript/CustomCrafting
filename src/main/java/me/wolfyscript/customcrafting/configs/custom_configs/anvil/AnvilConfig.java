@@ -5,7 +5,9 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class AnvilConfig extends CustomConfig {
@@ -23,11 +25,27 @@ public class AnvilConfig extends CustomConfig {
     }
 
     public int getRepairCost(){
-        return getInt("repair_cost");
+        return getInt("repair_cost.amount");
     }
 
     public void setRepairCost(int repairCost){
-        set("repair_cost", repairCost);
+        set("repair_cost.amount", repairCost);
+    }
+
+    public boolean isApplyRepairCost(){
+        return getBoolean("repair_cost.apply_to_result");
+    }
+
+    public void setApplyRepairCost(boolean apply){
+        set("repair_cost.apply_to_result", apply);
+    }
+
+    public CustomAnvilRecipe.RepairCostMode getRepairCostMode(){
+        return CustomAnvilRecipe.RepairCostMode.valueOf(getString("repair_cost.mode"));
+    }
+
+    public void setRepairCostMode(CustomAnvilRecipe.RepairCostMode mode){
+        set("repair_cost.mode", mode.toString());
     }
 
     public boolean isBlockRepairing(){
@@ -55,42 +73,67 @@ public class AnvilConfig extends CustomConfig {
     }
 
     public CustomAnvilRecipe.Mode getMode(){
-        if(getConfig().get("mode.durability") != null){
-            return CustomAnvilRecipe.Mode.DURABILITY;
-        }else if(getConfig().getConfigurationSection("mode.result") != null){
-            return CustomAnvilRecipe.Mode.RESULT;
-        }
-        return CustomAnvilRecipe.Mode.NONE;
+        return CustomAnvilRecipe.Mode.valueOf(getString("mode.usedMode"));
+    }
+
+    public void setMode(CustomAnvilRecipe.Mode mode){
+        set("mode.usedMode", mode.toString());
     }
 
     public CustomItem getResult(){
         return getCustomItem("mode.result");
     }
 
+    public void setResult(CustomItem customItem){
+        saveCustomItem("mode.result", customItem);
+    }
+
     public int getDurability(){
         return getInt("mode.durability");
     }
 
-    public HashMap<CustomItem, Boolean> getInputLeft(){
+    public void setDurability(int dur){
+        set("mode.durability", dur);
+    }
+
+    public List<CustomItem> getInputLeft(){
         return getInput("left");
     }
 
-    public HashMap<CustomItem, Boolean> getInputRight(){
+    public List<CustomItem> getInputRight(){
         return getInput("right");
     }
 
-    private HashMap<CustomItem, Boolean> getInput(String leftRight){
-        HashMap<CustomItem, Boolean> result = new HashMap<>();
+    private List<CustomItem> getInput(String leftRight){
+        List<CustomItem> result = new ArrayList<>();
         if(getConfig().getConfigurationSection("input_"+leftRight) != null){
             Set<String> variants = getConfig().getConfigurationSection("input_"+leftRight).getKeys(false);
             for(String variant : variants){
-                result.put(getCustomItem("input_"+leftRight+"."+variant+".item"), getBoolean("input_"+leftRight+"."+variant+".ignore_consume"));
+                result.add(getCustomItem("input_"+leftRight+"."+variant));
             }
         }
         return result;
     }
 
+    public void setInputLeft(List<CustomItem> inputs){
+        setInput("left", inputs);
+    }
 
+    public void setInputRight(List<CustomItem> inputs){
+        setInput("right", inputs);
+    }
 
+    private void setInput(String slot, List<CustomItem> inputs){
+        int variant = 0;
+        for(CustomItem customItem : inputs){
+            saveCustomItem("input_"+slot+".var"+(variant++), customItem);
+        }
+    }
+
+    /*
+    TODO:
+     MAKE REPAIR_COST applying toggleable!
+     Maybe add a option to ignore it from the input or add the repair cost from the input to the result!
+     */
 }
 

@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting;
 
 import com.sun.istack.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
+import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.data.PlayerCache;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -40,10 +42,13 @@ public class CustomCrafting extends JavaPlugin {
     private static RecipeHandler recipeHandler;
     private static Workbenches workbenches = null;
 
-    private static final boolean betaVersion = true;
+    private static final boolean betaVersion = false;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
+
+    public static final Pattern VALID_NAMESPACE = Pattern.compile("[a-z0-9._-]+");
+    public static final Pattern VALID_KEY = Pattern.compile("[a-z0-9/._-]+");
 
     public void onEnable() {
         instance = this;
@@ -82,7 +87,6 @@ public class CustomCrafting extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 
         if(loaded){
-
             getServer().getPluginManager().registerEvents(new CraftListener(api), this);
             getServer().getPluginManager().registerEvents(new BlockListener(), this);
             getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
@@ -92,9 +96,7 @@ public class CustomCrafting extends JavaPlugin {
 
             loadPlayerCache();
 
-            if (configHandler.getConfig().isExperimentalFeatures()) {
-                getServer().getPluginManager().registerEvents(new AnvilListener(), this);
-            }
+            getServer().getPluginManager().registerEvents(new AnvilListener(), this);
 
             CommandCC commandCC = new CommandCC();
             if (configHandler.getConfig().isCCenabled()) {
@@ -103,6 +105,8 @@ public class CustomCrafting extends JavaPlugin {
             }
             Bukkit.getPluginCommand("customcrafting").setExecutor(commandCC);
             Bukkit.getPluginCommand("customcrafting").setTabCompleter(commandCC);
+            Bukkit.getPluginCommand("recipes").setExecutor(new CommandRecipe());
+            Bukkit.getPluginCommand("recipes").setTabCompleter(new CommandRecipe());
 
             invHandler.init();
 
@@ -122,7 +126,7 @@ public class CustomCrafting extends JavaPlugin {
                 if (WolfyUtilities.hasSpigot()) {
                     version = "Spigot";
                 }
-                if (WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLoader")) {
+                if (WolfyUtilities.hasClass("com.destroystokyo.paper.entity.TargetEntityInfo")) {
                     version = "Paper";
                 }
                 return version;
@@ -164,7 +168,7 @@ public class CustomCrafting extends JavaPlugin {
 
     }
 
-    public static boolean canRun() {
+    private static boolean canRun() {
         try {
             RecipeChoice.ExactChoice exactChoice = new RecipeChoice.ExactChoice(new ItemStack(Material.DEBUG_STICK));
         } catch (NoClassDefFoundError e) {
@@ -174,16 +178,6 @@ public class CustomCrafting extends JavaPlugin {
             System.out.println("------------------------------------------------------------------------");
             return false;
         }
-
-        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
-            System.out.println("WolfyUtilities is not installed!");
-            System.out.println("You can download it here: ");
-            System.out.println("    https://www.spigotmc.org/resources/wolfyutilities.64124/");
-            System.out.println("------------------------------------------------------------------------");
-            Bukkit.getPluginManager().disablePlugin(instance);
-            return false;
-        }
-
         return true;
     }
 

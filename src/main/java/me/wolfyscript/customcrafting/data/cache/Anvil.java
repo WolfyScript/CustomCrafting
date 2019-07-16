@@ -5,7 +5,8 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import org.bukkit.Material;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Anvil {
 
@@ -13,8 +14,8 @@ public class Anvil {
     private RecipePriority priority;
     private boolean permissions;
 
-    private HashMap<CustomItem, Boolean> inputLeft;
-    private HashMap<CustomItem, Boolean> inputRight;
+    private List<CustomItem> inputLeft;
+    private List<CustomItem> inputRight;
 
     //RESULT MODES
     private CustomAnvilRecipe.Mode mode;
@@ -22,6 +23,8 @@ public class Anvil {
     private CustomItem result;
 
     private int repairCost;
+    private boolean applyRepairCost;
+    private CustomAnvilRecipe.RepairCostMode repairCostMode;
     private boolean blockRepair;
     private boolean blockRename;
     private boolean blockEnchant;
@@ -30,8 +33,8 @@ public class Anvil {
     private Menu menu;
 
     public Anvil(){
-        this.inputLeft = new HashMap<>();
-        this.inputRight = new HashMap<>();
+        this.inputLeft = new ArrayList<>();
+        this.inputRight = new ArrayList<>();
         this.result = new CustomItem(Material.AIR);
         this.priority = RecipePriority.NORMAL;
         this.exactMeta = true;
@@ -39,7 +42,9 @@ public class Anvil {
         this.mode = CustomAnvilRecipe.Mode.RESULT;
         this.durability = 0;
         this.result = new CustomItem(Material.AIR);
-        this.repairCost = 0;
+        this.repairCost = 1;
+        this.applyRepairCost = false;
+        this.repairCostMode = CustomAnvilRecipe.RepairCostMode.NONE;
         this.blockEnchant = false;
         this.blockRename = false;
         this.blockRepair = false;
@@ -70,20 +75,28 @@ public class Anvil {
         this.result = result;
     }
 
-    public HashMap<CustomItem, Boolean> getInputLeft() {
+    public List<CustomItem> getInputLeft() {
         return inputLeft;
     }
 
-    public void setInputLeft(HashMap<CustomItem, Boolean> inputLeft) {
+    public void setInputLeft(List<CustomItem> inputLeft) {
         this.inputLeft = inputLeft;
     }
 
-    public HashMap<CustomItem, Boolean> getInputRight() {
+    public List<CustomItem> getInputRight() {
         return inputRight;
     }
 
-    public void setInputRight(HashMap<CustomItem, Boolean> inputRight) {
+    public void setInputRight(List<CustomItem> inputRight) {
         this.inputRight = inputRight;
+    }
+
+    public void setInput(List<CustomItem> input){
+        if(getMenu().equals(Menu.INPUT_LEFT)){
+            setInputLeft(input);
+        }else if(getMenu().equals(Menu.INPUT_RIGHT)){
+            setInputRight(input);
+        }
     }
 
     public boolean isPermissions() {
@@ -148,6 +161,22 @@ public class Anvil {
 
     public void setMenu(Menu menu) {
         this.menu = menu;
+    }
+
+    public boolean isApplyRepairCost() {
+        return applyRepairCost;
+    }
+
+    public void setApplyRepairCost(boolean applyRepairCost) {
+        this.applyRepairCost = applyRepairCost;
+    }
+
+    public CustomAnvilRecipe.RepairCostMode getRepairCostMode() {
+        return repairCostMode;
+    }
+
+    public void setRepairCostMode(CustomAnvilRecipe.RepairCostMode repairCostMode) {
+        this.repairCostMode = repairCostMode;
     }
 
     public enum Menu{

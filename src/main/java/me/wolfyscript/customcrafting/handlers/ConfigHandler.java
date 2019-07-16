@@ -49,7 +49,7 @@ public class ConfigHandler {
     public void loadLang() {
         String chosenLang = configAPI.getConfig("main_config").getString("language");
         Config langConf;
-        if (CustomCrafting.getInst().getResource("me/wolfyscript/customcrafting/configs/lang" + "/" + chosenLang + ".yml") != null) {
+        if (CustomCrafting.getInst().getResource("me/wolfyscript/customcrafting/configs/lang/" + chosenLang + ".yml") != null) {
             langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", instance.getDataFolder().getPath() + "/lang", chosenLang, true);
         } else {
             langConf = new Config(configAPI, "me/wolfyscript/customcrafting/configs/lang", "en_US", instance.getDataFolder().getPath() + "/lang", chosenLang, false);

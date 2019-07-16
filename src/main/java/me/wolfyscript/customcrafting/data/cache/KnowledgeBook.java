@@ -1,7 +1,10 @@
 package me.wolfyscript.customcrafting.data.cache;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,15 +18,52 @@ public class KnowledgeBook {
 
     private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
-    private HashMap<Character, ArrayList<CustomItem>> ingredients;
-
-    private CustomItem source;
     private CustomItem result;
+
+    private CustomRecipe customRecipe;
+
+    private int timerTask;
+    private HashMap<Integer, Integer> timerTimings;
 
     public KnowledgeBook(){
         this.page = 0;
         this.setting = Setting.MAIN_MENU;
         this.recipeID = "";
+        this.customRecipe = null;
+        this.timerTask = -1;
+        this.timerTimings = new HashMap<>();
+    }
+
+    public HashMap<Integer, Integer> getTimerTimings() {
+        return timerTimings;
+    }
+
+    public void setTimerTimings(HashMap<Integer, Integer> timerTimings) {
+        this.timerTimings = timerTimings;
+    }
+
+    public void setTimerTask(int task){
+        this.timerTask = task;
+    }
+
+    public int getTimerTask() {
+        return timerTask;
+    }
+
+    public void stopTimerTask(){
+        if(timerTask != -1){
+            Bukkit.getScheduler().cancelTask(timerTask);
+            timerTask = -1;
+            timerTimings = new HashMap<>();
+        }
+    }
+
+    public CustomRecipe getCustomRecipe(){
+        return customRecipe;
+    }
+
+    public void setCustomRecipe(CustomRecipe customRecipe) {
+        this.customRecipe = customRecipe;
     }
 
     public int getPage() {
@@ -51,28 +91,7 @@ public class KnowledgeBook {
     }
 
     public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public List<CustomItem> getIngredients(int slot){
-        return getIngredients().getOrDefault(LETTERS[slot], new ArrayList<>());
-    }
-
-    public CustomItem getIngredient(int slot){
-        List<CustomItem> list = getIngredients(slot);
-        return list.size() > 0 ? list.get(0) : null;
-    }
-
-    public CustomItem getSource() {
-        return source;
-    }
-
-    public void setSource(CustomItem source) {
-        this.source = source;
+        return new HashMap<>();
     }
 
     public CustomItem getResult() {

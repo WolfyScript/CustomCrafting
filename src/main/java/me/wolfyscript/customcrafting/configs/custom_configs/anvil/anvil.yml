@@ -1,5 +1,14 @@
-#The cost of this recipe
-repair_cost: 0
+repair_cost:
+  #The cost of this recipe
+  amount: 0
+  #If the repair cost should be applied to the results Meta
+  apply_to_result: false
+  #The mode in which the repair cost should be affected by the input.
+  #NONE: nothing will change. amount stays the same
+  #ADD: the repair cost of the input will be added
+  #MULTIPLY: the repair cost will be multiplied by the input repair cost
+  mode: NONE
+
 #Blocks repairing! Only if input_right is blank!
 block_repairing: false
 #Blocks the renaming of the item!
@@ -15,7 +24,6 @@ mode:
   durability: 1
 
   #RESULT (Will always return this item! No matter which you put in the anvil!)
-  result: #CustomItem
 
 #Each of the inputs can be left blank! So that means you can have both set, or you have either input_left or input_right set!
 #input_left=true, input_right=false:
@@ -30,18 +38,8 @@ mode:
 
 #Supports multiple choices of items, so you don't need to create a recipe for each tool etc.!
 input_left:
-  var0:
-    item: #CustomItem
-    #Ignores the consume options set to the item! Yes they will also apply to anvil recipes!
-    ignore_consume: false
-  var1:
-    item:
-    ignore_consume: false
-  #etc.
+  #multiple CustomItems possible
 
 #Also supports multiple choices!
 input_right:
-  var0:
-    item:
-    ignore_consume: false
   #same as for input_left

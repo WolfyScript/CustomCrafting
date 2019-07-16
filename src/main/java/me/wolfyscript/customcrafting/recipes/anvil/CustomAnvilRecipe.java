@@ -8,7 +8,10 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.inventory.ItemStack;
 import com.sun.istack.internal.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class CustomAnvilRecipe implements CustomRecipe {
 
@@ -24,11 +27,13 @@ public class CustomAnvilRecipe implements CustomRecipe {
 
     private Mode mode;
     private int repairCost;
+    private boolean applyRepairCost;
+    private RepairCostMode repairCostMode;
     private CustomItem result;
     private int durability;
 
-    private HashMap<CustomItem, Boolean> inputLeft;
-    private HashMap<CustomItem, Boolean> inputRight;
+    private List<CustomItem> inputLeft;
+    private List<CustomItem> inputRight;
 
     public CustomAnvilRecipe(AnvilConfig config){
         this.config = config;
@@ -43,6 +48,8 @@ public class CustomAnvilRecipe implements CustomRecipe {
 
         this.repairCost = config.getRepairCost();
         this.mode = config.getMode();
+        this.applyRepairCost = config.isApplyRepairCost();
+        this.repairCostMode = config.getRepairCostMode();
         this.durability = 0;
         this.result = null;
         if(config.getMode().equals(Mode.DURABILITY)){
@@ -130,15 +137,15 @@ public class CustomAnvilRecipe implements CustomRecipe {
         this.durability = durability;
     }
 
-    public HashMap<CustomItem, Boolean> getInputLeft() {
+    public List<CustomItem> getInputLeft() {
         return inputLeft;
     }
 
-    public void setInputLeft(HashMap<CustomItem, Boolean> inputLeft) {
+    public void setInputLeft(List<CustomItem> inputLeft) {
         this.inputLeft = inputLeft;
     }
 
-    public HashMap<CustomItem, Boolean> getInputRight() {
+    public List<CustomItem> getInputRight() {
         return inputRight;
     }
 
@@ -150,7 +157,7 @@ public class CustomAnvilRecipe implements CustomRecipe {
         return !getInputRight().isEmpty();
     }
 
-    public void setInputRight(HashMap<CustomItem, Boolean> inputRight) {
+    public void setInputRight(List<CustomItem> inputRight) {
         this.inputRight = inputRight;
     }
 
@@ -176,6 +183,22 @@ public class CustomAnvilRecipe implements CustomRecipe {
 
     public void setBlockEnchant(boolean blockEnchant) {
         this.blockEnchant = blockEnchant;
+    }
+
+    public boolean isApplyRepairCost() {
+        return applyRepairCost;
+    }
+
+    public void setApplyRepairCost(boolean applyRepairCost) {
+        this.applyRepairCost = applyRepairCost;
+    }
+
+    public RepairCostMode getRepairCostMode() {
+        return repairCostMode;
+    }
+
+    public void setRepairCostMode(RepairCostMode repairCostMode) {
+        this.repairCostMode = repairCostMode;
     }
 
     @Override
@@ -209,6 +232,19 @@ public class CustomAnvilRecipe implements CustomRecipe {
                     return mode;
             }
             return NONE;
+        }
+    }
+
+    public enum RepairCostMode{
+        ADD(), MULTIPLY(), NONE();
+
+        private static List<RepairCostMode> modes = new ArrayList<>();
+
+        public static List<RepairCostMode> getModes() {
+            if(modes.isEmpty()){
+                modes.addAll(Arrays.asList(values()));
+            }
+            return modes;
         }
     }
 }

@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CookingConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.smoker.SmokerConfig;
@@ -11,6 +12,7 @@ import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfi
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.utils.ItemUtils;
@@ -36,9 +38,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class RecipeCreator extends ExtendedGuiWindow {
 
@@ -75,6 +75,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
         createItem("furnace.cooking_time", Material.COAL);
 
         createItem("anvil.mode", Material.REDSTONE);
+        createItem("anvil.repair_mode", Material.GLOWSTONE_DUST);
+        createItem("anvil.repair_apply.true", Material.GREEN_CONCRETE);
+        createItem("anvil.repair_apply.false", Material.RED_CONCRETE);
         createItem("anvil.repair_cost", Material.EXPERIENCE_BOTTLE);
         createItem("anvil.block_repair.true", Material.IRON_SWORD);
         createItem("anvil.block_repair.false", Material.IRON_SWORD);
@@ -85,6 +88,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
         createItem("anvil.durability", Material.IRON_SWORD);
 
         createItem("anvil.input.cancel", Material.BARRIER);
+        createItem("anvil.input.empty", Material.BARRIER);
     }
 
     @EventHandler
@@ -93,9 +97,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
 
             Workbench workbench = cache.getWorkbench();
-
             switch (cache.getSetting()) {
-                case CRAFT_RECIPE:
+                case WORKBENCH:
                     event.setItem(35, event.getItem("priority", "%PRI%", workbench.getPriority().name()));
                     if (!workbench.getIngredients().isEmpty()) {
                         int slot;
@@ -114,56 +117,65 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     } else {
                         event.setItem(5, "workbench.adv_workbench_off");
                     }
+                    event.setItem(44, "save");
                     break;
                 case ANVIL:
                     Anvil anvil = cache.getAnvil();
-                    event.setItem(6, anvil.isExactMeta() ? "exact_meta_on" : "exact_meta_off");
-                    event.setItem(4, event.getItem("priority", "%PRI%", anvil.getPriority().name()));
-                    event.setItem(2, anvil.isPermissions() ? "permissions_on" : "permissions_off");
 
                     if(anvil.getMenu().equals(Anvil.Menu.MAINMENU)){
-                        event.setItem(19, anvil.getInputLeft().isEmpty() ? new ItemStack(Material.AIR) : anvil.getInputLeft().keySet().toArray(new CustomItem[0])[0]);
-                        event.setItem(21, anvil.getInputRight().isEmpty() ? new ItemStack(Material.AIR) : anvil.getInputRight().keySet().toArray(new CustomItem[0])[0]);
+                        event.setItem(6, anvil.isExactMeta() ? "exact_meta_on" : "exact_meta_off");
+                        event.setItem(4, event.getItem("priority", "%PRI%", anvil.getPriority().name()));
+                        event.setItem(2, anvil.isPermissions() ? "permissions_on" : "permissions_off");
+
+                        event.setItem(19, anvil.getInputLeft().isEmpty() ? event.getItem("anvil.input.empty") : anvil.getInputLeft().get(0));
+                        event.setItem(21, anvil.getInputRight().isEmpty() ? event.getItem("anvil.input.empty") : anvil.getInputRight().get(0));
 
                         if (anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                            event.setItem(25, anvil.getResult());
+                            event.setItem(25, anvil.getResult().getIDItem());
                         } else if (anvil.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
                             event.setItem(25, event.getItem("anvil.durability", "%VAR%", String.valueOf(anvil.getDurability())));
                         } else {
                             event.setItem(25, new ItemStack(Material.BARRIER));
                         }
 
-                        event.setItem(23, event.getItem("anvil.repair_cost", "%VAR%", String.valueOf(anvil.getRepairCost())));
+                        event.setItem(23, event.getItem("anvil.mode", "%MODE%", anvil.getMode().name()));
 
-                        event.setItem(37, anvil.isBlockEnchant() ? "anvil.block_enchant.true" : "anvil.block_enchant.false");
-                        event.setItem(38, anvil.isBlockRename() ? "anvil.block_rename.true" : "anvil.block_rename.false");
-                        event.setItem(39, anvil.isBlockRepair() ? "anvil.block_repair.true" : "anvil.block_repair.false");
-                        event.setItem(41, event.getItem("anvil.mode", "%MODE%", anvil.getMode().name()));
+                        event.setItem(36, anvil.isBlockEnchant() ? "anvil.block_enchant.true" : "anvil.block_enchant.false");
+                        event.setItem(37, anvil.isBlockRename() ? "anvil.block_rename.true" : "anvil.block_rename.false");
+                        event.setItem(38, anvil.isBlockRepair() ? "anvil.block_repair.true" : "anvil.block_repair.false");
+
+                        event.setItem(40, anvil.isApplyRepairCost() ? "anvil.repair_apply.true" : "anvil.repair_apply.false");
+                        event.setItem(41, event.getItem("anvil.repair_cost", "%VAR%", String.valueOf(anvil.getRepairCost())));
+                        event.setItem(42, event.getItem("anvil.repair_mode", "%VAR%", anvil.getRepairCostMode().toString()));
+
+                        event.setItem(44, "save");
                     }else{
-                        HashMap<CustomItem, Boolean> input = anvil.getMenu().equals(Anvil.Menu.INPUT_LEFT) ? anvil.getInputLeft() : anvil.getInputRight();
+                        event.setItem(0, "glass_white", true);
+                        List<CustomItem> input = anvil.getMenu().equals(Anvil.Menu.INPUT_LEFT) ? anvil.getInputLeft() : anvil.getInputRight();
 
-                        for(int i = 0; i < 9; i++){
+                        for(int i = 0; i < 27; i++){
                             event.setItem(9+i, new ItemStack(Material.AIR));
                         }
 
-
+                        Iterator<CustomItem> itr = input.iterator();
+                        for(int i = 0; itr.hasNext(); i++){
+                            CustomItem item = itr.next();
+                            event.setItem(9+i, item.getIDItem());
+                        }
 
                         event.setItem(40, "anvil.input.cancel");
                     }
-
-
-
-
                     break;
                 case STONECUTTER:
                     Stonecutter stonecutter = cache.getStonecutter();
                     event.setItem(20, stonecutter.getSource().getIDItem());
                     event.setItem(24, stonecutter.getResult().getIDItem());
+                    event.setItem(44, "save");
                     break;
                 case BLAST_FURNACE:
                 case SMOKER:
                 case CAMPFIRE:
-                case FURNACE_RECIPE:
+                case FURNACE:
                     CookingData cooking = cache.getCookingData();
                     event.setItem(20, "none", "glass_white");
                     event.setItem(11, cooking.getSource().getIDItem());
@@ -196,9 +208,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     }
                     time.setItemMeta(timeMeta);
                     event.setItem(29, time);
+                    event.setItem(44, "save");
                     break;
             }
-            event.setItem(44, "save");
         }
     }
 
@@ -209,7 +221,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
             updateInv(guiAction.getPlayer().getOpenInventory().getTopInventory(), cache);
             switch (cache.getSetting()) {
-                case CRAFT_RECIPE:
+                case WORKBENCH:
                     Workbench workbench = cache.getWorkbench();
                     if (action.startsWith("workbench.shapeless_")) {
                         api.sendDebugMessage("  Shapeless: " + !workbench.isShapeless());
@@ -237,35 +249,62 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     Anvil anvil = cache.getAnvil();
                     if (action.startsWith("anvil.")) {
                         action = action.substring("anvil.".length());
-                        switch (action.split("\\.", 1)[0]) {
-                            case "block_enchant":
-                                anvil.setBlockEnchant(!anvil.isBlockEnchant());
-                                break;
-                            case "block_repair":
-                                anvil.setBlockRepair(!anvil.isBlockRepair());
-                                break;
-                            case "block_rename":
-                                anvil.setBlockRename(!anvil.isBlockRename());
-                                break;
-                            case "durability":
-                                runChat(40, "", guiAction.getGuiHandler());
-                                break;
-                            case "repair_cost":
-                                runChat(30, "", guiAction.getGuiHandler());
-                                break;
-                            case "mode":
-                                CustomAnvilRecipe.Mode mode = anvil.getMode();
-                                int id = mode.getId();
-                                if (id < 2) {
-                                    id++;
-                                } else {
-                                    id = 0;
-                                }
-                                anvil.setMode(CustomAnvilRecipe.Mode.getById(id));
-                                break;
-                            case "input.cancel":
-                                anvil.setMenu(Anvil.Menu.MAINMENU);
+                        if(action.startsWith("input.")){
+                            switch (action.substring("input.".length())){
+                                case "cancel":
+                                    anvil.setMenu(Anvil.Menu.MAINMENU);
+                                    break;
+                                case "empty":
+                                    if(guiAction.getRawSlot() == 19){
+                                        anvil.setMenu(Anvil.Menu.INPUT_LEFT);
+                                        update(guiAction.getGuiHandler());
+                                    }else{
+                                        anvil.setMenu(Anvil.Menu.INPUT_RIGHT);
+                                        update(guiAction.getGuiHandler());
+                                    }
+                                    break;
+                            }
+                        }else{
+                            switch (action.split("\\.")[0]) {
+                                case "block_enchant":
+                                    anvil.setBlockEnchant(!anvil.isBlockEnchant());
+                                    break;
+                                case "block_repair":
+                                    anvil.setBlockRepair(!anvil.isBlockRepair());
+                                    break;
+                                case "block_rename":
+                                    anvil.setBlockRename(!anvil.isBlockRename());
+                                    break;
+                                case "durability":
+                                    runChat(40, "$msg.gui.recipe_creator.anvil.durability$", guiAction.getGuiHandler());
+                                    break;
+                                case "repair_cost":
+                                    runChat(30, "$msg.gui.recipe_creator.anvil.repair_cost$", guiAction.getGuiHandler());
+                                    break;
+                                case "mode":
+                                    CustomAnvilRecipe.Mode mode = anvil.getMode();
+                                    int id = mode.getId();
+                                    if (id < 2) {
+                                        id++;
+                                    } else {
+                                        id = 0;
+                                    }
+                                    anvil.setMode(CustomAnvilRecipe.Mode.getById(id));
+                                    break;
+                                case "repair_apply":
+                                    anvil.setApplyRepairCost(!anvil.isApplyRepairCost());
+                                    break;
+                                case "repair_mode":
+                                    int index = CustomAnvilRecipe.RepairCostMode.getModes().indexOf(anvil.getRepairCostMode())+1;
+                                    anvil.setRepairCostMode(CustomAnvilRecipe.RepairCostMode.getModes().get(index >= CustomAnvilRecipe.RepairCostMode.getModes().size() ? 0 : index));
+                                    break;
+
+                            }
                         }
+                    } else if (action.startsWith("permissions_")) {
+                        anvil.setPermissions(!anvil.isPermissions());
+                    } else if (action.startsWith("exact_meta_")) {
+                        anvil.setExactMeta(!anvil.isExactMeta());
                     } else if (action.equals("priority")) {
                         RecipePriority recipePriority = anvil.getPriority();
                         int order = recipePriority.getOrder();
@@ -280,7 +319,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 case BLAST_FURNACE:
                 case SMOKER:
                 case CAMPFIRE:
-                case FURNACE_RECIPE:
+                case FURNACE:
                     CookingData furnace = cache.getCookingData();
                     if (action.startsWith("furnace.adv_furnace_")) {
                         furnace.setAdvFurnace(!furnace.isAdvFurnace());
@@ -307,14 +346,22 @@ public class RecipeCreator extends ExtendedGuiWindow {
 
     private boolean validToSave(PlayerCache cache) {
         switch (cache.getSetting()) {
-            case CRAFT_RECIPE:
+            case WORKBENCH:
                 Workbench workbench = cache.getWorkbench();
                 if (!workbench.getIngredients().isEmpty() && !workbench.getResult().getType().equals(Material.AIR))
                     return true;
                 break;
             case ANVIL:
-
-                break;
+                Anvil anvil = cache.getAnvil();
+                if(!anvil.getInputLeft().isEmpty() || !anvil.getInputRight().isEmpty()){
+                    if(anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)){
+                        return anvil.getResult() != null && !anvil.getResult().getType().equals(Material.AIR);
+                    }else{
+                        return true;
+                    }
+                }else{
+                    return false;
+                }
             case STONECUTTER:
                 Stonecutter stonecutter = cache.getStonecutter();
                 if (!stonecutter.getResult().getType().equals(Material.AIR) && !stonecutter.getSource().getType().equals(Material.AIR))
@@ -323,7 +370,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
             case BLAST_FURNACE:
             case SMOKER:
             case CAMPFIRE:
-            case FURNACE_RECIPE:
+            case FURNACE:
                 CookingData furnace = cache.getCookingData();
                 if (!furnace.getResult().getType().equals(Material.AIR) && !furnace.getSource().getType().equals(Material.AIR))
                     return true;
@@ -337,13 +384,14 @@ public class RecipeCreator extends ExtendedGuiWindow {
         Player player = guiClick.getPlayer();
         PlayerCache playerCache = CustomCrafting.getPlayerCache(player);
         Items items = playerCache.getItems();
+        Anvil anvil = playerCache.getAnvil();
         updateInv(player.getOpenInventory().getTopInventory(), playerCache);
         if (guiClick.getClickedInventory().equals(player.getOpenInventory().getTopInventory())) {
-            if (guiClick.getClickType().equals(ClickType.SHIFT_RIGHT) && !guiClick.getCurrentItem().getType().equals(Material.AIR)) {
-                CustomItem customItem = CustomItem.getCustomItem(guiClick.getCurrentItem());
+            if (guiClick.getClickType().equals(ClickType.SHIFT_RIGHT)) {
+                CustomItem customItem = CustomItem.getByItemStack(guiClick.getCurrentItem() == null ? new ItemStack(Material.AIR) : guiClick.getCurrentItem());
                 String id = customItem.getId();
                 switch (playerCache.getSetting()) {
-                    case CRAFT_RECIPE:
+                    case WORKBENCH:
                         if ((slot >= 10 && slot < 13) || (slot >= 19 && slot < 22) || (slot >= 28 && slot < 31)) {
                             items.setIngredient((slot - 10) - 6 * (((slot - 10) / 4) / 2), customItem);
                             guiClick.getGuiHandler().changeToInv("item_editor");
@@ -354,7 +402,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             return true;
                         }
                     case ANVIL:
-                        Anvil anvil = playerCache.getAnvil();
                         if(slot == 19){
                             anvil.setMenu(Anvil.Menu.INPUT_LEFT);
                             update(guiClick.getGuiHandler());
@@ -377,7 +424,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     case BLAST_FURNACE:
                     case SMOKER:
                     case CAMPFIRE:
-                    case FURNACE_RECIPE:
+                    case FURNACE:
                         if (slot == 11) {
                             items.setSource(customItem);
                         } else {
@@ -386,6 +433,23 @@ public class RecipeCreator extends ExtendedGuiWindow {
                         guiClick.getGuiHandler().changeToInv("item_editor");
                         return true;
                 }
+            }else{
+                if(playerCache.getSetting().equals(Setting.ANVIL)){
+                    if(anvil.getMenu().equals(Anvil.Menu.MAINMENU)){
+                        if(slot == 19){
+                            anvil.setMenu(Anvil.Menu.INPUT_LEFT);
+                            update(guiClick.getGuiHandler());
+                            return true;
+                        }else if(slot == 21){
+                            anvil.setMenu(Anvil.Menu.INPUT_RIGHT);
+                            update(guiClick.getGuiHandler());
+                            return true;
+                        }
+                    }else{
+
+
+                    }
+                }
             }
         }
         return false;
@@ -393,7 +457,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
 
     private void updateInv(Inventory inv, PlayerCache cache) {
         switch (cache.getSetting()) {
-            case CRAFT_RECIPE:
+            case WORKBENCH:
                 Workbench workbench = cache.getWorkbench();
                 List<ItemStack> ingredients = new ArrayList<>();
                 int craftSlot;
@@ -404,22 +468,47 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 }
                 workbench.setIngredients(ingredients);
                 if (inv.getItem(24) != null) {
-                    CustomItem customItem = CustomItem.getCustomItem(inv.getItem(24));
+                    CustomItem customItem = CustomItem.getByItemStack(inv.getItem(24));
                     workbench.setResult(customItem);
                     workbench.setResultCustomAmount(customItem.getAmount());
                 } else {
                     workbench.setResult(new CustomItem(Material.AIR));
                 }
                 break;
+            case ANVIL:
+                Anvil anvil = cache.getAnvil();
+                if(anvil.getMenu().equals(Anvil.Menu.INPUT_LEFT) || anvil.getMenu().equals(Anvil.Menu.INPUT_RIGHT)){
+                    //TODO: UPDATE INPUT VARIANTS!
+                    List<CustomItem> inputVariants = new ArrayList<>();
+                    for(int i = 9; i < 36; i++){
+                        ItemStack itemStack = inv.getItem(i);
+                        if(itemStack != null && !itemStack.getType().equals(Material.AIR)){
+                            CustomItem customItem = CustomItem.getByItemStack(itemStack);
+                            inputVariants.add(customItem);
+                        }
+                    }
+                    anvil.setInput(inputVariants);
+                }else{
+                    if(anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)){
+                        ItemStack result = inv.getItem(25);
+                        if (result != null) {
+                            CustomItem customItem = CustomItem.getByItemStack(result);
+                            anvil.setResult(customItem);
+                        } else {
+                            anvil.setResult(new CustomItem(Material.AIR));
+                        }
+                    }
+                }
+                break;
             case STONECUTTER:
                 Stonecutter stonecutter = cache.getStonecutter();
                 if (inv.getItem(24) != null) {
-                    stonecutter.setResult(CustomItem.getCustomItem(inv.getItem(24)));
+                    stonecutter.setResult(CustomItem.getByItemStack(inv.getItem(24)));
                 } else {
                     stonecutter.setResult(new CustomItem(Material.AIR));
                 }
                 if (inv.getItem(20) != null) {
-                    stonecutter.setSource(CustomItem.getCustomItem(inv.getItem(20)));
+                    stonecutter.setSource(CustomItem.getByItemStack(inv.getItem(20)));
                 } else {
                     stonecutter.setSource(new CustomItem(Material.AIR));
                 }
@@ -427,15 +516,15 @@ public class RecipeCreator extends ExtendedGuiWindow {
             case BLAST_FURNACE:
             case SMOKER:
             case CAMPFIRE:
-            case FURNACE_RECIPE:
+            case FURNACE:
                 CookingData cooking = cache.getCookingData();
                 if (inv.getItem(24) != null) {
-                    cooking.setResult(CustomItem.getCustomItem(inv.getItem(24)));
+                    cooking.setResult(CustomItem.getByItemStack(inv.getItem(24)));
                 } else {
                     cooking.setResult(new CustomItem(Material.AIR));
                 }
                 if (inv.getItem(11) != null) {
-                    cooking.setSource(CustomItem.getCustomItem(inv.getItem(11)));
+                    cooking.setSource(CustomItem.getByItemStack(inv.getItem(11)));
                 } else {
                     cooking.setSource(new CustomItem(Material.AIR));
                 }
@@ -447,6 +536,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
     public boolean parseChatMessage(int id, String message, GuiHandler guiHandler) {
         Player player = guiHandler.getPlayer();
         PlayerCache cache = CustomCrafting.getPlayerCache(player);
+
         String[] args = message.split(" ");
         Workbench workbench = cache.getWorkbench();
         CookingData furnace = cache.getCookingData();
@@ -454,12 +544,22 @@ public class RecipeCreator extends ExtendedGuiWindow {
         if (args.length > 0) {
             if (id == 0) {
                 if (args.length > 1) {
+                    String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
+                    String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
+                    if(!CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches()){
+                        api.sendPlayerMessage(player, "&cInvalid Namespace! Namespaces may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+                        return true;
+                    }
+                    if(!CustomCrafting.VALID_KEY.matcher(key).matches()){
+                        api.sendPlayerMessage(player, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+                        return true;
+                    }
                     CookingConfig cookingConfig = null;
                     switch (cache.getSetting()) {
-                        case CRAFT_RECIPE:
-                            CraftConfig config = new CraftConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                        case WORKBENCH:
+                            CraftConfig config = new CraftConfig(api.getConfigAPI(), namespace, key);
                             api.sendDebugMessage("Create Config:");
-                            api.sendDebugMessage("  id: " + args[0].toLowerCase() + ":" + args[1].toLowerCase());
+                            api.sendDebugMessage("  id: " + namespace + ":" + key);
                             api.sendDebugMessage("  Permission: " + workbench.isPermissions());
                             api.sendDebugMessage("  Adv Workbench: " + workbench.isAdvWorkbench());
                             api.sendDebugMessage("  Shapeless: " + workbench.isShapeless());
@@ -478,8 +578,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             String[] shape = new String[3];
                             int index = 0;
                             int row = 0;
-                            for (char key : ingredients.keySet()) {
-                                List<CustomItem> keyItems = ingredients.get(key);
+                            for (char ingrd : ingredients.keySet()) {
+                                List<CustomItem> keyItems = ingredients.get(ingrd);
                                 if (ItemUtils.isEmpty(keyItems)) {
                                     if (shape[row] != null) {
                                         shape[row] = shape[row] + " ";
@@ -488,9 +588,9 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     }
                                 } else {
                                     if (shape[row] != null) {
-                                        shape[row] = shape[row] + key;
+                                        shape[row] = shape[row] + ingrd;
                                     } else {
-                                        shape[row] = String.valueOf(key);
+                                        shape[row] = String.valueOf(ingrd);
                                     }
                                 }
                                 index++;
@@ -509,7 +609,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             api.sendDebugMessage("Reset GUI cache...");
                             cache.resetWorkbench();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
-                            api.sendPlayerMessage(player, "§6recipes/" + args[0] + "/workbench/" + args[1]);
+                            api.sendPlayerMessage(player, "§6recipes/" + namespace + "/workbench/" + key);
                             try {
                                 api.sendDebugMessage("Loading Recipe...");
                                 CraftingRecipe customRecipe;
@@ -518,7 +618,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                 } else {
                                     customRecipe = new ShapedCraftRecipe(config);
                                 }
-                                customRecipe.load();
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                     CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
                                     api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
@@ -531,13 +630,37 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                             return false;
                         case ANVIL:
-                            //TODO
+                            AnvilConfig anvilConfig = new AnvilConfig(api.getConfigAPI(), namespace, key);
+                            anvilConfig.setBlockEnchant(anvil.isBlockEnchant());
+                            anvilConfig.setBlockRename(anvil.isBlockRename());
+                            anvilConfig.setBlockRepairing(anvil.isBlockRepair());
+                            anvilConfig.setExactMeta(anvil.isExactMeta());
+                            anvilConfig.setPermission(anvil.isPermissions());
+                            anvilConfig.setRepairCost(anvil.getRepairCost());
+                            anvilConfig.setPriority(anvil.getPriority());
+                            anvilConfig.setMode(anvil.getMode());
+                            anvilConfig.setResult(anvil.getResult());
+                            anvilConfig.setDurability(anvil.getDurability());
+                            anvilConfig.setInputLeft(anvil.getInputLeft());
+                            anvilConfig.setInputRight(anvil.getInputRight());
+                            anvilConfig.save();
+                            cache.resetAnvil();
 
-
-                            break;
+                            try {
+                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                    CustomCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
+                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
+                                }, 1);
+                            }catch (Exception ex){
+                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", anvilConfig.getId()});
+                                ex.printStackTrace();
+                                return false;
+                            }
+                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
+                            return false;
                         case STONECUTTER:
                             Stonecutter stonecutter = cache.getStonecutter();
-                            StonecutterConfig stonecutterConfig = new StonecutterConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                            StonecutterConfig stonecutterConfig = new StonecutterConfig(api.getConfigAPI(), namespace, key);
                             stonecutterConfig.setResult(stonecutter.getResult());
                             stonecutterConfig.setSource(stonecutter.getSource());
                             stonecutterConfig.setExactMeta(stonecutter.isExactMeta());
@@ -558,18 +681,18 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                             return false;
                         case BLAST_FURNACE:
-                            cookingConfig = new BlastingConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                            cookingConfig = new BlastingConfig(api.getConfigAPI(), namespace, key);
                         case SMOKER:
                             if (cookingConfig == null) {
-                                cookingConfig = new SmokerConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                                cookingConfig = new SmokerConfig(api.getConfigAPI(), namespace, key);
                             }
                         case CAMPFIRE:
                             if (cookingConfig == null) {
-                                cookingConfig = new CampfireConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                                cookingConfig = new CampfireConfig(api.getConfigAPI(), namespace, key);
                             }
-                        case FURNACE_RECIPE:
+                        case FURNACE:
                             if (cookingConfig == null) {
-                                cookingConfig = new FurnaceConfig(api.getConfigAPI(), args[0].toLowerCase(), args[1].toLowerCase());
+                                cookingConfig = new FurnaceConfig(api.getConfigAPI(), namespace, key);
                             }
                             //furnaceConfig.setAdvancedFurnace(furnace.isAdvFurnace());
                             cookingConfig.setCookingTime(furnace.getCookingTime());
@@ -581,7 +704,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             cookingConfig.load();
                             cache.resetCookingData();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
-                            api.sendPlayerMessage(player, "§6recipes/" + args[0] + "/furnace/" + args[1]);
+                            api.sendPlayerMessage(player, "§6recipes/" + namespace + "/furnace/" + key);
                             try {
                                 CustomRecipe customRecipe = null;
                                 switch (cache.getSetting()) {
@@ -591,7 +714,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     case CAMPFIRE:
                                         customRecipe = new CustomCampfireRecipe((CampfireConfig) cookingConfig);
                                         break;
-                                    case FURNACE_RECIPE:
+                                    case FURNACE:
                                         customRecipe = new CustomFurnaceRecipe((FurnaceConfig) cookingConfig);
                                         break;
                                     case BLAST_FURNACE:
