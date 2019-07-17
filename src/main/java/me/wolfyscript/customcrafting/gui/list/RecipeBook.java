@@ -74,7 +74,6 @@ public class RecipeBook extends ExtendedGuiWindow {
                     event.setItem(38, "previous_page");
                     event.setItem(42, "next_page");
                     List<CustomRecipe> recipes = new ArrayList<>();
-
                     if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
                         for (CraftingRecipe recipe : CustomCrafting.getRecipeHandler().getCraftingRecipes()) {
                             if (!recipe.needsPermission() || (player.hasPermission("customcrafting.craft.*") || player.hasPermission("customcrafting.craft." + recipe.getId()) || player.hasPermission("customcrafting.craft." + recipe.getId().split(":")[0]))) {
@@ -90,11 +89,20 @@ public class RecipeBook extends ExtendedGuiWindow {
                     }
                     int item = 0;
                     for (int i = 36 * knowledgeBook.getPage(); item < 36 && i < recipes.size(); i++) {
-                        Recipe recipe = recipes.get(i);
+                        CustomRecipe recipe = recipes.get(i);
                         if (recipe instanceof Keyed) {
-                            ItemStack itemStack = recipe.getResult();
+                            CustomItem itemStack;
+                            if(recipe instanceof CustomAnvilRecipe){
+                                if(!((CustomAnvilRecipe) recipe).getInputLeft().isEmpty()){
+                                    itemStack = ((CustomAnvilRecipe) recipe).getInputLeft().get(0).clone();
+                                }else{
+                                    itemStack = ((CustomAnvilRecipe) recipe).getInputRight().get(0).clone();
+                                }
+                            }else{
+                                itemStack = recipe.getCustomResult().clone();
+                            }
                             if (itemStack.getType().equals(Material.AIR)) {
-                                itemStack = new ItemStack(Material.STONE);
+                                itemStack = new CustomItem(new ItemStack(Material.STONE));
                                 itemStack.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
                                 ItemMeta itemMeta = itemStack.getItemMeta();
                                 itemMeta.setDisplayName("§r§7" + ((Keyed) recipe).getKey().toString());
@@ -215,7 +223,9 @@ public class RecipeBook extends ExtendedGuiWindow {
                             //TODO STONECUTTER
                             CustomStonecutterRecipe stonecutterRecipe = (CustomStonecutterRecipe) knowledgeBook.getCustomRecipe();
 
-
+                            event.setItem(20, stonecutterRecipe.getSource());
+                            event.setItem(24, stonecutterRecipe.getCustomResult());
+                            break;
 
                     }
                 }

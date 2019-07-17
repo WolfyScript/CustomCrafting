@@ -28,11 +28,12 @@ public class PlayerListener implements Listener {
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg$");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg1$");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg2$");
+            api.sendPlayerMessage(player, "$msg.player.error.loading.msg3$");
             api.sendActionMessage(player,
-                    new ClickData("$msg.player.error.loading.msg3$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/wiki/buildtools/")),
-                    new ClickData("$msg.player.error.loading.msg4$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://papermc.io/downloads")));
+                    new ClickData("$msg.player.error.loading.msg4$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/wiki/buildtools/")),
+                    new ClickData("$msg.player.error.loading.msg5$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://papermc.io/downloads")));
             api.sendPlayerMessage(player, "");
-            api.sendPlayerMessage(player, "$msg.player.error.loading.msg5$");
+            api.sendPlayerMessage(player, "$msg.player.error.loading.msg6$");
         }
 
         for(CustomFurnaceRecipe customFurnaceRecipe : CustomCrafting.getRecipeHandler().getFurnaceRecipes()){

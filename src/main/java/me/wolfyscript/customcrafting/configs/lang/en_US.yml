@@ -35,10 +35,11 @@ msg:
       loading:
         msg: "&cPlugin Disabled! The Plugin won't work!"
         msg1: "Make sure you have the latest Spigot or Paper build!"
-        msg2: "&7- More information can be found here!"
-        msg3: "   &7[&6Spigot&7]"
-        msg4: "   &7[&3Paper&7]"
-        msg5: "&cIf this solution doesn't work and you get error messages on startup please contact me on Discord or SpigotMC!"
+        msg2: "&7If using 1.13.x make sure to get the latest build!"
+        msg3: "&7More Information on how to get these builds here:"
+        msg4: "   &7[&6Spigot&7]"
+        msg5: "   &7[&3Paper&7]"
+        msg6: "&cIf this solution doesn't work and you get error messages on startup please contact me on Discord or SpigotMC!"
   gui:
     item_creator:
       save:
