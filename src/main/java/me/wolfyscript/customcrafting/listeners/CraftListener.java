@@ -150,10 +150,12 @@ public class CraftListener implements Listener {
                     List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
                     List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
 
+                    /*
                     CraftingRecipe testRecipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
                     if(testRecipe != null && !recipesToCheck.contains(testRecipe)){
                         recipesToCheck.add(testRecipe);
                     }
+                    */
                     recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
 
                     api.sendDebugMessage("---------------------------------");
@@ -169,6 +171,7 @@ public class CraftListener implements Listener {
                                 boolean perm = checkWorkbenchAndPerm(player, e.getView().getPlayer().getTargetBlock(null, 5).getLocation(), recipe);
                                 boolean check = recipe.check(ingredients);
                                 if (!(perm && check) || recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
+                                    api.sendDebugMessage("  invalid: "+recipe.getId());
                                     customPreCraftEvent.setCancelled(true);
                                 }
                                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);

@@ -163,12 +163,19 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     public boolean isSimilar(ItemStack stack, boolean exactMeta) {
+        CustomCrafting.getApi().sendDebugMessage("Compare: ");
+        CustomCrafting.getApi().sendDebugMessage("  This: "+this.toString());
+        CustomCrafting.getApi().sendDebugMessage("  Stack: "+stack);
         if (stack == null){
+            CustomCrafting.getApi().sendDebugMessage("      Shouldn't!");
             return false;
         } else if (stack == this) {
+            CustomCrafting.getApi().sendDebugMessage("      Valid!");
             return true;
         }else if(stack.getType().equals(this.getType()) && stack.getAmount() >= this.getAmount()){
+            CustomCrafting.getApi().sendDebugMessage("      Check Item!");
             if (exactMeta || this.hasItemMeta()) {
+                CustomCrafting.getApi().sendDebugMessage("          Check Meta!");
                 if (this.hasItemMeta() && !stack.hasItemMeta()) {
                     return false;
                 }else if(!this.hasItemMeta() && stack.hasItemMeta()){
@@ -181,6 +188,7 @@ public class CustomItem extends ItemStack implements Cloneable{
                 }
                 return stackMeta.equals(currentMeta);
             }
+            CustomCrafting.getApi().sendDebugMessage("          Valid!");
             return true;
         }
         return false;
