@@ -42,7 +42,7 @@ public class CustomCrafting extends JavaPlugin {
     private static RecipeHandler recipeHandler;
     private static Workbenches workbenches = null;
 
-    private static final boolean betaVersion = false;
+    private static final boolean betaVersion = true;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
@@ -55,13 +55,12 @@ public class CustomCrafting extends JavaPlugin {
         api = new WolfyUtilities(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");
-        System.out.println("  _____        __             _____         _____  _          ");
-        System.out.println(" / ___/_ _____/ /____  __ _  / ___/______ _/ _/ /_(_)__  ___ _");
-        System.out.println("/ /__/ // (_-< __/ _ \\/  ' \\/ /__/ __/ _ `/ _/ __/ / _ \\/ _ `/");
-        System.out.println("\\___/\\_,_/___|__/\\___/_/_/_/\\___/_/  \\_,_/_/ \\__/_/_//_/\\_, / ");
-        System.out.println("                                                       /___/ v" + instance.getDescription().getVersion() + (betaVersion ? "-beta" : ""));
-        System.out.println(" ");
 
+        System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
+        System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
+        System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
+        System.out.println("    v" + instance.getDescription().getVersion() + (betaVersion ? "-beta" : ""));
+        System.out.println(" ");
         if (betaVersion) {
             System.out.println("This is a beta build! It may contain bugs and game breaking glitches!");
             System.out.println("Do not use this version on production servers!");
@@ -86,7 +85,7 @@ public class CustomCrafting extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 
-        if(loaded){
+        if (loaded) {
             getServer().getPluginManager().registerEvents(new CraftListener(api), this);
             getServer().getPluginManager().registerEvents(new BlockListener(), this);
             getServer().getPluginManager().registerEvents(new FurnaceListener(), this);

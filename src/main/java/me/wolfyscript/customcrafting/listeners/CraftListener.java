@@ -69,7 +69,7 @@ public class CraftListener implements Listener {
                     Block block = player.getTargetBlock(null, 5);
                     PlayerCache cache = CustomCrafting.getPlayerCache(player);
 
-                    CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, event.getRecipe(), event.getInventory());
+                    CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, event.getInventory());
                     if (!customCraftEvent.isCancelled()) {
 
                         {//---------COMMANDS AND STATISTICS-------------
@@ -109,12 +109,12 @@ public class CraftListener implements Listener {
                             }
                         } else {
                             api.sendDebugMessage("ONE-CLICK!");
-                            if(event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())){
+                            if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())) {
                                 replacements = recipe.removeMatrix(ingredients, event.getInventory(), small, 1);
-                                if(event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)){
+                                if (event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)) {
 
                                     event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
-                                }else{
+                                } else {
                                     event.getView().setCursor(resultItem);
                                 }
                             }
@@ -123,10 +123,10 @@ public class CraftListener implements Listener {
                                 Bukkit.getPluginManager().callEvent(event1);
                             }, 2);
                         }
-                        for(ItemStack itemStack : replacements){
-                            if(ItemUtils.hasInventorySpace(player, itemStack)){
+                        for (ItemStack itemStack : replacements) {
+                            if (ItemUtils.hasInventorySpace(player, itemStack)) {
                                 player.getInventory().addItem(itemStack);
-                            }else{
+                            } else {
                                 player.getLocation().getWorld().dropItemNaturally(player.getLocation(), itemStack);
                             }
                         }
@@ -141,74 +141,67 @@ public class CraftListener implements Listener {
     @EventHandler
     public void onPreCraft(PrepareItemCraftEvent e) {
         Player player = (Player) e.getView().getPlayer();
-        if (e.getRecipe() != null) {
-            if (e.getRecipe() instanceof Keyed) {
-                try {
-                    ItemStack[] matrix = e.getInventory().getMatrix();
-                    RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+        try {
+            ItemStack[] matrix = e.getInventory().getMatrix();
+            RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
 
-                    List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
-                    List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
+            List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
+            List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
+            recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
 
-                    /*
-                    CraftingRecipe testRecipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
-                    if(testRecipe != null && !recipesToCheck.contains(testRecipe)){
-                        recipesToCheck.add(testRecipe);
-                    }
-                    */
-                    recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
-
-                    api.sendDebugMessage("---------------------------------");
-                    api.sendDebugMessage("Possible Custom Recipes detected:");
-                    recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - "+craftingRecipe.getId()));
-                    api.sendDebugMessage("");
-                    boolean allow = false;
-                    if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                        CustomPreCraftEvent customPreCraftEvent;
-                        for (CraftingRecipe recipe : recipesToCheck) {
-                            if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
-                                customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getRecipe(), e.getInventory(), ingredients);
-                                boolean perm = checkWorkbenchAndPerm(player, e.getView().getPlayer().getTargetBlock(null, 5).getLocation(), recipe);
-                                boolean check = recipe.check(ingredients);
-                                if (!(perm && check) || recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
-                                    api.sendDebugMessage("  invalid: "+recipe.getId());
-                                    customPreCraftEvent.setCancelled(true);
-                                }
-                                Bukkit.getPluginManager().callEvent(customPreCraftEvent);
-                                if (!customPreCraftEvent.isCancelled()) {
-                                    //ALLOW
-                                    api.sendDebugMessage("Recipe \""+customPreCraftEvent.getRecipe().getId() +"\" detected!");
-                                    precraftedRecipes.put(player.getUniqueId(), customPreCraftEvent.getRecipe().getId());
-                                    e.getInventory().setResult(customPreCraftEvent.getResult());
-                                    allow = true;
-                                    break;
-                                }
-                            }
+            api.sendDebugMessage("---------------------------------");
+            api.sendDebugMessage("Possible Custom Recipes detected:");
+            recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - " + craftingRecipe.getId()));
+            api.sendDebugMessage("");
+            boolean allow = false;
+            if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
+                CustomPreCraftEvent customPreCraftEvent;
+                for (CraftingRecipe recipe : recipesToCheck) {
+                    if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
+                        customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getInventory(), ingredients);
+                        boolean perm = checkWorkbenchAndPerm(player, e.getView().getPlayer().getTargetBlock(null, 5).getLocation(), recipe);
+                        boolean check = recipe.check(ingredients);
+                        if (!(perm && check) || recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
+                            api.sendDebugMessage("  invalid: " + recipe.getId());
+                            customPreCraftEvent.setCancelled(true);
+                        }
+                        /*
+                        The event is still called even if the recipe is invalid! This will allow other plugins to manipulate their own recipes!
+                         */
+                        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
+                        if (!customPreCraftEvent.isCancelled()) {
+                            //ALLOWED
+                            api.sendDebugMessage("Recipe \"" + customPreCraftEvent.getRecipe().getId() + "\" detected!");
+                            precraftedRecipes.put(player.getUniqueId(), customPreCraftEvent.getRecipe().getId());
+                            e.getInventory().setResult(customPreCraftEvent.getResult());
+                            allow = true;
+                            break;
                         }
                     }
-                    if (!allow) {
-                        api.sendDebugMessage("No recipe valid!");
-                        api.sendDebugMessage("Detected recipe: "+((Keyed) e.getRecipe()).getKey());
-                        precraftedRecipes.remove(player.getUniqueId());
+                }
+            }
+            if (!allow) {
+                api.sendDebugMessage("No recipe valid!");
+                precraftedRecipes.remove(player.getUniqueId());
+                if (e.getRecipe() != null) {
+                    if (e.getRecipe() instanceof Keyed) {
+                        api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
                         CraftingRecipe recipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
-                        if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString())) {
-                            api.sendDebugMessage("Recipe disabled! Set output to AIR");
+                        if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
+                            //Recipe is disabled or it is a custom recipe! Due the changes, custom recipes added to Bukkit are only placeholders in the vanilla knowledge book!
                             e.getInventory().setResult(new ItemStack(Material.AIR));
-                        } else if (recipe != null) {
-                            api.sendDebugMessage("Custom recipe! Set output to AIR");
-                            e.getInventory().setResult(new ItemStack(Material.AIR));
-                        } else{
+                        } else {
                             api.sendDebugMessage("Use vanilla recipe output!");
                         }
                     }
-                } catch (Exception ex) {
-                    System.out.println("WHAT HAPPENED? Please report!");
-                    ex.printStackTrace();
-                    System.out.println("WHAT HAPPENED? Please report!");
-                    precraftedRecipes.remove(player.getUniqueId());
-                    e.getInventory().setResult(new ItemStack(Material.AIR));
                 }
             }
+        } catch (Exception ex) {
+            System.out.println("WHAT HAPPENED? Please report!");
+            ex.printStackTrace();
+            System.out.println("WHAT HAPPENED? Please report!");
+            precraftedRecipes.remove(player.getUniqueId());
+            e.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }
 

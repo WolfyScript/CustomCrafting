@@ -6,26 +6,19 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 public class CustomCraftEvent extends Event implements Cancellable{
 
     private static final HandlerList handlers = new HandlerList();
     private ItemStack result;
     private CraftingInventory craftingInventory;
-    private Recipe bukkitRecipe;
     private boolean cancelled;
     private CraftingRecipe craftingRecipe;
 
-    public CustomCraftEvent(CraftingRecipe craftingRecipe, Recipe recipe, CraftingInventory craftingInventory){
-        this.bukkitRecipe = recipe;
+    public CustomCraftEvent(CraftingRecipe craftingRecipe, CraftingInventory craftingInventory){
         this.craftingRecipe = craftingRecipe;
         this.craftingInventory = craftingInventory;
         this.result = craftingRecipe.getCustomResult();
-    }
-
-    public Recipe getBukkitRecipe() {
-        return bukkitRecipe;
     }
 
     public CraftingInventory getCraftingInventory() {

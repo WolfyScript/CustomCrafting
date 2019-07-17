@@ -104,6 +104,12 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                 }
                             }
                         }
+                        break;
+                    case "debug":
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.debug")) {
+                            CustomCrafting.getConfigHandler().getConfig().set("debug", !api.hasDebuggingMode());
+                            api.sendPlayerMessage(p, "Set Debug to: "+api.hasDebuggingMode());
+                        }
                 }
             }
         } else {

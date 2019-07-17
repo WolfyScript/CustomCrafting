@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.CraftingInventory;
@@ -14,8 +15,8 @@ public class CustomPreCraftEvent extends CustomCraftEvent {
     private boolean isRepair;
     private List<List<ItemStack>> ingredients;
 
-    public CustomPreCraftEvent(boolean isRepair, CraftingRecipe craftingRecipe, Recipe recipe, CraftingInventory craftingInventory, List<List<ItemStack>> ingredients){
-        super(craftingRecipe, recipe, craftingInventory);
+    public CustomPreCraftEvent(boolean isRepair, CraftingRecipe craftingRecipe, CraftingInventory craftingInventory, List<List<ItemStack>> ingredients){
+        super(craftingRecipe,  craftingInventory);
         this.isRepair = isRepair;
         this.ingredients = ingredients;
     }

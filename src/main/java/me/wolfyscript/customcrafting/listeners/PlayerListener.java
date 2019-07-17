@@ -46,7 +46,6 @@ public class PlayerListener implements Listener {
         InventoryAPI inventoryAPI = CustomCrafting.getApi().getInventoryAPI();
         if((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (CustomCrafting.isOutdated()) {
-
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
                 api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
             } else {
