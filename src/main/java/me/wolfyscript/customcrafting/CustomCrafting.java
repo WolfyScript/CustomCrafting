@@ -42,7 +42,7 @@ public class CustomCrafting extends JavaPlugin {
     private static RecipeHandler recipeHandler;
     private static Workbenches workbenches = null;
 
-    private static final boolean betaVersion = true;
+    private static final boolean betaVersion = false;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
@@ -86,15 +86,12 @@ public class CustomCrafting extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 
         if (loaded) {
+            System.out.println("------------------------------------------------------------------------");
+
             getServer().getPluginManager().registerEvents(new CraftListener(api), this);
             getServer().getPluginManager().registerEvents(new BlockListener(), this);
             getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
             getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
-
-            System.out.println("------------------------------------------------------------------------");
-
-            loadPlayerCache();
-
             getServer().getPluginManager().registerEvents(new AnvilListener(), this);
 
             CommandCC commandCC = new CommandCC();
@@ -106,6 +103,8 @@ public class CustomCrafting extends JavaPlugin {
             Bukkit.getPluginCommand("customcrafting").setTabCompleter(commandCC);
             Bukkit.getPluginCommand("recipes").setExecutor(new CommandRecipe());
             Bukkit.getPluginCommand("recipes").setTabCompleter(new CommandRecipe());
+
+            loadPlayerCache();
 
             invHandler.init();
 
@@ -119,7 +118,7 @@ public class CustomCrafting extends JavaPlugin {
             checkUpdate(null);
 
             Metrics metrics = new Metrics(this);
-            metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> configHandler.getConfig().getString("language")));
+            metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
             metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
                 String version = Bukkit.getServer().getName();
                 if (WolfyUtilities.hasSpigot()) {

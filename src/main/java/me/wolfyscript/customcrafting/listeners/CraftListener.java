@@ -55,83 +55,81 @@ public class CraftListener implements Listener {
 
     @EventHandler
     public void onCraft(CraftItemEvent event) {
-        if (event.getRecipe() instanceof Keyed) {
-            ItemStack result = event.getInventory().getResult();
-            if (result != null && !result.getType().equals(Material.AIR) && precraftedRecipes.containsKey(event.getWhoClicked().getUniqueId()) && precraftedRecipes.get(event.getWhoClicked().getUniqueId()) != null) {
-                String key = precraftedRecipes.get(event.getWhoClicked().getUniqueId());
-                CraftingRecipe recipe = CustomCrafting.getRecipeHandler().getCraftingRecipe(key);
-                ItemStack[] matrix = event.getInventory().getMatrix();
-                boolean small = matrix.length < 9;
-                RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
-                List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
-                if (recipe != null) {
-                    Player player = (Player) event.getWhoClicked();
-                    Block block = player.getTargetBlock(null, 5);
-                    PlayerCache cache = CustomCrafting.getPlayerCache(player);
+        ItemStack result = event.getInventory().getResult();
+        if (result != null && !result.getType().equals(Material.AIR) && precraftedRecipes.containsKey(event.getWhoClicked().getUniqueId()) && precraftedRecipes.get(event.getWhoClicked().getUniqueId()) != null) {
+            String key = precraftedRecipes.get(event.getWhoClicked().getUniqueId());
+            CraftingRecipe recipe = CustomCrafting.getRecipeHandler().getCraftingRecipe(key);
+            ItemStack[] matrix = event.getInventory().getMatrix();
+            boolean small = matrix.length < 9;
+            RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+            List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
+            if (recipe != null) {
+                Player player = (Player) event.getWhoClicked();
+                Block block = player.getTargetBlock(null, 5);
+                PlayerCache cache = CustomCrafting.getPlayerCache(player);
 
-                    CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, event.getInventory());
-                    if (!customCraftEvent.isCancelled()) {
+                CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, event.getInventory());
+                if (!customCraftEvent.isCancelled()) {
 
-                        {//---------COMMANDS AND STATISTICS-------------
-                            if (config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()) {
-                                for (String command : config.getCommandsSuccessCrafted()) {
-                                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getId()));
-                                }
+                    {//---------COMMANDS AND STATISTICS-------------
+                        if (config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()) {
+                            for (String command : config.getCommandsSuccessCrafted()) {
+                                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getId()));
                             }
-                            cache.addRecipeCrafts(customCraftEvent.getRecipe().getId());
-                            cache.addAmountCrafted(1);
-                            if (CustomCrafting.getWorkbenches().isWorkbench(block.getLocation())) {
-                                cache.addAmountAdvancedCrafted(1);
-                            } else {
-                                cache.addAmountNormalCrafted(1);
-                            }
-                        }//----------------------------------------------
-
-                        //CALCULATE AMOUNTS CRAFTABLE AND REMOVE THEM!
-                        int amount = recipe.getAmountCraftable(ingredients);
-                        ItemStack resultItem = event.getCurrentItem();
-                        List<ItemStack> replacements = new ArrayList<>();
-
-                        if (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT)) {
-                            api.sendDebugMessage("SHIFT-CLICK!");
-                            if (resultItem != null && resultItem.getAmount() > 0) {
-                                int possible = ItemUtils.getInventorySpace(player, resultItem) / resultItem.getAmount();
-                                if (possible > amount) {
-                                    possible = amount;
-                                }
-                                if (possible > 0) {
-                                    api.sendDebugMessage(" possible: " + possible);
-                                    replacements = recipe.removeMatrix(ingredients, event.getInventory(), small, possible);
-                                }
-                                for (int i = 0; i < possible; i++) {
-                                    player.getInventory().addItem(resultItem);
-                                }
-                            }
+                        }
+                        cache.addRecipeCrafts(customCraftEvent.getRecipe().getId());
+                        cache.addAmountCrafted(1);
+                        if (CustomCrafting.getWorkbenches().isWorkbench(block.getLocation())) {
+                            cache.addAmountAdvancedCrafted(1);
                         } else {
-                            api.sendDebugMessage("ONE-CLICK!");
-                            if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())) {
-                                replacements = recipe.removeMatrix(ingredients, event.getInventory(), small, 1);
-                                if (event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)) {
+                            cache.addAmountNormalCrafted(1);
+                        }
+                    }//----------------------------------------------
 
-                                    event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
-                                } else {
-                                    event.getView().setCursor(resultItem);
-                                }
+                    //CALCULATE AMOUNTS CRAFTABLE AND REMOVE THEM!
+                    int amount = recipe.getAmountCraftable(ingredients);
+                    ItemStack resultItem = event.getCurrentItem();
+                    List<ItemStack> replacements = new ArrayList<>();
+
+                    if (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT)) {
+                        api.sendDebugMessage("SHIFT-CLICK!");
+                        if (resultItem != null && resultItem.getAmount() > 0) {
+                            int possible = ItemUtils.getInventorySpace(player, resultItem) / resultItem.getAmount();
+                            if (possible > amount) {
+                                possible = amount;
                             }
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(event.getInventory(), event.getView(), false);
-                                Bukkit.getPluginManager().callEvent(event1);
-                            }, 2);
+                            if (possible > 0) {
+                                api.sendDebugMessage(" possible: " + possible);
+                                replacements = recipe.removeMatrix(ingredients, event.getInventory(), small, possible);
+                            }
+                            for (int i = 0; i < possible; i++) {
+                                player.getInventory().addItem(resultItem);
+                            }
                         }
-                        for (ItemStack itemStack : replacements) {
-                            if (ItemUtils.hasInventorySpace(player, itemStack)) {
-                                player.getInventory().addItem(itemStack);
+                    } else {
+                        api.sendDebugMessage("ONE-CLICK!");
+                        if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())) {
+                            replacements = recipe.removeMatrix(ingredients, event.getInventory(), small, 1);
+                            if (event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)) {
+                                event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
                             } else {
-                                player.getLocation().getWorld().dropItemNaturally(player.getLocation(), itemStack);
+                                event.getView().setCursor(resultItem);
                             }
                         }
-                        event.setCurrentItem(new ItemStack(Material.AIR));
+                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                            PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(event.getInventory(), event.getView(), false);
+                            Bukkit.getPluginManager().callEvent(event1);
+                            player.updateInventory();
+                        }, 1);
                     }
+                    for (ItemStack itemStack : replacements) {
+                        if (ItemUtils.hasInventorySpace(player, itemStack)) {
+                            player.getInventory().addItem(itemStack);
+                        } else {
+                            player.getLocation().getWorld().dropItemNaturally(player.getLocation(), itemStack);
+                        }
+                    }
+                    event.setCurrentItem(new ItemStack(Material.AIR));
                 }
             }
         }
@@ -181,7 +179,7 @@ public class CraftListener implements Listener {
                 }
             }
             if (!allow) {
-                api.sendDebugMessage("No recipe valid!");
+                api.sendDebugMessage("No valid recipe!");
                 precraftedRecipes.remove(player.getUniqueId());
                 if (e.getRecipe() != null) {
                     if (e.getRecipe() instanceof Keyed) {

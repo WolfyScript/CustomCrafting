@@ -19,6 +19,15 @@ language: en_US
 commands:
   cc: true
 
+databank:
+  enabled: false
+  type: MYSQL
+  host: ""
+  port: 3306
+  database: ""
+  username: ""
+  password: ""
+
 workbench:
   enable: true
   reset_item: true
@@ -42,4 +51,5 @@ data:
 
 recipes:
   lockdown: false
+  pretty_printing: false
   disabled_recipes: []

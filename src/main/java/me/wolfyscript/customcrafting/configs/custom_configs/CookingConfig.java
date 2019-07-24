@@ -5,8 +5,12 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class CookingConfig extends CustomConfig {
 
-    public CookingConfig(ConfigAPI configAPI, String defaultName, String folder, String type, String name) {
-        super(configAPI, defaultName, folder, type, name);
+    public CookingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, String fileType) {
+        super(configAPI, folder, type, name, defaultName, fileType);
+    }
+
+    public CookingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
+        this(configAPI, folder, type, name, defaultName, "yml");
     }
 
     public void setXP(float xp){

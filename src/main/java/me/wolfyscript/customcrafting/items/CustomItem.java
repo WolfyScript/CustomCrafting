@@ -66,7 +66,10 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     public CustomItem getRealItem(){
-        return new CustomItem(config, true);
+        if(hasConfig()){
+            return new CustomItem(config, true);
+        }
+        return clone();
     }
 
     public boolean hasReplacement(){
@@ -206,6 +209,14 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     /*
+    This will call the super.clone() method to get the ItemStack.
+    All CustomItem variables will get lost!
+     */
+    public ItemStack getAsItemStack(){
+        return super.clone();
+    }
+
+    /*
     CustomItem static methods
      */
     public static CustomItem getByItemStack(ItemStack itemStack) {
@@ -254,11 +265,12 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     public static void saveItem(PlayerCache cache, String id, CustomItem customItem) {
-        ItemConfig config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), id.split(":")[0], id.split(":")[1]);
+        ItemConfig config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), id.split(":")[0], id.split(":")[1], "json");
         config.setCustomItem(customItem);
         if (CustomCrafting.getRecipeHandler().getCustomItem(id) != null) {
             CustomCrafting.getRecipeHandler().removeCustomItem(id);
         }
+        config.reload();
         CustomItem customItem1 = new CustomItem(config);
         cache.getItems().setItem(customItem1);
         CustomCrafting.getRecipeHandler().addCustomItem(customItem1);
@@ -283,7 +295,6 @@ public class CustomItem extends ItemStack implements Cloneable{
                 }else if(cache.getItems().getType().equals("inputRight")){
 
                 }
-
             case STONECUTTER:
                 Stonecutter stonecutter = cache.getStonecutter();
                 if (cache.getItems().getType().equals("result")) {

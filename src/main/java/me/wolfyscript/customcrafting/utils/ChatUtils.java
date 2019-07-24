@@ -22,14 +22,20 @@ public class ChatUtils {
 
     private static WolfyUtilities api = CustomCrafting.getApi();
 
-    public static boolean checkPerm(CommandSender sender, String perm) {
+    public static boolean checkPerm(CommandSender sender, String perm){
+        return checkPerm(sender, perm, true);
+    }
+
+    public static boolean checkPerm(CommandSender sender, String perm, boolean sendMessage) {
         if (WolfyUtilities.hasPermission(sender, perm)) {
             return true;
         }
-        if(sender instanceof Player){
-            api.sendPlayerMessage((Player) sender, "$msg.denied_perm$", new String[]{"%PERM%", perm});
-        }else{
-            sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+        if(sendMessage){
+            if(sender instanceof Player){
+                api.sendPlayerMessage((Player) sender, "$msg.denied_perm$", new String[]{"%PERM%", perm});
+            }else{
+                sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+            }
         }
         return false;
     }

@@ -6,6 +6,10 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 public class CampfireConfig extends CookingConfig {
 
     public CampfireConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, "campfire", folder, "campfire", name);
+        super(configAPI, folder, "campfire", name, "campfire");
+    }
+
+    public CampfireConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
+        super(configAPI, folder, "campfire", name, "campfire", fileType);
     }
 }

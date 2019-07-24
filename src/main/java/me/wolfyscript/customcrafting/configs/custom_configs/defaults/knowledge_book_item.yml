@@ -1,0 +1,21 @@
+fuel:
+  burntime: 0
+  allowed_blocks:
+    - furnace
+durability_cost: 0
+meta: '{"customModelData":"EXACT","damage":"EXACT","potion":"EXACT","lore":"EXACT","enchant":"EXACT","playerHead":"EXACT","flags":"EXACT","name":"EXACT","unbreakable":"EXACT","attributes_modifiers":"EXACT","repairCost":"EXACT"}'
+item:
+  v: 1968
+  type: KNOWLEDGE_BOOK
+  meta:
+    ==: ItemMeta
+    meta-type: KNOWLEDGE_BOOK
+    display-name: $crafting.knowledgebook.name$
+    lore:
+      - '[WU!]$crafting.knowledgebook.lore$'
+      - '&c&c&_&k&n&o&w&l&e&d&g&e&b&o&o&k'
+    enchants:
+      DURABILITY: 0
+    ItemFlags:
+      - HIDE_ENCHANTS
+consumed: true

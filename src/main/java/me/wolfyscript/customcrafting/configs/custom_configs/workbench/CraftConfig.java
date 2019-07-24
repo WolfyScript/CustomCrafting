@@ -10,20 +10,24 @@ import java.util.*;
 
 public class CraftConfig extends CustomConfig {
 
-    public CraftConfig(ConfigAPI configAPI, String defaultpath, String defaultName, String folder, String name, boolean override) {
-        super(configAPI, defaultpath, defaultName, folder, "workbench", name, override);
+    public CraftConfig(ConfigAPI configAPI, String folder, String name, String defaultPath, String defaultName, boolean override, String fileType) {
+        super(configAPI, folder, "workbench", name, defaultPath, defaultName, override, fileType);
     }
 
-    public CraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name, boolean override) {
-        super(configAPI, defaultName, folder, "workbench", name, override);
+    public CraftConfig(ConfigAPI configAPI, String folder, String name, String defaultName, boolean override, String fileType) {
+        super(configAPI, folder, "workbench", name, defaultName, override, fileType);
     }
 
-    public CraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
-        this(configAPI, defaultName, folder, name, false);
+    public CraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name, String fileType) {
+        this(configAPI, folder, name, defaultName, false, fileType);
+    }
+
+    public CraftConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
+        this(configAPI, "craft_config", folder, name, fileType);
     }
 
     public CraftConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, "craft_config", folder, name);
+        this(configAPI, "craft_config", folder, name, "yml");
     }
 
     public void setShapeless(boolean shapeless) {
@@ -55,12 +59,7 @@ public class CraftConfig extends CustomConfig {
     }
 
     public String[] getShape() {
-        List<String> list = getStringList("shape");
-        String[] shape = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            shape[i] = list.get(i);
-        }
-        return shape;
+        return getStringList("shape").toArray(new String[0]);
     }
 
     public void setResult(CustomItem itemStack) {
@@ -91,9 +90,9 @@ public class CraftConfig extends CustomConfig {
 
     public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
         HashMap<Character, ArrayList<CustomItem>> result = new HashMap<>();
-        Set<String> keys = getConfig().getConfigurationSection("ingredients").getKeys(false);
+        Set<String> keys = getValues("ingredients").keySet();
         for (String key : keys) {
-            Set<String> itemKeys = getConfig().getConfigurationSection("ingredients." + key).getKeys(false);
+            Set<String> itemKeys = getValues("ingredients." + key).keySet();
             ArrayList<CustomItem> data = new ArrayList<>();
             for (String itemKey : itemKeys) {
                 CustomItem itemStack;

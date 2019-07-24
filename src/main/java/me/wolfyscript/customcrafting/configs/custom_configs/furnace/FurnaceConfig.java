@@ -10,6 +10,10 @@ import java.util.List;
 public class FurnaceConfig extends CookingConfig {
 
     public FurnaceConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, "furnace_config", folder, "furnace", name);
+        super(configAPI, folder, "furnace", name, "furnace_config");
+    }
+
+    public FurnaceConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
+        super(configAPI, folder, "furnace", name, "furnace_config", fileType);
     }
 }

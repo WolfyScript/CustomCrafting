@@ -557,7 +557,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     CookingConfig cookingConfig = null;
                     switch (cache.getSetting()) {
                         case WORKBENCH:
-                            CraftConfig config = new CraftConfig(api.getConfigAPI(), namespace, key);
+                            CraftConfig config = new CraftConfig(api.getConfigAPI(), namespace, key, "json");
                             api.sendDebugMessage("Create Config:");
                             api.sendDebugMessage("  id: " + namespace + ":" + key);
                             api.sendDebugMessage("  Permission: " + workbench.isPermissions());
@@ -605,7 +605,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             config.setShape(shape);
                             config.setIngredients(workbench.getIngredients());
                             api.sendDebugMessage("Saving...");
-                            config.save();
+                            config.reload();
                             api.sendDebugMessage("Reset GUI cache...");
                             cache.resetWorkbench();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
@@ -630,12 +630,13 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                             return false;
                         case ANVIL:
-                            AnvilConfig anvilConfig = new AnvilConfig(api.getConfigAPI(), namespace, key);
+                            AnvilConfig anvilConfig = new AnvilConfig(api.getConfigAPI(), namespace, key, "json");
                             anvilConfig.setBlockEnchant(anvil.isBlockEnchant());
                             anvilConfig.setBlockRename(anvil.isBlockRename());
                             anvilConfig.setBlockRepairing(anvil.isBlockRepair());
                             anvilConfig.setExactMeta(anvil.isExactMeta());
                             anvilConfig.setPermission(anvil.isPermissions());
+                            anvilConfig.setRepairCostMode(anvil.getRepairCostMode());
                             anvilConfig.setRepairCost(anvil.getRepairCost());
                             anvilConfig.setPriority(anvil.getPriority());
                             anvilConfig.setMode(anvil.getMode());
@@ -643,7 +644,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             anvilConfig.setDurability(anvil.getDurability());
                             anvilConfig.setInputLeft(anvil.getInputLeft());
                             anvilConfig.setInputRight(anvil.getInputRight());
-                            anvilConfig.save();
+                            anvilConfig.reload();
                             cache.resetAnvil();
 
                             try {
@@ -660,12 +661,12 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             return false;
                         case STONECUTTER:
                             Stonecutter stonecutter = cache.getStonecutter();
-                            StonecutterConfig stonecutterConfig = new StonecutterConfig(api.getConfigAPI(), namespace, key);
+                            StonecutterConfig stonecutterConfig = new StonecutterConfig(api.getConfigAPI(), namespace, key, "json");
                             stonecutterConfig.setResult(stonecutter.getResult());
                             stonecutterConfig.setSource(stonecutter.getSource());
                             stonecutterConfig.setExactMeta(stonecutter.isExactMeta());
                             stonecutterConfig.setPriority(stonecutter.getPriority());
-                            stonecutterConfig.save();
+                            stonecutterConfig.reload();
                             cache.resetStonecutter();
                             try {
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
@@ -681,18 +682,18 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                             return false;
                         case BLAST_FURNACE:
-                            cookingConfig = new BlastingConfig(api.getConfigAPI(), namespace, key);
+                            cookingConfig = new BlastingConfig(api.getConfigAPI(), namespace, key, "json");
                         case SMOKER:
                             if (cookingConfig == null) {
-                                cookingConfig = new SmokerConfig(api.getConfigAPI(), namespace, key);
+                                cookingConfig = new SmokerConfig(api.getConfigAPI(), namespace, key, "json");
                             }
                         case CAMPFIRE:
                             if (cookingConfig == null) {
-                                cookingConfig = new CampfireConfig(api.getConfigAPI(), namespace, key);
+                                cookingConfig = new CampfireConfig(api.getConfigAPI(), namespace, key, "json");
                             }
                         case FURNACE:
                             if (cookingConfig == null) {
-                                cookingConfig = new FurnaceConfig(api.getConfigAPI(), namespace, key);
+                                cookingConfig = new FurnaceConfig(api.getConfigAPI(), namespace, key, "json");
                             }
                             //furnaceConfig.setAdvancedFurnace(furnace.isAdvFurnace());
                             cookingConfig.setCookingTime(furnace.getCookingTime());
@@ -700,8 +701,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             cookingConfig.setResult(furnace.getResult());
                             cookingConfig.setSource(furnace.getSource());
                             cookingConfig.setExactMeta(furnace.isExactMeta());
-                            cookingConfig.save();
-                            cookingConfig.load();
+                            cookingConfig.reload();
                             cache.resetCookingData();
                             api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
                             api.sendPlayerMessage(player, "§6recipes/" + namespace + "/furnace/" + key);

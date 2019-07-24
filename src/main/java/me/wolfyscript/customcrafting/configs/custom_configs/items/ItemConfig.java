@@ -16,20 +16,20 @@ import java.util.Locale;
 
 public class ItemConfig extends CustomConfig {
 
-    public ItemConfig(ConfigAPI configAPI, String defaultpath, String defaultName, String folder, String name, boolean override) {
-        super(configAPI, defaultpath, defaultName, folder, "items", name, override);
+    public ItemConfig(ConfigAPI configAPI, String folder, String name, String defaultPath, String defaultName, boolean override, String fileType) {
+        super(configAPI, folder, "items", name, defaultPath, defaultName, override, fileType);
     }
 
-    public ItemConfig(ConfigAPI configAPI, String defaultName, String folder, String name, boolean override) {
-        super(configAPI, defaultName, folder, "items", name, override);
+    public ItemConfig(ConfigAPI configAPI, String folder, String name, String defaultName, boolean override, String fileType) {
+        super(configAPI, folder, "items", name, defaultName, override, fileType);
     }
 
-    public ItemConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
-        this(configAPI, defaultName, folder, name, false);
+    public ItemConfig(ConfigAPI configAPI, String folder, String name, String defaultName, String fileType) {
+        this(configAPI, folder, name, defaultName, false, fileType);
     }
 
-    public ItemConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, "item", folder, name);
+    public ItemConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
+        this(configAPI, folder, name, "item", fileType);
     }
 
     public ItemStack getCustomItem(boolean replaceLang){
@@ -41,7 +41,7 @@ public class ItemConfig extends CustomConfig {
     }
 
     public void setCustomItem(CustomItem itemStack){
-        saveItem("item", itemStack);
+        setItem("item", new ItemStack(itemStack));
         setMetaSettings(itemStack.getMetaSettings());
         setBurnTime(itemStack.getBurnTime());
         setConsumed(itemStack.isConsumed());
@@ -81,7 +81,7 @@ public class ItemConfig extends CustomConfig {
             if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
                 set("replacement.item_key", customItem.getId());
             }else {
-                saveItem("replacement.item", customItem);
+                setItem("replacement.item", customItem);
             }
         }
     }
@@ -90,7 +90,7 @@ public class ItemConfig extends CustomConfig {
         String id = getString("replacement.item_key");
         if(id != null && !id.isEmpty()){
             return CustomCrafting.getRecipeHandler().getCustomItem(id);
-        }else if(getConfig().get("replacement.item") != null){
+        }else if(get("replacement.item") != null){
             return new CustomItem(getItem("replacement.item"));
         }
         return null;

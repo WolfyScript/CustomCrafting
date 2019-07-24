@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -63,7 +64,6 @@ public class MainMenu extends ExtendedGuiWindow {
                 event.setItem(22, "campfire");
                 event.setItem(24, "stonecutter");
             }
-
 
             event.setItem(39, "item_editor");
             event.setItem(41, "recipe_list");

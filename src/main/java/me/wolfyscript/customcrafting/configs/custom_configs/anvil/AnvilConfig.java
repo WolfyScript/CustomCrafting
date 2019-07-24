@@ -13,7 +13,11 @@ import java.util.Set;
 public class AnvilConfig extends CustomConfig {
 
     public AnvilConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, "anvil", folder, "anvil", name);
+        this(configAPI, folder, name, "yml");
+    }
+
+    public AnvilConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
+        super(configAPI, folder, "anvil", name, "anvil", fileType);
     }
 
     public void setPermission(boolean perm) {
@@ -41,11 +45,11 @@ public class AnvilConfig extends CustomConfig {
     }
 
     public CustomAnvilRecipe.RepairCostMode getRepairCostMode(){
-        return CustomAnvilRecipe.RepairCostMode.valueOf(getString("repair_cost.mode"));
+        return CustomAnvilRecipe.RepairCostMode.valueOf(getString("repair_cost_mode"));
     }
 
     public void setRepairCostMode(CustomAnvilRecipe.RepairCostMode mode){
-        set("repair_cost.mode", mode.toString());
+        set("repair_cost_mode", mode.toString());
     }
 
     public boolean isBlockRepairing(){
@@ -106,8 +110,8 @@ public class AnvilConfig extends CustomConfig {
 
     private List<CustomItem> getInput(String leftRight){
         List<CustomItem> result = new ArrayList<>();
-        if(getConfig().getConfigurationSection("input_"+leftRight) != null){
-            Set<String> variants = getConfig().getConfigurationSection("input_"+leftRight).getKeys(false);
+        if(get("input_"+leftRight) != null){
+            Set<String> variants = getValues("input_"+leftRight).keySet();
             for(String variant : variants){
                 result.add(getCustomItem("input_"+leftRight+"."+variant));
             }

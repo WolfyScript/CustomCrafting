@@ -57,15 +57,17 @@ public class RecipeHandler {
     private void loadConfig(String subfolder, String type) {
         File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
 
-        File[] files = workbench.listFiles((dir, name) -> (name.split("\\.").length > 1 && name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml")));
+        File[] files = workbench.listFiles((dir, name) -> (name.split("\\.").length > 1));
         if (files != null) {
             for (File file : files) {
+                String fileName = file.getName();
                 String key = file.getParentFile().getParentFile().getName().toLowerCase();
-                String name = file.getName().replace(".yml", "");
+                String name = fileName.substring(0, file.getName().lastIndexOf("."));
+                String fileType = fileName.substring(file.getName().lastIndexOf(".")+1);
                 try {
                     switch (type) {
                         case "workbench":
-                            CraftConfig config = new CraftConfig(configAPI, key, name);
+                            CraftConfig config = new CraftConfig(configAPI, key, name, fileType);
                             if (config.isShapeless()) {
                                 registerRecipe(new ShapelessCraftRecipe(config));
                             } else {
@@ -73,26 +75,26 @@ public class RecipeHandler {
                             }
                             break;
                         case "furnace":
-                            registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, key, name)));
+                            registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, key, name, fileType)));
                             break;
                         case "anvil":
-                            registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, key, name)));
+                            registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, key, name, fileType)));
                             break;
                         case "blast_furnace":
-                            registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, key, name)));
+                            registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, key, name, fileType)));
                             break;
                         case "smoker":
-                            registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, key, name)));
+                            registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, key, name, fileType)));
                             break;
                         case "campfire":
-                            registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, key, name)));
+                            registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, key, name, fileType)));
                             break;
                         case "items":
-                            ItemConfig itemConfig = new ItemConfig(configAPI, key, name);
+                            ItemConfig itemConfig = new ItemConfig(configAPI, key, name, fileType);
                             customItems.add(new CustomItem(itemConfig));
                             break;
                         case "stonecutter":
-                            registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, key, name)));
+                            registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, key, name, fileType)));
                             break;
                     }
                 } catch (Exception ex) {
@@ -120,6 +122,10 @@ public class RecipeHandler {
     public void onSave() {
         CustomCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
         CustomCrafting.getConfigHandler().getConfig().save();
+    }
+
+    public void loadDataBase(){
+
     }
 
     public void loadConfigs() {

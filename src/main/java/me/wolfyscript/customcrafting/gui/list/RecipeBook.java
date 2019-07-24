@@ -71,51 +71,52 @@ public class RecipeBook extends ExtendedGuiWindow {
                     event.setItem(i, "none", "glass_white");
                 }
                 if (knowledgeBook.getRecipeID().isEmpty()) {
-                    event.setItem(38, "previous_page");
-                    event.setItem(42, "next_page");
+                    event.setItem(2, "previous_page");
+                    event.setItem(6, "next_page");
                     List<CustomRecipe> recipes = new ArrayList<>();
                     if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
                         for (CraftingRecipe recipe : CustomCrafting.getRecipeHandler().getCraftingRecipes()) {
                             if (!recipe.needsPermission() || (player.hasPermission("customcrafting.craft.*") || player.hasPermission("customcrafting.craft." + recipe.getId()) || player.hasPermission("customcrafting.craft." + recipe.getId().split(":")[0]))) {
-                                recipes.add(recipe);
+                                if(!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())){
+                                    recipes.add(recipe);
+                                }
                             }
                         }
                     } else {
                         recipes.addAll(CustomCrafting.getRecipeHandler().getRecipes(knowledgeBook.getSetting()));
                     }
-
-                    if ((45 * knowledgeBook.getPage()) >= recipes.size()) {
-                        knowledgeBook.setPage(0);
+                    int maxPages = recipes.size() / 36 + (recipes.size() % 36 > 0 ? 1 : 0);
+                    if (knowledgeBook.getPage() >= maxPages) {
+                        knowledgeBook.setPage(1);
                     }
                     int item = 0;
                     for (int i = 36 * knowledgeBook.getPage(); item < 36 && i < recipes.size(); i++) {
                         CustomRecipe recipe = recipes.get(i);
-                        if (recipe instanceof Keyed) {
-                            CustomItem itemStack;
-                            if(recipe instanceof CustomAnvilRecipe){
-                                if(!((CustomAnvilRecipe) recipe).getInputLeft().isEmpty()){
-                                    itemStack = ((CustomAnvilRecipe) recipe).getInputLeft().get(0).clone();
-                                }else{
-                                    itemStack = ((CustomAnvilRecipe) recipe).getInputRight().get(0).clone();
-                                }
-                            }else{
-                                itemStack = recipe.getCustomResult().clone();
+                        CustomItem itemStack;
+                        if (recipe instanceof CustomAnvilRecipe) {
+                            if (!((CustomAnvilRecipe) recipe).getInputLeft().isEmpty()) {
+                                itemStack = ((CustomAnvilRecipe) recipe).getInputLeft().get(0).getRealItem();
+                            } else {
+                                itemStack = ((CustomAnvilRecipe) recipe).getInputRight().get(0).getRealItem();
                             }
-                            if (itemStack.getType().equals(Material.AIR)) {
-                                itemStack = new CustomItem(new ItemStack(Material.STONE));
-                                itemStack.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-                                ItemMeta itemMeta = itemStack.getItemMeta();
-                                itemMeta.setDisplayName("§r§7" + ((Keyed) recipe).getKey().toString());
-                                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                                itemStack.setItemMeta(itemMeta);
-                            }
-                            ItemMeta itemMeta = itemStack.getItemMeta();
-                            List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
-                            lore.add(ChatColor.translateAlternateColorCodes('&', api.getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_book.lores.click$")) + WolfyUtilities.hideString(";;" + ((Keyed) recipe).getKey().toString()));
-                            itemMeta.setLore(lore);
-                            itemStack.setItemMeta(itemMeta);
-                            event.setItem(9 + item, itemStack);
+                        } else {
+                            itemStack = recipe.getCustomResult().getRealItem();
                         }
+
+                        if (itemStack.getType().equals(Material.AIR)) {
+                            itemStack = new CustomItem(new ItemStack(Material.STONE));
+                            itemStack.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+                            ItemMeta itemMeta = itemStack.getItemMeta();
+                            itemMeta.setDisplayName("§r§7" + recipe.getId());
+                            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                            itemStack.setItemMeta(itemMeta);
+                        }
+                        ItemMeta itemMeta = itemStack.getItemMeta();
+                        List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+                        lore.add(ChatColor.translateAlternateColorCodes('&', api.getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_book.lores.click$")) + WolfyUtilities.hideString(";;" + recipe.getId()));
+                        itemMeta.setLore(lore);
+                        itemStack.setItemMeta(itemMeta);
+                        event.setItem(9 + item, itemStack);
                         item++;
                     }
                 } else if (knowledgeBook.getCustomRecipe() != null) {
@@ -140,14 +141,14 @@ public class RecipeBook extends ExtendedGuiWindow {
                                             slot = 10 + i + (i / 3) * 6;
                                             List<CustomItem> variants = craftingRecipe.getIngredients(i);
                                             int variant = variantsTimers.getOrDefault(i, 0);
-                                            event.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
+                                            event.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant).getRealItem());
                                             if (++variant < variants.size()) {
                                                 variantsTimers.put(i, variant);
                                             } else {
                                                 variantsTimers.put(i, 0);
                                             }
                                         }
-                                        event.setItem(24, craftingRecipe.getCustomResult());
+                                        event.setItem(24, craftingRecipe.getCustomResult().getRealItem());
                                     }, 1, 20));
                                 }
                             }
@@ -182,8 +183,8 @@ public class RecipeBook extends ExtendedGuiWindow {
                                         }
                                     }, 1, 4));
                                 }
-                                event.setItem(20, furnaceRecipe.getSource());
-                                event.setItem(24, furnaceRecipe.getCustomResult());
+                                event.setItem(20, furnaceRecipe.getSource().getRealItem());
+                                event.setItem(24, furnaceRecipe.getCustomResult().getRealItem());
                             }
                             break;
                         case ANVIL:
@@ -203,7 +204,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                         List<CustomItem> variants = i == 0 ? customAnvilRecipe.getInputLeft() : customAnvilRecipe.getInputRight();
                                         if (!variants.isEmpty()) {
                                             int variant = timings.getOrDefault(0, 0);
-                                            event.setItem(i == 0 ? 19 : 21, variants.get(variant));
+                                            event.setItem(i == 0 ? 19 : 21, variants.get(variant).getRealItem());
                                             if (++variant < variants.size()) {
                                                 timings.put(i, variant);
                                             } else {
@@ -214,7 +215,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                         }
                                     }
                                     if (customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                                        event.setItem(25, customAnvilRecipe.getCustomResult());
+                                        event.setItem(25, customAnvilRecipe.getCustomResult().getRealItem());
                                     }
                                 }, 1, 20));
                             }
@@ -223,15 +224,15 @@ public class RecipeBook extends ExtendedGuiWindow {
                             //TODO STONECUTTER
                             CustomStonecutterRecipe stonecutterRecipe = (CustomStonecutterRecipe) knowledgeBook.getCustomRecipe();
 
-                            event.setItem(20, stonecutterRecipe.getSource());
-                            event.setItem(24, stonecutterRecipe.getCustomResult());
+                            event.setItem(20, stonecutterRecipe.getSource().getRealItem());
+                            event.setItem(24, stonecutterRecipe.getCustomResult().getRealItem());
                             break;
-
                     }
                 }
             } else {
                 //MAINMENU
-                event.setItem(0, "none", "glass_gray");
+                event.setItem(0, "none", "glass_white");
+                event.setItem(8, "none", "glass_white");
                 event.setItem(11, "workbench");
                 event.setItem(13, "furnace");
                 event.setItem(15, "anvil");
@@ -243,10 +244,6 @@ public class RecipeBook extends ExtendedGuiWindow {
                 }
             }
         }
-    }
-
-    public void updateRecipe() {
-
     }
 
     @Override
@@ -281,6 +278,12 @@ public class RecipeBook extends ExtendedGuiWindow {
         PlayerCache cache = CustomCrafting.getPlayerCache(guiAction.getPlayer());
         KnowledgeBook book = cache.getKnowledgeBook();
         switch (guiAction.getAction()) {
+            case "previous_page":
+                book.setPage(book.getPage() > 0 ? book.getPage()-1 : 0);
+                break;
+            case "next_page":
+                book.setPage(book.getPage()+1);
+                break;
             case "back":
                 book.stopTimerTask();
                 if (book.getRecipeID().isEmpty()) {
@@ -298,8 +301,6 @@ public class RecipeBook extends ExtendedGuiWindow {
             case "stonecutter":
                 book.setSetting(Setting.valueOf(guiAction.getAction().toUpperCase(Locale.ROOT)));
                 break;
-
-
         }
         return true;
     }

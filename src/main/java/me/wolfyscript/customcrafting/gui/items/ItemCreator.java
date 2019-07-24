@@ -698,7 +698,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                         api.sendPlayerMessage(player, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
                         return true;
                     }
-
                     CustomItem.saveItem(cache, namespace + ":" + key, items.getItem());
                     api.sendPlayerMessage(player, "$msg.gui.item_creator.save.success$");
                     api.sendPlayerMessage(player, "&6" + namespace + "/items/" + key);

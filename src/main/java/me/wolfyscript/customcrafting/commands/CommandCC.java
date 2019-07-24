@@ -63,8 +63,11 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         break;
                     case "knowledge":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge")) {
-                            invAPI.openGui(p);
-                            invAPI.getGuiHandler(p).changeToInv("recipe_book");
+                            if (invAPI.hasGuiHandler(p)) {
+                                invAPI.getGuiHandler(p).changeToInv("recipe_book");
+                            }else{
+                                invAPI.openGui(p, "recipe_book");
+                            }
                         }
                         break;
                     case "give":
@@ -162,12 +165,19 @@ public class CommandCC implements CommandExecutor, TabCompleter {
     }
 
     public void openGUI(Player p, InventoryAPI invAPI) {
-        if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio")) {
-            invAPI.openGui(p);
-            if (invAPI.getGuiHandler(p).getCurrentInv() != null && invAPI.getGuiHandler(p).getCurrentInv().getNamespace().equals("recipe_book")) {
-                invAPI.getGuiHandler(p).changeToInv("main_menu");
+        if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio", false)) {
+            if(invAPI.hasGuiHandler(p)){
+                if(invAPI.getGuiHandler(p).getLastInv() != null && invAPI.getGuiHandler(p).getLastInv().getNamespace().equalsIgnoreCase("recipe_book")){
+                    invAPI.getGuiHandler(p).changeToInv("main_menu");
+                }else{
+                    invAPI.openGui(p,"main_menu");
+                }
+            }else{
+                invAPI.openGui(p, "main_menu");
             }
+            return;
         }
+        invAPI.openGui(p, "recipe_book");
     }
 
     public void printInfo(Player p) {

@@ -6,6 +6,10 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 public class BlastingConfig extends CookingConfig {
 
     public BlastingConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, "blast_furnace", folder, "blast_furnace", name);
+        super(configAPI, folder, "blast_furnace", name, "blast_furnace");
+    }
+
+    public BlastingConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
+        super(configAPI, folder, "blast_furnace", name, "blast_furnace", fileType);
     }
 }

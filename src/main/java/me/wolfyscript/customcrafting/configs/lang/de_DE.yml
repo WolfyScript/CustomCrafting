@@ -11,6 +11,10 @@ crafting:
     name: "&6Erweiterte Werkbank"
     lore:
       - "&7Werkbank für erweitertes Handwerk"
+  knowledgebook:
+    name: "&6Knowledge Book"
+    lore:
+      - "&7Contains some interesting recipes..."
 msg:
   auto_save:
     start:    "     Auto-Speichern    "
@@ -123,6 +127,7 @@ msg:
       loading:
         error: "&cError occurred while loading recipe &4%REC%"
         success: "&aLoaded and injected recipe successful!"
+        warning: "&cIt is better to restart the Server after you're done, to prevent recipes from not working correctly!"
       valid_number: "&cType in a valid number!"
     recipe_editor:
       not_existing: "&cThe recipe &6%RECIPE% &cdoesn't exist!"
@@ -765,20 +770,24 @@ items:
     furnace:
       name: "&6Furnace Recipes"
       help: []
+    anvil:
+      name: "&6Anvil Recipes"
+      help:
+        - ""
     blast_furnace:
-      name: "&6Blasting Recipe"
+      name: "&6Blasting Recipes"
       help:
         - ""
     smoker:
-      name: "&6Smoking Recipe"
+      name: "&6Smoking Recipes"
       help:
         - ""
     campfire:
-      name: "&6Campfire Recipe"
+      name: "&6Campfire Recipes"
       help:
         - ""
     stonecutter:
-      name: "&6Stonecutter Recipe"
+      name: "&6Stonecutter Recipes"
       help:
         - ""
 

@@ -3,21 +3,17 @@ package me.wolfyscript.customcrafting.configs;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import org.bukkit.Material;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainConfig extends Config {
 
     public MainConfig(ConfigAPI configAPI) {
-        super(configAPI, "me/wolfyscript/customcrafting/configs", CustomCrafting.getInst().getDataFolder().getPath(), "main_config");
+        super(configAPI, CustomCrafting.getInst().getDataFolder().getPath(),"main_config", "me/wolfyscript/customcrafting/configs","main_config", "yml", false);
     }
 
     @Override
     public void init() {
-        loadDefaults();
-        configAPI.registerConfig(this);
     }
 
     public boolean isExperimentalFeatures() {
@@ -26,6 +22,22 @@ public class MainConfig extends Config {
 
     public void setExperimentalFeatures(boolean experimentalFeatures){
         set("experimental_features", experimentalFeatures);
+    }
+
+    public boolean resetKnowledgeBookItem(){
+        return getBoolean("knowledgebook.reset_item");
+    }
+
+    public void setResetKnowledgeBookItem(boolean reset){
+        set("knowledgebook.reset_item", reset);
+    }
+
+    public boolean resetKnowledgeBookRecipe(){
+        return getBoolean("knowledgebook.reset_recipe");
+    }
+
+    public void setResetKnowledgeBookRecipe(boolean reset){
+        set("knowledgebook.reset_recipe", reset);
     }
 
     public boolean isAdvancedWorkbenchEnabled() {
@@ -64,6 +76,14 @@ public class MainConfig extends Config {
         set("recipes.disabled_recipes", recipes);
     }
 
+    public boolean isPrettyPrinting(){
+        return getBoolean("recipes.pretty_printing");
+    }
+
+    public void setPrettyPrinting(boolean prettyPrinting){
+        set("recipes.pretty_printing", prettyPrinting);
+    }
+
     public boolean displayContents() {
         return getBoolean("workbench.contents.display_items");
     }
@@ -91,5 +111,31 @@ public class MainConfig extends Config {
     public void setLockDown(boolean lockdown){
         set("recipes.lockdown", lockdown);
     }
+
+    public boolean isDatabankEnabled(){
+        return getBoolean("databank.enabled");
+    }
+
+    public String getDatabankHost(){
+        return getString("databank.host");
+    }
+
+    public int getDatabankPort(){
+        return getInt("databank.port");
+    }
+
+    public String getDatabankDataBase(){
+        return getString("databank.database");
+    }
+
+    public String getDatabankUsername(){
+        return getString("databank.username");
+    }
+
+    public String getDataBankPassword(){
+        return getString("databank.password");
+    }
+
+
 
 }
