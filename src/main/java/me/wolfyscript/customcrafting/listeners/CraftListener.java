@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
@@ -53,7 +54,7 @@ public class CraftListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraft(CraftItemEvent event) {
         ItemStack result = event.getInventory().getResult();
         if (result != null && !result.getType().equals(Material.AIR) && precraftedRecipes.containsKey(event.getWhoClicked().getUniqueId()) && precraftedRecipes.get(event.getWhoClicked().getUniqueId()) != null) {
@@ -136,7 +137,7 @@ public class CraftListener implements Listener {
         precraftedRecipes.put(event.getWhoClicked().getUniqueId(), null);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPreCraft(PrepareItemCraftEvent e) {
         Player player = (Player) e.getView().getPlayer();
         try {

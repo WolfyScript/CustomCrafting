@@ -707,7 +707,10 @@ public class ItemCreator extends ExtendedGuiWindow {
                 break;
             //DisplayName
             case 1:
-                itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', message));
+                if(message.startsWith("&f")){
+                    message = "&r"+message;
+                }
+                itemMeta.setDisplayName(WolfyUtilities.translateColorCodes(message));
                 items.getItem().setItemMeta(itemMeta);
                 break;
             //Enchantments ADD

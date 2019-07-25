@@ -45,7 +45,10 @@ public class AnvilConfig extends CustomConfig {
     }
 
     public CustomAnvilRecipe.RepairCostMode getRepairCostMode(){
-        return CustomAnvilRecipe.RepairCostMode.valueOf(getString("repair_cost_mode"));
+        if(getString("repair_cost_mode") != null && !getString("repair_cost_mode").isEmpty()){
+            return CustomAnvilRecipe.RepairCostMode.valueOf(getString("repair_cost_mode"));
+        }
+        return CustomAnvilRecipe.RepairCostMode.NONE;
     }
 
     public void setRepairCostMode(CustomAnvilRecipe.RepairCostMode mode){

@@ -81,7 +81,7 @@ public class ItemConfig extends CustomConfig {
             if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
                 set("replacement.item_key", customItem.getId());
             }else {
-                setItem("replacement.item", customItem);
+                setItem("replacement.item", new ItemStack(customItem));
             }
         }
     }
@@ -90,7 +90,7 @@ public class ItemConfig extends CustomConfig {
         String id = getString("replacement.item_key");
         if(id != null && !id.isEmpty()){
             return CustomCrafting.getRecipeHandler().getCustomItem(id);
-        }else if(get("replacement.item") != null){
+        }else if(getItem("replacement.item") != null){
             return new CustomItem(getItem("replacement.item"));
         }
         return null;

@@ -1,12 +1,15 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.cache.Furnace;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlastFurnace;
+import org.bukkit.block.Block;
 import org.bukkit.block.EnchantingTable;
+import org.bukkit.block.Hopper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
@@ -23,9 +26,9 @@ public class FurnaceListener implements Listener {
 
     List<InventoryType> invs = new ArrayList<>();
 
-    public FurnaceListener(){
+    public FurnaceListener() {
         invs.add(InventoryType.FURNACE);
-        if(WolfyUtilities.hasVillagePillageUpdate()){
+        if (WolfyUtilities.hasVillagePillageUpdate()) {
             invs.add(InventoryType.BLAST_FURNACE);
             invs.add(InventoryType.SMOKER);
         }
@@ -59,6 +62,9 @@ public class FurnaceListener implements Listener {
                                                     event.getWhoClicked().setItemOnCursor(input);
                                                 }, 1);
                                             } else {
+                                                if (customItem.getType().isFuel()) {
+                                                    event.setCancelled(true);
+                                                }
                                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                                     event.getWhoClicked().setItemOnCursor(furnaceInventory.getFuel());
                                                     furnaceInventory.setFuel(input);
@@ -66,6 +72,9 @@ public class FurnaceListener implements Listener {
                                             }
                                         } else {
                                             if (!event.getAction().equals(InventoryAction.PICKUP_ALL)) {
+                                                if (customItem.getType().isFuel()) {
+                                                    event.setCancelled(true);
+                                                }
                                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                                     event.getWhoClicked().setItemOnCursor(new ItemStack(Material.AIR));
                                                     furnaceInventory.setFuel(input);
@@ -84,6 +93,15 @@ public class FurnaceListener implements Listener {
                                                         event.getWhoClicked().setItemOnCursor(input);
                                                     }
                                                 }
+                                            } else {
+                                                //TODO: Switch Cursor with Fuel!
+                                                if (customItem.getType().isFuel()) {
+                                                    event.setCancelled(true);
+                                                }
+                                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                                    event.getWhoClicked().setItemOnCursor(furnaceInventory.getFuel());
+                                                    furnaceInventory.setFuel(input);
+                                                }, 1);
                                             }
                                         } else {
                                             event.setCancelled(true);
@@ -96,7 +114,46 @@ public class FurnaceListener implements Listener {
                                             }, 1);
                                         }
                                     }
-                                    break;
+                                } else {
+                                    event.setCancelled(true);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+    @EventHandler
+    public void onMove(InventoryMoveItemEvent event) {
+        System.out.println("MOVE "+event.isCancelled());
+        if (invs.contains(event.getDestination().getType())) {
+            Material material = Material.valueOf(event.getDestination().getType().toString());
+            ItemStack input = event.getItem();
+
+            for (CustomItem customItem : CustomCrafting.getRecipeHandler().getCustomItems()) {
+                if (customItem.getBurnTime() > 0) {
+                    if (customItem.isSimilar(input)) {
+                        if(event.getDestination().getLocation() != null && event.getSource().getLocation() != null){
+                            Location locHopper = event.getSource().getLocation();
+                            Location locFurnace = event.getDestination().getLocation();
+                            if(!(locHopper.getBlockY() > locFurnace.getBlockY()) && !(locHopper.getBlockY() < locFurnace.getBlockY())){
+                                if (customItem.getAllowedBlocks().contains(material)) {
+                                    if(!customItem.getType().isFuel()){
+                                        ItemStack itemStack = event.getItem().clone();
+                                        if(event.getDestination().getItem(1) == null || event.getDestination().getItem(1).getType().equals(Material.AIR)){
+                                            event.setCancelled(true);
+                                            event.getDestination().setItem(1, itemStack);
+                                        }else if(customItem.isSimilar(event.getDestination().getItem(1))){
+                                            event.getDestination().getItem(1).setAmount(event.getDestination().getItem(1).getAmount()+1);
+                                            event.getSource().removeItem(itemStack);
+                                        }
+                                    }
+                                }else{
+                                    event.setCancelled(true);
                                 }
                             }
                         }
@@ -105,6 +162,7 @@ public class FurnaceListener implements Listener {
             }
         }
     }
+    */
 
     @EventHandler
     public void onBurn(FurnaceBurnEvent event) {

@@ -131,7 +131,6 @@ public class CustomCrafting extends JavaPlugin {
             }));
             metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
         }
-
         System.out.println("------------------------------------------------------------------------");
     }
 

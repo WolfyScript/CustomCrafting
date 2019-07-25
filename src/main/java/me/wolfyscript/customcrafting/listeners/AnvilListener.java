@@ -89,22 +89,27 @@ public class AnvilListener implements Listener {
                         result.setItemMeta(itemMeta);
                     }
                     if (recipe.isBlockRepair()) {
-                        if (result instanceof Damageable) {
-                            if (inputLeft instanceof Damageable) {
-                                ((Damageable) result).setDamage(((Damageable) inputLeft).getDamage());
+                        ItemMeta itemMeta = result.getItemMeta();
+                        if (itemMeta instanceof Damageable) {
+                            if (inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable) {
+                                ((Damageable) itemMeta).setDamage(((Damageable) inputLeft.getItemMeta()).getDamage());
                             }
+                            result.setItemMeta(itemMeta);
                         }
                     }
                 }
+                if (result == null || result.getType().equals(Material.AIR)) {
+                    result = inputLeft.clone();
+                }
                 if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-                    if (result instanceof Damageable) {
-                        ((Damageable) result).setDamage(((Damageable) result).getDamage() + recipe.getDurability());
+                    ItemMeta itemMeta = result.getItemMeta();
+                    if(itemMeta instanceof Damageable){
+                        ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() - recipe.getDurability());
+                        result.setItemMeta(itemMeta);
                     }
                 }
             }
-
             int repairCost = recipe.getRepairCost();
-
             ItemMeta inputMeta = inputLeft.getItemMeta();
             if (inputMeta instanceof Repairable) {
                 if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.ADD)) {
@@ -113,7 +118,6 @@ public class AnvilListener implements Listener {
                     repairCost = ((repairCost > 0 ? repairCost : 1) * recipe.getRepairCost());
                 }
             }
-
             if (recipe.isApplyRepairCost()) {
                 ItemMeta itemMeta = result.getItemMeta();
                 if (itemMeta instanceof Repairable) {
@@ -121,7 +125,6 @@ public class AnvilListener implements Listener {
                     result.setItemMeta(itemMeta);
                 }
             }
-
             /*
                  Set the values and result 1 tick after they are replaced by NMS.
                  So the player will get the correct Item and the correct values are displayed!
