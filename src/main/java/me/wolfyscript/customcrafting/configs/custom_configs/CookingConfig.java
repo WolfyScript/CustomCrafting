@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.configs.custom_configs;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 
@@ -10,7 +11,7 @@ public class CookingConfig extends CustomConfig {
     }
 
     public CookingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
-        this(configAPI, folder, type, name, defaultName, "yml");
+        this(configAPI, folder, type, name, defaultName, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
     }
 
     public void setXP(float xp){

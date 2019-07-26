@@ -175,9 +175,9 @@ public class CommandCC implements CommandExecutor, TabCompleter {
             }else{
                 invAPI.openGui(p, "main_menu");
             }
-            return;
+        }else if(ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge", true)){
+            invAPI.openGui(p, "recipe_book");
         }
-        invAPI.openGui(p, "recipe_book");
     }
 
     public void printInfo(Player p) {

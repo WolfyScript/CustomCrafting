@@ -21,6 +21,10 @@ public class CustomConfig extends Config {
         this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/configs/custom_configs/" + type, defaultName, override, fileType);
     }
 
+    public CustomConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override) {
+        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/configs/custom_configs/" + type, defaultName, override, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+    }
+
     public CustomConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override, String fileType) {
         super(configAPI, configAPI.getApi().getPlugin().getDataFolder()+"/recipes/"+folder+"/"+type, name, defaultPath, defaultName, fileType, override);
         this.folder = folder;
@@ -93,11 +97,14 @@ public class CustomConfig extends Config {
     }
 
     public RecipePriority getPriority() {
-        try {
-            return RecipePriority.valueOf(getString("priority"));
-        } catch (IllegalArgumentException e) {
-            return RecipePriority.NORMAL;
+        if(getString("priority") != null){
+            try {
+                return RecipePriority.valueOf(getString("priority"));
+            } catch (IllegalArgumentException e) {
+                return RecipePriority.NORMAL;
+            }
         }
+        return RecipePriority.NORMAL;
     }
 
     public void setPriority(RecipePriority recipePriority) {

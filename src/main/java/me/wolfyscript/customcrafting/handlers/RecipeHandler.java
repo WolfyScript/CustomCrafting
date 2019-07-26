@@ -42,7 +42,7 @@ public class RecipeHandler {
     private List<Recipe> allRecipes = new ArrayList<>();
 
     private HashMap<String, CustomRecipe> customRecipes = new HashMap<>();
-    private List<CustomItem> customItems = new ArrayList<>();
+    private HashMap<String, CustomItem> customItems = new HashMap<>();
 
     private ArrayList<String> disabledRecipes = new ArrayList<>();
 
@@ -63,7 +63,7 @@ public class RecipeHandler {
                 String fileName = file.getName();
                 String key = file.getParentFile().getParentFile().getName().toLowerCase();
                 String name = fileName.substring(0, file.getName().lastIndexOf("."));
-                String fileType = fileName.substring(file.getName().lastIndexOf(".")+1);
+                String fileType = fileName.substring(file.getName().lastIndexOf(".") + 1);
                 try {
                     switch (type) {
                         case "workbench":
@@ -91,7 +91,7 @@ public class RecipeHandler {
                             break;
                         case "items":
                             ItemConfig itemConfig = new ItemConfig(configAPI, key, name, fileType);
-                            customItems.add(new CustomItem(itemConfig));
+                            customItems.put(itemConfig.getId(), new CustomItem(itemConfig));
                             break;
                         case "stonecutter":
                             registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, key, name, fileType)));
@@ -102,14 +102,14 @@ public class RecipeHandler {
                     api.sendConsoleMessage("Error loading Contents for: " + key + ":" + name);
                     api.sendConsoleMessage("    Type: " + type);
                     api.sendConsoleMessage("    Message: " + ex.getMessage());
-                    if(ex.getCause() != null){
+                    if (ex.getCause() != null) {
                         api.sendConsoleMessage("    Cause: " + ex.getCause().getMessage());
                     }
                     api.sendConsoleMessage("You should check the config for empty settings ");
                     api.sendConsoleMessage("e.g. No set Result or Source Item!");
                     api.sendConsoleMessage("------------------[StackTrace]-------------------");
                     ex.printStackTrace();
-                    if(ex.getCause() != null){
+                    if (ex.getCause() != null) {
                         api.sendConsoleMessage("Caused StackTrace: ");
                         ex.getCause().printStackTrace();
                     }
@@ -124,7 +124,7 @@ public class RecipeHandler {
         CustomCrafting.getConfigHandler().getConfig().save();
     }
 
-    public void loadDataBase(){
+    public void loadDataBase() {
 
     }
 
@@ -253,9 +253,9 @@ public class RecipeHandler {
         return customRecipes.get(key);
     }
 
-    public List<CustomRecipe> getRecipes(String type){
+    public List<CustomRecipe> getRecipes(String type) {
         List<CustomRecipe> customRecipes = new ArrayList<>();
-        switch (type){
+        switch (type) {
             case "workbench":
                 customRecipes.addAll(getCraftingRecipes());
                 break;
@@ -280,7 +280,7 @@ public class RecipeHandler {
         return customRecipes;
     }
 
-    public List<CustomRecipe> getRecipes(Setting setting){
+    public List<CustomRecipe> getRecipes(Setting setting) {
         return getRecipes(setting.toString().toLowerCase(Locale.ROOT));
     }
 
@@ -384,7 +384,7 @@ public class RecipeHandler {
 
     //CUSTOM ITEMS
     public List<CustomItem> getCustomItems() {
-        return customItems;
+        return new ArrayList<>(customItems.values());
     }
 
     public CustomItem getCustomItem(String key) {
@@ -392,26 +392,24 @@ public class RecipeHandler {
     }
 
     public CustomItem getCustomItem(String key, boolean replace) {
-        for (CustomItem customItem : customItems) {
-            if (customItem.getId().equals(key)) {
-                if (replace)
-                    return customItem.getRealItem();
-                return customItem.clone();
-            }
+        if (customItems.containsKey(key) && customItems.get(key) != null) {
+            if (replace)
+                return customItems.get(key).getRealItem();
+            return customItems.get(key).clone();
         }
         return null;
     }
 
     public void addCustomItem(CustomItem item) {
-        customItems.add(item);
+        customItems.put(item.getId(), item);
     }
 
     public void removeCustomItem(String id) {
-        customItems.remove(getCustomItem(id));
+        customItems.remove(id);
     }
 
     public void removeCustomItem(CustomItem item) {
-        customItems.remove(item);
+        customItems.remove(item.getId());
     }
 
     public CustomItem getCustomItem(String key, String name) {
@@ -433,7 +431,7 @@ public class RecipeHandler {
         while (iterator.hasNext()) {
             Recipe recipe = iterator.next();
             if (WolfyUtilities.hasVillagePillageUpdate()) {
-                if(!(recipe instanceof CookingRecipe)){
+                if (!(recipe instanceof CookingRecipe)) {
                     allRecipes.add(recipe);
                 }
 
@@ -527,7 +525,7 @@ public class RecipeHandler {
     }
 
 
-    public boolean loadRecipeIntoCache(CustomRecipe recipe, Player player){
+    public boolean loadRecipeIntoCache(CustomRecipe recipe, Player player) {
         PlayerCache cache = CustomCrafting.getPlayerCache(player);
         switch (cache.getSetting()) {
             case WORKBENCH:
@@ -554,7 +552,7 @@ public class RecipeHandler {
                 }
                 return false;
             case ANVIL:
-                if(recipe instanceof CustomAnvilRecipe){
+                if (recipe instanceof CustomAnvilRecipe) {
                     cache.resetAnvil();
                     Anvil anvil = cache.getAnvil();
                     anvil.setResult(recipe.getCustomResult());

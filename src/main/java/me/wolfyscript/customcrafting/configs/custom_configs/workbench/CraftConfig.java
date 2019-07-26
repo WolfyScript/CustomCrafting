@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.configs.custom_configs.workbench;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.utils.ItemUtils;
@@ -27,7 +28,7 @@ public class CraftConfig extends CustomConfig {
     }
 
     public CraftConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, "craft_config", folder, name, "yml");
+        this(configAPI, "craft_config", folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
     }
 
     public void setShapeless(boolean shapeless) {

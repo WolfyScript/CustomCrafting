@@ -87,8 +87,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
         createItem("anvil.block_enchant.false", Material.ENCHANTING_TABLE);
         createItem("anvil.durability", Material.IRON_SWORD);
 
-        createItem("anvil.input.cancel", Material.BARRIER);
-        createItem("anvil.input.empty", Material.BARRIER);
+        createItem("input.cancel", Material.BARRIER);
+        createItem("input.empty", Material.BARRIER);
     }
 
     @EventHandler
@@ -122,13 +122,13 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 case ANVIL:
                     Anvil anvil = cache.getAnvil();
 
-                    if(anvil.getMenu().equals(Anvil.Menu.MAINMENU)){
+                    if (anvil.getMenu().equals(Anvil.Menu.MAINMENU)) {
                         event.setItem(6, anvil.isExactMeta() ? "exact_meta_on" : "exact_meta_off");
                         event.setItem(4, event.getItem("priority", "%PRI%", anvil.getPriority().name()));
                         event.setItem(2, anvil.isPermissions() ? "permissions_on" : "permissions_off");
 
-                        event.setItem(19, anvil.getInputLeft().isEmpty() ? event.getItem("anvil.input.empty") : anvil.getInputLeft().get(0));
-                        event.setItem(21, anvil.getInputRight().isEmpty() ? event.getItem("anvil.input.empty") : anvil.getInputRight().get(0));
+                        event.setItem(19, anvil.getInputLeft().isEmpty() ? event.getItem("input.empty") : anvil.getInputLeft().get(0));
+                        event.setItem(21, anvil.getInputRight().isEmpty() ? event.getItem("input.empty") : anvil.getInputRight().get(0));
 
                         if (anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                             event.setItem(25, anvil.getResult().getIDItem());
@@ -149,21 +149,21 @@ public class RecipeCreator extends ExtendedGuiWindow {
                         event.setItem(42, event.getItem("anvil.repair_mode", "%VAR%", anvil.getRepairCostMode().toString()));
 
                         event.setItem(44, "save");
-                    }else{
+                    } else {
                         event.setItem(0, "glass_white", true);
                         List<CustomItem> input = anvil.getMenu().equals(Anvil.Menu.INPUT_LEFT) ? anvil.getInputLeft() : anvil.getInputRight();
 
-                        for(int i = 0; i < 27; i++){
-                            event.setItem(9+i, new ItemStack(Material.AIR));
+                        for (int i = 0; i < 27; i++) {
+                            event.setItem(9 + i, new ItemStack(Material.AIR));
                         }
 
                         Iterator<CustomItem> itr = input.iterator();
-                        for(int i = 0; itr.hasNext(); i++){
+                        for (int i = 0; itr.hasNext(); i++) {
                             CustomItem item = itr.next();
-                            event.setItem(9+i, item.getIDItem());
+                            event.setItem(9 + i, item.getIDItem());
                         }
 
-                        event.setItem(40, "anvil.input.cancel");
+                        event.setItem(40, "input.cancel");
                     }
                     break;
                 case STONECUTTER:
@@ -247,59 +247,57 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     break;
                 case ANVIL:
                     Anvil anvil = cache.getAnvil();
-                    if (action.startsWith("anvil.")) {
+                    if (action.startsWith("input.")) {
+                        switch (action.substring("input.".length())) {
+                            case "cancel":
+                                anvil.setMenu(Anvil.Menu.MAINMENU);
+                                break;
+                            case "empty":
+                                if (guiAction.getRawSlot() == 19) {
+                                    anvil.setMenu(Anvil.Menu.INPUT_LEFT);
+                                    update(guiAction.getGuiHandler());
+                                } else {
+                                    anvil.setMenu(Anvil.Menu.INPUT_RIGHT);
+                                    update(guiAction.getGuiHandler());
+                                }
+                                break;
+                        }
+                    } else if (action.startsWith("anvil.")) {
                         action = action.substring("anvil.".length());
-                        if(action.startsWith("input.")){
-                            switch (action.substring("input.".length())){
-                                case "cancel":
-                                    anvil.setMenu(Anvil.Menu.MAINMENU);
-                                    break;
-                                case "empty":
-                                    if(guiAction.getRawSlot() == 19){
-                                        anvil.setMenu(Anvil.Menu.INPUT_LEFT);
-                                        update(guiAction.getGuiHandler());
-                                    }else{
-                                        anvil.setMenu(Anvil.Menu.INPUT_RIGHT);
-                                        update(guiAction.getGuiHandler());
-                                    }
-                                    break;
-                            }
-                        }else{
-                            switch (action.split("\\.")[0]) {
-                                case "block_enchant":
-                                    anvil.setBlockEnchant(!anvil.isBlockEnchant());
-                                    break;
-                                case "block_repair":
-                                    anvil.setBlockRepair(!anvil.isBlockRepair());
-                                    break;
-                                case "block_rename":
-                                    anvil.setBlockRename(!anvil.isBlockRename());
-                                    break;
-                                case "durability":
-                                    runChat(40, "$msg.gui.recipe_creator.anvil.durability$", guiAction.getGuiHandler());
-                                    break;
-                                case "repair_cost":
-                                    runChat(30, "$msg.gui.recipe_creator.anvil.repair_cost$", guiAction.getGuiHandler());
-                                    break;
-                                case "mode":
-                                    CustomAnvilRecipe.Mode mode = anvil.getMode();
-                                    int id = mode.getId();
-                                    if (id < 2) {
-                                        id++;
-                                    } else {
-                                        id = 0;
-                                    }
-                                    anvil.setMode(CustomAnvilRecipe.Mode.getById(id));
-                                    break;
-                                case "repair_apply":
-                                    anvil.setApplyRepairCost(!anvil.isApplyRepairCost());
-                                    break;
-                                case "repair_mode":
-                                    int index = CustomAnvilRecipe.RepairCostMode.getModes().indexOf(anvil.getRepairCostMode())+1;
-                                    anvil.setRepairCostMode(CustomAnvilRecipe.RepairCostMode.getModes().get(index >= CustomAnvilRecipe.RepairCostMode.getModes().size() ? 0 : index));
-                                    break;
+                        switch (action.split("\\.")[0]) {
+                            case "block_enchant":
+                                anvil.setBlockEnchant(!anvil.isBlockEnchant());
+                                break;
+                            case "block_repair":
+                                anvil.setBlockRepair(!anvil.isBlockRepair());
+                                break;
+                            case "block_rename":
+                                anvil.setBlockRename(!anvil.isBlockRename());
+                                break;
+                            case "durability":
+                                runChat(40, "$msg.gui.recipe_creator.anvil.durability$", guiAction.getGuiHandler());
+                                break;
+                            case "repair_cost":
+                                runChat(30, "$msg.gui.recipe_creator.anvil.repair_cost$", guiAction.getGuiHandler());
+                                break;
+                            case "mode":
+                                CustomAnvilRecipe.Mode mode = anvil.getMode();
+                                int id = mode.getId();
+                                if (id < 2) {
+                                    id++;
+                                } else {
+                                    id = 0;
+                                }
+                                anvil.setMode(CustomAnvilRecipe.Mode.getById(id));
+                                break;
+                            case "repair_apply":
+                                anvil.setApplyRepairCost(!anvil.isApplyRepairCost());
+                                break;
+                            case "repair_mode":
+                                int index = CustomAnvilRecipe.RepairCostMode.getModes().indexOf(anvil.getRepairCostMode()) + 1;
+                                anvil.setRepairCostMode(CustomAnvilRecipe.RepairCostMode.getModes().get(index >= CustomAnvilRecipe.RepairCostMode.getModes().size() ? 0 : index));
+                                break;
 
-                            }
                         }
                     } else if (action.startsWith("permissions_")) {
                         anvil.setPermissions(!anvil.isPermissions());
@@ -353,13 +351,13 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 break;
             case ANVIL:
                 Anvil anvil = cache.getAnvil();
-                if(!anvil.getInputLeft().isEmpty() || !anvil.getInputRight().isEmpty()){
-                    if(anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)){
+                if (!anvil.getInputLeft().isEmpty() || !anvil.getInputRight().isEmpty()) {
+                    if (anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                         return anvil.getResult() != null && !anvil.getResult().getType().equals(Material.AIR);
-                    }else{
+                    } else {
                         return true;
                     }
-                }else{
+                } else {
                     return false;
                 }
             case STONECUTTER:
@@ -402,13 +400,13 @@ public class RecipeCreator extends ExtendedGuiWindow {
                             return true;
                         }
                     case ANVIL:
-                        if(slot == 19){
+                        if (slot == 19) {
                             anvil.setMenu(Anvil.Menu.INPUT_LEFT);
                             update(guiClick.getGuiHandler());
-                        }else if(slot == 21){
+                        } else if (slot == 21) {
                             anvil.setMenu(Anvil.Menu.INPUT_RIGHT);
                             update(guiClick.getGuiHandler());
-                        }else if (slot == 25){
+                        } else if (slot == 25) {
                             items.setResult(customItem);
                             guiClick.getGuiHandler().changeToInv("item_editor");
                         }
@@ -433,19 +431,19 @@ public class RecipeCreator extends ExtendedGuiWindow {
                         guiClick.getGuiHandler().changeToInv("item_editor");
                         return true;
                 }
-            }else{
-                if(playerCache.getSetting().equals(Setting.ANVIL)){
-                    if(anvil.getMenu().equals(Anvil.Menu.MAINMENU)){
-                        if(slot == 19){
+            } else {
+                if (playerCache.getSetting().equals(Setting.ANVIL)) {
+                    if (anvil.getMenu().equals(Anvil.Menu.MAINMENU)) {
+                        if (slot == 19) {
                             anvil.setMenu(Anvil.Menu.INPUT_LEFT);
                             update(guiClick.getGuiHandler());
                             return true;
-                        }else if(slot == 21){
+                        } else if (slot == 21) {
                             anvil.setMenu(Anvil.Menu.INPUT_RIGHT);
                             update(guiClick.getGuiHandler());
                             return true;
                         }
-                    }else{
+                    } else {
 
 
                     }
@@ -477,19 +475,19 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 break;
             case ANVIL:
                 Anvil anvil = cache.getAnvil();
-                if(anvil.getMenu().equals(Anvil.Menu.INPUT_LEFT) || anvil.getMenu().equals(Anvil.Menu.INPUT_RIGHT)){
+                if (anvil.getMenu().equals(Anvil.Menu.INPUT_LEFT) || anvil.getMenu().equals(Anvil.Menu.INPUT_RIGHT)) {
                     //TODO: UPDATE INPUT VARIANTS!
                     List<CustomItem> inputVariants = new ArrayList<>();
-                    for(int i = 9; i < 36; i++){
+                    for (int i = 9; i < 36; i++) {
                         ItemStack itemStack = inv.getItem(i);
-                        if(itemStack != null && !itemStack.getType().equals(Material.AIR)){
+                        if (itemStack != null && !itemStack.getType().equals(Material.AIR)) {
                             CustomItem customItem = CustomItem.getByItemStack(itemStack);
                             inputVariants.add(customItem);
                         }
                     }
                     anvil.setInput(inputVariants);
-                }else{
-                    if(anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)){
+                } else {
+                    if (anvil.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                         ItemStack result = inv.getItem(25);
                         if (result != null) {
                             CustomItem customItem = CustomItem.getByItemStack(result);
@@ -546,11 +544,11 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 if (args.length > 1) {
                     String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
                     String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                    if(!CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches()){
+                    if (!CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches()) {
                         api.sendPlayerMessage(player, "&cInvalid Namespace! Namespaces may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
                         return true;
                     }
-                    if(!CustomCrafting.VALID_KEY.matcher(key).matches()){
+                    if (!CustomCrafting.VALID_KEY.matcher(key).matches()) {
                         api.sendPlayerMessage(player, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
                         return true;
                     }
@@ -652,7 +650,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     CustomCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
                                     api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
                                 }, 1);
-                            }catch (Exception ex){
+                            } catch (Exception ex) {
                                 api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", anvilConfig.getId()});
                                 ex.printStackTrace();
                                 return false;

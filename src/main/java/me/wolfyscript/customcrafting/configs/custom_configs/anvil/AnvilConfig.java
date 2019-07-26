@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.configs.custom_configs.anvil;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
@@ -13,7 +14,7 @@ import java.util.Set;
 public class AnvilConfig extends CustomConfig {
 
     public AnvilConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, "yml");
+        this(configAPI, folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
     }
 
     public AnvilConfig(ConfigAPI configAPI, String folder, String name, String fileType) {

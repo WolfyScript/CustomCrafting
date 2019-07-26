@@ -32,6 +32,10 @@ public class ItemConfig extends CustomConfig {
         this(configAPI, folder, name, "item", fileType);
     }
 
+    public ItemConfig(ConfigAPI configAPI, String folder, String name) {
+        this(configAPI, folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+    }
+
     public ItemStack getCustomItem(boolean replaceLang){
         return getItem("item", replaceLang);
     }
@@ -128,6 +132,9 @@ public class ItemConfig extends CustomConfig {
     }
 
     public MetaSettings getMetaSettings(){
-        return new MetaSettings(getString("meta"));
+        if(getString("meta") != null && !getString("meta").isEmpty()){
+            return new MetaSettings(getString("meta"));
+        }
+        return new MetaSettings();
     }
 }

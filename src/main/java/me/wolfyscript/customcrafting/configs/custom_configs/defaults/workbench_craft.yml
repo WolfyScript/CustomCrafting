@@ -2,8 +2,8 @@
 
 permissions: false
 advanced_workbench: false
-override: []
-extend: ''
+exactItemMeta: false
+priority: "NORMAL"
 group: ''
 shapeless: false
 shape:

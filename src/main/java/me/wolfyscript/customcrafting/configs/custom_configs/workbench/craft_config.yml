@@ -5,14 +5,12 @@ advanced_workbench: true
 exactItemMeta: true
 priority: "NORMAL"
 group: ""
-
-result:
-
 shapeless: true
 shape:
   - ""
   - ""
   - ""
+result:
 
 ingredients:
 

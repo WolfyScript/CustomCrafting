@@ -84,6 +84,14 @@ public class MainConfig extends Config {
         set("recipes.pretty_printing", prettyPrinting);
     }
 
+    public void setPreferredFileType(String fileType){
+        set("recipes.preferred_file_type", fileType);
+    }
+
+    public String getPreferredFileType(){
+        return getString("recipes.preferred_file_type");
+    }
+
     public boolean displayContents() {
         return getBoolean("workbench.contents.display_items");
     }

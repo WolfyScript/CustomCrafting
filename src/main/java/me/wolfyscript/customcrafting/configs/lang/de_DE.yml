@@ -655,6 +655,13 @@ items:
         - "&7Items without Meta will only"
         - "&7be checked for their type!"
         - "&7Items with Meta still need to be exact!"
+    input:
+      cancel:
+        name: "&7Cancel"
+      empty:
+        name: "&7Slot is empty"
+        lore:
+          - "&7[&aClick to set items&7]"
     workbench:
       adv_workbench_on:
         name: "&3Advanced Workbench"
