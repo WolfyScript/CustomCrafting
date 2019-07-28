@@ -1,12 +1,19 @@
 package me.wolfyscript.customcrafting.utils;
 
+import com.google.gson.JsonObject;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.util.List;
+import java.util.*;
 
 public class ItemUtils {
 
@@ -35,7 +42,7 @@ public class ItemUtils {
         return free;
     }
 
-    public static boolean hasInventorySpace(Inventory inventory, ItemStack itemStack){
+    public static boolean hasInventorySpace(Inventory inventory, ItemStack itemStack) {
         return getInventorySpace(inventory, itemStack) >= itemStack.getAmount();
     }
 

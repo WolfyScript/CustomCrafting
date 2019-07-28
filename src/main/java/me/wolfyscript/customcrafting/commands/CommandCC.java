@@ -91,7 +91,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                 CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
                                 if (customItem != null) {
                                     if (ItemUtils.hasInventorySpace(target, customItem)) {
-                                        ItemStack itemStack = new ItemStack(customItem);
+                                        ItemStack itemStack = customItem.getAsItemStack();
                                         itemStack.setAmount(amount);
                                         target.getInventory().addItem(itemStack);
                                         if (amount > 1) {
@@ -113,6 +113,28 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             CustomCrafting.getConfigHandler().getConfig().set("debug", !api.hasDebuggingMode());
                             api.sendPlayerMessage(p, "Set Debug to: "+api.hasDebuggingMode());
                         }
+                        break;
+                    case "settings":
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.settings")) {
+                            if(args.length > 2){
+                                switch (args[1]){
+                                    case "preferred_file_type":
+                                        String setting = args[2];
+                                        if(setting.equalsIgnoreCase("yml") || setting.equalsIgnoreCase("json")){
+                                            CustomCrafting.getConfigHandler().getConfig().setPreferredFileType(setting.toLowerCase(Locale.ROOT));
+                                            api.sendPlayerMessage(p, "&aSet &epreferred file type &ato &e"+setting);
+                                        }
+                                        break;
+                                    case "pretty_printing":
+                                        if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")){
+                                            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
+                                            api.sendPlayerMessage(p, "&aSet &epretty printing &ato &e"+args[2].toLowerCase(Locale.ROOT));
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        break;
                 }
             }
         } else {
@@ -204,7 +226,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge");
+    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings");
+    private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] strings) {
@@ -224,6 +247,19 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         CustomCrafting.getRecipeHandler().getCustomItems().forEach(customItem -> items.add(customItem.getId()));
                         StringUtil.copyPartialMatches(strings[2], items, results);
                         break;
+                }
+            }else if(strings[0].equalsIgnoreCase("settings")){
+                if(strings.length == 2){
+                    StringUtil.copyPartialMatches(strings[1], SETTINGS, results);
+                }else if(strings.length == 3){
+                    switch (strings[1]){
+                        case "preferred_file_type":
+                            StringUtil.copyPartialMatches(strings[2], Arrays.asList("json","yml"), results);
+                            break;
+                        case "pretty_printing":
+                            StringUtil.copyPartialMatches(strings[2], Arrays.asList("true","false"), results);
+                            break;
+                    }
                 }
             }
         } else {

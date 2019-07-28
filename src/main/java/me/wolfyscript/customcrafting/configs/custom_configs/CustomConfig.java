@@ -36,11 +36,6 @@ public class CustomConfig extends Config {
         setPathSeparator('.');
     }
 
-    @Override
-    public void reload() {
-        super.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-    }
-
     public String getFolder() {
         return folder;
     }

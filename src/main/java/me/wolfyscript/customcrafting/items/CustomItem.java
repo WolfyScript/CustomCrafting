@@ -270,7 +270,7 @@ public class CustomItem extends ItemStack implements Cloneable{
         if (CustomCrafting.getRecipeHandler().getCustomItem(id) != null) {
             CustomCrafting.getRecipeHandler().removeCustomItem(id);
         }
-        config.reload();
+        config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
         CustomItem customItem1 = new CustomItem(config);
         cache.getItems().setItem(customItem1);
         CustomCrafting.getRecipeHandler().addCustomItem(customItem1);
