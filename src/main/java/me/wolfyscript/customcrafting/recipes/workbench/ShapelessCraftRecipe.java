@@ -105,9 +105,12 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                 if (item != null) {
                     if (item.getMaxStackSize() > 1) {
                         int amount = input.getAmount() - item.getAmount() * totalAmount;
+                        api.sendDebugMessage("Amount: "+amount);
                         if(item.isConsumed()){
+                            api.sendDebugMessage("Consumed!");
                             input.setAmount(amount);
                         }
+                        api.sendDebugMessage("Input: "+input);
                         if (item.hasReplacement()) {
                             ItemStack replacement = item.getReplacement();
                             replacement.setAmount(replacement.getAmount() * totalAmount);

@@ -615,6 +615,26 @@ items:
         - "&7Durability cost is blocked now!"
     replacement_disabled:
       name: "&cReplacement disabled!"
+    custom_durability:
+      option:
+        name: "&6Custom Durability & Damage"
+        lore:
+          - "&7Set Custom Durability and damage to your item!"
+          - "&7This will replace the vanilla Durability and Damage!"
+      set_durability:
+        name: "&7Set Durability: &3%VAR%"
+        lore:
+          - "&7Click to set Durability!"
+      set_damage:
+        name: "&7Set Damage: &3%VAR%"
+        lore:
+          - "&7Click to set Damage!"
+      set_tag:
+        name: "&7Set Tag: &3%VAR%"
+        lore:
+          - "&7Click to set Tag!"
+          - "&3%DUR% -> &7replaced with custom durability"
+          - "&3%DMG% -> &7replaced with custom damage"
   recipe_editor:
   recipe_creator:
     save:

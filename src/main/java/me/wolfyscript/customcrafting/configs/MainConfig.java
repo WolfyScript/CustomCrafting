@@ -120,6 +120,14 @@ public class MainConfig extends Config {
         set("recipes.lockdown", lockdown);
     }
 
+    public boolean useVanillaKnowledgeBook(){
+        return getBoolean("vanilla_knowledgebook");
+    }
+
+    public void useVanillaKnowledgeBook(boolean use){
+        set("vanilla_knowledgebook", use);
+    }
+
     public boolean isDatabankEnabled(){
         return getBoolean("databank.enabled");
     }

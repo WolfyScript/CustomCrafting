@@ -49,7 +49,6 @@ public class PlayerListener implements Listener {
             api.sendPlayerMessage(player, "");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg6$");
         }
-
         for(CustomFurnaceRecipe customFurnaceRecipe : CustomCrafting.getRecipeHandler().getFurnaceRecipes()){
             player.undiscoverRecipe(new NamespacedKey(customFurnaceRecipe.getId().split(":")[0], customFurnaceRecipe.getId().split(":")[1]));
         }
@@ -74,20 +73,22 @@ public class PlayerListener implements Listener {
             ItemStack itemStack = event.getItem();
             if(itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()){
                 List<String> lore = itemStack.getItemMeta().getLore();
-                String lastLine = WolfyUtilities.unhideString(lore.get(lore.size()-1));
-                if(lastLine.equals("cc_knowledgebook")){
-                    Player p = event.getPlayer();
-                    event.setUseItemInHand(Event.Result.DENY);
-                    if(event.hasBlock()){
-                        if(event.getClickedBlock().getType().isInteractable()){
-                            return;
+                for(String line : lore){
+                    String unhidden = WolfyUtilities.unhideString(line);
+                    if(unhidden.equals("cc_knowledgebook")){
+                        Player p = event.getPlayer();
+                        event.setUseItemInHand(Event.Result.DENY);
+                        if(event.hasBlock()){
+                            if(event.getClickedBlock().getType().isInteractable()){
+                                return;
+                            }
                         }
-                    }
-                    if (ChatUtils.checkPerm(event.getPlayer(), "customcrafting.item.knowledge_book")) {
-                        if (CustomCrafting.getApi().getInventoryAPI().hasGuiHandler(p)) {
-                            CustomCrafting.getApi().getInventoryAPI().getGuiHandler(p).changeToInv("recipe_book");
-                        }else{
-                            CustomCrafting.getApi().getInventoryAPI().openGui(p, "recipe_book");
+                        if (ChatUtils.checkPerm(event.getPlayer(), "customcrafting.item.knowledge_book")) {
+                            if (CustomCrafting.getApi().getInventoryAPI().hasGuiHandler(p)) {
+                                CustomCrafting.getApi().getInventoryAPI().getGuiHandler(p).changeToInv("recipe_book");
+                            }else{
+                                CustomCrafting.getApi().getInventoryAPI().openGui(p, "recipe_book");
+                            }
                         }
                     }
                 }

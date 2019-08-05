@@ -131,6 +131,12 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                             api.sendPlayerMessage(p, "&aSet &epretty printing &ato &e"+args[2].toLowerCase(Locale.ROOT));
                                         }
                                         break;
+                                    case "vanilla_knowledgebook":
+                                        if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")){
+                                            CustomCrafting.getConfigHandler().getConfig().useVanillaKnowledgeBook(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
+                                            api.sendPlayerMessage(p, "&aSet &evanilla knowledge book&ato &e"+args[2].toLowerCase(Locale.ROOT));
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -227,7 +233,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
     }
 
     private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings");
-    private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type");
+    private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type", "vanilla_knowledgebook", "advanced_workbench");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] strings) {
@@ -256,6 +262,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         case "preferred_file_type":
                             StringUtil.copyPartialMatches(strings[2], Arrays.asList("json","yml"), results);
                             break;
+                        case "advanced_workbench":
+                        case "vanilla_knowledgebook":
                         case "pretty_printing":
                             StringUtil.copyPartialMatches(strings[2], Arrays.asList("true","false"), results);
                             break;

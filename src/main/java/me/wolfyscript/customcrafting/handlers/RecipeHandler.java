@@ -165,7 +165,7 @@ public class RecipeHandler {
     }
 
     public void registerRecipe(CustomRecipe recipe) {
-        if (!(recipe instanceof CustomAnvilRecipe)) {
+        if (!(recipe instanceof CustomAnvilRecipe) && CustomCrafting.getConfigHandler().getConfig().useVanillaKnowledgeBook()) {
             api.sendDebugMessage("  add to Bukkit...");
             Bukkit.addRecipe(recipe);
         }
@@ -175,8 +175,10 @@ public class RecipeHandler {
 
     public void injectRecipe(CustomRecipe recipe) {
         api.sendDebugMessage("Inject Recipe:");
-        api.sendDebugMessage("  unregister old recipe:");
-        unregisterRecipe(recipe);
+        if(CustomCrafting.getConfigHandler().getConfig().useVanillaKnowledgeBook()){
+            api.sendDebugMessage("  unregister old recipe:");
+            unregisterRecipe(recipe);
+        }
         registerRecipe(recipe);
     }
 
@@ -227,21 +229,17 @@ public class RecipeHandler {
 
     public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items) {
         List<CraftingRecipe> recipes = new ArrayList<>();
+        int size = 0;
+        for(List<ItemStack> itemStacks : items){
+            size += (int) itemStacks.stream().filter(itemStack -> itemStack != null && !itemStack.getType().equals(Material.AIR)).count();
+        }
         for (CraftingRecipe customRecipe : getCraftingRecipes()) {
-            if (customRecipe instanceof ShapedCraftRecipe) {
-                if (items.size() == ((ShapedCraftRecipe) customRecipe).getShape().length && items.get(0).size() == ((ShapedCraftRecipe) customRecipe).getShape()[0].length()) {
-                    recipes.add(customRecipe);
-                }
-            } else {
-                int i = 0;
-                for (List<ItemStack> row : items) {
-                    for (ItemStack c : row) {
-                        if (c != null) {
-                            i++;
-                        }
+            if (customRecipe.getIngredients().keySet().size() == size) {
+                if (customRecipe instanceof ShapedCraftRecipe) {
+                    if (items.size() == ((ShapedCraftRecipe) customRecipe).getShape().length && items.get(0).size() == ((ShapedCraftRecipe) customRecipe).getShape()[0].length()) {
+                        recipes.add(customRecipe);
                     }
-                }
-                if (customRecipe.getIngredients().keySet().size() == i) {
+                } else {
                     recipes.add(customRecipe);
                 }
             }

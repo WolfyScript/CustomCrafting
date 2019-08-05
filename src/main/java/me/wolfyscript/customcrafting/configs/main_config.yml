@@ -52,6 +52,7 @@ data:
 
 recipes:
   lockdown: false
+  vanilla_knowledgebook: true
   pretty_printing: false
   preferred_file_type: "json"
   disabled_recipes: []

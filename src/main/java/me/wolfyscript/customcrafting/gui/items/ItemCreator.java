@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.items.MetaSettings;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.*;
+import me.wolfyscript.utilities.api.utils.ItemUtils;
 import me.wolfyscript.utilities.api.utils.Legacy;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
@@ -148,6 +149,11 @@ public class ItemCreator extends ExtendedGuiWindow {
         createItem("attribute.set_amount", WolfyUtilities.getSkullByValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDYxYzhmZWJjYWMyMWI5ZjYzZDg3ZjlmZDkzMzU4OWZlNjQ2OGU5M2FhODFjZmNmNWU1MmE0MzIyZTE2ZTYifX19"));
         createItem("attribute.set_name", Material.NAME_TAG);
         createItem("attribute.set_uuid", Material.TRIPWIRE_HOOK);
+
+        createItem("custom_durability.option", Material.DIAMOND_SWORD);
+        createItem("custom_durability.set_durability", Material.GREEN_CONCRETE);
+        createItem("custom_durability.set_damage", Material.RED_CONCRETE);
+        createItem("custom_durability.set_tag", Material.NAME_TAG);
     }
 
     @EventHandler
@@ -173,34 +179,48 @@ public class ItemCreator extends ExtendedGuiWindow {
                 event.setItem(7, "page_next");
             }
 
-            switch (items.getPage()) {
-                case 0:
-                    event.setItem(9, "item_name");
-                    event.setItem(10, "item_lore");
-                    event.setItem(11, "attributes_modifiers");
-
-                    event.setItem(18, "item_enchantments");
-                    event.setItem(19, "item_flags");
-                    event.setItem(20, "custom_model_data");
-                    event.setItem(21, "unbreakable_off");
-                    if (items.getItem() != null && items.getItem().hasItemMeta() && items.getItem().getItemMeta().isUnbreakable()) {
-                        event.setItem(21, "unbreakable_on");
-                    }
-
-                    event.setItem(15, "repair_cost");
-                    event.setItem(16, "potion_effects");
-                    event.setItem(17, event.getItem("furnace.fuel", "%C%", items.getItem().getBurnTime() > 0 ? "§a" : "§4"));
-
-                    event.setItem(23, "replacement_durability");
-                    event.setItem(24, "item_damage");
-                    event.setItem(25, "variants");
-                    event.setItem(26, "skull_setting");
-                    break;
-                case 1:
-
-                    break;
+            List<ItemStack> options = new ArrayList<>();
+            options.add(event.getItem("item_name"));
+            options.add(event.getItem("item_lore"));
+            options.add(event.getItem("attributes_modifiers"));
+            options.add(event.getItem("item_enchantments"));
+            options.add(event.getItem("item_flags"));
+            if(WolfyUtilities.hasVillagePillageUpdate()){
+                options.add(event.getItem("custom_model_data"));
+            }
+            if (items.getItem() != null && items.getItem().hasItemMeta() && items.getItem().getItemMeta().isUnbreakable()) {
+                options.add(event.getItem("unbreakable_on"));
+            }else{
+                options.add(event.getItem("unbreakable_off"));
+            }
+            options.add(event.getItem("repair_cost"));
+            if(items.getItem() != null && items.getItem().hasItemMeta() && items.getItem().getItemMeta() instanceof PotionMeta){
+                options.add(event.getItem("potion_effects"));
+            }
+            options.add(event.getItem("furnace.fuel", "%C%", items.getItem().getBurnTime() > 0 ? "§a" : "§4"));
+            options.add(event.getItem("replacement_durability"));
+            options.add(event.getItem("item_damage"));
+            if (items.getItem() != null && items.getType().equals("ingredient")) {
+                options.add(event.getItem("variants"));
+            }
+            if (items.getItem() != null && items.getItem().getType().equals(Material.PLAYER_HEAD)) {
+                options.add(event.getItem("skull_setting"));
+            }
+            if(WolfyUtilities.getVersion().equals("1.3.1.0")|| WolfyUtilities.getVersionNumber() >= 1320){
+                options.add(event.getItem("custom_durability.option"));
             }
 
+            int slot = 9;
+            int j = 14*items.getPage();
+            for(int i = 0; i < 14 && j < options.size(); i++){
+                if(i == 3){
+                    slot = 12;
+                }else if(i == 10){
+                    slot = 13;
+                }
+                event.setItem(slot+j, options.get(j));
+                j++;
+            }
 
             CustomItem itemStack = items.getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -338,8 +358,12 @@ public class ItemCreator extends ExtendedGuiWindow {
                         } else {
                             event.setItem(41, event.getItem("durability_cost", "%VAR%", "" + items.getItem().getDurabilityCost()));
                         }
-
                         break;
+                    case "custom_durability.option":
+                        event.setItem(38, event.getItem("custom_durability.set_damage"));
+                        event.setItem(41,event.getItem("custom_durability.set_durability"));
+                        event.setItem(51,event.getItem("custom_durability.set_tag"));
+
                 }
                 if (cache.getSubSetting().startsWith("GENERIC_") || cache.getSubSetting().startsWith("HORSE_") || cache.getSubSetting().startsWith("ZOMBIE_")) {
                     event.setItem(36, "attribute.slot_head");
@@ -441,6 +465,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         case "custom_model_data":
                         case "variants":
                         case "replacement_durability":
+                        case "custom_durability.option":
                             cache.setSubSetting(action);
                             break;
                         case "unbreakable_off":
@@ -609,7 +634,39 @@ public class ItemCreator extends ExtendedGuiWindow {
                             break;
                         case "consume_item_disabled":
                             items.getItem().setConsumed(true);
+                        case "custom_durability.set_durability":
+                            openChat(guiAction.getGuiHandler(), "", (guiHandler, player1, s, strings) -> {
+                                try{
+                                    ItemUtils.setCustomDurability(items.getItem(), Integer.parseInt(strings[0]));
+                                }catch (NumberFormatException ex){
+                                    return true;
+                                }
+                                guiHandler.openLastInv();
+                                return false;
+                            });
+                            break;
+                        case "custom_durability.set_damage":
+                            openChat(guiAction.getGuiHandler(), "", (guiHandler, player1, s, strings) -> {
+                                try{
+                                    ItemUtils.setDamage(items.getItem(), Integer.parseInt(strings[0]));
 
+                                }catch (NumberFormatException ex){
+                                    return true;
+                                }
+                                guiHandler.openLastInv();
+                                return false;
+                            });
+                            break;
+                        case "custom_durability.set_tag":
+                            openChat(guiAction.getGuiHandler(), "", (guiHandler, player1, s, strings) -> {
+                                try{
+                                    ItemUtils.setDurabilityTag(itemStack, s);
+                                }catch (NumberFormatException ex){
+                                    return true;
+                                }
+                                guiHandler.openLastInv();
+                                return false;
+                            });
                     }
 
                     //Flag and attribute section
