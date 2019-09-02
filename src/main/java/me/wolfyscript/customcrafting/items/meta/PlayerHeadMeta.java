@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerHeadMeta extends Meta {
 
-    public PlayerHeadMeta(){
+    public PlayerHeadMeta() {
         super("playerHead");
         setOption(MetaSettings.Option.EXACT);
         setAvailableOptions(MetaSettings.Option.EXACT, MetaSettings.Option.IGNORE);

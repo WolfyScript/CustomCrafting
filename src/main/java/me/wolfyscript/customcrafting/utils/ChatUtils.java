@@ -22,7 +22,7 @@ public class ChatUtils {
 
     private static WolfyUtilities api = CustomCrafting.getApi();
 
-    public static boolean checkPerm(CommandSender sender, String perm){
+    public static boolean checkPerm(CommandSender sender, String perm) {
         return checkPerm(sender, perm, true);
     }
 
@@ -30,10 +30,10 @@ public class ChatUtils {
         if (WolfyUtilities.hasPermission(sender, perm)) {
             return true;
         }
-        if(sendMessage){
-            if(sender instanceof Player){
+        if (sendMessage) {
+            if (sender instanceof Player) {
                 api.sendPlayerMessage((Player) sender, "$msg.denied_perm$", new String[]{"%PERM%", perm});
-            }else{
+            } else {
                 sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
             }
         }
@@ -102,7 +102,7 @@ public class ChatUtils {
 
     public static void sendLoreManager(Player player) {
         ItemMeta itemMeta = CustomCrafting.getPlayerCache(player).getItems().getItem().getItemMeta();
-        for(int i = 0; i < 15; i++){
+        for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
         api.sendPlayerMessage(player, "-------------------[&cRemove Lore&7]------------------");
@@ -127,36 +127,36 @@ public class ChatUtils {
         }
         api.sendPlayerMessage(player, "");
         api.sendPlayerMessage(player, "-------------------------------------------------");
-        api.sendActionMessage(player, new ClickData("                        §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openLastInv(), true));
+        api.sendActionMessage(player, new ClickData("                        §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openPreviousInv(), true));
     }
 
     public static void sendAttributeModifierManager(Player player) {
         PlayerCache cache = CustomCrafting.getPlayerCache(player);
         Items items = cache.getItems();
         ItemMeta itemMeta = items.getItem().getItemMeta();
-        for(int i = 0; i < 15; i++){
+        for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
         api.sendPlayerMessage(player, "-----------------[&cRemove Modifier&7]-----------------");
         api.sendPlayerMessage(player, "");
-        if(itemMeta.hasAttributeModifiers()){
+        if (itemMeta.hasAttributeModifiers()) {
             Collection<AttributeModifier> modifiers = itemMeta.getAttributeModifiers(Attribute.valueOf(cache.getSubSetting()));
-            if(modifiers != null){
+            if (modifiers != null) {
                 api.sendPlayerMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
                 api.sendPlayerMessage(player, "");
-                for(AttributeModifier modifier : modifiers){
+                for (AttributeModifier modifier : modifiers) {
                     api.sendActionMessage(player,
                             new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
                                 itemMeta.removeAttributeModifier(Attribute.valueOf(CustomCrafting.getPlayerCache(player1).getSubSetting()), modifier);
                                 CustomCrafting.getPlayerCache(player).getItems().getItem().setItemMeta(itemMeta);
                                 sendAttributeModifierManager(player1);
-                            }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT,"§c"+modifier.getName())),
-                            new ClickData("§e"+modifier.getName()+"  §b"+modifier.getAmount()+"  §6"+ (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3"+modifier.getOperation(), null),
+                            }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§c" + modifier.getName())),
+                            new ClickData("§e" + modifier.getName() + "  §b" + modifier.getAmount() + "  §6" + (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3" + modifier.getOperation(), null),
                             new ClickData("  ", null),
-                            new ClickData("§7[UUID]", null, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§7[§3Click to copy§7]\n"+modifier.getUniqueId()), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, ""+modifier.getUniqueId()))
+                            new ClickData("§7[UUID]", null, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§7[§3Click to copy§7]\n" + modifier.getUniqueId()), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "" + modifier.getUniqueId()))
                     );
                 }
-            }else{
+            } else {
                 api.sendPlayerMessage(player, "&cNo attributes set yet!");
             }
         }
@@ -164,13 +164,30 @@ public class ChatUtils {
         api.sendPlayerMessage(player, "");
         api.sendPlayerMessage(player, "-------------------------------------------------");
         api.sendActionMessage(player, new ClickData("                     §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> {
-            for(int i = 0; i < 15; i++){
+            for (int i = 0; i < 15; i++) {
                 player.sendMessage("");
             }
-            api.getInventoryAPI().getGuiHandler(player1).openLastInv();
+            api.getInventoryAPI().getGuiHandler(player1).openPreviousInv();
         }, true));
     }
 
 
-
+    public static void sendRecipeItemLoadingError(String namespace, String key, String type, Exception ex) {
+        api.sendConsoleMessage("-------------------------------------------------");
+        api.sendConsoleMessage("Error loading Contents for: " + namespace + ":" + key);
+        api.sendConsoleMessage("    Type: " + type);
+        api.sendConsoleMessage("    Message: " + ex.getMessage());
+        if (ex.getCause() != null) {
+            api.sendConsoleMessage("    Cause: " + ex.getCause().getMessage());
+        }
+        api.sendConsoleMessage("You should check the config for empty settings ");
+        api.sendConsoleMessage("e.g. No set Result or Source Item!");
+        api.sendConsoleMessage("------------------[StackTrace]-------------------");
+        ex.printStackTrace();
+        if (ex.getCause() != null) {
+            api.sendConsoleMessage("Caused StackTrace: ");
+            ex.getCause().printStackTrace();
+        }
+        api.sendConsoleMessage("------------------[StackTrace]-------------------");
+    }
 }

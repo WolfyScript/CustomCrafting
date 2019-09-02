@@ -38,8 +38,8 @@ mode:
 
 #Supports multiple choices of items, so you don't need to create a recipe for each tool etc.!
 input_left:
-  #multiple CustomItems possible
+#multiple CustomItems possible
 
 #Also supports multiple choices!
 input_right:
-  #same as for input_left
+#same as for input_left

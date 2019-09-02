@@ -11,7 +11,7 @@ public enum RecipePriority {
 
     int order;
 
-    RecipePriority(int order){
+    RecipePriority(int order) {
         this.order = order;
     }
 
@@ -19,9 +19,9 @@ public enum RecipePriority {
         return order;
     }
 
-    public static RecipePriority getByOrder(int order){
-        for(RecipePriority priority : RecipePriority.values()){
-            if(priority.getOrder()==order)
+    public static RecipePriority getByOrder(int order) {
+        for (RecipePriority priority : RecipePriority.values()) {
+            if (priority.getOrder() == order)
                 return priority;
         }
         return NORMAL;

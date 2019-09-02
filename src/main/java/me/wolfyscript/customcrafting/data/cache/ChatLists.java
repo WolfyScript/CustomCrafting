@@ -9,7 +9,7 @@ public class ChatLists {
     private String lastUsedItem;
 
 
-    public ChatLists(){
+    public ChatLists() {
         this.currentPageRecipes = 1;
         this.currentPageItems = 1;
         this.lastUsedRecipe = "";

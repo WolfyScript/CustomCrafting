@@ -13,33 +13,34 @@ public class DataSet implements Serializable {
 
     private HashMap<String, String> workbenches = new HashMap<>();
 
-    public DataSet(){}
-
-    public void add(Location location, String name){
-        workbenches.put(location.getWorld().getUID()+";"+location.getBlockX()+";"+location.getBlockY()+";"+location.getBlockZ(), name);
+    public DataSet() {
     }
 
-    public void remove(Location location){
-        workbenches.remove(location.getWorld().getUID()+";"+location.getBlockX()+";"+location.getBlockY()+";"+location.getBlockZ());
+    public void add(Location location, String name) {
+        workbenches.put(location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ(), name);
     }
 
-    public String getData(Location location){
-        return workbenches.get(location.getWorld().getUID()+";"+location.getBlockX()+";"+location.getBlockY()+";"+location.getBlockZ());
+    public void remove(Location location) {
+        workbenches.remove(location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ());
+    }
+
+    public String getData(Location location) {
+        return workbenches.get(location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ());
     }
 
     public HashMap<Location, String> getWorkbenches() {
         HashMap<Location, String> deserializedWorkbenches = new HashMap<>();
-        for(String worldCode : this.workbenches.keySet()){
+        for (String worldCode : this.workbenches.keySet()) {
             String[] codes = worldCode.split(";");
-            deserializedWorkbenches.put(new Location(Bukkit.getWorld(UUID.fromString(codes[0])), Double.parseDouble(codes[1]),Double.parseDouble(codes[2]),Double.parseDouble(codes[3])), this.workbenches.get(worldCode));
+            deserializedWorkbenches.put(new Location(Bukkit.getWorld(UUID.fromString(codes[0])), Double.parseDouble(codes[1]), Double.parseDouble(codes[2]), Double.parseDouble(codes[3])), this.workbenches.get(worldCode));
         }
         return deserializedWorkbenches;
     }
 
     public void setWorkbenches(HashMap<Location, String> newWorkbenches) {
         this.workbenches.clear();
-        for(Location location : newWorkbenches.keySet()){
-            this.workbenches.put(location.getWorld().getUID()+";"+location.getBlockX()+";"+location.getBlockY()+";"+location.getBlockZ(), newWorkbenches.get(location));
+        for (Location location : newWorkbenches.keySet()) {
+            this.workbenches.put(location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ(), newWorkbenches.get(location));
         }
     }
 

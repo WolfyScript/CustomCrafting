@@ -3,9 +3,11 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.configs.custom_configs.CookingConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
 
-public interface CustomCookingRecipe<T extends CookingConfig> extends CustomRecipe{
+import java.util.List;
 
-    CustomItem getSource();
+public interface CustomCookingRecipe<T extends CookingConfig> extends CustomRecipe {
+
+    List<CustomItem> getSource();
 
     @Override
     T getConfig();

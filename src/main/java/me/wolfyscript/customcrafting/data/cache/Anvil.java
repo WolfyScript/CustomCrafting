@@ -6,6 +6,8 @@ import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class Anvil {
@@ -14,13 +16,11 @@ public class Anvil {
     private RecipePriority priority;
     private boolean permissions;
 
-    private List<CustomItem> inputLeft;
-    private List<CustomItem> inputRight;
+    private HashMap<Integer, List<CustomItem>> ingredients;
 
     //RESULT MODES
     private CustomAnvilRecipe.Mode mode;
     private int durability;
-    private CustomItem result;
 
     private int repairCost;
     private boolean applyRepairCost;
@@ -29,26 +29,20 @@ public class Anvil {
     private boolean blockRename;
     private boolean blockEnchant;
 
-    //GUI
-    private Menu menu;
-
-    public Anvil(){
-        this.inputLeft = new ArrayList<>();
-        this.inputRight = new ArrayList<>();
-        this.result = new CustomItem(Material.AIR);
+    public Anvil() {
+        this.ingredients = new HashMap<>();
+        this.ingredients.put(2, new ArrayList<>(Collections.singleton(new CustomItem(Material.AIR))));
         this.priority = RecipePriority.NORMAL;
         this.exactMeta = true;
         this.permissions = true;
         this.mode = CustomAnvilRecipe.Mode.RESULT;
         this.durability = 0;
-        this.result = new CustomItem(Material.AIR);
         this.repairCost = 1;
         this.applyRepairCost = false;
         this.repairCostMode = CustomAnvilRecipe.RepairCostMode.NONE;
         this.blockEnchant = false;
         this.blockRename = false;
         this.blockRepair = false;
-        this.menu = Menu.MAINMENU;
     }
 
     public boolean isExactMeta() {
@@ -67,35 +61,30 @@ public class Anvil {
         this.priority = priority;
     }
 
-    public CustomItem getResult() {
-        return result;
+    public List<CustomItem> getResult() {
+        return this.ingredients.get(2);
     }
 
-    public void setResult(CustomItem result) {
-        this.result = result;
+    public void setResult(List<CustomItem> result) {
+        ingredients.get(2).clear();
+        for (int i = 0; i < result.size(); i++) {
+            ingredients.get(2).set(i, result.get(i));
+        }
     }
 
-    public List<CustomItem> getInputLeft() {
-        return inputLeft;
+    public List<CustomItem> getIngredients(int slot) {
+        return ingredients.getOrDefault(slot, new ArrayList<>());
     }
 
-    public void setInputLeft(List<CustomItem> inputLeft) {
-        this.inputLeft = inputLeft;
+    public void setIngredient(int slot, List<CustomItem> input) {
+        this.ingredients.put(slot, input);
     }
 
-    public List<CustomItem> getInputRight() {
-        return inputRight;
-    }
-
-    public void setInputRight(List<CustomItem> inputRight) {
-        this.inputRight = inputRight;
-    }
-
-    public void setInput(List<CustomItem> input){
-        if(getMenu().equals(Menu.INPUT_LEFT)){
-            setInputLeft(input);
-        }else if(getMenu().equals(Menu.INPUT_RIGHT)){
-            setInputRight(input);
+    public void setIngredient(int slot, int variant, CustomItem input) {
+        if (getIngredients(slot).size() > variant) {
+            getIngredients(slot).set(variant, input);
+        } else {
+            getIngredients(slot).add(input);
         }
     }
 
@@ -155,14 +144,6 @@ public class Anvil {
         this.blockEnchant = blockEnchant;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public boolean isApplyRepairCost() {
         return applyRepairCost;
     }
@@ -179,7 +160,7 @@ public class Anvil {
         this.repairCostMode = repairCostMode;
     }
 
-    public enum Menu{
-        MAINMENU, INPUT_LEFT, INPUT_RIGHT;
+    public enum Menu {
+        MAINMENU
     }
 }

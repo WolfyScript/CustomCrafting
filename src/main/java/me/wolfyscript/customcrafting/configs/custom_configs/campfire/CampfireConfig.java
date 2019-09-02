@@ -12,4 +12,8 @@ public class CampfireConfig extends CookingConfig {
     public CampfireConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
         super(configAPI, folder, "campfire", name, "campfire", fileType);
     }
+
+    public CampfireConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
+        super(jsonData, configAPI, namespace, key, "campfire", "campfire");
+    }
 }

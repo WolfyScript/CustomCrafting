@@ -15,13 +15,12 @@ public class Items implements Serializable {
 
     private int page;
 
-    private ItemStack skullSetting;
+    private ItemStack playerHeadSetting;
 
     private CustomItem item;
     private String type;
     private String id;
-    private int craftSlot;
-    private int anvilSlot;
+    private int craftSlot, anvilSlot, variantSlot;
     private boolean saved;
 
     private EquipmentSlot attributeSlot;
@@ -32,15 +31,16 @@ public class Items implements Serializable {
 
     private CustomItem variantItem;
 
-    public Items(){
+    public Items() {
         this.page = 0;
-        this.skullSetting = new ItemStack(Material.AIR);
+        this.playerHeadSetting = new ItemStack(Material.AIR);
 
         this.item = new CustomItem(Material.AIR);
         this.type = "";
         this.id = "";
         this.saved = false;
         this.craftSlot = -1;
+        this.variantSlot = -1;
 
         this.attributeSlot = null;
         this.attribOperation = AttributeModifier.Operation.ADD_NUMBER;
@@ -53,36 +53,41 @@ public class Items implements Serializable {
         this.anvilSlot = 0;
     }
 
-    public void setItem(String type, CustomItem customItem){
+    public void setItem(String type, CustomItem customItem) {
         setItem(customItem);
         setType(type);
-        if(customItem.getId().isEmpty()){
+        if (customItem.getId().isEmpty()) {
             setSaved(false);
-        }else{
+        } else {
             setId(customItem.getId());
             setSaved(true);
         }
     }
 
-    public void setInputLeft(CustomItem customItem, int index){
+    public void setVariant(int variantSlot, CustomItem customItem) {
+        this.variantSlot = variantSlot;
+        setItem("variant", customItem);
+    }
+
+    public void setInputLeft(CustomItem customItem, int index) {
         this.anvilSlot = index;
         setItem("inputLeft", customItem);
     }
 
-    public void setInputRight(CustomItem customItem, int index){
+    public void setInputRight(CustomItem customItem, int index) {
         this.anvilSlot = index;
         setItem("inputRight", customItem);
     }
 
-    public void setSource(CustomItem customItem){
+    public void setSource(CustomItem customItem) {
         setItem("source", customItem);
     }
 
-    public void setResult(CustomItem customItem){
+    public void setResult(CustomItem customItem) {
         setItem("result", customItem);
     }
 
-    public void setIngredient(int slot, CustomItem customItem){
+    public void setIngredient(int slot, int variant, CustomItem customItem) {
         setItem("ingredient", customItem);
         setCraftSlot(slot);
     }
@@ -131,6 +136,10 @@ public class Items implements Serializable {
         return attributeSlot;
     }
 
+    public boolean isAttributeSlot(EquipmentSlot equipmentSlot) {
+        return getAttributeSlot() != null && getAttributeSlot().equals(equipmentSlot);
+    }
+
     public void setAttributeSlot(EquipmentSlot attributeSlot) {
         this.attributeSlot = attributeSlot;
     }
@@ -167,7 +176,7 @@ public class Items implements Serializable {
         this.attributeName = attributeName;
     }
 
-    public AttributeModifier getAttributeModifier(){
+    public AttributeModifier getAttributeModifier() {
         double amount = getAttribAmount();
         EquipmentSlot slot = getAttributeSlot();
         String name = getAttributeName().isEmpty() ? "customcrafting" : getAttributeName();
@@ -177,20 +186,12 @@ public class Items implements Serializable {
 
     }
 
-    public ItemStack getSkullSetting() {
-        return skullSetting;
+    public ItemStack getPlayerHeadSetting() {
+        return playerHeadSetting;
     }
 
-    public void setSkullSetting(ItemStack skullSetting) {
-        this.skullSetting = skullSetting;
-    }
-
-    public CustomItem getVariantItem() {
-        return variantItem;
-    }
-
-    public void setVariantItem(CustomItem variantItem) {
-        this.variantItem = variantItem;
+    public void setPlayerHeadSetting(ItemStack playerHeadSetting) {
+        this.playerHeadSetting = playerHeadSetting;
     }
 
     public int getPage() {
@@ -199,5 +200,13 @@ public class Items implements Serializable {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public int getVariantSlot() {
+        return variantSlot;
+    }
+
+    public void setVariantSlot(int variantSlot) {
+        this.variantSlot = variantSlot;
     }
 }

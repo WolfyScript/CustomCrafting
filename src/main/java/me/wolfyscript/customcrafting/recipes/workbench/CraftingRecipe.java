@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,13 +41,13 @@ public interface CraftingRecipe extends CustomRecipe {
 
     void load();
 
-    void setResult(ItemStack result);
+    void setResult(List<CustomItem> result);
 
     CustomItem getCustomResult();
 
-    void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients);
+    void setIngredients(HashMap<Character, List<CustomItem>> ingredients);
 
-    HashMap<Character, ArrayList<CustomItem>> getIngredients();
+    HashMap<Character, List<CustomItem>> getIngredients();
 
     List<CustomItem> getIngredients(int slot);
 

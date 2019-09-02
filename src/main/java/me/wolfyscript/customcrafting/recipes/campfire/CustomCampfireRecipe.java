@@ -8,18 +8,21 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CampfireRecipe;
 import org.bukkit.inventory.RecipeChoice;
 
-public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookingRecipe<CampfireConfig>{
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookingRecipe<CampfireConfig> {
 
     private boolean exactMeta;
 
     private RecipePriority recipePriority;
-    private CustomItem result;
-    private CustomItem source;
+    private List<CustomItem> result;
+    private List<CustomItem> source;
     private String id;
     private CampfireConfig config;
 
     public CustomCampfireRecipe(CampfireConfig config) {
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), new RecipeChoice.ExactChoice(config.getSource()), config.getXP(), config.getCookingTime());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.config = config;
         this.result = config.getResult();
@@ -29,7 +32,7 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
         setGroup(config.getGroup());
     }
 
-    public CustomItem getSource() {
+    public List<CustomItem> getSource() {
         return source;
     }
 
@@ -39,7 +42,7 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     }
 
     @Override
-    public CustomItem getCustomResult() {
+    public List<CustomItem> getCustomResults() {
         return result;
     }
 

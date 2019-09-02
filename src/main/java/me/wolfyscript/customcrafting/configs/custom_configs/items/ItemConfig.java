@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.items.MetaSettings;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,85 +32,91 @@ public class ItemConfig extends CustomConfig {
     }
 
     public ItemConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+        super(configAPI, folder, "items", name, "item");
     }
 
-    public ItemStack getCustomItem(boolean replaceLang){
+    public ItemConfig(String jsonData, ConfigAPI configAPI, String folder, String name) {
+        super(jsonData, configAPI, folder, "items", name, "item");
+    }
+
+    public ItemStack getCustomItem(boolean replaceLang) {
         return getItem("item", replaceLang);
     }
 
-    public ItemStack getCustomItem(){
+    public ItemStack getCustomItem() {
         return getCustomItem(true);
     }
 
-    public void setCustomItem(CustomItem itemStack){
+    public void setCustomItem(CustomItem itemStack) {
         setItem("item", new ItemStack(itemStack));
         setMetaSettings(itemStack.getMetaSettings());
         setBurnTime(itemStack.getBurnTime());
         setConsumed(itemStack.isConsumed());
-        if(itemStack.getReplacement() != null){
+        setRarityPercentage(itemStack.getRarityPercentage());
+        setPermission(itemStack.getPermission());
+        if (itemStack.getReplacement() != null) {
             setReplacementItem(itemStack.getReplacement());
         }
         setDurabilityCost(itemStack.getDurabilityCost());
-        if(itemStack.getAllowedBlocks().isEmpty()){
+        if (itemStack.getAllowedBlocks().isEmpty()) {
             setAllowedBlocks(new ArrayList<>(Collections.singleton(Material.FURNACE)));
-        }else{
+        } else {
             setAllowedBlocks(itemStack.getAllowedBlocks());
         }
     }
 
-    public void setItem(ItemStack itemStack){
+    public void setItem(ItemStack itemStack) {
         saveItem("item", itemStack);
     }
 
-    public void setDurabilityCost(int durabilityCost){
+    public void setDurabilityCost(int durabilityCost) {
         set("durability_cost", durabilityCost);
     }
 
-    public int getDurabilityCost(){
+    public int getDurabilityCost() {
         return getInt("durability_cost");
     }
 
-    public void setConsumed(boolean consumed){
+    public void setConsumed(boolean consumed) {
         set("consumed", consumed);
     }
 
-    public boolean isConsumed(){
+    public boolean isConsumed() {
         return getBoolean("consumed");
     }
 
-    public void setReplacementItem(CustomItem customItem){
-        if(customItem != null){
-            if(!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")){
+    public void setReplacementItem(CustomItem customItem) {
+        if (customItem != null) {
+            if (!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")) {
                 set("replacement.item_key", customItem.getId());
-            }else {
+            } else {
                 setItem("replacement.item", new ItemStack(customItem));
             }
         }
     }
 
-    public CustomItem getReplacementItem(){
+    public CustomItem getReplacementItem() {
         String id = getString("replacement.item_key");
-        if(id != null && !id.isEmpty()){
+        if (id != null && !id.isEmpty()) {
             return CustomCrafting.getRecipeHandler().getCustomItem(id);
-        }else if(getItem("replacement.item") != null){
+        } else if (getItem("replacement.item") != null) {
             return new CustomItem(getItem("replacement.item"));
         }
         return null;
     }
 
-    public void setAllowedBlocks(ArrayList<Material> furnaces){
+    public void setAllowedBlocks(ArrayList<Material> furnaces) {
         List<String> mats = new ArrayList<>();
         furnaces.forEach(material -> mats.add(material.name().toLowerCase(Locale.ROOT)));
         set("fuel.allowed_blocks", mats);
     }
 
-    public ArrayList<Material> getAllowedBlocks(){
+    public ArrayList<Material> getAllowedBlocks() {
         ArrayList<Material> furnaces = new ArrayList<>();
-        if(getStringList("fuel.allowed_blocks") != null){
+        if (getStringList("fuel.allowed_blocks") != null) {
             getStringList("fuel.allowed_blocks").forEach(s -> {
                 Material material = Material.matchMaterial(s);
-                if(material != null){
+                if (material != null) {
                     furnaces.add(material);
                 }
             });
@@ -119,22 +124,38 @@ public class ItemConfig extends CustomConfig {
         return furnaces;
     }
 
-    public void setBurnTime(int burntime){
+    public void setBurnTime(int burntime) {
         set("fuel.burntime", burntime);
     }
 
-    public int getBurnTime(){
+    public int getBurnTime() {
         return getInt("fuel.burntime");
     }
 
-    public void setMetaSettings(MetaSettings metaSettings){
+    public void setMetaSettings(MetaSettings metaSettings) {
         set("meta", metaSettings.toString());
     }
 
-    public MetaSettings getMetaSettings(){
-        if(getString("meta") != null && !getString("meta").isEmpty()){
+    public MetaSettings getMetaSettings() {
+        if (getString("meta") != null && !getString("meta").isEmpty()) {
             return new MetaSettings(getString("meta"));
         }
         return new MetaSettings();
+    }
+
+    public void setRarityPercentage(double percentage){
+        set("rarity_percentage", percentage);
+    }
+
+    public double getRarityPercentage(){
+        return getDouble("rarity_percentage");
+    }
+
+    public void setPermission(String permission){
+        set("permission", permission);
+    }
+
+    public String getPermission(){
+        return getString("permission");
     }
 }

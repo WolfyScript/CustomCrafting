@@ -3,19 +3,19 @@ package me.wolfyscript.customcrafting.recipes.workbench;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRecipe {
 
@@ -27,12 +27,12 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     private CraftConfig config;
     private String id;
     private String group;
-    private CustomItem result;
-    private HashMap<Character, ArrayList<CustomItem>> ingredients;
+    private List<CustomItem> result;
+    private HashMap<Character, List<CustomItem>> ingredients;
     private WolfyUtilities api;
 
     public ShapelessCraftRecipe(CraftConfig config) {
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult().get(0));
         this.result = config.getResult();
         this.id = config.getId();
         this.config = config;
@@ -82,7 +82,7 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : ingredients.get(key)) {
-                    if(!ingredient.isSimilar(item, exactMeta)){
+                    if (!ingredient.isSimilar(item, exactMeta)) {
                         continue;
                     }
                     usedKeys.add(key);
@@ -105,46 +105,23 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
                 if (item != null) {
                     if (item.getMaxStackSize() > 1) {
                         int amount = input.getAmount() - item.getAmount() * totalAmount;
-                        api.sendDebugMessage("Amount: "+amount);
-                        if(item.isConsumed()){
+                        api.sendDebugMessage("Amount: " + amount);
+                        if (item.isConsumed()) {
                             api.sendDebugMessage("Consumed!");
                             input.setAmount(amount);
                         }
-                        api.sendDebugMessage("Input: "+input);
+                        api.sendDebugMessage("Input: " + input);
                         if (item.hasReplacement()) {
                             ItemStack replacement = item.getReplacement();
                             replacement.setAmount(replacement.getAmount() * totalAmount);
-                            if (ItemUtils.hasInventorySpace(inventory, replacement)) {
+                            if (InventoryUtils.hasInventorySpace(inventory, replacement)) {
                                 inventory.addItem(replacement);
                             } else {
                                 inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
                             }
                         }
                     } else {
-                        if (item.hasConfig()) {
-                            if (item.isConsumed()) {
-                                input.setAmount(0);
-                            }
-                            if (item.hasReplacement()) {
-                                ItemStack replace = item.getReplacement();
-                                input.setType(replace.getType());
-                                input.setItemMeta(replace.getItemMeta());
-                                input.setData(replace.getData());
-                                input.setAmount(replace.getAmount());
-                            } else if (item.getDurabilityCost() != 0) {
-                                ItemMeta itemMeta = input.getItemMeta();
-                                if (itemMeta instanceof Damageable) {
-                                    ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
-                                }
-                                input.setItemMeta(itemMeta);
-                            }
-                        } else {
-                            if (input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.WATER_BUCKET)) {
-                                input.setType(Material.BUCKET);
-                            } else {
-                                input.setAmount(0);
-                            }
-                        }
+                        item.consumeUnstackableItem(input);
                     }
                 }
             }
@@ -172,12 +149,12 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         return totalAmount;
     }
 
-    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
+    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
     @Override
-    public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
+    public HashMap<Character, List<CustomItem>> getIngredients() {
         return ingredients;
     }
 
@@ -192,8 +169,9 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
         return list.size() > 0 ? list.get(0) : null;
     }
 
-    public void setResult(ItemStack result) {
-        this.result = new CustomItem(result);
+    @Override
+    public void setResult(List<CustomItem> result) {
+        this.result = result;
     }
 
     @Override
@@ -212,6 +190,11 @@ public class ShapelessCraftRecipe extends ShapelessRecipe implements CraftingRec
     }
 
     public CustomItem getCustomResult() {
+        return getCustomResults().get(0);
+    }
+
+    @Override
+    public List<CustomItem> getCustomResults() {
         return result;
     }
 

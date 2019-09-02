@@ -9,7 +9,7 @@ import java.util.List;
 public class MainConfig extends Config {
 
     public MainConfig(ConfigAPI configAPI) {
-        super(configAPI, CustomCrafting.getInst().getDataFolder().getPath(),"main_config", "me/wolfyscript/customcrafting/configs","main_config", "yml", false);
+        super(configAPI, CustomCrafting.getInst().getDataFolder().getPath(), "main_config", "me/wolfyscript/customcrafting/configs", "main_config", "yml", false);
     }
 
     @Override
@@ -20,23 +20,23 @@ public class MainConfig extends Config {
         return getBoolean("experimental_features");
     }
 
-    public void setExperimentalFeatures(boolean experimentalFeatures){
+    public void setExperimentalFeatures(boolean experimentalFeatures) {
         set("experimental_features", experimentalFeatures);
     }
 
-    public boolean resetKnowledgeBookItem(){
+    public boolean resetKnowledgeBookItem() {
         return getBoolean("knowledgebook.reset_item");
     }
 
-    public void setResetKnowledgeBookItem(boolean reset){
+    public void setResetKnowledgeBookItem(boolean reset) {
         set("knowledgebook.reset_item", reset);
     }
 
-    public boolean resetKnowledgeBookRecipe(){
+    public boolean resetKnowledgeBookRecipe() {
         return getBoolean("knowledgebook.reset_recipe");
     }
 
-    public void setResetKnowledgeBookRecipe(boolean reset){
+    public void setResetKnowledgeBookRecipe(boolean reset) {
         set("knowledgebook.reset_recipe", reset);
     }
 
@@ -44,19 +44,19 @@ public class MainConfig extends Config {
         return getBoolean("workbench.enable");
     }
 
-    public boolean resetAdvancedWorkbenchItem(){
+    public boolean resetAdvancedWorkbenchItem() {
         return getBoolean("workbench.reset_item");
     }
 
-    public void setResetAdvancedWorkbenchItem(boolean reset){
+    public void setResetAdvancedWorkbenchItem(boolean reset) {
         set("workbench.reset_item", reset);
     }
 
-    public boolean resetAdvancedWorkbenchRecipe(){
+    public boolean resetAdvancedWorkbenchRecipe() {
         return getBoolean("workbench.reset_recipe");
     }
 
-    public void setResetAdvancedWorkbenchRecipe(boolean reset){
+    public void setResetAdvancedWorkbenchRecipe(boolean reset) {
         set("workbench.reset_recipe", reset);
     }
 
@@ -76,19 +76,19 @@ public class MainConfig extends Config {
         set("recipes.disabled_recipes", recipes);
     }
 
-    public boolean isPrettyPrinting(){
+    public boolean isPrettyPrinting() {
         return getBoolean("recipes.pretty_printing");
     }
 
-    public void setPrettyPrinting(boolean prettyPrinting){
+    public void setPrettyPrinting(boolean prettyPrinting) {
         set("recipes.pretty_printing", prettyPrinting);
     }
 
-    public void setPreferredFileType(String fileType){
+    public void setPreferredFileType(String fileType) {
         set("recipes.preferred_file_type", fileType);
     }
 
-    public String getPreferredFileType(){
+    public String getPreferredFileType() {
         return getString("recipes.preferred_file_type");
     }
 
@@ -108,50 +108,49 @@ public class MainConfig extends Config {
         return getBoolean("commands.cc");
     }
 
-    public boolean isLockedDown(){
+    public boolean isLockedDown() {
         return getBoolean("recipes.lockdown");
     }
 
-    public void toggleLockDown(){
+    public void toggleLockDown() {
         setLockDown(!isLockedDown());
     }
 
-    public void setLockDown(boolean lockdown){
+    public void setLockDown(boolean lockdown) {
         set("recipes.lockdown", lockdown);
     }
 
-    public boolean useVanillaKnowledgeBook(){
+    public boolean useVanillaKnowledgeBook() {
         return getBoolean("vanilla_knowledgebook");
     }
 
-    public void useVanillaKnowledgeBook(boolean use){
+    public void useVanillaKnowledgeBook(boolean use) {
         set("vanilla_knowledgebook", use);
     }
 
-    public boolean isDatabankEnabled(){
+    public boolean isDatabankEnabled() {
         return getBoolean("databank.enabled");
     }
 
-    public String getDatabankHost(){
+    public String getDatabankHost() {
         return getString("databank.host");
     }
 
-    public int getDatabankPort(){
+    public int getDatabankPort() {
         return getInt("databank.port");
     }
 
-    public String getDatabankDataBase(){
+    public String getDatabankDataBase() {
         return getString("databank.database");
     }
 
-    public String getDatabankUsername(){
+    public String getDatabankUsername() {
         return getString("databank.username");
     }
 
-    public String getDataBankPassword(){
+    public String getDataBankPassword() {
         return getString("databank.password");
     }
-
 
 
 }

@@ -9,18 +9,21 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustomStonecutterRecipe extends StonecuttingRecipe implements CustomRecipe {
 
     private boolean exactMeta;
 
     private StonecutterConfig config;
     private String id;
-    private CustomItem result;
-    private CustomItem source;
+    private List<CustomItem> result;
+    private List<CustomItem> source;
     private RecipePriority priority;
 
     public CustomStonecutterRecipe(StonecutterConfig config) {
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), config.isExactMeta() ? new RecipeChoice.ExactChoice(config.getSource()) : new RecipeChoice.MaterialChoice(config.getSource().getType()));
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())));
         this.result = config.getResult();
         this.id = config.getId();
         this.config = config;
@@ -36,7 +39,7 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     }
 
     @Override
-    public CustomItem getCustomResult() {
+    public List<CustomItem> getCustomResults() {
         return result;
     }
 
@@ -50,7 +53,7 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
         //NO LOADING NEEDED!
     }
 
-    public CustomItem getSource() {
+    public List<CustomItem> getSource() {
         return source;
     }
 

@@ -13,28 +13,28 @@ public abstract class Meta {
 
     private List<MetaSettings.Option> availableOptions;
 
-    protected Meta(String id){
+    protected Meta(String id) {
         this.id = id;
     }
 
-    public MetaSettings.Option getOption(){
+    public MetaSettings.Option getOption() {
         return option;
     }
 
-    public void setOption(MetaSettings.Option option){
+    public void setOption(MetaSettings.Option option) {
         this.option = option;
     }
 
-    public boolean isExact(){
+    public boolean isExact() {
         return option.equals(MetaSettings.Option.EXACT);
     }
 
-    public List<MetaSettings.Option> getAvailableOptions(){
+    public List<MetaSettings.Option> getAvailableOptions() {
         return availableOptions;
     }
 
-    protected void setAvailableOptions(MetaSettings.Option... options){
-        if(options != null){
+    protected void setAvailableOptions(MetaSettings.Option... options) {
+        if (options != null) {
             availableOptions = Arrays.asList(options);
         }
     }
@@ -42,11 +42,11 @@ public abstract class Meta {
     public abstract boolean check(ItemMeta metaOther, ItemMeta meta);
 
     @Override
-    public String toString(){
+    public String toString() {
         return option.toString();
     }
 
-    public void parseFromJSON(String value){
+    public void parseFromJSON(String value) {
         this.option = MetaSettings.Option.valueOf(value);
     }
 

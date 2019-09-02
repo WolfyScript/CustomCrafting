@@ -28,17 +28,17 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
         WolfyUtilities api = CustomCrafting.getApi();
-        if(args.length > 0){
+        if (args.length > 0) {
             String label = args[0];
-            if(label.equalsIgnoreCase("toggle") && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle")){
-                if(args.length > 1){
+            if (label.equalsIgnoreCase("toggle") && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle")) {
+                if (args.length > 1) {
                     String id = args[1];
                     if (!id.isEmpty() && id.contains(":")) {
                         if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
-                            sender.sendMessage("Enabled recipe "+id);
+                            sender.sendMessage("Enabled recipe " + id);
                             CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(id);
                         } else {
-                            sender.sendMessage("Disabled recipe "+id);
+                            sender.sendMessage("Disabled recipe " + id);
                             CustomCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                             for (Player player : Bukkit.getOnlinePlayers()) {
                                 player.undiscoverRecipe(new NamespacedKey(id.split(":")[0], id.split(":")[1]));
@@ -46,14 +46,14 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
                         }
                     }
                 }
-            }else if((label.equalsIgnoreCase("edit") && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit")) || (label.equalsIgnoreCase("delete") && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.delete"))){
-                if(args.length > 2) {
+            } else if ((label.equalsIgnoreCase("edit") && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit")) || (label.equalsIgnoreCase("delete") && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.delete"))) {
+                if (args.length > 2) {
                     Player player = (Player) sender;
                     CustomRecipe customRecipe = CustomCrafting.getRecipeHandler().getRecipe(args[2]);
-                    if(customRecipe != null){
+                    if (customRecipe != null) {
                         if (label.equalsIgnoreCase("edit")) {
                             Setting setting = Setting.WORKBENCH;
-                            switch (args[1]){
+                            switch (args[1]) {
                                 case "furnace":
                                     setting = Setting.FURNACE;
                                     break;
@@ -67,16 +67,13 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
                             }
                             CustomCrafting.getPlayerCache(player).setSetting(setting);
 
-                            if(CustomCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, player)){
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                    api.getInventoryAPI().openGui(player);
-                                    api.getInventoryAPI().getGuiHandler(player).changeToInv("recipe_creator");
-                                }, 1);
+                            if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, player)) {
+                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> api.getInventoryAPI().openGui(player, "none", "recipe_creator"), 1);
                             }
-                        }else if(label.equalsIgnoreCase("delete")){
+                        } else if (label.equalsIgnoreCase("delete")) {
                             api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new String[]{"%RECIPE%", customRecipe.getId()});
                             StringBuilder command = new StringBuilder("/recipes");
-                            for(int i = 0; i < args.length-1; i++){
+                            for (int i = 0; i < args.length - 1; i++) {
                                 command.append(" ").append(args[i]);
                             }
                             command.append(" ");
@@ -87,11 +84,9 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
                                 } else {
                                     api.sendPlayerMessage(player1, "§cCould not delete recipe!");
                                 }
-                            })), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> {
-                                api.sendPlayerMessage(player1, "§cCancelled");
-                            }, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, command.toString())));
+                            })), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> api.sendPlayerMessage(player1, "§cCancelled"), new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, command.toString())));
                         }
-                    }else{
+                    } else {
                         api.sendPlayerMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new String[]{"%RECIPE%", args[0] + ":" + args[1]});
                     }
                 }
@@ -105,29 +100,29 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
         List<String> results = new ArrayList<>();
         if (args.length > 1) {
             if (args[0].equalsIgnoreCase("toggle")) {
-                for(Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()){
+                for (Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()) {
                     List<String> recipes = new ArrayList<>();
-                    if(recipe instanceof Keyed){
+                    if (recipe instanceof Keyed) {
                         recipes.add(((Keyed) recipe).getKey().toString());
                     }
-                    StringUtil.copyPartialMatches(args[args.length-1], recipes, results);
+                    StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
                 }
-            }else if(args[0].equalsIgnoreCase("edit") || args[0].equalsIgnoreCase("delete")){
-                if(args.length == 2){
+            } else if (args[0].equalsIgnoreCase("edit") || args[0].equalsIgnoreCase("delete")) {
+                if (args.length == 2) {
                     StringUtil.copyPartialMatches(args[1], RECIPES, results);
-                }else if(args.length == 3){
+                } else if (args.length == 3) {
                     List<String> recipes = new ArrayList<>();
                     List<CustomRecipe> customRecipes = CustomCrafting.getRecipeHandler().getRecipes(args[1]);
-                    for(CustomRecipe customRecipe : customRecipes){
+                    for (CustomRecipe customRecipe : customRecipes) {
                         recipes.add(customRecipe.getId());
                     }
                     StringUtil.copyPartialMatches(args[2], recipes, results);
                 }
             }
         } else {
-            if(sender instanceof Player){
+            if (sender instanceof Player) {
                 StringUtil.copyPartialMatches(args[0], COMMANDS, results);
-            }else{
+            } else {
                 StringUtil.copyPartialMatches(args[0], Arrays.asList("toggle", "delete"), results);
             }
         }

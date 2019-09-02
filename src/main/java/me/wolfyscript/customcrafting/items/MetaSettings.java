@@ -23,40 +23,46 @@ public class MetaSettings {
     private PotionMeta potionMeta = new PotionMeta();
     private RepairCostMeta repairCostMeta = new RepairCostMeta();
     private UnbreakableMeta unbreakableMeta = new UnbreakableMeta();
+    private CustomDamageMeta customDamageMeta = new CustomDamageMeta();
+    private CustomDurabilityMeta customDurabilityMeta = new CustomDurabilityMeta();
 
     private HashMap<String, Meta> metas;
 
-    public MetaSettings(String jsonString){
+    public MetaSettings(String jsonString) {
         this();
         JSONParser parser = new JSONParser();
         JSONObject obj = null;
-        if(!jsonString.isEmpty()){
+        if (!jsonString.isEmpty()) {
             try {
                 obj = (JSONObject) parser.parse(jsonString);
-            }catch (ParseException e){
+            } catch (ParseException e) {
                 CustomCrafting.getApi().sendConsoleWarning("Error getting JSONObject from String:");
-                CustomCrafting.getApi().sendConsoleWarning(""+jsonString);
+                CustomCrafting.getApi().sendConsoleWarning("" + jsonString);
             }
         }
-        if(obj != null){
+        if (obj != null) {
             Set<String> keys = obj.keySet();
-            for(String key : keys){
+            for (String key : keys) {
                 String value = (String) obj.get(key);
                 getMetaByID(key).parseFromJSON(value);
             }
         }
     }
 
-    public MetaSettings(){
-        List<Meta> list = Arrays.asList(modifiersMeta, customModelDataMeta, damageMeta, enchantMeta, flagsMeta, loreMeta, nameMeta, playerHeadMeta, potionMeta, repairCostMeta, unbreakableMeta);
+    public MetaSettings() {
+        List<Meta> list = Arrays.asList(modifiersMeta, customModelDataMeta, damageMeta, enchantMeta, flagsMeta, loreMeta, nameMeta, playerHeadMeta, potionMeta, repairCostMeta, unbreakableMeta, customDamageMeta, customDurabilityMeta);
         this.metas = new HashMap<>();
-        for(Meta meta : list){
+        for (Meta meta : list) {
             this.metas.put(meta.getId(), meta);
         }
     }
 
-    private Meta getMetaByID(String id){
+    public Meta getMetaByID(String id) {
         return metas.get(id);
+    }
+
+    public List<String> getMetas(){
+        return new ArrayList<>(metas.keySet());
     }
 
     public AttributesModifiersMeta getModifiersMeta() {
@@ -147,7 +153,23 @@ public class MetaSettings {
         this.unbreakableMeta = unbreakableMeta;
     }
 
-    public Meta getMetaByCache(PlayerCache cache){
+    public CustomDamageMeta getCustomDamageMeta() {
+        return customDamageMeta;
+    }
+
+    public void setCustomDamageMeta(CustomDamageMeta customDamageMeta) {
+        this.customDamageMeta = customDamageMeta;
+    }
+
+    public CustomDurabilityMeta getCustomDurabilityMeta() {
+        return customDurabilityMeta;
+    }
+
+    public void setCustomDurabilityMeta(CustomDurabilityMeta customDurabilityMeta) {
+        this.customDurabilityMeta = customDurabilityMeta;
+    }
+
+    public Meta getMetaByCache(PlayerCache cache) {
         switch (cache.getSubSetting()) {
             case "attributes_modifiers":
                 return getModifiersMeta();
@@ -173,9 +195,10 @@ public class MetaSettings {
         return null;
     }
 
-    public boolean checkMeta(ItemMeta input, ItemMeta customItem){
-        for(Meta meta : metas.values()){
-            if(!meta.check(input, customItem)){
+    public boolean checkMeta(ItemMeta input, ItemMeta customItem) {
+        for (Meta meta : metas.values()) {
+            if (!meta.check(input, customItem)) {
+                CustomCrafting.getApi().sendDebugMessage("          Meta: " + meta.getId());
                 return false;
             }
         }
@@ -183,18 +206,17 @@ public class MetaSettings {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         HashMap<String, String> map = new HashMap<>();
-        for(String id : metas.keySet()){
+        for (String id : metas.keySet()) {
             map.put(id, metas.get(id).toString());
         }
         JSONObject obj = new JSONObject(map);
         return obj.toString();
     }
 
-    public enum Option{
+    public enum Option {
         EXACT, IGNORE, HIGHER, LOWER
-
     }
 
 }

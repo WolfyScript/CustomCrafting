@@ -633,8 +633,8 @@ items:
         name: "&7Set Tag: &3%VAR%"
         lore:
           - "&7Click to set Tag!"
-          - "&3%DUR% -> &7replaced with custom durability"
-          - "&3%DMG% -> &7replaced with custom damage"
+          - "&3%DUR% -> &7durability subtracted by the damage"
+          - "&3%MAX_DUR% -> &7max set durability for the item"
   recipe_editor:
   recipe_creator:
     save:
@@ -785,12 +785,12 @@ items:
     next_page:
       name: "&2Next Page"
       help: []
-    craft_recipe:
-      name: "&6Workbench Recipes"
-      help: []
-    furnace_recipe:
-      name: "&6Furnace Recipes"
-      help: []
+    workbench_filter_button:
+      name: "&7Recipe Filter:&3 %VAR%"
+      lore:
+        - "&3ALL &7- Show all recipes"
+        - "&3ADVANCED &7- Only show advanced recipes"
+        - "&3NORMAL &7- Only show normal recipes"
     workbench:
       name: "&6Workbench Recipes"
       help: []

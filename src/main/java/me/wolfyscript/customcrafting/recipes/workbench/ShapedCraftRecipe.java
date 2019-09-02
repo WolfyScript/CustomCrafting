@@ -3,17 +3,15 @@ package me.wolfyscript.customcrafting.recipes.workbench;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,14 +27,14 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     private CraftConfig config;
     private String id;
     private String group;
-    private CustomItem result;
-    private HashMap<Character, ArrayList<CustomItem>> ingredients;
+    private List<CustomItem> result;
+    private HashMap<Character, List<CustomItem>> ingredients;
     private String[] shape;
     private String shapeLine;
     private WolfyUtilities api;
 
     public ShapedCraftRecipe(CraftConfig config) {
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult());
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult().get(0));
         this.result = config.getResult();
         this.id = config.getId();
         this.config = config;
@@ -103,7 +101,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
 
     private CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
         for (CustomItem ingredient : ingredients) {
-            if(!ingredient.isSimilar(input, exactMeta)){
+            if (!ingredient.isSimilar(input, exactMeta)) {
                 continue;
             }
             return ingredient.clone();
@@ -123,7 +121,7 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
         }
         if (matrix.get(0).size() > 1) {
             for (int i = 0; i < matrix.get(0).size(); i++) {
-                if(matrix.get(0).get(i) != null){
+                if (matrix.get(0).get(i) != null) {
                     startIndex = startIndex - i;
                     break;
                 }
@@ -139,44 +137,20 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
                     if (item != null) {
                         if (item.getMaxStackSize() > 1) {
                             int amount = input.getAmount() - item.getAmount() * totalAmount;
-                            if(item.isConsumed()){
+                            if (item.isConsumed()) {
                                 input.setAmount(amount);
                             }
                             if (item.hasReplacement()) {
                                 ItemStack replacement = item.getReplacement();
                                 replacement.setAmount(replacement.getAmount() * totalAmount);
-                                if (ItemUtils.hasInventorySpace(inventory, replacement)) {
+                                if (InventoryUtils.hasInventorySpace(inventory, replacement)) {
                                     inventory.addItem(replacement);
                                 } else {
                                     inventory.getLocation().getWorld().dropItemNaturally(inventory.getLocation().add(0.5, 1.0, 0.5), replacement);
                                 }
                             }
-                        }else{
-                            if(item.hasConfig()){
-                                if(item.isConsumed()){
-                                    input.setAmount(0);
-                                }
-                                //TODO: Maybe add the possibility of having replacements together with durability cost?!
-                                if(item.hasReplacement()){
-                                    ItemStack replace = item.getReplacement();
-                                    input.setType(replace.getType());
-                                    input.setItemMeta(replace.getItemMeta());
-                                    input.setData(replace.getData());
-                                    input.setAmount(replace.getAmount());
-                                }else if(item.getDurabilityCost() != 0){
-                                    ItemMeta itemMeta = input.getItemMeta();
-                                    if(itemMeta instanceof Damageable){
-                                        ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + item.getDurabilityCost());
-                                    }
-                                    input.setItemMeta(itemMeta);
-                                }
-                            }else{
-                                if(input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.WATER_BUCKET)){
-                                    input.setType(Material.BUCKET);
-                                }else{
-                                    input.setAmount(0);
-                                }
-                            }
+                        } else {
+                            item.consumeUnstackableItem(input);
                         }
                     }
                 }
@@ -222,12 +196,12 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
+    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
     @Override
-    public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
+    public HashMap<Character, List<CustomItem>> getIngredients() {
         return ingredients;
     }
 
@@ -248,12 +222,17 @@ public class ShapedCraftRecipe extends ShapedRecipe implements CraftingRecipe {
     }
 
     @Override
-    public void setResult(ItemStack result) {
-        this.result = new CustomItem(result);
+    public void setResult(List<CustomItem> result) {
+        this.result = result;
     }
 
     @Override
     public CustomItem getCustomResult() {
+        return getCustomResults().get(0);
+    }
+
+    @Override
+    public List<CustomItem> getCustomResults() {
         return result;
     }
 

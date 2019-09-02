@@ -3,11 +3,14 @@ package me.wolfyscript.customcrafting.configs.custom_configs.workbench;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Material;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class CraftConfig extends CustomConfig {
 
@@ -29,6 +32,13 @@ public class CraftConfig extends CustomConfig {
 
     public CraftConfig(ConfigAPI configAPI, String folder, String name) {
         this(configAPI, "craft_config", folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+    }
+
+    /*
+    Creates a json Memory only Config used for DataBase management!
+     */
+    public CraftConfig(String jsonData, ConfigAPI configAPI, String folder, String name) {
+        super(jsonData, configAPI, folder, "workbench", name, "craft_config");
     }
 
     public void setShapeless(boolean shapeless) {
@@ -63,24 +73,40 @@ public class CraftConfig extends CustomConfig {
         return getStringList("shape").toArray(new String[0]);
     }
 
-    public void setResult(CustomItem itemStack) {
-        saveCustomItem("result", itemStack);
+    public void setResult(List<CustomItem> results) {
+        saveCustomItem("result", results.get(0));
+        for (int i = 1; i < results.size(); i++) {
+            if(!results.get(i).getType().equals(Material.AIR)){
+                saveCustomItem("result.variants.var" + i, results.get(i));
+            }
+        }
     }
 
-    public CustomItem getResult() {
-        return getCustomItem("result");
+    public List<CustomItem> getResult() {
+        List<CustomItem> results = new ArrayList<>();
+        results.add(getCustomItem("result"));
+        if (get("result.variants") != null) {
+            Set<String> variants = getValues("result.variants").keySet();
+            for (String variant : variants) {
+                CustomItem customItem = getCustomItem("result.variants." + variant);
+                if(customItem != null && !customItem.getType().equals(Material.AIR)){
+                    results.add(customItem);
+                }
+            }
+        }
+        return results;
     }
 
-    public void setIngredients(HashMap<Character, ArrayList<CustomItem>> ingredients) {
+    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
         set("ingredients", new HashMap<String, Object>());
         for (char key : ingredients.keySet()) {
             int variant = 0;
-            if (!ItemUtils.isEmpty(ingredients.get((char) key))) {
-                for (CustomItem customItem : ingredients.get((char) key)) {
+            if (!InventoryUtils.isEmpty(new ArrayList<>(ingredients.get(key)))) {
+                for (CustomItem customItem : ingredients.get(key)) {
                     saveCustomItem("ingredients." + key + ".var" + (variant++), customItem);
                 }
             } else {
-                for (CustomItem customItem : ingredients.get((char) key)) {
+                for (CustomItem customItem : ingredients.get(key)) {
                     if (customItem != null && !customItem.getType().equals(Material.AIR)) {
                         saveCustomItem("ingredients." + key + ".var" + (variant++), customItem);
                     }
@@ -89,12 +115,12 @@ public class CraftConfig extends CustomConfig {
         }
     }
 
-    public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
-        HashMap<Character, ArrayList<CustomItem>> result = new HashMap<>();
+    public HashMap<Character, List<CustomItem>> getIngredients() {
+        HashMap<Character, List<CustomItem>> result = new HashMap<>();
         Set<String> keys = getValues("ingredients").keySet();
         for (String key : keys) {
             Set<String> itemKeys = getValues("ingredients." + key).keySet();
-            ArrayList<CustomItem> data = new ArrayList<>();
+            List<CustomItem> data = new ArrayList<>();
             for (String itemKey : itemKeys) {
                 CustomItem itemStack;
                 itemStack = getCustomItem("ingredients." + key + "." + itemKey);

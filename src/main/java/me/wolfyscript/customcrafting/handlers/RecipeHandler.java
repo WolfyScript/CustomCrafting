@@ -1,14 +1,15 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_configs.CookingConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
+import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.stonecutter.StonecutterConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Anvil;
 import me.wolfyscript.customcrafting.data.cache.CookingData;
@@ -16,7 +17,8 @@ import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.campfire.CustomCampfireRecipe;
@@ -26,15 +28,20 @@ import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.CookingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.*;
 
 public class RecipeHandler {
@@ -52,6 +59,50 @@ public class RecipeHandler {
     public RecipeHandler(WolfyUtilities api) {
         this.configAPI = api.getConfigAPI();
         this.api = api;
+    }
+
+    public void load() {
+        if (CustomCrafting.hasDataBaseHandler()) {
+            loadDataBase();
+        } else {
+            loadConfigs();
+        }
+    }
+
+    private void loadConfigs() {
+        if (!CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
+            disabledRecipes.addAll(CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes());
+        }
+        api.sendConsoleMessage("$msg.startup.recipes.title$");
+        File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
+        List<File> subFolders = null;
+        File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
+        if (dirs != null) {
+            subFolders = new ArrayList<>(Arrays.asList(dirs));
+        }
+        if (subFolders != null) {
+            api.sendConsoleMessage("");
+            api.sendConsoleMessage("$msg.startup.recipes.items$");
+            for (File folder : subFolders) {
+                api.sendConsoleMessage("- " + folder.getName());
+                loadConfig(folder.getName(), "items");
+            }
+            api.sendConsoleMessage("");
+            api.sendConsoleMessage("$msg.startup.recipes.recipes$");
+            for (File folder : subFolders) {
+                api.sendConsoleMessage("- " + folder.getName());
+                loadConfig(folder.getName(), "workbench");
+                loadConfig(folder.getName(), "furnace");
+                loadConfig(folder.getName(), "anvil");
+
+                if (WolfyUtilities.hasVillagePillageUpdate()) {
+                    loadConfig(folder.getName(), "blast_furnace");
+                    loadConfig(folder.getName(), "smoker");
+                    loadConfig(folder.getName(), "campfire");
+                    loadConfig(folder.getName(), "stonecutter");
+                }
+            }
+        }
     }
 
     private void loadConfig(String subfolder, String type) {
@@ -91,29 +142,16 @@ public class RecipeHandler {
                             break;
                         case "items":
                             ItemConfig itemConfig = new ItemConfig(configAPI, key, name, fileType);
-                            customItems.put(itemConfig.getId(), new CustomItem(itemConfig));
+                            setCustomItem(itemConfig);
                             break;
                         case "stonecutter":
                             registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, key, name, fileType)));
                             break;
+                        case "enchant":
+
                     }
                 } catch (Exception ex) {
-                    api.sendConsoleMessage("-------------------------------------------------");
-                    api.sendConsoleMessage("Error loading Contents for: " + key + ":" + name);
-                    api.sendConsoleMessage("    Type: " + type);
-                    api.sendConsoleMessage("    Message: " + ex.getMessage());
-                    if (ex.getCause() != null) {
-                        api.sendConsoleMessage("    Cause: " + ex.getCause().getMessage());
-                    }
-                    api.sendConsoleMessage("You should check the config for empty settings ");
-                    api.sendConsoleMessage("e.g. No set Result or Source Item!");
-                    api.sendConsoleMessage("------------------[StackTrace]-------------------");
-                    ex.printStackTrace();
-                    if (ex.getCause() != null) {
-                        api.sendConsoleMessage("Caused StackTrace: ");
-                        ex.getCause().printStackTrace();
-                    }
-                    api.sendConsoleMessage("------------------[StackTrace]-------------------");
+                    ChatUtils.sendRecipeItemLoadingError(key, name, type, ex);
                 }
             }
         }
@@ -124,15 +162,18 @@ public class RecipeHandler {
         CustomCrafting.getConfigHandler().getConfig().save();
     }
 
-    public void loadDataBase() {
-
+    private void loadDataBase() {
+        DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
+        try {
+            api.sendConsoleMessage("$msg.startup.recipes.title$");
+            dataBaseHandler.loadItems(this);
+            dataBaseHandler.loadRecipes(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void loadConfigs() {
-        if (!CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
-            disabledRecipes.addAll(CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes());
-        }
-        api.sendConsoleMessage("$msg.startup.recipes.title$");
+    public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
         File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
         List<File> subFolders = null;
         File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
@@ -140,32 +181,80 @@ public class RecipeHandler {
             subFolders = new ArrayList<>(Arrays.asList(dirs));
         }
         if (subFolders != null) {
-            api.sendConsoleMessage("");
-            api.sendConsoleMessage("$msg.startup.recipes.items$");
             for (File folder : subFolders) {
                 api.sendConsoleMessage("- " + folder.getName());
-                loadConfig(folder.getName(), "items");
+                migrateConfigToDB(dataBaseHandler, folder.getName(), "items");
             }
-            api.sendConsoleMessage("");
-            api.sendConsoleMessage("$msg.startup.recipes.recipes$");
             for (File folder : subFolders) {
                 api.sendConsoleMessage("- " + folder.getName());
-                loadConfig(folder.getName(), "workbench");
-                loadConfig(folder.getName(), "furnace");
-                loadConfig(folder.getName(), "anvil");
-
+                migrateConfigToDB(dataBaseHandler, folder.getName(), "workbench");
+                migrateConfigToDB(dataBaseHandler, folder.getName(), "furnace");
+                migrateConfigToDB(dataBaseHandler, folder.getName(), "anvil");
                 if (WolfyUtilities.hasVillagePillageUpdate()) {
-                    loadConfig(folder.getName(), "blast_furnace");
-                    loadConfig(folder.getName(), "smoker");
-                    loadConfig(folder.getName(), "campfire");
-                    loadConfig(folder.getName(), "stonecutter");
+                    migrateConfigToDB(dataBaseHandler, folder.getName(), "blast_furnace");
+                    migrateConfigToDB(dataBaseHandler, folder.getName(), "smoker");
+                    migrateConfigToDB(dataBaseHandler, folder.getName(), "campfire");
+                    migrateConfigToDB(dataBaseHandler, folder.getName(), "stonecutter");
                 }
             }
         }
     }
 
+    private void migrateConfigToDB(DataBaseHandler dataBaseHandler, String subfolder, String type) {
+        File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
+        File[] files = workbench.listFiles((dir, name) -> (name.split("\\.").length > 1));
+        if (files != null) {
+            for (File file : files) {
+                String fileName = file.getName();
+                String key = file.getParentFile().getParentFile().getName().toLowerCase();
+                String name = fileName.substring(0, file.getName().lastIndexOf("."));
+                String fileType = fileName.substring(file.getName().lastIndexOf(".") + 1);
+                if (fileType.equals("json")) {
+                    try {
+                        switch (type) {
+                            case "workbench":
+                                CraftConfig config = new CraftConfig(configAPI, key, name, fileType);
+                                dataBaseHandler.updateRecipe(config);
+                                break;
+                            case "furnace":
+                                dataBaseHandler.updateRecipe(new FurnaceConfig(configAPI, key, name, fileType));
+                                break;
+                            case "anvil":
+                                dataBaseHandler.updateRecipe(new AnvilConfig(configAPI, key, name, fileType));
+                                break;
+                            case "blast_furnace":
+                                dataBaseHandler.updateRecipe(new BlastingConfig(configAPI, key, name, fileType));
+                                break;
+                            case "smoker":
+                                dataBaseHandler.updateRecipe(new SmokerConfig(configAPI, key, name, fileType));
+                                break;
+                            case "campfire":
+                                dataBaseHandler.updateRecipe(new CampfireConfig(configAPI, key, name, fileType));
+                                break;
+                            case "items":
+                                dataBaseHandler.updateItem(new ItemConfig(configAPI, key, name, fileType));
+                                break;
+                            case "stonecutter":
+                                dataBaseHandler.updateRecipe(new StonecutterConfig(configAPI, key, name, fileType));
+                                break;
+                            case "enchant":
+
+                        }
+                    } catch (Exception ex) {
+                        ChatUtils.sendRecipeItemLoadingError(key, name, type, ex);
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void setCustomItem(ItemConfig itemConfig) {
+        customItems.put(itemConfig.getId(), new CustomItem(itemConfig));
+    }
+
     public void registerRecipe(CustomRecipe recipe) {
-        if (!(recipe instanceof CustomAnvilRecipe) && CustomCrafting.getConfigHandler().getConfig().useVanillaKnowledgeBook()) {
+        if (!(recipe instanceof CraftingRecipe) && !(recipe instanceof CustomAnvilRecipe)) {
             api.sendDebugMessage("  add to Bukkit...");
             Bukkit.addRecipe(recipe);
         }
@@ -175,7 +264,7 @@ public class RecipeHandler {
 
     public void injectRecipe(CustomRecipe recipe) {
         api.sendDebugMessage("Inject Recipe:");
-        if(CustomCrafting.getConfigHandler().getConfig().useVanillaKnowledgeBook()){
+        if (!(recipe instanceof CraftingRecipe) && !(recipe instanceof CustomAnvilRecipe)) {
             api.sendDebugMessage("  unregister old recipe:");
             unregisterRecipe(recipe);
         }
@@ -203,8 +292,8 @@ public class RecipeHandler {
     }
 
     public void unregisterRecipe(CustomRecipe customRecipe) {
-        customRecipes.remove(customRecipe.getId());
-        if (!(customRecipe instanceof CustomAnvilRecipe)) {
+        if (customRecipes.containsKey(customRecipe.getId())) {
+            customRecipes.remove(customRecipe.getId());
             unregisterRecipe(customRecipe.getId());
         }
     }
@@ -230,7 +319,7 @@ public class RecipeHandler {
     public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items) {
         List<CraftingRecipe> recipes = new ArrayList<>();
         int size = 0;
-        for(List<ItemStack> itemStacks : items){
+        for (List<ItemStack> itemStacks : items) {
             size += (int) itemStacks.stream().filter(itemStack -> itemStack != null && !itemStack.getType().equals(Material.AIR)).count();
         }
         for (CraftingRecipe customRecipe : getCraftingRecipes()) {
@@ -530,17 +619,17 @@ public class RecipeHandler {
                 if (recipe instanceof CraftingRecipe) {
                     cache.resetWorkbench();
                     Workbench workbench = cache.getWorkbench();
-                    workbench.setResult(recipe.getCustomResult());
-                    HashMap<Character, ArrayList<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
+                    workbench.setResult(recipe.getCustomResults());
+                    HashMap<Character, List<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
                     workbench.setIngredients(Arrays.asList(new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR))));
                     for (String row : ((CraftingRecipe) recipe).getConfig().getShape()) {
                         for (char key : row.toCharArray()) {
                             if (key != ' ') {
-                                workbench.setIngredients(key, ingredients.get((char) key));
+                                workbench.setIngredients(key, ingredients.get(key));
                             }
                         }
                     }
-                    workbench.setResult(recipe.getCustomResult());
+                    workbench.setResult(recipe.getCustomResults());
                     workbench.setShapeless(((CraftingRecipe) recipe).isShapeless());
                     workbench.setAdvWorkbench(((CraftingRecipe) recipe).needsAdvancedWorkbench());
                     workbench.setPermissions(((CraftingRecipe) recipe).needsPermission());
@@ -553,9 +642,9 @@ public class RecipeHandler {
                 if (recipe instanceof CustomAnvilRecipe) {
                     cache.resetAnvil();
                     Anvil anvil = cache.getAnvil();
-                    anvil.setResult(recipe.getCustomResult());
-                    anvil.setInputLeft(((CustomAnvilRecipe) recipe).getInputLeft());
-                    anvil.setInputRight(((CustomAnvilRecipe) recipe).getInputRight());
+                    anvil.setResult(recipe.getCustomResults());
+                    anvil.setIngredient(0, ((CustomAnvilRecipe) recipe).getInputLeft());
+                    anvil.setIngredient(1, ((CustomAnvilRecipe) recipe).getInputRight());
                     anvil.setDurability(((CustomAnvilRecipe) recipe).getDurability());
                     anvil.setRepairCost(((CustomAnvilRecipe) recipe).getRepairCost());
                     anvil.setMode(((CustomAnvilRecipe) recipe).getMode());
@@ -565,7 +654,6 @@ public class RecipeHandler {
                     anvil.setExactMeta(recipe.isExactMeta());
                     anvil.setPermissions(((CustomAnvilRecipe) recipe).isPermission());
                     anvil.setPriority(recipe.getPriority());
-                    anvil.setMenu(Anvil.Menu.MAINMENU);
                     return true;
                 }
                 return false;
@@ -585,11 +673,12 @@ public class RecipeHandler {
             case SMOKER:
             case FURNACE:
                 if (recipe instanceof CustomCookingRecipe) {
+                    CustomCookingRecipe<CookingConfig> cookingRecipe = (CustomCookingRecipe<CookingConfig>) recipe;
                     cache.resetCookingData();
                     CookingData furnace = cache.getFurnace();
                     //furnace.setAdvFurnace(((CustomFurnaceRecipe) recipe).needsAdvancedFurnace());
-                    furnace.setSource(((CustomCookingRecipe) recipe).getSource());
-                    furnace.setResult(recipe.getCustomResult());
+                    furnace.setSource(cookingRecipe.getSource());
+                    furnace.setResult(recipe.getCustomResults());
                     furnace.setExperience(((CustomCookingRecipe) recipe).getConfig().getXP());
                     furnace.setCookingTime(((CustomCookingRecipe) recipe).getConfig().getCookingTime());
                     furnace.setExactMeta(recipe.isExactMeta());

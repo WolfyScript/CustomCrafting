@@ -108,6 +108,10 @@ msg:
         set: "&3Type in the Custom Model Data!"
         success: "&aSet Model Data to &6%VALUE%&a!"
         invalid_value: "&cThe value &4%VALUE%&c is not a valid Model Data number!"
+      durability_cost: "&3Type in the durability cost, which will be subtracted from the item when used in the crafting grid"
+      custom_durability:
+        set_durability: "&3Type in the custom durability. &cMax value: 2,147,483,647"
+        set_damage: "&3Type in the custom Damage of the item. &cMax value: 2,147,483,647"
     item_editor:
       input: "&3Type in the folder and name of the item! &6example your_item"
       error: "&cThis item does not exist or is not loaded!"
@@ -173,14 +177,8 @@ msg:
 
 items:
   none:
-    glass_gray:
-      name: '&4'
-    glass_red:
-      name: '&4'
-    glass_green:
-      name: '&4'
-    glass_white:
-      name: '&4'
+    background:
+      name: ""
     minimize:
       name: '&3Minimize'
       help: []
@@ -247,18 +245,6 @@ items:
       help:
         - '&7Create, Save custom Items'
         - '&6Use them inside of your recipes'
-    create_recipe:
-      name: '&6Create Recipe'
-      help:
-        - '&7Create your own recipe'
-    edit_recipe:
-      name: '&7Edit Recipe'
-      help:
-        - '&7Edit a existing recipe'
-    delete_recipe:
-      name: '&4Delete Recipe'
-      help:
-        - '&7Delete a existing recipe'
     recipe_list:
       name: "&2Recipe List"
       help:
@@ -301,39 +287,6 @@ items:
       name: "&7Previous Page"
       lore:
         - ""
-    item_name:
-      name: '&6Change name'
-      help:
-        - "&7Edit Display Name"
-    item_enchantments:
-      name: '&6Enchantments'
-      help:
-        - "&7Edit Enchantments"
-    item_lore:
-      name: '&6Edit Lore'
-      help:
-        - "&7Add or Remove Lore lines"
-    item_flags:
-      name: '&6Set Flags'
-      help:
-        - "&7Set HIDE Flags"
-        - "&7e.g. Hide Enchants"
-    skull_setting:
-      name: '&6Skull Settings'
-      help:
-        - "&7Add Textures to Player Heads"
-    attributes_modifiers:
-      name: '&6Set Attributes'
-      help:
-        - "&7Add or remove Attribute Modifiers"
-    unbreakable_on:
-      name: '&aUnbreakable'
-      help:
-        - "&7Toggle Unbreakable"
-    unbreakable_off:
-      name: '&cBreakable'
-      help:
-        - "&7Toggle Unbreakable"
     save_item:
       name: '&aSave Item'
       help:
@@ -357,87 +310,110 @@ items:
         - "&7For numeric items:"
         - "&3HIGHER &7- The value can be higher than the set value!"
         - "&3LOWER &7- The value can be lower than the set value!"
-    set_displayname:
-      name: "&6Set Display Name"
+    display_name:
+      option:
+        name: '&6Change name'
+        help:
+          - "&7Edit Display Name"
+      set:
+        name: "&6Set Display Name"
+        help:
+          - "&7Change Display Name"
+      remove:
+        name: "&3Remove Display Name"
+        help:
+          - "&7Removes Display Name and"
+          - "&7reset it to default"
+    enchantments:
+      option:
+        name: '&6Enchantments'
+        help:
+          - "&7Edit Enchantments"
+      add:
+        name: '&6Add Enchantment'
+        help: []
+      remove:
+        name: '&4Remove Enchantment'
+        help: []
+    lore:
+      option:
+        name: '&6Edit Lore'
+        help:
+          - "&7Add or Remove Lore lines"
+      add:
+        name: '&6Add Lore'
+        help: []
+      remove:
+        name: "&4Remove Lore"
+        help: []
+    flags:
+      option:
+        name: '&6Set Flags'
+        help:
+          - "&7Set HIDE Flags"
+          - "&7e.g. Hide Enchants"
+      flag_enchants:
+        name: '%C%Hide Enchants'
+        help: []
+      flag_attributes:
+        name: '%C%Hide Attributes'
+        help: []
+      flag_unbreakable:
+        name: '%C%Hide Unbreakable'
+        help: []
+      flag_destroys:
+        name: '%C%Hide Destroys'
+        help: []
+      flag_placed_on:
+        name: '%C%Hide Placed On'
+        help: []
+      flag_potion_effects:
+        name: '%C%Hide Potions'
+        help: []
+    player_head:
+      option:
+        name: '&6Skull Settings'
+        help:
+          - "&7Add Textures to Player Heads"
+      texture:
+        apply:
+          name: "&6Apply Texture"
+          help:
+            - "&7Applies the texture of the Player Head"
+            - "<- Input"
+      owner:
+        name: "&6Set Skull Owner"
+        help:
+          - "&7Sets the Skull Owner"
+          - "&7Input: &3<UUID or Player Name>"
+    unbreakable_on:
+      name: '&aUnbreakable'
       help:
-        - "&7Change Display Name"
-    remove_displayname:
-      name: "&3Remove Display Name"
+        - "&7Toggle Unbreakable"
+    unbreakable_off:
+      name: '&cBreakable'
       help:
-        - "&7Removes Display Name and"
-        - "&7reset it to default"
-    skull_texture:
-      name: "&6Apply Texture"
-      help:
-        - "&7Applies the texture of the Player Head"
-        - "<- Input"
-    skull_owner:
-      name: "&6Set Skull Owner"
-      help:
-        - "&7Sets the Skull Owner"
-        - "&7Input: &3<UUID or Player Name>"
-    potion_effects:
-      name: "&6Potion Effects"
-      help:
-        - "&7Configure Potion Effects"
-    variants:
-      name: "&6Variants"
-      help:
-        - "&7Sets the variants of ingredients"
-      lore:
-        - "&7[&cWork in Progress&7]"
-    variants_list:
-      name: "&6Variants"
-      lore:
-        - "&6%NUM%. &7%ITEM%"
-      help: []
-    potion_add:
-      name: "&3Add Potion Effect"
-      help:
-        - "&7Add a Potion Effect"
-        - "&7Input: &3<name> <duration> <level> [<ambient> <particles>]"
-    potion_remove:
-      name: "&4Remove Potion Effect"
-      help:
-        - "&7Remove a Potion Effect"
-        - "&7Input: &3<name>"
-    enchant_add:
-      name: '&6Add Enchantment'
-      help: []
-    enchant_remove:
-      name: '&4Remove Enchantment'
-      help: []
-    lore_add:
-      name: '&6Add Lore'
-      help: []
-    lore_remove:
-      name: "&4Remove Lore"
-      help: []
-    variant_add:
-      name: "&3Add Variant"
-      help: []
-    variant_remove:
-      name: "&4Remove Variant"
-      help: []
-    flag_enchants:
-      name: '%C%Hide Enchants'
-      help: []
-    flag_attributes:
-      name: '%C%Hide Attributes'
-      help: []
-    flag_unbreakable:
-      name: '%C%Hide Unbreakable'
-      help: []
-    flag_destroys:
-      name: '%C%Hide Destroys'
-      help: []
-    flag_placed_on:
-      name: '%C%Hide Placed On'
-      help: []
-    flag_potion_effects:
-      name: '%C%Hide Potions'
-      help: []
+        - "&7Toggle Unbreakable"
+    potion:
+      option:
+        name: "&6Potion Effects"
+        help:
+          - "&7Configure Potion Effects"
+      add:
+        name: "&3Add Potion Effect"
+        help:
+          - "&7Add a Potion Effect"
+          - "&7Input: &3<name> <duration> <level> [<ambient> <particles>]"
+      remove:
+        name: "&4Remove Potion Effect"
+        help:
+          - "&7Remove a Potion Effect"
+          - "&7Input: &3<name>"
     attribute:
+      option:
+        name: '&6Set Attributes'
+        help:
+          - "&7Add or remove Attribute Modifiers"
       generic_max_health:
         name: '&6GENERIC_MAX_HEALTH'
         help: []
@@ -526,50 +502,53 @@ items:
           - "&7Sets the uuid of this modifier"
           - "&cMust be a valid UUID format!"
           - "&7Input: &3<uuid>"
-    item_damage:
-      name: "&6Set Item Damage"
-      help:
-        - "&7Add a damage value to the Item"
-        - "&7This can be used for example"
-        - "&7for custom textures!"
-    damage_set:
-      name: "&6Set Damage"
-      help:
-        - "&7Set the damage value!"
-        - "&7Input: &3<value>"
-    damage_reset:
-      name: "&cReset Damage"
-      help:
-        - "&7Resets the damage value to 0"
+    damage:
+      option:
+        name: "&6Set Item Damage"
+        help:
+          - "&7Add a damage value to the Item"
+          - "&7This can be used for example"
+          - "&7for custom textures!"
+      set:
+        name: "&6Set Damage"
+        help:
+          - "&7Set the damage value!"
+          - "&7Input: &3<value>"
+      reset:
+        name: "&cReset Damage"
+        help:
+          - "&7Resets the damage value to 0"
     repair_cost:
-      name: "&6Repair Cost"
-      help:
-        - "&7Set the repair cost for this item!"
-        - "&7e.g. to prevent repairing"
-    repair_set:
-      name: "&6Set Repair Cost"
-    repair_reset:
-      name: "&cReset Repair Cost"
-      help:
-        - "Resets Repair Cost to 0"
-    furnace:
-      fuel:
-        name: "%C%Fuel Settings"
+      option:
+        name: "&6Repair Cost"
+        help:
+          - "&7Set the repair cost for this item!"
+          - "&7e.g. to prevent repairing"
+      set:
+        name: "&6Set Repair Cost"
+      reset:
+        name: "&cReset Repair Cost"
+        help:
+          - "Resets Repair Cost to 0"
+    fuel:
+      option:
+        name: "Fuel Settings"
         lore:
           - "&cThe Item must be saved in order to"
           - "&cbe added as a fuel"
       burn_time:
-        name: "&aBurn Time: &7%VAR% ticks"
-        help:
-          - "&7Sets the burn time in ticks!"
-          - "&720 ticks = 1 second"
-          - "&cSet it to 0 will disable this to be"
-          - "&csaved as a fuel!"
-      burn_time_reset:
-        name: "&cReset Burn Time"
-        lore:
-          - "&7The item item will not be saved"
-          - "&7as a fuel anymore!"
+        set:
+          name: "&aBurn Time: &7%VAR% ticks"
+          help:
+            - "&7Sets the burn time in ticks!"
+            - "&720 ticks = 1 second"
+            - "&cSet it to 0 will disable this to be"
+            - "&csaved as a fuel!"
+        reset:
+          name: "&cReset Burn Time"
+          lore:
+            - "&7The item item will not be saved"
+            - "&7as a fuel anymore!"
       furnace:
         name: "%C%Furnace"
       blast_furnace:
@@ -577,55 +556,60 @@ items:
       smoker:
         name: "%C%Smoker"
     custom_model_data:
-      name: "&6Custom Model Data"
-      help:
-        - "&7Set the Custom Model Data"
-        - "&7Used for custom Models and Textures!"
-        - "&7Available since Minecraft 1.14"
-    set_custom_model_data:
-      name: "&7Model Data: &7%VAR%"
-      help:
-        - "&7Sets the Custom Model Data"
-        - "&7for this item!"
-    reset_custom_model_data:
-      name: "&cRemove Model Data"
-      help:
-        - "&7Removes the Custom Model Data"
-        - "&7from this item!"
-    replacement_durability:
-      name: "&7Durability Cost & Replacement"
-      lore:
-        - "&4To use this feature, you need to save the item!"
-      help:
-        - "&7Set the Durability that gets"
-        - "&7removed when crafting!"
-        - "&7Set with which item this item gets replaced"
-        - "&7in the crafting grid."
-    durability_cost:
-      name: "&7Durability cost: &3%VAR%"
-      lore:
-        - "&7>0 = &3decrease durability!"
-        - "&7 0 = &3removed completely! Use replacement to prevent it!"
-        - "&7<0 = &3increase durability!"
-    durability_cost_disabled:
-      name: "&7Durability cost: &4&lDisabled"
-      lore:
-        - "&cItem must not be stackable!"
-        - "&cReplacement must be disabled!"
-    consume_item_enabled:
-      name: "&aConsumed"
-      lore:
-        - "&7Item will be consumed!"
-    consume_item_disabled:
-      name: "&cNot Consumed"
-      lore:
-        - "&7The item wil not be consumed!"
-    replacement:
-      name: "&aReplacement enabled!"
-      lore:
-        - "&7Durability cost is blocked now!"
-    replacement_disabled:
-      name: "&cReplacement disabled!"
+      option:
+        name: "&6Custom Model Data"
+        help:
+          - "&7Set the Custom Model Data"
+          - "&7Used for custom Models and Textures!"
+          - "&7Available since Minecraft 1.14"
+      set:
+        name: "&7Model Data: &7%VAR%"
+        help:
+          - "&7Sets the Custom Model Data"
+          - "&7for this item!"
+      reset:
+        name: "&cRemove Model Data"
+        help:
+          - "&7Removes the Custom Model Data"
+          - "&7from this item!"
+    consume:
+      option:
+        name: "&7Durability Cost & Replacement"
+        lore:
+          - "&4To use this feature, you need to save the item!"
+        help:
+          - "&7Set the Durability that gets"
+          - "&7removed when crafting!"
+          - "&7Set with which item this item gets replaced"
+          - "&7in the crafting grid."
+      durability_cost:
+        enabled:
+          name: "&7Durability cost: &3%VAR%"
+          lore:
+            - "&7>0 = &3decrease durability!"
+            - "&7 0 = &3removed completely! Use replacement to prevent it!"
+            - "&7<0 = &3increase durability!"
+        disabled:
+          name: "&7Durability cost: &4&lDisabled"
+          lore:
+            - "&cItem must not be stackable!"
+            - "&cReplacement must be disabled!"
+      consume_item:
+        enabled:
+          name: "&aConsumed"
+          lore:
+            - "&7Item will be consumed!"
+        disabled:
+          name: "&cNot Consumed"
+          lore:
+            - "&7The item wil not be consumed!"
+      replacement:
+        enabled:
+          name: "&aReplacement enabled!"
+          lore:
+            - "&7Durability cost is blocked now!"
+        disabled:
+          name: "&cReplacement disabled!"
     custom_durability:
       option:
         name: "&6Custom Durability & Damage"
@@ -644,25 +628,47 @@ items:
         name: "&7Set Tag: &3%VAR%"
         lore:
           - "&7Click to set Tag!"
-          - "&3%DUR% -> &7replaced with custom durability"
-          - "&3%DMG% -> &7replaced with custom damage"
-
+          - "&3%DUR% -> &7durability subtracted by the damage"
+          - "&3%MAX_DUR% -> &7max set durability for the item"
+    localized_name:
+      option:
+        name: "&6Localized Name"
+        help:
+          - "&7Set the localized name to use"
+          - "&7translations of resource packs, etc."
+      set:
+        name: ""
+      remove:
+        name: ""
   recipe_editor:
+    create_recipe:
+      name: '&6Create Recipe'
+      help:
+        - '&7Create your own recipe'
+    edit_recipe:
+      name: '&7Edit Recipe'
+      help:
+        - '&7Edit a existing recipe'
+    delete_recipe:
+      name: '&4Delete Recipe'
+      help:
+        - '&7Delete a existing recipe'
   recipe_creator:
     save:
       name: "&3Save"
       help:
         - "&7Save the recipe"
         - "&7Input: &3<namespace> <recipe_name>"
-    permissions_on:
-      name: "&3Permissions"
-      help:
-        - "&7Players need permission to craft"
-        - "&7Perm: &3customcrafting.craft.<recipe_id>"
-    permissions_off:
-      name: "&4No Permissions"
-      help:
-        - "&7Players don't need any permission to craft"
+    permission:
+      enabled:
+        name: "&3Permissions"
+        help:
+            - "&7Players need permission to craft"
+            - "&7Perm: &3customcrafting.craft.<recipe_id>"
+      disabled:
+        name: "&4No Permissions"
+        help:
+            - "&7Players don't need any permission to craft"
     priority:
       name: "&3Priority:&7 %PRI%"
       help:
@@ -797,6 +803,12 @@ items:
     next_page:
       name: "&2Next Page"
       help: []
+    workbench_filter_button:
+      name: "&7Recipe Filter:&3 %VAR%"
+      lore:
+        - "&3ALL &7- Show all recipes"
+        - "&3ADVANCED &7- Only show advanced recipes"
+        - "&3NORMAL &7- Only show normal recipes"
     workbench:
       name: "&6Workbench Recipes"
       help: []
@@ -825,10 +837,15 @@ items:
         - ""
 
 inventories:
-  main_menu: '&3&lCustomCrafting'
-  item_editor: "&0&lItem Editor"
-  item_creator: "&0&lItem Creator"
-  recipe_editor: "&4&lRecipe Editor"
-  recipe_creator: "&4&lRecipe Creator"
-  recipe_list: "&8&lRecipe List"
-  recipe_book: "&8&lRecipe knowledge Book"
+  none:
+    main_menu: '&3&lCustomCrafting'
+    item_editor: "&0&lItem Editor"
+    item_creator: "&0&lItem Creator"
+    recipe_editor: "&4&lRecipe Editor"
+    recipe_creator: "&4&lRecipe Creator"
+    recipe_list: "&8&lRecipe List"
+    variants: "&8&lVariants"
+  recipe_book:
+    main_menu: "&8&lRecipe knowledge Book"
+    recipe_book: "&8&lRecipe knowledge Book"
+

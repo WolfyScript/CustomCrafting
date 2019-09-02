@@ -6,21 +6,23 @@ import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingRecipe<FurnaceConfig> {
 
     private boolean exactMeta;
 
     private RecipePriority priority;
-    private CustomItem result;
-    private CustomItem source;
+    private List<CustomItem> result;
+    private List<CustomItem> source;
     private String id;
     private FurnaceConfig config;
 
-    public CustomFurnaceRecipe(FurnaceConfig config){
-        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult(), config.isExactMeta() ? new RecipeChoice.ExactChoice(config.getSource()) : new RecipeChoice.MaterialChoice(config.getSource().getType()), config.getXP(), config.getCookingTime());
+    public CustomFurnaceRecipe(FurnaceConfig config) {
+        super(new NamespacedKey(config.getFolder(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
         this.id = config.getId();
         this.config = config;
         this.result = config.getResult();
@@ -30,16 +32,12 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
         setGroup(config.getGroup());
     }
 
-    public CustomItem getSource() {
+    public List<CustomItem> getSource() {
         return source;
     }
 
-    public boolean check(ItemStack source){
-        return source.getAmount() >= getSource().getAmount() && getSource().isSimilar(source);
-    }
-
     @Override
-    public CustomItem getCustomResult() {
+    public List<CustomItem> getCustomResults() {
         return result;
     }
 
@@ -56,11 +54,6 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     @Override
     public void save() {
 
-    }
-
-    @Override
-    public CustomItem getResult() {
-        return result;
     }
 
     @Override

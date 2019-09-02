@@ -3,12 +3,13 @@ package me.wolfyscript.customcrafting;
 import com.sun.istack.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
-import me.wolfyscript.customcrafting.data.Workbenches;
-import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
+import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -40,6 +41,7 @@ public class CustomCrafting extends JavaPlugin {
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
     private static RecipeHandler recipeHandler;
+    private static DataBaseHandler dataBaseHandler = null;
     private static Workbenches workbenches = null;
 
     private static final boolean betaVersion = false;
@@ -83,6 +85,10 @@ public class CustomCrafting extends JavaPlugin {
         recipeHandler = new RecipeHandler(api);
         configHandler.load();
 
+        if (configHandler.getConfig().isDatabankEnabled()) {
+            dataBaseHandler = new DataBaseHandler(api);
+        }
+
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 
         if (loaded) {
@@ -93,16 +99,17 @@ public class CustomCrafting extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
             getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
             getServer().getPluginManager().registerEvents(new AnvilListener(), this);
+            getServer().getPluginManager().registerEvents(new EnchantListener(), this);
 
             CommandCC commandCC = new CommandCC();
             if (configHandler.getConfig().isCCenabled()) {
-                Bukkit.getPluginCommand("cc").setExecutor(commandCC);
-                Bukkit.getPluginCommand("cc").setTabCompleter(commandCC);
+                getCommand("cc").setExecutor(commandCC);
+                getCommand("cc").setTabCompleter(commandCC);
             }
-            Bukkit.getPluginCommand("customcrafting").setExecutor(commandCC);
-            Bukkit.getPluginCommand("customcrafting").setTabCompleter(commandCC);
-            Bukkit.getPluginCommand("recipes").setExecutor(new CommandRecipe());
-            Bukkit.getPluginCommand("recipes").setTabCompleter(new CommandRecipe());
+            getCommand("customcrafting").setExecutor(commandCC);
+            getCommand("customcrafting").setTabCompleter(commandCC);
+            getCommand("recipes").setExecutor(new CommandRecipe());
+            getCommand("recipes").setTabCompleter(new CommandRecipe());
 
             loadPlayerCache();
 
@@ -114,7 +121,7 @@ public class CustomCrafting extends JavaPlugin {
                 api.sendConsoleMessage("$msg.startup.placeholder$");
                 new PlaceHolder().register();
             }
-            recipeHandler.loadConfigs();
+            recipeHandler.load();
             checkUpdate(null);
 
             Metrics metrics = new Metrics(this);
@@ -136,6 +143,7 @@ public class CustomCrafting extends JavaPlugin {
 
     public void onDisable() {
         if (loaded) {
+            getConfigHandler().getConfig().save();
             workbenches.endTask();
             workbenches.save();
             getRecipeHandler().onSave();
@@ -275,5 +283,13 @@ public class CustomCrafting extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static boolean hasDataBaseHandler() {
+        return dataBaseHandler != null;
+    }
+
+    public static DataBaseHandler getDataBaseHandler() {
+        return dataBaseHandler;
     }
 }

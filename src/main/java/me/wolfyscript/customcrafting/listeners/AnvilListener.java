@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.listeners.customevents.CustomPrepareAnvilEvent;
 import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -103,7 +102,7 @@ public class AnvilListener implements Listener {
                 }
                 if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
                     ItemMeta itemMeta = result.getItemMeta();
-                    if(itemMeta instanceof Damageable){
+                    if (itemMeta instanceof Damageable) {
                         ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() - recipe.getDurability());
                         result.setItemMeta(itemMeta);
                     }
@@ -133,11 +132,11 @@ public class AnvilListener implements Listener {
             ItemStack finalResult = result;
             inventory.setRepairCost(finalRepairCost);
             event.setResult(finalResult);
-            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                 inventory.setRepairCost(finalRepairCost);
                 event.setResult(finalResult);
                 player.updateInventory();
-            }, 1);
+            });
         }
     }
 

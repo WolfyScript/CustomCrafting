@@ -3,9 +3,9 @@ package me.wolfyscript.customcrafting.placeholderapi;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -44,49 +44,49 @@ public class PlaceHolder extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer p, String params) {
-        if(p != null){
+        if (p != null) {
             PlayerCache cache = CustomCrafting.getPlayerCache(p.getUniqueId());
-            if(params.contains(";")){
+            if (params.contains(";")) {
                 //Params with %ccrafting_<option>;<recipe_id>%
                 String recipeID = params.split(";")[1];
                 CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(recipeID);
                 String option = params.split(";")[0];
-                switch (option){
+                switch (option) {
                     case "type":
-                        if(recipe instanceof CraftingRecipe){
+                        if (recipe instanceof CraftingRecipe) {
                             return "workbench";
                         }
-                        if(recipe instanceof CustomFurnaceRecipe){
+                        if (recipe instanceof CustomFurnaceRecipe) {
                             return "furnace";
                         }
                         break;
                     case "crafts":
-                        if(cache == null)
+                        if (cache == null)
                             break;
                         return String.valueOf(cache.getRecipeCrafts(recipeID));
                     case "workbench":
-                        if(recipe instanceof CraftingRecipe){
+                        if (recipe instanceof CraftingRecipe) {
                             return String.valueOf(((CraftingRecipe) recipe).needsAdvancedWorkbench());
                         }
                         break;
                     case "permission":
-                        if(recipe instanceof CraftingRecipe){
+                        if (recipe instanceof CraftingRecipe) {
                             return String.valueOf(((CraftingRecipe) recipe).needsPermission());
                         }
                         break;
                     case "has_perm":
-                        if(recipe instanceof  CraftingRecipe){
-                            if(p.isOnline()){
+                        if (recipe instanceof CraftingRecipe) {
+                            if (p.isOnline()) {
                                 Player player = Bukkit.getPlayer(p.getUniqueId());
-                                return String.valueOf(WolfyUtilities.hasPermission(player, "customcrafting.craft."+recipeID));
+                                return String.valueOf(WolfyUtilities.hasPermission(player, "customcrafting.craft." + recipeID));
                             }
                         }
                 }
-            }else{
+            } else {
                 //Doesn't contain recipe ID!
-                switch (params){
+                switch (params) {
                     case "crafts":
-                        if(cache == null)
+                        if (cache == null)
                             break;
                         return String.valueOf(cache.getAmountCrafted());
                     case "total":
@@ -94,11 +94,11 @@ public class PlaceHolder extends PlaceholderExpansion {
                     case "total_custom":
                         return String.valueOf(CustomCrafting.getRecipeHandler().getRecipes().size());
                     case "available":
-                        if(p.isOnline()){
+                        if (p.isOnline()) {
                             int i = 0;
                             Player player = Bukkit.getPlayer(p.getUniqueId());
-                            for(String id : CustomCrafting.getRecipeHandler().getRecipes().keySet()){
-                                if(WolfyUtilities.hasPermission(player, "customcrafting.craft."+id)){
+                            for (String id : CustomCrafting.getRecipeHandler().getRecipes().keySet()) {
+                                if (WolfyUtilities.hasPermission(player, "customcrafting.craft." + id)) {
                                     i++;
                                 }
                             }

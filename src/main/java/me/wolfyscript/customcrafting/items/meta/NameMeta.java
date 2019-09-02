@@ -4,11 +4,9 @@ import me.wolfyscript.customcrafting.items.Meta;
 import me.wolfyscript.customcrafting.items.MetaSettings;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
-
 public class NameMeta extends Meta {
 
-    public NameMeta(){
+    public NameMeta() {
         super("name");
         setOption(MetaSettings.Option.EXACT);
         setAvailableOptions(MetaSettings.Option.EXACT, MetaSettings.Option.IGNORE);
@@ -16,7 +14,7 @@ public class NameMeta extends Meta {
 
     @Override
     public boolean check(ItemMeta meta1, ItemMeta meta2) {
-        if(option.equals(MetaSettings.Option.IGNORE)){
+        if (option.equals(MetaSettings.Option.IGNORE)) {
             meta1.setDisplayName(null);
             meta2.setDisplayName(null);
         }

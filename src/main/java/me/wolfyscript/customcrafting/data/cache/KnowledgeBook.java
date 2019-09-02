@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -8,13 +7,12 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class KnowledgeBook {
 
     private int page;
     private Setting setting;
-    private String recipeID;
+    private WorkbenchFilter workbenchFilter;
 
     private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
@@ -25,13 +23,13 @@ public class KnowledgeBook {
     private int timerTask;
     private HashMap<Integer, Integer> timerTimings;
 
-    public KnowledgeBook(){
+    public KnowledgeBook() {
         this.page = 0;
         this.setting = Setting.MAIN_MENU;
-        this.recipeID = "";
         this.customRecipe = null;
         this.timerTask = -1;
         this.timerTimings = new HashMap<>();
+        workbenchFilter = WorkbenchFilter.ALL;
     }
 
     public HashMap<Integer, Integer> getTimerTimings() {
@@ -42,7 +40,7 @@ public class KnowledgeBook {
         this.timerTimings = timerTimings;
     }
 
-    public void setTimerTask(int task){
+    public void setTimerTask(int task) {
         this.timerTask = task;
     }
 
@@ -50,15 +48,15 @@ public class KnowledgeBook {
         return timerTask;
     }
 
-    public void stopTimerTask(){
-        if(timerTask != -1){
+    public void stopTimerTask() {
+        if (timerTask != -1) {
             Bukkit.getScheduler().cancelTask(timerTask);
             timerTask = -1;
             timerTimings = new HashMap<>();
         }
     }
 
-    public CustomRecipe getCustomRecipe(){
+    public CustomRecipe getCustomRecipe() {
         return customRecipe;
     }
 
@@ -82,14 +80,6 @@ public class KnowledgeBook {
         this.setting = setting;
     }
 
-    public String getRecipeID() {
-        return recipeID;
-    }
-
-    public void setRecipeID(String recipeID) {
-        this.recipeID = recipeID;
-    }
-
     public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
         return new HashMap<>();
     }
@@ -100,5 +90,31 @@ public class KnowledgeBook {
 
     public void setResult(CustomItem result) {
         this.result = result;
+    }
+
+    public WorkbenchFilter getWorkbenchFilter() {
+        return workbenchFilter;
+    }
+
+    public void setWorkbenchFilter(WorkbenchFilter workbenchFilter) {
+        this.workbenchFilter = workbenchFilter;
+    }
+
+    public enum WorkbenchFilter {
+        ALL,
+        ADVANCED,
+        NORMAL;
+
+        public static WorkbenchFilter next(WorkbenchFilter filter) {
+            switch (filter) {
+                case ALL:
+                    return ADVANCED;
+                case ADVANCED:
+                    return NORMAL;
+                case NORMAL:
+                    return ALL;
+            }
+            return filter;
+        }
     }
 }

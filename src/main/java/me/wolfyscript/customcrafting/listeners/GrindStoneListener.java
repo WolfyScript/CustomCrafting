@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 public class GrindStoneListener implements Listener {
 
     @EventHandler
-    public void onTest(){
+    public void onTest() {
 
     }
 }

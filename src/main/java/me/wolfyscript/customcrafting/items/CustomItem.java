@@ -1,24 +1,27 @@
 package me.wolfyscript.customcrafting.items;
 
+import com.sun.istack.internal.Nullable;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Anvil;
-import me.wolfyscript.customcrafting.data.cache.CookingData;
-import me.wolfyscript.customcrafting.data.cache.Stonecutter;
-import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.ItemUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import com.sun.istack.internal.Nullable;
-import java.util.*;
 
-public class CustomItem extends ItemStack implements Cloneable{
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomItem extends ItemStack implements Cloneable {
 
     private ItemConfig config;
     private String id;
+
+    private String permission;
+    private double rarityPercentage;
 
     private int burnTime;
     private ArrayList<Material> allowedBlocks;
@@ -29,7 +32,7 @@ public class CustomItem extends ItemStack implements Cloneable{
     private int durabilityCost;
     private MetaSettings metaSettings;
 
-    public CustomItem(ItemConfig config, boolean replace){
+    public CustomItem(ItemConfig config, boolean replace) {
         super(config.getCustomItem(replace));
         this.config = config;
         this.id = config.getId();
@@ -39,13 +42,15 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.durabilityCost = config.getDurabilityCost();
         this.consumed = config.isConsumed();
         this.metaSettings = config.getMetaSettings();
+        this.permission = config.getPermission();
+        this.rarityPercentage = config.getRarityPercentage();
     }
 
-    public CustomItem(ItemConfig config){
+    public CustomItem(ItemConfig config) {
         this(config, false);
     }
 
-    public CustomItem(ItemStack itemStack){
+    public CustomItem(ItemStack itemStack) {
         super(itemStack);
         this.config = null;
         this.id = "";
@@ -55,9 +60,11 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.durabilityCost = 0;
         this.consumed = true;
         this.metaSettings = new MetaSettings();
+        this.permission = "";
+        this.rarityPercentage = 1.0d;
     }
 
-    public CustomItem(Material material){
+    public CustomItem(Material material) {
         this(new ItemStack(material));
     }
 
@@ -65,14 +72,18 @@ public class CustomItem extends ItemStack implements Cloneable{
         return id;
     }
 
-    public CustomItem getRealItem(){
-        if(hasConfig()){
-            return new CustomItem(config, true);
+    public CustomItem getRealItem() {
+        if (hasConfig()) {
+            CustomItem customItem = new CustomItem(config, true);
+            if (customItem.getType().equals(this.getType())) {
+                customItem.setAmount(this.getAmount());
+            }
+            return customItem;
         }
         return clone();
     }
 
-    public boolean hasReplacement(){
+    public boolean hasReplacement() {
         return replacement != null;
     }
 
@@ -109,11 +120,11 @@ public class CustomItem extends ItemStack implements Cloneable{
         this.metaSettings = metaSettings;
     }
 
-    public boolean hasID(){
+    public boolean hasID() {
         return !id.isEmpty();
     }
 
-    public boolean hasConfig(){
+    public boolean hasConfig() {
         return config != null;
     }
 
@@ -121,22 +132,22 @@ public class CustomItem extends ItemStack implements Cloneable{
         return config;
     }
 
-    public ItemStack getIDItem(int amount){
-        if(getType().equals(Material.AIR)){
+    public ItemStack getIDItem(int amount) {
+        if (getType().equals(Material.AIR)) {
             return new ItemStack(Material.AIR);
         }
         ItemStack idItem = new ItemStack(this.clone());
-        if(!this.id.isEmpty()){
+        if (!this.id.isEmpty()) {
             ItemMeta idItemMeta = idItem.getItemMeta();
-            if(idItemMeta.hasDisplayName() && !WolfyUtilities.unhideString(idItemMeta.getDisplayName()).endsWith(":id_item")){
-                idItemMeta.setDisplayName(idItemMeta.getDisplayName()+ WolfyUtilities.hideString(":id_item"));
-            }else{
-                idItemMeta.setDisplayName(WolfyUtilities.hideString("%NO_NAME%")+"§r"+WordUtils.capitalizeFully(idItem.getType().name().replace("_", " ")) + WolfyUtilities.hideString(":id_item"));
+            if (idItemMeta.hasDisplayName() && !WolfyUtilities.unhideString(idItemMeta.getDisplayName()).endsWith(":id_item")) {
+                idItemMeta.setDisplayName(idItemMeta.getDisplayName() + WolfyUtilities.hideString(":id_item"));
+            } else {
+                idItemMeta.setDisplayName(WolfyUtilities.hideString("%NO_NAME%") + "§r" + WordUtils.capitalizeFully(idItem.getType().name().replace("_", " ")) + WolfyUtilities.hideString(":id_item"));
             }
             List<String> lore = idItemMeta.hasLore() ? idItemMeta.getLore() : new ArrayList<>();
             lore.add("");
             lore.add("§7[§3§lID_ITEM§r§7]");
-            lore.add("§3"+this.id);
+            lore.add("§3" + this.id);
             idItemMeta.setLore(lore);
             idItem.setItemMeta(idItemMeta);
         }
@@ -144,8 +155,8 @@ public class CustomItem extends ItemStack implements Cloneable{
         return idItem;
     }
 
-    public ItemStack getIDItem(){
-        return getIDItem(1);
+    public ItemStack getIDItem() {
+        return getIDItem(this.getAmount());
     }
 
     public int getBurnTime() {
@@ -161,32 +172,37 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     @Override
-    public boolean isSimilar(ItemStack stack){
+    public boolean isSimilar(ItemStack stack) {
         return isSimilar(stack, true);
     }
 
     public boolean isSimilar(ItemStack stack, boolean exactMeta) {
         CustomCrafting.getApi().sendDebugMessage("Compare: ");
-        CustomCrafting.getApi().sendDebugMessage("  This: "+this.toString());
-        CustomCrafting.getApi().sendDebugMessage("  Stack: "+stack);
-        if (stack == null){
+        CustomCrafting.getApi().sendDebugMessage("  This: " + this.toString());
+        CustomCrafting.getApi().sendDebugMessage("  Stack: " + stack);
+        if (stack == null) {
             CustomCrafting.getApi().sendDebugMessage("      Shouldn't!");
             return false;
         } else if (stack == this) {
             CustomCrafting.getApi().sendDebugMessage("      Valid!");
             return true;
-        }else if(stack.getType().equals(this.getType()) && stack.getAmount() >= this.getAmount()){
+        } else if (stack.getType().equals(this.getType()) && stack.getAmount() >= this.getAmount()) {
             CustomCrafting.getApi().sendDebugMessage("      Check Item!");
+            CustomCrafting.getApi().sendDebugMessage("      Exact: " + exactMeta + " metaData:" + this.hasItemMeta());
             if (exactMeta || this.hasItemMeta()) {
                 CustomCrafting.getApi().sendDebugMessage("          Check Meta!");
+                CustomCrafting.getApi().sendDebugMessage("          Meta CustomItem: " + this.getItemMeta());
+                CustomCrafting.getApi().sendDebugMessage("          Meta Input: " + stack.getItemMeta());
                 if (this.hasItemMeta() && !stack.hasItemMeta()) {
                     return false;
-                }else if(!this.hasItemMeta() && stack.hasItemMeta()){
+                } else if (!this.hasItemMeta() && stack.hasItemMeta()) {
+                    CustomCrafting.getApi().sendDebugMessage("          No Meta");
                     return false;
                 }
                 ItemMeta stackMeta = stack.getItemMeta();
                 ItemMeta currentMeta = this.getItemMeta();
-                if(!getMetaSettings().checkMeta(stackMeta, currentMeta)){
+                if (!getMetaSettings().checkMeta(stackMeta, currentMeta)) {
+                    CustomCrafting.getApi().sendDebugMessage("          Wrong meta");
                     return false;
                 }
                 return stackMeta.equals(currentMeta);
@@ -200,9 +216,9 @@ public class CustomItem extends ItemStack implements Cloneable{
     @Override
     public CustomItem clone() {
         CustomItem customItem;
-        if(hasConfig()){
+        if (hasConfig()) {
             customItem = new CustomItem(getConfig());
-        }else{
+        } else {
             customItem = new CustomItem(this);
         }
         return customItem;
@@ -212,7 +228,7 @@ public class CustomItem extends ItemStack implements Cloneable{
     This will call the super.clone() method to get the ItemStack.
     All CustomItem variables will get lost!
      */
-    public ItemStack getAsItemStack(){
+    public ItemStack getAsItemStack() {
         return super.clone();
     }
 
@@ -231,7 +247,7 @@ public class CustomItem extends ItemStack implements Cloneable{
                 if (row.startsWith("§7[§3§lID_ITEM§r§7]")) {
                     id = lore.get(i + 1).substring("§3".length());
                     clearedLore.remove(i - 1);
-                    clearedLore.remove((int) i);
+                    clearedLore.remove(i);
                     clearedLore.remove(row);
                 }
             }
@@ -250,7 +266,7 @@ public class CustomItem extends ItemStack implements Cloneable{
             return new CustomItem(itemStack.clone());
         }
         CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(id);
-        if(clearedItem.getAmount() != customItem.getAmount()){
+        if (clearedItem.getAmount() != customItem.getAmount()) {
             customItem.setAmount(clearedItem.getAmount());
         }
         return customItem;
@@ -265,55 +281,74 @@ public class CustomItem extends ItemStack implements Cloneable{
     }
 
     public static void saveItem(PlayerCache cache, String id, CustomItem customItem) {
-        ItemConfig config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), id.split(":")[0], id.split(":")[1], "json");
+        ItemConfig config;
+        if (CustomCrafting.hasDataBaseHandler()) {
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), id.split(":")[0], id.split(":")[1]);
+        } else {
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), id.split(":")[0], id.split(":")[1], "json");
+        }
         config.setCustomItem(customItem);
         if (CustomCrafting.getRecipeHandler().getCustomItem(id) != null) {
             CustomCrafting.getRecipeHandler().removeCustomItem(id);
         }
-        config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateItem(config);
+        } else {
+            config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
         CustomItem customItem1 = new CustomItem(config);
         cache.getItems().setItem(customItem1);
         CustomCrafting.getRecipeHandler().addCustomItem(customItem1);
     }
 
-    public static void applyItem(CustomItem item, PlayerCache cache) {
-        switch (cache.getSetting()) {
-            case WORKBENCH:
-                Workbench workbench = cache.getWorkbench();
-                if (cache.getItems().getType().equals("result")) {
-                    workbench.setResult(item);
+    public void consumeUnstackableItem(ItemStack input) {
+        if (this.hasConfig()) {
+            if (this.isConsumed()) {
+                input.setAmount(0);
+            }
+            if (this.hasReplacement()) {
+                ItemStack replace = this.getReplacement();
+                input.setType(replace.getType());
+                input.setItemMeta(replace.getItemMeta());
+                input.setData(replace.getData());
+                input.setAmount(replace.getAmount());
+            } else if (this.getDurabilityCost() != 0) {
+                if (ItemUtils.hasCustomDurability(input)) {
+                    ItemUtils.setDamage(input, ItemUtils.getDamage(input) + this.getDurabilityCost());
                 } else {
-                    workbench.setIngredient(cache.getItems().getCraftSlot(), item);
+                    ItemMeta itemMeta = input.getItemMeta();
+                    if (itemMeta instanceof Damageable) {
+                        ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() + this.getDurabilityCost());
+                    }
+                    input.setItemMeta(itemMeta);
                 }
-                break;
-            case ANVIL:
-                Anvil anvil = cache.getAnvil();
-                if (cache.getItems().getType().equals("result")) {
-                    anvil.setResult(item);
-                }else if(cache.getItems().getType().equals("inputLeft")){
-                    //TODO: CUSTOMITEMS IN VARIANT MENU!
-                }else if(cache.getItems().getType().equals("inputRight")){
-
-                }
-            case STONECUTTER:
-                Stonecutter stonecutter = cache.getStonecutter();
-                if (cache.getItems().getType().equals("result")) {
-                    stonecutter.setResult(item);
-                } else {
-                    stonecutter.setSource(item);
-                }
-                break;
-            case CAMPFIRE:
-            case SMOKER:
-            case BLAST_FURNACE:
-            case FURNACE:
-                CookingData furnace = cache.getCookingData();
-                if (cache.getItems().getType().equals("result")) {
-                    furnace.setResult(item);
-                } else {
-                    furnace.setSource(item);
-                }
-
+            }
+        } else {
+            if (input.getType().equals(Material.LAVA_BUCKET) || input.getType().equals(Material.WATER_BUCKET) || input.getType().equals(Material.MILK_BUCKET)) {
+                input.setType(Material.BUCKET);
+            } else {
+                input.setAmount(0);
+            }
         }
+    }
+
+    public boolean hasPermission(){
+        return !permission.isEmpty();
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    public double getRarityPercentage() {
+        return rarityPercentage;
+    }
+
+    public void setRarityPercentage(double rarityPercentage) {
+        this.rarityPercentage = rarityPercentage;
     }
 }

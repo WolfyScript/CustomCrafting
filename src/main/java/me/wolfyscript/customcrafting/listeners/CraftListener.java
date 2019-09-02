@@ -3,25 +3,30 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
-import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -32,6 +37,7 @@ public class CraftListener implements Listener {
     private MainConfig config = CustomCrafting.getConfigHandler().getConfig();
 
     private HashMap<UUID, String> precraftedRecipes = new HashMap<>();
+    private HashMap<UUID, HashMap<String, CustomItem>> precraftedItems = new HashMap<>();
     private HashMap<UUID, ItemStack[]> replacements = new HashMap<>();
 
     public CraftListener(WolfyUtilities api) {
@@ -44,13 +50,6 @@ public class CraftListener implements Listener {
             if (!CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()) {
                 event.setCancelled(true);
             }
-        }
-    }
-
-    @EventHandler
-    public void onDiscover(PlayerRecipeDiscoverEvent event) {
-        if (CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes().contains(event.getRecipe().toString())) {
-            event.setCancelled(true);
         }
     }
 
@@ -90,10 +89,16 @@ public class CraftListener implements Listener {
                         int amount = recipe.getAmountCraftable(ingredients);
                         List<ItemStack> replacements = new ArrayList<>();
 
-                        if (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT)) {
+                        List<CustomItem> results = new ArrayList<>();
+                        for(CustomItem customItem : recipe.getCustomResults()){
+                            if(!customItem.hasPermission() || player.hasPermission(customItem.getPermission())){
+                                results.add(customItem);
+                            }
+                        }
+                        if (results.size() < 2 && (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT)) ) {
                             api.sendDebugMessage("SHIFT-CLICK!");
                             if (resultItem.getAmount() > 0) {
-                                int possible = ItemUtils.getInventorySpace(player, resultItem) / resultItem.getAmount();
+                                int possible = InventoryUtils.getInventorySpace(player, resultItem) / resultItem.getAmount();
                                 if (possible > amount) {
                                     possible = amount;
                                 }
@@ -101,34 +106,64 @@ public class CraftListener implements Listener {
                                     api.sendDebugMessage(" possible: " + possible);
                                     replacements = recipe.removeMatrix(ingredients, inventory, small, possible);
                                 }
+                                Random rd = new Random();
                                 for (int i = 0; i < possible; i++) {
                                     player.getInventory().addItem(resultItem);
-                                }
-                            }
-                        } else {
-                            api.sendDebugMessage("ONE-CLICK!");
-                            if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())) {
-                                replacements = recipe.removeMatrix(ingredients, inventory, small, 1);
-                                if (event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)) {
-                                    event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
-                                } else {
-                                    event.getView().setCursor(resultItem);
-                                }
-                            }
-                            precraftedRecipes.put(event.getWhoClicked().getUniqueId(), null);
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                player.updateInventory();
-                                if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                                    CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(false, recipe, inventory, ingredients);
-                                    if (checkRecipe(recipe, ingredients, player, CustomCrafting.getRecipeHandler(), customPreCraftEvent)) {
-                                        inventory.setResult(customPreCraftEvent.getResult());
+                                    if(!customCraftEvent.getResult().isEmpty()){
+                                        resultItem = customCraftEvent.getResult().get(rd.nextInt(customCraftEvent.getResult().size()));
+                                    }else{
+                                        resultItem = new ItemStack(Material.AIR);
                                     }
                                 }
-                                player.updateInventory();
-                            }, 1);
+                            }
+                        } else if(event.getClick().equals(ClickType.LEFT) || event.getClick().equals(ClickType.RIGHT)){
+                            api.sendDebugMessage("ONE-CLICK!");
+                            if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())) {
+                                HashMap<String, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
+                                if (event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)) {
+                                    replacements = recipe.removeMatrix(ingredients, inventory, small, 1);
+                                    event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
+                                    precraftedItem.put(recipe.getId(), null);
+                                    precraftedItems.put(player.getUniqueId(), precraftedItem);
+                                    precraftedRecipes.put(event.getWhoClicked().getUniqueId(), null);
+                                } else if(event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR)){
+                                    replacements = recipe.removeMatrix(ingredients, inventory, small, 1);
+                                    event.getView().setCursor(resultItem);
+                                    precraftedItem.put(recipe.getId(), null);
+                                    precraftedItems.put(player.getUniqueId(), precraftedItem);
+                                    precraftedRecipes.put(event.getWhoClicked().getUniqueId(), null);
+                                }
+                            }
                         }
+                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                            player.updateInventory();
+                            if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
+                                CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(false, recipe, inventory, ingredients);
+                                if (checkRecipe(recipe, ingredients, player, CustomCrafting.getRecipeHandler(), customPreCraftEvent)) {
+                                    RandomCollection<CustomItem> items = new RandomCollection<>();
+                                    for(CustomItem customItem : customPreCraftEvent.getResult()){
+                                        if(!customItem.hasPermission() || player.hasPermission(customItem.getPermission())){
+                                            items.add(customItem.getRarityPercentage(), customItem);
+                                        }
+                                    }
+                                    HashMap<String, CustomItem> precraftedItem1 = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
+                                    CustomItem result = new CustomItem(Material.AIR);
+                                    if(precraftedItem1.get(recipe.getId()) == null){
+                                        if(!items.isEmpty()){
+                                            result = items.next();
+                                            precraftedItem1.put(recipe.getId(), result);
+                                            precraftedItems.put(player.getUniqueId(), precraftedItem1);
+                                        }
+                                    }else{
+                                        result = precraftedItem1.get(recipe.getId());
+                                    }
+                                    inventory.setResult(result);
+                                }
+                            }
+                            player.updateInventory();
+                        }, 1);
                         for (ItemStack itemStack : replacements) {
-                            if (ItemUtils.hasInventorySpace(player, itemStack)) {
+                            if (InventoryUtils.hasInventorySpace(player, itemStack)) {
                                 player.getInventory().addItem(itemStack);
                             } else {
                                 player.getLocation().getWorld().dropItemNaturally(player.getLocation(), itemStack);
@@ -175,7 +210,24 @@ public class CraftListener implements Listener {
                         customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getInventory(), ingredients);
                         if (checkRecipe(recipe, ingredients, player, recipeHandler, customPreCraftEvent)) {
                             allow = true;
-                            e.getInventory().setResult(customPreCraftEvent.getResult());
+                            RandomCollection<CustomItem> items = new RandomCollection<>();
+                            for(CustomItem customItem : customPreCraftEvent.getResult()){
+                                if(!customItem.hasPermission() || player.hasPermission(customItem.getPermission())){
+                                    items.add(customItem.getRarityPercentage(), customItem);
+                                }
+                            }
+                            HashMap<String, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
+                            CustomItem result = new CustomItem(Material.AIR);
+                            if(precraftedItem.get(recipe.getId()) == null){
+                                if(!items.isEmpty()){
+                                    result = items.next();
+                                    precraftedItem.put(recipe.getId(), result);
+                                    precraftedItems.put(player.getUniqueId(), precraftedItem);
+                                }
+                            }else{
+                                result = precraftedItem.get(recipe.getId());
+                            }
+                            e.getInventory().setResult(result);
                             break;
                         }
                     }

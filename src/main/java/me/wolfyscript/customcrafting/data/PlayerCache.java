@@ -3,7 +3,8 @@ package me.wolfyscript.customcrafting.data;
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.gui.Setting;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerCache {
 
@@ -17,10 +18,12 @@ public class PlayerCache {
 
     private KnowledgeBook knowledgeBook = new KnowledgeBook();
 
+    private VariantsData variantsData = new VariantsData();
+
     private ChatLists chatLists = new ChatLists();
 
     //RECIPE_LIST OF ALL RECIPE CACHES
-    private Workbench workbench =  new Workbench();
+    private Workbench workbench = new Workbench();
     private Furnace furnace = new Furnace();
     private Anvil anvil = new Anvil();
     private BlastingFurnace blastingFurnace = new BlastingFurnace();
@@ -39,7 +42,7 @@ public class PlayerCache {
         setAmountNormalCrafted(0);
     }
 
-    public PlayerCache(UUID uuid, HashMap<String, Object> stats){
+    public PlayerCache(UUID uuid, HashMap<String, Object> stats) {
         this(uuid);
         setStats(stats);
     }
@@ -56,7 +59,7 @@ public class PlayerCache {
         this.workbench = workbench;
     }
 
-    public void resetWorkbench(){
+    public void resetWorkbench() {
         this.workbench = new Workbench();
     }
 
@@ -64,8 +67,8 @@ public class PlayerCache {
         return furnace;
     }
 
-    public void resetCookingData(){
-        switch (getSetting()){
+    public void resetCookingData() {
+        switch (getSetting()) {
             case BLAST_FURNACE:
                 this.blastingFurnace = new BlastingFurnace();
             case SMOKER:
@@ -77,7 +80,7 @@ public class PlayerCache {
         }
     }
 
-    public void resetStonecutter(){
+    public void resetStonecutter() {
         this.stonecutter = new Stonecutter();
     }
 
@@ -100,8 +103,8 @@ public class PlayerCache {
         this.subSetting = setting;
     }
 
-    public CookingData getCookingData(){
-        switch (getSetting()){
+    public CookingData getCookingData() {
+        switch (getSetting()) {
             case BLAST_FURNACE:
                 return getBlastingFurnace();
             case SMOKER:
@@ -112,6 +115,14 @@ public class PlayerCache {
                 return getFurnace();
         }
         return null;
+    }
+
+    public VariantsData getVariantsData() {
+        return variantsData;
+    }
+
+    public void setVariantsData(VariantsData variantsData) {
+        this.variantsData = variantsData;
     }
 
     public void setFurnace(Furnace furnace) {
@@ -126,7 +137,7 @@ public class PlayerCache {
         this.anvil = anvil;
     }
 
-    public void resetAnvil(){
+    public void resetAnvil() {
         this.anvil = new Anvil();
     }
 
@@ -190,65 +201,65 @@ public class PlayerCache {
         CACHE.put(key, object);
     }
 
-    public HashMap<String, Object> getStats(){
+    public HashMap<String, Object> getStats() {
         return CACHE;
     }
 
-    public void setStats(HashMap<String, Object> stats){
+    public void setStats(HashMap<String, Object> stats) {
         CACHE = stats;
     }
 
-    public void addAmountCrafted(int amount){
-        setAmountCrafted(getAmountCrafted()+amount);
+    public void addAmountCrafted(int amount) {
+        setAmountCrafted(getAmountCrafted() + amount);
     }
 
-    public void setAmountCrafted(int amount){
+    public void setAmountCrafted(int amount) {
         setObject("amount_crafted", amount);
     }
 
-    public int getAmountCrafted(){
+    public int getAmountCrafted() {
         return (int) getObjectOrDefault("amount_crafted", 0);
     }
 
-    public void addAmountAdvancedCrafted(int amount){
-        setAmountAdvancedCrafted(getAmountAdvancedCrafted()+amount);
+    public void addAmountAdvancedCrafted(int amount) {
+        setAmountAdvancedCrafted(getAmountAdvancedCrafted() + amount);
     }
 
-    public void setAmountAdvancedCrafted(int amount){
+    public void setAmountAdvancedCrafted(int amount) {
         setObject("amount_advanced_crafted", amount);
     }
 
-    public int getAmountAdvancedCrafted(){
+    public int getAmountAdvancedCrafted() {
         return (int) getObjectOrDefault("amount_advanced_crafted", 0);
     }
 
-    public void addAmountNormalCrafted(int amount){
-        setAmountNormalCrafted(getAmountNormalCrafted()+amount);
+    public void addAmountNormalCrafted(int amount) {
+        setAmountNormalCrafted(getAmountNormalCrafted() + amount);
     }
 
-    public void setAmountNormalCrafted(int amount){
+    public void setAmountNormalCrafted(int amount) {
         setObject("amount_normal_crafted", amount);
     }
 
-    public int getAmountNormalCrafted(){
+    public int getAmountNormalCrafted() {
         return (int) getObjectOrDefault("amount_normal_crafted", 0);
     }
 
-    public HashMap<String, Integer> getRecipeCrafts(){
+    public HashMap<String, Integer> getRecipeCrafts() {
         return (HashMap<String, Integer>) getObjectOrDefault("recipe_crafts", new HashMap<String, Integer>());
     }
 
-    public void addRecipeCrafts(String key){
-        setRecipeCrafts(key, getRecipeCrafts(key)+1);
+    public void addRecipeCrafts(String key) {
+        setRecipeCrafts(key, getRecipeCrafts(key) + 1);
     }
 
-    public void setRecipeCrafts(String key, int amount){
+    public void setRecipeCrafts(String key, int amount) {
         HashMap<String, Integer> recipeCrafts = getRecipeCrafts();
         recipeCrafts.put(key, amount);
         setObject("recipe_crafts", recipeCrafts);
     }
 
-    public int getRecipeCrafts(String key){
+    public int getRecipeCrafts(String key) {
         HashMap<String, Integer> recipeCrafts = getRecipeCrafts();
         return recipeCrafts.getOrDefault(key, 0);
     }

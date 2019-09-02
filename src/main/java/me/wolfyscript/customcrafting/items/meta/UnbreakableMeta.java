@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class UnbreakableMeta extends Meta {
 
-    public UnbreakableMeta(){
+    public UnbreakableMeta() {
         super("unbreakable");
         setOption(MetaSettings.Option.EXACT);
         setAvailableOptions(MetaSettings.Option.EXACT, MetaSettings.Option.IGNORE);
@@ -15,7 +15,10 @@ public class UnbreakableMeta extends Meta {
 
     @Override
     public boolean check(ItemMeta meta1, ItemMeta meta2) {
-        //TODO
+        if (option.equals(MetaSettings.Option.IGNORE)) {
+            meta1.setUnbreakable(false);
+            meta2.setUnbreakable(false);
+        }
         return true;
     }
 }

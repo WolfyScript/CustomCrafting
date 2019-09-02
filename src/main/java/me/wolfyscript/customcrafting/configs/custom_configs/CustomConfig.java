@@ -26,13 +26,29 @@ public class CustomConfig extends Config {
     }
 
     public CustomConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override, String fileType) {
-        super(configAPI, configAPI.getApi().getPlugin().getDataFolder()+"/recipes/"+folder+"/"+type, name, defaultPath, defaultName, fileType, override);
+        super(configAPI, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + folder + "/" + type, name, defaultPath, defaultName, fileType, override);
         this.folder = folder;
         this.id = folder + ":" + name;
         this.type = type;
-        if(getType().equals(Type.YAML)){
+        if (getType().equals(Type.YAML)) {
             setSaveAfterValueSet(true);
         }
+        setPathSeparator('.');
+    }
+
+    public CustomConfig(String jsonData, ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
+        super(jsonData, configAPI, name, "me/wolfyscript/customcrafting/configs/custom_configs/" + type, defaultName);
+        this.folder = folder;
+        this.id = folder + ":" + name;
+        this.type = type;
+        setPathSeparator('.');
+    }
+
+    public CustomConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
+        super(configAPI, name, "me/wolfyscript/customcrafting/configs/custom_configs/" + type, defaultName);
+        this.folder = folder;
+        this.id = folder + ":" + name;
+        this.type = type;
         setPathSeparator('.');
     }
 
@@ -92,7 +108,7 @@ public class CustomConfig extends Config {
     }
 
     public RecipePriority getPriority() {
-        if(getString("priority") != null){
+        if (getString("priority") != null) {
             try {
                 return RecipePriority.valueOf(getString("priority"));
             } catch (IllegalArgumentException e) {

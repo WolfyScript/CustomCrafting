@@ -1,14 +1,18 @@
 package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.customcrafting.utils.ItemUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
@@ -30,15 +34,20 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     case "lockdown":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.lockdown")) {
                             CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
-                            if(CustomCrafting.getConfigHandler().getConfig().isLockedDown()){
+                            if (CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
                                 api.sendPlayerMessage(p, "$msg.commands.lockdown.enabled$");
-                            }else{
+                            } else {
                                 api.sendPlayerMessage(p, "$msg.commands.lockdown.disabled$");
                             }
                         }
                         break;
                     case "studio":
-                        openGUI(p, invAPI);
+                        invAPI.openCluster(p, "none");
+                        break;
+                    case "crafting":
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.crafting")) {
+                            invAPI.openCluster(p, "crafting");
+                        }
                         break;
                     case "info":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.info")) {
@@ -58,16 +67,19 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     case "reload":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
                             //TODO RELOAD
-                            CustomCrafting.getApi().sendPlayerMessage(p, "§cYeah you found it! Unfortunately it's not implemented yet! :(");
+                            CustomCrafting.getApi().getInventoryAPI().reset();
+                            CustomCrafting.getApi().getLanguageAPI().unregisterLanguages();
+                            CustomCrafting.getConfigHandler().getConfig().save();
+                            CustomCrafting.getRecipeHandler().onSave();
+                            CustomCrafting.getConfigHandler().load();
+                            InventoryHandler invHandler = new InventoryHandler(api);
+                            invHandler.init();
+                            CustomCrafting.getApi().sendPlayerMessage(p, "§aReload complete! Reloaded GUIs and languages");
                         }
                         break;
                     case "knowledge":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge")) {
-                            if (invAPI.hasGuiHandler(p)) {
-                                invAPI.getGuiHandler(p).changeToInv("recipe_book");
-                            }else{
-                                invAPI.openGui(p, "recipe_book");
-                            }
+                            invAPI.openCluster(p, "recipe_book");
                         }
                         break;
                     case "give":
@@ -90,7 +102,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                 }
                                 CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
                                 if (customItem != null) {
-                                    if (ItemUtils.hasInventorySpace(target, customItem)) {
+                                    if (InventoryUtils.hasInventorySpace(target, customItem)) {
                                         ItemStack itemStack = customItem.getAsItemStack();
                                         itemStack.setAmount(amount);
                                         target.getInventory().addItem(itemStack);
@@ -111,81 +123,89 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     case "debug":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.debug")) {
                             CustomCrafting.getConfigHandler().getConfig().set("debug", !api.hasDebuggingMode());
-                            api.sendPlayerMessage(p, "Set Debug to: "+api.hasDebuggingMode());
+                            api.sendPlayerMessage(p, "Set Debug to: " + api.hasDebuggingMode());
                         }
                         break;
                     case "settings":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.settings")) {
-                            if(args.length > 2){
-                                switch (args[1]){
+                            if (args.length > 2) {
+                                switch (args[1]) {
                                     case "preferred_file_type":
                                         String setting = args[2];
-                                        if(setting.equalsIgnoreCase("yml") || setting.equalsIgnoreCase("json")){
+                                        if (setting.equalsIgnoreCase("yml") || setting.equalsIgnoreCase("json")) {
                                             CustomCrafting.getConfigHandler().getConfig().setPreferredFileType(setting.toLowerCase(Locale.ROOT));
-                                            api.sendPlayerMessage(p, "&aSet &epreferred file type &ato &e"+setting);
+                                            api.sendPlayerMessage(p, "&aSet &epreferred file type &ato &e" + setting);
                                         }
                                         break;
                                     case "pretty_printing":
-                                        if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")){
+                                        if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
                                             CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
-                                            api.sendPlayerMessage(p, "&aSet &epretty printing &ato &e"+args[2].toLowerCase(Locale.ROOT));
+                                            api.sendPlayerMessage(p, "&aSet &epretty printing &ato &e" + args[2].toLowerCase(Locale.ROOT));
                                         }
                                         break;
                                     case "vanilla_knowledgebook":
-                                        if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")){
+                                        if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
                                             CustomCrafting.getConfigHandler().getConfig().useVanillaKnowledgeBook(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
-                                            api.sendPlayerMessage(p, "&aSet &evanilla knowledge book&ato &e"+args[2].toLowerCase(Locale.ROOT));
+                                            api.sendPlayerMessage(p, "&aSet &evanilla knowledge book&ato &e" + args[2].toLowerCase(Locale.ROOT));
                                         }
                                         break;
                                 }
                             }
                         }
                         break;
+                    case "export_to_database":
+                        if (CustomCrafting.hasDataBaseHandler()) {
+                            Thread thread = new Thread(() -> CustomCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler()));
+                            thread.run();
+                        }
+
                 }
             }
         } else {
-            if (args[0].equalsIgnoreCase("give")) {
-                //   /cc give <player> <namespace:key> [amount]
-                if (args.length >= 3) {
-                    Player target = Bukkit.getPlayer(args[1]);
-                    if (target == null) {
-                        api.sendConsoleMessage("$msg.commands.give.player_offline$", args[1]);
-                        return true;
-                    }
-                    String namespacekey = args[2];
-                    int amount = 1;
-                    if (args.length > 3) {
-                        try {
-                            amount = Integer.parseInt(args[3]);
-                        } catch (NumberFormatException ex) {
-                            api.sendConsoleMessage("$msg.commands.give.invalid_amount$");
+            if (args.length > 0) {
+                if (args[0].equalsIgnoreCase("give")) {
+                    //   /cc give <player> <namespace:key> [amount]
+                    if (args.length >= 3) {
+                        Player target = Bukkit.getPlayer(args[1]);
+                        if (target == null) {
+                            api.sendConsoleMessage("$msg.commands.give.player_offline$", args[1]);
+                            return true;
                         }
-                    }
-                    CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
-                    if (customItem != null) {
-                        if (ItemUtils.hasInventorySpace(target, customItem)) {
-                            ItemStack itemStack = new ItemStack(customItem);
-                            itemStack.setAmount(amount);
-                            target.getInventory().addItem(itemStack);
-                            if (amount > 1) {
-                                api.sendConsoleMessage("$msg.commands.give.success_amount$", args[3], args[2], args[1]);
+                        String namespacekey = args[2];
+                        int amount = 1;
+                        if (args.length > 3) {
+                            try {
+                                amount = Integer.parseInt(args[3]);
+                            } catch (NumberFormatException ex) {
+                                api.sendConsoleMessage("$msg.commands.give.invalid_amount$");
+                            }
+                        }
+                        CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
+                        if (customItem != null) {
+                            if (InventoryUtils.hasInventorySpace(target, customItem)) {
+                                ItemStack itemStack = new ItemStack(customItem);
+                                itemStack.setAmount(amount);
+                                target.getInventory().addItem(itemStack);
+                                if (amount > 1) {
+                                    api.sendConsoleMessage("$msg.commands.give.success_amount$", args[3], args[2], args[1]);
+                                } else {
+                                    api.sendConsoleMessage("$msg.commands.give.success$", args[2], args[1]);
+                                }
                             } else {
-                                api.sendConsoleMessage("$msg.commands.give.success$", args[2], args[1]);
+                                api.sendConsoleMessage("$msg.commands.give.no_inv_space$");
                             }
                         } else {
-                            api.sendConsoleMessage("$msg.commands.give.no_inv_space$");
+                            api.sendConsoleMessage("$msg.commands.give.invalid_item$", args[2]);
                         }
-                    } else {
-                        api.sendConsoleMessage("$msg.commands.give.invalid_item$", args[2]);
                     }
-                }
 
-            }else if (args[0].equalsIgnoreCase("lockdown")){
-                CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
-                if(CustomCrafting.getConfigHandler().getConfig().isLockedDown()){
-                    api.sendConsoleMessage("$msg.commands.lockdown.enabled$");
-                }else{
-                    api.sendConsoleMessage("$msg.commands.lockdown.disabled$");
+                } else if (args[0].equalsIgnoreCase("lockdown")) {
+                    CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
+                    if (CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
+                        api.sendConsoleMessage("$msg.commands.lockdown.enabled$");
+                    } else {
+                        api.sendConsoleMessage("$msg.commands.lockdown.disabled$");
+                    }
                 }
             }
         }
@@ -194,17 +214,9 @@ public class CommandCC implements CommandExecutor, TabCompleter {
 
     public void openGUI(Player p, InventoryAPI invAPI) {
         if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio", false)) {
-            if(invAPI.hasGuiHandler(p)){
-                if(invAPI.getGuiHandler(p).getLastInv() != null && invAPI.getGuiHandler(p).getLastInv().getNamespace().equalsIgnoreCase("recipe_book")){
-                    invAPI.getGuiHandler(p).changeToInv("main_menu");
-                }else{
-                    invAPI.openGui(p,"main_menu");
-                }
-            }else{
-                invAPI.openGui(p, "main_menu");
-            }
-        }else if(ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge", true)){
-            invAPI.openGui(p, "recipe_book");
+            invAPI.openCluster(p, "none");
+        } else if (ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge", true)) {
+            invAPI.openCluster(p, "recipe_book");
         }
     }
 
@@ -232,7 +244,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings");
+    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings", "export_to_database", "reload");
     private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type", "vanilla_knowledgebook", "advanced_workbench");
 
     @Override
@@ -254,18 +266,18 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         StringUtil.copyPartialMatches(strings[2], items, results);
                         break;
                 }
-            }else if(strings[0].equalsIgnoreCase("settings")){
-                if(strings.length == 2){
+            } else if (strings[0].equalsIgnoreCase("settings")) {
+                if (strings.length == 2) {
                     StringUtil.copyPartialMatches(strings[1], SETTINGS, results);
-                }else if(strings.length == 3){
-                    switch (strings[1]){
+                } else if (strings.length == 3) {
+                    switch (strings[1]) {
                         case "preferred_file_type":
-                            StringUtil.copyPartialMatches(strings[2], Arrays.asList("json","yml"), results);
+                            StringUtil.copyPartialMatches(strings[2], Arrays.asList("json", "yml"), results);
                             break;
                         case "advanced_workbench":
                         case "vanilla_knowledgebook":
                         case "pretty_printing":
-                            StringUtil.copyPartialMatches(strings[2], Arrays.asList("true","false"), results);
+                            StringUtil.copyPartialMatches(strings[2], Arrays.asList("true", "false"), results);
                             break;
                     }
                 }
