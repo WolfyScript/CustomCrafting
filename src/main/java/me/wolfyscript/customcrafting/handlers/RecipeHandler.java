@@ -107,18 +107,31 @@ public class RecipeHandler {
 
     private void loadConfig(String subfolder, String type) {
         File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
-
-        File[] files = workbench.listFiles((dir, name) -> (name.split("\\.").length > 1));
-        if (files != null) {
-            for (File file : files) {
-                String fileName = file.getName();
-                String key = file.getParentFile().getParentFile().getName().toLowerCase();
-                String name = fileName.substring(0, file.getName().lastIndexOf("."));
-                String fileType = fileName.substring(file.getName().lastIndexOf(".") + 1);
+        HashMap<String, String> recipes = new HashMap<>();
+        workbench.listFiles((dir, name) ->{
+            String key = name.substring(0, name.lastIndexOf("."));
+            String fileType = name.substring(name.lastIndexOf(".") + 1);
+            if(recipes.containsKey(key)){
+                if(recipes.get(key).equals("yml")){
+                    if(fileType.equals("json")){
+                        recipes.put(key, fileType);
+                    }
+                }else{
+                    api.sendConsoleMessage("$msg.startup.recipes.duplicate$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
+                }
+            }else{
+                recipes.put(key, fileType);
+            }
+            return true;
+        });
+        if (!recipes.isEmpty()) {
+            for (Map.Entry<String, String> recipe : recipes.entrySet()) {
+                String name = recipe.getKey();
+                String fileType = recipe.getValue();
                 try {
                     switch (type) {
                         case "workbench":
-                            CraftConfig config = new CraftConfig(configAPI, key, name, fileType);
+                            CraftConfig config = new CraftConfig(configAPI, subfolder, name, fileType);
                             if (config.isShapeless()) {
                                 registerRecipe(new ShapelessCraftRecipe(config));
                             } else {
@@ -126,32 +139,32 @@ public class RecipeHandler {
                             }
                             break;
                         case "furnace":
-                            registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, key, name, fileType)));
+                            registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, subfolder, name, fileType)));
                             break;
                         case "anvil":
-                            registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, key, name, fileType)));
+                            registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, subfolder, name, fileType)));
                             break;
                         case "blast_furnace":
-                            registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, key, name, fileType)));
+                            registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, subfolder, name, fileType)));
                             break;
                         case "smoker":
-                            registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, key, name, fileType)));
+                            registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, subfolder, name, fileType)));
                             break;
                         case "campfire":
-                            registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, key, name, fileType)));
+                            registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, subfolder, name, fileType)));
                             break;
                         case "items":
-                            ItemConfig itemConfig = new ItemConfig(configAPI, key, name, fileType);
+                            ItemConfig itemConfig = new ItemConfig(configAPI, subfolder, name, fileType);
                             setCustomItem(itemConfig);
                             break;
                         case "stonecutter":
-                            registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, key, name, fileType)));
+                            registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, subfolder, name, fileType)));
                             break;
                         case "enchant":
 
                     }
                 } catch (Exception ex) {
-                    ChatUtils.sendRecipeItemLoadingError(key, name, type, ex);
+                    ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
                 }
             }
         }

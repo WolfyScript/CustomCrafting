@@ -183,11 +183,6 @@ public class CraftListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onCraft(CraftItemEvent event) {
-        //EMPTY
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPreCraft(PrepareItemCraftEvent e) {
         Player player = (Player) e.getView().getPlayer();
         try {
@@ -206,6 +201,7 @@ public class CraftListener implements Listener {
             if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
                 CustomPreCraftEvent customPreCraftEvent;
                 for (CraftingRecipe recipe : recipesToCheck) {
+
                     if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
                         customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getInventory(), ingredients);
                         if (checkRecipe(recipe, ingredients, player, recipeHandler, customPreCraftEvent)) {
@@ -213,14 +209,17 @@ public class CraftListener implements Listener {
                             RandomCollection<CustomItem> items = new RandomCollection<>();
                             for(CustomItem customItem : customPreCraftEvent.getResult()){
                                 if(!customItem.hasPermission() || player.hasPermission(customItem.getPermission())){
+                                    api.sendDebugMessage("Item -> "+customItem.getRarityPercentage());
                                     items.add(customItem.getRarityPercentage(), customItem);
                                 }
                             }
+                            api.sendDebugMessage("  Test -> "+items.size());
                             HashMap<String, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
                             CustomItem result = new CustomItem(Material.AIR);
                             if(precraftedItem.get(recipe.getId()) == null){
                                 if(!items.isEmpty()){
                                     result = items.next();
+                                    api.sendDebugMessage("Result: "+result);
                                     precraftedItem.put(recipe.getId(), result);
                                     precraftedItems.put(player.getUniqueId(), precraftedItem);
                                 }

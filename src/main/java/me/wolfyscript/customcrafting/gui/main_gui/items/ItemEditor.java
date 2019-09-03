@@ -37,34 +37,33 @@ public class ItemEditor extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             cache.getChatLists().setCurrentPageItems(1);
             api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
-            openChat(guiHandler, "$msg.gui.item_editor.input$", (guiHandler1, player1, s, args) -> {
+            openChat(guiHandler, "$msg.gui.none.item_editor.input$", (guiHandler1, player1, s, args) -> {
                 PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
                 if (args.length > 1) {
                     Items items = CustomCrafting.getPlayerCache(player1).getItems();
                     CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(args[0], args[1], false);
                     if (customItem == null) {
-                        api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.item_editor.error$");
+                        api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.none.item_editor.error$");
                         return true;
                     }
                     CustomCrafting.getPlayerCache(player).getChatLists().setLastUsedItem(customItem.getId());
                     if (items.getType().equals("items")) {
-                        Inventory inv = Bukkit.createInventory(player1, 9, ChatColor.translateAlternateColorCodes('&', api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_editor.item_gui_title$")));
+                        Inventory inv = Bukkit.createInventory(player1, 9, ChatColor.translateAlternateColorCodes('&', api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.none.item_editor.item_gui_title$")));
                         inv.setItem(2, customItem.getIDItem());
                         inv.setItem(6, customItem);
                         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> player1.openInventory(inv), 2);
                         Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> player1.openInventory(inv));
                     } else {
-                        //TODO: NEW VARIANT SYSTEM
                         if (cache.getItems().getType().equals("variant")) {
                             //Set values to variant cache
                             cache.getVariantsData().putVariant(cache.getItems().getVariantSlot(), customItem);
-                            api.sendPlayerMessage(player1, "$msg.gui.item_editor.item_applied$");
+                            api.sendPlayerMessage(player1, "$msg.gui.none.item_editor.item_applied$");
                             guiHandler.openPreviousInv();
                         }
                     }
                     return false;
                 }
-                api.sendPlayerMessage(player1, "$msg.gui.item_editor.no_name$");
+                api.sendPlayerMessage(player1, "$msg.gui.none.item_editor.no_name$");
                 return true;
             });
             return true;
@@ -87,21 +86,21 @@ public class ItemEditor extends ExtendedGuiWindow {
             } else {
                 CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageItems(1);
                 api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
-                openChat(guiHandler, "$msg.gui.item_editor.input$", (guiHandler1, player1, s, args) -> {
+                openChat(guiHandler, "$msg.gui.none.item_editor.input$", (guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         Items items1 = CustomCrafting.getPlayerCache(player1).getItems();
                         CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(args[0], args[1], false);
                         if (customItem == null) {
-                            api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.item_editor.error$");
+                            api.sendPlayerMessage(guiHandler.getPlayer(), "$msg.gui.none.item_editor.error$");
                             return true;
                         }
                         CustomCrafting.getPlayerCache(player).getChatLists().setLastUsedItem(customItem.getId());
                         items1.setItem("items", customItem);
-                        api.sendPlayerMessage(guiHandler1.getPlayer(), "$msg.gui.item_editor.item_editable$");
+                        api.sendPlayerMessage(guiHandler1.getPlayer(), "$msg.gui.none.item_editor.item_editable$");
                         Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler1.changeToInv("item_creator"));
                         return false;
                     }
-                    api.sendPlayerMessage(player1, "$msg.gui.item_editor.no_name$");
+                    api.sendPlayerMessage(player1, "$msg.gui.none.item_editor.no_name$");
                     return true;
                 });
             }
@@ -110,11 +109,11 @@ public class ItemEditor extends ExtendedGuiWindow {
         registerButton(new ActionButton("delete_item", new ButtonState("delete_item", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageItems(1);
             api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
-            openChat(guiHandler, "$msg.gui.item_editor.input$", (guiHandler1, player1, s, args) -> {
+            openChat(guiHandler, "$msg.gui.none.item_editor.input$", (guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(args[0], args[1], false);
                     if (customItem == null) {
-                        api.sendPlayerMessage(guiHandler1.getPlayer(), "$msg.gui.item_editor.error$");
+                        api.sendPlayerMessage(guiHandler1.getPlayer(), "$msg.gui.none.item_editor.error$");
                         return true;
                     }
                     CustomCrafting.getPlayerCache(player1).getChatLists().setLastUsedItem(customItem.getId());
@@ -126,7 +125,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                     }
                     return false;
                 }
-                api.sendPlayerMessage(player1, "$msg.gui.item_editor.no_name$");
+                api.sendPlayerMessage(player1, "$msg.gui.none.item_editor.no_name$");
                 return true;
             });
             return true;
@@ -162,7 +161,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                 player.sendMessage(" ");
             }
             api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
-            api.sendPlayerMessage(player, "$msg.gui.item_editor.input$");
+            api.sendPlayerMessage(player, "$msg.gui.none.item_editor.input$");
         }, true), new ClickData("§n Items:", null));
 
         int currentPage = cache.getChatLists().getCurrentPageItems();
@@ -194,6 +193,6 @@ public class ItemEditor extends ExtendedGuiWindow {
         }
         api.sendPlayerMessage(player, "-------------------------------------------------");
 
-        api.sendPlayerMessage(player, "$msg.gui.item_editor.input$");
+        api.sendPlayerMessage(player, "$msg.gui.none.item_editor.input$");
     }
 }

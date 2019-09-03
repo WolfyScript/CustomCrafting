@@ -3,7 +3,8 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.defaults.WorkbenchCraftConfig;
+import me.wolfyscript.customcrafting.configs.default_configs.KnowledgeBookCraftConfig;
+import me.wolfyscript.customcrafting.configs.default_configs.WorkbenchCraftConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
 import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -34,16 +35,16 @@ public class ConfigHandler {
         configAPI.registerConfig(mainConfig);
         loadLang();
 
-        ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(), "customcrafting", "workbench", "me/wolfyscript/customcrafting/configs/custom_configs/defaults", "workbench_item", mainConfig.resetAdvancedWorkbenchItem(), mainConfig.getPreferredFileType());
+        ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(), "customcrafting", "workbench", "me/wolfyscript/customcrafting/configs/default_configs", "workbench_item", mainConfig.resetAdvancedWorkbenchItem(), "json");
         mainConfig.setResetAdvancedWorkbenchItem(false);
 
-        CustomConfig config = new WorkbenchCraftConfig(api.getConfigAPI(), mainConfig.resetAdvancedWorkbenchRecipe());
+        CustomConfig config = new WorkbenchCraftConfig(api.getConfigAPI());
         mainConfig.setResetAdvancedWorkbenchRecipe(false);
 
-        ItemConfig knowledgebookItem = new ItemConfig(api.getConfigAPI(), "customcrafting", "knowledge_book", "me/wolfyscript/customcrafting/configs/custom_configs/defaults", "knowledge_book_item", mainConfig.resetKnowledgeBookItem(), mainConfig.getPreferredFileType());
+        ItemConfig knowledgebookItem = new ItemConfig(api.getConfigAPI(), "customcrafting", "knowledge_book", "me/wolfyscript/customcrafting/configs/default_configs", "knowledge_book_item", mainConfig.resetKnowledgeBookItem(), "json");
         mainConfig.setResetKnowledgeBookItem(false);
 
-        CraftConfig knowledgebook = new CraftConfig(configAPI, "customcrafting", "knowledge_book", "me/wolfyscript/customcrafting/configs/custom_configs/defaults", "knowledge_book_recipe", mainConfig.resetKnowledgeBookRecipe(), mainConfig.getPreferredFileType());
+        CraftConfig knowledgebook = new KnowledgeBookCraftConfig(api.getConfigAPI());
         mainConfig.setResetKnowledgeBookRecipe(false);
     }
 

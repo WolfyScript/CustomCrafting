@@ -914,7 +914,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         }
 
         //Rarity Percentage
-        registerButton(new ActionButton("rarity.option", new ButtonState("rarity.option", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("rarity.option", new ButtonState("rarity.option", Material.DIAMOND, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(guiHandler.getPlayer()).setSubSetting("rarity");
             return true;
         })));

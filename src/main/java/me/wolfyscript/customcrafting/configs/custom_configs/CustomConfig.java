@@ -52,6 +52,22 @@ public class CustomConfig extends Config {
         setPathSeparator('.');
     }
 
+    @Override
+    public void save() {
+        if(!getType().equals(Type.YAML)){
+            save(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        super.save();
+    }
+
+    @Override
+    public void reload() {
+        if(!getType().equals(Type.YAML)){
+            reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        super.reload();
+    }
+
     public String getFolder() {
         return folder;
     }

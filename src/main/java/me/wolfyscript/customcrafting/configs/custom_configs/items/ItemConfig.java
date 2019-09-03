@@ -129,7 +129,7 @@ public class ItemConfig extends CustomConfig {
     }
 
     public int getBurnTime() {
-        return getInt("fuel.burntime");
+        return getInt("fuel.burntime", 0);
     }
 
     public void setMetaSettings(MetaSettings metaSettings) {
@@ -148,7 +148,7 @@ public class ItemConfig extends CustomConfig {
     }
 
     public double getRarityPercentage(){
-        return getDouble("rarity_percentage");
+        return getDouble("rarity_percentage", 1.0d);
     }
 
     public void setPermission(String permission){
@@ -156,6 +156,6 @@ public class ItemConfig extends CustomConfig {
     }
 
     public String getPermission(){
-        return getString("permission");
+        return getString("permission", "");
     }
 }

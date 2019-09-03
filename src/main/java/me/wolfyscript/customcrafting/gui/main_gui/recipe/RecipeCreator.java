@@ -39,6 +39,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
@@ -73,7 +74,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("save", new ButtonState("save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat(guiHandler, "$msg.gui.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
+                openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
                     PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
                     Workbench workbench = cache1.getWorkbench();
                     CookingData furnace = cache1.getCookingData();
@@ -153,7 +154,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                 }
                                 api.sendDebugMessage("Reset GUI cache...");
                                 cache1.resetWorkbench();
-                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
+                                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.success$");
                                 api.sendPlayerMessage(player, "§6recipes/" + namespace + "/workbench/" + key);
                                 try {
                                     api.sendDebugMessage("Loading Recipe...");
@@ -165,10 +166,10 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     }
                                     Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                         CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
-                                        api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
+                                        api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.success$");
                                     }, 1);
                                 } catch (Exception ex) {
-                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.error$", new String[]{"%REC%", config.getId()});
+                                    api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.error$", new String[]{"%REC%", config.getId()});
                                     ex.printStackTrace();
                                     return false;
                                 }
@@ -205,10 +206,10 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                 try {
                                     Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                         CustomCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
-                                        api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
+                                        api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.success$");
                                     }, 1);
                                 } catch (Exception ex) {
-                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", anvilConfig.getId()});
+                                    api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", anvilConfig.getId()});
                                     ex.printStackTrace();
                                     return false;
                                 }
@@ -236,11 +237,11 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                 try {
                                     Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                         CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
-                                        api.sendPlayerMessage(player, "$msg.gui.recipe_creator.loading.success$");
+                                        api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.success$");
                                     }, 1);
 
                                 } catch (Exception ex) {
-                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", stonecutterConfig.getId()});
+                                    api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", stonecutterConfig.getId()});
                                     ex.printStackTrace();
                                     return false;
                                 }
@@ -272,7 +273,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                     cookingConfig.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
                                 }
                                 cache1.resetCookingData();
-                                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.success$");
+                                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.success$");
                                 api.sendPlayerMessage(player, "§6recipes/" + namespace + "/furnace/" + key);
                                 try {
                                     CustomRecipe customRecipe = null;
@@ -293,10 +294,10 @@ public class RecipeCreator extends ExtendedGuiWindow {
                                         CustomRecipe finalCustomRecipe = customRecipe;
                                         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
                                     } else {
-                                        api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
+                                        api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
                                     }
                                 } catch (Exception ex) {
-                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
+                                    api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
                                     ex.printStackTrace();
                                     return false;
                                 }
@@ -307,7 +308,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     return false;
                 });
             } else {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.save.empty$");
+                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.empty$");
             }
             return true;
         })));
@@ -451,7 +452,7 @@ public class RecipeCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("furnace.xp", new ButtonState("furnace.xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%XP%", CustomCrafting.getPlayerCache(player).getCookingData().getExperience());
             return itemStack;
-        }), "$msg.gui.recipe_creator.furnace.xp$", (guiHandler, player, s, args) -> {
+        }), "$msg.gui.none.recipe_creator.furnace.xp$", (guiHandler, player, s, args) -> {
             float xp;
             try {
                 xp = Float.parseFloat(args[0]);
@@ -465,12 +466,12 @@ public class RecipeCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("furnace.cooking_time", new ButtonState("furnace.cooking_time", Material.COAL, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%TIME%", CustomCrafting.getPlayerCache(player).getCookingData().getCookingTime());
             return itemStack;
-        }), "$msg.gui.recipe_creator.furnace.cooking_time$", (guiHandler, player, s, args) -> {
+        }), "$msg.gui.none.recipe_creator.furnace.cooking_time$", (guiHandler, player, s, args) -> {
             int time;
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.valid_number$");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getCookingData().setCookingTime(time);
@@ -547,24 +548,24 @@ public class RecipeCreator extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ChatInputButton("anvil.repair_cost", new ButtonState("anvil.repair_cost", Material.EXPERIENCE_BOTTLE), "$msg.gui.recipe_creator.anvil.repair_cost$", (guiHandler, player, s, args) -> {
+        registerButton(new ChatInputButton("anvil.repair_cost", new ButtonState("anvil.repair_cost", Material.EXPERIENCE_BOTTLE), "$msg.gui.none.recipe_creator.anvil.repair_cost$", (guiHandler, player, s, args) -> {
             int repairCost;
             try {
                 repairCost = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.valid_number$");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getAnvil().setRepairCost(repairCost);
             return false;
         }));
 
-        registerButton(new ChatInputButton("anvil.durability", new ButtonState("anvil.durability", Material.IRON_SWORD), "$msg.gui.recipe_creator.anvil.durability$", (guiHandler, player, s, args) -> {
+        registerButton(new ChatInputButton("anvil.durability", new ButtonState("anvil.durability", Material.IRON_SWORD), "$msg.gui.none.recipe_creator.anvil.durability$", (guiHandler, player, s, args) -> {
             int durability;
             try {
                 durability = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.valid_number$");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getAnvil().setDurability(durability);
@@ -580,6 +581,10 @@ public class RecipeCreator extends ExtendedGuiWindow {
             event.setButton(0, "back");
             switch (cache.getSetting()) {
                 case WORKBENCH:
+                    ((ToggleButton)event.getGuiWindow().getButton("workbench.shapeless")).setState(event.getGuiHandler(), workbench.isShapeless());
+                    ((ToggleButton)event.getGuiWindow().getButton("workbench.adv_workbench")).setState(event.getGuiHandler(), workbench.isAdvWorkbench());
+                    ((ToggleButton)event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), workbench.isExactMeta());
+                    ((ToggleButton)event.getGuiWindow().getButton("permission")).setState(event.getGuiHandler(), !workbench.isPermissions());
                     event.setButton(35, "priority");
                     if (!workbench.getIngredients().isEmpty()) {
                         int slot;
@@ -597,6 +602,8 @@ public class RecipeCreator extends ExtendedGuiWindow {
                     break;
                 case ANVIL:
                     Anvil anvil = cache.getAnvil();
+                    ((ToggleButton)event.getGuiWindow().getButton("permission")).setState(event.getGuiHandler(), !workbench.isPermissions());
+                    ((ToggleButton)event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), anvil.isExactMeta());
                     event.setButton(2, "permission");
                     event.setButton(4, "priority");
                     event.setButton(6, "exact_meta");
@@ -628,7 +635,6 @@ public class RecipeCreator extends ExtendedGuiWindow {
                 case CAMPFIRE:
                 case FURNACE:
                     event.setButton(20, "none", "glass_white");
-                    //TODO: INPUT
                     event.setButton(11, "cooking.container_0");
                     event.setButton(24, "cooking.container_1");
                     event.setButton(37, "none", "glass_white");

@@ -33,7 +33,8 @@
       "recipes": {
         "title": "________[Loading Recipes/Items]________",
         "items": "---------[ITEMS]---------",
-        "recipes": "--------[RECIPES]--------"
+        "recipes": "--------[RECIPES]--------",
+        "duplicate": "Ignoring duplicate recipe %namespace%:%key% with the config file %key%.%file_type%!"
       }
     },
     "denied_perm": "&cYou lack the permission &4%PERM%&c!",
@@ -141,6 +142,12 @@
           "custom_durability": {
             "set_durability": "&3Type in the custom durability. &cMax value: 2,147,483,647",
             "set_damage": "&3Type in the custom Damage of the item. &cMax value: 2,147,483,647"
+          },
+          "rarity": {
+            "set": "&3Type in the percentage of how rare this item should be. &cThe number must be smaller than 1.0!"
+          },
+          "permission": {
+            "set": "&3Type in the permission string that players need to get this item"
           }
         },
         "item_editor": {

@@ -1,0 +1,16 @@
+{
+  "consumed": true,
+  "item": "H4sIAAAAAAAAAHWPMUvEQBCF55ITk2BpYeuSwuqwvlYUC7ETC5Fjkx3XZTezkux5ivh75n/ML3MvoFcJr3g8Ht/MawAqKJyBs8ER9qN+SWtPcRfQWNx0MfoFHF3FLaVFA2XStoT61hm8CdpOAJDTY+Omt6A/a1jexRGrnBagnh4fzp/bGejIrv6Ye+Qq5F4Ll8L9rI2wFybhKLwTDsIobITtbLo5z/IVLO/1gHDxpRJ+JLVW/x2gXGvVN9Rwck39q6Y0IKWp2X9cQBnew+/u08PuLXUjap9pufYDhMpGhhkBAAA\u003d",
+  "durability_cost": 0,
+  "meta": "{\"damage\":\"EXACT\",\"potion\":\"EXACT\",\"lore\":\"EXACT\",\"playerHead\":\"EXACT\",\"flags\":\"EXACT\",\"attributes_modifiers\":\"EXACT\",\"customModelData\":\"EXACT\",\"enchant\":\"EXACT\",\"custom_damage\":\"EXACT\",\"name\":\"EXACT\",\"unbreakable\":\"EXACT\",\"custom_durability\":\"EXACT\",\"repairCost\":\"EXACT\"}",
+  "fuel": {
+    "burntime": 0,
+    "allowed_blocks": [
+      "furnace"
+    ]
+  },
+  "rarity_percentage": 1.0,
+  "replacement": {
+    "item": "H4sIAAAAAAAAAONiYOBgYMpMYeDPzcxLTS5KTCuxKi7Jz0tlZGB1zi/NK2FkAADx5nVMIwAAAA\u003d\u003d"
+  }
+}

@@ -50,7 +50,7 @@ public class ChatUtils {
                 player.sendMessage(" ");
             }
             api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-            api.sendPlayerMessage(player, "$msg.gui.recipe_editor.input$");
+            api.sendPlayerMessage(player, "$msg.gui.none.recipe_editor.input$");
         }, true), new ClickData(" Recipes:", null));
 
         ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
@@ -97,7 +97,7 @@ public class ChatUtils {
             }
             sendRecipeListExpanded(p);
         }));
-        api.sendPlayerMessage(player, "$msg.gui.recipe_editor.input$");
+        api.sendPlayerMessage(player, "$msg.gui.none.recipe_editor.input$");
     }
 
     public static void sendLoreManager(Player player) {
