@@ -18,6 +18,7 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
@@ -76,6 +77,8 @@ public class RecipeBook extends ExtendedGuiWindow {
         for (int i = 0; i < 45; i++) {
             registerButton(new RecipeBookContainerButton(i));
         }
+        registerButton(new DummyButton("workbench.shapeless_on", new ButtonState("workbench.shapeless_on", WolfyUtilities.getSkullViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"))));
+        registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", WolfyUtilities.getSkullViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"))));
     }
 
     @EventHandler
@@ -131,7 +134,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                     event.setButton(i, "none", "glass_purple");
                                 }
                             }
-                            //event.setItem(22, "recipe_creator", craftingRecipe.isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+                            event.setButton(22, craftingRecipe.isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
                             int invSlot;
                             for (int i = 0; i < 9; i++) {
                                 invSlot = 10 + i + (i / 3) * 6;
@@ -159,12 +162,12 @@ public class RecipeBook extends ExtendedGuiWindow {
                                     }
 
                                     List<ItemStack> variants = new ArrayList<>();
-                                    if(craftingRecipe.getCustomResults().size() > 1){
+                                    if (craftingRecipe.getCustomResults().size() > 1) {
                                         for (CustomItem customItem : craftingRecipe.getCustomResults()) {
                                             if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
-                                                if(customItem.getType()!=Material.AIR){
+                                                if (customItem.getType() != Material.AIR) {
                                                     ItemBuilder itemBuilder = new ItemBuilder(customItem.getRealItem());
-                                                    itemBuilder.addLoreLine("§7"+(customItem.getRarityPercentage()*100)+"% possibility");
+                                                    itemBuilder.addLoreLine("§7" + (customItem.getRarityPercentage() * 100) + "% possibility");
                                                     variants.add(itemBuilder.create());
                                                 }
                                             }
@@ -176,7 +179,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                         } else {
                                             variantsTimers.put(9, 0);
                                         }
-                                    }else{
+                                    } else {
                                         event.setItem(24, craftingRecipe.getCustomResult().getRealItem());
                                     }
                                 }, 1, 20));
@@ -211,10 +214,36 @@ public class RecipeBook extends ExtendedGuiWindow {
                                     } else {
                                         i.set(0);
                                     }
+                                    HashMap<Integer, Integer> variantsTimers = knowledgeBook.getTimerTimings();
+                                    List<CustomItem> variants = furnaceRecipe.getSource();
+                                    int variant = variantsTimers.getOrDefault(0, 0);
+                                    event.setItem(20, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant).getRealItem());
+                                    if(i.get() > 2){
+                                        if (++variant < variants.size()) {
+                                            variantsTimers.put(0, variant);
+                                        } else {
+                                            variantsTimers.put(0, 0);
+                                        }
+                                    }
+                                    List<ItemStack> variantsResult = new ArrayList<>();
+                                    for (CustomItem customItem : furnaceRecipe.getCustomResults()) {
+                                        if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
+                                            if (customItem.getType() != Material.AIR) {
+                                                variantsResult.add(new ItemBuilder(customItem.getRealItem()).addLoreLine("§7" + (customItem.getRarityPercentage() * 100) + "% possibility").create());
+                                            }
+                                        }
+                                    }
+                                    variant = variantsTimers.getOrDefault(1, 0);
+                                    event.setItem(24, variantsResult.isEmpty() ? new ItemStack(Material.AIR) : variantsResult.get(variant));
+                                    if(i.get() > 2){
+                                        if (++variant < variantsResult.size()) {
+                                            variantsTimers.put(1, variant);
+                                        } else {
+                                            variantsTimers.put(1, 0);
+                                        }
+                                    }
                                 }, 1, 4));
                             }
-                            event.setItem(20, furnaceRecipe.getSource().get(0).getRealItem());
-                            event.setItem(24, furnaceRecipe.getCustomResult().getRealItem());
                         }
                         break;
                     case ANVIL:
@@ -247,12 +276,12 @@ public class RecipeBook extends ExtendedGuiWindow {
                                 if (customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                                     event.setItem(25, customAnvilRecipe.getCustomResult().getRealItem());
                                     List<ItemStack> variants = new ArrayList<>();
-                                    if(customAnvilRecipe.getCustomResults().size() > 1){
+                                    if (customAnvilRecipe.getCustomResults().size() > 1) {
                                         for (CustomItem customItem : customAnvilRecipe.getCustomResults()) {
                                             if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
-                                                if(customItem.getType()!=Material.AIR){
+                                                if (customItem.getType() != Material.AIR) {
                                                     ItemBuilder itemBuilder = new ItemBuilder(customItem.getRealItem());
-                                                    itemBuilder.addLoreLine("§7"+(customItem.getRarityPercentage()*100)+"% possibility");
+                                                    itemBuilder.addLoreLine("§7" + (customItem.getRarityPercentage() * 100) + "% possibility");
                                                     variants.add(itemBuilder.create());
                                                 }
                                             }
@@ -264,7 +293,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                         } else {
                                             timings.put(9, 0);
                                         }
-                                    }else{
+                                    } else {
                                         event.setItem(25, customAnvilRecipe.getCustomResult().getRealItem());
                                     }
                                 }

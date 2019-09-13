@@ -68,9 +68,9 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(14, "anvil");
             if (WolfyUtilities.hasVillagePillageUpdate()) {
                 event.setButton(16, "blast_furnace");
-                event.setButton(28, "smoker");
-                event.setButton(30, "campfire");
-                event.setButton(32, "stonecutter");
+                event.setButton(29, "smoker");
+                event.setButton(31, "campfire");
+                event.setButton(33, "stonecutter");
             }
         }
     }

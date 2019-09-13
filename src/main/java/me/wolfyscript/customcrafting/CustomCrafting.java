@@ -44,7 +44,7 @@ public class CustomCrafting extends JavaPlugin {
     private static DataBaseHandler dataBaseHandler = null;
     private static Workbenches workbenches = null;
 
-    private static final boolean betaVersion = true;
+    private static final boolean betaVersion = false;
 
     private static boolean outdated = false;
     private static boolean loaded = false;

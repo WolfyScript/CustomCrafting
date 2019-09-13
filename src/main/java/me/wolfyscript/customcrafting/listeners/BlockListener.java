@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class BlockListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (!event.isCancelled()) {
             ItemStack itemStack = event.getItemInHand();
@@ -40,7 +40,7 @@ public class BlockListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (!event.isCancelled()) {
             Block block = event.getBlock();

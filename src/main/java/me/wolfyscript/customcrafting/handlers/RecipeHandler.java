@@ -187,6 +187,7 @@ public class RecipeHandler {
     }
 
     public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
+        api.sendConsoleMessage("Exporting configs to database...");
         File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
         List<File> subFolders = null;
         File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
@@ -211,6 +212,7 @@ public class RecipeHandler {
                 }
             }
         }
+        api.sendConsoleMessage("Exported configs to database successfully.");
     }
 
     private void migrateConfigToDB(DataBaseHandler dataBaseHandler, String subfolder, String type) {

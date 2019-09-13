@@ -34,6 +34,7 @@ public class VariantMenu extends ExtendedGuiWindow {
                     if (cache.getVariantsData().getSlot() == 9) {
                         List<CustomItem> items = cache.getVariantsData().getVariants();
                         items.removeIf(item -> item.getType().equals(Material.AIR));
+                        System.out.println("List: "+items);
                         cache.getWorkbench().setResult(items);
                     } else {
                         cache.getWorkbench().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());

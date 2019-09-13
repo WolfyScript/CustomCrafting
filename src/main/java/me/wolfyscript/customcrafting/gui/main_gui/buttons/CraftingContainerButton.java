@@ -56,9 +56,10 @@ public class CraftingContainerButton extends ItemInputButton {
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
                 Workbench workbench = CustomCrafting.getPlayerCache(player).getWorkbench();
+                itemStack = new ItemStack(Material.AIR);
                 if (recipeSlot == 9) {
                     if (workbench.getResult() != null && !workbench.getResult().isEmpty()) {
-                        itemStack = workbench.getResult().get(0).getIDItem(workbench.getResultCustomAmount());
+                        itemStack = workbench.getResult().get(0).getIDItem();
                     }
                 } else if (workbench.getIngredient(recipeSlot) != null) {
                     itemStack = workbench.getIngredient(recipeSlot).getIDItem();

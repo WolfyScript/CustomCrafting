@@ -67,9 +67,9 @@ public class RecipeListContainerButton extends Button {
             }
             itemB.addLoreLine("");
             if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
-                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_list.lores.disabled$")));
+                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
             } else {
-                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_list.lores.enabled$")));
+                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
             }
             inventory.setItem(slot, itemB.create());
         }

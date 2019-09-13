@@ -2,14 +2,17 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,5 +174,40 @@ public class FurnaceListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onSmelt(FurnaceSmeltEvent event) {
+        List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult());
+        for (Recipe recipe : recipes) {
+            if(recipe.getResult().isSimilar(event.getResult())){
+                CustomRecipe customRecipe = CustomCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+                if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
+                    RandomCollection<CustomItem> items = new RandomCollection<>();
+                    for (CustomItem customItem : customRecipe.getCustomResults()) {
+                        items.add(customItem.getRarityPercentage(), customItem);
+                    }
+                    if(!items.isEmpty()){
+                        event.setResult(items.next());
+                    }
+                    break;
+                }
+            }
+        }
+
+    }
+
+    private boolean isRecipeValid(Material furnaceType, CustomRecipe recipe) {
+        if (recipe instanceof CustomCookingRecipe) {
+            switch (furnaceType) {
+                case BLAST_FURNACE:
+                    return recipe instanceof BlastingRecipe;
+                case SMOKER:
+                    return recipe instanceof SmokingRecipe;
+                case FURNACE:
+                    return recipe instanceof FurnaceRecipe;
+            }
+        }
+        return false;
     }
 }

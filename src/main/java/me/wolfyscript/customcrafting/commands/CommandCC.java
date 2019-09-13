@@ -143,20 +143,25 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                             api.sendPlayerMessage(p, "&aSet &epretty printing &ato &e" + args[2].toLowerCase(Locale.ROOT));
                                         }
                                         break;
-                                    case "vanilla_knowledgebook":
-                                        if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
-                                            CustomCrafting.getConfigHandler().getConfig().useVanillaKnowledgeBook(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
-                                            api.sendPlayerMessage(p, "&aSet &evanilla knowledge book&ato &e" + args[2].toLowerCase(Locale.ROOT));
-                                        }
-                                        break;
                                 }
                             }
                         }
                         break;
-                    case "export_to_database":
-                        if (CustomCrafting.hasDataBaseHandler()) {
-                            Thread thread = new Thread(() -> CustomCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler()));
-                            thread.run();
+                    case "database":
+                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
+                            if (args.length > 2) {
+                                switch (args[1]) {
+                                    case "export_data":
+                                        if (CustomCrafting.hasDataBaseHandler()) {
+                                            api.sendPlayerMessage(p, "Exporting json configs to Database.");
+                                            Thread thread = new Thread(() -> CustomCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler()));
+                                            thread.run();
+                                        }else{
+                                            api.sendPlayerMessage(p, "&4No Database found!");
+                                        }
+                                        break;
+                                }
+                            }
                         }
 
                 }
@@ -244,8 +249,9 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings", "export_to_database", "reload");
-    private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type", "vanilla_knowledgebook", "advanced_workbench");
+    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings", "database", "reload");
+    private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type", "advanced_workbench");
+    private final List<String> DATABASE = Arrays.asList("export_data");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] strings) {
@@ -280,6 +286,10 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             StringUtil.copyPartialMatches(strings[2], Arrays.asList("true", "false"), results);
                             break;
                     }
+                }
+            }else if(strings[0].equalsIgnoreCase("database")){
+                if (strings.length == 2) {
+                    StringUtil.copyPartialMatches(strings[1], DATABASE, results);
                 }
             }
         } else {

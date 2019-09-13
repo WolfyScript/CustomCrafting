@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.Material;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,6 @@ public abstract class CookingData {
     private RecipePriority priority;
 
     private HashMap<Integer, List<CustomItem>> ingredients;
-    private List<CustomItem> source;
-    private List<CustomItem> result;
 
     private boolean advFurnace;
     private int cookingTime;
@@ -23,8 +22,6 @@ public abstract class CookingData {
 
     public CookingData() {
         this.ingredients = new HashMap<>();
-        this.source = Collections.singletonList(new CustomItem(Material.AIR));
-        this.result = Collections.singletonList(new CustomItem(Material.AIR));
 
         this.experience = 0.2f;
 
@@ -39,11 +36,11 @@ public abstract class CookingData {
     }
 
     public List<CustomItem> getSource() {
-        return ingredients.getOrDefault(0, Collections.singletonList(new CustomItem(Material.AIR)));
+        return ingredients.getOrDefault(0, new ArrayList<>(Collections.singletonList(new CustomItem(Material.AIR))));
     }
 
     public List<CustomItem> getResult() {
-        return ingredients.getOrDefault(1, Collections.singletonList(new CustomItem(Material.AIR)));
+        return ingredients.getOrDefault(1, new ArrayList<>(Collections.singletonList(new CustomItem(Material.AIR))));
     }
 
     public void setResult(List<CustomItem> result) {
@@ -55,7 +52,7 @@ public abstract class CookingData {
     }
 
     public List<CustomItem> getIngredients(int slot) {
-        return ingredients.getOrDefault(slot, Collections.singletonList(new CustomItem(Material.AIR)));
+        return ingredients.getOrDefault(slot, new ArrayList<>(Collections.singletonList(new CustomItem(Material.AIR))));
     }
 
     public void setIngredient(int slot, int variant, CustomItem ingredient) {

@@ -53,7 +53,7 @@ public class RecipeBookContainerButton extends Button {
             if (recipe.getResult().getType().equals(Material.AIR)) {
                 itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
             }
-            itemB.addLoreLine("").addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_book.lores.click$")));
+            itemB.addLoreLine("").addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.recipe_book.recipe_book.items.lores.click$")));
             inventory.setItem(slot, itemB.create());
         }
     }

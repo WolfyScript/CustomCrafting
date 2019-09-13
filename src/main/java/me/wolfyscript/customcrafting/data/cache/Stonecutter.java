@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.Material;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Stonecutter {
     private CustomItem result;
 
     public Stonecutter() {
-        this.source = Collections.singletonList(new CustomItem(Material.AIR));
+        this.source = new ArrayList<>(Collections.singletonList(new CustomItem(Material.AIR)));
         this.result = new CustomItem(Material.AIR);
         this.priority = RecipePriority.NORMAL;
         this.exactMeta = true;

@@ -21,10 +21,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -188,11 +186,9 @@ public class CraftListener implements Listener {
         try {
             ItemStack[] matrix = e.getInventory().getMatrix();
             RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
-
             List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
             List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
             recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
-
             api.sendDebugMessage("---------------------------------");
             api.sendDebugMessage("Possible Custom Recipes detected:");
             recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - " + craftingRecipe.getId()));
@@ -201,7 +197,6 @@ public class CraftListener implements Listener {
             if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
                 CustomPreCraftEvent customPreCraftEvent;
                 for (CraftingRecipe recipe : recipesToCheck) {
-
                     if (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
                         customPreCraftEvent = new CustomPreCraftEvent(e.isRepair(), recipe, e.getInventory(), ingredients);
                         if (checkRecipe(recipe, ingredients, player, recipeHandler, customPreCraftEvent)) {
@@ -240,7 +235,7 @@ public class CraftListener implements Listener {
                         api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
                         CraftingRecipe recipe = recipeHandler.getCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
                         if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
-                            //Recipe is disabled or it is a custom recipe! Due the changes, custom recipes added to Bukkit are only placeholders in the vanilla knowledge book!
+                            //Recipe is disabled or it is a custom recipe!
                             e.getInventory().setResult(new ItemStack(Material.AIR));
                         } else {
                             api.sendDebugMessage("Use vanilla recipe output!");

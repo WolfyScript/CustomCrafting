@@ -22,35 +22,35 @@ import java.util.List;
 
 public class AnvilContainerButton extends ItemInputButton {
 
-    private int inputSlot;
-
     public AnvilContainerButton(int inputSlot) {
-        super("anvil.container_" + inputSlot, new ButtonState("", Material.AIR, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            Anvil anvil = CustomCrafting.getPlayerCache(player).getAnvil();
-            if (anvil.getIngredients(inputSlot) != null && !anvil.getIngredients(inputSlot).isEmpty()) {
-                itemStack = anvil.getIngredients(inputSlot).get(0);
+        super("anvil.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
+            @Override
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                Anvil anvil = cache.getAnvil();
+                if (event.isRightClick() && event.isShiftClick()) {
+                    List<CustomItem> variants = new ArrayList<>();
+                    if (anvil.getIngredients(inputSlot) != null) {
+                        variants = anvil.getIngredients(inputSlot);
+                    }
+                    cache.getVariantsData().setSlot(inputSlot);
+                    cache.getVariantsData().setVariants(variants);
+                    guiHandler.changeToInv("variants");
+                    return true;
+                } else {
+                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> anvil.setIngredient(inputSlot, 0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                }
+                return false;
             }
-            return itemStack;
-        }));
-        this.inputSlot = inputSlot;
-    }
 
-    @Override
-    public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-        PlayerCache cache = CustomCrafting.getPlayerCache(player);
-        Anvil anvil = cache.getAnvil();
-        if (event.isRightClick() && event.isShiftClick()) {
-            List<CustomItem> variants = new ArrayList<>();
-            if (anvil.getIngredients(inputSlot) != null) {
-                variants = anvil.getIngredients(inputSlot);
+            @Override
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
+                Anvil anvil = CustomCrafting.getPlayerCache(player).getAnvil();
+                if (anvil.getIngredients(inputSlot) != null && !anvil.getIngredients(inputSlot).isEmpty()) {
+                    item = anvil.getIngredients(inputSlot).get(0);
+                }
+                return item;
             }
-            cache.getVariantsData().setSlot(inputSlot);
-            cache.getVariantsData().setVariants(variants);
-            guiHandler.changeToInv("variants");
-            return true;
-        } else {
-            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> anvil.setIngredient(inputSlot, 0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
-        }
-        return false;
+        }));
     }
 }

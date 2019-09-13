@@ -262,10 +262,12 @@ public class CustomItem extends ItemStack implements Cloneable {
                 return new CustomItem(clearedItem);
             }
         }
+        CustomItem customItem;
         if (id.isEmpty()) {
-            return new CustomItem(itemStack.clone());
+            customItem = new CustomItem(clearedItem);
+        }else{
+            customItem = CustomCrafting.getRecipeHandler().getCustomItem(id);
         }
-        CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(id);
         if (clearedItem.getAmount() != customItem.getAmount()) {
             customItem.setAmount(clearedItem.getAmount());
         }

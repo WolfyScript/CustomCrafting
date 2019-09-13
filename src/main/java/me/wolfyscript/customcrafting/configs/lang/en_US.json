@@ -249,7 +249,8 @@
           "name": "&2Help",
           "lore": [
             "&7-Click Me-",
-            "&7[&aEnabled&7]"
+            "&7[&aEnabled&7]",
+            "%wolfyutilities.help%"
           ],
           "help": []
         },
@@ -264,6 +265,11 @@
       },
       "main_menu": {
         "gui_name": "&3&lCustomCrafting",
+        "gui_help": [
+          "&7Choose the type of recipe you want to Create/Edit",
+          "&7You can also open the ItemEditor to create/edit custom items.",
+          "&7Lockdown will toggle all custom recipes."
+        ],
         "items": {
           "lockdown": {
             "enabled": {
@@ -370,6 +376,10 @@
       },
       "item_creator": {
         "gui_name": "&0&lItem Creator",
+        "gui_help": [
+          "&7Place in the item you want to edit in top middle",
+          "&eSome features are only available if you save the item!"
+        ],
         "items": {
           "invalid_type": {
             "name": "&cInvalid Item",
@@ -964,6 +974,11 @@
       },
       "recipe_creator": {
         "gui_name": "&4&lRecipe Creator",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
         "items": {
           "save": {
             "name": "&3Save",
@@ -1156,6 +1171,11 @@
       },
       "recipe_list": {
         "gui_name": "&8&lRecipe List",
+        "gui_help": [
+          "&7Toggle recipes.",
+          "&7if a recipe is disabled it won't be craftable to anyone!",
+          "&7Not even for players with permissions"
+        ],
         "items": {
           "lores": {
             "disabled": "&7&l[&c&lDISABLED&7&l]",
@@ -1173,6 +1193,10 @@
       },
       "variants": {
         "gui_name": "&8&lVariants",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7will open the ItemEditor"
+        ],
         "items": {
         }
       }
@@ -1252,6 +1276,34 @@
               "name": "&7Recipe Filter:&3 ADVANCED",
               "lore": [
                 "&7Only showing advanced recipes"
+              ]
+            }
+          },
+          "workbench": {
+            "adv_workbench_on": {
+              "name": "&3Advanced Workbench",
+              "help": [
+                "&7Can only be crafted in",
+                "&7Advanced Workbenches",
+                ""
+              ]
+            },
+            "adv_workbench_off": {
+              "name": "&4Every Workbench",
+              "help": [
+                "&7Can be crafted in every Workbench"
+              ]
+            },
+            "shapeless_off": {
+              "name": "&3Shaped Recipe",
+              "help": [
+                "&7Recipe has a shape!"
+              ]
+            },
+            "shapeless_on": {
+              "name": "&3Shapeless Recipe",
+              "help": [
+                "&7Recipe is shapeless!"
               ]
             }
           }
