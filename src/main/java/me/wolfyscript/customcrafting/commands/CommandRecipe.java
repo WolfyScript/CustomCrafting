@@ -1,12 +1,15 @@
 package me.wolfyscript.customcrafting.commands;
 
+import com.sun.istack.internal.NotNull;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
@@ -100,13 +103,16 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
         List<String> results = new ArrayList<>();
         if (args.length > 1) {
             if (args[0].equalsIgnoreCase("toggle")) {
+                List<String> recipes = new ArrayList<>();
                 for (Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()) {
-                    List<String> recipes = new ArrayList<>();
                     if (recipe instanceof Keyed) {
                         recipes.add(((Keyed) recipe).getKey().toString());
                     }
-                    StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
                 }
+                for(CraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()){
+                    recipes.add(recipe.getId());
+                }
+                copyPartialMatches(args[args.length - 1], recipes, results);
             } else if (args[0].equalsIgnoreCase("edit") || args[0].equalsIgnoreCase("delete")) {
                 if (args.length == 2) {
                     StringUtil.copyPartialMatches(args[1], RECIPES, results);
@@ -128,5 +134,26 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
         }
         Collections.sort(results);
         return results;
+    }
+
+    @NotNull
+    public static <T extends Collection<? super String>> T copyPartialMatches(@NotNull String token, @NotNull Iterable<String> originals, @NotNull T collection) throws UnsupportedOperationException, IllegalArgumentException {
+        Validate.notNull(token, "Search token cannot be null");
+        Validate.notNull(collection, "Collection cannot be null");
+        Validate.notNull(originals, "Originals cannot be null");
+        Iterator var4 = originals.iterator();
+
+        while(var4.hasNext()) {
+            String string = (String)var4.next();
+            if (containsIgnoreCase(string, token)) {
+                collection.add(string);
+            }
+        }
+
+        return collection;
+    }
+
+    public static boolean containsIgnoreCase(String string, String other){
+        return string.toLowerCase(Locale.ROOT).contains(other.toLowerCase(Locale.ROOT));
     }
 }

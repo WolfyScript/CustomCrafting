@@ -1,16 +1,21 @@
 package me.wolfyscript.customcrafting.gui.main_gui.items;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.MetaIgnoreButton;
-import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.items.Meta;
-import me.wolfyscript.customcrafting.items.MetaSettings;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.*;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.custom_items.ItemConfig;
+import me.wolfyscript.utilities.api.custom_items.MetaSettings;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.*;
@@ -71,33 +76,28 @@ public class ItemCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("save_item", new ButtonState("save_item", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
             if (!items.getItem().getType().equals(Material.AIR)) {
-                if (items.getType().equals("items") && CustomCrafting.getRecipeHandler().getCustomItem(items.getId()) != null) {
-                    CustomItem.saveItem(CustomCrafting.getPlayerCache(guiHandler.getPlayer()), items.getId(), items.getItem());
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.save.success$");
-                    api.sendPlayerMessage(player, "&6" + items.getId().split(":")[0] + "/items/" + items.getId().split(":")[1]);
-                } else {
-                    //TODO ITEM LIST
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.save.input.line1$");
-                    openChat(guiHandler, "$msg.gui.none.item_creator.save.input.line2$", (guiHandler1, player1, s, args) -> {
-                        if (args.length > 1) {
-                            String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
-                            String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                            if (!CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches()) {
-                                api.sendPlayerMessage(player1, "&cInvalid Namespace! Namespaces may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
-                                return true;
-                            }
-                            if (!CustomCrafting.VALID_KEY.matcher(key).matches()) {
-                                api.sendPlayerMessage(player1, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
-                                return true;
-                            }
-                            CustomItem.saveItem(CustomCrafting.getPlayerCache(player1), namespace + ":" + key, items.getItem());
-                            api.sendPlayerMessage(player1, "$msg.gui.none.item_creator.save.success$");
-                            api.sendPlayerMessage(player1, "&6" + namespace + "/items/" + key);
-                            return false;
+                String id = items.getId();
+                //TODO ITEM LIST
+                api.sendPlayerMessage(player, "$msg.gui.none.item_creator.save.input.line1$");
+                openChat(guiHandler, "$msg.gui.none.item_creator.save.input.line2$", (guiHandler1, player1, s, args) -> {
+                    if (args.length > 1) {
+                        String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
+                        String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
+                        if (!CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches()) {
+                            api.sendPlayerMessage(player1, "&cInvalid Namespace! Namespaces may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+                            return true;
                         }
-                        return true;
-                    });
-                }
+                        if (!CustomCrafting.VALID_KEY.matcher(key).matches()) {
+                            api.sendPlayerMessage(player1, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+                            return true;
+                        }
+                        saveItem(CustomCrafting.getPlayerCache(player1), namespace + ":" + key, items.getItem());
+                        api.sendPlayerMessage(player1, "$msg.gui.none.item_creator.save.success$");
+                        api.sendPlayerMessage(player1, "&6" + namespace + "/items/" + key);
+                        return false;
+                    }
+                    return true;
+                });
             }
             return true;
         })));
@@ -107,25 +107,22 @@ public class ItemCreator extends ExtendedGuiWindow {
             if (!cache.getItems().getItem().getType().equals(Material.AIR)) {
                 CustomItem customItem = cache.getItems().getItem();
                 if (cache.getItems().isSaved()) {
-                    CustomItem.saveItem(cache, cache.getItems().getId(), customItem);
-                    customItem = CustomCrafting.getRecipeHandler().getCustomItem(cache.getItems().getId());
+                    saveItem(cache, cache.getItems().getId(), customItem);
+                    customItem = CustomItems.getCustomItem(cache.getItems().getId());
                 }
-                if (cache.getItems().getType().equals("variant")) {
-                    //Set values to variant cache
-                    cache.getVariantsData().putVariant(cache.getItems().getVariantSlot(), customItem);
-                    guiHandler.openPreviousInv();
-                }
+                cache.applyItem(customItem);
+                guiHandler.openPreviousInv();
             }
             return true;
         })));
 
         registerButton(new ActionButton("page_next", new ButtonState("page_next", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().setPage(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getPage()+1);
+            CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().setPage(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getPage() + 1);
             return true;
         })));
         registerButton(new ActionButton("page_previous", new ButtonState("page_previous", WolfyUtilities.getSkullViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            if(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getPage() > 0){
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().setPage(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getPage()-1);
+            if (CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getPage() > 0) {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().setPage(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getPage() - 1);
             }
             return true;
         })));
@@ -158,62 +155,66 @@ public class ItemCreator extends ExtendedGuiWindow {
             CustomCrafting.getPlayerCache(guiHandler.getPlayer()).setSubSetting("enchantments");
             return true;
         })));
-        registerButton(new ChatInputButton("enchantments.add", new ButtonState("enchantments.add", Material.ENCHANTED_BOOK), "$msg.gui.none.item_creator.enchant.add$", (guiHandler, player, s, args) -> {
-            if (args.length > 1) {
-                int level;
-                try {
-                    level = Integer.parseInt(args[args.length - 1]);
-                } catch (NumberFormatException ex) {
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.enchant.invalid_lvl$");
+        {
+            registerButton(new ChatInputButton("enchantments.add", new ButtonState("enchantments.add", Material.ENCHANTED_BOOK), "$msg.gui.none.item_creator.enchant.add$", (guiHandler, player, s, args) -> {
+                if (args.length > 1) {
+                    int level;
+                    try {
+                        level = Integer.parseInt(args[args.length - 1]);
+                    } catch (NumberFormatException ex) {
+                        api.sendPlayerMessage(player, "$msg.gui.none.item_creator.enchant.invalid_lvl$");
+                        return true;
+                    }
+                    Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
+                    if (enchantment != null) {
+                        CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().addUnsafeEnchantment(enchantment, level);
+                    } else {
+                        api.sendPlayerMessage(player, "$msg.gui.none.item_creator.enchant.invalid_enchant$", new String[]{"%ENCHANT%", args[0]});
+                        return true;
+                    }
+                } else {
+                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.enchant.no_lvl$");
                     return true;
                 }
+                return false;
+            }));
+            registerButton(new ChatInputButton("enchantments.remove", new ButtonState("enchantments.remove", Material.RED_CONCRETE), "$msg.none.gui.item_creator.enchant.remove$", (guiHandler, player, s, args) -> {
                 Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
                 if (enchantment != null) {
-                    CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().addUnsafeEnchantment(enchantment, level);
+                    CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().removeEnchantment(enchantment);
                 } else {
                     api.sendPlayerMessage(player, "$msg.gui.none.item_creator.enchant.invalid_enchant$", new String[]{"%ENCHANT%", args[0]});
                     return true;
                 }
-            } else {
-                api.sendPlayerMessage(player, "$msg.gui.none.item_creator.enchant.no_lvl$");
-                return true;
-            }
-            return false;
-        }));
-        registerButton(new ChatInputButton("enchantments.remove", new ButtonState("enchantments.remove", Material.RED_CONCRETE), "$msg.none.gui.item_creator.enchant.remove$", (guiHandler, player, s, args) -> {
-            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
-            if (enchantment != null) {
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().removeEnchantment(enchantment);
-            } else {
-                api.sendPlayerMessage(player, "$msg.gui.none.item_creator.enchant.invalid_enchant$", new String[]{"%ENCHANT%", args[0]});
-                return true;
-            }
-            return false;
-        }));
+                return false;
+            }));
+        }
 
         //LORE SETTINGS
         registerButton(new ActionButton("lore.option", new ButtonState("lore.option", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(guiHandler.getPlayer()).setSubSetting("lore");
             return true;
         })));
-        registerButton(new ChatInputButton("lore.add", new ButtonState("lore.add", Material.WRITABLE_BOOK), "$msg.gui.none.item_creator.lore.add$", (guiHandler, player, s, strings) -> {
-            CustomItem itemStack = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem();
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
-            if (s.equals("&empty")) {
-                lore.add("");
-            } else {
-                lore.add(WolfyUtilities.translateColorCodes(s));
-            }
-            itemMeta.setLore(lore);
-            CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(itemMeta);
-            return false;
-        }));
-        registerButton(new ActionButton("lore.remove", new ButtonState("lore.remove", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ChatUtils.sendLoreManager(player);
-            guiHandler.close();
-            return true;
-        })));
+        {
+            registerButton(new ChatInputButton("lore.add", new ButtonState("lore.add", Material.WRITABLE_BOOK), "$msg.gui.none.item_creator.lore.add$", (guiHandler, player, s, strings) -> {
+                CustomItem itemStack = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem();
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
+                if (s.equals("&empty")) {
+                    lore.add("");
+                } else {
+                    lore.add(WolfyUtilities.translateColorCodes(s));
+                }
+                itemMeta.setLore(lore);
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(itemMeta);
+                return false;
+            }));
+            registerButton(new ActionButton("lore.remove", new ButtonState("lore.remove", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ChatUtils.sendLoreManager(player);
+                guiHandler.close();
+                return true;
+            })));
+        }
 
         //FLAGS SETTINGS
         registerButton(new ActionButton("flags.option", new ButtonState("flags.option", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -246,7 +247,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return true;
             })));
         }
-        //-------------------
 
         //attributes_modifiers SETTINGS
         registerButton(new ActionButton("attribute.option", new ButtonState("attribute.option", Material.ENCHANTED_GOLDEN_APPLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -482,7 +482,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return true;
             })));
         }
-        //-------------------
 
         //PLAYER_HEAD SETTINGS
         registerButton(new ActionButton("player_head.option", new ButtonState("player_head.option", Material.PLAYER_HEAD, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -513,7 +512,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return false;
             }));
         }
-        //-------------------
 
         //POTION SETTINGS
         registerButton(new ActionButton("potion.option", new ButtonState("potion.option", Material.POTION, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -574,7 +572,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return true;
             }));
         }
-        //-------------------
 
         //Unbreakable Setting
         registerButton(new ToggleButton("unbreakable", new ButtonState("unbreakable_on", Material.BEDROCK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -660,7 +657,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         {
             registerButton(new ChatInputButton("custom_model_data.set", new ButtonState("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
                 Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
-                hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.item_creator.custom_model_data.disabled$"))) + "");
+                hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.none.item_creator.custom_model_data.disabled$"))) + "");
                 return itemStack;
             }), "$msg.gui.none.item_creator.custom_model_data.set$", (guiHandler, player, s, strings) -> {
                 ItemMeta itemMeta = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta();
@@ -699,9 +696,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 try {
                     int value = Integer.parseInt(s);
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setDurabilityCost(value);
-                    api.sendPlayerMessage(player, "", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.consume.valid$", new String[]{"%VALUE%", String.valueOf(value)});
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "", new String[]{"%VALUE%", s});
+                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.consume.invalid$", new String[]{"%VALUE%", s});
                     return true;
                 }
                 return false;
@@ -920,7 +917,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         })));
         {
             registerButton(new ChatInputButton("rarity.set", new ButtonState("rarity.set", Material.GREEN_CONCRETE, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                hashMap.put("%VAR%", CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getRarityPercentage() + "&8(&7" + (CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getRarityPercentage() * 100) + "%&8)");
+                hashMap.put("%VAR%", CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getRarityPercentage() + "§8(§7" + (CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getRarityPercentage() * 100) + "%§8)");
                 return itemStack;
             }), "$msg.gui.none.item_creator.rarity.set$", (guiHandler, player, s, strings) -> {
                 try {
@@ -935,7 +932,49 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return true;
             })));
         }
-        for(String meta : dummyMetaSettings.getMetas()){
+
+        registerButton(new ActionButton("persistent_data.option", new ButtonState("persistent_data.option", Material.BOOKSHELF, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(guiHandler.getPlayer()).setSubSetting("persistent_data");
+            return true;
+        })));
+        {
+
+        }
+
+        registerButton(new ActionButton("elite_workbench.option", new ButtonState("elite_workbench.option", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(guiHandler.getPlayer()).setSubSetting("elite_workbench");
+            return true;
+        })));
+        {
+            registerButton(new MultipleChoiceButton("elite_workbench.grid_size",
+                    new ButtonState("elite_workbench.grid_size.size_3", WolfyUtilities.getSkullViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(4);
+                        return true;
+                    }),
+                    new ButtonState("elite_workbench.grid_size.size_4", WolfyUtilities.getSkullViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(5);
+                        return true;
+                    }),
+                    new ButtonState("elite_workbench.grid_size.size_5", WolfyUtilities.getSkullViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(6);
+                        return true;
+                    }),
+                    new ButtonState("elite_workbench.grid_size.size_6", WolfyUtilities.getSkullViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(3);
+                        return true;
+                    })));
+            registerButton(new ToggleButton("elite_workbench.toggle", new ButtonState("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setEnabled(false);
+                return true;
+            }), new ButtonState("elite_workbench.toggle.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setEnabled(true);
+                return true;
+            })));
+        }
+
+
+
+        for (String meta : dummyMetaSettings.getMetas()) {
             registerButton(new MetaIgnoreButton(meta));
         }
     }
@@ -965,9 +1004,6 @@ public class ItemCreator extends ExtendedGuiWindow {
             options.add("enchantments.option");
             options.add("flags.option");
             options.add("attribute.option");
-            if (WolfyUtilities.hasVillagePillageUpdate()) {
-                options.add("custom_model_data.option");
-            }
             if (items.getItem() != null && !items.getItem().getType().equals(Material.AIR)) {
                 options.add("unbreakable");
             }
@@ -984,11 +1020,16 @@ public class ItemCreator extends ExtendedGuiWindow {
             options.add("custom_durability.option");
             options.add("permission.option");
             options.add("rarity.option");
+            if (WolfyUtilities.hasVillagePillageUpdate()) {
+                options.add("custom_model_data.option");
+                options.add("persistent_data.option");
+                options.add("elite_workbench.option");
+            }
 
             int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);
 
-            if(items.getPage() >= maxPages){
-                items.setPage(maxPages-1);
+            if (items.getPage() >= maxPages) {
+                items.setPage(maxPages - 1);
             }
 
             if (items.getPage() > 0) {
@@ -1115,6 +1156,12 @@ public class ItemCreator extends ExtendedGuiWindow {
                     case "rarity":
                         event.setButton(39, "rarity.set");
                         event.setButton(41, "rarity.reset");
+                        break;
+                    case "elite_workbench":
+                        ((MultipleChoiceButton)event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbench)items.getItem().getCustomData("elite_workbench")).getGridSize()-3);
+                        ((ToggleButton)event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbench)items.getItem().getCustomData("elite_workbench")).isEnabled());
+                        event.setButton(39, "elite_workbench.grid_size");
+                        event.setButton(41, "elite_workbench.toggle");
 
 
                 }
@@ -1136,5 +1183,28 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
             }
         }
+    }
+
+    public static void saveItem(PlayerCache cache, String id, CustomItem customItem) {
+        ItemConfig config;
+        String namespace = id.split(":")[0];
+        String key = id.split(":")[1];
+        if (CustomCrafting.hasDataBaseHandler()) {
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, key);
+        } else {
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, CustomCrafting.getInst().getDataFolder() + "/recipes/" + namespace + "/items", key, true, "json");
+        }
+        config.setCustomItem(customItem);
+        if (CustomItems.getCustomItem(id) != null) {
+            CustomItems.removeCustomItem(id);
+        }
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateItem(config);
+        } else {
+            config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        CustomItem customItem1 = new CustomItem(config);
+        cache.getItems().setItem(customItem1);
+        CustomItems.addCustomItem(customItem1);
     }
 }

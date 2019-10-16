@@ -105,9 +105,9 @@ msg:
           invalid_value: "&cThe value &4%VALUE%&c is not a valid number!"
         custom_model_data:
           disabled: "&l&cDisabled"
-          set: "&3Type in the Custom Model Data!"
-          success: "&aSet Model Data to &6%VALUE%&a!"
-          invalid_value: "&cThe value &4%VALUE%&c is not a valid Model Data number!"
+          set: "&3Type in the Custom Model RecipeData!"
+          success: "&aSet Model RecipeData to &6%VALUE%&a!"
+          invalid_value: "&cThe value &4%VALUE%&c is not a valid Model RecipeData number!"
     item_editor:
       input: "&3Type in the folder and name of the item! &6example your_item"
       error: "&cThis item does not exist or is not loaded!"
@@ -566,20 +566,20 @@ items:
       smoker:
         name: "%C%Smoker"
     custom_model_data:
-      name: "&6Custom Model Data"
+      name: "&6Custom Model RecipeData"
       help:
-        - "&7Set the Custom Model Data"
+        - "&7Set the Custom Model RecipeData"
         - "&7Used for custom Models and Textures!"
         - "&7Available since Minecraft 1.14"
     set_custom_model_data:
-      name: "&7Model Data: &7%VAR%"
+      name: "&7Model RecipeData: &7%VAR%"
       help:
-        - "&7Sets the Custom Model Data"
+        - "&7Sets the Custom Model RecipeData"
         - "&7for this item!"
     reset_custom_model_data:
-      name: "&cRemove Model Data"
+      name: "&cRemove Model RecipeData"
       help:
-        - "&7Removes the Custom Model Data"
+        - "&7Removes the Custom Model RecipeData"
         - "&7from this item!"
     replacement_durability:
       name: "&7Durability Cost & Replacement"

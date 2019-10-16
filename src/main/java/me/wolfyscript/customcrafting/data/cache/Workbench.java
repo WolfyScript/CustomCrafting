@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -8,38 +9,30 @@ import org.bukkit.inventory.ItemStack;
 import java.io.Serializable;
 import java.util.*;
 
-public class Workbench implements Serializable {
+public class Workbench extends RecipeData {
 
-    private static final long serialVersionUID = 421L;
     private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     private HashMap<Character, List<CustomItem>> ingredients;
     private List<CustomItem> result;
     private String extend;
     private List<String> overrides;
-    private boolean advWorkbench;
-    private boolean permissions;
     private boolean shapeless;
     private boolean saved;
     private String id;
-    private RecipePriority priority;
-    private boolean exactMeta;
     private int resultCustomAmount;
     private HashMap<Integer, Integer> ingredientsCustomAmount;
 
     public Workbench() {
+        super();
         this.ingredients = new HashMap<>();
         setIngredients(Arrays.asList(new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
         this.result = new ArrayList<>(Collections.singletonList(new CustomItem(Material.AIR)));
         this.extend = "";
         this.overrides = new ArrayList<>();
-        this.advWorkbench = false;
-        this.permissions = true;
         this.shapeless = false;
         this.saved = false;
         this.id = "";
-        this.priority = RecipePriority.NORMAL;
-        this.exactMeta = true;
         this.resultCustomAmount = 1;
         this.ingredientsCustomAmount = new HashMap<>();
     }
@@ -136,22 +129,6 @@ public class Workbench implements Serializable {
         return result;
     }
 
-    public void setAdvWorkbench(boolean advWorkbench) {
-        this.advWorkbench = advWorkbench;
-    }
-
-    public boolean isAdvWorkbench() {
-        return advWorkbench;
-    }
-
-    public void setPermissions(boolean permissions) {
-        this.permissions = permissions;
-    }
-
-    public boolean isPermissions() {
-        return permissions;
-    }
-
     public void setShapeless(boolean shapeless) {
         this.shapeless = shapeless;
     }
@@ -190,22 +167,6 @@ public class Workbench implements Serializable {
 
     public String getId() {
         return id;
-    }
-
-    public RecipePriority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(RecipePriority priority) {
-        this.priority = priority;
-    }
-
-    public boolean isExactMeta() {
-        return exactMeta;
-    }
-
-    public void setExactMeta(boolean exactMeta) {
-        this.exactMeta = exactMeta;
     }
 
     public int getResultCustomAmount() {

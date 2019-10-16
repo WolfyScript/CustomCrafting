@@ -3,9 +3,10 @@ package me.wolfyscript.customcrafting.placeholderapi;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -65,17 +66,17 @@ public class PlaceHolder extends PlaceholderExpansion {
                             break;
                         return String.valueOf(cache.getRecipeCrafts(recipeID));
                     case "workbench":
-                        if (recipe instanceof CraftingRecipe) {
-                            return String.valueOf(((CraftingRecipe) recipe).needsAdvancedWorkbench());
+                        if (recipe instanceof AdvancedCraftConfig) {
+                            return String.valueOf(((AdvancedCraftConfig) recipe).needsAdvancedWorkbench());
                         }
                         break;
                     case "permission":
-                        if (recipe instanceof CraftingRecipe) {
-                            return String.valueOf(((CraftingRecipe) recipe).needsPermission());
+                        if (recipe instanceof AdvancedCraftConfig) {
+                            return String.valueOf(((AdvancedCraftConfig) recipe).needsPermission());
                         }
                         break;
                     case "has_perm":
-                        if (recipe instanceof CraftingRecipe) {
+                        if (recipe instanceof AdvancedCraftConfig) {
                             if (p.isOnline()) {
                                 Player player = Bukkit.getPlayer(p.getUniqueId());
                                 return String.valueOf(WolfyUtilities.hasPermission(player, "customcrafting.craft." + recipeID));

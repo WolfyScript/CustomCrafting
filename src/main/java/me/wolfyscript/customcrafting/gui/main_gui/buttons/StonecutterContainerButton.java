@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Stonecutter;
-import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -29,6 +29,17 @@ public class StonecutterContainerButton extends ItemInputButton {
                 Stonecutter stonecutter = cache.getStonecutter();
                 if (inputSlot == 1) {
                     //RESULT STUFF
+                    if (event.isRightClick() && event.isShiftClick()) {
+                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                            if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
+                                CustomCrafting.getPlayerCache(player).getItems().setItem("single", inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
+                                guiHandler.changeToInv("item_editor");
+                            }
+                        });
+                        return true;
+                    } else {
+                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> stonecutter.setResult(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                    }
                 } else {
                     if (event.isRightClick() && event.isShiftClick()) {
                         List<CustomItem> variants = new ArrayList<>();
@@ -51,6 +62,9 @@ public class StonecutterContainerButton extends ItemInputButton {
                 Stonecutter stonecutter = CustomCrafting.getPlayerCache(player).getStonecutter();
                 if (inputSlot == 1) {
                     //RESULT STUFF
+                    if (stonecutter.getResult() != null && !stonecutter.getResult().getType().equals(Material.AIR)) {
+                        itemStack = stonecutter.getResult();
+                    }
                 } else {
                     if (stonecutter.getSource() != null && !stonecutter.getSource().isEmpty()) {
                         itemStack = stonecutter.getSource().get(0);

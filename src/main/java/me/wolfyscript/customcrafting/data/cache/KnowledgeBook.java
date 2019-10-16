@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -13,13 +13,8 @@ public class KnowledgeBook {
     private int page;
     private Setting setting;
     private WorkbenchFilter workbenchFilter;
-
-    private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-
     private CustomItem result;
-
     private CustomRecipe customRecipe;
-
     private int timerTask;
     private HashMap<Integer, Integer> timerTimings;
 

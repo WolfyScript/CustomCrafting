@@ -10,9 +10,12 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends ExtendedGuiWindow {
 
@@ -55,6 +58,11 @@ public class MainMenu extends ExtendedGuiWindow {
             })));
             registerButton(new ActionButton("stonecutter", new ButtonState("stonecutter", Material.STONECUTTER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 CustomCrafting.getPlayerCache(player).setSetting(Setting.STONECUTTER);
+                guiHandler.changeToInv("recipe_editor");
+                return true;
+            })));
+            registerButton(new ActionButton("elite_workbench", new ButtonState("elite_workbench", new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(player).getKnowledgeBook().setSetting(Setting.ELITE_WORKBENCH);
                 guiHandler.changeToInv("recipe_editor");
                 return true;
             })));
@@ -109,17 +117,19 @@ public class MainMenu extends ExtendedGuiWindow {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onUpdateGuis(GuiUpdateEvent event) {
         if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null && event.getGuiHandler().getCurrentInv().equals(event.getGuiWindow())) {
-            for (int i = 0; i < 9; i++) {
-                event.setButton(i, "none", "glass_white");
-            }
-            for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize() - 9; i++) {
-                event.setButton(i, "none", "glass_gray");
-            }
-            for (int i = event.getGuiHandler().getCurrentInv().getSize() - 9; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
-                event.setButton(i, "none", "glass_white");
-            }
-            if (event.getGuiHandler().getCurrentInv().getSize() > 8) {
-                event.setButton(8, "none", "gui_help");
+            if(!event.getGuiWindow().getClusterID().equals("crafting")){
+                for (int i = 0; i < 9; i++) {
+                    event.setButton(i, "none", "glass_white");
+                }
+                for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize() - 9; i++) {
+                    event.setButton(i, "none", "glass_gray");
+                }
+                for (int i = event.getGuiHandler().getCurrentInv().getSize() - 9; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
+                    event.setButton(i, "none", "glass_white");
+                }
+                if (event.getGuiHandler().getCurrentInv().getSize() > 8) {
+                    event.setButton(8, "none", "gui_help");
+                }
             }
         }
     }

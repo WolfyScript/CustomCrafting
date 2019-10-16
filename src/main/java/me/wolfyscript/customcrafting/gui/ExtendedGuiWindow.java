@@ -13,14 +13,4 @@ public class ExtendedGuiWindow extends GuiWindow {
     public ExtendedGuiWindow(String namespace, InventoryAPI inventoryAPI, int size) {
         super(namespace, inventoryAPI, size);
     }
-
-    @Override
-    public boolean onAction(GuiAction guiAction) {
-        if (guiAction.getAction().startsWith("gui_help_")) {
-            guiAction.getGuiHandler().setHelpEnabled(!guiAction.getGuiHandler().isHelpEnabled());
-            return true;
-        }
-        return false;
-
-    }
 }

@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.VariantsData;
-import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;

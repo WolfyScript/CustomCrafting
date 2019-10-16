@@ -2,19 +2,25 @@ package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
-import me.wolfyscript.customcrafting.items.CustomItem;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
@@ -66,7 +72,6 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         break;
                     case "reload":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-                            //TODO RELOAD
                             CustomCrafting.getApi().getInventoryAPI().reset();
                             CustomCrafting.getApi().getLanguageAPI().unregisterLanguages();
                             CustomCrafting.getConfigHandler().getConfig().save();
@@ -100,10 +105,10 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                         api.sendPlayerMessage(p, "$msg.commands.give.invalid_amount$");
                                     }
                                 }
-                                CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
+                                me.wolfyscript.utilities.api.custom_items.CustomItem customItem = CustomItems.getCustomItem(namespacekey);
                                 if (customItem != null) {
                                     if (InventoryUtils.hasInventorySpace(target, customItem)) {
-                                        ItemStack itemStack = customItem.getAsItemStack();
+                                        ItemStack itemStack = customItem.getItemStack();
                                         itemStack.setAmount(amount);
                                         target.getInventory().addItem(itemStack);
                                         if (amount > 1) {
@@ -163,7 +168,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                 }
                             }
                         }
-
+                        break;
                 }
             }
         } else {
@@ -185,7 +190,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                 api.sendConsoleMessage("$msg.commands.give.invalid_amount$");
                             }
                         }
-                        CustomItem customItem = CustomCrafting.getRecipeHandler().getCustomItem(namespacekey);
+                        CustomItem customItem = CustomItems.getCustomItem(namespacekey);
                         if (customItem != null) {
                             if (InventoryUtils.hasInventorySpace(target, customItem)) {
                                 ItemStack itemStack = new ItemStack(customItem);
@@ -249,7 +254,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings", "database", "reload");
+    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings", "database", "reload", "addAdvWorkbench");
     private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type", "advanced_workbench");
     private final List<String> DATABASE = Arrays.asList("export_data");
 
@@ -268,7 +273,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     case 3:
                         //Item completion
                         List<String> items = new ArrayList<>();
-                        CustomCrafting.getRecipeHandler().getCustomItems().forEach(customItem -> items.add(customItem.getId()));
+                        CustomItems.getCustomItems().forEach(customItem -> items.add(customItem.getId()));
                         StringUtil.copyPartialMatches(strings[2], items, results);
                         break;
                 }

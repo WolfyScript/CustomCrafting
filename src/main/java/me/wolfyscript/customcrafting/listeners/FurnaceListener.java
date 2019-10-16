@@ -1,10 +1,11 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class FurnaceListener implements Listener {
 
-    List<InventoryType> invs = new ArrayList<>();
+    private List<InventoryType> invs = new ArrayList<>();
 
     public FurnaceListener() {
         invs.add(InventoryType.FURNACE);
@@ -40,7 +41,7 @@ public class FurnaceListener implements Listener {
                 }
                 ItemStack input = event.getCursor();
                 if (input != null) {
-                    for (CustomItem customItem : CustomCrafting.getRecipeHandler().getCustomItems()) {
+                    for (CustomItem customItem : CustomItems.getCustomItems()) {
                         if (customItem.getBurnTime() > 0) {
                             if (customItem.isSimilar(input)) {
                                 if (customItem.getAllowedBlocks().contains(material)) {
@@ -129,7 +130,7 @@ public class FurnaceListener implements Listener {
             Material material = Material.valueOf(event.getDestination().getType().toString());
             ItemStack input = event.getItem();
 
-            for (CustomItem customItem : CustomCrafting.getRecipeHandler().getCustomItems()) {
+            for ( customItem : CustomItems.getCustomItems()) {
                 if (customItem.getBurnTime() > 0) {
                     if (customItem.isSimilar(input)) {
                         if(event.getDestination().getLocation() != null && event.getSource().getLocation() != null){
@@ -162,7 +163,7 @@ public class FurnaceListener implements Listener {
     @EventHandler
     public void onBurn(FurnaceBurnEvent event) {
         ItemStack input = event.getFuel();
-        for (CustomItem customItem : CustomCrafting.getRecipeHandler().getCustomItems()) {
+        for (CustomItem customItem : CustomItems.getCustomItems()) {
             if (customItem.getBurnTime() > 0) {
                 if (customItem.isSimilar(input)) {
                     if (customItem.getAllowedBlocks().contains(event.getBlock().getType())) {
@@ -188,7 +189,10 @@ public class FurnaceListener implements Listener {
                         items.add(customItem.getRarityPercentage(), customItem);
                     }
                     if(!items.isEmpty()){
-                        event.setResult(items.next());
+                        ItemStack item = items.next();
+                        if(!event.getResult().isSimilar(item)){
+                            event.setResult(item);
+                        }
                     }
                     break;
                 }

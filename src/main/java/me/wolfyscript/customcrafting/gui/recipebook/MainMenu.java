@@ -8,8 +8,11 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends ExtendedGuiWindow {
 
@@ -52,6 +55,11 @@ public class MainMenu extends ExtendedGuiWindow {
             })));
             registerButton(new ActionButton("stonecutter", new ButtonState("stonecutter", Material.STONECUTTER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 CustomCrafting.getPlayerCache(player).getKnowledgeBook().setSetting(Setting.STONECUTTER);
+                guiHandler.changeToInv("recipe_book");
+                return true;
+            })));
+            registerButton(new ActionButton("elite_workbench", new ButtonState("elite_workbench", new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(player).getKnowledgeBook().setSetting(Setting.ELITE_WORKBENCH);
                 guiHandler.changeToInv("recipe_book");
                 return true;
             })));

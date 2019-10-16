@@ -3,8 +3,10 @@ package me.wolfyscript.customcrafting;
 import com.sun.istack.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
+import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
@@ -13,6 +15,8 @@ import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
@@ -42,7 +46,9 @@ public class CustomCrafting extends JavaPlugin {
     private static ConfigHandler configHandler;
     private static RecipeHandler recipeHandler;
     private static DataBaseHandler dataBaseHandler = null;
+
     private static Workbenches workbenches = null;
+    private static Cauldrons cauldrons = null;
 
     private static final boolean betaVersion = false;
 
@@ -51,6 +57,11 @@ public class CustomCrafting extends JavaPlugin {
 
     public static final Pattern VALID_NAMESPACE = Pattern.compile("[a-z0-9._-]+");
     public static final Pattern VALID_KEY = Pattern.compile("[a-z0-9/._-]+");
+
+    @Override
+    public void onLoad() {
+        CustomItem.registerCustomData(new EliteWorkbench());
+    }
 
     public void onEnable() {
         instance = this;
@@ -93,14 +104,14 @@ public class CustomCrafting extends JavaPlugin {
 
         if (loaded) {
             System.out.println("------------------------------------------------------------------------");
-
             getServer().getPluginManager().registerEvents(new CraftListener(api), this);
-            getServer().getPluginManager().registerEvents(new BlockListener(), this);
+            getServer().getPluginManager().registerEvents(new BlockListener(api), this);
             getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
             getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
             getServer().getPluginManager().registerEvents(new AnvilListener(), this);
             getServer().getPluginManager().registerEvents(new EnchantListener(), this);
-
+            getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
+            getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
             CommandCC commandCC = new CommandCC();
             if (configHandler.getConfig().isCCenabled()) {
                 getCommand("cc").setExecutor(commandCC);
@@ -110,20 +121,17 @@ public class CustomCrafting extends JavaPlugin {
             getCommand("customcrafting").setTabCompleter(commandCC);
             getCommand("recipes").setExecutor(new CommandRecipe());
             getCommand("recipes").setTabCompleter(new CommandRecipe());
-
             loadPlayerCache();
-
             invHandler.init();
-
             workbenches = new Workbenches(api);
 
+            cauldrons = new Cauldrons(api);
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 api.sendConsoleMessage("$msg.startup.placeholder$");
                 new PlaceHolder().register();
             }
             recipeHandler.load();
             checkUpdate(null);
-
             Metrics metrics = new Metrics(this);
             metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
             metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
@@ -146,6 +154,8 @@ public class CustomCrafting extends JavaPlugin {
             getConfigHandler().getConfig().save();
             workbenches.endTask();
             workbenches.save();
+            cauldrons.endAutoSaveTask();
+            cauldrons.save();
             getRecipeHandler().onSave();
             savePlayerCache();
         }
@@ -212,6 +222,10 @@ public class CustomCrafting extends JavaPlugin {
 
     public static Workbenches getWorkbenches() {
         return workbenches;
+    }
+
+    public static Cauldrons getCauldrons() {
+        return cauldrons;
     }
 
     public static boolean hasPlayerCache(Player player) {

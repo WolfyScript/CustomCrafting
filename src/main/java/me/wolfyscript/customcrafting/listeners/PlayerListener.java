@@ -1,10 +1,9 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.NamespacedKey;
@@ -43,7 +42,6 @@ public class PlayerListener implements Listener {
             CustomCrafting.getApi().sendConsoleMessage("Initializing new cache for " + player.getDisplayName());
             CustomCrafting.renewPlayerCache(player);
         }
-        InventoryAPI inventoryAPI = CustomCrafting.getApi().getInventoryAPI();
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (CustomCrafting.isOutdated()) {
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
@@ -65,6 +63,7 @@ public class PlayerListener implements Listener {
                     if (unhidden.equals("cc_knowledgebook")) {
                         Player p = event.getPlayer();
                         event.setUseItemInHand(Event.Result.DENY);
+                        event.setCancelled(true);
                         if (event.hasBlock()) {
                             if (event.getClickedBlock().getType().isInteractable()) {
                                 return;
@@ -78,5 +77,4 @@ public class PlayerListener implements Listener {
             }
         }
     }
-
 }

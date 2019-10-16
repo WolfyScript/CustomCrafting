@@ -1,6 +1,6 @@
 {
   "consumed": false,
-  "item": "H4sIAAAAAAAAAG2PQWvCQBCFn4mlSei10FOhYc/+AK+ieCi9SQ9SwiYZ4+JmI5tpVaS/Z//H/jLXgHgRhoF58/F4LwMSRKrGW6sMVVZueDpsZZqCZalphKdZ92t4lCFm2cRIl6qmhZZNDyCoz7Xq91qeUow/O0tJUCO8r79XHz/iZjU5dHZXkqm2Ex0YAeFdNUzh3cG7zjvr3c670jvyzgyvbYLxl2wJ4pwzHTmf5o8MTUBE/o8UL/NwS8MtGe6za7oIsf7Tt46v944bZamQ/Z4qDtwFprOcpQYBAAA\u003d",
+  "item": "H4sIAAAAAAAAAG2PQWvCQBCFn4nFJPRa6NUll17s3Wtp6aH0Jj2IhE0yxsXNRjbT2iL+nv0f+8u6BtSLMAzMm28e8zIgQaRqPLbKUGXlmudDV6YpWJaaRrh76b4NjzLELJsY6buq6U3LpgcQ1Emt+p2WfynGH52lJKgRng6C6ZfFXCy/FtNVfvac7Tu7LclUm5kOcC6OeL6g3lVDFd7tveu8s95tvSu9I+/MsNqIY4Lxp2wJ+eXulrsJyMk9xf1rmKXhlgz32ennCLH+0efkD9fka2WpkP2OKg7cP82VqtwcAQAA",
   "durability_cost": 0,
   "meta": "{\"damage\":\"EXACT\",\"potion\":\"EXACT\",\"lore\":\"EXACT\",\"playerHead\":\"EXACT\",\"flags\":\"EXACT\",\"attributes_modifiers\":\"EXACT\",\"customModelData\":\"EXACT\",\"enchant\":\"EXACT\",\"custom_damage\":\"EXACT\",\"name\":\"EXACT\",\"unbreakable\":\"EXACT\",\"custom_durability\":\"EXACT\",\"repairCost\":\"EXACT\"}",
   "fuel": {
@@ -10,6 +10,7 @@
     ]
   },
   "rarity_percentage": 1.0,
+  "permission": "",
   "replacement": {
     "item": "H4sIAAAAAAAAAONiYOBgYMpMYeDPzcxLTS5KTCuxKi7Jz0tlZGB1zi/NK2FkAADx5nVMIwAAAA\u003d\u003d"
   }

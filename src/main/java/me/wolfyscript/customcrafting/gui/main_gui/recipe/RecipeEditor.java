@@ -2,9 +2,10 @@ package me.wolfyscript.customcrafting.gui.main_gui.recipe;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -27,7 +28,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("create_recipe", new ButtonState("create_recipe", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("recipe_creator");
+            changeToCreator(guiHandler);
             return true;
         })));
         registerButton(new ActionButton("edit_recipe", new ButtonState("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -38,7 +39,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                 if (args.length > 1) {
                     CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
                     if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, player1)) {
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler1.changeToInv("recipe_creator"), 1);
+                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
                         api.sendPlayerMessage(player1, "$msg.gui.none.recipe_editor.invalid_recipe$", new String[]{"%RECIPE_TYPE%", CustomCrafting.getPlayerCache(player1).getSetting().name()});
@@ -59,7 +60,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                     api.sendActionMessage(player1, new ClickData("$msg.gui.none.recipe_editor.delete.confirmed$", (wolfyUtilities, player2) -> Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
                         if (CustomCrafting.hasDataBaseHandler()) {
-                            CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getFolder(), recipe.getConfig().getName());
+                            CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getNamespace(), recipe.getConfig().getName());
                             player1.sendMessage("§aRecipe deleted!");
                         } else {
                             if (recipe.getConfig().getConfigFile().delete()) {
@@ -89,6 +90,22 @@ public class RecipeEditor extends ExtendedGuiWindow {
             event.setButton(20, "create_recipe");
             event.setButton(22, "edit_recipe");
             event.setButton(24, "delete_recipe");
+        }
+    }
+
+    private void changeToCreator(GuiHandler guiHandler){
+        switch (CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getSetting()){
+            case WORKBENCH:
+            case ELITE_WORKBENCH:
+            case STONECUTTER:
+            case ANVIL:
+                guiHandler.changeToInv("recipe_creator", CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getSetting().getId());
+                break;
+            case FURNACE:
+            case CAMPFIRE:
+            case SMOKER:
+            case BLAST_FURNACE:
+                guiHandler.changeToInv("recipe_creator", "cooking");
         }
     }
 }

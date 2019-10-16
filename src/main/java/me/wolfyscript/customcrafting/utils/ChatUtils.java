@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.utils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
-import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
@@ -56,7 +56,7 @@ public class ChatUtils {
         ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
         switch (cache.getSetting()) {
             case WORKBENCH:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getCraftingRecipes());
+                customRecipes.addAll(CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes());
                 break;
             case FURNACE:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getFurnaceRecipes());
@@ -127,7 +127,7 @@ public class ChatUtils {
         }
         api.sendPlayerMessage(player, "");
         api.sendPlayerMessage(player, "-------------------------------------------------");
-        api.sendActionMessage(player, new ClickData("                        §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openPreviousInv(), true));
+        api.sendActionMessage(player, new ClickData("                        §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
     }
 
     public static void sendAttributeModifierManager(Player player) {
@@ -160,14 +160,13 @@ public class ChatUtils {
                 api.sendPlayerMessage(player, "&cNo attributes set yet!");
             }
         }
-
         api.sendPlayerMessage(player, "");
         api.sendPlayerMessage(player, "-------------------------------------------------");
         api.sendActionMessage(player, new ClickData("                     §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> {
             for (int i = 0; i < 15; i++) {
                 player.sendMessage("");
             }
-            api.getInventoryAPI().getGuiHandler(player1).openPreviousInv();
+            api.getInventoryAPI().getGuiHandler(player1).openCluster();
         }, true));
     }
 

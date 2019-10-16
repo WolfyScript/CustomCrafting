@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class PlayerCache {
     private VariantsData variantsData = new VariantsData();
 
     private ChatLists chatLists = new ChatLists();
+    private EliteWorkbenchData eliteWorkbenchData = new EliteWorkbenchData();
 
     //RECIPE_LIST OF ALL RECIPE CACHES
     private Workbench workbench = new Workbench();
@@ -30,7 +32,6 @@ public class PlayerCache {
     private Smoker smoker = new Smoker();
     private Campfire campfire = new Campfire();
     private Stonecutter stonecutter = new Stonecutter();
-
 
     public PlayerCache(UUID uuid) {
         this.uuid = uuid;
@@ -117,6 +118,23 @@ public class PlayerCache {
         return null;
     }
 
+    public RecipeData getRecipeData(){
+        switch (getSetting()){
+            case BLAST_FURNACE:
+            case SMOKER:
+            case CAMPFIRE:
+            case FURNACE:
+                return getCookingData();
+            case STONECUTTER:
+                return getStonecutter();
+            case ANVIL:
+                return getAnvil();
+            case WORKBENCH:
+                return getWorkbench();
+        }
+        return null;
+    }
+
     public VariantsData getVariantsData() {
         return variantsData;
     }
@@ -187,6 +205,10 @@ public class PlayerCache {
 
     public void setItems(Items items) {
         this.items = items;
+    }
+
+    public EliteWorkbenchData getEliteWorkbenchData() {
+        return eliteWorkbenchData;
     }
 
     private Object getObject(String key) {
@@ -270,5 +292,18 @@ public class PlayerCache {
 
     public void resetChatRecipeList() {
         this.chatLists = new ChatLists();
+    }
+
+    public void applyItem(CustomItem customItem){
+        if (getItems().getType().equals("variant")) {
+            //Set values to variant cache
+            getVariantsData().putVariant(getItems().getVariantSlot(), customItem);
+        }else if(getItems().getType().equals("single")){
+            switch (getSetting()){
+                case STONECUTTER:
+                    getStonecutter().setResult(getItems().getItem());
+                    break;
+            }
+        }
     }
 }

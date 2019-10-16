@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
@@ -29,8 +29,6 @@ public class Items implements Serializable {
     private String attributeUUID;
     private String attributeName;
 
-    private CustomItem variantItem;
-
     public Items() {
         this.page = 0;
         this.playerHeadSetting = new ItemStack(Material.AIR);
@@ -47,8 +45,6 @@ public class Items implements Serializable {
         this.attribAmount = 0.5;
         this.attributeUUID = "";
         this.attributeName = "";
-
-        this.variantItem = new CustomItem(Material.AIR);
 
         this.anvilSlot = 0;
     }

@@ -1,24 +1,28 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.CustomConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.anvil.AnvilConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.blast_furnace.BlastingConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.campfire.CampfireConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.furnace.FurnaceConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.items.ItemConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.smoker.SmokerConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.stonecutter.StonecutterConfig;
-import me.wolfyscript.customcrafting.configs.custom_configs.workbench.CraftConfig;
-import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.campfire.CustomCampfireRecipe;
-import me.wolfyscript.customcrafting.recipes.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.smoker.CustomSmokerRecipe;
-import me.wolfyscript.customcrafting.recipes.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.workbench.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.workbench.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.custom_items.ItemConfig;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
+import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
+import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
+import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
+import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
+import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
+import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
+import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
+import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
+import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
+import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -89,41 +93,12 @@ public class DataBaseHandler {
         while (resultSet.next()) {
             String namespace = resultSet.getString("rNamespace");
             String key = resultSet.getString("rKey");
-            String type = resultSet.getString("rType");
-            String data = resultSet.getString("rData");
             api.sendConsoleMessage("- " + namespace + ":" + key);
-            try {
-                switch (type) {
-                    case "workbench":
-                        CraftConfig config = new CraftConfig(data, configAPI, namespace, key);
-                        if (config.isShapeless()) {
-                            recipeHandler.registerRecipe(new ShapelessCraftRecipe(config));
-                        } else {
-                            recipeHandler.registerRecipe(new ShapedCraftRecipe(config));
-                        }
-                        break;
-                    case "furnace":
-                        recipeHandler.registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(data, configAPI, namespace, key)));
-                        break;
-                    case "anvil":
-                        recipeHandler.registerRecipe(new CustomAnvilRecipe(new AnvilConfig(data, configAPI, namespace, key)));
-                        break;
-                    case "blast_furnace":
-                        recipeHandler.registerRecipe(new CustomBlastRecipe(new BlastingConfig(data, configAPI, namespace, key)));
-                        break;
-                    case "smoker":
-                        recipeHandler.registerRecipe(new CustomSmokerRecipe(new SmokerConfig(data, configAPI, namespace, key)));
-                        break;
-                    case "campfire":
-                        recipeHandler.registerRecipe(new CustomCampfireRecipe(new CampfireConfig(data, configAPI, namespace, key)));
-                        break;
-                    case "stonecutter":
-                        recipeHandler.registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(data, configAPI, namespace, key)));
-                        break;
-                    case "enchant":
-                }
-            } catch (Exception ex) {
-                ChatUtils.sendRecipeItemLoadingError(namespace, key, type, ex);
+            CustomRecipe recipe = getRecipe(namespace, key);
+            if(recipe != null){
+                recipeHandler.registerRecipe(getRecipe(namespace, key));
+            }else{
+                api.sendConsoleMessage("Error loading recipe \""+namespace+":"+"\". Couldn't find recipe in DataBase!");
             }
         }
     }
@@ -138,7 +113,7 @@ public class DataBaseHandler {
                 String key = resultSet.getString("rKey");
                 api.sendConsoleMessage("- " + namespace + ":" + key);
                 ItemConfig itemConfig = new ItemConfig(resultSet.getString("rData"), configAPI, namespace, key);
-                recipeHandler.setCustomItem(itemConfig);
+                CustomItems.setCustomItem(itemConfig);
             }
         }
     }
@@ -165,7 +140,7 @@ public class DataBaseHandler {
 
     public boolean hasRecipe(String namespace, String key) {
         try {
-            ResultSet resultSet = getRecipe(namespace, key);
+            ResultSet resultSet = getRecipeData(namespace, key);
             return resultSet.isBeforeFirst();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -173,7 +148,7 @@ public class DataBaseHandler {
         return false;
     }
 
-    public ResultSet getRecipe(String namespace, String key) {
+    public ResultSet getRecipeData(String namespace, String key) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("SELECT rType, rData FROM customcrafting_recipes WHERE rNamespace=? AND rKey=?");
             pState.setString(1, namespace);
@@ -185,32 +160,90 @@ public class DataBaseHandler {
         return null;
     }
 
-    public void addRecipe(CustomConfig data) {
+    public CustomRecipe getRecipe(String namespace, String key) {
+        ResultSet resultSet = getRecipeData(namespace, key);
+        try {
+            while (resultSet.next()) {
+                String type = resultSet.getString("rType");
+                String data = resultSet.getString("rData");
+                try {
+                    switch (type) {
+                        case "workbench":
+                            AdvancedCraftConfig config = new AdvancedCraftConfig(data, configAPI, namespace, key);
+                            if (config.isShapeless()) {
+                                return new ShapelessCraftRecipe(config);
+                            } else {
+                                return new ShapedCraftRecipe(config);
+                            }
+                        case "furnace":
+                            return new CustomFurnaceRecipe(new FurnaceConfig(data, configAPI, namespace, key));
+                        case "anvil":
+                            return new CustomAnvilRecipe(new AnvilConfig(data, configAPI, namespace, key));
+                        case "blast_furnace":
+                            return new CustomBlastRecipe(new BlastingConfig(data, configAPI, namespace, key));
+                        case "smoker":
+                            return new CustomSmokerRecipe(new SmokerConfig(data, configAPI, namespace, key));
+                        case "campfire":
+                            return new CustomCampfireRecipe(new CampfireConfig(data, configAPI, namespace, key));
+                        case "stonecutter":
+                            return new CustomStonecutterRecipe(new StonecutterConfig(data, configAPI, namespace, key));
+                        case "enchant":
+                            break;
+                        case "cauldron":
+                            return new CauldronRecipe(new CauldronConfig(data, configAPI, namespace, key));
+                    }
+                } catch (Exception ex) {
+                    ChatUtils.sendRecipeItemLoadingError(namespace, key, type, ex);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void addRecipe(RecipeConfig data) {
+        addRecipe(data, true);
+    }
+
+    public void addRecipe(RecipeConfig data, boolean async) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) values (?, ?, ?, ?)");
-            pState.setString(1, data.getFolder());
+            pState.setString(1, data.getNamespace());
             pState.setString(2, data.getName());
             pState.setString(3, data.getConfigType());
             pState.setString(4, data.toString());
-            dataBase.executeUpdate(pState);
+            if(async){
+                dataBase.executeUpdate(pState);
+            }else{
+                pState.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateRecipe(CustomConfig data) {
-        if (hasRecipe(data.getFolder(), data.getName())) {
+    public void updateRecipe(RecipeConfig data) {
+        updateRecipe(data, true);
+    }
+
+    public void updateRecipe(RecipeConfig data, boolean async) {
+        if (hasRecipe(data.getNamespace(), data.getName())) {
             try {
                 PreparedStatement pState = dataBase.getPreparedStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");
                 pState.setString(1, data.toString());
-                pState.setString(2, data.getFolder());
+                pState.setString(2, data.getNamespace());
                 pState.setString(3, data.getName());
-                dataBase.executeUpdate(pState);
+                if(async){
+                    dataBase.executeUpdate(pState);
+                }else{
+                    pState.executeUpdate();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
-            addRecipe(data);
+            addRecipe(data, async);
         }
     }
 
@@ -251,7 +284,7 @@ public class DataBaseHandler {
     public void addItem(ItemConfig data) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("INSERT INTO customcrafting_items (rNamespace, rKey, rData) values (?, ?, ?)");
-            pState.setString(1, data.getFolder());
+            pState.setString(1, data.getNamespace());
             pState.setString(2, data.getName());
             pState.setString(3, data.toString());
             dataBase.executeUpdate(pState);
@@ -261,11 +294,11 @@ public class DataBaseHandler {
     }
 
     public void updateItem(ItemConfig data) {
-        if (hasItem(data.getFolder(), data.getName())) {
+        if (hasItem(data.getNamespace(), data.getName())) {
             try {
                 PreparedStatement pState = dataBase.getPreparedStatement("UPDATE customcrafting_items SET rData=? WHERE rNamespace=? AND rKey=?");
                 pState.setString(1, data.toString());
-                pState.setString(2, data.getFolder());
+                pState.setString(2, data.getNamespace());
                 pState.setString(3, data.getName());
                 dataBase.executeUpdate(pState);
             } catch (SQLException e) {

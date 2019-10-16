@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.VariantContainerButton;
-import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -13,7 +13,6 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class VariantMenu extends ExtendedGuiWindow {
@@ -34,20 +33,19 @@ public class VariantMenu extends ExtendedGuiWindow {
                     if (cache.getVariantsData().getSlot() == 9) {
                         List<CustomItem> items = cache.getVariantsData().getVariants();
                         items.removeIf(item -> item.getType().equals(Material.AIR));
-                        System.out.println("List: "+items);
+                        System.out.println("List: " + items);
                         cache.getWorkbench().setResult(items);
                     } else {
                         cache.getWorkbench().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
                     }
                     break;
                 case ANVIL:
-                    if (cache.getVariantsData().getSlot() == 2) {
-                        List<CustomItem> items = cache.getVariantsData().getVariants();
-                        items.removeIf(item -> item.getType().equals(Material.AIR));
-                        cache.getAnvil().setResult(items);
-                    } else {
-                        cache.getAnvil().setIngredient(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
-                    }
+
+                    List<CustomItem> items = cache.getVariantsData().getVariants();
+                    items.removeIf(item -> item.getType().equals(Material.AIR));
+
+                    cache.getAnvil().setIngredient(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
+
                     break;
                 case STONECUTTER:
                     if (cache.getVariantsData().getSlot() != 1) {

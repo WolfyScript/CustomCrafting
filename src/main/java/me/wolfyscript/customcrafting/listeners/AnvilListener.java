@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -144,11 +144,7 @@ public class AnvilListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() instanceof AnvilInventory) {
             AnvilInventory inventory = (AnvilInventory) event.getClickedInventory();
-            System.out.print("Took item: " + inventory.getItem(2));
-            System.out.print("c: " + event.isCancelled());
             //TODO: Input consume method
         }
-
-
     }
 }

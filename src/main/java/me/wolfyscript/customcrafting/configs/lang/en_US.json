@@ -138,6 +138,10 @@
             "success": "&aSet Model Data to &6%VALUE%&a!",
             "invalid_value": "&cThe value &4%VALUE%&c is not a valid Model Data number!"
           },
+          "consume": {
+            "valid": "&aSet the durability cost to &e%VALUE%",
+            "invalid": "&cThis is not a Number! Please type in a Valid number e.g. &e1 &7or&e -1"
+          },
           "durability_cost": "&3Type in the durability cost, which will be subtracted from the item when used in the crafting grid",
           "custom_durability": {
             "set_durability": "&3Type in the custom durability. &cMax value: 2,147,483,647",
@@ -787,7 +791,7 @@
           },
           "custom_model_data": {
             "option": {
-              "name": "&6Custom Model Data",
+              "name": "&6Custom Model Data &8[&71.14+&8]",
               "help": [
                 "&7Set the Custom Model Data",
                 "&7Used for custom Models and Textures!",
@@ -942,9 +946,62 @@
             },
             "reset": {
               "name": "&7Reset the rarity percentage",
-              "lore":[
+              "lore": [
                 "&7Resets the percentage to 1.0 (100%)"
               ]
+            }
+          },
+          "persistent_data": {
+            "option": {
+              "name": "&6Persistent NBT Data &8[&71.14+&8]",
+              "lore": [
+                "&7Store custom data in NBT, linked to an key."
+              ]
+            }
+          },
+          "elite_workbench": {
+            "option": {
+              "name": "&6Elite Workbench &8[&71.14+&8]",
+              "lore": [
+                "&7Create and Configure your own unique Workbench",
+                "&7e.g. Custom GUI, 5x5 crafting field, custom Particles"
+              ]
+            },
+            "grid_size": {
+              "size_3": {
+                "name": "&7Grid size: &73&8x&73",
+                "lore": [
+                  "&7Vanilla style crafting in a 3x3 crafting table"
+                ]
+              },
+              "size_4": {
+                "name": "&7Grid size: &e4&8x&e4",
+                "lore": [
+                  "&7More space for crafting. Create advanced items."
+                ]
+              },
+              "size_5": {
+                "name": "&7Grid size: &65&8x&65",
+                "lore": [
+                  "&7Even more slots... More advanced Items I guess"
+                ]
+              },
+              "size_6": {
+                "name": "&7Grid size: &46&8x&46",
+                "lore": [
+                  "",
+                  "&7oh ok... wtf. Who needs this many slots for crafting?",
+                  "&7You? ok. alright then, but do not craft so many items at once!"
+                ]
+              }
+            },
+            "toggle": {
+              "enabled": {
+                "name": "&aEnabled"
+              },
+              "disabled": {
+                "name": "&cDisabled"
+              }
             }
           }
         }
@@ -969,203 +1026,6 @@
             "help": [
               "&7Delete a existing recipe"
             ]
-          }
-        }
-      },
-      "recipe_creator": {
-        "gui_name": "&4&lRecipe Creator",
-        "gui_help": [
-          "&7Tip:",
-          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
-          "&7allow you to edit the item/s"
-        ],
-        "items": {
-          "save": {
-            "name": "&3Save",
-            "help": [
-              "&7Save the recipe",
-              "&7Input: &3<namespace> <recipe_name>"
-            ]
-          },
-          "permission": {
-            "enabled": {
-              "name": "&3Permissions",
-              "help": [
-                "&7Players need permission to craft",
-                "&7Perm: &3customcrafting.craft.<recipe_id>"
-              ]
-            },
-            "disabled": {
-              "name": "&4No Permissions",
-              "help": [
-                "&7Players don't need any permission to craft"
-              ]
-            }
-          },
-          "priority": {
-            "name": "&3Priority:&7 %PRI%",
-            "help": [
-              "&7Sets the priority of this recipe!",
-              "&7Priorities: ",
-              "&9LOWEST&7: will be checked first",
-              "&bLOW&7",
-              "&3NORMAL&7: normal priority",
-              "&cHIGH&7",
-              "&4HIGHEST&7: will be checked last"
-            ]
-          },
-          "exact_meta_on": {
-            "name": "&aExact Meta",
-            "help": [],
-            "lore": [
-              "&7Items need to be exactly the same!",
-              "&7That means if you put in a IronSword with no damage ",
-              "&7then IronSwords with damage won't be allowed!"
-            ]
-          },
-          "exact_meta_off": {
-            "name": "&3Ignore Meta",
-            "help": [],
-            "lore": [
-              "&7Items without Meta will only",
-              "&7be checked for their type!",
-              "&7Items with Meta still need to be exact!"
-            ]
-          },
-          "input": {
-            "cancel": {
-              "name": "&7Cancel"
-            },
-            "empty": {
-              "name": "&7Slot is empty",
-              "lore": [
-                "&7[&aClick to set items&7]"
-              ]
-            }
-          },
-          "workbench": {
-            "adv_workbench_on": {
-              "name": "&3Advanced Workbench",
-              "help": [
-                "&7Can only be crafted in",
-                "&7Advanced Workbenches",
-                ""
-              ]
-            },
-            "adv_workbench_off": {
-              "name": "&4Every Workbench",
-              "help": [
-                "&7Can be crafted in every Workbench"
-              ]
-            },
-            "shapeless_off": {
-              "name": "&3Shaped Recipe",
-              "help": [
-                "&7Recipe has a shape!"
-              ]
-            },
-            "shapeless_on": {
-              "name": "&3Shapeless Recipe",
-              "help": [
-                "&7Recipe is shapeless!"
-              ]
-            }
-          },
-          "furnace": {
-            "adv_furnace_on": {
-              "name": "&3Advanced CookingData",
-              "help": []
-            },
-            "adv_furnace_off": {
-              "name": "&4Every CookingData"
-            },
-            "xp": {
-              "name": "&3Experience",
-              "help": [],
-              "lore": [
-                "&6%XP% Exp"
-              ]
-            },
-            "cooking_time": {
-              "name": "&6Cooking Time",
-              "help": [
-                "&7Set the time how long the item",
-                "&7needs to cook in ticks",
-                "&3Tip: 20ticks = 1sec"
-              ],
-              "lore": [
-                "&6%TIME% ticks"
-              ]
-            }
-          },
-          "anvil": {
-            "mode": {
-              "name": "&7Mode:&6 %MODE%",
-              "help": [
-                ""
-              ]
-            },
-            "repair_cost": {
-              "name": "&7Repair Cost:&6 %VAR%",
-              "lore": [
-                ""
-              ]
-            },
-            "block_repair": {
-              "true": {
-                "name": "&aRepairing blocked"
-              },
-              "false": {
-                "name": "&cRepairing allowed"
-              }
-            },
-            "block_rename": {
-              "true": {
-                "name": "&aRenaming blocked"
-              },
-              "false": {
-                "name": "&cRenaming allowed"
-              }
-            },
-            "block_enchant": {
-              "true": {
-                "name": "&aEnchanting blocked"
-              },
-              "false": {
-                "name": "&cEnchanting allowed"
-              }
-            },
-            "durability": {
-              "name": "&7Durability:&6 %VAR%",
-              "lore": [
-                ""
-              ]
-            },
-            "repair_apply": {
-              "true": {
-                "name": "&aApply to Result",
-                "lore": [
-                  "&7Applies the repair cost",
-                  "&7to the result's MetaData!"
-                ]
-              },
-              "false": {
-                "name": "&cNot Applied!",
-                "lore": [
-                  "&7The result's MetaData stays the same!"
-                ]
-              }
-            },
-            "repair_mode": {
-              "name": "&7RepairCost mode: &3%VAR%",
-              "lore": [
-                "&eThe mode how the repaircost should be ",
-                "&eaffected by the input left!",
-                "&3NONE &7- Not affected at all",
-                "&3ADD &7- Gets added to recipe repaircost!",
-                "&3MULTIPLY &7- Gets multiplied with recipe repaircost"
-              ]
-            }
           }
         }
       },
@@ -1198,6 +1058,265 @@
           "&eShift &7+ &eRight click &7will open the ItemEditor"
         ],
         "items": {
+        }
+      }
+    },
+    "recipe_creator": {
+      "global_items": {
+        "save": {
+          "name": "&3Save",
+          "help": [
+            "&7Save the recipe",
+            "&7Input: &3<namespace> <recipe_name>"
+          ]
+        },
+        "priority": {
+          "name": "&3Priority:&7 %PRI%",
+          "help": [
+            "&7Sets the priority of this recipe!",
+            "&7Priorities: ",
+            "&9LOWEST&7: will be checked first",
+            "&bLOW&7",
+            "&3NORMAL&7: normal priority",
+            "&cHIGH&7",
+            "&4HIGHEST&7: will be checked last"
+          ]
+        },
+        "conditions": {
+          "name": "&3Conditions",
+          "lore": [
+            "&7Set conditions to further customize your recipe.",
+            "&7Such as World Time, Weather, etc."
+          ]
+        },
+        "permission": {
+          "enabled": {
+            "name": "&3Permissions",
+            "help": [
+              "&7Players need permission to craft",
+              "&7Perm: &3customcrafting.craft.<recipe_id>"
+            ]
+          },
+          "disabled": {
+            "name": "&4No Permissions",
+            "help": [
+              "&7Players don't need any permission to craft"
+            ]
+          }
+        },
+        "exact_meta": {
+          "enabled": {
+            "name": "&aExact Meta",
+            "help": [],
+            "lore": [
+              "&7Items need to be exactly the same!",
+              "&7That means if you put in a IronSword with no damage ",
+              "&7then IronSwords with damage won't be allowed!"
+            ]
+          },
+          "disabled": {
+            "name": "&3Ignore Meta",
+            "help": [],
+            "lore": [
+              "&7Items without Meta will only",
+              "&7be checked for their type!",
+              "&7Items with Meta still need to be exact!"
+            ]
+          }
+        }
+      },
+      "conditions": {
+        "gui_name": "Conditions",
+        "mode_names": {
+          "exact": "&eEquals",
+          "ignore": "&cDisabled",
+          "higher": "&e>",
+          "lower": "&e<",
+          "higher_lower": "&eHigher or Lower",
+          "higher_exact": "&e>=",
+          "lower_exact": "&e<="
+        },
+        "items": {
+          "world_time": {
+            "name": "&7- World Time - ",
+            "lore": [
+              "&7Time:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7set Time"
+            ]
+          },
+          "weather": {
+            "modes": {
+              "storm": "&eRain/Snow",
+              "thunder": "&eThunder",
+              "storm_thunder": "&eRain/Snow &7+ &eThunder",
+              "none": "&eSunshine"
+            },
+            "name": "&7- World Weather -",
+            "lore": [
+              "&7Weather:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7toggle Weather"
+            ]
+          }
+        }
+      },
+      "workbench": {
+        "gui_name": "&4&lRecipe Creator &8[&7Workbench&8]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+          "shapeless": {
+            "enabled": {
+              "name": "&3Shapeless Recipe",
+              "help": [
+                "&7Recipe is shapeless!"
+              ]
+            },
+            "disabled": {
+              "name": "&3Shaped Recipe",
+              "help": [
+                "&7Recipe has a shape!"
+              ]
+            }
+          },
+          "adv_workbench": {
+            "enabled": {
+              "name": "&3Advanced Workbench",
+              "help": [
+                "&7Can only be crafted in",
+                "&7Advanced Workbenches",
+                ""
+              ]
+            },
+            "disabled": {
+              "name": "&4Every Workbench",
+              "help": [
+                "&7Can be crafted in every Workbench"
+              ]
+            }
+          }
+        }
+      },
+      "stonecutter": {
+        "gui_name": "&4&lRecipe Creator &8[&7Stonecutter&8]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+
+        }
+      },
+      "cooking": {
+        "gui_name": "&4&lRecipe Creator &8[&7Cooking/Smelting&8]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+          "xp": {
+            "name": "&3Experience",
+            "help": [],
+            "lore": [
+              "&6%XP% Exp"
+            ]
+          },
+          "cooking_time": {
+            "name": "&6Cooking Time",
+            "help": [
+              "&7Set the time how long the item",
+              "&7needs to cook in ticks",
+              "&3Tip: 20ticks = 1sec"
+            ],
+            "lore": [
+              "&6%TIME% ticks"
+            ]
+          }
+        }
+      },
+      "anvil": {
+        "gui_name": "&4&lRecipe Creator &8[&7Anvil&8]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+          "mode": {
+            "name": "&7Mode:&6 %MODE%",
+            "help": [
+              ""
+            ]
+          },
+          "repair_cost": {
+            "name": "&7Repair Cost:&6 %VAR%",
+            "lore": [
+              ""
+            ]
+          },
+          "block_repair": {
+            "true": {
+              "name": "&aRepairing blocked"
+            },
+            "false": {
+              "name": "&cRepairing allowed"
+            }
+          },
+          "block_rename": {
+            "true": {
+              "name": "&aRenaming blocked"
+            },
+            "false": {
+              "name": "&cRenaming allowed"
+            }
+          },
+          "block_enchant": {
+            "true": {
+              "name": "&aEnchanting blocked"
+            },
+            "false": {
+              "name": "&cEnchanting allowed"
+            }
+          },
+          "durability": {
+            "name": "&7Durability:&6 %VAR%",
+            "lore": [
+              ""
+            ]
+          },
+          "repair_apply": {
+            "true": {
+              "name": "&aApply to Result",
+              "lore": [
+                "&7Applies the repair cost",
+                "&7to the result's MetaData!"
+              ]
+            },
+            "false": {
+              "name": "&cNot Applied!",
+              "lore": [
+                "&7The result's MetaData stays the same!"
+              ]
+            }
+          },
+          "repair_mode": {
+            "name": "&7RepairCost mode: &3%VAR%",
+            "lore": [
+              "&eThe mode how the repaircost should be ",
+              "&eaffected by the input left!",
+              "&3NONE &7- Not affected at all",
+              "&3ADD &7- Gets added to recipe repaircost!",
+              "&3MULTIPLY &7- Gets multiplied with recipe repaircost"
+            ]
+          }
         }
       }
     },
@@ -1308,6 +1427,29 @@
             }
           }
         }
+      }
+    },
+    "crafting": {
+      "global_items": {
+        "knowledge_book": {
+          "name": "&eKnowledge Book",
+          "lore": [
+          ]
+        }
+      },
+      "crafting_grid3": {
+        "gui_name": "&8&lCrafting Table",
+        "items": {
+        }
+      },
+      "crafting_grid4": {
+        "gui_name": "&8&lElite Crafting Table"
+      },
+      "crafting_grid5": {
+        "gui_name": "&8&lElite Crafting Table"
+      },
+      "crafting_grid6": {
+        "gui_name": "&8&lElite Crafting Table"
       }
     }
   }

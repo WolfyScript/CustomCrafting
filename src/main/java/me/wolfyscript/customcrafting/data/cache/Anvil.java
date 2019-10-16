@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
-import me.wolfyscript.customcrafting.recipes.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
@@ -10,11 +10,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class Anvil {
+public class Anvil extends RecipeData{
 
     private boolean exactMeta;
     private RecipePriority priority;
-    private boolean permissions;
 
     private HashMap<Integer, List<CustomItem>> ingredients;
 
@@ -30,11 +29,9 @@ public class Anvil {
     private boolean blockEnchant;
 
     public Anvil() {
+        super();
         this.ingredients = new HashMap<>();
         this.ingredients.put(2, new ArrayList<>(Collections.singleton(new CustomItem(Material.AIR))));
-        this.priority = RecipePriority.NORMAL;
-        this.exactMeta = true;
-        this.permissions = true;
         this.mode = CustomAnvilRecipe.Mode.RESULT;
         this.durability = 0;
         this.repairCost = 1;
@@ -62,14 +59,7 @@ public class Anvil {
     }
 
     public List<CustomItem> getResult() {
-        return this.ingredients.get(2);
-    }
-
-    public void setResult(List<CustomItem> result) {
-        ingredients.get(2).clear();
-        for (int i = 0; i < result.size(); i++) {
-            ingredients.get(2).set(i, result.get(i));
-        }
+        return getIngredients(2);
     }
 
     public List<CustomItem> getIngredients(int slot) {
@@ -86,14 +76,6 @@ public class Anvil {
         } else {
             getIngredients(slot).add(input);
         }
-    }
-
-    public boolean isPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(boolean permissions) {
-        this.permissions = permissions;
     }
 
     public CustomAnvilRecipe.Mode getMode() {
@@ -158,9 +140,5 @@ public class Anvil {
 
     public void setRepairCostMode(CustomAnvilRecipe.RepairCostMode repairCostMode) {
         this.repairCostMode = repairCostMode;
-    }
-
-    public enum Menu {
-        MAINMENU
     }
 }
