@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types.cauldron;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,30 @@ public class CauldronConfig extends RecipeConfig {
         return getInt("cookingTime");
     }
 
+    public void setWaterLevel(int waterLevel){
+        set("waterLevel", waterLevel);
+    }
+
+    public int getWaterLevel(){
+        return getInt("waterLevel");
+    }
+
+    public void setNoWater(boolean noWater){
+        set("noWater",noWater);
+    }
+
+    public boolean isNoWater(){
+        return getBoolean("noWater");
+    }
+
+    public boolean needsFire(){
+        return getBoolean("fire");
+    }
+
+    public void setFire(boolean needsFire){
+        set("fire", needsFire);
+    }
+
     public void setIngredients(List<CustomItem> source) {
         for (int i = 0; i < source.size(); i++) {
             saveCustomItem("ingredients.var" + i, source.get(i));
@@ -63,11 +88,27 @@ public class CauldronConfig extends RecipeConfig {
         return sources;
     }
 
-    public void setResult(CustomItem customItem){
-        saveCustomItem("result", customItem);
+    public void setResult(List<CustomItem> results) {
+        saveCustomItem("result", results.get(0));
+        for (int i = 1; i < results.size(); i++) {
+            if(!results.get(i).getType().equals(Material.AIR)){
+                saveCustomItem("result.variants.var" + i, results.get(i));
+            }
+        }
     }
 
-    public CustomItem getResult(){
-        return getCustomItem("result");
+    public List<CustomItem> getResult() {
+        List<CustomItem> results = new ArrayList<>();
+        results.add(getCustomItem("result"));
+        if (get("result.variants") != null) {
+            Set<String> variants = getValues("result.variants").keySet();
+            for (String variant : variants) {
+                CustomItem customItem = getCustomItem("result.variants." + variant);
+                if(customItem != null && !customItem.getType().equals(Material.AIR)){
+                    results.add(customItem);
+                }
+            }
+        }
+        return results;
     }
 }

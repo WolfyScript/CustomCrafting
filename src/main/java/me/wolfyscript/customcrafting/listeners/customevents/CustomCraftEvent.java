@@ -21,6 +21,7 @@ public class CustomCraftEvent extends Event implements Cancellable {
         this.craftingRecipe = craftingRecipe;
         this.inventory = inventory;
         this.result = craftingRecipe.getCustomResults();
+        this.cancelled = false;
     }
 
     public Inventory getInventory() {

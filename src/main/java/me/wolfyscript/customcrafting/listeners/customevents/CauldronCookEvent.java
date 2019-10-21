@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -16,9 +17,9 @@ public class CauldronCookEvent extends Event implements Cancellable {
     private CustomItem result;
     private CauldronRecipe recipe;
 
-    public CauldronCookEvent(Location location, Cauldron cauldron){
+    public CauldronCookEvent(Cauldron cauldron){
         this.recipe = cauldron.getRecipe();
-        this.result = cauldron.getRecipe().getResult();
+        this.result = cauldron.getResult();
         this.dropItems = cauldron.dropItems();
     }
 
