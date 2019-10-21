@@ -6,8 +6,9 @@ import org.bukkit.util.NumberConversions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EliteWorkbench extends CustomData {
+public class EliteWorkbench extends CustomData implements Cloneable{
 
+    private boolean advancedRecipes;
     private boolean enabled;
     private int gridSize;
 
@@ -23,6 +24,14 @@ public class EliteWorkbench extends CustomData {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isAdvancedRecipes() {
+        return advancedRecipes;
+    }
+
+    public void setAdvancedRecipes(boolean advancedRecipes) {
+        this.advancedRecipes = advancedRecipes;
     }
 
     public int getGridSize() {
@@ -43,16 +52,25 @@ public class EliteWorkbench extends CustomData {
         HashMap<String, Object> map = new HashMap<>();
         map.put("enabled", enabled);
         map.put("gridSize", gridSize);
+        map.put("advancedRecipes", advancedRecipes);
         return map;
     }
 
     @Override
     public EliteWorkbench fromMap(Map<String, Object> map) {
         EliteWorkbench eliteWorkbench = new EliteWorkbench();
-        eliteWorkbench.setEnabled((Boolean) map.get("enabled"));
-        eliteWorkbench.setGridSize(NumberConversions.toInt(map.get("gridSize")));
+        eliteWorkbench.setEnabled((Boolean) map.getOrDefault("enabled", false));
+        eliteWorkbench.setGridSize(NumberConversions.toInt(map.getOrDefault("gridSize", 3)));
+        eliteWorkbench.setAdvancedRecipes((Boolean) map.getOrDefault("advancedRecipes", false));
         return eliteWorkbench;
     }
 
-
+    @Override
+    public EliteWorkbench clone() {
+        EliteWorkbench eliteWorkbench = new EliteWorkbench();
+        eliteWorkbench.setAdvancedRecipes(isAdvancedRecipes());
+        eliteWorkbench.setEnabled(isEnabled());
+        eliteWorkbench.setGridSize(getGridSize());
+        return eliteWorkbench;
+    }
 }

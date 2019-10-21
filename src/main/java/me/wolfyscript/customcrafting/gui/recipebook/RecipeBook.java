@@ -104,7 +104,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                     for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()) {
                         if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
                             if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                                if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.needsAdvancedWorkbench()) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.needsAdvancedWorkbench())) {
+                                if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.needsAdvancedWorkbench())) {
                                     recipes.add(recipe);
                                 }
                             }
@@ -137,7 +137,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                     case WORKBENCH:
                         AdvancedCraftingRecipe craftingRecipe = (AdvancedCraftingRecipe) knowledgeBook.getCustomRecipe();
                         if (!craftingRecipe.getIngredients().isEmpty()) {
-                            if (craftingRecipe.needsAdvancedWorkbench()) {
+                            if (craftingRecipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
                                 for (int i = 1; i < 8; i++) {
                                     event.setButton(i, "none", "glass_purple");
                                 }

@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.crafting.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.RecipeUtils;
@@ -28,14 +29,13 @@ public class CraftingSlotButton extends ItemInputButton {
                 if(eliteWorkbenchData.getContents() != null){
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         eliteWorkbenchData.getContents()[recipeSlot] = inventory.getItem(slot);
-
-                        ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbenchData.getContents(), player, false, inventory);
+                        EliteWorkbench eliteWorkbench = eliteWorkbenchData.getEliteWorkbench();
+                        ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbenchData.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbench.isAdvancedRecipes());
                         if(result != null){
                             eliteWorkbenchData.setResult(result);
                         }else{
                             eliteWorkbenchData.setResult(new ItemStack(Material.AIR));
                         }
-
                     });
                 }
                 return false;

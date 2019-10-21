@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.smoker;
 
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -59,8 +61,13 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
     }
 
     @Override
-    public void save() {
+    public CustomSmokerRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
 
+    @Override
+    public CustomSmokerRecipe save(SmokerConfig config) {
+        return null;
     }
 
     @Override

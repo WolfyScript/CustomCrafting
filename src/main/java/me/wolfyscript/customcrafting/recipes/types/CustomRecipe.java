@@ -2,13 +2,17 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 import java.util.List;
 
-public interface CustomRecipe extends Recipe {
+public interface CustomRecipe<T extends RecipeConfig> extends Recipe {
 
     String getId();
 
@@ -29,9 +33,10 @@ public interface CustomRecipe extends Recipe {
 
     void load();
 
-    void save();
+    CustomRecipe save(ConfigAPI configAPI, String namespace, String key);
+    CustomRecipe save(T config);
 
-    RecipeConfig getConfig();
+    T getConfig();
 
     boolean isExactMeta();
 

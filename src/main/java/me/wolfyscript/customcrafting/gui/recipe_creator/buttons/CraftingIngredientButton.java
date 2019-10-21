@@ -1,7 +1,8 @@
-package me.wolfyscript.customcrafting.gui.main_gui.buttons;
+package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -19,9 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CraftingContainerButton extends ItemInputButton {
+public class CraftingIngredientButton extends ItemInputButton {
 
-    public CraftingContainerButton(int recipeSlot) {
+    public CraftingIngredientButton(int recipeSlot) {
         super("crafting.container_" + recipeSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -29,7 +30,7 @@ public class CraftingContainerButton extends ItemInputButton {
                 Workbench workbench = cache.getWorkbench();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
-                    if (recipeSlot == 9) {
+                    if((workbench instanceof EliteWorkbench && recipeSlot == 36) || (!(workbench instanceof EliteWorkbench) && recipeSlot == 9)) {
                         if (workbench.getResult() != null) {
                             variants = workbench.getResult();
                         }
@@ -42,8 +43,11 @@ public class CraftingContainerButton extends ItemInputButton {
                     return true;
                 } else {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
-                        CustomItem customItem = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
-                        if (recipeSlot == 9) {
+                        CustomItem customItem = new CustomItem(Material.AIR);
+                        if(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)){
+                            customItem = CustomItem.getByItemStack(inventory.getItem(slot));
+                        }
+                        if ((workbench instanceof EliteWorkbench && recipeSlot == 36) || (!(workbench instanceof EliteWorkbench) && recipeSlot == 9)) {
                             workbench.setResult(0, customItem);
                         } else {
                             workbench.setIngredient(recipeSlot, 0, customItem);
@@ -57,12 +61,12 @@ public class CraftingContainerButton extends ItemInputButton {
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
                 Workbench workbench = CustomCrafting.getPlayerCache(player).getWorkbench();
                 itemStack = new ItemStack(Material.AIR);
-                if (recipeSlot == 9) {
+                if ((workbench instanceof EliteWorkbench && recipeSlot == 36) || (!(workbench instanceof EliteWorkbench) && recipeSlot == 9)) {
                     if (workbench.getResult() != null && !workbench.getResult().isEmpty()) {
-                        itemStack = workbench.getResult().get(0).getIDItem();
+                        itemStack = workbench.getResult().get(0).getRealItem();
                     }
                 } else if (workbench.getIngredient(recipeSlot) != null) {
-                    itemStack = workbench.getIngredient(recipeSlot).getIDItem();
+                    itemStack = workbench.getIngredient(recipeSlot).getRealItem();
                 }
                 return itemStack;
             }

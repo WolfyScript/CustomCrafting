@@ -1,11 +1,14 @@
 package me.wolfyscript.customcrafting.data.cache;
 
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class EliteWorkbenchData {
 
     private int currentGridSize;
+    private EliteWorkbench eliteWorkbench;
     private ItemStack result;
     private ItemStack[] contents;
 
@@ -37,5 +40,13 @@ public class EliteWorkbenchData {
 
     public void setResult(ItemStack result) {
         this.result = result;
+    }
+
+    public EliteWorkbench getEliteWorkbench() {
+        return eliteWorkbench;
+    }
+
+    public void setEliteWorkbench(EliteWorkbench eliteWorkbench) {
+        this.eliteWorkbench = eliteWorkbench;
     }
 }

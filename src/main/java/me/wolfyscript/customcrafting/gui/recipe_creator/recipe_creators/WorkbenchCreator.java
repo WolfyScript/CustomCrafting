@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.main_gui.buttons.CraftingContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingIngredientButton;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.RecipeUtils;
@@ -54,8 +54,6 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
                 openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
-                    PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
-                    Workbench workbench = cache1.getWorkbench();
                     if (args.length > 1) {
                         String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
                         String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
@@ -68,59 +66,8 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                         } else {
                             config = new AdvancedCraftConfig(api.getConfigAPI(), namespace, key);
                         }
-                        api.sendDebugMessage("Create Config:");
-                        api.sendDebugMessage("  id: " + namespace + ":" + key);
-                        api.sendDebugMessage("  Conditions: " + workbench.getConditions().toMap());
-                        api.sendDebugMessage("  Shapeless: " + workbench.isShapeless());
-                        api.sendDebugMessage("  ExactMeta: " + workbench.isExactMeta());
-                        api.sendDebugMessage("  Priority: " + workbench.getPriority());
-                        api.sendDebugMessage("  Result: " + workbench.getResult());
-                        config.setShapeless(workbench.isShapeless());
-                        config.setExactMeta(workbench.isExactMeta());
-                        config.setPriority(workbench.getPriority());
-                        config.setConditions(workbench.getConditions());
+                        config.saveRecipe(3, CustomCrafting.getPlayerCache(player1));
 
-                        config.setResult(workbench.getResult());
-                        HashMap<Character, List<CustomItem>> ingredients = workbench.getIngredients();
-                        api.sendDebugMessage("  Ingredients: " + ingredients);
-                        String[] shape = new String[3];
-                        int index = 0;
-                        int row = 0;
-                        for (char ingrd : ingredients.keySet()) {
-                            List<CustomItem> keyItems = ingredients.get(ingrd);
-                            if (InventoryUtils.isEmpty(new ArrayList<>(keyItems))) {
-                                if (shape[row] != null) {
-                                    shape[row] = shape[row] + " ";
-                                } else {
-                                    shape[row] = " ";
-                                }
-                            } else {
-                                if (shape[row] != null) {
-                                    shape[row] = shape[row] + ingrd;
-                                } else {
-                                    shape[row] = String.valueOf(ingrd);
-                                }
-                            }
-                            index++;
-                            if ((index % 3) == 0) {
-                                row++;
-                            }
-                        }
-                        api.sendDebugMessage("  Shape:");
-                        for (String shapeRow : shape) {
-                            api.sendDebugMessage("      " + shapeRow);
-                        }
-                        config.setShape(shape);
-                        config.setIngredients(workbench.getIngredients());
-                        api.sendDebugMessage("Saving...");
-
-                        if (CustomCrafting.hasDataBaseHandler()) {
-                            CustomCrafting.getDataBaseHandler().updateRecipe(config, false);
-                        } else {
-                            config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-                        }
-                        api.sendDebugMessage("Reset GUI cache...");
-                        cache1.resetWorkbench();
                         api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.success$");
                         api.sendPlayerMessage(player, "§6recipes/" + namespace + "/workbench/" + key);
 
@@ -157,7 +104,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
         })));
 
         for (int i = 0; i < 10; i++) {
-            registerButton(new CraftingContainerButton(i));
+            registerButton(new CraftingIngredientButton(i));
         }
 
         registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -234,17 +181,15 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), workbench.isExactMeta());
             ((ToggleButton) event.getGuiWindow().getButton("permission")).setState(event.getGuiHandler(), !workbench.getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT));
             event.setButton(35, "priority");
-            if (!workbench.getIngredients().isEmpty()) {
-                int slot;
-                for (int i = 0; i < 9; i++) {
-                    slot = 10 + i + (i / 3) * 6;
-                    event.setButton(slot, "crafting.container_" + i);
-                }
+            int slot;
+            for (int i = 0; i < 9; i++) {
+                slot = 10 + i + (i / 3) * 6;
+                event.setButton(slot, "crafting.container_" + i);
             }
             event.setButton(26, "exact_meta");
             event.setButton(22, "workbench.shapeless");
             event.setButton(24, "crafting.container_9");
-            event.setButton(2, "recipe_creator","conditions");
+            event.setButton(2, "recipe_creator", "conditions");
             event.setButton(4, "permission");
             event.setButton(6, "workbench.adv_workbench");
             event.setButton(44, "save");

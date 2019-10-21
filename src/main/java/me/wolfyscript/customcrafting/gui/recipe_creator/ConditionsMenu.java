@@ -1,8 +1,11 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeData;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -89,14 +92,60 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             }
         })));
 
+        registerButton(new ActionButton("conditions.advanced_workbench", new ButtonState("advanced_workbench", Material.CRAFTING_TABLE, new ButtonActionRender() {
+            @Override
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+                RecipeData recipeData = CustomCrafting.getPlayerCache(player).getRecipeData();
+                if(event.getClick().isLeftClick()){
+                    //Change Mode
+                    recipeData.getConditions().getByID("advanced_workbench").toggleOption();
+                }
+                return true;
+            }
+
+            @Override
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
+                hashMap.put("%MODE%", CustomCrafting.getPlayerCache(player).getRecipeData().getConditions().getByID("advanced_workbench").getOption().getDisplayString(api));
+                return itemStack;
+            }
+        })));
+
+        registerButton(new ActionButton("conditions.elite_workbench", new ButtonState("elite_workbench", Material.CRAFTING_TABLE, new ButtonActionRender() {
+            @Override
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+                RecipeData recipeData = CustomCrafting.getPlayerCache(player).getRecipeData();
+                if(event.getClick().isRightClick()){
+                    //Change Mode
+                    recipeData.getConditions().getByID("elite_workbench").toggleOption();
+                }else {
+                    //CONFIGURE ELITE WORKBENCHES
+                }
+                return true;
+            }
+
+            @Override
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
+                hashMap.put("%MODE%", CustomCrafting.getPlayerCache(player).getRecipeData().getConditions().getByID("elite_workbench").getOption().getDisplayString(api));
+                return itemStack;
+            }
+        })));
+
     }
 
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if(event.verify(this)){
+            PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             event.setButton(0, "back");
+
+            event.setButton(9, "conditions.world_time");
+            event.setButton(10, "conditions.weather");
+            if(cache.getSetting().equals(Setting.WORKBENCH)){
+                event.setButton(11, "conditions.advanced_workbench");
+            }else{
+                event.setButton(11, "conditions.elite_workbench");
+            }
         }
-        event.setButton(9, "conditions.world_time");
-        event.setButton(10, "conditions.weather");
+
     }
 }

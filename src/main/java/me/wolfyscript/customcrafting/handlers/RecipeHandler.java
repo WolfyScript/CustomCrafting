@@ -7,10 +7,7 @@ import me.wolfyscript.customcrafting.data.cache.CookingData;
 import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.*;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
@@ -345,16 +342,23 @@ public class RecipeHandler {
         return groupRecipes;
     }
 
-    public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items) {
+    public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {
         List<CraftingRecipe> recipes = new ArrayList<>();
         int size = 0;
         for (List<ItemStack> itemStacks : items) {
             size += (int) itemStacks.stream().filter(itemStack -> itemStack != null && !itemStack.getType().equals(Material.AIR)).count();
         }
-        for (CraftingRecipe customRecipe : getAdvancedCraftingRecipes()) {
+        List<CraftingRecipe> craftingRecipes = new ArrayList<>();
+        if(elite){
+            craftingRecipes.addAll(getEliteCraftingRecipes());
+        }
+        if(advanced){
+            craftingRecipes.addAll(getAdvancedCraftingRecipes());
+        }
+        for (CraftingRecipe customRecipe : craftingRecipes) {
             if (customRecipe.getIngredients().keySet().size() == size) {
-                if (customRecipe instanceof ShapedCraftRecipe) {
-                    if (items.size() == ((ShapedCraftRecipe) customRecipe).getShape().length && items.get(0).size() == ((ShapedCraftRecipe) customRecipe).getShape()[0].length()) {
+                if (customRecipe instanceof ShapedCraftingRecipe) {
+                    if (items.size() == ((ShapedCraftingRecipe) customRecipe).getShape().length && items.get(0).size() == ((ShapedCraftingRecipe) customRecipe).getShape()[0].length()) {
                         recipes.add(customRecipe);
                     }
                 } else {
@@ -419,6 +423,21 @@ public class RecipeHandler {
         for (CustomRecipe recipe : customRecipes.values()) {
             if (recipe instanceof EliteCraftingRecipe) {
                 recipes.add((EliteCraftingRecipe) recipe);
+            }
+        }
+        return recipes;
+    }
+
+    public CraftingRecipe getCraftingRecipe(String key) {
+        CustomRecipe customRecipe = getRecipe(key);
+        return customRecipe instanceof CraftingRecipe ? (CraftingRecipe) customRecipe : null;
+    }
+
+    public List<CraftingRecipe> getCraftingRecipes() {
+        List<CraftingRecipe> recipes = new ArrayList<>();
+        for (CustomRecipe recipe : customRecipes.values()) {
+            if (recipe instanceof CraftingRecipe) {
+                recipes.add((CraftingRecipe) recipe);
             }
         }
         return recipes;
@@ -683,12 +702,12 @@ public class RecipeHandler {
         PlayerCache cache = CustomCrafting.getPlayerCache(player);
         switch (cache.getSetting()) {
             case WORKBENCH:
+            case ELITE_WORKBENCH:
                 if (recipe instanceof CraftingRecipe) {
                     cache.resetWorkbench();
                     Workbench workbench = cache.getWorkbench();
                     workbench.setResult(recipe.getCustomResults());
-                    HashMap<Character, List<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
-                    workbench.setIngredients(Arrays.asList(new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR)), new CustomItem(new ItemStack(Material.AIR))));
+                    Map<Character, List<CustomItem>> ingredients = ((CraftingRecipe) recipe).getIngredients();
                     for (String row : ((CraftingRecipe) recipe).getConfig().getShape()) {
                         for (char key : row.toCharArray()) {
                             if (key != ' ') {
@@ -706,20 +725,7 @@ public class RecipeHandler {
                 return false;
             case ANVIL:
                 if (recipe instanceof CustomAnvilRecipe) {
-                    cache.resetAnvil();
-                    Anvil anvil = cache.getAnvil();
-                    anvil.setIngredient(0, ((CustomAnvilRecipe) recipe).getInputLeft());
-                    anvil.setIngredient(1, ((CustomAnvilRecipe) recipe).getInputRight());
-                    anvil.setIngredient(2, recipe.getCustomResults());
-                    anvil.setDurability(((CustomAnvilRecipe) recipe).getDurability());
-                    anvil.setRepairCost(((CustomAnvilRecipe) recipe).getRepairCost());
-                    anvil.setMode(((CustomAnvilRecipe) recipe).getMode());
-                    anvil.setBlockRename(((CustomAnvilRecipe) recipe).isBlockRename());
-                    anvil.setBlockEnchant(((CustomAnvilRecipe) recipe).isBlockEnchant());
-                    anvil.setBlockRepair(((CustomAnvilRecipe) recipe).isBlockRepair());
-                    anvil.setExactMeta(recipe.isExactMeta());
-                    anvil.setConditions(recipe.getConditions());
-                    anvil.setPriority(recipe.getPriority());
+                    cache.setAnvilRecipe((CustomAnvilRecipe) recipe);
                     return true;
                 }
                 return false;

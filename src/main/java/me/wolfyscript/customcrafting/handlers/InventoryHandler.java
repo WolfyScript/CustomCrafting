@@ -2,16 +2,13 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.gui.crafting.*;
 import me.wolfyscript.customcrafting.gui.main_gui.MainMenu;
-import me.wolfyscript.customcrafting.gui.main_gui.VariantMenu;
+import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.main_gui.items.ItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.items.ItemEditor;
 import me.wolfyscript.customcrafting.gui.main_gui.list.RecipesList;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.main_gui.recipe.RecipeEditor;
-import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.AnvilCreator;
-import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.CookingCreator;
-import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.StonecutterCreator;
-import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.WorkbenchCreator;
+import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiCluster;
@@ -63,7 +60,6 @@ public class InventoryHandler {
         mainCluster.registerGuiWindow(new ItemCreator(invAPI));
         mainCluster.registerGuiWindow(new RecipeEditor(invAPI));
         mainCluster.registerGuiWindow(new RecipesList(invAPI));
-        mainCluster.registerGuiWindow(new VariantMenu(invAPI));
         mainCluster.setMainmenu("main_menu");
 
         GuiCluster recipeCreator = invAPI.getOrRegisterGuiCluster("recipe_creator");
@@ -71,7 +67,9 @@ public class InventoryHandler {
         recipeCreator.registerGuiWindow(new CookingCreator(invAPI));
         recipeCreator.registerGuiWindow(new StonecutterCreator(invAPI));
         recipeCreator.registerGuiWindow(new WorkbenchCreator(invAPI));
+        recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI));
         recipeCreator.registerGuiWindow(new ConditionsMenu(invAPI));
+        recipeCreator.registerGuiWindow(new VariantMenu(invAPI));
 
         recipeCreator.registerButton(new ActionButton("conditions", new ButtonState("conditions", Material.CYAN_CONCRETE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.changeToInv("conditions");

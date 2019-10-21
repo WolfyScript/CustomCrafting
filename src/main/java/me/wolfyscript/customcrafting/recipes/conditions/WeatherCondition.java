@@ -4,6 +4,8 @@ import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import java.util.Locale;
 
@@ -34,7 +36,38 @@ public class WeatherCondition extends Condition {
 
     @Override
     public boolean check(CustomRecipe recipe, Conditions.Data data) {
-        return true;
+        if(option.equals(Conditions.Option.IGNORE)){
+            return true;
+        }
+        Block block = data.getBlock();
+        if(block != null){
+            World world = block.getWorld();
+            switch(weather){
+                case NONE:
+                    return !world.isThundering() && !world.hasStorm();
+                case STORM:
+                    return world.hasStorm() && !world.isThundering();
+                case THUNDER:
+                    return world.isThundering() && !world.hasStorm();
+                case STORM_THUNDER:
+                    return world.isThundering() && world.hasStorm();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return option.toString() + ";" + weather.toString();
+    }
+
+    @Override
+    public void fromString(String value) {
+        String[] args = value.split(";");
+        this.option = Conditions.Option.valueOf(args[0]);
+        if(args.length > 1){
+            this.weather = Weather.valueOf(args[1]);
+        }
     }
 
     public enum Weather{

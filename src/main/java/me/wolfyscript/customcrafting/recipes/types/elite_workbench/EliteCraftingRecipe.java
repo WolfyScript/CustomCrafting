@@ -9,23 +9,23 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public abstract class EliteCraftingRecipe implements CraftingRecipe {
+public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftConfig> {
 
     private boolean exactMeta;
     private RecipePriority priority;
     private Conditions conditions;
 
-    private CraftConfig config;
+    private EliteCraftConfig config;
     private String id;
     private String group;
     private List<CustomItem> result;
-    private HashMap<Character, List<CustomItem>> ingredients;
+    private Map<Character, List<CustomItem>> ingredients;
     private WolfyUtilities api;
 
-    public EliteCraftingRecipe(CraftConfig config) {
+    public EliteCraftingRecipe(EliteCraftConfig config) {
         this.result = config.getResult();
         this.id = config.getId();
         this.config = config;
@@ -38,20 +38,16 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe {
     }
 
     @Override
-    public void save() {
-    }
-
-    @Override
     public void load() {
     }
 
     @Override
-    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
+    public void setIngredients(Map<Character, List<CustomItem>> ingredients) {
         this.ingredients = ingredients;
     }
 
     @Override
-    public HashMap<Character, List<CustomItem>> getIngredients() {
+    public Map<Character, List<CustomItem>> getIngredients() {
         return ingredients;
     }
 
@@ -85,18 +81,13 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe {
         return result;
     }
 
-    public CraftConfig getConfig() {
+    public EliteCraftConfig getConfig() {
         return config;
     }
 
     @Override
     public String getId() {
         return id;
-    }
-
-    @Override
-    public boolean isShapeless() {
-        return false;
     }
 
     @Override

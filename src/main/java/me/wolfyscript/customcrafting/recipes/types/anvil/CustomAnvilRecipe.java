@@ -1,26 +1,25 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class CustomAnvilRecipe implements CustomRecipe {
+public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
 
-    private boolean permission;
     private boolean exactMeta;
     private boolean blockRepair;
     private boolean blockRename;
     private boolean blockEnchant;
     private RecipePriority priority;
-
-    private String id;
-    private AnvilConfig config;
 
     private Mode mode;
     private int repairCost;
@@ -31,24 +30,23 @@ public class CustomAnvilRecipe implements CustomRecipe {
 
     private HashMap<Integer, List<CustomItem>> ingredients;
 
+    private String id;
+    private AnvilConfig config;
+
     public CustomAnvilRecipe(AnvilConfig config) {
-        this.ingredients = new HashMap<>();
         this.config = config;
-        this.permission = config.needPerm();
+        this.id = config.getId();
+        this.ingredients = new HashMap<>();
         this.exactMeta = config.isExactMeta();
         this.blockEnchant = config.isBlockEnchant();
         this.blockRename = config.isBlockRename();
         this.blockRepair = config.isBlockRepairing();
         this.priority = config.getPriority();
-
-        this.id = config.getId();
-
         this.repairCost = config.getRepairCost();
         this.mode = config.getMode();
         this.applyRepairCost = config.isApplyRepairCost();
         this.repairCostMode = config.getRepairCostMode();
         this.durability = 0;
-
         ingredients.put(0, config.getInputLeft());
         ingredients.put(1, config.getInputRight());
         if (config.getMode().equals(Mode.DURABILITY)) {
@@ -56,6 +54,60 @@ public class CustomAnvilRecipe implements CustomRecipe {
         } else if (config.getMode().equals(Mode.RESULT)) {
             ingredients.put(2, config.getResult());
         }
+        this.conditions = config.getConditions();
+    }
+
+    public CustomAnvilRecipe(){
+        this.config = null;
+        this.id = "";
+        this.exactMeta = true;
+        this.ingredients = new HashMap<>();
+        this.ingredients.put(2, new ArrayList<>(Collections.singleton(new CustomItem(Material.AIR))));
+        this.mode = Mode.RESULT;
+        this.durability = 0;
+        this.repairCost = 1;
+        this.applyRepairCost = false;
+        this.repairCostMode = RepairCostMode.NONE;
+        this.blockEnchant = false;
+        this.blockRename = false;
+        this.blockRepair = false;
+        this.priority = RecipePriority.NORMAL;
+        this.conditions = new Conditions();
+    }
+
+    public CustomAnvilRecipe save(ConfigAPI configAPI, String namespace, String key){
+        AnvilConfig config;
+        if (CustomCrafting.hasDataBaseHandler()) {
+            config = new AnvilConfig("{}", configAPI, namespace, key);
+        } else {
+            config = new AnvilConfig(configAPI, namespace, key);
+        }
+        return save(config);
+    }
+
+    @Override
+    public CustomAnvilRecipe save(AnvilConfig config){
+        config.setBlockEnchant(isBlockEnchant());
+        config.setBlockRename(isBlockRename());
+        config.setBlockRepairing(isBlockRepair());
+        config.setExactMeta(isExactMeta());
+        config.setRepairCostMode(getRepairCostMode());
+        config.setRepairCost(getRepairCost());
+        config.setPriority(getPriority());
+        config.setMode(getMode());
+        config.setResult(getCustomResults());
+        config.setDurability(getDurability());
+        config.setInputLeft(getInputLeft());
+        config.setInputRight(getInputRight());
+        config.setConditions(getConditions());
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateRecipe(config);
+        } else {
+            config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        this.config = config;
+        this.id = config.getId();
+        return this;
     }
 
     @Override
@@ -82,10 +134,6 @@ public class CustomAnvilRecipe implements CustomRecipe {
     }
 
     @Override
-    public void save() {
-    }
-
-    @Override
     public RecipeConfig getConfig() {
         return config;
     }
@@ -98,14 +146,6 @@ public class CustomAnvilRecipe implements CustomRecipe {
     @Override
     public Conditions getConditions() {
         return conditions;
-    }
-
-    public boolean isPermission() {
-        return permission;
-    }
-
-    public void setPermission(boolean permission) {
-        this.permission = permission;
     }
 
     public void setExactMeta(boolean exactMeta) {
@@ -154,6 +194,14 @@ public class CustomAnvilRecipe implements CustomRecipe {
 
     public List<CustomItem> getInputRight() {
         return ingredients.get(1);
+    }
+
+    public void setInput(int slot, List<CustomItem> input){
+        ingredients.put(slot, input);
+    }
+
+    public List<CustomItem> getInput(int slot){
+        return ingredients.get(slot);
     }
 
     public boolean hasInputLeft() {

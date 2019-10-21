@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.campfire;
 
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -58,8 +60,13 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     }
 
     @Override
-    public void save() {
+    public CustomCampfireRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
 
+    @Override
+    public CustomCampfireRecipe save(CampfireConfig config) {
+        return null;
     }
 
     @Override

@@ -14,7 +14,8 @@ public enum Setting {
     BLAST_FURNACE,
     SMOKER,
     CAMPFIRE,
-    STONECUTTER;
+    STONECUTTER,
+    CAULDRON;
 
     private String id;
 

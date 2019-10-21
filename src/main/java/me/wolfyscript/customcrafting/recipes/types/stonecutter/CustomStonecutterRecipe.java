@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -54,13 +55,18 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
         //NO LOADING NEEDED!
     }
 
-    public List<CustomItem> getSource() {
-        return source;
+    @Override
+    public CustomRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
     }
 
     @Override
-    public void save() {
-        //NO SAVING NEEDED!
+    public CustomRecipe save(RecipeConfig config) {
+        return null;
+    }
+
+    public List<CustomItem> getSource() {
+        return source;
     }
 
     @Override

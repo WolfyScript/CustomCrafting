@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.furnace;
 
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -53,8 +55,13 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     }
 
     @Override
-    public void save() {
+    public CustomFurnaceRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
 
+    @Override
+    public CustomFurnaceRecipe save(FurnaceConfig config) {
+        return null;
     }
 
     @Override

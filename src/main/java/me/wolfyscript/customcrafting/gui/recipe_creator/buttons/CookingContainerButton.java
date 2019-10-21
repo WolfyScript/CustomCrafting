@@ -1,12 +1,11 @@
-package me.wolfyscript.customcrafting.gui.main_gui.buttons;
+package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Anvil;
+import me.wolfyscript.customcrafting.data.cache.CookingData;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
-import me.wolfyscript.utilities.api.inventory.button.ButtonRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
 import org.bukkit.Bukkit;
@@ -20,36 +19,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AnvilContainerButton extends ItemInputButton {
+public class CookingContainerButton extends ItemInputButton {
 
-    public AnvilContainerButton(int inputSlot) {
-        super("anvil.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
+    public CookingContainerButton(int inputSlot) {
+        super("cooking.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
-                Anvil anvil = cache.getAnvil();
+                CookingData cooking = cache.getCookingData();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
-                    if (anvil.getIngredients(inputSlot) != null) {
-                        variants = anvil.getIngredients(inputSlot);
+                    if (cooking.getIngredients(inputSlot) != null) {
+                        variants = cooking.getIngredients(inputSlot);
                     }
                     cache.getVariantsData().setSlot(inputSlot);
                     cache.getVariantsData().setVariants(variants);
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> anvil.setIngredient(inputSlot, 0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> cooking.setIngredient(inputSlot, 0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                 }
                 return false;
             }
 
             @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
-                Anvil anvil = CustomCrafting.getPlayerCache(player).getAnvil();
-                if (anvil.getIngredients(inputSlot) != null && !anvil.getIngredients(inputSlot).isEmpty()) {
-                    item = anvil.getIngredients(inputSlot).get(0);
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
+                CookingData cooking = CustomCrafting.getPlayerCache(player).getCookingData();
+                if (cooking.getIngredients(inputSlot) != null && !cooking.getIngredients(inputSlot).isEmpty()) {
+                    itemStack = cooking.getIngredients(inputSlot).get(0);
                 }
-                return item;
+                return itemStack;
             }
         }));
     }

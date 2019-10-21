@@ -1,15 +1,14 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.Workbench;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CraftConfig extends RecipeConfig {
 
@@ -76,8 +75,8 @@ public class CraftConfig extends RecipeConfig {
         return results;
     }
 
-    public void setIngredients(HashMap<Character, List<CustomItem>> ingredients) {
-        set("ingredients", new HashMap<String, Object>());
+    public void setIngredients(Map<Character, List<CustomItem>> ingredients) {
+        set("ingredients", new TreeMap<String, Object>());
         for (char key : ingredients.keySet()) {
             int variant = 0;
             if (!InventoryUtils.isEmpty(new ArrayList<>(ingredients.get(key)))) {
@@ -94,8 +93,8 @@ public class CraftConfig extends RecipeConfig {
         }
     }
 
-    public HashMap<Character, List<CustomItem>> getIngredients() {
-        HashMap<Character, List<CustomItem>> result = new HashMap<>();
+    public Map<Character, List<CustomItem>> getIngredients() {
+        Map<Character, List<CustomItem>> result = new TreeMap<>();
         Set<String> keys = getValues("ingredients").keySet();
         for (String key : keys) {
             Set<String> itemKeys = getValues("ingredients." + key).keySet();
@@ -108,6 +107,63 @@ public class CraftConfig extends RecipeConfig {
             result.put(key.charAt(0), data);
         }
         return result;
+    }
+
+    public void saveRecipe(int gridSize, PlayerCache cache){
+        Workbench workbench = cache.getWorkbench();
+        api.sendDebugMessage("Create Config:");
+        api.sendDebugMessage("  id: " + getId());
+        api.sendDebugMessage("  Conditions: " + workbench.getConditions().toMap());
+        api.sendDebugMessage("  Shapeless: " + workbench.isShapeless());
+        api.sendDebugMessage("  ExactMeta: " + workbench.isExactMeta());
+        api.sendDebugMessage("  Priority: " + workbench.getPriority());
+        api.sendDebugMessage("  Result: " + workbench.getResult());
+        setShapeless(workbench.isShapeless());
+        setExactMeta(workbench.isExactMeta());
+        setPriority(workbench.getPriority());
+        setConditions(workbench.getConditions());
+
+        setResult(workbench.getResult());
+        Map<Character, List<CustomItem>> ingredients = workbench.getIngredients();
+        api.sendDebugMessage("  Ingredients: " + ingredients);
+        String[] shape = new String[gridSize];
+        int index = 0;
+        int row = 0;
+        for (char ingrd : ingredients.keySet()) {
+            List<CustomItem> keyItems = ingredients.get(ingrd);
+            if (InventoryUtils.isEmpty(new ArrayList<>(keyItems))) {
+                if (shape[row] != null) {
+                    shape[row] = shape[row] + " ";
+                } else {
+                    shape[row] = " ";
+                }
+            } else {
+                if (shape[row] != null) {
+                    shape[row] = shape[row] + ingrd;
+                } else {
+                    shape[row] = String.valueOf(ingrd);
+                }
+            }
+            index++;
+            if ((index % gridSize) == 0) {
+                row++;
+            }
+        }
+        api.sendDebugMessage("  Shape:");
+        for (String shapeRow : shape) {
+            api.sendDebugMessage("      " + shapeRow);
+        }
+        setShape(shape);
+        setIngredients(workbench.getIngredients());
+        api.sendDebugMessage("Saving...");
+
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
+        } else {
+            reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        api.sendDebugMessage("Reset GUI cache...");
+        cache.resetWorkbench();
     }
 
 }

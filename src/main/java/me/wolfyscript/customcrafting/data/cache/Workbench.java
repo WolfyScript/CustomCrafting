@@ -11,9 +11,9 @@ import java.util.*;
 
 public class Workbench extends RecipeData {
 
-    private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
-    private HashMap<Character, List<CustomItem>> ingredients;
+    private Map<Character, List<CustomItem>> ingredients;
     private List<CustomItem> result;
     private String extend;
     private List<String> overrides;
@@ -25,8 +25,7 @@ public class Workbench extends RecipeData {
 
     public Workbench() {
         super();
-        this.ingredients = new HashMap<>();
-        setIngredients(Arrays.asList(new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR)));
+        this.ingredients = new TreeMap<>();
         this.result = new ArrayList<>(Collections.singletonList(new CustomItem(Material.AIR)));
         this.extend = "";
         this.overrides = new ArrayList<>();
@@ -37,7 +36,15 @@ public class Workbench extends RecipeData {
         this.ingredientsCustomAmount = new HashMap<>();
     }
 
-    public HashMap<Character, List<CustomItem>> getIngredients() {
+    public void initIngredients(int gridSize){
+        ArrayList<ItemStack> list = new ArrayList<>();
+        for(int i = 0; i < (gridSize*gridSize); i++){
+            list.add(new ItemStack(Material.AIR));
+        }
+        setIngredients(list);
+    }
+
+    public Map<Character, List<CustomItem>> getIngredients() {
         return ingredients;
     }
 
@@ -46,7 +53,7 @@ public class Workbench extends RecipeData {
     }
 
     public List<CustomItem> getIngredients(char key) {
-        return getIngredients().getOrDefault(key, new ArrayList<>());
+        return getIngredients().getOrDefault(key, new ArrayList<>(Collections.singleton(new CustomItem(Material.AIR))));
     }
 
     public List<CustomItem> getIngredients(int slot) {

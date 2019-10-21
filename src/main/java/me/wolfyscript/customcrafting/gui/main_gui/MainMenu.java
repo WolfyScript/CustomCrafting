@@ -62,8 +62,13 @@ public class MainMenu extends ExtendedGuiWindow {
                 return true;
             })));
             registerButton(new ActionButton("elite_workbench", new ButtonState("elite_workbench", new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                CustomCrafting.getPlayerCache(player).getKnowledgeBook().setSetting(Setting.ELITE_WORKBENCH);
+                CustomCrafting.getPlayerCache(player).setSetting(Setting.ELITE_WORKBENCH);
                 guiHandler.changeToInv("recipe_editor");
+                return true;
+            })));
+            registerButton(new ActionButton("cauldron", new ButtonState("cauldron", Material.CAULDRON, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(player).setSetting(Setting.CAULDRON);
+                guiHandler.changeToInv("cauldron");
                 return true;
             })));
         }
@@ -102,10 +107,11 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(14, "anvil");
 
             if (WolfyUtilities.hasVillagePillageUpdate()) {
-                event.setButton(16, "blast_furnace");
-                event.setButton(20, "smoker");
-                event.setButton(22, "campfire");
-                event.setButton(24, "stonecutter");
+                event.setButton(15, "blast_furnace");
+                event.setButton(19, "smoker");
+                event.setButton(21, "campfire");
+                event.setButton(23, "stonecutter");
+                event.setButton(25, "elite_workbench");
             }
             event.setButton(39, "item_editor");
             event.setButton(41, "recipe_list");

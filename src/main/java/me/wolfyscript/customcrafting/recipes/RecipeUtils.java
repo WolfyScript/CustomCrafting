@@ -29,15 +29,12 @@ public class RecipeUtils {
     private static HashMap<UUID, String> precraftedRecipes = new HashMap<>();
     private static HashMap<UUID, HashMap<String, CustomItem>> precraftedItems = new HashMap<>();
 
-    public static ItemStack preCheckRecipe(ItemStack[] matrix, Player player, boolean isRepair, Inventory inventory){
+    public static ItemStack preCheckRecipe(ItemStack[] matrix, Player player, boolean isRepair, Inventory inventory, boolean elite, boolean advanced){
         RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
         List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
-        List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients));
+        List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients, elite, advanced));
         recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
-        api.sendDebugMessage("---------------------------------");
-        api.sendDebugMessage("Possible Custom Recipes detected:");
         recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - " + craftingRecipe.getId()));
-        api.sendDebugMessage("");
         if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
             CustomPreCraftEvent customPreCraftEvent;
             for (CraftingRecipe recipe : recipesToCheck) {
@@ -47,17 +44,14 @@ public class RecipeUtils {
                         RandomCollection<CustomItem> items = new RandomCollection<>();
                         for(CustomItem customItem : customPreCraftEvent.getResult()){
                             if(!customItem.hasPermission() || player.hasPermission(customItem.getPermission())){
-                                api.sendDebugMessage("Item -> "+customItem.getRarityPercentage());
                                 items.add(customItem.getRarityPercentage(), customItem.clone());
                             }
                         }
-                        api.sendDebugMessage("  Test -> "+items.size());
                         HashMap<String, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
                         CustomItem result = new CustomItem(Material.AIR);
                         if(precraftedItem.get(recipe.getId()) == null){
                             if(!items.isEmpty()){
                                 result = items.next();
-                                api.sendDebugMessage("Result: "+result);
                                 precraftedItem.put(recipe.getId(), result);
                                 precraftedItems.put(player.getUniqueId(), precraftedItem);
                             }
@@ -81,11 +75,8 @@ public class RecipeUtils {
                 }
             }
         }
-        if (customPreCraftEvent.isCancelled()) {
-            api.sendDebugMessage("  invalid: " + recipe.getId());
-        }
         /*
-         The event is still called even if the recipe is invalid! This will allow other plugins to manipulate their own recipes!
+         The event is still called even if the recipe is invalid! This will allow other plugins to manipulate their own recipes or use their own checks!
         */
         Bukkit.getPluginManager().callEvent(customPreCraftEvent);
         if (!customPreCraftEvent.isCancelled()) {
@@ -101,7 +92,7 @@ public class RecipeUtils {
         MainConfig config = CustomCrafting.getConfigHandler().getConfig();
         Inventory inventory = event.getClickedInventory();
         if (resultItem != null && !resultItem.getType().equals(Material.AIR) && RecipeUtils.getPrecraftedRecipes().containsKey(event.getWhoClicked().getUniqueId()) && RecipeUtils.getPrecraftedRecipes().get(event.getWhoClicked().getUniqueId()) != null) {
-            CraftingRecipe recipe = CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipe(RecipeUtils.getPrecraftedRecipes().get(event.getWhoClicked().getUniqueId()));
+            CraftingRecipe recipe = CustomCrafting.getRecipeHandler().getCraftingRecipe(RecipeUtils.getPrecraftedRecipes().get(event.getWhoClicked().getUniqueId()));
             boolean small = matrix.length < 9;
             if (recipe != null) {
                 CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, inventory);
@@ -192,6 +183,6 @@ public class RecipeUtils {
     }
 
     public static boolean testNameSpaceKey(String namespace, String key){
-        return !CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches() && !CustomCrafting.VALID_KEY.matcher(key).matches();
+        return CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches() && CustomCrafting.VALID_KEY.matcher(key).matches();
     }
 }

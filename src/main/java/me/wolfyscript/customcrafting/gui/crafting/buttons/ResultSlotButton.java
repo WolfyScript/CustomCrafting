@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.crafting.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.RecipeUtils;
@@ -25,18 +26,17 @@ public class ResultSlotButton extends ItemInputButton {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
                 EliteWorkbenchData eliteWorkbenchData = cache.getEliteWorkbenchData();
-                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                    eliteWorkbenchData.setResult(inventory.getItem(slot) == null ? new ItemStack(Material.AIR) : inventory.getItem(slot));
-                    if(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)){
-                        ItemStack[] matrix = eliteWorkbenchData.getContents();
-                        RecipeUtils.consumeRecipe(eliteWorkbenchData.getResult(), matrix, event);
-                        guiHandler.getCurrentInv().update(guiHandler);
-                        ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbenchData.getContents(), player, false, inventory);
+                if(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)){
+                    RecipeUtils.consumeRecipe(eliteWorkbenchData.getResult(), eliteWorkbenchData.getContents(), event);
+                    RecipeUtils.getPrecraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                        EliteWorkbench eliteWorkbench = eliteWorkbenchData.getEliteWorkbench();
+                        ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbenchData.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbench.isAdvancedRecipes());
                         if(result != null){
                             eliteWorkbenchData.setResult(result);
                         }
-                    }
-                }, 2);
+                    });
+                }
                 return false;
             }
 

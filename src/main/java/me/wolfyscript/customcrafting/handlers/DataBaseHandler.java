@@ -3,6 +3,9 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.configs.MainConfig;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.custom_items.ItemConfig;
@@ -96,7 +99,7 @@ public class DataBaseHandler {
             api.sendConsoleMessage("- " + namespace + ":" + key);
             CustomRecipe recipe = getRecipe(namespace, key);
             if(recipe != null){
-                recipeHandler.registerRecipe(getRecipe(namespace, key));
+                recipeHandler.registerRecipe(recipe);
             }else{
                 api.sendConsoleMessage("Error loading recipe \""+namespace+":"+"\". Couldn't find recipe in DataBase!");
             }
@@ -174,6 +177,13 @@ public class DataBaseHandler {
                                 return new ShapelessCraftRecipe(config);
                             } else {
                                 return new ShapedCraftRecipe(config);
+                            }
+                        case "elite_workbench":
+                            EliteCraftConfig eliteCraftConfig = new EliteCraftConfig(data, configAPI, namespace, key);
+                            if (eliteCraftConfig.isShapeless()) {
+                                return new ShapelessEliteCraftRecipe(eliteCraftConfig);
+                            } else {
+                                return new ShapedEliteCraftRecipe(eliteCraftConfig);
                             }
                         case "furnace":
                             return new CustomFurnaceRecipe(new FurnaceConfig(data, configAPI, namespace, key));

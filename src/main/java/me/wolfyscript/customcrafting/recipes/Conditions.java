@@ -1,9 +1,6 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
-import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
-import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
-import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.block.Block;
@@ -24,6 +21,7 @@ public class Conditions {
     public Conditions(){
         addCondition(new PermissionCondition());
         addCondition(new AdvancedWorkbenchCondition());
+        addCondition(new EliteWorkbenchCondition());
         addCondition(new WorldTimeCondition());
         addCondition(new WeatherCondition());
     }

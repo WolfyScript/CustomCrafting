@@ -1,9 +1,9 @@
-package me.wolfyscript.customcrafting.gui.main_gui;
+package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.main_gui.buttons.VariantContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.VariantContainerButton;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
@@ -28,9 +28,12 @@ public class VariantMenu extends ExtendedGuiWindow {
         }
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            int resultSlot = 9;
             switch (cache.getSetting()) {
+                case ELITE_WORKBENCH:
+                    resultSlot = 36;
                 case WORKBENCH:
-                    if (cache.getVariantsData().getSlot() == 9) {
+                    if (cache.getVariantsData().getSlot() == resultSlot) {
                         List<CustomItem> items = cache.getVariantsData().getVariants();
                         items.removeIf(item -> item.getType().equals(Material.AIR));
                         System.out.println("List: " + items);
@@ -40,12 +43,9 @@ public class VariantMenu extends ExtendedGuiWindow {
                     }
                     break;
                 case ANVIL:
-
                     List<CustomItem> items = cache.getVariantsData().getVariants();
                     items.removeIf(item -> item.getType().equals(Material.AIR));
-
-                    cache.getAnvil().setIngredient(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
-
+                    cache.getAnvilRecipe().setInput(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
                     break;
                 case STONECUTTER:
                     if (cache.getVariantsData().getSlot() != 1) {

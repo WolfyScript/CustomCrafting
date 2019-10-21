@@ -47,10 +47,8 @@ public class CraftListener implements Listener {
             ItemStack[] matrix = inventory.getMatrix().clone();
             RecipeUtils.consumeRecipe(resultItem, matrix, event);
 
-            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
-                inventory.setMatrix(matrix);
+            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> inventory.setMatrix(matrix));
 
-            });
             RecipeUtils.getPrecraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
         } else if (event.getClickedInventory() instanceof CraftingInventory) {
             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
@@ -66,7 +64,7 @@ public class CraftListener implements Listener {
         try {
             RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
-            ItemStack result = RecipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory());
+            ItemStack result = RecipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (result != null) {
                 e.getInventory().setResult(result);
             } else {

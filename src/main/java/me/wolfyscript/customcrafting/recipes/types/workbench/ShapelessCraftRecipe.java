@@ -1,12 +1,16 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ShapedCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ShapelessCraftingRecipe;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.inventory.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShapelessCraftRecipe extends AdvancedCraftingRecipe {
+public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ShapelessCraftingRecipe<AdvancedCraftConfig> {
 
     public ShapelessCraftRecipe(AdvancedCraftConfig config) {
         super(config);
@@ -16,73 +20,13 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe {
     public void load() { }
 
     @Override
-    public void save() { }
-
-    @Override
-    public boolean check(List<List<ItemStack>> matrix) {
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
-        for (List<ItemStack> items : matrix) {
-            for (ItemStack itemStack : items) {
-                if (itemStack == null) {
-                    continue;
-                }
-                checkIngredient(allKeys, usedKeys, itemStack);
-            }
-        }
-        return usedKeys.containsAll(getIngredients().keySet());
-    }
-
-    private CustomItem checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack item) {
-        for (Character key : allKeys) {
-            if (!usedKeys.contains(key)) {
-                for (CustomItem ingredient : getIngredients().get(key)) {
-                    if (!ingredient.isSimilar(item, isExactMeta())) {
-                        continue;
-                    }
-                    usedKeys.add(key);
-                    return ingredient.clone();
-                }
-            }
-        }
+    public ShapelessCraftRecipe save(ConfigAPI configAPI, String namespace, String key) {
         return null;
     }
 
     @Override
-    public List<ItemStack> removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, ItemStack[] matrix, boolean small, int totalAmount) {
-        List<ItemStack> replacements = new ArrayList<>();
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
-        for (int i = 0; i < matrix.length; i++) {
-            ItemStack input = matrix[i];
-            if (input != null) {
-                CustomItem item = checkIngredient(allKeys, usedKeys, input);
-                if (item != null) {
-                    item.consumeItem(input, totalAmount, inventory);
-                }
-            }
-        }
-        return replacements;
-    }
-
-    @Override
-    public int getAmountCraftable(List<List<ItemStack>> matrix) {
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
-        int totalAmount = -1;
-        for (List<ItemStack> items : matrix) {
-            for (ItemStack itemStack : items) {
-                if (itemStack != null) {
-                    ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-                    if (result != null) {
-                        int possible = itemStack.getAmount() / result.getAmount();
-                        if (possible < totalAmount || totalAmount == -1)
-                            totalAmount = possible;
-                    }
-                }
-            }
-        }
-        return totalAmount;
+    public ShapelessCraftRecipe save(AdvancedCraftConfig config) {
+        return null;
     }
 
     @Override

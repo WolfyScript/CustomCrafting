@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.HashMap;
@@ -25,9 +26,11 @@ public class PlayerCache {
     private EliteWorkbenchData eliteWorkbenchData = new EliteWorkbenchData();
 
     //RECIPE_LIST OF ALL RECIPE CACHES
-    private Workbench workbench = new Workbench();
-    private Furnace furnace = new Furnace();
     private Anvil anvil = new Anvil();
+    private CustomAnvilRecipe anvilRecipe = new CustomAnvilRecipe();
+    private Workbench workbench = new Workbench();
+    private EliteWorkbench eliteWorkbench = new EliteWorkbench();
+    private Furnace furnace = new Furnace();
     private BlastingFurnace blastingFurnace = new BlastingFurnace();
     private Smoker smoker = new Smoker();
     private Campfire campfire = new Campfire();
@@ -37,6 +40,8 @@ public class PlayerCache {
         this.uuid = uuid;
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
+        this.workbench.initIngredients(3);
+        this.eliteWorkbench.initIngredients(6);
 
         setAmountCrafted(0);
         setAmountAdvancedCrafted(0);
@@ -53,15 +58,32 @@ public class PlayerCache {
     }
 
     public Workbench getWorkbench() {
+        if(getSetting().equals(Setting.ELITE_WORKBENCH)){
+            return eliteWorkbench;
+        }
         return workbench;
+    }
+
+    public EliteWorkbench getEliteWorkbench() {
+        return eliteWorkbench;
     }
 
     public void setWorkbench(Workbench workbench) {
         this.workbench = workbench;
     }
 
+    public void setEliteWorkbench(EliteWorkbench eliteWorkbench) {
+        this.eliteWorkbench = eliteWorkbench;
+    }
+
     public void resetWorkbench() {
-        this.workbench = new Workbench();
+        if(getSetting().equals(Setting.ELITE_WORKBENCH)){
+            this.eliteWorkbench = new EliteWorkbench();
+            this.eliteWorkbench.initIngredients(6);
+        }else{
+            this.workbench = new Workbench();
+            this.workbench.initIngredients(3);
+        }
     }
 
     public Furnace getFurnace() {
@@ -131,6 +153,8 @@ public class PlayerCache {
                 return getAnvil();
             case WORKBENCH:
                 return getWorkbench();
+            case ELITE_WORKBENCH:
+                return getEliteWorkbench();
         }
         return null;
     }
@@ -151,8 +175,16 @@ public class PlayerCache {
         return anvil;
     }
 
-    public void setAnvil(Anvil anvil) {
-        this.anvil = anvil;
+    public CustomAnvilRecipe getAnvilRecipe() {
+        return anvilRecipe;
+    }
+
+    public void setAnvilRecipe(CustomAnvilRecipe anvilRecipe) {
+        this.anvilRecipe = anvilRecipe;
+    }
+
+    public void resetAnvilRecipe(){
+        this.anvilRecipe = new CustomAnvilRecipe();
     }
 
     public void resetAnvil() {
@@ -169,10 +201,6 @@ public class PlayerCache {
 
     public Smoker getSmoker() {
         return smoker;
-    }
-
-    public void setSmoker(Smoker smoker) {
-        this.smoker = smoker;
     }
 
     public Campfire getCampfire() {

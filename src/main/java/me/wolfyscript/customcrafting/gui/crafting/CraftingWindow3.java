@@ -70,6 +70,7 @@ public class CraftingWindow3 extends ExtendedGuiWindow {
                     }
                 }
             }
+            eliteWorkbenchData.setEliteWorkbench(null);
             eliteWorkbenchData.setResult(new ItemStack(Material.AIR));
             eliteWorkbenchData.setContents(null);
             eliteWorkbenchData.setCurrentGridSize(0);

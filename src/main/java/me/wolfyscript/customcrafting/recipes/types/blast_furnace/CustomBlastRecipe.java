@@ -1,6 +1,14 @@
 package me.wolfyscript.customcrafting.recipes.types.blast_furnace;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
+import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -30,6 +38,7 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
         this.source = config.getSource();
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
+        this.conditions = config.getConditions();
         setGroup(config.getGroup());
     }
 
@@ -44,8 +53,20 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     }
 
     @Override
-    public void save() {
+    public CustomBlastRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        BlastingConfig config;
+        if (CustomCrafting.hasDataBaseHandler()) {
+            config = new BlastingConfig("{}",configAPI, namespace, key);
+        } else {
+            config = new BlastingConfig(configAPI, namespace, key);
+        }
+        return save(config);
+    }
 
+    @Override
+    public CustomBlastRecipe save(BlastingConfig config) {
+
+        return this;
     }
 
     @Override

@@ -1002,6 +1002,21 @@
               "disabled": {
                 "name": "&cDisabled"
               }
+            },
+            "advanced_recipes": {
+              "enabled": {
+                "name": "&aNormal Recipes Allowed",
+                "lore": [
+                  "&7Normal Recipes && Elite Recipes can be crafted.",
+                  "&eNormal Recipes: Custom Recipes which are not Advanced Workbench only!"
+                ]
+              },
+              "disabled": {
+                "name": "&cOnly Elite Recipes",
+                "lore": [
+                  "&7Only Elite Recipes can be crafted!"
+                ]
+              }
             }
           }
         }
@@ -1123,6 +1138,22 @@
               "&7Items with Meta still need to be exact!"
             ]
           }
+        },
+        "workbench": {
+          "shapeless": {
+            "enabled": {
+              "name": "&3Shapeless Recipe",
+              "help": [
+                "&7Recipe is shapeless!"
+              ]
+            },
+            "disabled": {
+              "name": "&3Shaped Recipe",
+              "help": [
+                "&7Recipe has a shape!"
+              ]
+            }
+          }
         }
       },
       "conditions": {
@@ -1160,31 +1191,33 @@
               "&8[&aRight Click&8] &7toggle Mode",
               "&8[&aLeft Click&8] &7toggle Weather"
             ]
+          },
+          "advanced_workbench": {
+            "name": "&7- Advanced Workbench -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&8[&aLeft Click&8] &7toggle on/off"
+            ]
+          },
+          "elite_workbench": {
+            "name": "&7- Elite Workbench -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Values:&e %VALUE%",
+              "&8[&aRight Click&8] &7toggle on/off",
+              "&8[&aLeft Click&8] &7configure Elite Workbenches"
+            ]
           }
         }
       },
       "workbench": {
-        "gui_name": "&4&lRecipe Creator &8[&7Workbench&8]",
+        "gui_name": "&4&lCreator &7[&8Workbench&7]",
         "gui_help": [
           "&7Tip:",
           "&eShift &7+ &eRight click &7on Result or Ingredients will ",
           "&7allow you to edit the item/s"
         ],
         "items": {
-          "shapeless": {
-            "enabled": {
-              "name": "&3Shapeless Recipe",
-              "help": [
-                "&7Recipe is shapeless!"
-              ]
-            },
-            "disabled": {
-              "name": "&3Shaped Recipe",
-              "help": [
-                "&7Recipe has a shape!"
-              ]
-            }
-          },
           "adv_workbench": {
             "enabled": {
               "name": "&3Advanced Workbench",
@@ -1201,6 +1234,15 @@
               ]
             }
           }
+        }
+      },
+      "elite_workbench": {
+        "gui_name": "&4&lCreator &7[&8Elite Workbench&7]",
+        "gui_help": [
+
+        ],
+        "items": {
+
         }
       },
       "stonecutter": {
@@ -1438,7 +1480,7 @@
         }
       },
       "crafting_grid3": {
-        "gui_name": "&8&lCrafting Table",
+        "gui_name": "&8&lElite Crafting Table",
         "items": {
         }
       },
