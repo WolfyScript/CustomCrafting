@@ -51,9 +51,15 @@ public class RecipeConfig extends CustomConfig {
         setPathSeparator('.');
     }
 
+    @Override
+    public void init() {
+        super.init();
+        getConditions();
+    }
+
     /*
-        Creates a json Memory only Config. can be used for anything. to save it use the linkToFile(String, String, String) method!
-    */
+            Creates a json Memory only Config. can be used for anything. to save it use the linkToFile(String, String, String) method!
+        */
     public RecipeConfig(String type, String defaultName) {
         super(CustomCrafting.getApi().getConfigAPI(), "", "", "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;
@@ -125,7 +131,9 @@ public class RecipeConfig extends CustomConfig {
             setConditions(conditions);
             return conditions;
         }
-        return new Conditions();
+        Conditions conditions = new Conditions();
+        setConditions(conditions);
+        return conditions;
     }
 
     public Conditions getConditions() {

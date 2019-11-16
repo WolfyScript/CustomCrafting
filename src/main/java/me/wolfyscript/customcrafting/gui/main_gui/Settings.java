@@ -9,7 +9,10 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+
+import java.util.Locale;
 
 public class Settings extends ExtendedGuiWindow {
 
@@ -19,7 +22,7 @@ public class Settings extends ExtendedGuiWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ToggleButton("lockdown", !CustomCrafting.getConfigHandler().getConfig().isLockedDown(), new ButtonState("lockdown.disabled", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("lockdown", new ButtonState("lockdown.disabled", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
                 guiHandler.close();
                 api.sendPlayerMessage(player, "&cAre you sure you want to enable LockDown mode?");
@@ -43,7 +46,7 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ToggleButton("darkMode", !CustomCrafting.getConfigHandler().getConfig().isLockedDown(), new ButtonState("darkMode.disabled", Material.WHITE_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("darkMode", new ButtonState("darkMode.disabled", Material.WHITE_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).setDarkMode(true);
             return true;
         }), new ButtonState("darkMode.enabled", Material.BLACK_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -51,16 +54,57 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
+        registerButton(new ToggleButton("pretty_printing", new ButtonState("pretty_printing.disabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
+            return true;
+        }), new ButtonState("pretty_printing.enabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
+            return true;
+        })));
+
+        registerButton(new ToggleButton("advanced_workbench", new ButtonState("advanced_workbench.disabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
+            return true;
+        }), new ButtonState("advanced_workbench.enabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
+            return true;
+        })));
+
+        registerButton(new ToggleButton("debug", new ButtonState("debug.disabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().set("debug", false);
+            return true;
+        }), new ButtonState("debug.enabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().set("debug", true);
+            return true;
+        })));
     }
 
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            Player player = event.getPlayer();
+
             ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isLockedDown());
             ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerCache(event.getPlayer()).getDarkMode());
+            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
+
             event.setButton(0, "none", "back");
-            event.setButton(9, "lockdown");
-            event.setButton(10, "darkMode");
+
+            if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
+                event.setButton(9, "lockdown");
+            }
+            if (ChatUtils.checkPerm(player, "customcrafting.cmd.darkmode")) {
+                event.setButton(10, "darkMode");
+            }
+            if (ChatUtils.checkPerm(player, "customcrafting.cmd.settings")) {
+                event.setButton(11, "pretty_printing");
+                event.setButton(12, "advanced_workbench");
+            }
+
+            if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
+                event.setButton(34, "debug");
+            }
+
 
 
         }

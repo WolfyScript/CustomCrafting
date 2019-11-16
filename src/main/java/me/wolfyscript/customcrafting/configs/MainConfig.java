@@ -40,6 +40,10 @@ public class MainConfig extends Config {
         set("knowledgebook.reset_recipe", reset);
     }
 
+    public void setAdvancedWorkbenchEnabled(boolean enabled){
+        set("workbench.enable", enabled);
+    }
+
     public boolean isAdvancedWorkbenchEnabled() {
         return getBoolean("workbench.enable");
     }

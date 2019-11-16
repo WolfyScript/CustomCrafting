@@ -42,6 +42,14 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             }
                         }
                         break;
+                    case "darkmode":
+                        CustomCrafting.getPlayerCache(p).setDarkMode(!CustomCrafting.getPlayerCache(p).getDarkMode());
+                        if(CustomCrafting.getPlayerCache(p).getDarkMode()){
+                            api.sendPlayerMessage(p, "$msg.commands.darkmode.enabled$");
+                        }else{
+                            api.sendPlayerMessage(p, "$msg.commands.darkmode.disabled$");
+                        }
+                        break;
                     case "studio":
                         if (!invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("recipe_book")) {
                             invAPI.getGuiHandler(p).openCluster();
@@ -104,7 +112,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                         api.sendPlayerMessage(p, "$msg.commands.give.invalid_amount$");
                                     }
                                 }
-                                me.wolfyscript.utilities.api.custom_items.CustomItem customItem = CustomItems.getCustomItem(namespacekey);
+                                CustomItem customItem = CustomItems.getCustomItem(namespacekey);
                                 if (customItem != null) {
                                     if (InventoryUtils.hasInventorySpace(target, customItem)) {
                                         ItemStack itemStack = customItem.getItemStack();
@@ -134,13 +142,6 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.settings")) {
                             if (args.length > 2) {
                                 switch (args[1]) {
-                                    case "preferred_file_type":
-                                        String setting = args[2];
-                                        if (setting.equalsIgnoreCase("yml") || setting.equalsIgnoreCase("json")) {
-                                            CustomCrafting.getConfigHandler().getConfig().setPreferredFileType(setting.toLowerCase(Locale.ROOT));
-                                            api.sendPlayerMessage(p, "&aSet &epreferred file type &ato &e" + setting);
-                                        }
-                                        break;
                                     case "pretty_printing":
                                         if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
                                             CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
@@ -255,8 +256,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 
-    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "knowledge", "settings", "database", "reload", "addAdvWorkbench");
-    private final List<String> SETTINGS = Arrays.asList("pretty_printing", "preferred_file_type", "advanced_workbench");
+    private final List<String> COMMANDS = Arrays.asList("help", "clear", "info", "studio", "give", "lockdown", "darkmode", "knowledge", "settings", "database", "reload", "addAdvWorkbench");
+    private final List<String> SETTINGS = Arrays.asList("pretty_printing", "advanced_workbench");
     private final List<String> DATABASE = Arrays.asList("export_data");
 
     @Override
@@ -283,9 +284,6 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     StringUtil.copyPartialMatches(strings[1], SETTINGS, results);
                 } else if (strings.length == 3) {
                     switch (strings[1]) {
-                        case "preferred_file_type":
-                            StringUtil.copyPartialMatches(strings[2], Arrays.asList("json", "yml"), results);
-                            break;
                         case "advanced_workbench":
                         case "vanilla_knowledgebook":
                         case "pretty_printing":

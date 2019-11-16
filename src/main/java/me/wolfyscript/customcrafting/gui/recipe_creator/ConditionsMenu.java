@@ -44,10 +44,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                 if (event.getClick().isRightClick()) {
                     //Change Mode
                     RecipeConfig recipeConfig = CustomCrafting.getPlayerCache(player).getRecipeConfig();
-                    Conditions conditions = recipeConfig.getConditions();
-                    conditions.getByID("world_time").toggleOption();
-                    recipeConfig.setConditions(conditions);
-                    System.out.println(recipeConfig.getConditions().toMap());
+                    recipeConfig.getConditions().getByID("world_time").toggleOption();
                 } else {
                     //Change Value
                     openChat(guiHandler, "$$", (guiHandler1, player1, s, strings) -> {
