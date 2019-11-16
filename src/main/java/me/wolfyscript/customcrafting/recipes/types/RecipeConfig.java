@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
-import me.wolfyscript.customcrafting.recipes.RecipeUtils;
+import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;

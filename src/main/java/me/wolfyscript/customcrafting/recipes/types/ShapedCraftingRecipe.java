@@ -1,20 +1,19 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.sun.javafx.geom.Vec2d;
+import me.wolfyscript.customcrafting.recipes.crafting.CraftingData;
+import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T> {
 
     String[] getShapeMirrorHorizontal();
     String[] getShapeMirrorVertical();
-
     String[] getShape();
-
-    void setShape(String[] shape);
 
     @Override
     default boolean isShapeless() {
@@ -26,32 +25,48 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
     boolean mirrorVertical();
 
     @Override
-    default boolean check(List<List<ItemStack>> matrix) {
-        if(checkShape(matrix, getShape())){
-            return true;
+    default CraftingData check(List<List<ItemStack>> matrix) {
+        CraftingData craftingData = checkShape(matrix, getShape());
+        if(craftingData != null){
+            return craftingData;
         }
-        if(mirrorHorizontal() && checkShape(matrix, getShapeMirrorHorizontal())){
-            return true;
+        if(mirrorHorizontal()){
+            craftingData = checkShape(matrix, getShapeMirrorHorizontal());
+            if(craftingData != null){
+                return craftingData;
+            }
         }
-        return mirrorVertical() && checkShape(matrix, getShapeMirrorVertical());
+        if(mirrorVertical()){
+            craftingData = checkShape(matrix, getShapeMirrorVertical());
+            if(craftingData != null){
+                return craftingData;
+            }
+        }
+        return null;
     }
 
-    default boolean checkShape(List<List<ItemStack>> matrix, String[] shape){
+    default CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape){
         List<Character> containedKeys = new ArrayList<>();
+        HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
                 if ((matrix.get(i).get(j) != null && shape[i].charAt(j) != ' ')) {
-                    if (checkIngredient(matrix.get(i).get(j), getIngredients().get(shape[i].charAt(j))) == null) {
-                        return false;
+                    CustomItem item = checkIngredient(matrix.get(i).get(j), getIngredients().get(shape[i].charAt(j)));
+                    if (item == null) {
+                        return null;
                     } else {
+                        foundItems.put(new Vec2d(j, i), item);
                         containedKeys.add(shape[i].charAt(j));
                     }
                 } else if (!(matrix.get(i).get(j) == null && shape[i].charAt(j) == ' ')) {
-                    return false;
+                    return null;
                 }
             }
         }
-        return containedKeys.containsAll(getIngredients().keySet());
+        if(containedKeys.containsAll(getIngredients().keySet())){
+            return new CraftingData((CraftingRecipe<CraftConfig>) this, foundItems);
+        }
+        return null;
     }
 
     default CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
@@ -61,65 +76,5 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
             }
         }
         return null;
-    }
-
-    @Override
-    default List<ItemStack> removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, ItemStack[] matrix, boolean small, int totalAmount) {
-        List<ItemStack> replacements = new ArrayList<>();
-        int startIndex = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            if (matrix[i] != null) {
-                startIndex = i;
-                break;
-            }
-        }
-        if (ingredientsInput.get(0).size() > 1) {
-            for (int i = 0; i < ingredientsInput.get(0).size(); i++) {
-                if (ingredientsInput.get(0).get(i) != null) {
-                    startIndex = startIndex - i;
-                    break;
-                }
-            }
-        }
-        int r = 0; //ROW
-        int c = 0; //COLUMN
-        for (int x = startIndex; x < matrix.length; x++) {
-            if (r < ingredientsInput.size() && c < ingredientsInput.get(r).size()) {
-                if ((ingredientsInput.get(r).get(c) != null && getShape()[r].charAt(c) != ' ')) {
-                    ItemStack input = ingredientsInput.get(r).get(c);
-                    CustomItem item = checkIngredient(input, getIngredients().get(getShape()[r].charAt(c)));
-                    if (item != null) {
-                        item.consumeItem(input, totalAmount, inventory);
-                    }
-                }
-            }
-            if (r >= ingredientsInput.size()) {
-                break;
-            }
-            c++;
-            if (c >= ingredientsInput.get(r).size()) {
-                c = 0;
-                r++;
-            }
-        }
-        return replacements;
-    }
-
-    @Override
-    default int getAmountCraftable(List<List<ItemStack>> matrix) {
-        int totalAmount = -1;
-        for (int i = 0; i < matrix.size(); i++) {
-            for (int j = 0; j < matrix.get(i).size(); j++) {
-                if ((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')) {
-                    ItemStack item = checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j)));
-                    if (item != null) {
-                        int possible = matrix.get(i).get(j).getAmount() / item.getAmount();
-                        if (possible < totalAmount || totalAmount == -1)
-                            totalAmount = possible;
-                    }
-                }
-            }
-        }
-        return totalAmount;
     }
 }

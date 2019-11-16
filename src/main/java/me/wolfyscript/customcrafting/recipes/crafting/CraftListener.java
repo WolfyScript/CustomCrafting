@@ -1,10 +1,10 @@
-package me.wolfyscript.customcrafting.listeners;
+package me.wolfyscript.customcrafting.recipes.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.recipes.RecipeUtils;
+import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
@@ -49,7 +49,7 @@ public class CraftListener implements Listener {
 
             Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> inventory.setMatrix(matrix));
 
-            RecipeUtils.getPrecraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+            RecipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
         } else if (event.getClickedInventory() instanceof CraftingInventory) {
             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                 PrepareItemCraftEvent event1 = new PrepareItemCraftEvent((CraftingInventory) event.getClickedInventory(), event.getView(), false);
@@ -69,7 +69,7 @@ public class CraftListener implements Listener {
                 e.getInventory().setResult(result);
             } else {
                 api.sendDebugMessage("No valid recipe!");
-                RecipeUtils.getPrecraftedRecipes().remove(player.getUniqueId());
+                RecipeUtils.getPreCraftedRecipes().remove(player.getUniqueId());
                 if (e.getRecipe() != null) {
                     if (e.getRecipe() instanceof Keyed) {
                         api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
@@ -88,7 +88,7 @@ public class CraftListener implements Listener {
             System.out.println("WHAT HAPPENED? Please report!");
             ex.printStackTrace();
             System.out.println("WHAT HAPPENED? Please report!");
-            RecipeUtils.getPrecraftedRecipes().remove(player.getUniqueId());
+            RecipeUtils.getPreCraftedRecipes().remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }

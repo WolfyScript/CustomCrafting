@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting;
 
 import com.sun.istack.internal.Nullable;
+import com.sun.javafx.geom.Vec2d;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
@@ -14,6 +15,7 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
+import me.wolfyscript.customcrafting.recipes.crafting.CraftListener;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
