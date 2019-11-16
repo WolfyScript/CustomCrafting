@@ -39,7 +39,7 @@ public class CookingCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
                 openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
@@ -98,7 +98,7 @@ public class CookingCreator extends ExtendedGuiWindow {
             //CustomCrafting.getPlayerCache(player).getCookingConfig().setAdvFurnace(true);
             return true;
         })));
-        registerButton(new ChatInputButton("furnace.xp", new ButtonState("furnace.xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton("furnace.xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%XP%", CustomCrafting.getPlayerCache(player).getCookingConfig().getXP());
             return itemStack;
         }), "$msg.gui.none.recipe_creator.furnace.xp$", (guiHandler, player, s, args) -> {
@@ -112,7 +112,7 @@ public class CookingCreator extends ExtendedGuiWindow {
             CustomCrafting.getPlayerCache(player).getCookingConfig().setXP(xp);
             return false;
         }));
-        registerButton(new ChatInputButton("furnace.cooking_time", new ButtonState("furnace.cooking_time", Material.COAL, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton("furnace.cooking_time", new ButtonState("cooking_time", Material.COAL, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%TIME%", CustomCrafting.getPlayerCache(player).getCookingConfig().getCookingTime());
             return itemStack;
         }), "$msg.gui.none.recipe_creator.furnace.cooking_time$", (guiHandler, player, s, args) -> {
@@ -138,11 +138,11 @@ public class CookingCreator extends ExtendedGuiWindow {
                 case SMOKER:
                 case CAMPFIRE:
                 case FURNACE:
-                    event.setButton(20, "none", "glass_white");
+                    event.setButton(20, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
                     event.setButton(11, "cooking.container_0");
                     event.setButton(24, "cooking.container_1");
-                    event.setButton(37, "none", "glass_white");
-                    event.setButton(39, "none", "glass_white");
+                    event.setButton(10, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+                    event.setButton(12, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
                     event.setButton(22, "furnace.xp");
                     event.setButton(29, "furnace.cooking_time");
                     event.setButton(44, "save");

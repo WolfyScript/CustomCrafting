@@ -213,6 +213,10 @@
         "enabled": "&7[&c&lLOCKDOWN&7] &aENABLED! &cRecipes will be blocked from now on!",
         "disabled": "&7[&c&lLOCKDOWN&7] &cDISABLED! &cRecipes will no longer be blocked!"
       },
+      "darkmode": {
+        "enabled": "&aEnabled Dark Mode for the GUIs!",
+        "disabled": "&cDisabled Dar Mode for the GUIs!"
+      },
       "give": {
         "player_offline": "&cThe player &4%PLAYER% &cis not online!",
         "invalid_amount": "&cInvalid amount! Is it a number?",
@@ -486,6 +490,63 @@
               "lore": [
                 "&7[&8Disabled&7]",
                 "&7Recipes are not blocked!"
+              ]
+            }
+          },
+          "darkMode": {
+            "enabled": {
+              "name": "&7Dark Mode"
+            },
+            "disabled": {
+              "name": "&7Light Mode"
+            }
+          },
+          "pretty_printing": {
+            "enabled": {
+              "name": "&6Pretty Printing",
+              "lore": [
+                "&7Json configs are saved with correct formatting!",
+                "&7[&aClick&7] Toggle one-line printing"
+              ]
+            },
+            "disabled": {
+              "name": "&6One-Line Printing",
+              "lore": [
+                "&7Json configs are saved in one line!",
+                "&7[&aClick&7] Toggle pretty printing"
+              ]
+            }
+          },
+          "advanced_workbench": {
+            "enabled": {
+              "name": "&aAdvanced Workbench",
+              "lore": [
+                "&7Advanced Workbench is enabled!",
+                "&7[&aClick&7] Toggle advanced workbench"
+              ]
+            },
+            "disabled": {
+              "name": "&cAdvanced Workbench",
+              "lore": [
+                "&7Advanced Workbench is disabled!",
+                "&7[&aClick&7] Toggle advanced workbench"
+              ]
+            }
+          },
+          "debug": {
+            "enabled": {
+              "name": "&aDebug",
+              "lore": [
+                "&7Debug is enabled!",
+                "&7You may get a lot of messages from now on!",
+                "&7[&aClick&7] Toggle debug"
+              ]
+            },
+            "disabled": {
+              "name": "&cDebug",
+              "lore": [
+                "&7Debug is disabled!",
+                "&7[&aClick&7] Toggle debug"
               ]
             }
           }
@@ -1214,6 +1275,38 @@
                 "&7Recipe has a shape!"
               ]
             }
+          },
+          "mirrorHorizontal": {
+            "enabled": {
+              "name": "&aMirror Horizontal",
+              "lore": [
+                "&7Recipe can be crafted mirrored horizontally",
+                "&7[&aClick&7] Toggle"
+              ]
+            },
+            "disabled": {
+              "name": "&cMirror Horizontal",
+              "lore": [
+                "&7Recipe is fixed!",
+                "&7[&aClick&7] Toggle"
+              ]
+            }
+          },
+          "mirrorVertical": {
+            "enabled": {
+              "name": "&aMirror Vertical",
+              "lore": [
+                "&7Recipe can be crafted mirrored vertically",
+                "&7[&aClick&7] Toggle"
+              ]
+            },
+            "disabled": {
+              "name": "&cMirror Vertical",
+              "lore": [
+                "&7Recipe is fixed!",
+                "&7[&aClick&7] Toggle"
+              ]
+            }
           }
         }
       },
@@ -1324,7 +1417,7 @@
         }
       },
       "cooking": {
-        "gui_name": "&4&lRecipe Creator &8[&7Cooking/Smelting&8]",
+        "gui_name": "&4Recipe Creator &8[&7Cooking/Smelting&8]",
         "gui_help": [
           "&7Tip:",
           "&eShift &7+ &eRight click &7on Result or Ingredients will ",
@@ -1446,9 +1539,9 @@
             "disabled": {
               "name": "&6Keep Items",
               "lore": [
-                "&eItems stay in the cauldron when recipe is done."
-                ,"&ePlayer right click replaces the item in their hand."
-                ,"&eSet the item player needs to use for the right click >>>",
+                "&eItems stay in the cauldron when recipe is done.",
+                "&ePlayer right click replaces the item in their hand.",
+                "&eSet the item player needs to use for the right click >>>",
                 "",
                 "&7[&aClick&7] toggle to drop items"
               ]
@@ -1464,8 +1557,8 @@
             "disabled": {
               "name": "&6No Fire required",
               "lore": [
-                "&eThis recipe will only work if no Fire or lit Campfire"
-                ,"&eis present!"
+                "&eThis recipe will only work if no Fire or lit Campfire",
+                "&eis present!"
               ]
             }
           },
@@ -1487,16 +1580,16 @@
           "xp": {
             "name": "&6Experience",
             "lore": [
-              "&7Experience: &e%xp%"
-              ,"",
+              "&7Experience: &e%xp%",
+              "",
               "&eThe amount xp you get when the recipe is done."
             ]
           },
           "cookingTime": {
             "name": "&6Cooking Time",
             "lore": [
-              "&7Time: &e%time% ticks"
-              ,"",
+              "&7Time: &e%time% ticks",
+              "",
               "&eThe time in ticks for the recipe to be done!"
             ]
           },

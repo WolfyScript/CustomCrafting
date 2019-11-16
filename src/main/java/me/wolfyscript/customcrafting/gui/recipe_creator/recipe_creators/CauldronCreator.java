@@ -39,7 +39,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
                 openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {

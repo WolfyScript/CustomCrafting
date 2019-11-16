@@ -62,11 +62,11 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ToggleButton("advanced_workbench", new ButtonState("advanced_workbench.disabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
-            return true;
-        }), new ButtonState("advanced_workbench.enabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("advanced_workbench", new ButtonState("advanced_workbench.enabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
+            return true;
+        }), new ButtonState("advanced_workbench.disabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
             return true;
         })));
 
@@ -86,7 +86,9 @@ public class Settings extends ExtendedGuiWindow {
 
             ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isLockedDown());
             ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerCache(event.getPlayer()).getDarkMode());
-            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
+            ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+            ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
+            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), api.hasDebuggingMode());
 
             event.setButton(0, "none", "back");
 
@@ -102,11 +104,8 @@ public class Settings extends ExtendedGuiWindow {
             }
 
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
-                event.setButton(34, "debug");
+                event.setButton(35, "debug");
             }
-
-
-
         }
     }
 }
