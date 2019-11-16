@@ -24,11 +24,11 @@ public class WeatherCondition extends Condition {
         return weather;
     }
 
-    public void toggleWeather(){
+    public void toggleWeather() {
         int index = weather.ordinal();
-        if(index < Weather.values().length-1){
+        if (index < Weather.values().length - 1) {
             index++;
-        }else{
+        } else {
             index = 0;
         }
         weather = Weather.values()[index];
@@ -36,13 +36,13 @@ public class WeatherCondition extends Condition {
 
     @Override
     public boolean check(CustomRecipe recipe, Conditions.Data data) {
-        if(option.equals(Conditions.Option.IGNORE)){
+        if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
         Block block = data.getBlock();
-        if(block != null){
+        if (block != null) {
             World world = block.getWorld();
-            switch(weather){
+            switch (weather) {
                 case NONE:
                     return !world.isThundering() && !world.hasStorm();
                 case STORM:
@@ -65,18 +65,18 @@ public class WeatherCondition extends Condition {
     public void fromString(String value) {
         String[] args = value.split(";");
         this.option = Conditions.Option.valueOf(args[0]);
-        if(args.length > 1){
+        if (args.length > 1) {
             this.weather = Weather.valueOf(args[1]);
         }
     }
 
-    public enum Weather{
+    public enum Weather {
         STORM, THUNDER, STORM_THUNDER, NONE;
 
         private String display;
 
-        Weather(){
-            this.display = "$inventories.recipe_creator.conditions.items.weather.modes."+super.toString().toLowerCase(Locale.ROOT)+"$";
+        Weather() {
+            this.display = "$inventories.recipe_creator.conditions.items.weather.modes." + super.toString().toLowerCase(Locale.ROOT) + "$";
         }
 
         public String getDisplay(WolfyUtilities api) {

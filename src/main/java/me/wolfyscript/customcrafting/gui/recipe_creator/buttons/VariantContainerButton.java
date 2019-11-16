@@ -28,7 +28,7 @@ public class VariantContainerButton extends ItemInputButton {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             CustomCrafting.getPlayerCache(player).getItems().setVariant(variantSlot, CustomItem.getByItemStack(inventory.getItem(slot)));
-                            guiHandler.changeToInv("item_editor");
+                            guiHandler.changeToInv("none","item_editor");
                         }
                     });
                     return true;

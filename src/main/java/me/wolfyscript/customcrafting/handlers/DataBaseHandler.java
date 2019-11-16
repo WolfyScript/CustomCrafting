@@ -1,15 +1,9 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
@@ -18,17 +12,23 @@ import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.utils.sql.SQLDataBase;
 import org.bukkit.plugin.Plugin;
@@ -98,10 +98,10 @@ public class DataBaseHandler {
             String key = resultSet.getString("rKey");
             api.sendConsoleMessage("- " + namespace + ":" + key);
             CustomRecipe recipe = getRecipe(namespace, key);
-            if(recipe != null){
+            if (recipe != null) {
                 recipeHandler.registerRecipe(recipe);
-            }else{
-                api.sendConsoleMessage("Error loading recipe \""+namespace+":"+"\". Couldn't find recipe in DataBase!");
+            } else {
+                api.sendConsoleMessage("Error loading recipe \"" + namespace + ":" + "\". Couldn't find recipe in DataBase!");
             }
         }
     }
@@ -223,9 +223,9 @@ public class DataBaseHandler {
             pState.setString(2, data.getName());
             pState.setString(3, data.getConfigType());
             pState.setString(4, data.toString());
-            if(async){
+            if (async) {
                 dataBase.executeUpdate(pState);
-            }else{
+            } else {
                 pState.executeUpdate();
             }
         } catch (SQLException e) {
@@ -244,9 +244,9 @@ public class DataBaseHandler {
                 pState.setString(1, data.toString());
                 pState.setString(2, data.getNamespace());
                 pState.setString(3, data.getName());
-                if(async){
+                if (async) {
                     dataBase.executeUpdate(pState);
-                }else{
+                } else {
                     pState.executeUpdate();
                 }
             } catch (SQLException e) {

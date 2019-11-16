@@ -30,7 +30,7 @@ public class Cauldron implements Listener {
         }
         if (!items.isEmpty()) {
             this.result = items.next();
-        }else{
+        } else {
             this.result = new CustomItem(Material.AIR);
         }
 

@@ -2,7 +2,18 @@ package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
+import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
+import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
+import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
+import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
+import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
+import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
+import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.HashMap;
@@ -22,26 +33,26 @@ public class PlayerCache {
 
     private VariantsData variantsData = new VariantsData();
 
-    private ChatLists chatLists = new ChatLists();
-    private EliteWorkbenchData eliteWorkbenchData = new EliteWorkbenchData();
-
-    //RECIPE_LIST OF ALL RECIPE CACHES
-    private Anvil anvil = new Anvil();
-    private CustomAnvilRecipe anvilRecipe = new CustomAnvilRecipe();
-    private Workbench workbench = new Workbench();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
-    private Furnace furnace = new Furnace();
-    private BlastingFurnace blastingFurnace = new BlastingFurnace();
-    private Smoker smoker = new Smoker();
-    private Campfire campfire = new Campfire();
-    private Stonecutter stonecutter = new Stonecutter();
+
+    private ChatLists chatLists = new ChatLists();
+
+    //RECIPE_LIST OF ALL RECIPE CACHE
+
+    private AnvilConfig anvilConfig = new AnvilConfig();
+    private AdvancedCraftConfig advancedCraftConfig = new AdvancedCraftConfig();
+    private EliteCraftConfig eliteCraftConfig = new EliteCraftConfig();
+    private BlastingConfig blastingConfig = new BlastingConfig();
+    private CampfireConfig campfireConfig = new CampfireConfig();
+    private CauldronConfig cauldronConfig = new CauldronConfig();
+    private SmokerConfig smokerConfig = new SmokerConfig();
+    private StonecutterConfig stonecutterConfig = new StonecutterConfig();
+    private FurnaceConfig furnaceConfig = new FurnaceConfig();
 
     public PlayerCache(UUID uuid) {
         this.uuid = uuid;
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
-        this.workbench.initIngredients(3);
-        this.eliteWorkbench.initIngredients(6);
 
         setAmountCrafted(0);
         setAmountAdvancedCrafted(0);
@@ -55,56 +66,6 @@ public class PlayerCache {
 
     public UUID getUuid() {
         return uuid;
-    }
-
-    public Workbench getWorkbench() {
-        if(getSetting().equals(Setting.ELITE_WORKBENCH)){
-            return eliteWorkbench;
-        }
-        return workbench;
-    }
-
-    public EliteWorkbench getEliteWorkbench() {
-        return eliteWorkbench;
-    }
-
-    public void setWorkbench(Workbench workbench) {
-        this.workbench = workbench;
-    }
-
-    public void setEliteWorkbench(EliteWorkbench eliteWorkbench) {
-        this.eliteWorkbench = eliteWorkbench;
-    }
-
-    public void resetWorkbench() {
-        if(getSetting().equals(Setting.ELITE_WORKBENCH)){
-            this.eliteWorkbench = new EliteWorkbench();
-            this.eliteWorkbench.initIngredients(6);
-        }else{
-            this.workbench = new Workbench();
-            this.workbench.initIngredients(3);
-        }
-    }
-
-    public Furnace getFurnace() {
-        return furnace;
-    }
-
-    public void resetCookingData() {
-        switch (getSetting()) {
-            case BLAST_FURNACE:
-                this.blastingFurnace = new BlastingFurnace();
-            case SMOKER:
-                this.smoker = new Smoker();
-            case CAMPFIRE:
-                this.campfire = new Campfire();
-            case FURNACE:
-                this.furnace = new Furnace();
-        }
-    }
-
-    public void resetStonecutter() {
-        this.stonecutter = new Stonecutter();
     }
 
     //Player Stats
@@ -126,38 +87,6 @@ public class PlayerCache {
         this.subSetting = setting;
     }
 
-    public CookingData getCookingData() {
-        switch (getSetting()) {
-            case BLAST_FURNACE:
-                return getBlastingFurnace();
-            case SMOKER:
-                return getSmoker();
-            case CAMPFIRE:
-                return getCampfire();
-            case FURNACE:
-                return getFurnace();
-        }
-        return null;
-    }
-
-    public RecipeData getRecipeData(){
-        switch (getSetting()){
-            case BLAST_FURNACE:
-            case SMOKER:
-            case CAMPFIRE:
-            case FURNACE:
-                return getCookingData();
-            case STONECUTTER:
-                return getStonecutter();
-            case ANVIL:
-                return getAnvil();
-            case WORKBENCH:
-                return getWorkbench();
-            case ELITE_WORKBENCH:
-                return getEliteWorkbench();
-        }
-        return null;
-    }
 
     public VariantsData getVariantsData() {
         return variantsData;
@@ -165,58 +94,6 @@ public class PlayerCache {
 
     public void setVariantsData(VariantsData variantsData) {
         this.variantsData = variantsData;
-    }
-
-    public void setFurnace(Furnace furnace) {
-        this.furnace = furnace;
-    }
-
-    public Anvil getAnvil() {
-        return anvil;
-    }
-
-    public CustomAnvilRecipe getAnvilRecipe() {
-        return anvilRecipe;
-    }
-
-    public void setAnvilRecipe(CustomAnvilRecipe anvilRecipe) {
-        this.anvilRecipe = anvilRecipe;
-    }
-
-    public void resetAnvilRecipe(){
-        this.anvilRecipe = new CustomAnvilRecipe();
-    }
-
-    public void resetAnvil() {
-        this.anvil = new Anvil();
-    }
-
-    public BlastingFurnace getBlastingFurnace() {
-        return blastingFurnace;
-    }
-
-    public void setBlastingFurnace(BlastingFurnace blastingFurnace) {
-        this.blastingFurnace = blastingFurnace;
-    }
-
-    public Smoker getSmoker() {
-        return smoker;
-    }
-
-    public Campfire getCampfire() {
-        return campfire;
-    }
-
-    public void setCampfire(Campfire campfire) {
-        this.campfire = campfire;
-    }
-
-    public Stonecutter getStonecutter() {
-        return stonecutter;
-    }
-
-    public void setStonecutter(Stonecutter stonecutter) {
-        this.stonecutter = stonecutter;
     }
 
     public KnowledgeBook getKnowledgeBook() {
@@ -233,10 +110,6 @@ public class PlayerCache {
 
     public void setItems(Items items) {
         this.items = items;
-    }
-
-    public EliteWorkbenchData getEliteWorkbenchData() {
-        return eliteWorkbenchData;
     }
 
     private Object getObject(String key) {
@@ -257,6 +130,14 @@ public class PlayerCache {
 
     public void setStats(HashMap<String, Object> stats) {
         CACHE = stats;
+    }
+
+    public void setDarkMode(boolean darkMode){
+        CACHE.put("dark_mode", darkMode);
+    }
+
+    public boolean getDarkMode(){
+        return (boolean) CACHE.getOrDefault("dark_mode", false);
     }
 
     public void addAmountCrafted(int amount) {
@@ -322,16 +203,186 @@ public class PlayerCache {
         this.chatLists = new ChatLists();
     }
 
-    public void applyItem(CustomItem customItem){
+    public void applyItem(CustomItem customItem) {
         if (getItems().getType().equals("variant")) {
             //Set values to variant cache
             getVariantsData().putVariant(getItems().getVariantSlot(), customItem);
-        }else if(getItems().getType().equals("single")){
-            switch (getSetting()){
+        } else if (getItems().getType().equals("single")) {
+            switch (getSetting()) {
                 case STONECUTTER:
-                    getStonecutter().setResult(getItems().getItem());
+                    getStonecutterConfig().setResult(getItems().getItem());
                     break;
+                case CAULDRON:
+                    getCauldronConfig().setHandItem(getItems().getItem());
             }
         }
+    }
+
+    public AnvilConfig getAnvilConfig() {
+        return anvilConfig;
+    }
+
+    public void resetAnvilConfig() {
+        this.anvilConfig = new AnvilConfig();
+    }
+
+    public CraftConfig getCraftConfig() {
+        if (getSetting().equals(Setting.ELITE_WORKBENCH))
+            return getEliteCraftConfig();
+        return getAdvancedCraftConfig();
+    }
+
+    public CookingConfig getCookingConfig() {
+        switch (getSetting()) {
+            case CAMPFIRE:
+                return getCampfireConfig();
+            case SMOKER:
+                return getSmokerConfig();
+            case FURNACE:
+                return getFurnaceConfig();
+            case BLAST_FURNACE:
+                return getBlastingConfig();
+        }
+        return null;
+    }
+
+    public AdvancedCraftConfig getAdvancedCraftConfig() {
+        return advancedCraftConfig;
+    }
+
+    public void resetAdvancedCraftConfig() {
+        this.advancedCraftConfig = new AdvancedCraftConfig();
+    }
+
+    public EliteCraftConfig getEliteCraftConfig() {
+        return eliteCraftConfig;
+    }
+
+    public void resetEliteCraftConfig() {
+        this.eliteCraftConfig = new EliteCraftConfig();
+    }
+
+    public FurnaceConfig getFurnaceConfig() {
+        return furnaceConfig;
+    }
+
+    public void setFurnaceConfig(FurnaceConfig furnaceConfig) {
+        this.furnaceConfig = furnaceConfig;
+    }
+
+    public void resetFurnaceConfig() {
+        this.furnaceConfig = new FurnaceConfig();
+    }
+
+    public BlastingConfig getBlastingConfig() {
+        return blastingConfig;
+    }
+
+    public void resetBlastingConfig() {
+        this.blastingConfig = new BlastingConfig();
+    }
+
+    public CampfireConfig getCampfireConfig() {
+        return campfireConfig;
+    }
+
+    public void resetCampfireConfig() {
+        this.campfireConfig = new CampfireConfig();
+    }
+
+    public CauldronConfig getCauldronConfig() {
+        return cauldronConfig;
+    }
+
+    public void resetCauldronConfig() {
+        this.cauldronConfig = new CauldronConfig();
+    }
+
+    public SmokerConfig getSmokerConfig() {
+        return smokerConfig;
+    }
+
+    public void resetSmokerConfig() {
+        this.smokerConfig = new SmokerConfig();
+    }
+
+    public StonecutterConfig getStonecutterConfig() {
+        return stonecutterConfig;
+    }
+
+    public void resetStonecutterConfig() {
+        this.stonecutterConfig = new StonecutterConfig();
+    }
+
+    public void setAnvilConfig(AnvilConfig anvilConfig) {
+        this.anvilConfig = anvilConfig;
+    }
+
+    public void setAdvancedCraftConfig(AdvancedCraftConfig advancedCraftConfig) {
+        this.advancedCraftConfig = advancedCraftConfig;
+    }
+
+    public void setEliteCraftConfig(EliteCraftConfig eliteCraftConfig) {
+        this.eliteCraftConfig = eliteCraftConfig;
+    }
+
+    public void setBlastingConfig(BlastingConfig blastingConfig) {
+        this.blastingConfig = blastingConfig;
+    }
+
+    public void setCampfireConfig(CampfireConfig campfireConfig) {
+        this.campfireConfig = campfireConfig;
+    }
+
+    public void setCauldronConfig(CauldronConfig cauldronConfig) {
+        this.cauldronConfig = cauldronConfig;
+    }
+
+    public void setSmokerConfig(SmokerConfig smokerConfig) {
+        this.smokerConfig = smokerConfig;
+    }
+
+    public void setStonecutterConfig(StonecutterConfig stonecutterConfig) {
+        this.stonecutterConfig = stonecutterConfig;
+    }
+
+    public void setCookingConfig(CookingConfig cookingConfig) {
+        if (cookingConfig instanceof CampfireConfig) {
+            setCampfireConfig((CampfireConfig) cookingConfig);
+        } else if (cookingConfig instanceof SmokerConfig) {
+            setSmokerConfig((SmokerConfig) cookingConfig);
+        } else if (cookingConfig instanceof FurnaceConfig) {
+            setFurnaceConfig((FurnaceConfig) cookingConfig);
+        } else if (cookingConfig instanceof BlastingConfig) {
+            setBlastingConfig((BlastingConfig) cookingConfig);
+        }
+    }
+
+    public RecipeConfig getRecipeConfig() {
+        switch (getSetting()) {
+            case CAMPFIRE:
+            case SMOKER:
+            case FURNACE:
+            case BLAST_FURNACE:
+                return getCookingConfig();
+            case ELITE_WORKBENCH:
+            case WORKBENCH:
+                return getCraftConfig();
+            case ANVIL:
+                return getAnvilConfig();
+            case STONECUTTER:
+                return getStonecutterConfig();
+            case CAULDRON:
+                return getCauldronConfig();
+        }
+        return null;
+    }
+
+    public EliteWorkbench getEliteWorkbench() {
+        return eliteWorkbench;
+    }
+
+    public void setEliteWorkbench(EliteWorkbench eliteWorkbench) {
+        this.eliteWorkbench = eliteWorkbench;
     }
 }

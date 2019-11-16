@@ -20,7 +20,7 @@ public class Items implements Serializable {
     private CustomItem item;
     private String type;
     private String id;
-    private int craftSlot, anvilSlot, variantSlot;
+    private int craftSlot, variantSlot;
     private boolean saved;
 
     private EquipmentSlot attributeSlot;
@@ -45,8 +45,6 @@ public class Items implements Serializable {
         this.attribAmount = 0.5;
         this.attributeUUID = "";
         this.attributeName = "";
-
-        this.anvilSlot = 0;
     }
 
     public void setItem(String type, CustomItem customItem) {
@@ -63,29 +61,6 @@ public class Items implements Serializable {
     public void setVariant(int variantSlot, CustomItem customItem) {
         this.variantSlot = variantSlot;
         setItem("variant", customItem);
-    }
-
-    public void setInputLeft(CustomItem customItem, int index) {
-        this.anvilSlot = index;
-        setItem("inputLeft", customItem);
-    }
-
-    public void setInputRight(CustomItem customItem, int index) {
-        this.anvilSlot = index;
-        setItem("inputRight", customItem);
-    }
-
-    public void setSource(CustomItem customItem) {
-        setItem("source", customItem);
-    }
-
-    public void setResult(CustomItem customItem) {
-        setItem("result", customItem);
-    }
-
-    public void setIngredient(int slot, int variant, CustomItem customItem) {
-        setItem("ingredient", customItem);
-        setCraftSlot(slot);
     }
 
     public CustomItem getItem() {

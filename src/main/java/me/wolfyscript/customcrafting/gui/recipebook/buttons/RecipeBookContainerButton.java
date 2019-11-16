@@ -9,7 +9,8 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.Button;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,7 +24,7 @@ public class RecipeBookContainerButton extends Button {
     private HashMap<GuiHandler, CustomRecipe> recipes = new HashMap<>();
 
     public RecipeBookContainerButton(int slot) {
-        super("recipe_book.container_"+slot, null);
+        super("recipe_book.container_" + slot, null);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class RecipeBookContainerButton extends Button {
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
         CustomRecipe recipe = getRecipe(guiHandler);
-        if(recipe != null){
+        if (recipe != null) {
             ItemBuilder itemB = new ItemBuilder(recipe.getResult());
             if (recipe.getResult().getType().equals(Material.AIR)) {
                 itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
@@ -57,11 +58,11 @@ public class RecipeBookContainerButton extends Button {
         }
     }
 
-    public CustomRecipe getRecipe(GuiHandler guiHandler){
+    public CustomRecipe getRecipe(GuiHandler guiHandler) {
         return recipes.getOrDefault(guiHandler, null);
     }
 
-    public void setRecipe(GuiHandler guiHandler, CustomRecipe recipe){
+    public void setRecipe(GuiHandler guiHandler, CustomRecipe recipe) {
         recipes.put(guiHandler, recipe);
     }
 }

@@ -26,11 +26,21 @@ public class EliteCraftConfig extends CraftConfig {
         this(configAPI, "craft_config", folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
     }
 
+    public EliteCraftConfig() {
+        super("elite_workbench");
+    }
+
     /*
     Creates a json Memory only Config used for DataBase management!
      */
     public EliteCraftConfig(String jsonData, ConfigAPI configAPI, String folder, String name) {
         super(jsonData, configAPI, "elite_workbench", folder, name);
+    }
+
+    @Override
+    public void linkToFile(String namespace, String name) {
+        setShape(6);
+        super.linkToFile(namespace, name);
     }
 
 }

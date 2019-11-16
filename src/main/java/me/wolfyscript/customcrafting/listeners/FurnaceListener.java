@@ -1,10 +1,11 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Bukkit;
@@ -181,16 +182,16 @@ public class FurnaceListener implements Listener {
     public void onSmelt(FurnaceSmeltEvent event) {
         List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult());
         for (Recipe recipe : recipes) {
-            if(recipe.getResult().isSimilar(event.getResult())){
-                CustomRecipe customRecipe = CustomCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+            if (recipe.getResult().isSimilar(event.getResult())) {
+                CustomRecipe<RecipeConfig> customRecipe = CustomCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
                 if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                     RandomCollection<CustomItem> items = new RandomCollection<>();
                     for (CustomItem customItem : customRecipe.getCustomResults()) {
                         items.add(customItem.getRarityPercentage(), customItem);
                     }
-                    if(!items.isEmpty()){
+                    if (!items.isEmpty()) {
                         ItemStack item = items.next();
-                        if(!event.getResult().isSimilar(item)){
+                        if (!event.getResult().isSimilar(item)) {
                             event.setResult(item);
                         }
                     }

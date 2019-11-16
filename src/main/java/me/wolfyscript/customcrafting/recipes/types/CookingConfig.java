@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,14 @@ public class CookingConfig extends RecipeConfig {
 
     public CookingConfig(String jsonData, ConfigAPI configAPI, String namespace, String key, String type, String defName) {
         super(jsonData, configAPI, namespace, type, key, defName);
+    }
+
+    public CookingConfig(String type, String defaultName) {
+        super(type, defaultName);
+    }
+
+    public CookingConfig(String type) {
+        super(type);
     }
 
     public void setXP(float xp) {
@@ -57,23 +65,38 @@ public class CookingConfig extends RecipeConfig {
         return sources;
     }
 
+    @Override
+    public List<CustomItem> getResult() {
+        return super.getResult();
+    }
+
+    @Override
     public void setResult(List<CustomItem> results) {
-        saveCustomItem("result", results.get(0));
-        for (int i = 1; i < results.size(); i++) {
-            saveCustomItem("result.variants.var" + i, results.get(i));
+        super.setResult(results);
+    }
+
+    public void setIngredients(int slot, List<CustomItem> ingredient) {
+        if (slot == 0) {
+            setSource(ingredient);
+        } else {
+            setSource(ingredient);
         }
     }
 
-    public List<CustomItem> getResult() {
-        List<CustomItem> results = new ArrayList<>();
-        results.add(getCustomItem("result"));
-        if (get("result.variants") != null) {
-            Set<String> variants = getValues("result.variants").keySet();
-            for (String variant : variants) {
-                results.add(getCustomItem("result.variants." + variant));
-            }
+    public List<CustomItem> getIngredients(int slot) {
+        if (slot == 0) {
+            return getSource();
         }
-        return results;
+        return getSource();
+    }
+
+    public void setIngredient(int slot, int variant, CustomItem ingredient) {
+        List<CustomItem> ingredients = getIngredients(slot);
+        if (variant < ingredients.size())
+            ingredients.set(variant, ingredient);
+        else
+            ingredients.add(ingredient);
+        setIngredients(slot, ingredients);
     }
 
 }

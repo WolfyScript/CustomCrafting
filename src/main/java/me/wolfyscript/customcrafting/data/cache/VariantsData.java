@@ -16,8 +16,8 @@ public class VariantsData {
     }
 
     public List<CustomItem> getVariants() {
-        for(int i = variants.size()-1; i > 0; i--){
-            if(variants.get(i) == null || variants.get(i).getType().equals(Material.AIR)){
+        for (int i = variants.size() - 1; i > 0; i--) {
+            if (variants.get(i) == null || variants.get(i).getType().equals(Material.AIR)) {
                 variants.remove(i);
             }
         }

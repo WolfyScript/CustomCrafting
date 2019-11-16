@@ -10,17 +10,12 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
@@ -48,7 +43,11 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "studio":
-                        invAPI.openCluster(p, "none");
+                        if (!invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("recipe_book")) {
+                            invAPI.getGuiHandler(p).openCluster();
+                        } else {
+                            invAPI.openCluster(p, "none");
+                        }
                         break;
                     case "crafting":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.crafting")) {
@@ -161,7 +160,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                             api.sendPlayerMessage(p, "Exporting json configs to Database.");
                                             Thread thread = new Thread(() -> CustomCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler()));
                                             thread.run();
-                                        }else{
+                                        } else {
                                             api.sendPlayerMessage(p, "&4No Database found!");
                                         }
                                         break;
@@ -224,9 +223,11 @@ public class CommandCC implements CommandExecutor, TabCompleter {
 
     public void openGUI(Player p, InventoryAPI invAPI) {
         if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio", false)) {
-            invAPI.openCluster(p, "none");
-        } else if (ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge", true)) {
-            invAPI.openCluster(p, "recipe_book");
+            if (!invAPI.getGuiHandler(p).getCurrentGuiCluster().isEmpty() && !invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("recipe_book")) {
+                invAPI.getGuiHandler(p).openCluster();
+            } else {
+                invAPI.openCluster(p, "none");
+            }
         }
     }
 
@@ -292,7 +293,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             break;
                     }
                 }
-            }else if(strings[0].equalsIgnoreCase("database")){
+            } else if (strings[0].equalsIgnoreCase("database")) {
                 if (strings.length == 2) {
                     StringUtil.copyPartialMatches(strings[1], DATABASE, results);
                 }

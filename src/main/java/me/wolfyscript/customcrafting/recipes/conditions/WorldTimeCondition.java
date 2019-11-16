@@ -11,13 +11,13 @@ public class WorldTimeCondition extends Condition {
     public WorldTimeCondition() {
         super("world_time");
         setOption(Conditions.Option.IGNORE);
-        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER, Conditions.Option.IGNORE);
+        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
     }
 
     @Override
     public boolean check(CustomRecipe recipe, Conditions.Data data) {
         long currentTime = data.getBlock().getWorld().getTime();
-        switch (option){
+        switch (option) {
             case IGNORE:
                 return true;
             case EXACT:

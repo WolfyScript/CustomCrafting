@@ -25,7 +25,7 @@ public class IngredientContainerButton extends Button {
     private HashMap<GuiHandler, CustomRecipe> recipes = new HashMap<>();
 
     public IngredientContainerButton(int slot) {
-        super("ingredient.container_"+slot, ButtonType.DUMMY);
+        super("ingredient.container_" + slot, ButtonType.DUMMY);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class IngredientContainerButton extends Button {
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
         CustomRecipe recipe = getRecipe(guiHandler);
-        if(recipe != null){
+        if (recipe != null) {
             ItemBuilder itemB = new ItemBuilder(recipe.getResult());
             if (recipe.getResult().getType().equals(Material.AIR)) {
                 itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
@@ -59,11 +59,11 @@ public class IngredientContainerButton extends Button {
         }
     }
 
-    public CustomRecipe getRecipe(GuiHandler guiHandler){
+    public CustomRecipe getRecipe(GuiHandler guiHandler) {
         return recipes.getOrDefault(guiHandler, null);
     }
 
-    public void setRecipe(GuiHandler guiHandler, CustomRecipe recipe){
+    public void setRecipe(GuiHandler guiHandler, CustomRecipe recipe) {
         recipes.put(guiHandler, recipe);
     }
 

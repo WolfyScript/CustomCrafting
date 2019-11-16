@@ -1,14 +1,13 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Stonecutter extends RecipeData{
+public class Stonecutter extends RecipeData {
 
     private List<CustomItem> source;
     private CustomItem result;

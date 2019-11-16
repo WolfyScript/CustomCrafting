@@ -250,49 +250,84 @@
           "help": []
         },
         "gui_help_on": {
-          "name": "&2Help",
+          "name": "&3&lHelp",
           "lore": [
-            "&7-Click Me-",
-            "&7[&aEnabled&7]",
-            "%wolfyutilities.help%"
+            "%wolfyutilities.help%",
+            "<empty>",
+            "&7[&aEnabled&7] &eClick to disable Button descriptions."
           ],
           "help": []
         },
         "gui_help_off": {
-          "name": "&2Help",
+          "name": "&3&lHelp",
           "lore": [
-            "&7-Click Me-",
-            "&7[&cDisabled&7]"
+            "%wolfyutilities.help%",
+            "<empty>",
+            "&7[&cDisabled&7] &eClick to view Button descriptions."
           ],
           "help": []
+        },
+        "main_menu": {
+          "name": "&6Patreon",
+          "lore": [
+            "&7Support me on Patreon and help me",
+            "&7keep this project alive."
+          ]
+        },
+        "patreon": {
+          "name": "&6&lPatreon",
+          "lore": [
+            "&eDonate a bit to support the continuation of the development of my plugins.",
+            "&eAs a patrons you will get credited in CustomCrafting and you can get",
+            "&eearly access to releases and access to indev-builds and more."
+          ]
+        },
+        "instagram": {
+          "name": "&5&lInstagram",
+          "lore": [
+            "&eSupport me on Instagram by following!",
+            "&eI try to post as frequently as possible."
+          ]
+        },
+        "youtube": {
+          "name": "&c&lYouTube",
+          "lore": [
+            "&eSubscribe to my channel.",
+            "&eI will start to upload videos soon I hope..."
+          ]
+        },
+        "discord": {
+          "name": "&9&lDiscord",
+          "lore": [
+            "&eNeed support? Found a bug? Have an suggestion or idea?",
+            "&eJoin the discord and join the awesome community!"
+          ]
         }
       },
       "main_menu": {
-        "gui_name": "&3&lCustomCrafting",
+        "gui_name": "&3&lCustomCrafting&7[&8%plugin.version%&7]",
         "gui_help": [
-          "&7Choose the type of recipe you want to Create/Edit",
-          "&7You can also open the ItemEditor to create/edit custom items.",
-          "&7Lockdown will toggle all custom recipes."
+          "&7Options:",
+          "&7- Click on the type of the Recipe you want to create.",
+          "&7- ItemCreator bottom left or RecipeList bottom right.",
+          "&7- Got ot Settings top left."
         ],
         "items": {
-          "lockdown": {
-            "enabled": {
-              "name": "&4&lLockDown!",
-              "lore": [
-                "&7[&3Enabled&7]",
-                "&4Recipes are being blocked!"
-              ]
-            },
-            "disabled": {
-              "name": "&4LockDown",
-              "lore": [
-                "&7[&8Disabled&7]",
-                "&7Recipes are not blocked!"
-              ]
-            }
+          "settings": {
+            "name": "&7&lSettings",
+            "lore": [
+              "&eConfigure the main settings ",
+              "&ewithout stopping the server!"
+            ]
           },
           "workbench": {
             "name": "&6Workbench Recipe",
+            "help": [
+              "&7Create workbench recipes."
+            ]
+          },
+          "elite_workbench": {
+            "name": "&6Elite Workbench",
             "help": [
               ""
             ]
@@ -327,6 +362,13 @@
               ""
             ]
           },
+          "cauldron": {
+            "name": "&6Cauldron",
+            "help": [
+              "&eCreate cauldron recipes, which allow",
+              "&eto brew/cook items in the cauldron!"
+            ]
+          },
           "stonecutter": {
             "name": "&6Stonecutter Recipe",
             "help": [
@@ -336,15 +378,15 @@
           "item_editor": {
             "name": "&6Item Creator",
             "help": [
-              "&7Create, Save custom Items",
-              "&6Use them inside of your recipes"
+              "&eCreate&7/&eEdit custom Items",
+              "&ewith special features e.g. Custom Durability, Furnace Fuel"
             ]
           },
           "recipe_list": {
-            "name": "&2Recipe List",
+            "name": "&6Recipe List",
             "help": [
-              "&7List of recipes",
-              "&6Toggle Recipes on/off"
+              "&eList of recipes",
+              "&eToggle Recipes on/off"
             ]
           }
         }
@@ -378,7 +420,80 @@
           }
         }
       },
-      "item_creator": {
+      "recipe_editor": {
+        "gui_name": "&4&lRecipe Editor",
+        "items": {
+          "create_recipe": {
+            "name": "&6Create Recipe",
+            "help": [
+              "&7Create your own recipe"
+            ]
+          },
+          "edit_recipe": {
+            "name": "&7Edit Recipe",
+            "help": [
+              "&7Edit a existing recipe"
+            ]
+          },
+          "delete_recipe": {
+            "name": "&4Delete Recipe",
+            "help": [
+              "&7Delete a existing recipe"
+            ]
+          }
+        }
+      },
+      "recipe_list": {
+        "gui_name": "&8&lRecipe List",
+        "gui_help": [
+          "&7Toggle recipes.",
+          "&7if a recipe is disabled it won't be craftable to anyone!",
+          "&7Not even for players with permissions"
+        ],
+        "items": {
+          "lores": {
+            "disabled": "&7&l[&c&lDISABLED&7&l]",
+            "enabled": "&7&l[&a&lENABLED&7&l]"
+          },
+          "previous_page": {
+            "name": "&2Previous Page",
+            "help": []
+          },
+          "next_page": {
+            "name": "&2Next Page",
+            "help": []
+          }
+        }
+      },
+      "settings": {
+        "gui_name": "&8Settings",
+        "gui_help": [
+          "&7Edit the settings of the main-config",
+          "&7",
+          "&7Be careful with Lockdown!"
+        ],
+        "items": {
+          "lockdown": {
+            "enabled": {
+              "name": "&4&lLockDown!",
+              "lore": [
+                "&7[&3Enabled&7]",
+                "&4Recipes are being blocked!"
+              ]
+            },
+            "disabled": {
+              "name": "&4LockDown",
+              "lore": [
+                "&7[&8Disabled&7]",
+                "&7Recipes are not blocked!"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "item_creator": {
+      "main_menu": {
         "gui_name": "&0&lItem Creator",
         "gui_help": [
           "&7Place in the item you want to edit in top middle",
@@ -1020,60 +1135,6 @@
             }
           }
         }
-      },
-      "recipe_editor": {
-        "gui_name": "&4&lRecipe Editor",
-        "items": {
-          "create_recipe": {
-            "name": "&6Create Recipe",
-            "help": [
-              "&7Create your own recipe"
-            ]
-          },
-          "edit_recipe": {
-            "name": "&7Edit Recipe",
-            "help": [
-              "&7Edit a existing recipe"
-            ]
-          },
-          "delete_recipe": {
-            "name": "&4Delete Recipe",
-            "help": [
-              "&7Delete a existing recipe"
-            ]
-          }
-        }
-      },
-      "recipe_list": {
-        "gui_name": "&8&lRecipe List",
-        "gui_help": [
-          "&7Toggle recipes.",
-          "&7if a recipe is disabled it won't be craftable to anyone!",
-          "&7Not even for players with permissions"
-        ],
-        "items": {
-          "lores": {
-            "disabled": "&7&l[&c&lDISABLED&7&l]",
-            "enabled": "&7&l[&a&lENABLED&7&l]"
-          },
-          "previous_page": {
-            "name": "&2Previous Page",
-            "help": []
-          },
-          "next_page": {
-            "name": "&2Next Page",
-            "help": []
-          }
-        }
-      },
-      "variants": {
-        "gui_name": "&8&lVariants",
-        "gui_help": [
-          "&7Tip:",
-          "&eShift &7+ &eRight click &7will open the ItemEditor"
-        ],
-        "items": {
-        }
       }
     },
     "recipe_creator": {
@@ -1207,6 +1268,15 @@
               "&8[&aRight Click&8] &7toggle on/off",
               "&8[&aLeft Click&8] &7configure Elite Workbenches"
             ]
+          },
+          "permission": {
+            "name": "&7- Permission - ",
+            "lore": [
+              "&7Permission:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7change Permission"
+            ]
           }
         }
       },
@@ -1239,10 +1309,8 @@
       "elite_workbench": {
         "gui_name": "&4&lCreator &7[&8Elite Workbench&7]",
         "gui_help": [
-
         ],
         "items": {
-
         }
       },
       "stonecutter": {
@@ -1253,7 +1321,6 @@
           "&7allow you to edit the item/s"
         ],
         "items": {
-
         }
       },
       "cooking": {
@@ -1360,6 +1427,99 @@
             ]
           }
         }
+      },
+      "cauldron": {
+        "gui_name": "&4&lRecipe Creator &8[&7Cauldron&8]",
+        "items": {
+          "cauldron": {
+            "name": "&c"
+          },
+          "dropItems": {
+            "enabled": {
+              "name": "&6Drop Items",
+              "lore": [
+                "&eItems drop out of the cauldron when done.",
+                "",
+                "&7[&aClick&7] toggle to keep items"
+              ]
+            },
+            "disabled": {
+              "name": "&6Keep Items",
+              "lore": [
+                "&eItems stay in the cauldron when recipe is done."
+                ,"&ePlayer right click replaces the item in their hand."
+                ,"&eSet the item player needs to use for the right click >>>",
+                "",
+                "&7[&aClick&7] toggle to drop items"
+              ]
+            }
+          },
+          "fire": {
+            "enabled": {
+              "name": "&6Fire required",
+              "lore": [
+                "&eFire or lit Campfire is required for this recipe"
+              ]
+            },
+            "disabled": {
+              "name": "&6No Fire required",
+              "lore": [
+                "&eThis recipe will only work if no Fire or lit Campfire"
+                ,"&eis present!"
+              ]
+            }
+          },
+          "water": {
+            "disabled": {
+              "name": "&3No Water required!",
+              "lore": [
+                "&eRecipe will only work if cauldron is empty!"
+              ]
+            },
+            "enabled": {
+              "name": "&3Water required!",
+              "lore": [
+                "&eRecipe will only work with water in it!",
+                "&eExcept water level is set to 0!"
+              ]
+            }
+          },
+          "xp": {
+            "name": "&6Experience",
+            "lore": [
+              "&7Experience: &e%xp%"
+              ,"",
+              "&eThe amount xp you get when the recipe is done."
+            ]
+          },
+          "cookingTime": {
+            "name": "&6Cooking Time",
+            "lore": [
+              "&7Time: &e%time% ticks"
+              ,"",
+              "&eThe time in ticks for the recipe to be done!"
+            ]
+          },
+          "waterLevel": {
+            "name": "&3Water Level",
+            "lore": [
+              "&7Required: &e%level%",
+              "",
+              "&eDefines the lowest cauldron water level",
+              "&ethis recipe should be able to be made with.",
+              "&eThe Water is consumed when the recipe is done!"
+            ]
+          }
+        }
+      },
+      "variants": {
+        "gui_name": "&8Variants",
+        "gui_help": [
+          "&7Setup the variants of the chosen slot.",
+          "&7Put in as many Items you want.",
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7will open the ItemEditor"
+        ]
       }
     },
     "recipe_book": {

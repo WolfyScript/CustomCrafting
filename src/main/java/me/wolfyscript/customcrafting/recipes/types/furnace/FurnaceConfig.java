@@ -16,4 +16,8 @@ public class FurnaceConfig extends CookingConfig {
     public FurnaceConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "furnace", "furnace_config");
     }
+
+    public FurnaceConfig() {
+        super("furnace", "furnace_config");
+    }
 }

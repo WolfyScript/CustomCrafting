@@ -1,26 +1,19 @@
-package me.wolfyscript.customcrafting.gui.main_gui.list;
+package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListContainerButton;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiClick;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
+import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +44,7 @@ public class RecipesList extends ExtendedGuiWindow {
             return true;
         })));
 
-        for(int i = 0; i < 45; i++){
+        for (int i = 0; i < 45; i++) {
             registerButton(new RecipeListContainerButton(i));
         }
     }
@@ -70,7 +63,7 @@ public class RecipesList extends ExtendedGuiWindow {
             for (int i = 45 * pages.get(event.getGuiHandler()); item < 45 && i < recipes.size(); i++) {
                 Recipe recipe = recipes.get(i);
                 if (recipe instanceof Keyed) {
-                    RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_"+item);
+                    RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
                     button.setRecipe(event.getGuiHandler(), recipe);
                     event.setButton(9 + item, button);
                 }

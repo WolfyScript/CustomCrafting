@@ -2,18 +2,14 @@ package me.wolfyscript.customcrafting.recipes.types.blast_furnace;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.custom_items.CustomConfig;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 import java.util.ArrayList;
@@ -42,6 +38,17 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
         setGroup(config.getGroup());
     }
 
+    public CustomBlastRecipe() {
+        super(new NamespacedKey("null", "null"), new ItemStack(Material.STONE), Material.STONE, 0, 0);
+        this.config = null;
+        this.id = "";
+        this.result = new ArrayList<>();
+        this.source = new ArrayList<>();
+        this.priority = RecipePriority.NORMAL;
+        this.exactMeta = true;
+        this.conditions = new Conditions();
+    }
+
     @Override
     public RecipePriority getPriority() {
         return priority;
@@ -56,7 +63,7 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     public CustomBlastRecipe save(ConfigAPI configAPI, String namespace, String key) {
         BlastingConfig config;
         if (CustomCrafting.hasDataBaseHandler()) {
-            config = new BlastingConfig("{}",configAPI, namespace, key);
+            config = new BlastingConfig("{}", configAPI, namespace, key);
         } else {
             config = new BlastingConfig(configAPI, namespace, key);
         }

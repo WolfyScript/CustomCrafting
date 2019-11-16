@@ -1,10 +1,9 @@
-package me.wolfyscript.customcrafting.gui.main_gui.items;
+package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
@@ -17,12 +16,9 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 public class ItemEditor extends ExtendedGuiWindow {
 
@@ -69,7 +65,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("create_item", new ButtonState("create_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("item_creator");
+            guiHandler.changeToInv("item_creator", "main_menu");
             return true;
         })));
         registerButton(new ActionButton("edit_item", new ButtonState("edit_item", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -78,7 +74,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                 if (items.isSaved()) {
                     items.setItem(CustomItems.getCustomItem(items.getId()));
                 }
-                guiHandler.changeToInv("item_creator");
+                guiHandler.changeToInv("item_creator", "main_menu");
             } else {
                 CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageItems(1);
                 api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));

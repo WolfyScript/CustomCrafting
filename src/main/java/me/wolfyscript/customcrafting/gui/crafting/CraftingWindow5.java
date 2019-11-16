@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.ResultSlotButton;
@@ -19,26 +19,26 @@ public class CraftingWindow5 extends ExtendedGuiWindow {
 
     @Override
     public void onInit() {
-        for(int i = 0; i < 25; i++){
+        for (int i = 0; i < 25; i++) {
             registerButton(new CraftingSlotButton(i));
         }
         registerButton(new ResultSlotButton());
     }
 
     @EventHandler
-    public void onUpdate(GuiUpdateEvent event){
-        if(event.verify(this)){
+    public void onUpdate(GuiUpdateEvent event) {
+        if (event.verify(this)) {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
-            EliteWorkbenchData eliteWorkbenchData = cache.getEliteWorkbenchData();
-            if(eliteWorkbenchData.getContents() == null || eliteWorkbenchData.getCurrentGridSize() <= 0){
-                eliteWorkbenchData.setCurrentGridSize(5);
-                eliteWorkbenchData.setContents(new ItemStack[25]);
+            EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+            if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
+                eliteWorkbench.setCurrentGridSize(5);
+                eliteWorkbench.setContents(new ItemStack[25]);
             }
-            event.setButton(18, "crafting","knowledge_book");
+            event.setButton(18, "crafting", "knowledge_book");
             int slot;
             for (int i = 0; i < 25; i++) {
                 slot = 1 + i + (i / 5) * 4;
-                event.setButton(slot, "crafting.slot_"+i);
+                event.setButton(slot, "crafting.slot_" + i);
             }
             event.setButton(25, "result_slot");
         }

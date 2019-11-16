@@ -4,8 +4,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.VariantContainerButton;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -36,20 +36,19 @@ public class VariantMenu extends ExtendedGuiWindow {
                     if (cache.getVariantsData().getSlot() == resultSlot) {
                         List<CustomItem> items = cache.getVariantsData().getVariants();
                         items.removeIf(item -> item.getType().equals(Material.AIR));
-                        System.out.println("List: " + items);
-                        cache.getWorkbench().setResult(items);
+                        cache.getCraftConfig().setResult(items);
                     } else {
-                        cache.getWorkbench().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
+                        cache.getCraftConfig().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
                     }
                     break;
                 case ANVIL:
                     List<CustomItem> items = cache.getVariantsData().getVariants();
                     items.removeIf(item -> item.getType().equals(Material.AIR));
-                    cache.getAnvilRecipe().setInput(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
+                    cache.getAnvilConfig().setInput(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
                     break;
                 case STONECUTTER:
                     if (cache.getVariantsData().getSlot() != 1) {
-                        cache.getStonecutter().setSource(cache.getVariantsData().getVariants());
+                        cache.getStonecutterConfig().setSource(cache.getVariantsData().getVariants());
                     }
                     break;
                 case FURNACE:
@@ -57,9 +56,18 @@ public class VariantMenu extends ExtendedGuiWindow {
                 case BLAST_FURNACE:
                 case CAMPFIRE:
                     if (cache.getVariantsData().getSlot() != 1) {
-                        cache.getCookingData().setSource(cache.getVariantsData().getVariants());
+                        cache.getCookingConfig().setSource(cache.getVariantsData().getVariants());
                     }
                     break;
+                case CAULDRON:
+                    List<CustomItem> variants = cache.getVariantsData().getVariants();
+                    variants.removeIf(item -> item.getType().equals(Material.AIR));
+                    if(cache.getVariantsData().getSlot() == 0){
+                        cache.getCauldronConfig().setIngredients(variants);
+                    }else{
+                        cache.getCauldronConfig().setResult(variants);
+                    }
+
             }
             guiHandler.openPreviousInv();
             return true;

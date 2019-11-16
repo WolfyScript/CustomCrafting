@@ -3,10 +3,13 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Condition {
+public abstract class Condition implements Serializable {
+
+    private static final long serialVersionUID = 42069L;
 
     protected Conditions.Option option;
 
@@ -14,7 +17,7 @@ public abstract class Condition {
     private String id;
     private List<Conditions.Option> availableOptions;
 
-    protected Condition(String id){
+    protected Condition(String id) {
         this.id = id;
     }
 
@@ -36,14 +39,14 @@ public abstract class Condition {
         }
     }
 
-    public void toggleOption(){
-        int index = availableOptions.indexOf(option);
-        if(index < availableOptions.size()-1){
+    public void toggleOption() {
+        int index = availableOptions.indexOf(this.option);
+        if (index < availableOptions.size() - 1) {
             index++;
-        }else{
+        } else {
             index = 0;
         }
-        option = availableOptions.get(index);
+        this.option = availableOptions.get(index);
     }
 
     public abstract boolean check(CustomRecipe recipe, Conditions.Data data);
@@ -53,7 +56,7 @@ public abstract class Condition {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return option.toString();
     }
 
@@ -77,7 +80,7 @@ public abstract class Condition {
         this.iconDisabled = iconDisabled;
     }
 
-    protected void setIcons(ItemStack iconEnabled, ItemStack iconDisabled){
+    protected void setIcons(ItemStack iconEnabled, ItemStack iconDisabled) {
         this.iconEnabled = iconEnabled;
         this.iconDisabled = iconDisabled;
     }

@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,9 +18,12 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -75,6 +79,34 @@ public class CauldronListener implements Listener {
     }
 
     @EventHandler
+    public void onInteract(PlayerInteractEvent event){
+        if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND)){
+            Player player = event.getPlayer();
+            Block block = event.getClickedBlock();
+            Cauldrons cauldrons = CustomCrafting.getCauldrons();
+            if(cauldrons.isCauldron(block.getLocation())){
+                List<Cauldron> cauldronData = cauldrons.getCauldrons().get(block.getLocation());
+                for(Cauldron cauldron : cauldronData){
+                    if (cauldron.isDone() && !cauldron.dropItems()){
+                        ItemStack handItem = event.getItem();
+                        CustomItem required = cauldron.getRecipe().getHandItem();
+                        if((handItem != null && (required == null || required.getType().equals(Material.AIR)) ) || required.isSimilar(handItem, cauldron.getRecipe().isExactMeta())){
+                            handItem.setAmount(handItem.getAmount()-1);
+                            ItemStack result = cauldron.getResult().getItemStack();
+                            if(InventoryUtils.hasInventorySpace(player, result)){
+                                player.getInventory().addItem(result);
+                            }else{
+                                player.getWorld().dropItemNaturally(player.getLocation(), result);
+                            }
+                            cauldrons.removeCauldron(block.getLocation(), cauldron);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         Item itemDrop = event.getItemDrop();
@@ -83,7 +115,7 @@ public class CauldronListener implements Listener {
             for (Map.Entry<Location, List<Cauldron>> cauldronEntry : cauldrons.getCauldrons().entrySet()) {
                 Location loc = cauldronEntry.getKey();
                 List<Cauldron> cauldronEntryValue = cauldronEntry.getValue();
-                if(loc.getWorld() != itemDrop.getLocation().getWorld()){
+                if (loc.getWorld() != itemDrop.getLocation().getWorld()) {
                     continue;
                 }
                 double distance = loc.clone().add(0.5, 0.4, 0.5).distance(itemDrop.getLocation());

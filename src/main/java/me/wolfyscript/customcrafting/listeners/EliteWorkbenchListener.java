@@ -1,8 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
@@ -16,22 +15,22 @@ public class EliteWorkbenchListener implements Listener {
 
     private WolfyUtilities api;
 
-    public EliteWorkbenchListener(WolfyUtilities api){
+    public EliteWorkbenchListener(WolfyUtilities api) {
         this.api = api;
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent event){
-        if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             Block block = event.getClickedBlock();
-            if(CustomItems.isBlockStored(block.getLocation())){
+            if (CustomItems.isBlockStored(block.getLocation())) {
                 CustomItem customItem = CustomItems.getStoredBlockItem(block.getLocation());
-                if(customItem != null){
-                    EliteWorkbench eliteWorkbench = (EliteWorkbench) customItem.getCustomData("elite_workbench");
-                    if(eliteWorkbench.isEnabled()){
+                if (customItem != null) {
+                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData("elite_workbench");
+                    if (eliteWorkbench.isEnabled()) {
                         event.setCancelled(true);
-                        CustomCrafting.getPlayerCache(event.getPlayer()).getEliteWorkbenchData().setEliteWorkbench(eliteWorkbench.clone());
-                        api.getInventoryAPI().getGuiHandler(event.getPlayer()).changeToInv("crafting", "crafting_grid"+eliteWorkbench.getGridSize());
+                        CustomCrafting.getPlayerCache(event.getPlayer()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
+                        api.getInventoryAPI().getGuiHandler(event.getPlayer()).changeToInv("crafting", "crafting_grid" + eliteWorkbench.getGridSize());
                     }
                 }
             }

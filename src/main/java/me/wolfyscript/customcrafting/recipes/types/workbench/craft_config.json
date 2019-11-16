@@ -1,1 +1,6 @@
-{}
+{
+  "mirror": {
+    "horizontal": true,
+    "vertical": false
+  }
+}

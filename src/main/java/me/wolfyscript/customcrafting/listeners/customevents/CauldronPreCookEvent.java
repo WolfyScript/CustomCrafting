@@ -15,7 +15,7 @@ public class CauldronPreCookEvent extends Event implements Cancellable {
     private Player player;
     private CauldronRecipe recipe;
 
-    public CauldronPreCookEvent(CauldronRecipe recipe, Player player){
+    public CauldronPreCookEvent(CauldronRecipe recipe, Player player) {
         this.dropItems = recipe.dropItems();
         this.recipe = recipe;
         this.cookingTime = recipe.getCookingTime();

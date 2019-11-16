@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -67,15 +68,16 @@ public class MainMenu extends ExtendedGuiWindow {
     }
 
     @EventHandler
-    private void onUpdate(GuiUpdateEvent event){
-        if(event.verify(this)){
-            event.setButton(0, "none", "glass_white");
-            event.setButton(8, "none", "glass_white");
+    private void onUpdate(GuiUpdateEvent event) {
+        if (event.verify(this)) {
+            PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
+            event.setButton(0, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(8, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
             event.setButton(10, "workbench");
             event.setButton(12, "furnace");
             event.setButton(14, "anvil");
             if (WolfyUtilities.hasVillagePillageUpdate()) {
-                event.setButton(15, "blast_furnace");
+                event.setButton(16, "blast_furnace");
                 event.setButton(28, "smoker");
                 event.setButton(30, "campfire");
                 event.setButton(32, "stonecutter");

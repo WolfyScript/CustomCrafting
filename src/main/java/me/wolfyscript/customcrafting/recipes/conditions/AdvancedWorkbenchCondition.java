@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import org.bukkit.Location;
 
@@ -18,11 +17,11 @@ public class AdvancedWorkbenchCondition extends Condition {
 
     @Override
     public boolean check(CustomRecipe recipe, Conditions.Data data) {
-        if(option.equals(Conditions.Option.IGNORE)){
+        if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
         if (recipe instanceof AdvancedCraftingRecipe) {
-            if(data.getBlock() != null){
+            if (data.getBlock() != null) {
                 Location location = data.getBlock().getLocation();
                 return CustomCrafting.getWorkbenches().isWorkbench(location);
             }

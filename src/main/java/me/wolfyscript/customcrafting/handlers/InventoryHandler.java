@@ -1,13 +1,13 @@
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.customcrafting.gui.crafting.*;
-import me.wolfyscript.customcrafting.gui.main_gui.MainMenu;
-import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
-import me.wolfyscript.customcrafting.gui.main_gui.items.ItemCreator;
-import me.wolfyscript.customcrafting.gui.main_gui.items.ItemEditor;
-import me.wolfyscript.customcrafting.gui.main_gui.list.RecipesList;
+import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow3;
+import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow4;
+import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow5;
+import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow6;
+import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
+import me.wolfyscript.customcrafting.gui.main_gui.*;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
-import me.wolfyscript.customcrafting.gui.main_gui.recipe.RecipeEditor;
+import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -17,6 +17,8 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.chat.ClickData;
+import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import org.bukkit.Material;
 
 public class InventoryHandler {
@@ -57,14 +59,32 @@ public class InventoryHandler {
         GuiCluster mainCluster = invAPI.getOrRegisterGuiCluster("none");
         mainCluster.registerGuiWindow(new MainMenu(invAPI));
         mainCluster.registerGuiWindow(new ItemEditor(invAPI));
-        mainCluster.registerGuiWindow(new ItemCreator(invAPI));
         mainCluster.registerGuiWindow(new RecipeEditor(invAPI));
         mainCluster.registerGuiWindow(new RecipesList(invAPI));
+        mainCluster.registerGuiWindow(new Settings(invAPI));
         mainCluster.setMainmenu("main_menu");
+
+        mainCluster.registerButton(new ActionButton("patreon", new ButtonState("main_menu", "patreon", WolfyUtilities.getSkullViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Patreon&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")));
+            return true;
+        })), invAPI.getWolfyUtilities());
+        mainCluster.registerButton(new ActionButton("instagram", new ButtonState("main_menu", "instagram", WolfyUtilities.getSkullViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/wolfyscript/")));
+            return true;
+        })), invAPI.getWolfyUtilities());
+        mainCluster.registerButton(new ActionButton("youtube", new ButtonState("main_menu", "youtube", WolfyUtilities.getSkullViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to YouTube&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g")));
+            return true;
+        })), invAPI.getWolfyUtilities());
+        mainCluster.registerButton(new ActionButton("discord", new ButtonState("main_menu", "discord", WolfyUtilities.getSkullViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            api.sendActionMessage(player, new ClickData("&7[&3Click here to join Discord&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/2jcN4vF")));
+            return true;
+        })), invAPI.getWolfyUtilities());
 
         GuiCluster recipeCreator = invAPI.getOrRegisterGuiCluster("recipe_creator");
         recipeCreator.registerGuiWindow(new AnvilCreator(invAPI));
         recipeCreator.registerGuiWindow(new CookingCreator(invAPI));
+        recipeCreator.registerGuiWindow(new CauldronCreator(invAPI));
         recipeCreator.registerGuiWindow(new StonecutterCreator(invAPI));
         recipeCreator.registerGuiWindow(new WorkbenchCreator(invAPI));
         recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI));
@@ -88,10 +108,13 @@ public class InventoryHandler {
         craftingCluster.registerGuiWindow(new CraftingWindow5(invAPI));
         craftingCluster.registerGuiWindow(new CraftingWindow6(invAPI));
         craftingCluster.setMainmenu("crafting_3");
-        craftingCluster.registerButton(new ActionButton("knowledge_book", new ButtonState("crafting","knowledge_book", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        craftingCluster.registerButton(new ActionButton("knowledge_book", new ButtonState("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
 
             return true;
         })), invAPI.getWolfyUtilities());
+
+        GuiCluster itemCreator = invAPI.getOrRegisterGuiCluster("item_creator");
+        itemCreator.registerGuiWindow(new ItemCreator(invAPI));
 
     }
 

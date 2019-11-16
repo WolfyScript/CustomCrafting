@@ -33,8 +33,8 @@ public class BlockListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockPlaceNonCustom(BlockPlaceEvent event){
-        if(!event.isCancelled()){
+    public void onBlockPlaceNonCustom(BlockPlaceEvent event) {
+        if (!event.isCancelled()) {
             ItemStack itemStack = event.getItemInHand();
             if (itemStack.hasItemMeta()) {
                 ItemMeta itemMeta = itemStack.getItemMeta();

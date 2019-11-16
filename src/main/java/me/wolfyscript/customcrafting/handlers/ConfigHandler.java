@@ -2,14 +2,14 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.configs.default_configs.KnowledgeBookCraftConfig;
 import me.wolfyscript.customcrafting.configs.default_configs.WorkbenchCraftConfig;
-import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import org.bukkit.plugin.Plugin;
@@ -54,12 +54,14 @@ public class ConfigHandler {
         String chosenLang = CustomCrafting.getConfigHandler().getConfig().getString("language");
         Config langConf;
         if (CustomCrafting.getInst().getResource("me/wolfyscript/customcrafting/configs/lang/" + chosenLang + ".json") != null) {
+            System.out.println("Default language: load latest language");
             langConf = new Config(configAPI, instance.getDataFolder().getPath() + "/lang", chosenLang, "me/wolfyscript/customcrafting/configs/lang", chosenLang, "json", true);
         } else {
+            System.out.println("Custom language: loading default values");
             langConf = new Config(configAPI, instance.getDataFolder().getPath() + "/lang", chosenLang, "me/wolfyscript/customcrafting/configs/lang", "en_US", "json", false);
         }
         langConf.loadDefaults();
-        System.out.println("Loading language \"" + chosenLang + "\" v" + langConf.getString("version") + " translated by " + langConf.getString("author"));
+        System.out.println("Loaded language \"" + chosenLang + "\" v" + langConf.getString("version") + " translated by " + langConf.getString("author"));
 
         languageAPI.registerLanguage(new Language(chosenLang, langConf, configAPI));
     }

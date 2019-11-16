@@ -16,4 +16,8 @@ public class BlastingConfig extends CookingConfig {
     public BlastingConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "blast_furnace", "blast_furnace");
     }
+
+    public BlastingConfig() {
+        super("blast_furnace");
+    }
 }

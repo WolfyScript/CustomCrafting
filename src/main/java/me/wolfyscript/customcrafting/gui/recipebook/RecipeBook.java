@@ -1,21 +1,21 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -104,13 +104,13 @@ public class RecipeBook extends ExtendedGuiWindow {
                     for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()) {
                         if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
                             if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                                if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.needsAdvancedWorkbench())) {
+                                if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))) {
                                     recipes.add(recipe);
                                 }
                             }
                         }
                     }
-                } else if(knowledgeBook.getSetting().equals(Setting.ELITE_WORKBENCH)){
+                } else if (knowledgeBook.getSetting().equals(Setting.ELITE_WORKBENCH)) {
                     for (EliteCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getEliteCraftingRecipes()) {
                         if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
                             if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
@@ -118,7 +118,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                             }
                         }
                     }
-                } else{
+                } else {
                     recipes.addAll(CustomCrafting.getRecipeHandler().getRecipes(knowledgeBook.getSetting()));
                 }
                 int maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
@@ -232,7 +232,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                     List<CustomItem> variants = furnaceRecipe.getSource();
                                     int variant = variantsTimers.getOrDefault(0, 0);
                                     event.setItem(20, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant).getRealItem());
-                                    if(i.get() > 2){
+                                    if (i.get() > 2) {
                                         if (++variant < variants.size()) {
                                             variantsTimers.put(0, variant);
                                         } else {
@@ -249,7 +249,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                                     }
                                     variant = variantsTimers.getOrDefault(1, 0);
                                     event.setItem(24, variantsResult.isEmpty() ? new ItemStack(Material.AIR) : variantsResult.get(variant));
-                                    if(i.get() > 2){
+                                    if (i.get() > 2) {
                                         if (++variant < variantsResult.size()) {
                                             variantsTimers.put(1, variant);
                                         } else {

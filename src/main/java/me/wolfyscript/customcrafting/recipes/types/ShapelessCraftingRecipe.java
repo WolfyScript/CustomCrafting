@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ShapelessCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T>{
+public interface ShapelessCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T> {
 
     @Override
     default boolean check(List<List<ItemStack>> matrix) {
@@ -24,7 +24,7 @@ public interface ShapelessCraftingRecipe<T extends CraftConfig> extends Crafting
         return usedKeys.containsAll(getIngredients().keySet());
     }
 
-     default CustomItem checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack item) {
+    default CustomItem checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack item) {
         for (Character key : allKeys) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : getIngredients().get(key)) {

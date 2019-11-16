@@ -9,13 +9,13 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class MainMenu extends ExtendedGuiWindow {
 
@@ -68,7 +68,7 @@ public class MainMenu extends ExtendedGuiWindow {
             })));
             registerButton(new ActionButton("cauldron", new ButtonState("cauldron", Material.CAULDRON, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 CustomCrafting.getPlayerCache(player).setSetting(Setting.CAULDRON);
-                guiHandler.changeToInv("cauldron");
+                guiHandler.changeToInv("recipe_editor");
                 return true;
             })));
         }
@@ -87,11 +87,8 @@ public class MainMenu extends ExtendedGuiWindow {
             CustomCrafting.getPlayerCache(player).setSetting(Setting.RECIPE_LIST);
             return true;
         })));
-        registerButton(new ToggleButton("lockdown", !CustomCrafting.getConfigHandler().getConfig().isLockedDown(), new ButtonState("lockdown.disabled", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setLockDown(true);
-            return true;
-        }), new ButtonState("lockdown.enabled", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setLockDown(false);
+        registerButton(new ActionButton("settings", new ButtonState("settings", WolfyUtilities.getSkullViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            guiHandler.changeToInv("settings");
             return true;
         })));
     }
@@ -99,39 +96,44 @@ public class MainMenu extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            event.setButton(0, "settings");
             event.setButton(8, "none", "gui_help");
+            event.setButton(4, "none", "patreon");
 
-            event.setButton(0, "none", "glass_white");
+            event.setButton(39, "none", "instagram");
+            event.setButton(40, "none", "youtube");
+            event.setButton(41, "none", "discord");
+
             event.setButton(10, "workbench");
             event.setButton(12, "furnace");
             event.setButton(14, "anvil");
+            event.setButton(16, "cauldron");
 
             if (WolfyUtilities.hasVillagePillageUpdate()) {
-                event.setButton(15, "blast_furnace");
-                event.setButton(19, "smoker");
-                event.setButton(21, "campfire");
-                event.setButton(23, "stonecutter");
-                event.setButton(25, "elite_workbench");
+                event.setButton(20, "blast_furnace");
+                event.setButton(22, "smoker");
+                event.setButton(24, "campfire");
+                event.setButton(30, "stonecutter");
+                event.setButton(32, "elite_workbench");
             }
-            event.setButton(39, "item_editor");
-            event.setButton(41, "recipe_list");
-
-            event.setButton(0, "lockdown");
+            event.setButton(36, "item_editor");
+            event.setButton(44, "recipe_list");
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onUpdateGuis(GuiUpdateEvent event) {
         if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null && event.getGuiHandler().getCurrentInv().equals(event.getGuiWindow())) {
-            if(!event.getGuiWindow().getClusterID().equals("crafting")){
+            PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
+            if (!event.getGuiWindow().getClusterID().equals("crafting")) {
                 for (int i = 0; i < 9; i++) {
-                    event.setButton(i, "none", "glass_white");
+                    event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
                 }
                 for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize() - 9; i++) {
-                    event.setButton(i, "none", "glass_gray");
+                    event.setButton(i, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
                 }
                 for (int i = event.getGuiHandler().getCurrentInv().getSize() - 9; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
-                    event.setButton(i, "none", "glass_white");
+                    event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
                 }
                 if (event.getGuiHandler().getCurrentInv().getSize() > 8) {
                     event.setButton(8, "none", "gui_help");

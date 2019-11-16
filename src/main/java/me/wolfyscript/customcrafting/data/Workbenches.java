@@ -86,10 +86,6 @@ public class Workbenches {
         return new ArrayList<>();
     }
 
-    public HashMap<String, List<ItemStack>> getWorkbenches() {
-        return workbenches;
-    }
-
     public boolean isWorkbench(Location location) {
         return workbenches.containsKey(locationToString(location));
     }

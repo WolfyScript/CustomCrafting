@@ -1,15 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
-import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ShapelessCraftingRecipe;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements ShapelessCraftingRecipe<EliteCraftConfig> {
 

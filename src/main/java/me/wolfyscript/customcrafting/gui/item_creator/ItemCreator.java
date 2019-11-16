@@ -1,11 +1,11 @@
-package me.wolfyscript.customcrafting.gui.main_gui.items;
+package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.main_gui.buttons.MetaIgnoreButton;
+import me.wolfyscript.customcrafting.gui.item_creator.buttons.MetaIgnoreButton;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -45,13 +45,17 @@ public class ItemCreator extends ExtendedGuiWindow {
     private static final MetaSettings dummyMetaSettings = new MetaSettings();
 
     public ItemCreator(InventoryAPI inventoryAPI) {
-        super("item_creator", inventoryAPI, 54);
+        super("main_menu", inventoryAPI, 54);
     }
 
     @Override
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openPreviousInv();
+            if (!CustomCrafting.getPlayerCache(player).getItems().getType().equals("items")) {
+                guiHandler.openCluster("recipe_creator");
+            }else{
+                guiHandler.openCluster("none");
+            }
             return true;
         })));
 
@@ -83,11 +87,11 @@ public class ItemCreator extends ExtendedGuiWindow {
                     if (args.length > 1) {
                         String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
                         String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        if (!CustomCrafting.VALID_NAMESPACE.matcher(namespace).matches()) {
+                        if (!CustomCrafting.VALID_NAMESPACEKEY.matcher(namespace).matches()) {
                             api.sendPlayerMessage(player1, "&cInvalid Namespace! Namespaces may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
                             return true;
                         }
-                        if (!CustomCrafting.VALID_KEY.matcher(key).matches()) {
+                        if (!CustomCrafting.VALID_NAMESPACEKEY.matcher(key).matches()) {
                             api.sendPlayerMessage(player1, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
                             return true;
                         }
@@ -111,7 +115,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     customItem = CustomItems.getCustomItem(cache.getItems().getId());
                 }
                 cache.applyItem(customItem);
-                guiHandler.openPreviousInv();
+                guiHandler.openCluster("recipe_creator");
             }
             return true;
         })));
@@ -948,35 +952,35 @@ public class ItemCreator extends ExtendedGuiWindow {
         {
             registerButton(new MultipleChoiceButton("elite_workbench.grid_size",
                     new ButtonState("elite_workbench.grid_size.size_3", WolfyUtilities.getSkullViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(4);
+                        ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(4);
                         return true;
                     }),
                     new ButtonState("elite_workbench.grid_size.size_4", WolfyUtilities.getSkullViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(5);
+                        ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(5);
                         return true;
                     }),
                     new ButtonState("elite_workbench.grid_size.size_5", WolfyUtilities.getSkullViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(6);
+                        ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(6);
                         return true;
                     }),
                     new ButtonState("elite_workbench.grid_size.size_6", WolfyUtilities.getSkullViaURL("faff2eb498e5c6a04484f0c9f785b448479ab213df95ec91176a308a12add70"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                        ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(3);
+                        ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(3);
                         return true;
                     })));
             registerButton(new ToggleButton("elite_workbench.toggle", new ButtonState("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setEnabled(false);
+                ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setEnabled(false);
                 return true;
             }), new ButtonState("elite_workbench.toggle.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setEnabled(true);
+                ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setEnabled(true);
                 return true;
             })));
         }
 
         registerButton(new ToggleButton("elite_workbench.advanced_recipes", new ButtonState("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setAdvancedRecipes(false);
+            ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setAdvancedRecipes(false);
             return true;
         }), new ButtonState("elite_workbench.advanced_recipes.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((EliteWorkbench) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setAdvancedRecipes(true);
+            ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setAdvancedRecipes(true);
             return true;
         })));
 
@@ -994,10 +998,10 @@ public class ItemCreator extends ExtendedGuiWindow {
             if (!WolfyUtilities.getVersion().equals("1.3.1.0") && WolfyUtilities.getVersionNumber() >= 1320) {
                 event.setButton(13, "item_input");
             }
-            event.setButton(4, "none", "glass_white");
-            event.setButton(12, "none", "glass_white");
-            event.setButton(14, "none", "glass_white");
-            event.setButton(22, "none", "glass_white");
+            event.setButton(4, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(12, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(14, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(22, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
             if (!items.getType().equals("items")) {
                 event.setButton(3, "apply_item");
             }
@@ -1164,8 +1168,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(41, "rarity.reset");
                         break;
                     case "elite_workbench":
-                        ((MultipleChoiceButton)event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbench)items.getItem().getCustomData("elite_workbench")).getGridSize()-3);
-                        ((ToggleButton)event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbench)items.getItem().getCustomData("elite_workbench")).isEnabled());
+                        ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).getGridSize() - 3);
+                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).isEnabled());
                         event.setButton(39, "elite_workbench.grid_size");
                         event.setButton(41, "elite_workbench.toggle");
                         event.setButton(43, "elite_workbench.advanced_recipes");

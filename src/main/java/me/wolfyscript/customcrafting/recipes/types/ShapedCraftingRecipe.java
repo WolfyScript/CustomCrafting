@@ -7,7 +7,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T>{
+public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T> {
+
+    String[] getShapeMirrorHorizontal();
+    String[] getShapeMirrorVertical();
 
     String[] getShape();
 
@@ -18,18 +21,32 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
         return false;
     }
 
+    boolean mirrorHorizontal();
+
+    boolean mirrorVertical();
+
     @Override
     default boolean check(List<List<ItemStack>> matrix) {
+        if(checkShape(matrix, getShape())){
+            return true;
+        }
+        if(mirrorHorizontal() && checkShape(matrix, getShapeMirrorHorizontal())){
+            return true;
+        }
+        return mirrorVertical() && checkShape(matrix, getShapeMirrorVertical());
+    }
+
+    default boolean checkShape(List<List<ItemStack>> matrix, String[] shape){
         List<Character> containedKeys = new ArrayList<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
-                if ((matrix.get(i).get(j) != null && getShape()[i].charAt(j) != ' ')) {
-                    if (checkIngredient(matrix.get(i).get(j), getIngredients().get(getShape()[i].charAt(j))) == null) {
+                if ((matrix.get(i).get(j) != null && shape[i].charAt(j) != ' ')) {
+                    if (checkIngredient(matrix.get(i).get(j), getIngredients().get(shape[i].charAt(j))) == null) {
                         return false;
                     } else {
-                        containedKeys.add(getShape()[i].charAt(j));
+                        containedKeys.add(shape[i].charAt(j));
                     }
-                } else if (!(matrix.get(i).get(j) == null && getShape()[i].charAt(j) == ' ')) {
+                } else if (!(matrix.get(i).get(j) == null && shape[i].charAt(j) == ' ')) {
                     return false;
                 }
             }

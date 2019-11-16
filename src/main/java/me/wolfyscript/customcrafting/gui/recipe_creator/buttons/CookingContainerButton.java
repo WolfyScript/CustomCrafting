@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.CookingData;
+import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
@@ -26,7 +26,7 @@ public class CookingContainerButton extends ItemInputButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
-                CookingData cooking = cache.getCookingData();
+                CookingConfig cooking = cache.getCookingConfig();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
                     if (cooking.getIngredients(inputSlot) != null) {
@@ -44,7 +44,7 @@ public class CookingContainerButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                CookingData cooking = CustomCrafting.getPlayerCache(player).getCookingData();
+                CookingConfig cooking = CustomCrafting.getPlayerCache(player).getCookingConfig();
                 if (cooking.getIngredients(inputSlot) != null && !cooking.getIngredients(inputSlot).isEmpty()) {
                     itemStack = cooking.getIngredients(inputSlot).get(0);
                 }

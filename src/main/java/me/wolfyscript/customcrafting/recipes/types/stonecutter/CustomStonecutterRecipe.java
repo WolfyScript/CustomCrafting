@@ -1,11 +1,10 @@
 package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.StonecuttingRecipe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomStonecutterRecipe extends StonecuttingRecipe implements CustomRecipe {
+public class CustomStonecutterRecipe extends StonecuttingRecipe implements CustomRecipe<StonecutterConfig> {
 
     private boolean exactMeta;
 
@@ -61,7 +60,7 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     }
 
     @Override
-    public CustomRecipe save(RecipeConfig config) {
+    public CustomRecipe save(StonecutterConfig config) {
         return null;
     }
 
@@ -70,7 +69,7 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     }
 
     @Override
-    public RecipeConfig getConfig() {
+    public StonecutterConfig getConfig() {
         return config;
     }
 

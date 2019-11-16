@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Stonecutter;
+import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
@@ -26,7 +26,7 @@ public class StonecutterContainerButton extends ItemInputButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
-                Stonecutter stonecutter = cache.getStonecutter();
+                StonecutterConfig stonecutter = cache.getStonecutterConfig();
                 if (inputSlot == 1) {
                     //RESULT STUFF
                     if (event.isRightClick() && event.isShiftClick()) {
@@ -59,11 +59,11 @@ public class StonecutterContainerButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                Stonecutter stonecutter = CustomCrafting.getPlayerCache(player).getStonecutter();
+                StonecutterConfig stonecutter = CustomCrafting.getPlayerCache(player).getStonecutterConfig();
                 if (inputSlot == 1) {
                     //RESULT STUFF
-                    if (stonecutter.getResult() != null && !stonecutter.getResult().getType().equals(Material.AIR)) {
-                        itemStack = stonecutter.getResult();
+                    if (stonecutter.getResult().get(0) != null && !stonecutter.getResult().get(0).getType().equals(Material.AIR)) {
+                        itemStack = stonecutter.getResult().get(0);
                     }
                 } else {
                     if (stonecutter.getSource() != null && !stonecutter.getSource().isEmpty()) {

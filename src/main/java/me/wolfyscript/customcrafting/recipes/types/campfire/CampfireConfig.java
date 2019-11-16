@@ -16,4 +16,8 @@ public class CampfireConfig extends CookingConfig {
     public CampfireConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "campfire", "campfire");
     }
+
+    public CampfireConfig() {
+        super("campfire");
+    }
 }

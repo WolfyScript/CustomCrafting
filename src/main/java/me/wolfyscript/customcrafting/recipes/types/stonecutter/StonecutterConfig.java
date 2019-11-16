@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,10 @@ public class StonecutterConfig extends RecipeConfig {
 
     public StonecutterConfig(ConfigAPI configAPI, String folder, String name) {
         this(configAPI, folder, name, "yml");
+    }
+
+    public StonecutterConfig() {
+        super("stonecutter");
     }
 
     public void setSource(List<CustomItem> source) {
@@ -45,9 +49,12 @@ public class StonecutterConfig extends RecipeConfig {
         saveCustomItem("result", result);
     }
 
-    public List<CustomItem> getResult() {
-        List<CustomItem> results = new ArrayList<>();
-        results.add(getCustomItem("result"));
-        return results;
+    public void setSource(int variant, CustomItem source) {
+        List<CustomItem> sources = getSource();
+        if (variant < sources.size())
+            sources.set(variant, source);
+        else
+            sources.add(source);
+        setSource(sources);
     }
 }

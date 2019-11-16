@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.main_gui.recipe;
+package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
@@ -93,11 +93,12 @@ public class RecipeEditor extends ExtendedGuiWindow {
         }
     }
 
-    private void changeToCreator(GuiHandler guiHandler){
-        switch (CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getSetting()){
+    private void changeToCreator(GuiHandler guiHandler) {
+        switch (CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getSetting()) {
             case WORKBENCH:
             case ELITE_WORKBENCH:
             case STONECUTTER:
+            case CAULDRON:
             case ANVIL:
                 guiHandler.changeToInv("recipe_creator", CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getSetting().getId());
                 break;

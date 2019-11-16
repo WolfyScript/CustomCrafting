@@ -1,9 +1,11 @@
 package me.wolfyscript.customcrafting.recipes.types.cauldron;
 
+import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import org.bukkit.Material;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import org.bukkit.entity.EntityType;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +25,24 @@ public class CauldronConfig extends RecipeConfig {
         super(jsonData, configAPI, namespace, key, "cauldron", "cauldron");
     }
 
-    public boolean dropItems(){
-        return getBoolean("dropItems");
+    public CauldronConfig() {
+        super("cauldron");
     }
 
-    public void setDropItems(boolean dropItems){
-        set("dropItems", dropItems);
+    public boolean dropItems() {
+        return getBoolean("dropItems.enabled");
+    }
+
+    public void setDropItems(boolean dropItems) {
+        set("dropItems.enabled", dropItems);
+    }
+
+    public void setHandItem(CustomItem customItem){
+        setItem("dropItems.handItem", customItem);
+    }
+
+    public CustomItem getHandItem(){
+        return getCustomItem("dropItems.handItem");
     }
 
     public void setXP(float xp) {
@@ -39,35 +53,35 @@ public class CauldronConfig extends RecipeConfig {
         return (float) getDouble("exp");
     }
 
-    public void setCookingTime(int cookingTime){
+    public void setCookingTime(int cookingTime) {
         set("cookingTime", cookingTime);
     }
 
-    public int getCookingTime(){
+    public int getCookingTime() {
         return getInt("cookingTime");
     }
 
-    public void setWaterLevel(int waterLevel){
+    public void setWaterLevel(int waterLevel) {
         set("waterLevel", waterLevel);
     }
 
-    public int getWaterLevel(){
+    public int getWaterLevel() {
         return getInt("waterLevel");
     }
 
-    public void setNoWater(boolean noWater){
-        set("noWater",noWater);
+    public void setWater(boolean noWater) {
+        set("water", noWater);
     }
 
-    public boolean isNoWater(){
-        return getBoolean("noWater");
+    public boolean isWater() {
+        return getBoolean("water");
     }
 
-    public boolean needsFire(){
+    public boolean needsFire() {
         return getBoolean("fire");
     }
 
-    public void setFire(boolean needsFire){
+    public void setFire(boolean needsFire) {
         set("fire", needsFire);
     }
 
@@ -88,27 +102,24 @@ public class CauldronConfig extends RecipeConfig {
         return sources;
     }
 
-    public void setResult(List<CustomItem> results) {
-        saveCustomItem("result", results.get(0));
-        for (int i = 1; i < results.size(); i++) {
-            if(!results.get(i).getType().equals(Material.AIR)){
-                saveCustomItem("result.variants.var" + i, results.get(i));
-            }
-        }
+    public void setMythicMob(String mobName, int level, double modX, double modY, double modZ){
+        set("mythicMob.name", mobName);
+        set("mythicMob.level", level);
+        set("mythicMob.modX", modX);
+        set("mythicMob.modY", modY);
+        set("mythicMob.modZ", modZ);
     }
 
-    public List<CustomItem> getResult() {
-        List<CustomItem> results = new ArrayList<>();
-        results.add(getCustomItem("result"));
-        if (get("result.variants") != null) {
-            Set<String> variants = getValues("result.variants").keySet();
-            for (String variant : variants) {
-                CustomItem customItem = getCustomItem("result.variants." + variant);
-                if(customItem != null && !customItem.getType().equals(Material.AIR)){
-                    results.add(customItem);
-                }
-            }
-        }
-        return results;
+    public String getMythicMobName(){
+        return getString("mythicMob.name", "<none>");
+    }
+
+    public int getMythicMobLevel(){
+        return getInt("mythicMob.level", 1);
+    }
+
+    public Vector getMythicMobMod(){
+        Vector vector = new Vector(getDouble("mythicMob.modX", 0), getDouble("mythicMob.modY", 0.5), getDouble("mythicMob.modZ", 0));
+        return vector;
     }
 }

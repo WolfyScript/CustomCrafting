@@ -18,19 +18,19 @@ public class LivingEntitySerialization {
      * @return
      */
     public static JSONObject serializeEntity(LivingEntity entity) {
-            JSONObject root = new JSONObject();
-            root.put("age", ((Ageable) entity).getAge());
-            root.put("health", entity.getHealth());
-            root.put("name", entity.getCustomName());
-            root.put("type", entity.getType().getTypeId());
-            return root;
+        JSONObject root = new JSONObject();
+        root.put("age", ((Ageable) entity).getAge());
+        root.put("health", entity.getHealth());
+        root.put("name", entity.getCustomName());
+        root.put("type", entity.getType().getTypeId());
+        return root;
 
     }
 
     /**
      * Serialize a LivingEntity into a String.
      *
-     * @param entity       The LivingEntity to serialize
+     * @param entity The LivingEntity to serialize
      * @return The serialization string
      */
     public static String serializeEntityAsString(LivingEntity entity) {

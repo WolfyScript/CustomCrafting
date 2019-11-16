@@ -16,4 +16,8 @@ public class SmokerConfig extends CookingConfig {
     public SmokerConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "smoker", "smoker");
     }
+
+    public SmokerConfig() {
+        super("smoker");
+    }
 }

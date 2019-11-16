@@ -1,13 +1,11 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipePriority;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -57,7 +55,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
         this.conditions = config.getConditions();
     }
 
-    public CustomAnvilRecipe(){
+    public CustomAnvilRecipe() {
         this.config = null;
         this.id = "";
         this.exactMeta = true;
@@ -75,7 +73,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
         this.conditions = new Conditions();
     }
 
-    public CustomAnvilRecipe save(ConfigAPI configAPI, String namespace, String key){
+    public CustomAnvilRecipe save(ConfigAPI configAPI, String namespace, String key) {
         AnvilConfig config;
         if (CustomCrafting.hasDataBaseHandler()) {
             config = new AnvilConfig("{}", configAPI, namespace, key);
@@ -86,7 +84,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
     }
 
     @Override
-    public CustomAnvilRecipe save(AnvilConfig config){
+    public CustomAnvilRecipe save(AnvilConfig config) {
         config.setBlockEnchant(isBlockEnchant());
         config.setBlockRename(isBlockRename());
         config.setBlockRepairing(isBlockRepair());
@@ -134,7 +132,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
     }
 
     @Override
-    public RecipeConfig getConfig() {
+    public AnvilConfig getConfig() {
         return config;
     }
 
@@ -196,11 +194,11 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
         return ingredients.get(1);
     }
 
-    public void setInput(int slot, List<CustomItem> input){
+    public void setInput(int slot, List<CustomItem> input) {
         ingredients.put(slot, input);
     }
 
-    public List<CustomItem> getInput(int slot){
+    public List<CustomItem> getInput(int slot) {
         return ingredients.get(slot);
     }
 

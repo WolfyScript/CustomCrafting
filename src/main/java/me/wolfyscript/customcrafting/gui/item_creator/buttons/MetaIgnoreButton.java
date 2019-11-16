@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.main_gui.buttons;
+package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.custom_items.Meta;
@@ -18,7 +18,7 @@ public class MetaIgnoreButton extends ActionButton {
     private String meta;
 
     public MetaIgnoreButton(String meta) {
-        super("meta_ignore."+meta, new ButtonState("meta_ignore", Material.CYAN_CONCRETE, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        super("meta_ignore." + meta, new ButtonState("meta_ignore", Material.CYAN_CONCRETE, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%VAR%", CustomCrafting.getPlayerCache(player).getItems().getItem().getMetaSettings().getMetaByID(meta).getOption().toString());
             return itemStack;
         }));

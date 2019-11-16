@@ -9,19 +9,7 @@ public abstract class RecipeData {
     private RecipePriority priority;
     private Conditions conditions;
 
-    public RecipeData(boolean exactMeta, RecipePriority priority, Conditions conditions) {
-        this.exactMeta = exactMeta;
-        this.priority = priority;
-        this.conditions = conditions;
-    }
-
-    public RecipeData(boolean exactMeta, RecipePriority priority) {
-        this.exactMeta = exactMeta;
-        this.priority = priority;
-        this.conditions = new Conditions();
-    }
-
-    public RecipeData(){
+    public RecipeData() {
         this.exactMeta = true;
         this.priority = RecipePriority.NORMAL;
         this.conditions = new Conditions();

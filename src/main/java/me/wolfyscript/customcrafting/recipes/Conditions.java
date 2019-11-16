@@ -11,14 +11,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class Conditions {
-
-    private static int conditionsAmount = 3;
-
-    private HashMap<String, Condition> conditions = new HashMap<>();
+public class Conditions extends HashMap<String, Condition> {
 
     //Conditions initialization
-    public Conditions(){
+    public Conditions() {
         addCondition(new PermissionCondition());
         addCondition(new AdvancedWorkbenchCondition());
         addCondition(new EliteWorkbenchCondition());
@@ -28,13 +24,13 @@ public class Conditions {
 
     public Conditions(Map<String, String> map) {
         this();
-        for(Map.Entry<String, String> condition : map.entrySet()){
+        for (Map.Entry<String, String> condition : map.entrySet()) {
             getByID(condition.getKey()).fromString(condition.getValue());
         }
     }
 
     public boolean checkConditions(CustomRecipe customRecipe, Data data) {
-        for (Condition condition : conditions.values()) {
+        for (Condition condition : values()) {
             if (!condition.check(customRecipe, data)) {
                 return false;
             }
@@ -42,24 +38,24 @@ public class Conditions {
         return true;
     }
 
-    public Condition getByID(String id){
-        return conditions.get(id);
+    public Condition getByID(String id) {
+        return get(id);
     }
 
-    public HashMap<String, String> toMap(){
+    public void updateCondition(Condition condition) {
+        put(condition.getId(), condition);
+    }
+
+    public HashMap<String, String> toMap() {
         HashMap<String, String> map = new HashMap<>();
-        for (String id : conditions.keySet()) {
-            map.put(id, conditions.get(id).toString());
+        for (String id : keySet()) {
+            map.put(id, get(id).toString());
         }
         return map;
     }
 
-    public void setConditions(HashMap<String, Condition> conditions) {
-        this.conditions = conditions;
-    }
-
-    public void addCondition(Condition condition){
-        conditions.put(condition.getId(), condition);
+    public void addCondition(Condition condition) {
+        put(condition.getId(), condition);
     }
 
     public enum Option {
@@ -67,8 +63,8 @@ public class Conditions {
 
         private String displayString;
 
-        Option(){
-            this.displayString = "$inventories.recipe_creator.conditions.mode_names."+this.toString().toLowerCase(Locale.ROOT)+"$";
+        Option() {
+            this.displayString = "$inventories.recipe_creator.conditions.mode_names." + this.toString().toLowerCase(Locale.ROOT) + "$";
         }
 
         public String getDisplayString() {

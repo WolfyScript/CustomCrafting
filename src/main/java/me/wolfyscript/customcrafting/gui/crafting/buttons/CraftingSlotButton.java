@@ -1,9 +1,9 @@
 package me.wolfyscript.customcrafting.gui.crafting.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.RecipeUtils;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
@@ -25,15 +25,15 @@ public class CraftingSlotButton extends ItemInputButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
-                EliteWorkbenchData eliteWorkbenchData = cache.getEliteWorkbenchData();
-                if(eliteWorkbenchData.getContents() != null){
+                EliteWorkbench eliteWorkbenchData = cache.getEliteWorkbench();
+                if (eliteWorkbenchData.getContents() != null) {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         eliteWorkbenchData.getContents()[recipeSlot] = inventory.getItem(slot);
-                        EliteWorkbench eliteWorkbench = eliteWorkbenchData.getEliteWorkbench();
+                        EliteWorkbenchData eliteWorkbench = eliteWorkbenchData.getEliteWorkbenchData();
                         ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbenchData.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbench.isAdvancedRecipes());
-                        if(result != null){
+                        if (result != null) {
                             eliteWorkbenchData.setResult(result);
-                        }else{
+                        } else {
                             eliteWorkbenchData.setResult(new ItemStack(Material.AIR));
                         }
                     });
@@ -44,9 +44,9 @@ public class CraftingSlotButton extends ItemInputButton {
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
-                EliteWorkbenchData eliteWorkbenchData = cache.getEliteWorkbenchData();
-                if(eliteWorkbenchData.getContents() != null){
-                    ItemStack slotItem =  eliteWorkbenchData.getContents()[recipeSlot];
+                EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+                if (eliteWorkbench.getContents() != null) {
+                    ItemStack slotItem = eliteWorkbench.getContents()[recipeSlot];
                     itemStack = slotItem == null ? new ItemStack(Material.AIR) : slotItem;
                 }
                 return itemStack;

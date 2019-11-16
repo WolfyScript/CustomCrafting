@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -26,16 +26,16 @@ public class EliteWorkbenchCondition extends Condition {
 
     @Override
     public boolean check(CustomRecipe recipe, Conditions.Data data) {
-        if(option.equals(Conditions.Option.IGNORE)){
+        if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
         if (recipe instanceof EliteCraftingRecipe) {
-            if(data.getBlock() != null){
+            if (data.getBlock() != null) {
                 Location location = data.getBlock().getLocation();
                 CustomItem customItem = CustomItems.getStoredBlockItem(location);
-                if(customItem != null){
-                    if (eliteWorkbenches.contains(customItem.getId())){
-                        EliteWorkbench eliteWorkbenchData = (EliteWorkbench) customItem.getCustomData("elite_workbench");
+                if (customItem != null) {
+                    if (eliteWorkbenches.contains(customItem.getId())) {
+                        EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData("elite_workbench");
                         return eliteWorkbenchData.isEnabled();
                     }
                 }
@@ -46,7 +46,7 @@ public class EliteWorkbenchCondition extends Condition {
     }
 
     public void addEliteWorkbenches(String eliteWorkbenches) {
-        if(!this.eliteWorkbenches.contains(eliteWorkbenches)){
+        if (!this.eliteWorkbenches.contains(eliteWorkbenches)) {
             this.eliteWorkbenches.add(eliteWorkbenches);
         }
     }
@@ -59,7 +59,7 @@ public class EliteWorkbenchCondition extends Condition {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder(option.toString());
         stringBuilder.append(";");
-        for(String eliteWorkbench : eliteWorkbenches){
+        for (String eliteWorkbench : eliteWorkbenches) {
             stringBuilder.append(eliteWorkbench).append(",");
         }
         return stringBuilder.toString();
@@ -69,7 +69,7 @@ public class EliteWorkbenchCondition extends Condition {
     public void fromString(String value) {
         String[] args = value.split(";");
         this.option = Conditions.Option.valueOf(args[0]);
-        if(args.length > 1 && args[1].contains(",")){
+        if (args.length > 1 && args[1].contains(",")) {
             this.eliteWorkbenches = Arrays.asList(args[1].split(","));
         }
     }

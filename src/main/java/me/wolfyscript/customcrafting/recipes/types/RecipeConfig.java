@@ -3,15 +3,19 @@ package me.wolfyscript.customcrafting.recipes.types;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.RecipeUtils;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomConfig;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class RecipeConfig extends CustomConfig {
+
     private String type;
 
     public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, String fileType) {
@@ -47,6 +51,41 @@ public class RecipeConfig extends CustomConfig {
         setPathSeparator('.');
     }
 
+    /*
+        Creates a json Memory only Config. can be used for anything. to save it use the linkToFile(String, String, String) method!
+    */
+    public RecipeConfig(String type, String defaultName) {
+        super(CustomCrafting.getApi().getConfigAPI(), "", "", "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
+        this.type = type;
+        setPathSeparator('.');
+    }
+
+    public void linkToFile(String namespace, String name) {
+        super.linkToFile(namespace, name, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + namespace + "/" + type);
+    }
+
+    public boolean saveConfig(String namespace, String key, Player player) {
+        namespace = namespace.toLowerCase(Locale.ROOT).replace(" ", "_");
+        key = key.toLowerCase(Locale.ROOT).replace(" ", "_");
+        if (!RecipeUtils.testNameSpaceKey(namespace, key)) {
+            api.sendPlayerMessage(player, "&cInvalid Namespace or Key! Namespaces & Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+            return false;
+        }
+        linkToFile(namespace, key);
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
+        } else {
+            reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.success$");
+        api.sendPlayerMessage(player, "§6recipes/" + namespace + "/workbench/" + key);
+        return true;
+    }
+
+    public RecipeConfig(String type) {
+        this(type, type);
+    }
+
     public String getConfigType() {
         return type;
     }
@@ -67,25 +106,34 @@ public class RecipeConfig extends CustomConfig {
         return getBoolean("exactItemMeta");
     }
 
-    public Conditions getConditions() {
-        Map<String, String> conditions = (Map<String, String>) get("conditions", new HashMap<>());
-        if (conditions != null) {
-            return new Conditions(conditions);
-        } else {
-            Conditions conditions1 = new Conditions();
+    public Conditions getConditions(boolean migrateFromOld) {
+        Object object = get("conditions");
+        if (object instanceof Conditions) {
+            return (Conditions) object;
+        } else if (object != null) {
+            Map<String, String> conditionsMap = (Map<String, String>) object;
+            Conditions conditions = new Conditions(conditionsMap);
             //Migrate old settings to new Condition system.
-            if (this instanceof AdvancedCraftConfig) {
-                conditions1.getByID("advanced_workbench").setOption(((AdvancedCraftConfig) this).needsAdvancedWorkbench() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
-                conditions1.getByID("permission").setOption(((AdvancedCraftConfig) this).needsPermission() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
-            } else if (this instanceof AnvilConfig) {
-                conditions1.getByID("permission").setOption(((AnvilConfig) this).needPerm() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
+            if (migrateFromOld) {
+                if (this instanceof AdvancedCraftConfig) {
+                    conditions.getByID("advanced_workbench").setOption(((AdvancedCraftConfig) this).needsAdvancedWorkbench() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
+                    conditions.getByID("permission").setOption(((AdvancedCraftConfig) this).needsPermission() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
+                } else if (this instanceof AnvilConfig) {
+                    conditions.getByID("permission").setOption(((AnvilConfig) this).needPerm() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
+                }
             }
-            return conditions1;
+            setConditions(conditions);
+            return conditions;
         }
+        return new Conditions();
+    }
+
+    public Conditions getConditions() {
+        return getConditions(false);
     }
 
     public void setConditions(Conditions conditions) {
-        set("conditions", conditions.toMap());
+        set("conditions", conditions);
     }
 
     public RecipePriority getPriority() {
@@ -101,5 +149,43 @@ public class RecipeConfig extends CustomConfig {
 
     public void setPriority(RecipePriority recipePriority) {
         set("priority", recipePriority.name());
+    }
+
+    public void setResult(List<CustomItem> results) {
+        setResult("", results);
+    }
+
+    protected void setResult(String path, List<CustomItem> results) {
+        if (!path.isEmpty() && !path.endsWith(".")) {
+            path = path + ".";
+        }
+        saveCustomItem(path + "result", results.get(0));
+        for (int i = 1; i < results.size(); i++) {
+            if (!results.get(i).getType().equals(Material.AIR)) {
+                saveCustomItem(path + "result.variants.var" + i, results.get(i));
+            }
+        }
+    }
+
+    public List<CustomItem> getResult() {
+        return getResult("");
+    }
+
+    protected List<CustomItem> getResult(String path) {
+        if (!path.isEmpty() && !path.endsWith(".")) {
+            path = path + ".";
+        }
+        List<CustomItem> results = new ArrayList<>();
+        results.add(getCustomItem(path + "result"));
+        if (get(path + "result.variants") != null) {
+            Set<String> variants = getValues(path + "result.variants").keySet();
+            for (String variant : variants) {
+                CustomItem customItem = getCustomItem(path + "result.variants." + variant);
+                if (customItem != null && !customItem.getType().equals(Material.AIR)) {
+                    results.add(customItem);
+                }
+            }
+        }
+        return results;
     }
 }

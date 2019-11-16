@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting;
 import com.sun.istack.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbench;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
@@ -16,7 +16,6 @@ import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
@@ -51,20 +50,21 @@ public class CustomCrafting extends JavaPlugin {
     private static Cauldrons cauldrons = null;
 
     private static final boolean betaVersion = false;
+    private static String currentVersion;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
 
-    public static final Pattern VALID_NAMESPACE = Pattern.compile("[a-z0-9._-]+");
-    public static final Pattern VALID_KEY = Pattern.compile("[a-z0-9/._-]+");
+    public static final Pattern VALID_NAMESPACEKEY = Pattern.compile("[a-z0-9._-]+");
 
     @Override
     public void onLoad() {
-        CustomItem.registerCustomData(new EliteWorkbench());
+        CustomItem.registerCustomData(new EliteWorkbenchData());
     }
 
     public void onEnable() {
         instance = this;
+        currentVersion = instance.getDescription().getVersion();
         api = new WolfyUtilities(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");
@@ -74,8 +74,8 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
         System.out.println("    v" + instance.getDescription().getVersion() + (betaVersion ? "-beta" : ""));
         System.out.println(" ");
-        if (betaVersion) {
-            System.out.println("This is a beta build! It may contain bugs and game breaking glitches!");
+        if (betaVersion || currentVersion.contains("-indev") || currentVersion.contains("-dev")) {
+            System.out.println("This is a dev build! It may contain bugs and game breaking glitches!");
             System.out.println("Do not use this version on production servers!");
         }
         System.out.println("------------------------------------------------------------------------");
@@ -167,7 +167,7 @@ public class CustomCrafting extends JavaPlugin {
                 HttpURLConnection con = (HttpURLConnection) new URL(
                         "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
                 String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-                if (!version.isEmpty() && !version.equals(instance.getDescription().getVersion())) {
+                if (!version.isEmpty() && !version.equals(currentVersion) && !currentVersion.contains("-indev") && !currentVersion.contains("-dev")) {
                     outdated = true;
                     api.sendConsoleWarning("$msg.startup.outdated$");
                     if (player != null) {

@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Stonecutter;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.StonecutterContainerButton;
 import me.wolfyscript.customcrafting.recipes.RecipeUtils;
@@ -36,29 +35,18 @@ public class StonecutterCreator extends ExtendedGuiWindow {
             if (validToSave(cache)) {
                 openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
                     PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
+                    StonecutterConfig stonecutterConfig = cache1.getStonecutterConfig();
                     if (args.length > 1) {
                         String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
                         String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        if (!RecipeUtils.testNameSpaceKey(namespace, key)) {
-                            api.sendPlayerMessage(player, "&cInvalid Namespace or Key! Namespaces & Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
+                        if (!stonecutterConfig.saveConfig(namespace, key, player1)) {
+                            return true;
                         }
-                        Stonecutter stonecutter = cache1.getStonecutter();
-                        StonecutterConfig stonecutterConfig;
-                        if (CustomCrafting.hasDataBaseHandler()) {
-                            stonecutterConfig = new StonecutterConfig("{}", api.getConfigAPI(), namespace, key);
-                        } else {
-                            stonecutterConfig = new StonecutterConfig(api.getConfigAPI(), namespace, key);
-                        }
-                        stonecutterConfig.setResult(stonecutter.getResult());
-                        stonecutterConfig.setSource(stonecutter.getSource());
-                        stonecutterConfig.setExactMeta(stonecutter.isExactMeta());
-                        stonecutterConfig.setPriority(stonecutter.getPriority());
                         if (CustomCrafting.hasDataBaseHandler()) {
                             CustomCrafting.getDataBaseHandler().updateRecipe(stonecutterConfig);
                         } else {
                             stonecutterConfig.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
                         }
-                        cache1.resetStonecutter();
                         try {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
@@ -94,7 +82,7 @@ public class StonecutterCreator extends ExtendedGuiWindow {
     }
 
     private boolean validToSave(PlayerCache cache) {
-        Stonecutter stonecutter = cache.getStonecutter();
-        return !stonecutter.getResult().getType().equals(Material.AIR) && !stonecutter.getSource().isEmpty();
+        StonecutterConfig stonecutter = cache.getStonecutterConfig();
+        return !stonecutter.getResult().get(0).getType().equals(Material.AIR) && !stonecutter.getSource().isEmpty();
     }
 }

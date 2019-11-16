@@ -33,6 +33,13 @@ public class AdvancedCraftConfig extends CraftConfig {
         super(jsonData, configAPI, "workbench", folder, name);
     }
 
+    /*
+    Creates a json Memory only Config. can be used for anything. to save it use the linkToFile() method!
+     */
+    public AdvancedCraftConfig() {
+        super("workbench");
+    }
+
     public void setNeedWorkbench(boolean workbench) {
         set("advanced_workbench", workbench);
     }
@@ -49,4 +56,9 @@ public class AdvancedCraftConfig extends CraftConfig {
         return getBoolean("permissions");
     }
 
+    @Override
+    public void linkToFile(String namespace, String name) {
+        setShape(3);
+        super.linkToFile(namespace, name);
+    }
 }

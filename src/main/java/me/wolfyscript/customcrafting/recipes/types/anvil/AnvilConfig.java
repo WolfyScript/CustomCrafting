@@ -2,8 +2,8 @@ package me.wolfyscript.customcrafting.recipes.types.anvil;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,10 @@ public class AnvilConfig extends RecipeConfig {
 
     public AnvilConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, "anvil", key, "anvil");
+    }
+
+    public AnvilConfig() {
+        super("anvil");
     }
 
     public void setPermission(boolean perm) {
@@ -90,23 +94,14 @@ public class AnvilConfig extends RecipeConfig {
         set("mode.usedMode", mode.toString());
     }
 
+    @Override
     public List<CustomItem> getResult() {
-        List<CustomItem> result = new ArrayList<>();
-        result.add(getCustomItem("mode.result"));
-        if (get("mode.result.variants") != null) {
-            Set<String> variants = getValues("mode.result.variants").keySet();
-            for (String variant : variants) {
-                result.add(getCustomItem("mode.result.variants." + variant));
-            }
-        }
-        return result;
+        return getResult("mode");
     }
 
+    @Override
     public void setResult(List<CustomItem> results) {
-        saveCustomItem("mode.result", results.get(0));
-        for (int i = 1; i < results.size(); i++) {
-            saveCustomItem("mode.result.variants.var" + i, results.get(i));
-        }
+        setResult("mode", results);
     }
 
     public int getDurability() {
@@ -125,7 +120,27 @@ public class AnvilConfig extends RecipeConfig {
         return getInput("right");
     }
 
-    private List<CustomItem> getInput(String leftRight) {
+    public List<CustomItem> getInput(int slot) {
+        if (slot == 0) {
+            return getInputLeft();
+        } else if (slot == 1) {
+            return getInputRight();
+        } else {
+            return getResult();
+        }
+    }
+
+    public void setInput(int slot, List<CustomItem> inputs) {
+        if (slot == 0) {
+            setInputLeft(inputs);
+        } else if (slot == 1) {
+            setInputRight(inputs);
+        } else {
+            setResult(inputs);
+        }
+    }
+
+    public List<CustomItem> getInput(String leftRight) {
         List<CustomItem> result = new ArrayList<>();
         if (get("input_" + leftRight) != null) {
             Set<String> variants = getValues("input_" + leftRight).keySet();

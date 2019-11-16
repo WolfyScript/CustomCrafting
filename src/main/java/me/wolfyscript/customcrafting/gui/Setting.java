@@ -19,7 +19,7 @@ public enum Setting {
 
     private String id;
 
-    Setting(){
+    Setting() {
         this.id = this.toString().toLowerCase(Locale.ROOT);
     }
 
