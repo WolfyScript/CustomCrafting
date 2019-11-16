@@ -58,11 +58,6 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements Shape
     }
 
     @Override
-    public void setShape(String[] shape) {
-        this.shape = shape;
-    }
-
-    @Override
     public boolean mirrorHorizontal() {
         return mirrorHorizontal;
     }

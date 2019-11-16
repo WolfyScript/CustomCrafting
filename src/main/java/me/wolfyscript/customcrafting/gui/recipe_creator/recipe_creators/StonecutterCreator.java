@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.StonecutterContainerButton;
-import me.wolfyscript.customcrafting.recipes.RecipeUtils;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;

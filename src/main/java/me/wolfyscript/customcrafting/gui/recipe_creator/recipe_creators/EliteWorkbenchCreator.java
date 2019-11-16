@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingIngredientButton;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
-import me.wolfyscript.customcrafting.recipes.RecipeUtils;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;

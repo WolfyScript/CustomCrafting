@@ -1,31 +1,42 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.sun.javafx.geom.Vec2d;
+import me.wolfyscript.customcrafting.recipes.crafting.CraftingData;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface ShapelessCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T> {
 
     @Override
-    default boolean check(List<List<ItemStack>> matrix) {
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
+    default CraftingData check(List<List<ItemStack>> matrix) {
         List<Character> usedKeys = new ArrayList<>();
-        for (List<ItemStack> items : matrix) {
-            for (ItemStack itemStack : items) {
+        HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
+        for (int i = 0; i < matrix.size(); i++) {
+            for (int j = 0; j < matrix.get(i).size(); j++) {
+                ItemStack itemStack = matrix.get(i).get(j);
                 if (itemStack == null) {
                     continue;
                 }
-                checkIngredient(allKeys, usedKeys, itemStack);
+                CustomItem item = checkIngredient(usedKeys, itemStack);
+                if(item != null){
+                    foundItems.put(new Vec2d(j, i), item);
+                }
             }
         }
-        return usedKeys.containsAll(getIngredients().keySet());
+        if(usedKeys.containsAll(getIngredients().keySet())){
+            return new CraftingData((CraftingRecipe<CraftConfig>) this, foundItems);
+        }
+        return null;
     }
 
-    default CustomItem checkIngredient(List<Character> allKeys, List<Character> usedKeys, ItemStack item) {
-        for (Character key : allKeys) {
+    default CustomItem checkIngredient(List<Character> usedKeys, ItemStack item) {
+        for (Character key : getIngredients().keySet()) {
             if (!usedKeys.contains(key)) {
                 for (CustomItem ingredient : getIngredients().get(key)) {
                     if (!ingredient.isSimilar(item, isExactMeta())) {
@@ -39,40 +50,4 @@ public interface ShapelessCraftingRecipe<T extends CraftConfig> extends Crafting
         return null;
     }
 
-    @Override
-    default List<ItemStack> removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, ItemStack[] matrix, boolean small, int totalAmount) {
-        List<ItemStack> replacements = new ArrayList<>();
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
-        for (int i = 0; i < matrix.length; i++) {
-            ItemStack input = matrix[i];
-            if (input != null) {
-                CustomItem item = checkIngredient(allKeys, usedKeys, input);
-                if (item != null) {
-                    item.consumeItem(input, totalAmount, inventory);
-                }
-            }
-        }
-        return replacements;
-    }
-
-    @Override
-    default int getAmountCraftable(List<List<ItemStack>> matrix) {
-        List<Character> allKeys = new ArrayList<>(getIngredients().keySet());
-        List<Character> usedKeys = new ArrayList<>();
-        int totalAmount = -1;
-        for (List<ItemStack> items : matrix) {
-            for (ItemStack itemStack : items) {
-                if (itemStack != null) {
-                    ItemStack result = checkIngredient(allKeys, usedKeys, itemStack);
-                    if (result != null) {
-                        int possible = itemStack.getAmount() / result.getAmount();
-                        if (possible < totalAmount || totalAmount == -1)
-                            totalAmount = possible;
-                    }
-                }
-            }
-        }
-        return totalAmount;
-    }
 }
