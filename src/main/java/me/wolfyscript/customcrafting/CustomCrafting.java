@@ -41,6 +41,11 @@ import java.util.regex.Pattern;
 
 public class CustomCrafting extends JavaPlugin {
 
+    /*
+    « 0171
+    » 0187
+     */
+
     private static Plugin instance;
     private static List<PlayerCache> playerCacheList = new ArrayList<>();
     private static WolfyUtilities api;

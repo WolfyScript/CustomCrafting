@@ -56,146 +56,6 @@
         }
       }
     },
-    "gui": {
-      "none": {
-        "item_creator": {
-          "save": {
-            "input": {
-              "line1": "&3Type in the name of the folder and item",
-              "line2": "&6e.g. example your_item"
-            },
-            "success": "&aItem saved to:"
-          },
-          "display_name": "&3Type in the name! Use &6& &3for formatting codes!",
-          "enchant": {
-            "add": "&3Type in the enchantment and level! &6unbreaking 5",
-            "remove": "&3Type in the enchantment! &6unbreaking",
-            "invalid_lvl": "&cInvalid level! It's not a number!",
-            "invalid_enchant": "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!",
-            "no_lvl": "&cNo level set!"
-          },
-          "lore": {
-            "add": "&3Type in the lore! Use &6& &3for formatting codes!",
-            "remove": "&3Type in the line of the lore you want to remove!",
-            "no_number": "&cError getting the line! Is it a number? It should be!",
-            "error": "&cError the line &4%NUM%&c does not exist!",
-            "success": "&aRemoved Lore in line &6%NUM%"
-          },
-          "potion": {
-            "add": "&3Type in the Potion! &6<name> <duration> <level> [<ambient> <particles>]",
-            "remove": "&3Type in the Potion name you want to remove!",
-            "error_number": "&cError parsing Numbers! &4<name> <duration> <level> [<ambient> <particles>]",
-            "wrong_args": "&cWrong arguments or invalid name! &4<name> <duration> <level> [<ambient> <particles>]",
-            "success": "&aAdded Potion Effect &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%",
-            "invalid_name": "&cInvalid name! &4%NAME%&c does not exist!"
-          },
-          "variant": {
-            "remove": {
-              "msg": "&3Choose the Item you want to remove!",
-              "line": " &6%NUM%. &7%ITEM%",
-              "success": "&aRemoved &6%ITEM%&a from variants&a!"
-            }
-          },
-          "attribute": {
-            "amount": {
-              "input": "&3Type in the amount you want! For example&6 0.4",
-              "error": "&cError parsing number! Is it a number? It should be!"
-            },
-            "name": {
-              "input": "&3Type in the name!"
-            },
-            "uuid": {
-              "input": "&3Type in the uuid for the attribute! Must be a valid UUID!",
-              "error": {
-                "line1": "&cInvalid UUID: &4%UUID%",
-                "line2": "&cType in a valid UUID!"
-              }
-            }
-          },
-          "skull_owner": {
-            "input": "&3Type in the Player Name!"
-          },
-          "damage": {
-            "set": "&3Type in the amount of damage!",
-            "invalid_type": "&cThe current item does not support damage value!",
-            "value_success": "&aSet item damage to &6%VALUE%&a!",
-            "invalid_value": "&cThe value &4%VALUE%&c is not a number!"
-          },
-          "repair": {
-            "set": "&3Type in the amount of cost",
-            "invalid_type": "&cThe current item does not support repair cost!",
-            "value_success": "&aSet repair cost to &6%VALUE%&a!",
-            "invalid_value": "&cThe value &4%VALUE%&c is not a valid number!"
-          },
-          "fuel": {
-            "set": "&3Type in the Burn Time in ticks!",
-            "value_success": "&aSet Burn Time to &6%VALUE% ticks&a!",
-            "invalid_value": "&cThe value &4%VALUE%&c is not a valid number!"
-          },
-          "custom_model_data": {
-            "disabled": "&l&cDisabled",
-            "set": "&3Type in the Custom Model Data!",
-            "success": "&aSet Model Data to &6%VALUE%&a!",
-            "invalid_value": "&cThe value &4%VALUE%&c is not a valid Model Data number!"
-          },
-          "consume": {
-            "valid": "&aSet the durability cost to &e%VALUE%",
-            "invalid": "&cThis is not a Number! Please type in a Valid number e.g. &e1 &7or&e -1"
-          },
-          "durability_cost": "&3Type in the durability cost, which will be subtracted from the item when used in the crafting grid",
-          "custom_durability": {
-            "set_durability": "&3Type in the custom durability. &cMax value: 2,147,483,647",
-            "set_damage": "&3Type in the custom Damage of the item. &cMax value: 2,147,483,647"
-          },
-          "rarity": {
-            "set": "&3Type in the percentage of how rare this item should be. &cThe number must be smaller than 1.0!"
-          },
-          "permission": {
-            "set": "&3Type in the permission string that players need to get this item"
-          }
-        },
-        "item_editor": {
-          "input": "&3Type in the folder and name of the item! &6example your_item",
-          "error": "&cThis item does not exist or is not loaded!",
-          "item_gui_title": "       &cID ITEM     &3ORIGINAL ITEM",
-          "item_applied": "&aItem successfully applied to recipe!",
-          "item_editable": "&aThis item can now be edited!",
-          "no_name": "&cYou need to type in the item name!"
-        },
-        "recipe_creator": {
-          "override": "&3type the namespace and key from the recipe!",
-          "furnace": {
-            "xp": "&3Type in the amount of experience. e.g. 0.5",
-            "cooking_time": "&3Type in the cooking time in ticks. e.g. 20"
-          },
-          "anvil": {
-            "durability": "&3Type in the amount of durability. &6>0 increase&7, <0 decrease",
-            "repair_cost": "&3Type in the amount of repair_cost. &cMust be greater than 0!"
-          },
-          "save": {
-            "input": "&3Type in the name of the folder and item! &6folder recipe_name",
-            "empty": "&cCannot save a empty recipe! Check the Result and the Source/ingredients",
-            "success": "&aRecipe successfully saved to:"
-          },
-          "loading": {
-            "error": "&cError occurred while loading recipe &4%REC%",
-            "success": "&aLoaded and injected recipe successful!",
-            "warning": "&cIt is better to restart the Server after you're done, to prevent recipes from not working correctly!"
-          },
-          "valid_number": "&cType in a valid number!"
-        },
-        "recipe_editor": {
-          "not_existing": "&cThe recipe &6%RECIPE% &cdoesn't exist!",
-          "input": "&3Type in the name of the folder and recipe! &6example your_recipe",
-          "invalid_recipe": "This recipe is not a %RECIPE_TYPE%!",
-          "delete": {
-            "confirm": "&7Do you really want to delete &6%RECIPE%",
-            "confirmed": "&7[&aYES&7]  ",
-            "declined": "&7[&cNO&7]"
-          }
-        }
-      }
-    },
     "commands": {
       "help": [
         "",
@@ -309,7 +169,7 @@
         }
       },
       "main_menu": {
-        "gui_name": "&3&lCustomCrafting&7[&8%plugin.version%&7]",
+        "gui_name": "&3&lCustomCrafting &7[&8%plugin.version%&7]",
         "gui_help": [
           "&7Options:",
           "&7- Click on the type of the Recipe you want to create.",
@@ -422,6 +282,14 @@
               "&7Delete a custom Item"
             ]
           }
+        },
+        "messages": {
+          "input": "&eType in the folder and name of the item! &6example your_item",
+          "error": "&cThis item does not exist or is not loaded!",
+          "item_gui_title": "       &cID ITEM     &3ORIGINAL ITEM",
+          "item_applied": "&aItem successfully applied to recipe!",
+          "item_editable": "&aThis item can now be edited!",
+          "no_name": "&cYou need to type in the item name!"
         }
       },
       "recipe_editor": {
@@ -444,6 +312,16 @@
             "help": [
               "&7Delete a existing recipe"
             ]
+          }
+        },
+        "messages": {
+          "not_existing": "&cThe recipe &6%RECIPE% &cdoesn't exist!",
+          "input": "&eType in the name of the folder and recipe! &6example your_recipe",
+          "invalid_recipe": "&cThis recipe is not a %recipe_type%!",
+          "delete": {
+            "confirm": "&eDo you really want to delete &6%recipe%?",
+            "confirmed": "&7[&aYES&7]  ",
+            "declined": "&7[&cNO&7]"
           }
         }
       },
@@ -560,6 +438,72 @@
           "&7Place in the item you want to edit in top middle",
           "&eSome features are only available if you save the item!"
         ],
+        "messages": {
+          "save": {
+            "input": {
+              "line1": "&eType in the name of the folder and item!",
+              "line2": "&6e.g. weapons ultimate_sword"
+            },
+            "success": "&aItem saved to:"
+          },
+          "enchant": {
+            "invalid_lvl": "&cInvalid level! It's not a number!",
+            "invalid_enchant": "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!",
+            "no_lvl": "&cNo level set!"
+          },
+          "lore": {
+            "no_number": "&cError getting the line! Is it a number? It should be!",
+            "error": "&cError the line &4%NUM%&c does not exist!",
+            "success": "&aRemoved Lore in line &6%NUM%"
+          },
+          "potion": {
+            "error_number": "&cError parsing Numbers! &4<name> <duration> <level> [<ambient> <particles>]",
+            "wrong_args": "&cWrong arguments or invalid name! &4<name> <duration> <level> [<ambient> <particles>]",
+            "success": "&aAdded Potion Effect &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%",
+            "invalid_name": "&cInvalid name! &4%NAME%&c does not exist!"
+          },
+          "variant": {
+            "remove": {
+              "msg": "&eChoose the Item you want to remove!",
+              "line": " &6%NUM%. &7%ITEM%",
+              "success": "&aRemoved &6%ITEM%&a from variants&a!"
+            }
+          },
+          "attribute": {
+            "amount": {
+              "error": "&cError parsing number! Is it a number? It should be!"
+            },
+            "uuid": {
+              "error": {
+                "line1": "&cInvalid UUID: &4%UUID%",
+                "line2": "&cType in a valid UUID!"
+              }
+            }
+          },
+          "damage": {
+            "invalid_type": "&cThe current item does not support damage value!",
+            "value_success": "&aSet item damage to &6%VALUE%&a!",
+            "invalid_value": "&cThe value &4%VALUE%&c is not a number!"
+          },
+          "repair": {
+            "invalid_type": "&cThe current item does not support repair cost!",
+            "value_success": "&aSet repair cost to &6%VALUE%&a!",
+            "invalid_value": "&cThe value &4%VALUE%&c is not a valid number!"
+          },
+          "fuel": {
+            "value_success": "&aSet Burn Time to &6%VALUE% ticks&a!",
+            "invalid_value": "&cThe value &4%VALUE%&c is not a valid number!"
+          },
+          "custom_model_data": {
+            "disabled": "&l&cDisabled",
+            "success": "&aSet Model Data to &6%VALUE%&a!",
+            "invalid_value": "&cThe value &4%VALUE%&c is not a valid Model Data number!"
+          },
+          "consume": {
+            "valid": "&aSet the durability cost to &e%VALUE%",
+            "invalid": "&cThis is not a Number! Please type in a Valid number e.g. &e1 &7or&e -1"
+          }
+        },
         "items": {
           "invalid_type": {
             "name": "&cInvalid Item",
@@ -598,7 +542,7 @@
           "apply_item": {
             "name": "&aApply Item",
             "help": [
-              "Applies the Item to the recipe"
+              "&7Applies the Item to the recipe"
             ]
           },
           "meta_ignore": {
@@ -629,7 +573,8 @@
               "name": "&6Set Display Name",
               "help": [
                 "&7Change Display Name"
-              ]
+              ],
+              "message": "&eType in the name! Use &6&& &efor formatting codes!"
             },
             "remove": {
               "name": "&3Remove Display Name",
@@ -648,11 +593,13 @@
             },
             "add": {
               "name": "&6Add Enchantment",
-              "help": []
+              "help": [],
+              "message": "&eType in the enchantment and level! &6unbreaking 5"
             },
             "remove": {
               "name": "&4Remove Enchantment",
-              "help": []
+              "help": [],
+              "message": "&eType in the enchantment! &6unbreaking"
             }
           },
           "lore": {
@@ -664,11 +611,13 @@
             },
             "add": {
               "name": "&6Add Lore",
-              "help": []
+              "help": [],
+              "message": "&eType in the lore! Use &6& &efor formatting codes!"
             },
             "remove": {
               "name": "&4Remove Lore",
-              "help": []
+              "help": [],
+              "message": "&eType in the line of the lore you want to remove!"
             }
           },
           "flags": {
@@ -716,7 +665,7 @@
                 "name": "&6Apply Texture",
                 "help": [
                   "&7Applies the texture of the Player Head",
-                  "<- Input"
+                  "&e<- Put the player head with the texture in the empty slot!"
                 ]
               }
             },
@@ -725,20 +674,23 @@
               "help": [
                 "&7Sets the Skull Owner",
                 "&7Input: &3<UUID or Player Name>"
-              ]
+              ],
+              "message": "&eType in the Player Name!"
             }
           },
-          "unbreakable_on": {
-            "name": "&aUnbreakable",
-            "help": [
-              "&7Toggle Unbreakable"
-            ]
-          },
-          "unbreakable_off": {
-            "name": "&cBreakable",
-            "help": [
-              "&7Toggle Unbreakable"
-            ]
+          "unbreakable": {
+            "enabled": {
+              "name": "&aUnbreakable",
+              "help": [
+                "&7[&aClick&7] Disable Unbreakable"
+              ]
+            },
+            "disabled": {
+              "name": "&cBreakable",
+              "help": [
+                "&7[&aClick&7] Enable Unbreakable"
+              ]
+            }
           },
           "potion": {
             "option": {
@@ -752,14 +704,16 @@
               "help": [
                 "&7Add a Potion Effect",
                 "&7Input: &3<name> <duration> <level> [<ambient> <particles>]"
-              ]
+              ],
+              "message": "&eType in the Potion! &6<name> <duration> <level> [<ambient> <particles>]"
             },
             "remove": {
               "name": "&4Remove Potion Effect",
               "help": [
                 "&7Remove a Potion Effect",
                 "&7Input: &3<name>"
-              ]
+              ],
+              "message": "&eType in the Potion name you want to remove!"
             }
           },
           "attribute": {
@@ -870,14 +824,16 @@
               "help": [
                 "&7Sets the amount of this modifier",
                 "&7Input: &3<amount>"
-              ]
+              ],
+              "message": "&3Type in the amount you want! For example&6 0.4"
             },
             "set_name": {
               "name": "&3Name:&7 %NAME%",
               "help": [
                 "&7Sets the name of this modifier",
                 "&7Input: &3<name>"
-              ]
+              ],
+              "message": "&3Type in the name!"
             },
             "set_uuid": {
               "name": "&3UUID:&7 %UUID%",
@@ -885,7 +841,8 @@
                 "&7Sets the uuid of this modifier",
                 "&cMust be a valid UUID format!",
                 "&7Input: &3<uuid>"
-              ]
+              ],
+              "message": "&3Type in the uuid for the attribute! Must be a valid UUID!"
             }
           },
           "damage": {
@@ -902,7 +859,8 @@
               "help": [
                 "&7Set the damage value!",
                 "&7Input: &3<value>"
-              ]
+              ],
+              "message": "&eType in the amount of damage!"
             },
             "reset": {
               "name": "&cReset Damage",
@@ -914,24 +872,25 @@
           "repair_cost": {
             "option": {
               "name": "&6Repair Cost",
-              "help": [
+              "lore": [
                 "&7Set the repair cost for this item!",
                 "&7e.g. to prevent repairing"
               ]
             },
             "set": {
-              "name": "&6Set Repair Cost"
+              "name": "&6Set Repair Cost",
+              "message": "&eType in the amount of cost"
             },
             "reset": {
               "name": "&cReset Repair Cost",
-              "help": [
-                "Resets Repair Cost to 0"
+              "lore": [
+                "&7Resets Repair Cost to 0"
               ]
             }
           },
           "fuel": {
             "option": {
-              "name": "Fuel Settings",
+              "name": "&6Fuel Settings",
               "lore": [
                 "&cThe Item must be saved in order to",
                 "&cbe added as a fuel"
@@ -940,12 +899,16 @@
             "burn_time": {
               "set": {
                 "name": "&aBurn Time: &7%VAR% ticks",
+                "lore": [
+                  "&7[&aClick&7] Set Burn Time"
+                ],
                 "help": [
                   "&7Sets the burn time in ticks!",
                   "&720 ticks = 1 second",
                   "&cSet it to 0 will disable this to be",
                   "&csaved as a fuel!"
-                ]
+                ],
+                "message": "&eType in the Burn Time in ticks!"
               },
               "reset": {
                 "name": "&cReset Burn Time",
@@ -956,13 +919,46 @@
               }
             },
             "furnace": {
-              "name": "%C%Furnace"
+              "enabled": {
+                "name": "&aFurnace",
+                "lore": [
+                  "&7Can be used in Furnace"
+                ]
+              },
+              "disabled": {
+                "name": "&cFurnace",
+                "lore": [
+                  "&7Cannot be used in Furnace"
+                ]
+              }
             },
             "blast_furnace": {
-              "name": "%C%Blast Furnace"
+              "enabled": {
+                "name": "&aBlast Furnace",
+                "lore": [
+                  "&7Can be used in Blast Furnace"
+                ]
+              },
+              "disabled": {
+                "name": "&cBlast Furnace",
+                "lore": [
+                  "&7Cannot be used in Blast Furnace"
+                ]
+              }
             },
             "smoker": {
-              "name": "%C%Smoker"
+              "enabled": {
+                "name": "&aSmoker",
+                "lore": [
+                  "&7Can be used in Smoker"
+                ]
+              },
+              "disabled": {
+                "name": "&cSmoker",
+                "lore": [
+                  "&7Cannot be used in Smoker"
+                ]
+              }
             }
           },
           "custom_model_data": {
@@ -979,7 +975,8 @@
               "help": [
                 "&7Sets the Custom Model Data",
                 "&7for this item!"
-              ]
+              ],
+              "message": "&eType in the Custom Model Data!"
             },
             "reset": {
               "name": "&cRemove Model Data",
@@ -1009,7 +1006,8 @@
                   "&7>0 = &3decrease durability!",
                   "&7 0 = &3removed completely! Use replacement to prevent it!",
                   "&7<0 = &3increase durability!"
-                ]
+                ],
+                "message": "&eType in the durability cost, which will be subtracted from the item when used in the crafting grid"
               },
               "disabled": {
                 "name": "&7Durability cost: &4&lDisabled",
@@ -1047,7 +1045,7 @@
           },
           "custom_durability": {
             "option": {
-              "name": "&6Custom Durability & Damage",
+              "name": "&6Custom Durability && Damage",
               "lore": [
                 "&7Set Custom Durability and damage to your item!",
                 "&7This will replace the vanilla Durability and Damage!"
@@ -1057,21 +1055,25 @@
               "name": "&7Set Durability: &3%VAR%",
               "lore": [
                 "&7Click to set Durability!"
-              ]
+              ],
+              "message": "&eType in the custom durability. &cMax value: 2,147,483,647"
             },
             "set_damage": {
               "name": "&7Set Damage: &3%VAR%",
               "lore": [
                 "&7Click to set Damage!"
-              ]
+              ],
+              "message": "&eType in the custom Damage of the item. &cMax value: 2,147,483,647"
             },
             "set_tag": {
               "name": "&7Set Tag: &3%VAR%",
               "lore": [
                 "&7Click to set Tag!",
-                "&3%DUR% -> &7durability subtracted by the damage",
-                "&3%MAX_DUR% -> &7max set durability for the item"
-              ]
+                "&eReplacements: ",
+                "&6%dur% -> &ethe durability that's left for use",
+                "&6%max_dur% -> &emax durability of the item"
+              ],
+              "message": "&eType in the Tag that should appear at the bottom of the lore! %dur%"
             }
           },
           "localized_name": {
@@ -1083,7 +1085,8 @@
               ]
             },
             "set": {
-              "name": "&7Set Localized Name: &f%VAR%"
+              "name": "&7Set Localized Name: &f%VAR%",
+              "message": "&eType in the localized name"
             },
             "remove": {
               "name": "&cRemove Localized Name"
@@ -1098,7 +1101,8 @@
               ]
             },
             "set": {
-              "name": "&7Set Permssion: &3%VAR%"
+              "name": "&7Set Permssion: &3%VAR%",
+              "message": "&eType in the permission string that players need to get this item"
             },
             "remove": {
               "name": "&7Remove Permission"
@@ -1118,7 +1122,8 @@
                 "&7Type in a value of 1.0 or lower",
                 "&7e.g. 1.0 -> 100%",
                 "     &70.04 -> 4%"
-              ]
+              ],
+              "message": "&eType in the percentage of how rare this item should be. &cThe number must be smaller than 1.0!"
             },
             "reset": {
               "name": "&7Reset the rarity percentage",
@@ -1226,21 +1231,6 @@
             "&7Such as World Time, Weather, etc."
           ]
         },
-        "permission": {
-          "enabled": {
-            "name": "&3Permissions",
-            "help": [
-              "&7Players need permission to craft",
-              "&7Perm: &3customcrafting.craft.<recipe_id>"
-            ]
-          },
-          "disabled": {
-            "name": "&4No Permissions",
-            "help": [
-              "&7Players don't need any permission to craft"
-            ]
-          }
-        },
         "exact_meta": {
           "enabled": {
             "name": "&aExact Meta",
@@ -1310,6 +1300,20 @@
           }
         }
       },
+      "global_messages": {
+        "override": "&3type the namespace and key from the recipe!",
+        "valid_number": "&cType in a valid number!",
+        "save": {
+          "input": "&3Type in the name of the folder and item! &6folder recipe_name",
+          "empty": "&cCannot save a empty recipe! Check the Result and the Source/ingredients",
+          "success": "&aRecipe successfully saved to:"
+        },
+        "loading": {
+          "error": "&cError occurred while loading recipe &4%REC%",
+          "success": "&aLoaded and injected recipe successful!",
+          "warning": "&cIt is better to restart the Server after you're done, to prevent recipes from not working correctly!"
+        }
+      },
       "conditions": {
         "gui_name": "Conditions",
         "mode_names": {
@@ -1371,6 +1375,11 @@
               "&8[&aLeft Click&8] &7change Permission"
             ]
           }
+        },
+        "messages": {
+          "world_time": "&eType the time in ticks! e.g. 1500",
+          "elite_workbench": "&eType in the id of the Elite Workbench",
+          "permission": "&eType in the permission string"
         }
       },
       "workbench": {
@@ -1402,6 +1411,9 @@
       "elite_workbench": {
         "gui_name": "&4&lCreator &7[&8Elite Workbench&7]",
         "gui_help": [
+          "&7Tip:",
+          "&eShift&7+&eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
         ],
         "items": {
         }
@@ -1429,7 +1441,8 @@
             "help": [],
             "lore": [
               "&6%XP% Exp"
-            ]
+            ],
+            "message": "&3Type in the amount of experience. e.g. 0.5"
           },
           "cooking_time": {
             "name": "&6Cooking Time",
@@ -1440,7 +1453,8 @@
             ],
             "lore": [
               "&6%TIME% ticks"
-            ]
+            ],
+            "message": "&3Type in the cooking time in ticks. e.g. 20"
           }
         }
       },
@@ -1462,7 +1476,8 @@
             "name": "&7Repair Cost:&6 %VAR%",
             "lore": [
               ""
-            ]
+            ],
+            "message": "&3Type in the amount of repair_cost. &cMust be greater than 0!"
           },
           "block_repair": {
             "true": {
@@ -1492,7 +1507,8 @@
             "name": "&7Durability:&6 %VAR%",
             "lore": [
               ""
-            ]
+            ],
+            "message": "&3Type in the amount of durability. &6>0 increase&7, <0 decrease"
           },
           "repair_apply": {
             "true": {
@@ -1541,8 +1557,8 @@
               "lore": [
                 "&eItems stay in the cauldron when recipe is done.",
                 "&ePlayer right click replaces the item in their hand.",
-                "&eSet the item player needs to use for the right click >>>",
-                "",
+                "&e«« Set the required item for the player to hold on right click!",
+                "     &eLeave blank to require empty hand!",
                 "&7[&aClick&7] toggle to drop items"
               ]
             }
@@ -1583,7 +1599,8 @@
               "&7Experience: &e%xp%",
               "",
               "&eThe amount xp you get when the recipe is done."
-            ]
+            ],
+            "message": "&3Type in the amount of experience. e.g. 0.5"
           },
           "cookingTime": {
             "name": "&6Cooking Time",
@@ -1591,7 +1608,8 @@
               "&7Time: &e%time% ticks",
               "",
               "&eThe time in ticks for the recipe to be done!"
-            ]
+            ],
+            "message": "&3Type in the cooking time in ticks. e.g. 20"
           },
           "waterLevel": {
             "name": "&3Water Level",
@@ -1601,7 +1619,22 @@
               "&eDefines the lowest cauldron water level",
               "&ethis recipe should be able to be made with.",
               "&eThe Water is consumed when the recipe is done!"
-            ]
+            ],
+            "message": "&eType in the amount of water the cauldron needs to have! &cMax: &43"
+          },
+          "mythicMob": {
+            "name": "&6MythicMob",
+            "lore": [
+              "&7-Mob Settings-",
+              "&7Name: &e%mob.name%",
+              "&7Level: &e%mob.level%",
+              "&7Spawn location (relative): ",
+              "   &7x: &e%mob.modX%",
+              "   &7y: &e%mob.modY%",
+              "   &7z: &e%mob.modZ%",
+              ""
+            ],
+            "message": "&eType in the MythicMob you want! <mob_name> [<level> <relative_x> <relative_y> <relative_z>]"
           }
         }
       },

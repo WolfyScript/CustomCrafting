@@ -76,7 +76,7 @@ public class MainMenu extends ExtendedGuiWindow {
         registerButton(new ActionButton("item_editor", new ButtonState("item_editor", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache playerCache = CustomCrafting.getPlayerCache(player);
             playerCache.setSetting(Setting.ITEMS);
-            playerCache.getItems().setType("items");
+            playerCache.getItems().setRecipeItem(false);
             playerCache.getItems().setSaved(false);
             playerCache.getItems().setId("");
             guiHandler.changeToInv("item_editor");
@@ -125,7 +125,7 @@ public class MainMenu extends ExtendedGuiWindow {
     public void onUpdateGuis(GuiUpdateEvent event) {
         if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null && event.getGuiHandler().getCurrentInv().equals(event.getGuiWindow())) {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
-            if (!event.getGuiWindow().getClusterID().equals("crafting")) {
+            if (!event.getGuiWindow().getNamespace().startsWith("crafting_grid")) {
                 for (int i = 0; i < 9; i++) {
                     event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
                 }

@@ -35,13 +35,13 @@ public class ConfigHandler {
         configAPI.registerConfig(mainConfig);
         loadLang();
 
-        ItemConfig itemConfig = new ItemConfig(api.getConfigAPI(), "customcrafting", "workbench", "me/wolfyscript/customcrafting/configs/default_configs", WolfyUtilities.hasVillagePillageUpdate() ? "workbench_item" : "workbench_item_13", mainConfig.resetAdvancedWorkbenchItem(), "json");
+        ItemConfig itemConfig = new ItemConfig("customcrafting", "workbench", "me/wolfyscript/customcrafting/configs/default_configs", WolfyUtilities.hasVillagePillageUpdate() ? "workbench_item" : "workbench_item_13", mainConfig.resetAdvancedWorkbenchItem(), api.getConfigAPI());
         mainConfig.setResetAdvancedWorkbenchItem(false);
 
         RecipeConfig config = new WorkbenchCraftConfig(api.getConfigAPI());
         mainConfig.setResetAdvancedWorkbenchRecipe(false);
 
-        ItemConfig knowledgebookItem = new ItemConfig(api.getConfigAPI(), "customcrafting", "knowledge_book", "me/wolfyscript/customcrafting/configs/default_configs", WolfyUtilities.hasVillagePillageUpdate() ? "knowledge_book_item" : "knowledge_book_item_13", mainConfig.resetKnowledgeBookItem(), "json");
+        ItemConfig knowledgebookItem = new ItemConfig("customcrafting", "knowledge_book", "me/wolfyscript/customcrafting/configs/default_configs", WolfyUtilities.hasVillagePillageUpdate() ? "knowledge_book_item" : "knowledge_book_item_13", mainConfig.resetKnowledgeBookItem(), api.getConfigAPI());
         mainConfig.setResetKnowledgeBookItem(false);
 
         CraftConfig knowledgebook = new KnowledgeBookCraftConfig(api.getConfigAPI());

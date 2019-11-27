@@ -43,7 +43,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
+                openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     AdvancedCraftConfig config = cache.getAdvancedCraftConfig();
                     if (args.length > 1) {
                         String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
@@ -65,10 +65,10 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                             }
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
-                                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.success$");
+                                api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.error$", new String[]{"%REC%", config.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getId()});
                             ex.printStackTrace();
                             return false;
                         }
@@ -78,7 +78,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                     return false;
                 });
             } else {
-                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.empty$");
+                api.sendPlayerMessage(player, "recipe_creator", "save.empty");
             }
             return false;
         })));

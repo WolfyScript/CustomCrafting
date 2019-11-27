@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.data.cache.*;
+import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
+import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
@@ -37,6 +39,8 @@ public class PlayerCache {
 
     private ChatLists chatLists = new ChatLists();
 
+    private ApplyItem applyItem;
+
     //RECIPE_LIST OF ALL RECIPE CACHE
 
     private AnvilConfig anvilConfig = new AnvilConfig();
@@ -53,7 +57,7 @@ public class PlayerCache {
         this.uuid = uuid;
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
-
+        this.applyItem = null;
         setAmountCrafted(0);
         setAmountAdvancedCrafted(0);
         setAmountNormalCrafted(0);
@@ -203,18 +207,14 @@ public class PlayerCache {
         this.chatLists = new ChatLists();
     }
 
+    public void setApplyItem(ApplyItem applyItem) {
+        this.applyItem = applyItem;
+    }
+
     public void applyItem(CustomItem customItem) {
-        if (getItems().getType().equals("variant")) {
-            //Set values to variant cache
-            getVariantsData().putVariant(getItems().getVariantSlot(), customItem);
-        } else if (getItems().getType().equals("single")) {
-            switch (getSetting()) {
-                case STONECUTTER:
-                    getStonecutterConfig().setResult(getItems().getItem());
-                    break;
-                case CAULDRON:
-                    getCauldronConfig().setHandItem(getItems().getItem());
-            }
+        if(applyItem != null){
+            applyItem.applyItem(getItems(), this, customItem);
+            applyItem = null;
         }
     }
 

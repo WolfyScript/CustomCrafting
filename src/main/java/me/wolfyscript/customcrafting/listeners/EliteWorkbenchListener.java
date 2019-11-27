@@ -6,6 +6,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import org.bukkit.block.Block;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -28,7 +29,9 @@ public class EliteWorkbenchListener implements Listener {
                 if (customItem != null) {
                     EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData("elite_workbench");
                     if (eliteWorkbench.isEnabled()) {
-                        event.setCancelled(true);
+                        event.setUseItemInHand(Event.Result.DENY);
+                        event.setUseInteractedBlock(Event.Result.DENY);
+                        event.getPlayer().closeInventory();
                         CustomCrafting.getPlayerCache(event.getPlayer()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
                         api.getInventoryAPI().getGuiHandler(event.getPlayer()).changeToInv("crafting", "crafting_grid" + eliteWorkbench.getGridSize());
                     }

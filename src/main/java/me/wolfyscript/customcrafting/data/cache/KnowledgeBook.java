@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.data.cache;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.utils.ItemCategory;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class KnowledgeBook {
     private int page;
     private Setting setting;
     private WorkbenchFilter workbenchFilter;
+    private ItemCategory itemCategory;
     private CustomItem result;
     private CustomRecipe customRecipe;
     private int timerTask;
@@ -25,6 +27,7 @@ public class KnowledgeBook {
         this.timerTask = -1;
         this.timerTimings = new HashMap<>();
         workbenchFilter = WorkbenchFilter.ALL;
+        this.itemCategory = ItemCategory.SEARCH;
     }
 
     public HashMap<Integer, Integer> getTimerTimings() {
@@ -93,6 +96,14 @@ public class KnowledgeBook {
 
     public void setWorkbenchFilter(WorkbenchFilter workbenchFilter) {
         this.workbenchFilter = workbenchFilter;
+    }
+
+    public void setItemCategory(ItemCategory itemCategory) {
+        this.itemCategory = itemCategory;
+    }
+
+    public ItemCategory getItemCategory() {
+        return itemCategory;
     }
 
     public enum WorkbenchFilter {

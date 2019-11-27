@@ -4,12 +4,30 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.gui.crafting.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
+import me.wolfyscript.utilities.api.utils.ItemCategory;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class CraftingRecipeBook extends ExtendedGuiWindow {
 
@@ -45,5 +63,74 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
         }
         registerButton(new DummyButton("workbench.shapeless_on", new ButtonState("workbench.shapeless_on", WolfyUtilities.getSkullViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"))));
         registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", WolfyUtilities.getSkullViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"))));
+    }
+
+    @EventHandler
+    public void onUpdate(GuiUpdateEvent event){
+        if(event.verify(this)){
+            event.setButton(0, "back");
+            Player player = event.getPlayer();
+
+            KnowledgeBook knowledgeBook = CustomCrafting.getPlayerCache(player).getKnowledgeBook();
+
+            ItemCategory itemCategory = knowledgeBook.getItemCategory();
+
+            ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), itemCategory);
+
+            event.setButton(0, "back");
+            if (knowledgeBook.getCustomRecipe() == null) {
+                event.setButton(2, "previous_page");
+                event.setButton(4, "recipe_book", "itemCategory");
+                event.setButton(6, "next_page");
+                List<CustomRecipe> recipes = new ArrayList<>();
+
+                for (EliteCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getEliteCraftingRecipes()) {
+                    if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
+                        if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
+                            recipes.add(recipe);
+                        }
+                    }
+                }
+                if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
+                    for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()) {
+                        if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
+                            if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
+                                recipes.add(recipe);
+                            }
+                        }
+                    }
+                }
+                if(!itemCategory.equals(ItemCategory.SEARCH)){
+                    Iterator<CustomRecipe> recipeIterator = recipes.iterator();
+                    while(recipeIterator.hasNext()){
+                        CustomRecipe recipe = recipeIterator.next();
+                        List<CustomItem> customItems = recipe.getCustomResults();
+                        boolean allowed = false;
+                        for(CustomItem customItem : customItems){
+                            if(itemCategory.isValid(customItem.getType())){
+                                allowed = true;
+                            }
+                        }
+                        if(!allowed){
+                            recipeIterator.remove();
+                        }
+                    }
+                }
+
+                int maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
+                if (knowledgeBook.getPage() >= maxPages) {
+                    knowledgeBook.setPage(0);
+                }
+                int item = 0;
+                for (int i = 45 * knowledgeBook.getPage(); item < 45 && i < recipes.size(); i++) {
+                    RecipeBookContainerButton button = (RecipeBookContainerButton) getButton("recipe_book.container_" + item);
+                    button.setRecipe(event.getGuiHandler(), recipes.get(i));
+                    event.setButton(9 + item, button);
+                    item++;
+                }
+            }
+
+
+        }
     }
 }

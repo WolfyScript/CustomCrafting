@@ -52,14 +52,14 @@ public class AnvilConfig extends RecipeConfig {
     }
 
     public CustomAnvilRecipe.RepairCostMode getRepairCostMode() {
-        if (getString("repair_cost_mode") != null && !getString("repair_cost_mode").isEmpty()) {
-            return CustomAnvilRecipe.RepairCostMode.valueOf(getString("repair_cost_mode"));
+        if (getString("repair_cost.mode") != null && !getString("repair_cost.mode").isEmpty()) {
+            return CustomAnvilRecipe.RepairCostMode.valueOf(getString("repair_cost.mode"));
         }
         return CustomAnvilRecipe.RepairCostMode.NONE;
     }
 
     public void setRepairCostMode(CustomAnvilRecipe.RepairCostMode mode) {
-        set("repair_cost_mode", mode.toString());
+        set("repair_cost.mode", mode.toString());
     }
 
     public boolean isBlockRepairing() {

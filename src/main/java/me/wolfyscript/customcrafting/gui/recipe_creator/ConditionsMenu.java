@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
@@ -43,16 +44,15 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 if (event.getClick().isRightClick()) {
                     //Change Mode
-                    RecipeConfig recipeConfig = CustomCrafting.getPlayerCache(player).getRecipeConfig();
-                    recipeConfig.getConditions().getByID("world_time").toggleOption();
+                    CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions().getByID("world_time").toggleOption();
                 } else {
                     //Change Value
-                    openChat(guiHandler, "$$", (guiHandler1, player1, s, strings) -> {
+                    openChat("world_time", guiHandler, (guiHandler1, player1, s, strings) -> {
                         try {
                             long value = Long.parseLong(s);
                             ((WorldTimeCondition) CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions().getByID("world_time")).setTime(value);
                         } catch (NumberFormatException ex) {
-                            api.sendPlayerMessage(player1, "$$");
+                            api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
                         }
                         return false;
                     });
@@ -118,13 +118,8 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                     recipeConfig.getConditions().getByID("elite_workbench").toggleOption();
                 } else {
                     //CONFIGURE ELITE WORKBENCHES
-                    openChat(guiHandler, "$$", (guiHandler1, player1, s, strings) -> {
-                        try {
-                            long value = Long.parseLong(s);
-                            ((WorldTimeCondition) CustomCrafting.getPlayerCache(player1).getRecipeConfig().getConditions().getByID("world_time")).setTime(value);
-                        } catch (NumberFormatException ex) {
-                            api.sendPlayerMessage(player1, "$$");
-                        }
+                    openChat("elite_workbench", guiHandler, (guiHandler1, player1, s, strings) -> {
+                        ((EliteWorkbenchCondition) CustomCrafting.getPlayerCache(player1).getRecipeConfig().getConditions().getByID("elite_workbench")).addEliteWorkbenches(s);
                         return false;
                     });
                 }
@@ -147,9 +142,8 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                     recipeConfig.getConditions().getByID("permission").toggleOption();
                 } else {
                     //SET Custom Permission String
-                    openChat(guiHandler, "$$", (guiHandler1, player1, s, strings) -> {
+                    openChat("permission", guiHandler, (guiHandler1, player1, s, strings) -> {
                         ((PermissionCondition) CustomCrafting.getPlayerCache(player1).getRecipeConfig().getConditions().getByID("permission")).setPermission(s.trim());
-                        api.sendPlayerMessage(player1, "");
                         return false;
                     });
                 }

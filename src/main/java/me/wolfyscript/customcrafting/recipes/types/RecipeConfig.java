@@ -159,8 +159,8 @@ public class RecipeConfig extends CustomConfig {
         set("priority", recipePriority.name());
     }
 
-    public void setResult(List<CustomItem> results) {
-        setResult("", results);
+    public void setResult(List<CustomItem> result) {
+        setResult("", result);
     }
 
     protected void setResult(String path, List<CustomItem> results) {

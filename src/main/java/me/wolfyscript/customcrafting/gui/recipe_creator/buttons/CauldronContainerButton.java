@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -17,10 +18,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class CauldronContainerButton extends ItemInputButton {
+
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getCauldronConfig().setResult(Collections.singletonList(items.getItem()));
 
     public CauldronContainerButton(int inputSlot) {
         super("cauldron.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
@@ -29,29 +33,33 @@ public class CauldronContainerButton extends ItemInputButton {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
                 CauldronConfig cauldronConfig = cache.getCauldronConfig();
                 if (event.isRightClick() && event.isShiftClick()) {
-                    List<CustomItem> variants = new ArrayList<>();
                     if(inputSlot == 0 && cauldronConfig.getIngredients() != null){
-                        variants = cauldronConfig.getIngredients();
+                        cache.getVariantsData().setSlot(inputSlot);
+                        cache.getVariantsData().setVariants(cauldronConfig.getIngredients());
+
                     }else if(cauldronConfig.getResult() != null){
-                        variants = cauldronConfig.getResult();
+                        if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
+                            cache.getItems().setItem(false, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
+                            cache.setApplyItem(APPLY_ITEM);
+                            guiHandler.changeToInv("item_editor");
+                        }
                     }
-                    cache.getVariantsData().setSlot(inputSlot);
-                    cache.getVariantsData().setVariants(variants);
+
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         CustomItem input = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
-                        List<CustomItem> inputs = inputSlot == 0 ? cauldronConfig.getIngredients() : cauldronConfig.getResult();
-                        if (inputs.size() > 0) {
-                            inputs.set(0, input);
-                        } else {
-                            inputs.add(input);
-                        }
                         if(inputSlot == 0){
+                            List<CustomItem> inputs = cauldronConfig.getIngredients();
+                            if (inputs.size() > 0) {
+                                inputs.set(0, input);
+                            } else {
+                                inputs.add(input);
+                            }
                             cauldronConfig.setIngredients(inputs);
                         }else{
-                            cauldronConfig.setResult(inputs);
+                            cauldronConfig.setResult(Collections.singletonList(input));
                         }
                     });
                 }

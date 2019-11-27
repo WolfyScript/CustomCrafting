@@ -1,7 +1,9 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.VariantsData;
+import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
@@ -19,15 +21,19 @@ import java.util.HashMap;
 
 public class VariantContainerButton extends ItemInputButton {
 
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getVariantsData().putVariant(items.getVariantSlot(), customItem);
+
     public VariantContainerButton(int variantSlot) {
         super("variant_container_" + variantSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                VariantsData variantsData = CustomCrafting.getPlayerCache(player).getVariantsData();
+                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                VariantsData variantsData = cache.getVariantsData();
                 if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             CustomCrafting.getPlayerCache(player).getItems().setVariant(variantSlot, CustomItem.getByItemStack(inventory.getItem(slot)));
+                            cache.setApplyItem(APPLY_ITEM);
                             guiHandler.changeToInv("none","item_editor");
                         }
                     });

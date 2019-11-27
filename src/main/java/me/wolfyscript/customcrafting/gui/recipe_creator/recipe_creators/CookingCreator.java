@@ -42,7 +42,7 @@ public class CookingCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
+                openChat("save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
                     CookingConfig cookingConfig = cache1.getCookingConfig();
                     if (args.length > 1) {
@@ -69,10 +69,10 @@ public class CookingCreator extends ExtendedGuiWindow {
                                 CustomRecipe finalCustomRecipe = customRecipe;
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
                             } else {
-                                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
+                                api.sendPlayerMessage(player, "recipe_creator","error_loading", new String[]{"%REC%", cookingConfig.getId()});
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", cookingConfig.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator","error_loading", new String[]{"%REC%", cookingConfig.getId()});
                             ex.printStackTrace();
                             return false;
                         }
@@ -83,7 +83,7 @@ public class CookingCreator extends ExtendedGuiWindow {
                     return false;
                 });
             } else {
-                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.empty$");
+                api.sendPlayerMessage(player, "recipe_creator","save.empty");
             }
             return false;
         })));
@@ -91,36 +91,29 @@ public class CookingCreator extends ExtendedGuiWindow {
         registerButton(new CookingContainerButton(0));
         registerButton(new CookingContainerButton(1));
 
-        registerButton(new ToggleButton("furnace.adv_furnace", false, new ButtonState("furnace.adv_furnace.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            //CustomCrafting.getPlayerCache(player).getCookingConfig().setAdvFurnace(false);
-            return true;
-        }), new ButtonState("furnace.adv_furnace.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            //CustomCrafting.getPlayerCache(player).getCookingConfig().setAdvFurnace(true);
-            return true;
-        })));
-        registerButton(new ChatInputButton("furnace.xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton("xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%XP%", CustomCrafting.getPlayerCache(player).getCookingConfig().getXP());
             return itemStack;
-        }), "$msg.gui.none.recipe_creator.furnace.xp$", (guiHandler, player, s, args) -> {
+        }), (guiHandler, player, s, args) -> {
             float xp;
             try {
                 xp = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getCookingConfig().setXP(xp);
             return false;
         }));
-        registerButton(new ChatInputButton("furnace.cooking_time", new ButtonState("cooking_time", Material.COAL, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton("cooking_time", new ButtonState("cooking_time", Material.COAL, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%TIME%", CustomCrafting.getPlayerCache(player).getCookingConfig().getCookingTime());
             return itemStack;
-        }), "$msg.gui.none.recipe_creator.furnace.cooking_time$", (guiHandler, player, s, args) -> {
+        }), (guiHandler, player, s, args) -> {
             int time;
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getCookingConfig().setCookingTime(time);
@@ -143,8 +136,8 @@ public class CookingCreator extends ExtendedGuiWindow {
                     event.setButton(24, "cooking.container_1");
                     event.setButton(10, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
                     event.setButton(12, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-                    event.setButton(22, "furnace.xp");
-                    event.setButton(29, "furnace.cooking_time");
+                    event.setButton(22, "xp");
+                    event.setButton(29, "cooking_time");
                     event.setButton(44, "save");
                     break;
             }

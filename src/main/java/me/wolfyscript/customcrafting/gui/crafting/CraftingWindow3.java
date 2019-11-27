@@ -50,9 +50,11 @@ public class CraftingWindow3 extends ExtendedGuiWindow {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onUpdateMain(GuiUpdateEvent event) {
-        if (event.getGuiWindow().getNamespace().startsWith("crafting_grid")) {
-            for (int i = 0; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
-                event.setButton(i, "none", "glass_black");
+        if(event.getGuiHandler().getCurrentInv() != null){
+            if (event.getGuiHandler().getCurrentInv().getNamespace().startsWith("crafting_grid")) {
+                for (int i = 0; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
+                    event.setButton(i, "none", "glass_black");
+                }
             }
         }
     }

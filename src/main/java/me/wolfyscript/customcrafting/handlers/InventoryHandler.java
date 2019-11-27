@@ -1,9 +1,12 @@
 package me.wolfyscript.customcrafting.handlers;
 
-import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow3;
-import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow4;
-import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow5;
-import me.wolfyscript.customcrafting.gui.crafting.CraftingWindow6;
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
+import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.gui.crafting.*;
+import me.wolfyscript.customcrafting.gui.crafting.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.*;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
@@ -16,7 +19,9 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.ItemCategory;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import org.bukkit.Material;
@@ -94,12 +99,13 @@ public class InventoryHandler {
         recipeCreator.registerButton(new ActionButton("conditions", new ButtonState("conditions", Material.CYAN_CONCRETE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.changeToInv("conditions");
             return true;
-        })), invAPI.getWolfyUtilities());
+        })), api);
 
         GuiCluster recipeBook = invAPI.getOrRegisterGuiCluster("recipe_book");
         recipeBook.registerGuiWindow(new RecipeBook(invAPI));
         recipeBook.registerGuiWindow(new me.wolfyscript.customcrafting.gui.recipebook.MainMenu(invAPI));
         recipeBook.setMainmenu("main_menu");
+        recipeBook.registerButton(new ItemCategoryButton(), api);
 
         GuiCluster craftingCluster = new GuiCluster();
         invAPI.registerCustomGuiCluster("crafting", craftingCluster);
@@ -107,11 +113,20 @@ public class InventoryHandler {
         craftingCluster.registerGuiWindow(new CraftingWindow4(invAPI));
         craftingCluster.registerGuiWindow(new CraftingWindow5(invAPI));
         craftingCluster.registerGuiWindow(new CraftingWindow6(invAPI));
+        craftingCluster.registerGuiWindow(new CraftingRecipeBook(invAPI));
         craftingCluster.setMainmenu("crafting_3");
         craftingCluster.registerButton(new ActionButton("knowledge_book", new ButtonState("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-
+            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+            KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
+            if(eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()){
+                knowledgeBook.setSetting(Setting.WORKBENCH);
+            }else{
+                knowledgeBook.setSetting(Setting.ELITE_WORKBENCH);
+            }
+            guiHandler.changeToInv("crafting_recipe_book");
             return true;
-        })), invAPI.getWolfyUtilities());
+        })), api);
 
         GuiCluster itemCreator = invAPI.getOrRegisterGuiCluster("item_creator");
         itemCreator.registerGuiWindow(new ItemCreator(invAPI));

@@ -1,5 +1,6 @@
-package me.wolfyscript.customcrafting.data.cache;
+package me.wolfyscript.customcrafting.data.cache.items;
 
+import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
@@ -18,7 +19,7 @@ public class Items implements Serializable {
     private ItemStack playerHeadSetting;
 
     private CustomItem item;
-    private String type;
+    private boolean recipeItem;
     private String id;
     private int craftSlot, variantSlot;
     private boolean saved;
@@ -34,7 +35,7 @@ public class Items implements Serializable {
         this.playerHeadSetting = new ItemStack(Material.AIR);
 
         this.item = new CustomItem(Material.AIR);
-        this.type = "";
+        this.recipeItem = false;
         this.id = "";
         this.saved = false;
         this.craftSlot = -1;
@@ -47,9 +48,9 @@ public class Items implements Serializable {
         this.attributeName = "";
     }
 
-    public void setItem(String type, CustomItem customItem) {
+    public void setItem(boolean recipeItem, CustomItem customItem) {
         setItem(customItem);
-        setType(type);
+        setRecipeItem(recipeItem);
         if (customItem.getId().isEmpty()) {
             setSaved(false);
         } else {
@@ -60,7 +61,7 @@ public class Items implements Serializable {
 
     public void setVariant(int variantSlot, CustomItem customItem) {
         this.variantSlot = variantSlot;
-        setItem("variant", customItem);
+        setItem(true, customItem);
     }
 
     public CustomItem getItem() {
@@ -71,12 +72,12 @@ public class Items implements Serializable {
         this.item = item;
     }
 
-    public String getType() {
-        return type;
+    public void setRecipeItem(boolean recipeItem) {
+        this.recipeItem = recipeItem;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public boolean isRecipeItem() {
+        return recipeItem;
     }
 
     public String getId() {
@@ -154,7 +155,6 @@ public class Items implements Serializable {
         UUID uuid = getAttributeUUID().isEmpty() ? UUID.randomUUID() : UUID.fromString(getAttributeUUID());
         AttributeModifier.Operation operation = getAttribOperation();
         return new AttributeModifier(uuid, name, amount, operation, slot);
-
     }
 
     public ItemStack getPlayerHeadSetting() {

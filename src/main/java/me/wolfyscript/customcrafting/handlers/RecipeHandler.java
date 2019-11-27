@@ -166,7 +166,7 @@ public class RecipeHandler {
                             registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, subfolder, name, fileType)));
                             break;
                         case "items":
-                            ItemConfig itemConfig = new ItemConfig(configAPI, subfolder, name, fileType);
+                            ItemConfig itemConfig = new ItemConfig(subfolder, name, fileType, configAPI);
                             CustomItems.setCustomItem(itemConfig);
                             break;
                         case "stonecutter":
@@ -701,6 +701,7 @@ public class RecipeHandler {
             case WORKBENCH:
                 if (recipe instanceof AdvancedCraftingRecipe) {
                     cache.setAdvancedCraftConfig(((AdvancedCraftingRecipe) recipe).getConfig());
+                    return true;
                 }
                 return false;
             case ELITE_WORKBENCH:

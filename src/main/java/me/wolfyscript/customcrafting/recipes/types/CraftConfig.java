@@ -26,7 +26,7 @@ public class CraftConfig extends RecipeConfig {
     }
 
     public CraftConfig(ConfigAPI configAPI, String type, String folder, String name) {
-        this(configAPI, "craft_config", type, folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+        this(configAPI, "craft_config", type, folder, name, "json");
     }
 
     /*
@@ -88,11 +88,13 @@ public class CraftConfig extends RecipeConfig {
     }
 
     public void setIngredients(Map<Character, List<CustomItem>> ingredients) {
-        set("ingredients", new TreeMap<String, Object>());
-        for (char key : ingredients.keySet()) {
+        getMap().remove("ingredients");
+        for (Map.Entry<Character, List<CustomItem>> entry : ingredients.entrySet()) {
+            char key = entry.getKey();
+            List<CustomItem> ingredient = entry.getValue();
             int variant = 0;
-            if (!InventoryUtils.isEmpty(new ArrayList<>(ingredients.get(key)))) {
-                for (CustomItem customItem : ingredients.get(key)) {
+            if (!InventoryUtils.isEmpty(new ArrayList<>(ingredient))) {
+                for (CustomItem customItem : ingredient) {
                     saveCustomItem("ingredients." + key + ".var" + (variant++), customItem);
                 }
             } else {
@@ -134,12 +136,20 @@ public class CraftConfig extends RecipeConfig {
 
     public void setIngredient(char key, int variant, CustomItem itemStack) {
         List<CustomItem> ingredient = getIngredients(key);
-        if (variant < ingredient.size())
-            ingredient.set(variant, itemStack);
-        else
-            ingredient.add(itemStack);
+        if (variant < ingredient.size()) {
+            if (itemStack.getType().equals(Material.AIR)) {
+                ingredient.remove(variant);
+            } else {
+                ingredient.set(variant, itemStack);
+            }
+        } else {
+            if (!itemStack.getType().equals(Material.AIR)) {
+                ingredient.add(itemStack);
+            }
+        }
         Map<Character, List<CustomItem>> ingredients = getIngredients();
         ingredients.put(key, ingredient);
+        System.out.println("ingred.: " + ingredients);
         setIngredients(ingredients);
     }
 
@@ -207,19 +217,19 @@ public class CraftConfig extends RecipeConfig {
         return getIngredient(LETTERS[slot]);
     }
 
-    public boolean mirrorHorizontal(){
+    public boolean mirrorHorizontal() {
         return getBoolean("mirror.horizontal");
     }
 
-    public void setMirrorHorizontal(boolean mirror){
+    public void setMirrorHorizontal(boolean mirror) {
         set("mirror.horizontal", mirror);
     }
 
-    public boolean mirrorVertical(){
+    public boolean mirrorVertical() {
         return getBoolean("mirror.vertical");
     }
 
-    public void setMirrorVertical(boolean mirror){
+    public void setMirrorVertical(boolean mirror) {
         set("mirror.vertical", mirror);
     }
 }

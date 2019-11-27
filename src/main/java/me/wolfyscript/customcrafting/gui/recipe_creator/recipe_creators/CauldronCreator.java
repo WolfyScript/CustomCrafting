@@ -39,10 +39,10 @@ public class CauldronCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
+                openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
                     CauldronConfig config = cache1.getCauldronConfig();
                     if (args.length > 1) {
@@ -52,10 +52,10 @@ public class CauldronCreator extends ExtendedGuiWindow {
                         try {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CauldronRecipe(config));
-                                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.success$");
+                                api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", config.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", config.getId()});
                             ex.printStackTrace();
                             return false;
                         }
@@ -64,7 +64,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                     return false;
                 });
             } else {
-                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.empty$");
+                api.sendPlayerMessage(player, "recipe_creator", "save.empty");
             }
             return false;
         })));
@@ -79,7 +79,9 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            CustomCrafting.getPlayerCache(player).getItems().setItem("single", CustomItem.getByItemStack(inventory.getItem(slot)));
+                            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                            cache.getItems().setItem(true, CustomItem.getByItemStack(inventory.getItem(slot)));
+                            cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronConfig().setHandItem(items.getItem()));
                             guiHandler.changeToInv("none","item_editor");
                         }
                     });
@@ -124,12 +126,12 @@ public class CauldronCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%xp%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getXP());
             return itemStack;
-        }), "$msg.gui.none.recipe_creator.cauldron.xp$", (guiHandler, player, s, args) -> {
+        }), (guiHandler, player, s, args) -> {
             float xp;
             try {
                 xp = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getCauldronConfig().setXP(xp);
@@ -138,12 +140,12 @@ public class CauldronCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("cookingTime", new ButtonState("cookingTime", Material.CLOCK, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%time%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getCookingTime());
             return itemStack;
-        }), "$msg.gui.none.recipe_creator.cauldron.cookingTime$", (guiHandler, player, s, args) -> {
+        }), (guiHandler, player, s, args) -> {
             int time;
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getCauldronConfig().setCookingTime(time);
@@ -152,12 +154,12 @@ public class CauldronCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("waterLevel", new ButtonState("waterLevel", Material.GLASS_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%level%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getWaterLevel());
             return itemStack;
-        }), "$msg.gui.none.recipe_creator.cauldron.waterLevel", (guiHandler, player, s, args) -> {
+        }), (guiHandler, player, s, args) -> {
             int waterLvl;
             try {
                 waterLvl = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             if(waterLvl > 3){
@@ -172,7 +174,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 @Override
                 public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
                     if (event.getClick().isLeftClick()) {
-                        openChat(guiHandler, "$msg.gui.none.recipe_creator.cauldron.mythicMob", (guiHandler1, player1, s, args) -> {
+                        openChat("mythicMob", guiHandler, (guiHandler1, player1, s, args) -> {
                             if (args.length > 1) {
                                 CauldronConfig config = CustomCrafting.getPlayerCache(player).getCauldronConfig();
                                 MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(args[0]);
@@ -233,7 +235,6 @@ public class CauldronCreator extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("dropItems")).setState(event.getGuiHandler(), cauldronConfig.dropItems());
 
             event.setButton(11, "cauldron.container_0");
-
             event.setButton(13, "cookingTime");
 
             event.setButton(19, "water");
@@ -247,7 +248,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
             event.setButton(34, "dropItems");
 
             if(!cache.getCauldronConfig().dropItems()){
-                event.setButton(35, "handItem_container");
+                event.setButton(33, "handItem_container");
             }
             if (WolfyUtilities.hasMythicMobs()){
                 event.setButton(13, "mythicMob");

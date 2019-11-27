@@ -26,7 +26,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 public class AnvilCreator extends ExtendedGuiWindow {
 
@@ -40,10 +39,10 @@ public class AnvilCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat(guiHandler, "$msg.gui.none.recipe_creator.save.input$", (guiHandler1, player1, s, args) -> {
+                openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
                     AnvilConfig anvilConfig = cache1.getAnvilConfig();
                     if (args.length > 1) {
@@ -53,10 +52,10 @@ public class AnvilCreator extends ExtendedGuiWindow {
                         try {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
-                                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.loading.success$");
+                                api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.error_loading$", new String[]{"%REC%", anvilConfig.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", anvilConfig.getId()});
                             ex.printStackTrace();
                             return false;
                         }
@@ -65,7 +64,7 @@ public class AnvilCreator extends ExtendedGuiWindow {
                     return false;
                 });
             } else {
-                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.empty$");
+                api.sendPlayerMessage(player, "recipe_creator", "save.empty");
             }
             return false;
         })));
@@ -178,23 +177,23 @@ public class AnvilCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("anvil.repair_cost", new ButtonState("anvil.repair_cost", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%VAR%", CustomCrafting.getPlayerCache(player).getAnvilConfig().getRepairCost());
             return itemStack;
-        }), "$msg.gui.none.recipe_creator.anvil.repair_cost$", (guiHandler, player, s, args) -> {
+        }), (guiHandler, player, s, args) -> {
             int repairCost;
             try {
                 repairCost = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getAnvilConfig().setRepairCost(repairCost);
             return false;
         }));
-        registerButton(new ChatInputButton("anvil.durability", new ButtonState("anvil.durability", Material.IRON_SWORD), "$msg.gui.none.recipe_creator.anvil.durability$", (guiHandler, player, s, args) -> {
+        registerButton(new ChatInputButton("anvil.durability", new ButtonState("anvil.durability", Material.IRON_SWORD), (guiHandler, player, s, args) -> {
             int durability;
             try {
                 durability = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.valid_number$");
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             CustomCrafting.getPlayerCache(player).getAnvilConfig().setDurability(durability);

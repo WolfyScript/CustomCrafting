@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
@@ -30,7 +31,7 @@ public class CraftingIngredientButton extends ItemInputButton {
                 CraftConfig workbench = cache.getCraftConfig();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
-                    if ((workbench instanceof EliteCraftConfig && recipeSlot == 36) || (!(workbench instanceof EliteCraftConfig) && recipeSlot == 9)) {
+                    if ((workbench instanceof EliteCraftConfig && recipeSlot == 36) || ((workbench instanceof AdvancedCraftConfig) && recipeSlot == 9)) {
                         if (workbench.getResult() != null) {
                             variants = workbench.getResult();
                         }
@@ -47,7 +48,7 @@ public class CraftingIngredientButton extends ItemInputButton {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             customItem = CustomItem.getByItemStack(inventory.getItem(slot));
                         }
-                        if ((workbench instanceof EliteCraftConfig && recipeSlot == 36) || (!(workbench instanceof EliteCraftConfig) && recipeSlot == 9)) {
+                        if ( (workbench instanceof EliteCraftConfig && recipeSlot == 36) || ((workbench instanceof AdvancedCraftConfig) && recipeSlot == 9)) {
                             workbench.setResult(0, customItem);
                         } else {
                             workbench.setIngredient(recipeSlot, 0, customItem);

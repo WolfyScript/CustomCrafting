@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.Items;
+import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 public class ChatUtils {
 
@@ -140,14 +141,14 @@ public class ChatUtils {
         api.sendPlayerMessage(player, "-----------------[&cRemove Modifier&7]-----------------");
         api.sendPlayerMessage(player, "");
         if (itemMeta.hasAttributeModifiers()) {
-            Collection<AttributeModifier> modifiers = itemMeta.getAttributeModifiers(Attribute.valueOf(cache.getSubSetting()));
+            Collection<AttributeModifier> modifiers = itemMeta.getAttributeModifiers(Attribute.valueOf(cache.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)));
             if (modifiers != null) {
                 api.sendPlayerMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
                 api.sendPlayerMessage(player, "");
                 for (AttributeModifier modifier : modifiers) {
                     api.sendActionMessage(player,
                             new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
-                                itemMeta.removeAttributeModifier(Attribute.valueOf(CustomCrafting.getPlayerCache(player1).getSubSetting()), modifier);
+                                itemMeta.removeAttributeModifier(Attribute.valueOf(CustomCrafting.getPlayerCache(player1).getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)), modifier);
                                 CustomCrafting.getPlayerCache(player).getItems().getItem().setItemMeta(itemMeta);
                                 sendAttributeModifierManager(player1);
                             }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§c" + modifier.getName())),

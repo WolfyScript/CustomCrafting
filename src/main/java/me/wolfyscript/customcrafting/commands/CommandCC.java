@@ -224,7 +224,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
 
     public void openGUI(Player p, InventoryAPI invAPI) {
         if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio", false)) {
-            if (!invAPI.getGuiHandler(p).getCurrentGuiCluster().isEmpty() && !invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("recipe_book")) {
+            if (!invAPI.getGuiHandler(p).getCurrentGuiCluster().isEmpty() && !invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("recipe_book") && !invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("crafting")) {
                 invAPI.getGuiHandler(p).openCluster();
             } else {
                 invAPI.openCluster(p, "none");

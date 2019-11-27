@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -21,6 +22,8 @@ import java.util.List;
 
 public class StonecutterContainerButton extends ItemInputButton {
 
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getStonecutterConfig().setResult(items.getItem());
+
     public StonecutterContainerButton(int inputSlot) {
         super("stonecutter.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
@@ -32,7 +35,8 @@ public class StonecutterContainerButton extends ItemInputButton {
                     if (event.isRightClick() && event.isShiftClick()) {
                         Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                             if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                                CustomCrafting.getPlayerCache(player).getItems().setItem("single", inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
+                                CustomCrafting.getPlayerCache(player).getItems().setItem(true, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
+                                cache.setApplyItem(APPLY_ITEM);
                                 guiHandler.changeToInv("item_editor");
                             }
                         });

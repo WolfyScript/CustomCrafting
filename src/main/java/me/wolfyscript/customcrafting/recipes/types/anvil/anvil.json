@@ -1,1 +1,16 @@
-{}
+{
+  "permissions": false,
+  "priority": "NORMAL",
+  "mode": {
+    "usedMode": "DURABILITY",
+    "durability": 1
+  },
+  "repair_cost": {
+    "amount": 0,
+    "apply_to_result": true,
+    "mode": "NONE"
+  },
+  "block_repairing": false,
+  "block_rename": false,
+  "block_enchant": false
+}
