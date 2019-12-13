@@ -36,18 +36,18 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.lockdown")) {
                             CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
                             if (CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                                api.sendPlayerMessage(p, "$msg.commands.lockdown.enabled$");
+                                api.sendPlayerMessage(p, "$commands.lockdown.enabled$");
                             } else {
-                                api.sendPlayerMessage(p, "$msg.commands.lockdown.disabled$");
+                                api.sendPlayerMessage(p, "$commands.lockdown.disabled$");
                             }
                         }
                         break;
                     case "darkmode":
                         CustomCrafting.getPlayerCache(p).setDarkMode(!CustomCrafting.getPlayerCache(p).getDarkMode());
                         if(CustomCrafting.getPlayerCache(p).getDarkMode()){
-                            api.sendPlayerMessage(p, "$msg.commands.darkmode.enabled$");
+                            api.sendPlayerMessage(p, "$commands.darkmode.enabled$");
                         }else{
-                            api.sendPlayerMessage(p, "$msg.commands.darkmode.disabled$");
+                            api.sendPlayerMessage(p, "$commands.darkmode.disabled$");
                         }
                         break;
                     case "studio":

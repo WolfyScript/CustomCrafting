@@ -19,11 +19,10 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.ItemCategory;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
+import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
 import org.bukkit.Material;
 
 public class InventoryHandler {
@@ -70,11 +69,29 @@ public class InventoryHandler {
         mainCluster.setMainmenu("main_menu");
 
         mainCluster.registerButton(new ActionButton("patreon", new ButtonState("main_menu", "patreon", WolfyUtilities.getSkullViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Patreon&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")));
+            api.openBook(player, false,
+                    new ClickData[]{
+                            new ClickData("&c&l      Patreon\n", null),
+                            new ClickData("&8Special thanks to my \n&8Patron\n", null),
+                            new ClickData("&3&lApprehentice\n", null),
+                            new ClickData("\n\n", null),
+                            new ClickData("&8Also special thanks to &8the &8&lCommunity &8and &8&lDonators &8for &8supporting my &8projects!\n", null),
+                            new ClickData("\n", null),
+                            new ClickData("\n&8[&cBecome a Patron&8]", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript"))
+                    },
+                    new ClickData[]{
+                            new ClickData("   &ka&8&lSocialmedia&ka\n", null),
+                            new ClickData("&8Support me on other Socialmedia.\n\n", null),
+                            new ClickData("&5&lInstagram\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto §5Instagram"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/_gunnar.h_/")),
+                            new ClickData("&4&lYouTube\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto §4YouTube"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g")),
+                            new ClickData("\n&8Join the Community on &8the Discord Server", null),
+                            new ClickData("\n&9&lDiscord Invatation", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Get Invite Link"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr"))
+                    }
+            );
             return true;
         })), invAPI.getWolfyUtilities());
         mainCluster.registerButton(new ActionButton("instagram", new ButtonState("main_menu", "instagram", WolfyUtilities.getSkullViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/wolfyscript/")));
+            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/_gunnar.h_/")));
             return true;
         })), invAPI.getWolfyUtilities());
         mainCluster.registerButton(new ActionButton("youtube", new ButtonState("main_menu", "youtube", WolfyUtilities.getSkullViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -82,7 +99,7 @@ public class InventoryHandler {
             return true;
         })), invAPI.getWolfyUtilities());
         mainCluster.registerButton(new ActionButton("discord", new ButtonState("main_menu", "discord", WolfyUtilities.getSkullViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            api.sendActionMessage(player, new ClickData("&7[&3Click here to join Discord&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/2jcN4vF")));
+            api.sendActionMessage(player, new ClickData("&7[&3Click here to join Discord&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr")));
             return true;
         })), invAPI.getWolfyUtilities());
 
@@ -119,9 +136,9 @@ public class InventoryHandler {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
-            if(eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()){
+            if (eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()) {
                 knowledgeBook.setSetting(Setting.WORKBENCH);
-            }else{
+            } else {
                 knowledgeBook.setSetting(Setting.ELITE_WORKBENCH);
             }
             guiHandler.changeToInv("crafting_recipe_book");

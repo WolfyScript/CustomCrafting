@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting;
 
+import com.google.gson.*;
 import com.sun.istack.internal.Nullable;
-import com.sun.javafx.geom.Vec2d;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
@@ -15,13 +15,17 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
+import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.crafting.CraftListener;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.utils.GsonUtil;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
+import me.wolfyscript.utilities.main.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -33,17 +37,14 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class CustomCrafting extends JavaPlugin {
 
     /*
-    « 0171
-    » 0187
+    « 174
+    » 175
      */
 
     private static Plugin instance;
@@ -67,6 +68,8 @@ public class CustomCrafting extends JavaPlugin {
     @Override
     public void onLoad() {
         CustomItem.registerCustomData(new EliteWorkbenchData());
+        GsonBuilder gsonBuilder = GsonUtil.getGsonBuilder();
+        gsonBuilder.registerTypeHierarchyAdapter(Conditions.class, new Conditions.Serialization());
     }
 
     public void onEnable() {
@@ -81,8 +84,8 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
         System.out.println("    v" + instance.getDescription().getVersion() + (betaVersion ? "-beta" : ""));
         System.out.println(" ");
-        if (betaVersion || currentVersion.contains("-indev") || currentVersion.contains("-dev")) {
-            System.out.println("This is a dev build! It may contain bugs and game breaking glitches!");
+        if (betaVersion || currentVersion.contains("-dev") || currentVersion.contains("-pre")) {
+            System.out.println("This is a unstable build! It may contain bugs and game breaking glitches!");
             System.out.println("Do not use this version on production servers!");
         }
         System.out.println("------------------------------------------------------------------------");
@@ -119,13 +122,14 @@ public class CustomCrafting extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new EnchantListener(), this);
             getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
             getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
+
             CommandCC commandCC = new CommandCC();
-            if (configHandler.getConfig().isCCenabled()) {
-                getCommand("cc").setExecutor(commandCC);
-                getCommand("cc").setTabCompleter(commandCC);
+            PluginCommand command = getServer().getPluginCommand("customcrafting");
+            if (!configHandler.getConfig().isCCenabled()) {
+                command.setAliases(new ArrayList<>());
             }
-            getCommand("customcrafting").setExecutor(commandCC);
-            getCommand("customcrafting").setTabCompleter(commandCC);
+            command.setExecutor(commandCC);
+            command.setTabCompleter(commandCC);
             getCommand("recipes").setExecutor(new CommandRecipe());
             getCommand("recipes").setTabCompleter(new CommandRecipe());
             loadPlayerCache();
@@ -137,6 +141,11 @@ public class CustomCrafting extends JavaPlugin {
                 api.sendConsoleMessage("$msg.startup.placeholder$");
                 new PlaceHolder().register();
             }
+            if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
+                api.sendConsoleMessage("$msg.startup.mythicmobs.detected$");
+                api.sendConsoleMessage("$msg.startup.mythicmobs.register$");
+            }
+
             recipeHandler.load();
             checkUpdate(null);
             Metrics metrics = new Metrics(this);
@@ -174,7 +183,7 @@ public class CustomCrafting extends JavaPlugin {
                 HttpURLConnection con = (HttpURLConnection) new URL(
                         "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
                 String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-                if (!version.isEmpty() && !version.equals(currentVersion) && !currentVersion.contains("-indev") && !currentVersion.contains("-dev")) {
+                if (!version.isEmpty() && !version.equals(currentVersion) && !currentVersion.contains("-dev") && !currentVersion.contains("-pre")) {
                     outdated = true;
                     api.sendConsoleWarning("$msg.startup.outdated$");
                     if (player != null) {

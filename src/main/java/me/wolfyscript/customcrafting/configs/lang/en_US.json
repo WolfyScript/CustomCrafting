@@ -1,6 +1,6 @@
 {
   "author": "WolfyScript",
-  "version": "3.0.0",
+  "version": "5.0.0",
   "info": [
     "YouTube:",
     "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
@@ -55,47 +55,47 @@
           "msg6": "&cIf this solution doesn't work and you get error messages on startup please contact me on Discord or SpigotMC!"
         }
       }
+    }
+  },
+  "commands": {
+    "help": [
+      "",
+      "            &bMain command: &e/cc",
+      "",
+      "                &3/cc &6<label>",
+      "  &6help     &7-  &3Displays list of commands",
+      "  &6clear    &7-  &3Resets Player cache",
+      "  &6info      &7-  &3Displays info about this plugin",
+      "  &6studio    &7-  &3Opens the GUI Studio",
+      "  &6give     &7-  &3Gives custom items to players"
+    ],
+    "info": "&3type &6\"/cc help\" &3for help!",
+    "lockdown": {
+      "enabled": "&7[&c&lLOCKDOWN&7] &aENABLED! &cRecipes will be blocked from now on!",
+      "disabled": "&7[&c&lLOCKDOWN&7] &cDISABLED! &cRecipes will no longer be blocked!"
     },
-    "commands": {
-      "help": [
-        "",
-        "            &bMain command: &e/cc",
-        "",
-        "                &3/cc &6<label>",
-        "  &6help     &7-  &3Displays list of commands",
-        "  &6clear    &7-  &3Resets Player cache",
-        "  &6info      &7-  &3Displays info about this plugin",
-        "  &6studio    &7-  &3Opens the GUI Studio",
-        "  &6give     &7-  &3Gives custom items to players"
-      ],
-      "info": "&3type &6\"/cc help\" &3for help!",
-      "lockdown": {
-        "enabled": "&7[&c&lLOCKDOWN&7] &aENABLED! &cRecipes will be blocked from now on!",
-        "disabled": "&7[&c&lLOCKDOWN&7] &cDISABLED! &cRecipes will no longer be blocked!"
+    "darkmode": {
+      "enabled": "&aEnabled Dark Mode for the GUIs!",
+      "disabled": "&cDisabled Dar Mode for the GUIs!"
+    },
+    "give": {
+      "player_offline": "&cThe player &4%PLAYER% &cis not online!",
+      "invalid_amount": "&cInvalid amount! Is it a number?",
+      "success": "&aGave &e%ITEM%&a to &e%PLAYER%",
+      "success_amount": "&aGave &e%AMOUNT%x %ITEM%&a to &e%PLAYER%",
+      "no_inv_space": "&cNo space in Inventory!",
+      "invalid_item": "&cThe item &4%ITEM%&c does not exist!"
+    },
+    "recipes": {
+      "toggle": {
+        "enabled": "",
+        "disabled": ""
       },
-      "darkmode": {
-        "enabled": "&aEnabled Dark Mode for the GUIs!",
-        "disabled": "&cDisabled Dar Mode for the GUIs!"
+      "edit": {
+        "invalid": ""
       },
-      "give": {
-        "player_offline": "&cThe player &4%PLAYER% &cis not online!",
-        "invalid_amount": "&cInvalid amount! Is it a number?",
-        "success": "&aGave &e%ITEM%&a to &e%PLAYER%",
-        "success_amount": "&aGave &e%AMOUNT%x %ITEM%&a to &e%PLAYER%",
-        "no_inv_space": "&cNo space in Inventory!",
-        "invalid_item": "&cThe item &4%ITEM%&c does not exist!"
-      },
-      "recipes": {
-        "toggle": {
-          "enabled": "",
-          "disabled": ""
-        },
-        "edit": {
-          "invalid": ""
-        },
-        "delete": {
-          "invalid": ""
-        }
+      "delete": {
+        "invalid": ""
       }
     }
   },
@@ -143,7 +143,8 @@
           "lore": [
             "&eDonate a bit to support the continuation of the development of my plugins.",
             "&eAs a patrons you will get credited in CustomCrafting and you can get",
-            "&eearly access to releases and access to indev-builds and more."
+            "&eearly access to releases and access to indev-builds and more.",
+            "&7[&aClick&7] View Credits and more Information"
           ]
         },
         "instagram": {
@@ -174,7 +175,7 @@
           "&7Options:",
           "&7- Click on the type of the Recipe you want to create.",
           "&7- ItemCreator bottom left or RecipeList bottom right.",
-          "&7- Got ot Settings top left."
+          "&7- Go to the Settings in the top left."
         ],
         "items": {
           "settings": {
@@ -337,6 +338,14 @@
             "disabled": "&7&l[&c&lDISABLED&7&l]",
             "enabled": "&7&l[&a&lENABLED&7&l]"
           },
+          "namespace": {
+            "name": "&7%namespace%",
+            "lore": [
+              "&7[&aClick&7] Open namespace",
+              "&7[&aShift Left Click&7] Disable all recipes",
+              "&7[&aShift Right Click&7] Enable all recipes"
+            ]
+          },
           "previous_page": {
             "name": "&2Previous Page",
             "help": []
@@ -411,6 +420,19 @@
               ]
             }
           },
+          "language": {
+            "name": "&7Language",
+            "lore": [
+              "&7&l%lang0%",
+              "&7%lang1%",
+              "&7%lang2%",
+              "&7%lang3%",
+              "&7%lang4%",
+              "&7[&aLeft Click&7] Next language",
+              "&7[&aRight Click&7] Previous language",
+              "&7[&aShift Click&7] Reload Language & GUIs"
+            ]
+          },
           "debug": {
             "enabled": {
               "name": "&aDebug",
@@ -444,7 +466,7 @@
               "line1": "&eType in the name of the folder and item!",
               "line2": "&6e.g. weapons ultimate_sword"
             },
-            "success": "&aItem saved to:"
+            "success": "&aConfig saved to:"
           },
           "enchant": {
             "invalid_lvl": "&cInvalid level! It's not a number!",
@@ -1475,7 +1497,9 @@
           "repair_cost": {
             "name": "&7Repair Cost:&6 %VAR%",
             "lore": [
-              ""
+              "&eThe Repair Cost for this recipe.",
+              "&eMust be greater than 0, else the recipe won't work!",
+              "&7[&aClick&7] Input Repair Cost"
             ],
             "message": "&3Type in the amount of repair_cost. &cMust be greater than 0!"
           },
@@ -1529,10 +1553,11 @@
             "name": "&7RepairCost mode: &3%VAR%",
             "lore": [
               "&eThe mode how the repaircost should be ",
-              "&eaffected by the input left!",
+              "&eaffected by the left input!",
               "&3NONE &7- Not affected at all",
               "&3ADD &7- Gets added to recipe repaircost!",
-              "&3MULTIPLY &7- Gets multiplied with recipe repaircost"
+              "&3MULTIPLY &7- Gets multiplied with recipe repaircost",
+              "&7[&aClick&7] Toggle Mode"
             ]
           }
         }
@@ -1557,7 +1582,7 @@
               "lore": [
                 "&eItems stay in the cauldron when recipe is done.",
                 "&ePlayer right click replaces the item in their hand.",
-                "&e«« Set the required item for the player to hold on right click!",
+                "&e« Set the required item for the player to hold on right click!",
                 "     &eLeave blank to require empty hand!",
                 "&7[&aClick&7] toggle to drop items"
               ]
@@ -1652,6 +1677,9 @@
       "main_menu": {
         "gui_name": "&8&lRecipe knowledge Book",
         "items": {
+          "elite_workbench": {
+            "name": "&6Elite Workbench Recipes"
+          },
           "workbench": {
             "name": "&6Workbench Recipes",
             "help": []
