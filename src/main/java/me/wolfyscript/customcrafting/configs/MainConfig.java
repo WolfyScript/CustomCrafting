@@ -16,6 +16,14 @@ public class MainConfig extends Config {
     public void init() {
     }
 
+    public String getLanguage(){
+        return getString("language");
+    }
+
+    public void setlanguage(String lang){
+        set("language", lang);
+    }
+
     public boolean isExperimentalFeatures() {
         return getBoolean("experimental_features");
     }
