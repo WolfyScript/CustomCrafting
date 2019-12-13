@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
@@ -30,6 +31,9 @@ public class ItemEditor extends ExtendedGuiWindow {
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openPreviousInv();
+            if(!CustomCrafting.getPlayerCache(player).getSetting().equals(Setting.ITEMS)){
+                guiHandler.openCluster("recipe_creator");
+            }
             return true;
         })));
         registerButton(new ActionButton("load_item", new ButtonState("load_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -49,7 +53,11 @@ public class ItemEditor extends ExtendedGuiWindow {
                     if (items.isRecipeItem()) {
                         cache.applyItem(customItem);
                         sendMessage(player1, "item_applied");
-                        guiHandler.openPreviousInv();
+                        if(!cache.getSetting().equals(Setting.ITEMS)){
+                            guiHandler.openCluster("recipe_creator");
+                        }else{
+                            guiHandler.openPreviousInv();
+                        }
                         return false;
                     }
                     if (InventoryUtils.hasInventorySpace(player1, customItem)) {

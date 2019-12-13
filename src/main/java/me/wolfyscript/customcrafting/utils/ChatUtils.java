@@ -46,18 +46,24 @@ public class ChatUtils {
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }
+        api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
+        api.sendPlayerMessage(player, "&7----------------------------------------------------------");
         api.sendActionMessage(player, new ClickData("§7[§c-§7]", (wolfyUtilities1, p) -> {
             for (int i = 0; i < 20; i++) {
                 player.sendMessage(" ");
             }
+            api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()));
             api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-            api.sendPlayerMessage(player, "$msg.gui.none.recipe_editor.input$");
+            api.sendPlayerMessage(player, "none", "recipe_editor","input");
         }, true), new ClickData(" Recipes:", null));
 
         ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
         switch (cache.getSetting()) {
             case WORKBENCH:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes());
+                break;
+            case ELITE_WORKBENCH:
+                customRecipes.addAll(CustomCrafting.getRecipeHandler().getEliteCraftingRecipes());
                 break;
             case FURNACE:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getFurnaceRecipes());
@@ -77,6 +83,8 @@ public class ChatUtils {
             case CAMPFIRE:
                 customRecipes.addAll(CustomCrafting.getRecipeHandler().getCampfireRecipes());
                 break;
+            case CAULDRON:
+                customRecipes.addAll(CustomCrafting.getRecipeHandler().getCauldronRecipes());
         }
 
         int currentPage = cache.getChatLists().getCurrentPageRecipes();
@@ -98,7 +106,7 @@ public class ChatUtils {
             }
             sendRecipeListExpanded(p);
         }));
-        api.sendPlayerMessage(player, "$msg.gui.none.recipe_editor.input$");
+        api.sendPlayerMessage(player, "none", "recipe_editor", "input");
     }
 
     public static void sendLoreManager(Player player) {

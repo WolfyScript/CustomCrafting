@@ -33,8 +33,9 @@ public class RecipeEditor extends ExtendedGuiWindow {
         })));
         registerButton(new ActionButton("edit_recipe", new ButtonState("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageRecipes(1);
+            api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
+            api.sendPlayerMessage(player, "&7----------------------------------------------------------");
             api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> ChatUtils.sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-
             openChat("input", guiHandler, (guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
@@ -52,6 +53,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
         })));
         registerButton(new ActionButton("delete_recipe", new ButtonState("delete_recipe", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageRecipes(1);
+            api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
+            api.sendPlayerMessage(player, "&7----------------------------------------------------------");
             api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> ChatUtils.sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
             openChat("input", guiHandler, (guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
@@ -72,9 +75,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                             }
                         }
                         guiHandler1.openCluster();
-                    })), new ClickData("$msg.gui.none.recipe_editor.delete.declined$", (wolfyUtilities, player2) -> {
-                        guiHandler1.openCluster();
-                    }));
+                    })), new ClickData("$msg.gui.none.recipe_editor.delete.declined$", (wolfyUtilities, player2) -> guiHandler1.openCluster()));
                     guiHandler1.cancelChatEvent();
                     return true;
                 }
