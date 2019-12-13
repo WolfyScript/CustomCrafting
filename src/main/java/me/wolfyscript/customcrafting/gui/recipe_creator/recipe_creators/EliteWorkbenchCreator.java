@@ -138,6 +138,13 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorVertical(true);
             return true;
         })));
+        registerButton(new ToggleButton("workbench.mirrorRotation", false, new ButtonState("recipe_creator","workbench.mirrorRotation.enabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorRotation(false);
+            return true;
+        }), new ButtonState("recipe_creator","workbench.mirrorRotation.disabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorRotation(true);
+            return true;
+        })));
     }
 
     @EventHandler
@@ -151,6 +158,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), workbench.isExactMeta());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(event.getGuiHandler(), workbench.mirrorHorizontal());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorVertical")).setState(event.getGuiHandler(), workbench.mirrorVertical());
+            ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorRotation")).setState(event.getGuiHandler(), workbench.mirrorRotation());
             int slot;
             for (int i = 0; i < 36; i++) {
                 slot = i + (i / 6) * 3;
@@ -161,6 +169,9 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
 
             event.setButton(42, "workbench.mirrorHorizontal");
             event.setButton(43, "workbench.mirrorVertical");
+            if(workbench.mirrorHorizontal() && workbench.mirrorVertical()){
+                event.setButton(33, "workbench.mirrorRotation");
+            }
             event.setButton(44, "recipe_creator", "conditions");
 
             event.setButton(51, "exact_meta");

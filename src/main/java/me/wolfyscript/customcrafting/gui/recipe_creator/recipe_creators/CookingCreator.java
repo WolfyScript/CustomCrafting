@@ -20,12 +20,9 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-
-import java.util.Locale;
 
 public class CookingCreator extends ExtendedGuiWindow {
 
@@ -39,7 +36,7 @@ public class CookingCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
                 openChat("save.input", guiHandler, (guiHandler1, player1, s, args) -> {
@@ -69,10 +66,10 @@ public class CookingCreator extends ExtendedGuiWindow {
                                 CustomRecipe finalCustomRecipe = customRecipe;
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
                             } else {
-                                api.sendPlayerMessage(player, "recipe_creator","error_loading", new String[]{"%REC%", cookingConfig.getId()});
+                                api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator","error_loading", new String[]{"%REC%", cookingConfig.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
                             ex.printStackTrace();
                             return false;
                         }
@@ -83,7 +80,7 @@ public class CookingCreator extends ExtendedGuiWindow {
                     return false;
                 });
             } else {
-                api.sendPlayerMessage(player, "recipe_creator","save.empty");
+                api.sendPlayerMessage(player, "recipe_creator", "save.empty");
             }
             return false;
         })));
@@ -126,22 +123,15 @@ public class CookingCreator extends ExtendedGuiWindow {
         if (event.verify(this)) {
             event.setButton(0, "back");
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
-            switch (cache.getSetting()) {
-                case BLAST_FURNACE:
-                case SMOKER:
-                case CAMPFIRE:
-                case FURNACE:
-                    event.setButton(20, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-                    event.setButton(11, "cooking.container_0");
-                    event.setButton(24, "cooking.container_1");
-                    event.setButton(10, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-                    event.setButton(12, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-                    event.setButton(22, "xp");
-                    event.setButton(29, "cooking_time");
-                    event.setButton(44, "save");
-                    break;
-            }
-
+            event.setButton(2, "recipe_creator", "conditions");
+            event.setButton(20, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(11, "cooking.container_0");
+            event.setButton(24, "cooking.container_1");
+            event.setButton(10, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(12, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(22, "xp");
+            event.setButton(29, "cooking_time");
+            event.setButton(44, "save");
         }
     }
 

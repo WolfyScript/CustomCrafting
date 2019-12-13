@@ -13,6 +13,7 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
 
     String[] getShapeMirrorHorizontal();
     String[] getShapeMirrorVertical();
+    String[] getShapeRotated();
     String[] getShape();
 
     @Override
@@ -23,6 +24,8 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
     boolean mirrorHorizontal();
 
     boolean mirrorVertical();
+
+    boolean mirrorRotate();
 
     @Override
     default CraftingData check(List<List<ItemStack>> matrix) {
@@ -38,6 +41,12 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
         }
         if(mirrorVertical()){
             craftingData = checkShape(matrix, getShapeMirrorVertical());
+            if(craftingData != null){
+                return craftingData;
+            }
+        }
+        if(mirrorHorizontal() && mirrorVertical() && mirrorRotate()){
+            craftingData = checkShape(matrix, getShapeRotated());
             if(craftingData != null){
                 return craftingData;
             }

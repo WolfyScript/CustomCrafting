@@ -141,6 +141,13 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             CustomCrafting.getPlayerCache(player).getAdvancedCraftConfig().setMirrorVertical(true);
             return true;
         })));
+        registerButton(new ToggleButton("workbench.mirrorRotation", false, new ButtonState("recipe_creator","workbench.mirrorRotation.enabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getAdvancedCraftConfig().setMirrorRotation(false);
+            return true;
+        }), new ButtonState("recipe_creator","workbench.mirrorRotation.disabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getAdvancedCraftConfig().setMirrorRotation(true);
+            return true;
+        })));
     }
 
     @EventHandler
@@ -153,6 +160,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), workbench.isExactMeta());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(event.getGuiHandler(), workbench.mirrorHorizontal());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorVertical")).setState(event.getGuiHandler(), workbench.mirrorVertical());
+            ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorRotation")).setState(event.getGuiHandler(), workbench.mirrorRotation());
             int slot;
             for (int i = 0; i < 9; i++) {
                 slot = 10 + i + (i / 3) * 6;
@@ -162,6 +170,9 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             event.setButton(24, "crafting.container_9");
             event.setButton(38, "workbench.mirrorHorizontal");
             event.setButton(39, "workbench.mirrorVertical");
+            if(workbench.mirrorHorizontal() && workbench.mirrorVertical()){
+                event.setButton(37, "workbench.mirrorRotation");
+            }
             event.setButton(40, "recipe_creator", "conditions");
             event.setButton(41, "exact_meta");
             event.setButton(42, "priority");

@@ -6,8 +6,8 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements ShapedCraftingRecipe<EliteCraftConfig> {
 
-    private String[] shape, shapeMirrorHorizontal, shapeMirrorVertical;
-    private boolean mirrorHorizontal, mirrorVertical;
+    private String[] shape, shapeMirrorHorizontal, shapeMirrorVertical, shapeRotated;
+    private boolean mirrorHorizontal, mirrorVertical, mirrorRotation;
 
     public ShapedEliteCraftRecipe(EliteCraftConfig config) {
         super(config);
@@ -23,8 +23,13 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements Shape
         for(int i = 0; i < this.shapeMirrorHorizontal.length; i++){
             this.shapeMirrorHorizontal[i] = new StringBuilder(this.shapeMirrorHorizontal[i]).reverse().toString();
         }
+        this.shapeRotated = this.shapeMirrorVertical.clone();
+        for(int i = 0; i < this.shapeRotated.length; i++){
+            this.shapeRotated[i] = new StringBuilder(this.shapeRotated[i]).reverse().toString();
+        }
         this.mirrorHorizontal = config.mirrorHorizontal();
         this.mirrorVertical = config.mirrorVertical();
+        this.mirrorRotation = config.mirrorRotation();
     }
 
     @Override
@@ -41,7 +46,6 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements Shape
         return null;
     }
 
-
     @Override
     public String[] getShapeMirrorHorizontal() {
         return shapeMirrorHorizontal;
@@ -50,6 +54,11 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements Shape
     @Override
     public String[] getShapeMirrorVertical() {
         return shapeMirrorVertical;
+    }
+
+    @Override
+    public String[] getShapeRotated() {
+        return shapeRotated;
     }
 
     @Override
@@ -65,5 +74,10 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements Shape
     @Override
     public boolean mirrorVertical() {
         return mirrorVertical;
+    }
+
+    @Override
+    public boolean mirrorRotate() {
+        return mirrorRotation;
     }
 }

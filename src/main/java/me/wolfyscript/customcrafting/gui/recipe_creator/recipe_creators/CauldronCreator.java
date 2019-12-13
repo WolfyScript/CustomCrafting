@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CauldronContainerButton;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -68,6 +69,37 @@ public class CauldronCreator extends ExtendedGuiWindow {
             }
             return false;
         })));
+        registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getCauldronConfig().setExactMeta(false);
+            return true;
+        }), new ButtonState("recipe_creator", "exact_meta.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getCauldronConfig().setExactMeta(true);
+            return true;
+        })));
+        registerButton(new ActionButton("priority", new ButtonState("recipe_creator","priority", WolfyUtilities.getSkullViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d"), new ButtonActionRender() {
+            @Override
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
+                RecipePriority priority = CustomCrafting.getPlayerCache(player).getCauldronConfig().getPriority();
+                int order;
+                order = priority.getOrder();
+                if (order < 2) {
+                    order++;
+                } else {
+                    order = -2;
+                }
+                CustomCrafting.getPlayerCache(player).getCauldronConfig().setPriority(RecipePriority.getByOrder(order));
+                return true;
+            }
+
+            @Override
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
+                RecipePriority priority = CustomCrafting.getPlayerCache(player).getCauldronConfig().getPriority();
+                if (priority != null) {
+                    hashMap.put("%PRI%", priority.name());
+                }
+                return itemStack;
+            }
+        })));
 
         registerButton(new DummyButton("cauldron", new ButtonState("cauldron", Material.CAULDRON)));
 
@@ -97,7 +129,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 if(customItem != null){
                     return customItem.getItemStack();
                 }
-                return new ItemStack(Material.AIR);
+                return itemStack;
             }
         })));
 
@@ -231,9 +263,12 @@ public class CauldronCreator extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             CauldronConfig cauldronConfig = cache.getCauldronConfig();
             ((ToggleButton) event.getGuiWindow().getButton("fire")).setState(event.getGuiHandler(), cauldronConfig.needsFire());
-            ((ToggleButton) event.getGuiWindow().getButton("water")).setState(event.getGuiHandler(), cauldronConfig.isWater());
+            ((ToggleButton) event.getGuiWindow().getButton("water")).setState(event.getGuiHandler(), cauldronConfig.needsWater());
             ((ToggleButton) event.getGuiWindow().getButton("dropItems")).setState(event.getGuiHandler(), cauldronConfig.dropItems());
 
+            event.setButton(2, "recipe_creator", "conditions");
+            event.setButton(4, "priority");
+            event.setButton(6, "exact_meta");
             event.setButton(11, "cauldron.container_0");
             event.setButton(13, "cookingTime");
 
