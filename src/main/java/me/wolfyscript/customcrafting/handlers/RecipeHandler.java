@@ -587,14 +587,7 @@ public class RecipeHandler {
         allRecipes.clear();
         Iterator<Recipe> iterator = Bukkit.recipeIterator();
         while (iterator.hasNext()) {
-            Recipe recipe = iterator.next();
-            if (WolfyUtilities.hasVillagePillageUpdate()) {
-                if (!(recipe instanceof CookingRecipe)) {
-                    allRecipes.add(recipe);
-                }
-            } else if (!(recipe instanceof FurnaceRecipe)) {
-                allRecipes.add(recipe);
-            }
+            allRecipes.add(iterator.next());
         }
         return allRecipes;
     }
