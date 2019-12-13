@@ -1,6 +1,6 @@
 name: CustomCrafting
 main: me.wolfyscript.customcrafting.CustomCrafting
-version: 1.5.0.0-indev
+version: 1.5.0.0-pre1
 api-version: 1.13
 
 depend:
@@ -12,10 +12,9 @@ description: Create your own custom recipes for workbenches and furnaces. Disabl
 commands:
   customcrafting:
     usage: /customcrafting <label>
+    aliases:
+      - cc
     description: Main command
-  cc:
-    usage: /cc <label>
-    description: Main Command alternativ
   recipes:
     usage: /recipes <label>
     description: Command to quick edit, delete, toggle recipes
