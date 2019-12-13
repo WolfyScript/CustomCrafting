@@ -1,5 +1,9 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -11,6 +15,7 @@ import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class EliteWorkbenchCondition extends Condition {
@@ -45,6 +50,28 @@ public class EliteWorkbenchCondition extends Condition {
         return true;
     }
 
+    @Override
+    public JsonElement toJsonElement() {
+        JsonObject jsonObject = (JsonObject) super.toJsonElement();
+        JsonArray jsonArray = new JsonArray();
+        eliteWorkbenches.forEach(s -> jsonArray.add(s));
+        jsonObject.add("elite_workbenches", jsonArray);
+        return jsonObject;
+    }
+
+    @Override
+    public void fromJsonElement(JsonElement jsonElement) {
+        JsonObject jsonObject = (JsonObject) jsonElement;
+        JsonArray jsonArray = jsonObject.getAsJsonArray("elite_workbenches");
+        Iterator<JsonElement> iterator = jsonArray.iterator();
+        while (iterator.hasNext()){
+            JsonElement element = iterator.next();
+            if(element instanceof JsonPrimitive){
+                addEliteWorkbenches(element.getAsString());
+            }
+        }
+    }
+
     public void addEliteWorkbenches(String eliteWorkbenches) {
         if (!this.eliteWorkbenches.contains(eliteWorkbenches)) {
             this.eliteWorkbenches.add(eliteWorkbenches);
@@ -63,14 +90,5 @@ public class EliteWorkbenchCondition extends Condition {
             stringBuilder.append(eliteWorkbench).append(",");
         }
         return stringBuilder.toString();
-    }
-
-    @Override
-    public void fromString(String value) {
-        String[] args = value.split(";");
-        this.option = Conditions.Option.valueOf(args[0]);
-        if (args.length > 1 && args[1].contains(",")) {
-            this.eliteWorkbenches = Arrays.asList(args[1].split(","));
-        }
     }
 }

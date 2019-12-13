@@ -1,5 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -37,14 +39,15 @@ public class WorldTimeCondition extends Condition {
     }
 
     @Override
-    public String toString() {
-        return option.toString() + ";" + time;
+    public JsonElement toJsonElement() {
+        JsonObject jsonObject = (JsonObject) super.toJsonElement();
+        jsonObject.addProperty("time", time);
+        return jsonObject;
     }
 
     @Override
-    public void fromString(String value) {
-        this.option = Conditions.Option.valueOf(value.split(";")[0]);
-        this.time = Long.parseLong(value.split(";")[1]);
+    public void fromJsonElement(JsonElement jsonElement) {
+        this.time = ((JsonObject)jsonElement).getAsJsonPrimitive("time").getAsInt();
     }
 
     public void setTime(long time) {

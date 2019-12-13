@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.google.gson.JsonElement;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -28,5 +29,10 @@ public class AdvancedWorkbenchCondition extends Condition {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void fromJsonElement(JsonElement jsonElement) {
+        //Not NECESSARY!
     }
 }

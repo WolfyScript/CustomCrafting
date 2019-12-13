@@ -1,5 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -57,17 +59,19 @@ public class WeatherCondition extends Condition {
     }
 
     @Override
-    public String toString() {
-        return option.toString() + ";" + weather.toString();
+    public void fromJsonElement(JsonElement jsonElement) {
+        try {
+            this.weather = Weather.valueOf(((JsonObject)jsonElement).getAsJsonPrimitive("weather").getAsString());
+        }catch (IllegalArgumentException ex){
+            //EMPTY CATCH
+        }
     }
 
     @Override
-    public void fromString(String value) {
-        String[] args = value.split(";");
-        this.option = Conditions.Option.valueOf(args[0]);
-        if (args.length > 1) {
-            this.weather = Weather.valueOf(args[1]);
-        }
+    public JsonElement toJsonElement() {
+        JsonObject jsonObject = (JsonObject) super.toJsonElement();
+        jsonObject.addProperty("weather", weather.toString());
+        return jsonObject;
     }
 
     public enum Weather {

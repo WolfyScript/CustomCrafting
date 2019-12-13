@@ -1,8 +1,9 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -14,7 +15,7 @@ public class PermissionCondition extends Condition {
 
     public PermissionCondition() {
         super("permission");
-        setOption(Conditions.Option.EXACT);
+        setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
     }
 
@@ -28,30 +29,26 @@ public class PermissionCondition extends Condition {
 
     @Override
     public boolean check(CustomRecipe recipe, Conditions.Data data) {
-        if (recipe instanceof CustomCookingRecipe) {
+        if (recipe instanceof CustomCookingRecipe && data.getPlayer() == null) {
             return true;
-        } else if (recipe instanceof CraftingRecipe) {
-            Player player = data.getPlayer();
-            if (option.equals(Conditions.Option.IGNORE)) {
-                return true;
-            }
-            String permissionString = permission.replace("&namespace&", recipe.getId().split(":")[0]).replace("%recipe_name%", recipe.getId().split(":")[1]);
-            return WolfyUtilities.hasPermission(player, permissionString);
         }
-        return true;
+        Player player = data.getPlayer();
+        if (option.equals(Conditions.Option.IGNORE)) {
+            return true;
+        }
+        String permissionString = permission.replace("&namespace&", recipe.getId().split(":")[0]).replace("%recipe_name%", recipe.getId().split(":")[1]);
+        return WolfyUtilities.hasPermission(player, permissionString);
     }
 
     @Override
-    public String toString() {
-        return option.toString() + ";" + permission;
+    public JsonElement toJsonElement() {
+        JsonObject jsonObject = (JsonObject) super.toJsonElement();
+        jsonObject.addProperty("permission", permission);
+        return jsonObject;
     }
 
     @Override
-    public void fromString(String value) {
-        String[] args = value.split(";");
-        this.option = Conditions.Option.valueOf(args[0]);
-        if (args.length > 1) {
-            this.permission = args[1];
-        }
+    public void fromJsonElement(JsonElement jsonElement) {
+        this.permission = ((JsonObject) jsonElement).getAsJsonPrimitive("permission").getAsString();
     }
 }
