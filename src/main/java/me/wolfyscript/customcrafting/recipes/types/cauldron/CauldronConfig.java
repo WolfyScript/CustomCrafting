@@ -38,7 +38,7 @@ public class CauldronConfig extends RecipeConfig {
     }
 
     public void setHandItem(CustomItem customItem){
-        setItem("dropItems.handItem", customItem);
+        saveCustomItem("dropItems.handItem", customItem);
     }
 
     public CustomItem getHandItem(){
@@ -73,7 +73,7 @@ public class CauldronConfig extends RecipeConfig {
         set("water", noWater);
     }
 
-    public boolean isWater() {
+    public boolean needsWater() {
         return getBoolean("water");
     }
 

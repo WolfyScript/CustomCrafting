@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -15,7 +16,7 @@ public class CookingConfig extends RecipeConfig {
     }
 
     public CookingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
-        this(configAPI, folder, type, name, defaultName, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+        this(configAPI, folder, type, name, defaultName, "json");
     }
 
     public CookingConfig(String jsonData, ConfigAPI configAPI, String namespace, String key, String type, String defName) {
@@ -47,6 +48,7 @@ public class CookingConfig extends RecipeConfig {
     }
 
     public void setSource(List<CustomItem> source) {
+        set("source", new JsonObject());
         saveCustomItem("source", source.get(0));
         for (int i = 1; i < source.size(); i++) {
             saveCustomItem("source.variants.var" + i, source.get(i));
@@ -79,7 +81,7 @@ public class CookingConfig extends RecipeConfig {
         if (slot == 0) {
             setSource(ingredient);
         } else {
-            setSource(ingredient);
+            setResult(ingredient);
         }
     }
 
@@ -87,7 +89,7 @@ public class CookingConfig extends RecipeConfig {
         if (slot == 0) {
             return getSource();
         }
-        return getSource();
+        return getResult();
     }
 
     public void setIngredient(int slot, int variant, CustomItem ingredient) {

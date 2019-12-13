@@ -31,6 +31,7 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
         this.source = config.getSource();
         this.recipePriority = config.getPriority();
         this.exactMeta = config.isExactMeta();
+        this.conditions = config.getConditions();
         setGroup(config.getGroup());
     }
 

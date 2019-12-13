@@ -31,6 +31,7 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
         this.source = config.getSource();
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
+        this.conditions = config.getConditions();
         setGroup(config.getGroup());
     }
 

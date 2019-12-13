@@ -1,7 +1,7 @@
 # Crafting Recipe Config
 
 permissions: false
-advanced_workbench: true
+advanced_workbench: false
 exactItemMeta: true
 priority: "NORMAL"
 group: ""

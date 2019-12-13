@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -19,7 +20,7 @@ public class StonecutterConfig extends RecipeConfig {
     }
 
     public StonecutterConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, "yml");
+        this(configAPI, folder, name, "json");
     }
 
     public StonecutterConfig() {
@@ -27,6 +28,7 @@ public class StonecutterConfig extends RecipeConfig {
     }
 
     public void setSource(List<CustomItem> source) {
+        set("source", new JsonObject());
         saveCustomItem("source", source.get(0));
         for (int i = 1; i < source.size(); i++) {
             saveCustomItem("source.variants.var" + i, source.get(i));

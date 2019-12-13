@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -88,7 +89,7 @@ public class CraftConfig extends RecipeConfig {
     }
 
     public void setIngredients(Map<Character, List<CustomItem>> ingredients) {
-        getMap().remove("ingredients");
+        set("ingredients", new JsonObject());
         for (Map.Entry<Character, List<CustomItem>> entry : ingredients.entrySet()) {
             char key = entry.getKey();
             List<CustomItem> ingredient = entry.getValue();
@@ -149,7 +150,6 @@ public class CraftConfig extends RecipeConfig {
         }
         Map<Character, List<CustomItem>> ingredients = getIngredients();
         ingredients.put(key, ingredient);
-        System.out.println("ingred.: " + ingredients);
         setIngredients(ingredients);
     }
 
@@ -231,5 +231,13 @@ public class CraftConfig extends RecipeConfig {
 
     public void setMirrorVertical(boolean mirror) {
         set("mirror.vertical", mirror);
+    }
+
+    public void setMirrorRotation(boolean rotation) {
+        set("mirror.rotation", rotation);
+    }
+
+    public boolean mirrorRotation(){
+        return getBoolean("mirror.rotation");
     }
 }

@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -12,7 +13,7 @@ import java.util.Set;
 public class AnvilConfig extends RecipeConfig {
 
     public AnvilConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+        this(configAPI, folder, name, "json");
     }
 
     public AnvilConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
@@ -160,6 +161,7 @@ public class AnvilConfig extends RecipeConfig {
     }
 
     private void setInput(String slot, List<CustomItem> inputs) {
+        set("input_" + slot, new JsonObject());
         int variant = 0;
         for (CustomItem customItem : inputs) {
             saveCustomItem("input_" + slot + ".var" + (variant++), customItem);

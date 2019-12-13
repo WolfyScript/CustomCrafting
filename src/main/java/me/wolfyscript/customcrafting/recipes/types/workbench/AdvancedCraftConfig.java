@@ -23,7 +23,7 @@ public class AdvancedCraftConfig extends CraftConfig {
     }
 
     public AdvancedCraftConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, "craft_config", folder, name, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+        this(configAPI, "craft_config", folder, name, "json");
     }
 
     /*

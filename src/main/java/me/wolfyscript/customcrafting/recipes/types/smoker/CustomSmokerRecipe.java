@@ -31,6 +31,7 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
         this.source = config.getSource();
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
+        this.conditions = config.getConditions();
         setGroup(config.getGroup());
     }
 
