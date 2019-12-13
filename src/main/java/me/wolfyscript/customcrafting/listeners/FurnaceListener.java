@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
@@ -11,13 +13,20 @@ import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Furnace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class FurnaceListener implements Listener {
 
@@ -35,7 +44,7 @@ public class FurnaceListener implements Listener {
     public void onInvClick(InventoryClickEvent event) {
         if (event.getClickedInventory() != null && invs.contains(event.getClickedInventory().getType())) {
             FurnaceInventory furnaceInventory = (FurnaceInventory) event.getClickedInventory();
-            if (event.getSlot() == 1) {
+            if (event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
                 Material material = Material.FURNACE;
                 if (event.getWhoClicked().getTargetBlockExact(6) != null) {
                     material = event.getWhoClicked().getTargetBlockExact(6).getType();
@@ -123,44 +132,6 @@ public class FurnaceListener implements Listener {
         }
     }
 
-    /*
-    @EventHandler
-    public void onMove(InventoryMoveItemEvent event) {
-        System.out.println("MOVE "+event.isCancelled());
-        if (invs.contains(event.getDestination().getType())) {
-            Material material = Material.valueOf(event.getDestination().getType().toString());
-            ItemStack input = event.getItem();
-
-            for ( customItem : CustomItems.getCustomItems()) {
-                if (customItem.getBurnTime() > 0) {
-                    if (customItem.isSimilar(input)) {
-                        if(event.getDestination().getLocation() != null && event.getSource().getLocation() != null){
-                            Location locHopper = event.getSource().getLocation();
-                            Location locFurnace = event.getDestination().getLocation();
-                            if(!(locHopper.getBlockY() > locFurnace.getBlockY()) && !(locHopper.getBlockY() < locFurnace.getBlockY())){
-                                if (customItem.getAllowedBlocks().contains(material)) {
-                                    if(!customItem.getType().isFuel()){
-                                        ItemStack itemStack = event.getItem().clone();
-                                        if(event.getDestination().getItem(1) == null || event.getDestination().getItem(1).getType().equals(Material.AIR)){
-                                            event.setCancelled(true);
-                                            event.getDestination().setItem(1, itemStack);
-                                        }else if(customItem.isSimilar(event.getDestination().getItem(1))){
-                                            event.getDestination().getItem(1).setAmount(event.getDestination().getItem(1).getAmount()+1);
-                                            event.getSource().removeItem(itemStack);
-                                        }
-                                    }
-                                }else{
-                                    event.setCancelled(true);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    */
-
     @EventHandler
     public void onBurn(FurnaceBurnEvent event) {
         ItemStack input = event.getFuel();
@@ -183,23 +154,31 @@ public class FurnaceListener implements Listener {
         List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult());
         for (Recipe recipe : recipes) {
             if (recipe.getResult().isSimilar(event.getResult())) {
-                CustomRecipe<RecipeConfig> customRecipe = CustomCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+                if(recipe instanceof Keyed && CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())){
+                    event.setCancelled(true);
+                    continue;
+                }
+                CustomCookingRecipe<CookingConfig> customRecipe = (CustomCookingRecipe<CookingConfig>) CustomCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
                 if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
-                    RandomCollection<CustomItem> items = new RandomCollection<>();
-                    for (CustomItem customItem : customRecipe.getCustomResults()) {
-                        items.add(customItem.getRarityPercentage(), customItem);
-                    }
-                    if (!items.isEmpty()) {
-                        ItemStack item = items.next();
-                        if (!event.getResult().isSimilar(item)) {
-                            event.setResult(item);
+                    if(customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))){
+                        event.setCancelled(false);
+                        RandomCollection<CustomItem> items = new RandomCollection<>();
+                        for (CustomItem customItem : customRecipe.getCustomResults()) {
+                            items.add(customItem.getRarityPercentage(), customItem);
                         }
+                        if (!items.isEmpty()) {
+                            ItemStack item = items.next();
+                            if (!event.getResult().isSimilar(item)) {
+                                event.setResult(item);
+                            }
+                        }
+                        break;
+                    }else{
+                        event.setCancelled(true);
                     }
-                    break;
                 }
             }
         }
-
     }
 
     private boolean isRecipeValid(Material furnaceType, CustomRecipe recipe) {

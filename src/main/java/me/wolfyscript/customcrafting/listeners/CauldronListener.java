@@ -16,6 +16,7 @@ import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -79,26 +81,29 @@ public class CauldronListener implements Listener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent event){
-        if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND)){
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND)) {
             Player player = event.getPlayer();
             Block block = event.getClickedBlock();
             Cauldrons cauldrons = CustomCrafting.getCauldrons();
-            if(cauldrons.isCauldron(block.getLocation())){
-                List<Cauldron> cauldronData = cauldrons.getCauldrons().get(block.getLocation());
-                for(Cauldron cauldron : cauldronData){
-                    if (cauldron.isDone() && !cauldron.dropItems()){
+            if (cauldrons.isCauldron(block.getLocation())) {
+                Iterator<Cauldron> cauldronItr = cauldrons.getCauldrons().get(block.getLocation()).iterator();
+                while (cauldronItr.hasNext()) {
+                    Cauldron cauldron = cauldronItr.next();
+                    if (cauldron.isDone() && !cauldron.dropItems()) {
                         ItemStack handItem = event.getItem();
                         CustomItem required = cauldron.getRecipe().getHandItem();
-                        if((handItem != null && (required == null || required.getType().equals(Material.AIR)) ) || required.isSimilar(handItem, cauldron.getRecipe().isExactMeta())){
-                            handItem.setAmount(handItem.getAmount()-1);
+                        if ((handItem != null && (required == null || required.getType().equals(Material.AIR))) || required.isSimilar(handItem, cauldron.getRecipe().isExactMeta())) {
+                            event.setUseItemInHand(Event.Result.DENY);
+                            event.setUseInteractedBlock(Event.Result.DENY);
+                            handItem.setAmount(handItem.getAmount() - 1);
                             ItemStack result = cauldron.getResult().getItemStack();
-                            if(InventoryUtils.hasInventorySpace(player, result)){
+                            if (InventoryUtils.hasInventorySpace(player, result)) {
                                 player.getInventory().addItem(result);
-                            }else{
+                            } else {
                                 player.getWorld().dropItemNaturally(player.getLocation(), result);
                             }
-                            cauldrons.removeCauldron(block.getLocation(), cauldron);
+                            cauldronItr.remove();
                         }
                     }
                 }
@@ -132,7 +137,7 @@ public class CauldronListener implements Listener {
                     List<CauldronRecipe> recipes = CustomCrafting.getRecipeHandler().getCauldronRecipes();
                     for (CauldronRecipe recipe : recipes) {
                         if (cauldronEntryValue.isEmpty() || cauldronEntryValue.get(0).getRecipe().getId().equals(recipe.getId())) {
-                            if (level >= recipe.getWaterLevel() && (level == 0 || !recipe.isNoWater()) && (!recipe.needsFire() || cauldrons.isCustomCauldronLit(loc.getBlock()))) {
+                            if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || cauldrons.isCustomCauldronLit(loc.getBlock()))) {
                                 List<Item> validItems = recipe.checkRecipe(items);
                                 if (validItems != null) {
                                     //Do something with the items! e.g. consume!

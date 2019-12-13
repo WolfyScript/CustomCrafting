@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.data.cauldron;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -57,11 +56,9 @@ public class Cauldrons {
                             int level = data.getLevel();
                             if (isCustomCauldronLit(loc.getBlock())) {
                                 if (level > 0) {
-                                    world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 5, 0.15, 0.1, 0.15, 0.00000001);
-                                    world.spawnParticle(Particle.REDSTONE, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
+                                    world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
+                                    //world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 5, 0.15, 0.1, 0.15, 0.00000001);
                                 }
-                            } else {
-                                world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
                             }
                         }
                     }
@@ -70,16 +67,18 @@ public class Cauldrons {
         }, 10, 4);
         recipeTick = Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> {
             for (Map.Entry<Location, List<Cauldron>> cauldronEntry : cauldrons.entrySet()) {
-                Location loc = cauldronEntry.getKey();
+                Location loc = cauldronEntry.getKey().clone();
                 List<Cauldron> cauldronEntryValue = cauldronEntry.getValue();
                 if (loc != null && loc.getWorld() != null) {
                     World world = loc.getWorld();
                     if (!cauldronEntryValue.isEmpty()) {
                         Levelled levelled = (Levelled) loc.getBlock().getBlockData();
                         int level = levelled.getLevel();
-                        for (Cauldron cauldron : cauldronEntryValue) {
+                        Iterator<Cauldron> cauldronItr = cauldronEntry.getValue().iterator();
+                        while(cauldronItr.hasNext()){
+                            Cauldron cauldron = cauldronItr.next();
                             CauldronRecipe recipe = cauldron.getRecipe();
-                            if (level >= recipe.getWaterLevel() && (level == 0 || !recipe.isNoWater()) && (!recipe.needsFire() || isCustomCauldronLit(loc.getBlock()))) {
+                            if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || isCustomCauldronLit(loc.getBlock()))) {
                                 if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {
                                     //Execute CauldronRecipeDoneEvent
                                     cauldron.setDone(true);
@@ -97,16 +96,17 @@ public class Cauldrons {
                                                 } else {
                                                     levelled.setLevel(0);
                                                 }
+                                                loc.getBlock().setBlockData(levelled);
                                             }
                                             if (event.dropItems()) {
-                                                world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), event.getResult());
-                                                cauldronEntryValue.remove(cauldron);
+                                                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), event.getResult()));
+                                                cauldronItr.remove();
                                             }
                                             if(WolfyUtilities.hasMythicMobs()){
                                                 if(!cauldron.getRecipe().getMythicMobName().equals("<none>")){
                                                     MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(cauldron.getRecipe().getMythicMobName());
                                                     if(mythicMob != null){
-                                                        Location location = loc.add(cauldron.getRecipe().getMythicMobMod());
+                                                        Location location = loc.clone().add(cauldron.getRecipe().getMythicMobMod());
                                                         mythicMob.spawn(BukkitAdapter.adapt(location), cauldron.getRecipe().getMythicMobLevel());
                                                     }
                                                 }
@@ -114,20 +114,21 @@ public class Cauldrons {
                                         }
                                     });
                                 } else {
+                                    world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
+                                    world.spawnParticle(Particle.REDSTONE, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
                                     cauldron.increasePassedTicks();
                                 }
                             } else {
                                 cauldron.decreasePassedTicks(2);
-                                if (cauldron.getPassedTicks() == 0) {
+                                if (cauldron.getPassedTicks() <= 0) {
                                     for (CustomItem customItem : cauldron.getRecipe().getIngredients()) {
-                                        world.dropItemNaturally(loc, customItem.getItemStack());
+                                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
                                     }
-                                    cauldronEntryValue.remove(cauldron);
+                                    cauldronItr.remove();
                                 }
                             }
                         }
                     }
-                    cauldrons.put(loc, cauldronEntryValue);
                 }
             }
         }, 20, 1);

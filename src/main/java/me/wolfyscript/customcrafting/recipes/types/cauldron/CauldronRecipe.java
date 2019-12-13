@@ -26,7 +26,7 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
     private List<CustomItem> ingredients;
     private boolean dropItems;
     private boolean needsFire;
-    private boolean noWater;
+    private boolean needsWater;
 
     private String mythicMobName;
     private int mythicMobLevel;
@@ -45,10 +45,11 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
         this.exactMeta = config.isExactMeta();
         this.group = config.getGroup();
         this.xp = config.getXP();
+        this.cookingTime = config.getCookingTime();
         this.needsFire = config.needsFire();
         this.conditions = config.getConditions();
         this.waterLevel = config.getWaterLevel();
-        this.noWater = config.isWater();
+        this.needsWater = config.needsWater();
         this.handItem = config.getHandItem();
         this.mythicMobLevel = config.getMythicMobLevel();
         this.mythicMobMod = config.getMythicMobMod();
@@ -76,8 +77,12 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
         return waterLevel;
     }
 
-    public boolean isNoWater() {
-        return noWater;
+    public boolean needsWater() {
+        return needsWater;
+    }
+
+    public float getXp() {
+        return xp;
     }
 
     @Override
