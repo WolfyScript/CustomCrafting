@@ -24,7 +24,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ConditionsMenu extends ExtendedGuiWindow {
 
@@ -42,21 +44,23 @@ public class ConditionsMenu extends ExtendedGuiWindow {
         registerButton(new ActionButton("conditions.world_time", new ButtonState("world_time", Material.CLOCK, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+                Conditions conditions = CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
-                    CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions().getByID("world_time").toggleOption();
+                    conditions.getByID("world_time").toggleOption();
                 } else {
                     //Change Value
                     openChat("world_time", guiHandler, (guiHandler1, player1, s, strings) -> {
                         try {
                             long value = Long.parseLong(s);
-                            ((WorldTimeCondition) CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions().getByID("world_time")).setTime(value);
+                            ((WorldTimeCondition) conditions.getByID("world_time")).setTime(value);
                         } catch (NumberFormatException ex) {
                             api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
                         }
                         return false;
                     });
                 }
+                CustomCrafting.getPlayerCache(player).getRecipeConfig().setConditions(conditions);
                 return true;
             }
 
@@ -73,13 +77,15 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 RecipeConfig recipeConfig = CustomCrafting.getPlayerCache(player).getRecipeConfig();
+                Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
-                    recipeConfig.getConditions().getByID("weather").toggleOption();
+                    conditions.getByID("weather").toggleOption();
                 } else {
                     //Change Value
-                    ((WeatherCondition) recipeConfig.getConditions().getByID("weather")).toggleWeather();
+                    ((WeatherCondition) conditions.getByID("weather")).toggleWeather();
                 }
+                recipeConfig.setConditions(conditions);
                 return true;
             }
 
@@ -97,7 +103,9 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 if (event.getClick().isLeftClick()) {
                     //Change Mode
-                    CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions().getByID("advanced_workbench").toggleOption();
+                    Conditions conditions = CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions();
+                    conditions.getByID("advanced_workbench").toggleOption();
+                    CustomCrafting.getPlayerCache(player).getRecipeConfig().setConditions(conditions);
                 }
                 return true;
             }
@@ -113,13 +121,16 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 RecipeConfig recipeConfig = CustomCrafting.getPlayerCache(player).getRecipeConfig();
+                Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
-                    recipeConfig.getConditions().getByID("elite_workbench").toggleOption();
+                    conditions.getByID("elite_workbench").toggleOption();
+                    recipeConfig.setConditions(conditions);
                 } else {
                     //CONFIGURE ELITE WORKBENCHES
                     openChat("elite_workbench", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        ((EliteWorkbenchCondition) CustomCrafting.getPlayerCache(player1).getRecipeConfig().getConditions().getByID("elite_workbench")).addEliteWorkbenches(s);
+                        ((EliteWorkbenchCondition) conditions.getByID("elite_workbench")).addEliteWorkbenches(s);
+                        recipeConfig.setConditions(conditions);
                         return false;
                     });
                 }
@@ -137,13 +148,16 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 RecipeConfig recipeConfig = CustomCrafting.getPlayerCache(player).getRecipeConfig();
+                Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
-                    recipeConfig.getConditions().getByID("permission").toggleOption();
+                    conditions.getByID("permission").toggleOption();
+                    recipeConfig.setConditions(conditions);
                 } else {
                     //SET Custom Permission String
                     openChat("permission", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        ((PermissionCondition) CustomCrafting.getPlayerCache(player1).getRecipeConfig().getConditions().getByID("permission")).setPermission(s.trim());
+                        ((PermissionCondition) conditions.getByID("permission")).setPermission(s.trim());
+                        recipeConfig.setConditions(conditions);
                         return false;
                     });
                 }
@@ -167,15 +181,23 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             event.setButton(0, "back");
 
-            event.setButton(9, "conditions.world_time");
-            event.setButton(10, "conditions.weather");
-            event.setButton(11, "conditions.permission");
-            if (cache.getSetting().equals(Setting.WORKBENCH)) {
-                event.setButton(12, "conditions.advanced_workbench");
-            } else {
-                event.setButton(12, "conditions.elite_workbench");
+            List<String> values = new ArrayList<>();
+            values.add("conditions.world_time");
+            values.add("conditions.weather");
+            switch (cache.getSetting()){
+                case WORKBENCH:
+                    values.add("conditions.permission");
+                    values.add("conditions.advanced_workbench");
+                    break;
+                case ELITE_WORKBENCH:
+                    values.add("conditions.permission");
+                    values.add("conditions.elite_workbench");
+                    break;
+            }
+            int item = 9;
+            for(int i = 0; i < values.size() && item < 45; i++){
+                event.setButton(item++, values.get(i));
             }
         }
-
     }
 }

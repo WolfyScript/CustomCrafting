@@ -1,18 +1,22 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
-import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.config.JsonConfiguration;
 import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class RecipeConfig extends CustomConfig {
 
@@ -54,7 +58,6 @@ public class RecipeConfig extends CustomConfig {
     @Override
     public void init() {
         super.init();
-        getConditions();
     }
 
     /*
@@ -83,8 +86,8 @@ public class RecipeConfig extends CustomConfig {
         } else {
             reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
         }
-        api.sendPlayerMessage(player, "$msg.gui.none.recipe_creator.save.success$");
-        api.sendPlayerMessage(player, "§6recipes/" + namespace + "/workbench/" + key);
+        api.sendPlayerMessage(player, "recipe_creator", "save.success");
+        api.sendPlayerMessage(player, "§6"+ (type.equalsIgnoreCase("item") ? "items" : "recipes") +"/" + namespace + "/" + type +"/" + key);
         return true;
     }
 
@@ -112,32 +115,18 @@ public class RecipeConfig extends CustomConfig {
         return getBoolean("exactItemMeta");
     }
 
-    public Conditions getConditions(boolean migrateFromOld) {
-        Object object = get("conditions");
-        if (object instanceof Conditions) {
-            return (Conditions) object;
-        } else if (object != null) {
-            Map<String, String> conditionsMap = (Map<String, String>) object;
-            Conditions conditions = new Conditions(conditionsMap);
-            //Migrate old settings to new Condition system.
-            if (migrateFromOld) {
-                if (this instanceof AdvancedCraftConfig) {
-                    conditions.getByID("advanced_workbench").setOption(((AdvancedCraftConfig) this).needsAdvancedWorkbench() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
-                    conditions.getByID("permission").setOption(((AdvancedCraftConfig) this).needsPermission() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
-                } else if (this instanceof AnvilConfig) {
-                    conditions.getByID("permission").setOption(((AnvilConfig) this).needPerm() ? Conditions.Option.EXACT : Conditions.Option.IGNORE);
-                }
+    public Conditions getConditions() {
+        if (configuration instanceof JsonConfiguration) {
+            Conditions object = ((JsonConfiguration) configuration).get(Conditions.class, "conditions", new Conditions());
+            return object;
+        } else {
+            Object object = get("conditions");
+            if (object instanceof Conditions) {
+                return (Conditions) object;
             }
-            setConditions(conditions);
-            return conditions;
         }
         Conditions conditions = new Conditions();
-        setConditions(conditions);
         return conditions;
-    }
-
-    public Conditions getConditions() {
-        return getConditions(false);
     }
 
     public void setConditions(Conditions conditions) {
@@ -164,6 +153,7 @@ public class RecipeConfig extends CustomConfig {
     }
 
     protected void setResult(String path, List<CustomItem> results) {
+        set("result", new JsonObject());
         if (!path.isEmpty() && !path.endsWith(".")) {
             path = path + ".";
         }

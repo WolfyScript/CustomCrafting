@@ -1,15 +1,18 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.gson.*;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
 public class Conditions extends HashMap<String, Condition> {
 
@@ -20,13 +23,6 @@ public class Conditions extends HashMap<String, Condition> {
         addCondition(new EliteWorkbenchCondition());
         addCondition(new WorldTimeCondition());
         addCondition(new WeatherCondition());
-    }
-
-    public Conditions(Map<String, String> map) {
-        this();
-        for (Map.Entry<String, String> condition : map.entrySet()) {
-            getByID(condition.getKey()).fromString(condition.getValue());
-        }
     }
 
     public boolean checkConditions(CustomRecipe customRecipe, Data data) {
@@ -44,14 +40,6 @@ public class Conditions extends HashMap<String, Condition> {
 
     public void updateCondition(Condition condition) {
         put(condition.getId(), condition);
-    }
-
-    public HashMap<String, String> toMap() {
-        HashMap<String, String> map = new HashMap<>();
-        for (String id : keySet()) {
-            map.put(id, get(id).toString());
-        }
-        return map;
     }
 
     public void addCondition(Condition condition) {
@@ -82,17 +70,18 @@ public class Conditions extends HashMap<String, Condition> {
         private Block block;
         private InventoryView inventoryView;
 
-        public Data(Player player, Block block, InventoryView inventoryView) {
+        public Data(@Nullable Player player, Block block, @Nullable InventoryView inventoryView) {
             this.player = player;
             this.block = block;
             this.inventoryView = inventoryView;
         }
 
+        @Nullable
         public Player getPlayer() {
             return player;
         }
 
-        public void setPlayer(Player player) {
+        public void setPlayer(@Nullable Player player) {
             this.player = player;
         }
 
@@ -104,12 +93,46 @@ public class Conditions extends HashMap<String, Condition> {
             this.block = block;
         }
 
+        @Nullable
         public InventoryView getInventoryView() {
             return inventoryView;
         }
 
-        public void setInventoryView(InventoryView inventoryView) {
+        public void setInventoryView(@Nullable InventoryView inventoryView) {
             this.inventoryView = inventoryView;
+        }
+    }
+
+    public static class Serialization implements JsonSerializer<Conditions>, JsonDeserializer<Conditions> {
+
+        @Override
+        public JsonElement serialize(Conditions conditions, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonElement element = new JsonArray();
+            for(Condition condition : conditions.values()){
+                ((JsonArray) element).add(condition.toJsonElement());
+            }
+            return element;
+        }
+
+        @Override
+        public Conditions deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            Conditions conditions = new Conditions();
+            if(jsonElement instanceof JsonArray){
+                Iterator<JsonElement> elementIterator = ((JsonArray) jsonElement).iterator();
+                while(elementIterator.hasNext()){
+                    JsonElement element = elementIterator.next();
+                    if(element instanceof JsonObject){
+                        String id = ((JsonObject) element).getAsJsonPrimitive("id").getAsString();
+                        Conditions.Option option = Conditions.Option.valueOf(((JsonObject) element).getAsJsonPrimitive("option").getAsString());
+                        Condition condition = conditions.getByID(id);
+                        if(condition != null){
+                            condition.setOption(option);
+                            condition.fromJsonElement(element);
+                        }
+                    }
+                }
+            }
+            return conditions;
         }
     }
 

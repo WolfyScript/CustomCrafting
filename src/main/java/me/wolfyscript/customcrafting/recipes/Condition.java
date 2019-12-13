@@ -1,15 +1,17 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 
-public abstract class Condition implements Serializable {
-
-    private static final long serialVersionUID = 42069L;
+public abstract class Condition {
 
     protected Conditions.Option option;
 
@@ -55,14 +57,14 @@ public abstract class Condition implements Serializable {
         return id;
     }
 
-    @Override
-    public String toString() {
-        return option.toString();
+    public JsonElement toJsonElement(){
+        JsonObject element = new JsonObject();
+        element.addProperty("id", id);
+        element.addProperty("option", option.toString());
+        return element;
     }
 
-    public void fromString(String value) {
-        this.option = Conditions.Option.valueOf(value);
-    }
+    public abstract void fromJsonElement(JsonElement jsonElement);
 
     public ItemStack getIconEnabled() {
         return iconEnabled;
