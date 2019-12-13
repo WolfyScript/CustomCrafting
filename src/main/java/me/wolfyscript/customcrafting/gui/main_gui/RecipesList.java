@@ -3,6 +3,8 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListContainerButton;
+import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListNamespaceButton;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
@@ -14,12 +16,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.Recipe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class RecipesList extends ExtendedGuiWindow {
 
     private HashMap<GuiHandler, Integer> pages = new HashMap<>();
+    private HashMap<GuiHandler, String> namespaces = new HashMap<>();
+    private static int maxPages = 0;
 
     public RecipesList(InventoryAPI inventoryAPI) {
         super("recipe_list", inventoryAPI, 54);
@@ -28,7 +33,12 @@ public class RecipesList extends ExtendedGuiWindow {
     @Override
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openPreviousInv();
+            pages.put(guiHandler, 0);
+            if (namespaces.getOrDefault(guiHandler, "").isEmpty()) {
+                guiHandler.openPreviousInv();
+                return true;
+            }
+            namespaces.put(guiHandler, "");
             return true;
         })));
         registerButton(new ActionButton("next_page", new ButtonState("next_page", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -46,33 +56,73 @@ public class RecipesList extends ExtendedGuiWindow {
 
         for (int i = 0; i < 45; i++) {
             registerButton(new RecipeListContainerButton(i));
+            registerButton(new RecipeListNamespaceButton(i));
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            GuiHandler guiHandler = event.getGuiHandler();
             event.setButton(0, "back");
             event.setButton(2, "previous_page");
             event.setButton(6, "next_page");
-            List<Recipe> recipes = CustomCrafting.getRecipeHandler().getAllRecipes();
-            if (!pages.containsKey(event.getGuiHandler())) {
-                pages.put(event.getGuiHandler(), 0);
-            }
-            int item = 0;
-            for (int i = 45 * pages.get(event.getGuiHandler()); item < 45 && i < recipes.size(); i++) {
-                Recipe recipe = recipes.get(i);
-                if (recipe instanceof Keyed) {
-                    RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
-                    button.setRecipe(event.getGuiHandler(), recipe);
+
+            String namespace = namespaces.getOrDefault(guiHandler, "");
+            if (namespace.isEmpty()) {
+                List<String> namespaceList = new ArrayList<>();
+                namespaceList.add("minecraft");
+                namespaceList.addAll(CustomCrafting.getRecipeHandler().getNamespaces());
+                maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
+                int item = 0;
+                for (int i = 45 * pages.getOrDefault(guiHandler, 0); item < 45 && i < namespaceList.size(); i++) {
+                    RecipeListNamespaceButton button = (RecipeListNamespaceButton) event.getGuiWindow().getButton("recipe_list.namespace_" + item);
+                    button.setNamespace(guiHandler, namespaceList.get(i));
                     event.setButton(9 + item, button);
+                    item++;
                 }
-                item++;
+            } else {
+                if (namespace.equalsIgnoreCase("minecraft")) {
+                    List<Recipe> recipes = new ArrayList<>();
+                    recipes.addAll(CustomCrafting.getRecipeHandler().getAllRecipes());
+                    maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
+                    int item = 0;
+                    for (int i = 45 * pages.getOrDefault(event.getGuiHandler(), 0); item < 45 && i < recipes.size(); i++) {
+                        Recipe recipe = recipes.get(i);
+                        if (recipe instanceof Keyed) {
+                            RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
+                            button.setRecipe(event.getGuiHandler(), recipe);
+                            event.setButton(9 + item, button);
+                        }
+                        item++;
+                    }
+                } else {
+                    List<CustomRecipe> recipes = new ArrayList<>();
+                    recipes.addAll(CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace));
+                    maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
+                    int item = 0;
+                    for (int i = 45 * pages.getOrDefault(event.getGuiHandler(), 0); item < 45 && i < recipes.size(); i++) {
+                        CustomRecipe recipe = recipes.get(i);
+                        RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
+                        button.setRecipe(event.getGuiHandler(), recipe);
+                        event.setButton(9 + item, button);
+                        item++;
+                    }
+                }
+                //TODO: VANILLA RECIPES!
             }
         }
     }
 
     private int getMaxPages() {
-        return CustomCrafting.getRecipeHandler().getAllRecipes().size() / 45 + (CustomCrafting.getRecipeHandler().getAllRecipes().size() % 45 > 0 ? 1 : 0);
+        return maxPages;
+    }
+
+    public void setPage(GuiHandler guiHandler, int page) {
+        this.pages.put(guiHandler, page);
+    }
+
+    public HashMap<GuiHandler, String> getRecipeNamespaces() {
+        return namespaces;
     }
 }
