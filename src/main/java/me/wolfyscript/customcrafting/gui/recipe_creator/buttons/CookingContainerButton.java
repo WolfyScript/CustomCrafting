@@ -27,6 +27,7 @@ public class CookingContainerButton extends ItemInputButton {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
                 CookingConfig cooking = cache.getCookingConfig();
+
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
                     if (cooking.getIngredients(inputSlot) != null) {
@@ -39,6 +40,7 @@ public class CookingContainerButton extends ItemInputButton {
                 } else {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> cooking.setIngredient(inputSlot, 0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                 }
+
                 return false;
             }
 

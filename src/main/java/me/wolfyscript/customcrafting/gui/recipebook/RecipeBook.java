@@ -5,11 +5,13 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.gui.crafting.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
@@ -23,6 +25,7 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.ItemCategory;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,9 +33,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -89,38 +94,48 @@ public class RecipeBook extends ExtendedGuiWindow {
             Player player = event.getPlayer();
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
+            ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), knowledgeBook.getItemCategory());
             for (int i = 1; i < 8; i++) {
                 event.setButton(i, "none", "glass_white");
             }
             event.setButton(0, "back");
             if (knowledgeBook.getCustomRecipe() == null) {
                 event.setButton(2, "previous_page");
+                event.setButton(4, "recipe_book", "itemCategory");
                 event.setButton(6, "next_page");
                 List<CustomRecipe> recipes = new ArrayList<>();
 
                 if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
                     KnowledgeBook.WorkbenchFilter workbenchFilter = knowledgeBook.getWorkbenchFilter();
                     event.setButton(8, "workbench_filter_button");
-                    for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()) {
-                        if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                            if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                                if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))) {
-                                    recipes.add(recipe);
-                                }
-                            }
+                    for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player)) {
+                        if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))) {
+                            recipes.add(recipe);
                         }
                     }
                 } else if (knowledgeBook.getSetting().equals(Setting.ELITE_WORKBENCH)) {
-                    for (EliteCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getEliteCraftingRecipes()) {
-                        if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                            if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                                recipes.add(recipe);
-                            }
-                        }
-                    }
+                    recipes.addAll(CustomCrafting.getRecipeHandler().getAvailableEliteCraftingRecipes(player));
                 } else {
                     recipes.addAll(CustomCrafting.getRecipeHandler().getRecipes(knowledgeBook.getSetting()));
                 }
+
+                if(!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)){
+                    Iterator<CustomRecipe> recipeIterator = recipes.iterator();
+                    while(recipeIterator.hasNext()){
+                        CustomRecipe<RecipeConfig> customRecipe = recipeIterator.next();
+                        boolean valid = false;
+                        for(CustomItem item : customRecipe.getCustomResults()){
+                            if(knowledgeBook.getItemCategory().isValid(item.getType())){
+                                valid = true;
+                                break;
+                            }
+                        }
+                        if(!valid){
+                            recipeIterator.remove();
+                        }
+                    }
+                }
+
                 int maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
                 if (knowledgeBook.getPage() >= maxPages) {
                     knowledgeBook.setPage(0);

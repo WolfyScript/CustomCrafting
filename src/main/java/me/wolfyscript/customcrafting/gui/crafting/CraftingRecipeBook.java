@@ -83,22 +83,9 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                 event.setButton(4, "recipe_book", "itemCategory");
                 event.setButton(6, "next_page");
                 List<CustomRecipe> recipes = new ArrayList<>();
-
-                for (EliteCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getEliteCraftingRecipes()) {
-                    if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                        if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                            recipes.add(recipe);
-                        }
-                    }
-                }
+                recipes.addAll(CustomCrafting.getRecipeHandler().getAvailableEliteCraftingRecipes(player));
                 if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
-                    for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()) {
-                        if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                            if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                                recipes.add(recipe);
-                            }
-                        }
-                    }
+                    recipes.addAll(CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player));
                 }
                 if(!itemCategory.equals(ItemCategory.SEARCH)){
                     Iterator<CustomRecipe> recipeIterator = recipes.iterator();

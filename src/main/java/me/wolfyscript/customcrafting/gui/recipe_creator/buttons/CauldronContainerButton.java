@@ -37,14 +37,13 @@ public class CauldronContainerButton extends ItemInputButton {
                         cache.getVariantsData().setSlot(inputSlot);
                         cache.getVariantsData().setVariants(cauldronConfig.getIngredients());
 
-                    }else if(cauldronConfig.getResult() != null){
+                    }else if(inputSlot == 1 && cauldronConfig.getResult() != null){
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             cache.getItems().setItem(false, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
                             cache.setApplyItem(APPLY_ITEM);
                             guiHandler.changeToInv("item_editor");
                         }
                     }
-
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {

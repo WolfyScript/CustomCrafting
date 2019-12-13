@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -14,6 +15,9 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemFlag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainMenu extends ExtendedGuiWindow {
 
@@ -73,15 +77,41 @@ public class MainMenu extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             event.setButton(0, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
             event.setButton(8, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-            event.setButton(10, "workbench");
-            event.setButton(12, "furnace");
-            event.setButton(14, "anvil");
+
+            RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+            List<String> availableRecipes = new ArrayList<>();
+            if(!recipeHandler.getAvailableAdvancedCraftingRecipes(event.getPlayer()).isEmpty()){
+                availableRecipes.add("workbench");
+            }
+            if(!recipeHandler.getFurnaceRecipes().isEmpty()){
+                availableRecipes.add("furnace");
+            }
+            if(!recipeHandler.getAnvilRecipes().isEmpty()){
+                availableRecipes.add("anvil");
+            }
             if (WolfyUtilities.hasVillagePillageUpdate()) {
-                event.setButton(16, "blast_furnace");
-                event.setButton(28, "smoker");
-                event.setButton(30, "campfire");
-                event.setButton(32, "stonecutter");
-                event.setButton(34, "elite_workbench");
+                if(!recipeHandler.getBlastRecipes().isEmpty()){
+                    availableRecipes.add("blast_furnace");
+                }
+                if(!recipeHandler.getSmokerRecipes().isEmpty()){
+                    availableRecipes.add("smoker");
+                }
+                if(!recipeHandler.getCampfireRecipes().isEmpty()){
+                    availableRecipes.add("campfire");
+                }
+                if (!recipeHandler.getStonecutterRecipes().isEmpty()){
+                    availableRecipes.add("stonecutter");
+                }
+                if(!recipeHandler.getAvailableEliteCraftingRecipes(event.getPlayer()).isEmpty()){
+                    availableRecipes.add("elite_workbench");
+                }
+            }
+            int index = 0;
+            for(int i = 10; i < 45 && index < availableRecipes.size(); i+=2){
+                if(i == 18){
+                    i = 28;
+                }
+                event.setButton(i, availableRecipes.get(index++));
             }
         }
     }

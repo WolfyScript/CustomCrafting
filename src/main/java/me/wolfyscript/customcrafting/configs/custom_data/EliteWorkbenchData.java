@@ -75,6 +75,7 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
         map.put("advancedRecipes", advancedRecipes);
         map.put("allowHoppers", allowHoppers);
         map.put("keepItems", keepItems);
+
         return map;
     }
 

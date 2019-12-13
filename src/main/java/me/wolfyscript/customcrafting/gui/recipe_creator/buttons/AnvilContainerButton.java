@@ -22,7 +22,7 @@ import java.util.List;
 public class AnvilContainerButton extends ItemInputButton {
 
     public AnvilContainerButton(int inputSlot) {
-        super("anvil.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
+        super("container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);

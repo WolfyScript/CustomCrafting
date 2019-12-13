@@ -10,35 +10,35 @@ import org.bukkit.Material;
 public class ItemCategoryButton extends MultipleChoiceButton {
 
     public ItemCategoryButton() {
-        super("itemCategory", new ButtonState("recipe_book", "building_blocks", Material.BRICKS, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.DECORATIONS);
+        super("itemCategory", new ButtonState("recipe_book", "brewing", Material.GLASS_BOTTLE, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.BUILDING_BLOCKS : ItemCategory.SEARCH);
             return true;
-        }), new ButtonState("recipe_book", "decorations", Material.LILAC, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.REDSTONE);
+        }), new ButtonState("recipe_book", "building_blocks", Material.BRICKS, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.DECORATIONS : ItemCategory.BREWING);
             return true;
-        }), new ButtonState("recipe_book", "redstone", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.TRANSPORTATION);
+        }), new ButtonState("recipe_book", "decorations", Material.LILAC, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.COMBAT : ItemCategory.BUILDING_BLOCKS);
             return true;
-        }), new ButtonState("recipe_book", "transportation", Material.POWERED_RAIL, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.MISC);
+        }), new ButtonState("recipe_book", "combat", Material.GOLDEN_SWORD, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.TOOLS : ItemCategory.DECORATIONS);
             return true;
-        }), new ButtonState("recipe_book", "misc", Material.LAVA_BUCKET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.SEARCH);
+        }), new ButtonState("recipe_book", "tools", Material.IRON_AXE, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.REDSTONE : ItemCategory.COMBAT);
             return true;
-        }), new ButtonState("recipe_book", "search", Material.COMPASS, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.FOOD);
+        }), new ButtonState("recipe_book", "redstone", Material.REDSTONE, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.FOOD : ItemCategory.TOOLS);
             return true;
-        }), new ButtonState("recipe_book", "food", Material.APPLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.TOOLS);
+        }), new ButtonState("recipe_book", "food", Material.APPLE, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.TRANSPORTATION : ItemCategory.REDSTONE);
             return true;
-        }), new ButtonState("recipe_book", "tools", Material.IRON_AXE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.COMBAT);
+        }), new ButtonState("recipe_book", "transportation", Material.POWERED_RAIL, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.MISC : ItemCategory.FOOD);
             return true;
-        }), new ButtonState("recipe_book", "combat", Material.GOLDEN_SWORD, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.BREWING);
+        }), new ButtonState("recipe_book", "misc", Material.LAVA_BUCKET, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.SEARCH : ItemCategory.TRANSPORTATION);
             return true;
-        }), new ButtonState("recipe_book", "brewing", Material.GLASS_BOTTLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(ItemCategory.BUILDING_BLOCKS);
+        }), new ButtonState("recipe_book", "search", Material.COMPASS, (guiHandler, player, inventory, i, e) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.BREWING : ItemCategory.MISC);
             return true;
         }));
     }
