@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
     private String group;
     private Conditions conditions;
 
@@ -54,6 +54,7 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
         this.mythicMobLevel = config.getMythicMobLevel();
         this.mythicMobMod = config.getMythicMobMod();
         this.mythicMobName = config.getMythicMobName();
+        this.hidden = config.isHidden();
     }
 
     @Override
@@ -192,5 +193,10 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
 
     public Vector getMythicMobMod(){
         return mythicMobMod;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 }

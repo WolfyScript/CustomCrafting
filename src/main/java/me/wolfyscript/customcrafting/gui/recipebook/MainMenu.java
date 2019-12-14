@@ -80,23 +80,23 @@ public class MainMenu extends ExtendedGuiWindow {
             if(!recipeHandler.getAvailableAdvancedCraftingRecipes(event.getPlayer()).isEmpty()){
                 availableRecipes.add("workbench");
             }
-            if(!recipeHandler.getFurnaceRecipes().isEmpty()){
+            if(!recipeHandler.getAvailableFurnaceRecipes().isEmpty()){
                 availableRecipes.add("furnace");
             }
-            if(!recipeHandler.getAnvilRecipes().isEmpty()){
+            if(!recipeHandler.getAvailableAnvilRecipes(event.getPlayer()).isEmpty()){
                 availableRecipes.add("anvil");
             }
             if (WolfyUtilities.hasVillagePillageUpdate()) {
-                if(!recipeHandler.getBlastRecipes().isEmpty()){
+                if(!recipeHandler.getAvailableBlastRecipes().isEmpty()){
                     availableRecipes.add("blast_furnace");
                 }
-                if(!recipeHandler.getSmokerRecipes().isEmpty()){
+                if(!recipeHandler.getAvailableSmokerRecipes().isEmpty()){
                     availableRecipes.add("smoker");
                 }
-                if(!recipeHandler.getCampfireRecipes().isEmpty()){
+                if(!recipeHandler.getAvailableCampfireRecipes().isEmpty()){
                     availableRecipes.add("campfire");
                 }
-                if (!recipeHandler.getStonecutterRecipes().isEmpty()){
+                if (!recipeHandler.getAvailableStonecutterRecipes().isEmpty()){
                     availableRecipes.add("stonecutter");
                 }
                 if(!recipeHandler.getAvailableEliteCraftingRecipes(event.getPlayer()).isEmpty()){

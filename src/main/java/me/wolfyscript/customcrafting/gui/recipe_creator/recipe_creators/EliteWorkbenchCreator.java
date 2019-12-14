@@ -80,6 +80,14 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             return false;
         })));
 
+        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setHidden(false);
+            return true;
+        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setHidden(true);
+            return true;
+        })));
+
         for (int i = 0; i < 37; i++) {
             registerButton(new CraftingIngredientButton(i));
         }
@@ -153,12 +161,12 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             event.setButton(6, "back");
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             EliteCraftConfig workbench = cache.getEliteCraftConfig();
-
             ((ToggleButton) event.getGuiWindow().getButton("workbench.shapeless")).setState(event.getGuiHandler(), workbench.isShapeless());
             ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), workbench.isExactMeta());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(event.getGuiHandler(), workbench.mirrorHorizontal());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorVertical")).setState(event.getGuiHandler(), workbench.mirrorVertical());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorRotation")).setState(event.getGuiHandler(), workbench.mirrorRotation());
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), workbench.isHidden());
             int slot;
             for (int i = 0; i < 36; i++) {
                 slot = i + (i / 6) * 3;
@@ -167,11 +175,12 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             event.setButton(25, "crafting.container_36");
             event.setButton(24, "workbench.shapeless");
 
-            event.setButton(42, "workbench.mirrorHorizontal");
-            event.setButton(43, "workbench.mirrorVertical");
+            event.setButton(35, "hidden");
             if(workbench.mirrorHorizontal() && workbench.mirrorVertical()){
                 event.setButton(33, "workbench.mirrorRotation");
             }
+            event.setButton(42, "workbench.mirrorHorizontal");
+            event.setButton(43, "workbench.mirrorVertical");
             event.setButton(44, "recipe_creator", "conditions");
 
             event.setButton(51, "exact_meta");

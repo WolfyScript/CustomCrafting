@@ -119,6 +119,14 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             }
         })));
 
+        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getAdvancedCraftConfig().setHidden(false);
+            return true;
+        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getAdvancedCraftConfig().setHidden(true);
+            return true;
+        })));
+
         registerButton(new ToggleButton("workbench.shapeless", false, new ButtonState("recipe_creator","workbench.shapeless.enabled", WolfyUtilities.getSkullViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getAdvancedCraftConfig().setShapeless(false);
             return true;
@@ -161,6 +169,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(event.getGuiHandler(), workbench.mirrorHorizontal());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorVertical")).setState(event.getGuiHandler(), workbench.mirrorVertical());
             ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorRotation")).setState(event.getGuiHandler(), workbench.mirrorRotation());
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), workbench.isHidden());
             int slot;
             for (int i = 0; i < 9; i++) {
                 slot = 10 + i + (i / 3) * 6;
@@ -168,14 +177,17 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
             }
             event.setButton(22, "workbench.shapeless");
             event.setButton(24, "crafting.container_9");
-            event.setButton(38, "workbench.mirrorHorizontal");
-            event.setButton(39, "workbench.mirrorVertical");
+
             if(workbench.mirrorHorizontal() && workbench.mirrorVertical()){
                 event.setButton(37, "workbench.mirrorRotation");
             }
-            event.setButton(40, "recipe_creator", "conditions");
-            event.setButton(41, "exact_meta");
-            event.setButton(42, "priority");
+            event.setButton(38, "workbench.mirrorHorizontal");
+            event.setButton(39, "workbench.mirrorVertical");
+
+            event.setButton(1, "hidden");
+            event.setButton(3, "recipe_creator", "conditions");
+            event.setButton(5, "exact_meta");
+            event.setButton(7, "priority");
             event.setButton(44, "save");
         }
     }

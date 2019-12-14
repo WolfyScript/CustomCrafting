@@ -69,6 +69,14 @@ public class AnvilCreator extends ExtendedGuiWindow {
             return false;
         })));
 
+        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getAnvilConfig().setHidden(false);
+            return true;
+        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getAnvilConfig().setHidden(true);
+            return true;
+        })));
+
         registerButton(new AnvilContainerButton(0));
         registerButton(new AnvilContainerButton(1));
         registerButton(new AnvilContainerButton(2));
@@ -209,9 +217,11 @@ public class AnvilCreator extends ExtendedGuiWindow {
             event.setButton(0, "back");
             AnvilConfig anvilRecipe = cache.getAnvilConfig();
             ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());
-            event.setButton(2, "recipe_creator", "conditions");
-            event.setButton(4, "priority");
-            event.setButton(6, "exact_meta");
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), anvilRecipe.isHidden());
+            event.setButton(1, "hidden");
+            event.setButton(3, "recipe_creator", "conditions");
+            event.setButton(5, "priority");
+            event.setButton(7, "exact_meta");
             event.setButton(19, "container_0");
             event.setButton(21, "container_1");
             if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {

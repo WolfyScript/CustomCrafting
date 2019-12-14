@@ -40,4 +40,6 @@ public interface CustomRecipe<T extends RecipeConfig> extends Recipe {
 
     Conditions getConditions();
 
+    boolean isHidden();
+
 }

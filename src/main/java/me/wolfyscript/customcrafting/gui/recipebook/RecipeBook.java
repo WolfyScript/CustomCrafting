@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
+import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -14,6 +15,7 @@ import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -91,6 +93,7 @@ public class RecipeBook extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
             Player player = event.getPlayer();
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
@@ -102,17 +105,44 @@ public class RecipeBook extends ExtendedGuiWindow {
             if (knowledgeBook.getCustomRecipe() == null) {
                 event.setButton(4, "recipe_book", "itemCategory");
                 List<CustomRecipe> recipes = new ArrayList<>();
-
-                if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
-                    KnowledgeBook.WorkbenchFilter workbenchFilter = knowledgeBook.getWorkbenchFilter();
-                    event.setButton(8, "workbench_filter_button");
-                    for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player)) {
-                        if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))) {
-                            recipes.add(recipe);
+                switch (knowledgeBook.getSetting()){
+                    case WORKBENCH:
+                        KnowledgeBook.WorkbenchFilter workbenchFilter = knowledgeBook.getWorkbenchFilter();
+                        event.setButton(8, "workbench_filter_button");
+                        for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player)) {
+                            if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))) {
+                                recipes.add(recipe);
+                            }
                         }
-                    }
+                        break;
+                    case ELITE_WORKBENCH:
+                        recipes.addAll(recipeHandler.getAvailableEliteCraftingRecipes(player));
+                        break;
+                    case ANVIL:
+                        recipes.addAll(recipeHandler.getAvailableAnvilRecipes(player));
+                        break;
+                    case STONECUTTER:
+                        recipes.addAll(recipeHandler.getAvailableStonecutterRecipes());
+                        break;
+                    case CAULDRON:
+                        recipes.addAll(recipeHandler.getAvailableCauldronRecipes());
+                        break;
+                    case FURNACE:
+                        recipes.addAll(recipeHandler.getAvailableFurnaceRecipes());
+                        break;
+                    case BLAST_FURNACE:
+                        recipes.addAll(recipeHandler.getAvailableBlastRecipes());
+                        break;
+                    case SMOKER:
+                        recipes.addAll(recipeHandler.getAvailableSmokerRecipes());
+                        break;
+                    case CAMPFIRE:
+                        recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
+                }
+                if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
+
                 } else if (knowledgeBook.getSetting().equals(Setting.ELITE_WORKBENCH)) {
-                    recipes.addAll(CustomCrafting.getRecipeHandler().getAvailableEliteCraftingRecipes(player));
+
                 } else {
                     recipes.addAll(CustomCrafting.getRecipeHandler().getRecipes(knowledgeBook.getSetting()));
                 }

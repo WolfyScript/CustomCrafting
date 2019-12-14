@@ -20,6 +20,7 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -85,6 +86,14 @@ public class CookingCreator extends ExtendedGuiWindow {
             return false;
         })));
 
+        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getCookingConfig().setHidden(false);
+            return true;
+        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getCookingConfig().setHidden(true);
+            return true;
+        })));
+
         registerButton(new CookingContainerButton(0));
         registerButton(new CookingContainerButton(1));
 
@@ -123,7 +132,10 @@ public class CookingCreator extends ExtendedGuiWindow {
         if (event.verify(this)) {
             event.setButton(0, "back");
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
-            event.setButton(2, "recipe_creator", "conditions");
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), cache.getCookingConfig().isHidden());
+
+            event.setButton(3, "hidden");
+            event.setButton(5, "recipe_creator", "conditions");
             event.setButton(20, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
             event.setButton(11, "cooking.container_0");
             event.setButton(24, "cooking.container_1");

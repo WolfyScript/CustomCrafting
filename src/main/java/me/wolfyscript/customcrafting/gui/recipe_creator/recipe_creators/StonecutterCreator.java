@@ -11,9 +11,11 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Locale;
 
@@ -66,6 +68,15 @@ public class StonecutterCreator extends ExtendedGuiWindow {
             }
             return false;
         })));
+
+        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getStonecutterConfig().setHidden(false);
+            return true;
+        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getStonecutterConfig().setHidden(true);
+            return true;
+        })));
+
         registerButton(new StonecutterContainerButton(0));
         registerButton(new StonecutterContainerButton(1));
     }
@@ -73,7 +84,9 @@ public class StonecutterCreator extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), CustomCrafting.getPlayerCache(event.getPlayer()).getStonecutterConfig().isHidden());
             event.setButton(0, "back");
+            event.setButton(4, "hidden");
             event.setButton(20, "stonecutter.container_0");
             event.setButton(24, "stonecutter.container_1");
             event.setButton(44, "save");

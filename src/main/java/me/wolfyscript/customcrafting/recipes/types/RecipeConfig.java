@@ -186,4 +186,12 @@ public class RecipeConfig extends CustomConfig {
         }
         return results;
     }
+
+    public void setHidden(boolean hidden){
+        set("hidden", hidden);
+    }
+
+    public boolean isHidden(){
+        return getBoolean("hidden");
+    }
 }

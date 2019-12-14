@@ -13,7 +13,7 @@ import java.util.Map;
 
 public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
     private RecipePriority priority;
     private Conditions conditions;
 
@@ -34,6 +34,7 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
         this.api = CustomCrafting.getApi();
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
+        this.hidden = config.isHidden();
     }
 
     @Override
@@ -107,5 +108,10 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
     @Override
     public Conditions getConditions() {
         return conditions;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 }

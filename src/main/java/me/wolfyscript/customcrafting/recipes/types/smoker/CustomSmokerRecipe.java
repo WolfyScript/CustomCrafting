@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRecipe<SmokerConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
 
     private RecipePriority priority;
     private List<CustomItem> result;
@@ -32,6 +32,7 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
+        this.hidden = config.isHidden();
         setGroup(config.getGroup());
     }
 
@@ -83,5 +84,10 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
     @Override
     public Conditions getConditions() {
         return conditions;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 }

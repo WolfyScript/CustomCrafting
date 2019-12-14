@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookingRecipe<CampfireConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
 
     private RecipePriority recipePriority;
     private List<CustomItem> result;
@@ -32,6 +32,7 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
         this.recipePriority = config.getPriority();
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
+        this.hidden = config.isHidden();
         setGroup(config.getGroup());
     }
 
@@ -82,5 +83,10 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     @Override
     public Conditions getConditions() {
         return conditions;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 }

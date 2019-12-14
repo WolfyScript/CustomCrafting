@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CustomStonecutterRecipe extends StonecuttingRecipe implements CustomRecipe<StonecutterConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
 
     private StonecutterConfig config;
     private String id;
@@ -31,6 +31,8 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
         this.source = config.getSource();
+        this.conditions = config.getConditions();
+        this.hidden = config.isHidden();
         setGroup(config.getGroup());
     }
 
@@ -81,5 +83,10 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     @Override
     public Conditions getConditions() {
         return conditions;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 }

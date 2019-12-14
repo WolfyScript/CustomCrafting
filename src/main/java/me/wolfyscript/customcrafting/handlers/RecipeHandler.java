@@ -40,10 +40,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.CookingRecipe;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.util.NumberConversions;
 
 import java.io.File;
@@ -401,7 +398,7 @@ public class RecipeHandler {
             case "workbench":
                 return new ArrayList<>(getAdvancedCraftingRecipes());
             case "elite_workbench":
-                return new ArrayList<>();
+                return new ArrayList<>(getEliteCraftingRecipes());
             case "furnace":
                 return new ArrayList<>(getFurnaceRecipes());
             case "anvil":
@@ -430,129 +427,127 @@ public class RecipeHandler {
         return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
     }
 
-    public List<AdvancedCraftingRecipe> getAdvancedCraftingRecipes() {
-        List<AdvancedCraftingRecipe> recipes = new ArrayList<>();
+    public <T extends CustomRecipe> List<T> getRecipes(Class<T> type){
+        List<T> recipes = new ArrayList<>();
         for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof AdvancedCraftingRecipe) {
-                recipes.add((AdvancedCraftingRecipe) recipe);
+            if (type.isInstance(recipe)) {
+                recipes.add((T) recipe);
             }
         }
         return recipes;
     }
 
-    public List<AdvancedCraftingRecipe> getAvailableAdvancedCraftingRecipes(Player player){
-        List<AdvancedCraftingRecipe> recipes = new ArrayList<>();
-        for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()) {
-            if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                    recipes.add(recipe);
-                }
+    public <T extends CustomRecipe> List<T> getAvailableRecipes(Class<T> type){
+        List<T> recipes = getRecipes(type);
+        Iterator<T> iterator = recipes.iterator();
+        while(iterator.hasNext()){
+            T recipe = iterator.next();
+            if (recipe.isHidden() || CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())){
+                iterator.remove();
             }
         }
         return recipes;
+    }
+
+    public List<AdvancedCraftingRecipe> getAdvancedCraftingRecipes() {
+        return getRecipes(AdvancedCraftingRecipe.class);
     }
 
     public List<EliteCraftingRecipe> getEliteCraftingRecipes() {
-        List<EliteCraftingRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof EliteCraftingRecipe) {
-                recipes.add((EliteCraftingRecipe) recipe);
+        return getRecipes(EliteCraftingRecipe.class);
+    }
+
+    public List<CustomFurnaceRecipe> getFurnaceRecipes() {
+        return getRecipes(CustomFurnaceRecipe.class);
+    }
+
+    public List<CustomSmokerRecipe> getSmokerRecipes() {
+        return getRecipes(CustomSmokerRecipe.class);
+    }
+
+    public List<CustomBlastRecipe> getBlastRecipes() {
+        return getRecipes(CustomBlastRecipe.class);
+    }
+
+    public List<CustomCampfireRecipe> getCampfireRecipes() {
+        return getRecipes(CustomCampfireRecipe.class);
+    }
+
+    public List<CustomStonecutterRecipe> getStonecutterRecipes() {
+        return getRecipes(CustomStonecutterRecipe.class);
+    }
+
+    public List<CustomAnvilRecipe> getAnvilRecipes() {
+        return getRecipes(CustomAnvilRecipe.class);
+    }
+
+    public List<CauldronRecipe> getCauldronRecipes() {
+        return getRecipes(CauldronRecipe.class);
+    }
+
+    /*
+    Get the available recipes only.
+    Disabled and hidden recipes are removed!
+    For the crafting recipes you also need permissions to view them.
+     */
+    public List<AdvancedCraftingRecipe> getAvailableAdvancedCraftingRecipes(Player player){
+        List<AdvancedCraftingRecipe> recipes = getAvailableRecipes(AdvancedCraftingRecipe.class);
+        Iterator<AdvancedCraftingRecipe> iterator = recipes.iterator();
+        while(iterator.hasNext()){
+            AdvancedCraftingRecipe recipe = iterator.next();
+            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
+                iterator.remove();
             }
         }
         return recipes;
     }
 
     public List<EliteCraftingRecipe> getAvailableEliteCraftingRecipes(Player player){
-        List<EliteCraftingRecipe> recipes = new ArrayList<>();
-        for (EliteCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getEliteCraftingRecipes()) {
-            if (recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                    recipes.add(recipe);
-                }
+        List<EliteCraftingRecipe> recipes = getAvailableRecipes(EliteCraftingRecipe.class);
+        Iterator<EliteCraftingRecipe> iterator = recipes.iterator();
+        while(iterator.hasNext()){
+            EliteCraftingRecipe recipe = iterator.next();
+            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
+                iterator.remove();
             }
         }
         return recipes;
     }
 
-    public CraftingRecipe getCraftingRecipe(String key) {
-        CustomRecipe customRecipe = getRecipe(key);
-        return customRecipe instanceof CraftingRecipe ? (CraftingRecipe) customRecipe : null;
+    public List<CustomFurnaceRecipe> getAvailableFurnaceRecipes(){
+        return getAvailableRecipes(CustomFurnaceRecipe.class);
     }
 
-    public List<CraftingRecipe> getCraftingRecipes() {
-        List<CraftingRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CraftingRecipe) {
-                recipes.add((CraftingRecipe) recipe);
+    public List<CustomSmokerRecipe> getAvailableSmokerRecipes() {
+        return getAvailableRecipes(CustomSmokerRecipe.class);
+    }
+
+    public List<CustomBlastRecipe> getAvailableBlastRecipes() {
+        return getAvailableRecipes(CustomBlastRecipe.class);
+    }
+
+    public List<CustomCampfireRecipe> getAvailableCampfireRecipes() {
+        return getAvailableRecipes(CustomCampfireRecipe.class);
+    }
+
+    public List<CustomStonecutterRecipe> getAvailableStonecutterRecipes() {
+        return getAvailableRecipes(CustomStonecutterRecipe.class);
+    }
+
+    public List<CustomAnvilRecipe> getAvailableAnvilRecipes(Player player) {
+        List<CustomAnvilRecipe> recipes = getAvailableRecipes(CustomAnvilRecipe.class);
+        Iterator<CustomAnvilRecipe> iterator = recipes.iterator();
+        while(iterator.hasNext()){
+            CustomAnvilRecipe recipe = iterator.next();
+            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
+                iterator.remove();
             }
         }
         return recipes;
     }
 
-    //FURNACE RECIPES
-    public List<CustomFurnaceRecipe> getFurnaceRecipes() {
-        List<CustomFurnaceRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CustomFurnaceRecipe) {
-                recipes.add((CustomFurnaceRecipe) recipe);
-            }
-        }
-        return recipes;
-    }
-
-    //SMOKER RECIPES
-    public List<CustomSmokerRecipe> getSmokerRecipes() {
-        List<CustomSmokerRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CustomSmokerRecipe) {
-                recipes.add((CustomSmokerRecipe) recipe);
-            }
-        }
-        return recipes;
-    }
-
-    //Blasting Recipes
-    public List<CustomBlastRecipe> getBlastRecipes() {
-        List<CustomBlastRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CustomBlastRecipe) {
-                recipes.add((CustomBlastRecipe) recipe);
-            }
-        }
-        return recipes;
-    }
-
-    //Campfire Recipes
-    public List<CustomCampfireRecipe> getCampfireRecipes() {
-        List<CustomCampfireRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CustomCampfireRecipe) {
-                recipes.add((CustomCampfireRecipe) recipe);
-            }
-        }
-        return recipes;
-    }
-
-    //Stonecutter Recipes
-    public List<CustomStonecutterRecipe> getStonecutterRecipes() {
-        List<CustomStonecutterRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CustomStonecutterRecipe) {
-                recipes.add((CustomStonecutterRecipe) recipe);
-            }
-        }
-        return recipes;
-    }
-
-
-    public List<CustomAnvilRecipe> getAnvilRecipes() {
-        List<CustomAnvilRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CustomAnvilRecipe) {
-                recipes.add((CustomAnvilRecipe) recipe);
-            }
-        }
-        return recipes;
+    public List<CauldronRecipe> getAvailableCauldronRecipes() {
+        return getAvailableRecipes(CauldronRecipe.class);
     }
 
     public CustomFurnaceRecipe getFurnaceRecipe(String key) {
@@ -562,16 +557,6 @@ public class RecipeHandler {
             }
         }
         return null;
-    }
-
-    public List<CauldronRecipe> getCauldronRecipes() {
-        List<CauldronRecipe> recipes = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe instanceof CauldronRecipe) {
-                recipes.add((CauldronRecipe) recipe);
-            }
-        }
-        return recipes;
     }
 
     public HashMap<String, CustomRecipe> getRecipes() {

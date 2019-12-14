@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingRecipe<FurnaceConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
 
     private RecipePriority priority;
     private List<CustomItem> result;
@@ -32,6 +32,7 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
+        this.hidden = config.isHidden();
         setGroup(config.getGroup());
     }
 
@@ -82,5 +83,10 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     @Override
     public Conditions getConditions() {
         return conditions;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 }

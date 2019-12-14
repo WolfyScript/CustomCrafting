@@ -69,6 +69,15 @@ public class CauldronCreator extends ExtendedGuiWindow {
             }
             return false;
         })));
+
+        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getCauldronConfig().setHidden(false);
+            return true;
+        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getCauldronConfig().setHidden(true);
+            return true;
+        })));
+
         registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getCauldronConfig().setExactMeta(false);
             return true;
@@ -265,10 +274,12 @@ public class CauldronCreator extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("fire")).setState(event.getGuiHandler(), cauldronConfig.needsFire());
             ((ToggleButton) event.getGuiWindow().getButton("water")).setState(event.getGuiHandler(), cauldronConfig.needsWater());
             ((ToggleButton) event.getGuiWindow().getButton("dropItems")).setState(event.getGuiHandler(), cauldronConfig.dropItems());
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), cauldronConfig.isHidden());
 
-            event.setButton(2, "recipe_creator", "conditions");
-            event.setButton(4, "priority");
-            event.setButton(6, "exact_meta");
+            event.setButton(1, "hidden");
+            event.setButton(3, "recipe_creator", "conditions");
+            event.setButton(5, "priority");
+            event.setButton(7, "exact_meta");
             event.setButton(11, "cauldron.container_0");
             event.setButton(13, "cookingTime");
 

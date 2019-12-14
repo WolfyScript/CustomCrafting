@@ -13,7 +13,7 @@ import java.util.*;
 
 public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
     private boolean blockRepair;
     private boolean blockRename;
     private boolean blockEnchant;
@@ -53,6 +53,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
             ingredients.put(2, config.getResult());
         }
         this.conditions = config.getConditions();
+        this.hidden = config.isHidden();
     }
 
     public CustomAnvilRecipe() {
@@ -295,5 +296,10 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
             }
             return modes;
         }
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
     }
 }

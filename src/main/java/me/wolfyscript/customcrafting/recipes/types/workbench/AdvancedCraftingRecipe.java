@@ -13,7 +13,7 @@ import java.util.Map;
 
 public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedCraftConfig> {
 
-    private boolean exactMeta;
+    private boolean exactMeta, hidden;
     private RecipePriority priority;
     private Conditions conditions;
 
@@ -34,6 +34,7 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
         this.api = CustomCrafting.getApi();
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
+        this.hidden = config.isHidden();
         load();
     }
 
@@ -100,4 +101,8 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
         return conditions;
     }
 
+    @Override
+    public boolean isHidden() {
+        return hidden;
+    }
 }
