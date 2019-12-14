@@ -15,7 +15,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class MainMenu extends ExtendedGuiWindow {
 
@@ -137,7 +136,7 @@ public class MainMenu extends ExtendedGuiWindow {
                         event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
                     }
                     event.setButton(8, "none", "gui_help");
-                }else{
+                } else {
                     for (int i = 0; i < 9; i++) {
                         event.setButton(i, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
                     }

@@ -38,9 +38,9 @@ public class RecipeListContainerButton extends Button {
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
         String id;
-        if(getRecipe(guiHandler) instanceof CustomRecipe){
+        if (getRecipe(guiHandler) instanceof CustomRecipe) {
             id = ((CustomRecipe) getRecipe(guiHandler)).getId();
-        }else{
+        } else {
             id = ((Keyed) getRecipe(guiHandler)).getKey().toString();
         }
         if (!id.isEmpty() && id.contains(":")) {
@@ -58,14 +58,14 @@ public class RecipeListContainerButton extends Button {
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        if(getRecipe(guiHandler) instanceof CustomRecipe){
+        if (getRecipe(guiHandler) instanceof CustomRecipe) {
             CustomRecipe recipe = (CustomRecipe) getRecipe(guiHandler);
             if (recipe != null) {
                 ItemBuilder itemB = new ItemBuilder(recipe.getResult());
                 if (recipe.getResult().getType().equals(Material.AIR)) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
                 }
-                itemB.addLoreLine("§8"+recipe.getId());
+                itemB.addLoreLine("§8" + recipe.getId());
                 if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
                     itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {
@@ -73,14 +73,14 @@ public class RecipeListContainerButton extends Button {
                 }
                 inventory.setItem(slot, itemB.create());
             }
-        }else {
+        } else {
             Recipe recipe = getRecipe(guiHandler);
             if (recipe != null) {
                 ItemBuilder itemB = new ItemBuilder(recipe.getResult());
                 if (recipe.getResult().getType().equals(Material.AIR)) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + ((Keyed) recipe).getKey().toString());
                 }
-                itemB.addLoreLine("§8"+((Keyed) recipe).getKey().toString());
+                itemB.addLoreLine("§8" + ((Keyed) recipe).getKey().toString());
                 if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
                     itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {

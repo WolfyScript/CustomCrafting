@@ -16,11 +16,11 @@ public class MainConfig extends Config {
     public void init() {
     }
 
-    public String getLanguage(){
+    public String getLanguage() {
         return getString("language");
     }
 
-    public void setlanguage(String lang){
+    public void setlanguage(String lang) {
         set("language", lang);
     }
 
@@ -48,7 +48,7 @@ public class MainConfig extends Config {
         set("knowledgebook.reset_recipe", reset);
     }
 
-    public void setAdvancedWorkbenchEnabled(boolean enabled){
+    public void setAdvancedWorkbenchEnabled(boolean enabled) {
         set("workbench.enable", enabled);
     }
 

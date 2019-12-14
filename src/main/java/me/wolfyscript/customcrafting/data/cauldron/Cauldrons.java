@@ -51,7 +51,7 @@ public class Cauldrons {
                 if (loc != null) {
                     World world = loc.getWorld();
                     if (world != null) {
-                        if(loc.getBlock().getType().equals(Material.CAULDRON)){
+                        if (loc.getBlock().getType().equals(Material.CAULDRON)) {
                             Levelled data = (Levelled) loc.getBlock().getBlockData();
                             int level = data.getLevel();
                             if (isCustomCauldronLit(loc.getBlock())) {
@@ -75,7 +75,7 @@ public class Cauldrons {
                         Levelled levelled = (Levelled) loc.getBlock().getBlockData();
                         int level = levelled.getLevel();
                         Iterator<Cauldron> cauldronItr = cauldronEntry.getValue().iterator();
-                        while(cauldronItr.hasNext()){
+                        while (cauldronItr.hasNext()) {
                             Cauldron cauldron = cauldronItr.next();
                             CauldronRecipe recipe = cauldron.getRecipe();
                             if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || isCustomCauldronLit(loc.getBlock()))) {
@@ -102,10 +102,10 @@ public class Cauldrons {
                                                 Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), event.getResult()));
                                                 cauldronItr.remove();
                                             }
-                                            if(WolfyUtilities.hasMythicMobs()){
-                                                if(!cauldron.getRecipe().getMythicMobName().equals("<none>")){
+                                            if (WolfyUtilities.hasMythicMobs()) {
+                                                if (!cauldron.getRecipe().getMythicMobName().equals("<none>")) {
                                                     MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(cauldron.getRecipe().getMythicMobName());
-                                                    if(mythicMob != null){
+                                                    if (mythicMob != null) {
                                                         Location location = loc.clone().add(cauldron.getRecipe().getMythicMobMod());
                                                         mythicMob.spawn(BukkitAdapter.adapt(location), cauldron.getRecipe().getMythicMobLevel());
                                                     }

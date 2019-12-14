@@ -1,10 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.cauldron;
 
-import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -37,11 +35,11 @@ public class CauldronConfig extends RecipeConfig {
         set("dropItems.enabled", dropItems);
     }
 
-    public void setHandItem(CustomItem customItem){
+    public void setHandItem(CustomItem customItem) {
         saveCustomItem("dropItems.handItem", customItem);
     }
 
-    public CustomItem getHandItem(){
+    public CustomItem getHandItem() {
         return getCustomItem("dropItems.handItem");
     }
 
@@ -102,7 +100,7 @@ public class CauldronConfig extends RecipeConfig {
         return sources;
     }
 
-    public void setMythicMob(String mobName, int level, double modX, double modY, double modZ){
+    public void setMythicMob(String mobName, int level, double modX, double modY, double modZ) {
         set("mythicMob.name", mobName);
         set("mythicMob.level", level);
         set("mythicMob.modX", modX);
@@ -110,15 +108,15 @@ public class CauldronConfig extends RecipeConfig {
         set("mythicMob.modZ", modZ);
     }
 
-    public String getMythicMobName(){
+    public String getMythicMobName() {
         return getString("mythicMob.name", "<none>");
     }
 
-    public int getMythicMobLevel(){
+    public int getMythicMobLevel() {
         return getInt("mythicMob.level", 1);
     }
 
-    public Vector getMythicMobMod(){
+    public Vector getMythicMobMod() {
         Vector vector = new Vector(getDouble("mythicMob.modX", 0), getDouble("mythicMob.modY", 0.5), getDouble("mythicMob.modZ", 0));
         return vector;
     }

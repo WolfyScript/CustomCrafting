@@ -85,7 +85,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
             CustomCrafting.getPlayerCache(player).getCauldronConfig().setExactMeta(true);
             return true;
         })));
-        registerButton(new ActionButton("priority", new ButtonState("recipe_creator","priority", WolfyUtilities.getSkullViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d"), new ButtonActionRender() {
+        registerButton(new ActionButton("priority", new ButtonState("recipe_creator", "priority", WolfyUtilities.getSkullViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d"), new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
                 RecipePriority priority = CustomCrafting.getPlayerCache(player).getCauldronConfig().getPriority();
@@ -123,7 +123,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                             PlayerCache cache = CustomCrafting.getPlayerCache(player);
                             cache.getItems().setItem(true, CustomItem.getByItemStack(inventory.getItem(slot)));
                             cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronConfig().setHandItem(items.getItem()));
-                            guiHandler.changeToInv("none","item_editor");
+                            guiHandler.changeToInv("none", "item_editor");
                         }
                     });
                     return true;
@@ -135,7 +135,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
                 CustomItem customItem = CustomCrafting.getPlayerCache(player).getCauldronConfig().getHandItem();
-                if(customItem != null){
+                if (customItem != null) {
                     return customItem.getItemStack();
                 }
                 return itemStack;
@@ -203,7 +203,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            if(waterLvl > 3){
+            if (waterLvl > 3) {
                 waterLvl = 3;
             }
             CustomCrafting.getPlayerCache(player).getCauldronConfig().setWaterLevel(waterLvl);
@@ -293,10 +293,10 @@ public class CauldronCreator extends ExtendedGuiWindow {
             event.setButton(29, "fire");
             event.setButton(34, "dropItems");
 
-            if(!cache.getCauldronConfig().dropItems()){
+            if (!cache.getCauldronConfig().dropItems()) {
                 event.setButton(33, "handItem_container");
             }
-            if (WolfyUtilities.hasMythicMobs()){
+            if (WolfyUtilities.hasMythicMobs()) {
                 event.setButton(13, "mythicMob");
             }
 

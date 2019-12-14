@@ -43,7 +43,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.sendPlayerMessage(player1, "none", "recipe_editor","invalid_recipe", new String[]{"%recipe_type%", CustomCrafting.getPlayerCache(player1).getSetting().name()});
+                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", CustomCrafting.getPlayerCache(player1).getSetting().name()});
                         return true;
                     }
                 }

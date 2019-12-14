@@ -61,8 +61,8 @@ public class WeatherCondition extends Condition {
     @Override
     public void fromJsonElement(JsonElement jsonElement) {
         try {
-            this.weather = Weather.valueOf(((JsonObject)jsonElement).getAsJsonPrimitive("weather").getAsString());
-        }catch (IllegalArgumentException ex){
+            this.weather = Weather.valueOf(((JsonObject) jsonElement).getAsJsonPrimitive("weather").getAsString());
+        } catch (IllegalArgumentException ex) {
             //EMPTY CATCH
         }
     }

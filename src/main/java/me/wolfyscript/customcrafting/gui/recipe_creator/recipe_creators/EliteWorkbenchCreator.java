@@ -40,10 +40,10 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat("recipe_creator", "save.input", guiHandler,  (guiHandler1, player1, s, args) -> {
+                openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     EliteCraftConfig config = cache.getEliteCraftConfig();
                     if (args.length > 1) {
                         if (!config.saveConfig(args[0], args[1], player1)) {
@@ -132,24 +132,24 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ToggleButton("workbench.mirrorHorizontal", false, new ButtonState("recipe_creator","workbench.mirrorHorizontal.enabled", WolfyUtilities.getSkullViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("workbench.mirrorHorizontal", false, new ButtonState("recipe_creator", "workbench.mirrorHorizontal.enabled", WolfyUtilities.getSkullViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorHorizontal(false);
             return true;
-        }), new ButtonState("recipe_creator","workbench.mirrorHorizontal.disabled", WolfyUtilities.getSkullViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState("recipe_creator", "workbench.mirrorHorizontal.disabled", WolfyUtilities.getSkullViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorHorizontal(true);
             return true;
         })));
-        registerButton(new ToggleButton("workbench.mirrorVertical", false, new ButtonState("recipe_creator","workbench.mirrorVertical.enabled", WolfyUtilities.getSkullViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("workbench.mirrorVertical", false, new ButtonState("recipe_creator", "workbench.mirrorVertical.enabled", WolfyUtilities.getSkullViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorVertical(false);
             return true;
-        }), new ButtonState("recipe_creator","workbench.mirrorVertical.disabled", WolfyUtilities.getSkullViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState("recipe_creator", "workbench.mirrorVertical.disabled", WolfyUtilities.getSkullViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorVertical(true);
             return true;
         })));
-        registerButton(new ToggleButton("workbench.mirrorRotation", false, new ButtonState("recipe_creator","workbench.mirrorRotation.enabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("workbench.mirrorRotation", false, new ButtonState("recipe_creator", "workbench.mirrorRotation.enabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorRotation(false);
             return true;
-        }), new ButtonState("recipe_creator","workbench.mirrorRotation.disabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState("recipe_creator", "workbench.mirrorRotation.disabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorRotation(true);
             return true;
         })));
@@ -176,7 +176,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             event.setButton(24, "workbench.shapeless");
 
             event.setButton(35, "hidden");
-            if(workbench.mirrorHorizontal() && workbench.mirrorVertical()){
+            if (workbench.mirrorHorizontal() && workbench.mirrorVertical()) {
                 event.setButton(33, "workbench.mirrorRotation");
             }
             event.setButton(42, "workbench.mirrorHorizontal");

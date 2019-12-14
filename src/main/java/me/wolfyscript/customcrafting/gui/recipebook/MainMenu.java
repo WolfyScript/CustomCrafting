@@ -77,34 +77,34 @@ public class MainMenu extends ExtendedGuiWindow {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
             List<String> availableRecipes = new ArrayList<>();
-            if(!recipeHandler.getAvailableAdvancedCraftingRecipes(event.getPlayer()).isEmpty()){
+            if (!recipeHandler.getAvailableAdvancedCraftingRecipes(event.getPlayer()).isEmpty()) {
                 availableRecipes.add("workbench");
             }
-            if(!recipeHandler.getAvailableFurnaceRecipes().isEmpty()){
+            if (!recipeHandler.getAvailableFurnaceRecipes().isEmpty()) {
                 availableRecipes.add("furnace");
             }
-            if(!recipeHandler.getAvailableAnvilRecipes(event.getPlayer()).isEmpty()){
+            if (!recipeHandler.getAvailableAnvilRecipes(event.getPlayer()).isEmpty()) {
                 availableRecipes.add("anvil");
             }
             if (WolfyUtilities.hasVillagePillageUpdate()) {
-                if(!recipeHandler.getAvailableBlastRecipes().isEmpty()){
+                if (!recipeHandler.getAvailableBlastRecipes().isEmpty()) {
                     availableRecipes.add("blast_furnace");
                 }
-                if(!recipeHandler.getAvailableSmokerRecipes().isEmpty()){
+                if (!recipeHandler.getAvailableSmokerRecipes().isEmpty()) {
                     availableRecipes.add("smoker");
                 }
-                if(!recipeHandler.getAvailableCampfireRecipes().isEmpty()){
+                if (!recipeHandler.getAvailableCampfireRecipes().isEmpty()) {
                     availableRecipes.add("campfire");
                 }
-                if (!recipeHandler.getAvailableStonecutterRecipes().isEmpty()){
+                if (!recipeHandler.getAvailableStonecutterRecipes().isEmpty()) {
                     availableRecipes.add("stonecutter");
                 }
-                if(!recipeHandler.getAvailableEliteCraftingRecipes(event.getPlayer()).isEmpty()){
+                if (!recipeHandler.getAvailableEliteCraftingRecipes(event.getPlayer()).isEmpty()) {
                     availableRecipes.add("elite_workbench");
                 }
             }
 
-            for(int i = 0; i < 9 && i < availableRecipes.size(); i++){
+            for (int i = 0; i < 9 && i < availableRecipes.size(); i++) {
                 event.setButton(i, availableRecipes.get(i));
             }
         }

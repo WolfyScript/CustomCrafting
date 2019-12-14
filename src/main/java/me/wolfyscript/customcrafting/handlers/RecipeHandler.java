@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
@@ -40,7 +39,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.util.NumberConversions;
 
 import java.io.File;
@@ -339,11 +339,11 @@ public class RecipeHandler {
         return groupRecipes;
     }
 
-    public List<String> getNamespaces(){
+    public List<String> getNamespaces() {
         List<String> namespaces = new ArrayList<>();
-        for(String namespace : customRecipes.keySet()){
+        for (String namespace : customRecipes.keySet()) {
 
-            if(!namespaces.contains(namespace.split(":")[0])){
+            if (!namespaces.contains(namespace.split(":")[0])) {
                 namespaces.add(namespace.split(":")[0]);
             }
         }
@@ -352,8 +352,8 @@ public class RecipeHandler {
 
     public List<CustomRecipe> getRecipesByNamespace(String namespace) {
         List<CustomRecipe> namespaceRecipes = new ArrayList<>();
-        for(Map.Entry<String, CustomRecipe> recipeEntry : customRecipes.entrySet()){
-            if(recipeEntry.getKey().split(":")[0].equalsIgnoreCase(namespace)){
+        for (Map.Entry<String, CustomRecipe> recipeEntry : customRecipes.entrySet()) {
+            if (recipeEntry.getKey().split(":")[0].equalsIgnoreCase(namespace)) {
                 namespaceRecipes.add(recipeEntry.getValue());
             }
         }
@@ -427,7 +427,7 @@ public class RecipeHandler {
         return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
     }
 
-    public <T extends CustomRecipe> List<T> getRecipes(Class<T> type){
+    public <T extends CustomRecipe> List<T> getRecipes(Class<T> type) {
         List<T> recipes = new ArrayList<>();
         for (CustomRecipe recipe : customRecipes.values()) {
             if (type.isInstance(recipe)) {
@@ -437,12 +437,12 @@ public class RecipeHandler {
         return recipes;
     }
 
-    public <T extends CustomRecipe> List<T> getAvailableRecipes(Class<T> type){
+    public <T extends CustomRecipe> List<T> getAvailableRecipes(Class<T> type) {
         List<T> recipes = getRecipes(type);
         Iterator<T> iterator = recipes.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             T recipe = iterator.next();
-            if (recipe.isHidden() || CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())){
+            if (recipe.isHidden() || CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
                 iterator.remove();
             }
         }
@@ -490,10 +490,10 @@ public class RecipeHandler {
     Disabled and hidden recipes are removed!
     For the crafting recipes you also need permissions to view them.
      */
-    public List<AdvancedCraftingRecipe> getAvailableAdvancedCraftingRecipes(Player player){
+    public List<AdvancedCraftingRecipe> getAvailableAdvancedCraftingRecipes(Player player) {
         List<AdvancedCraftingRecipe> recipes = getAvailableRecipes(AdvancedCraftingRecipe.class);
         Iterator<AdvancedCraftingRecipe> iterator = recipes.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             AdvancedCraftingRecipe recipe = iterator.next();
             if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
                 iterator.remove();
@@ -502,10 +502,10 @@ public class RecipeHandler {
         return recipes;
     }
 
-    public List<EliteCraftingRecipe> getAvailableEliteCraftingRecipes(Player player){
+    public List<EliteCraftingRecipe> getAvailableEliteCraftingRecipes(Player player) {
         List<EliteCraftingRecipe> recipes = getAvailableRecipes(EliteCraftingRecipe.class);
         Iterator<EliteCraftingRecipe> iterator = recipes.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             EliteCraftingRecipe recipe = iterator.next();
             if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
                 iterator.remove();
@@ -514,7 +514,7 @@ public class RecipeHandler {
         return recipes;
     }
 
-    public List<CustomFurnaceRecipe> getAvailableFurnaceRecipes(){
+    public List<CustomFurnaceRecipe> getAvailableFurnaceRecipes() {
         return getAvailableRecipes(CustomFurnaceRecipe.class);
     }
 
@@ -537,7 +537,7 @@ public class RecipeHandler {
     public List<CustomAnvilRecipe> getAvailableAnvilRecipes(Player player) {
         List<CustomAnvilRecipe> recipes = getAvailableRecipes(CustomAnvilRecipe.class);
         Iterator<CustomAnvilRecipe> iterator = recipes.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             CustomAnvilRecipe recipe = iterator.next();
             if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
                 iterator.remove();
@@ -677,7 +677,7 @@ public class RecipeHandler {
                 }
                 return false;
             case CAULDRON:
-                if(recipe instanceof CauldronRecipe){
+                if (recipe instanceof CauldronRecipe) {
                     cache.setCauldronConfig(((CauldronRecipe) recipe).getConfig());
                     return true;
                 }

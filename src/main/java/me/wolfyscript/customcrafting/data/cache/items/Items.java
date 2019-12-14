@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.data.cache.items;
 
-import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;

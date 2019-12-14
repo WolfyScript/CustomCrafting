@@ -14,7 +14,6 @@ import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,9 +63,9 @@ public class EliteWorkbenchCondition extends Condition {
         JsonObject jsonObject = (JsonObject) jsonElement;
         JsonArray jsonArray = jsonObject.getAsJsonArray("elite_workbenches");
         Iterator<JsonElement> iterator = jsonArray.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             JsonElement element = iterator.next();
-            if(element instanceof JsonPrimitive){
+            if (element instanceof JsonPrimitive) {
                 addEliteWorkbenches(element.getAsString());
             }
         }

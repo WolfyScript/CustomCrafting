@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
-import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -17,7 +16,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,11 +31,11 @@ public class CauldronContainerButton extends ItemInputButton {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
                 CauldronConfig cauldronConfig = cache.getCauldronConfig();
                 if (event.isRightClick() && event.isShiftClick()) {
-                    if(inputSlot == 0 && cauldronConfig.getIngredients() != null){
+                    if (inputSlot == 0 && cauldronConfig.getIngredients() != null) {
                         cache.getVariantsData().setSlot(inputSlot);
                         cache.getVariantsData().setVariants(cauldronConfig.getIngredients());
 
-                    }else if(inputSlot == 1 && cauldronConfig.getResult() != null){
+                    } else if (inputSlot == 1 && cauldronConfig.getResult() != null) {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             cache.getItems().setItem(false, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
                             cache.setApplyItem(APPLY_ITEM);
@@ -49,7 +47,7 @@ public class CauldronContainerButton extends ItemInputButton {
                 } else {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         CustomItem input = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
-                        if(inputSlot == 0){
+                        if (inputSlot == 0) {
                             List<CustomItem> inputs = cauldronConfig.getIngredients();
                             if (inputs.size() > 0) {
                                 inputs.set(0, input);
@@ -57,7 +55,7 @@ public class CauldronContainerButton extends ItemInputButton {
                                 inputs.add(input);
                             }
                             cauldronConfig.setIngredients(inputs);
-                        }else{
+                        } else {
                             cauldronConfig.setResult(Collections.singletonList(input));
                         }
                     });

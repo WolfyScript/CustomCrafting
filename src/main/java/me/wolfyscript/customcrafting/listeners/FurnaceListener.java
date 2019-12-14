@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
@@ -13,20 +12,13 @@ import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Furnace;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 public class FurnaceListener implements Listener {
 
@@ -154,13 +146,13 @@ public class FurnaceListener implements Listener {
         List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult());
         for (Recipe recipe : recipes) {
             if (recipe.getResult().isSimilar(event.getResult())) {
-                if(recipe instanceof Keyed && CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())){
+                if (recipe instanceof Keyed && CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
                     event.setCancelled(true);
                     continue;
                 }
                 CustomCookingRecipe<CookingConfig> customRecipe = (CustomCookingRecipe<CookingConfig>) CustomCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
                 if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
-                    if(customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))){
+                    if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                         event.setCancelled(false);
                         RandomCollection<CustomItem> items = new RandomCollection<>();
                         for (CustomItem customItem : customRecipe.getCustomResults()) {
@@ -173,7 +165,7 @@ public class FurnaceListener implements Listener {
                             }
                         }
                         break;
-                    }else{
+                    } else {
                         event.setCancelled(true);
                     }
                 }

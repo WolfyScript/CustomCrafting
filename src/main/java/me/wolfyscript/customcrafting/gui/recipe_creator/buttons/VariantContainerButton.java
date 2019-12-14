@@ -34,7 +34,7 @@ public class VariantContainerButton extends ItemInputButton {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             CustomCrafting.getPlayerCache(player).getItems().setVariant(variantSlot, CustomItem.getByItemStack(inventory.getItem(slot)));
                             cache.setApplyItem(APPLY_ITEM);
-                            guiHandler.changeToInv("none","item_editor");
+                            guiHandler.changeToInv("none", "item_editor");
                         }
                     });
                     return true;

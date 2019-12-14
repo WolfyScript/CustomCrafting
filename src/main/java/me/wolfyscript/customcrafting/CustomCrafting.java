@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting;
 
-import com.google.gson.*;
+import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
@@ -21,7 +21,6 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.GsonUtil;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
-import me.wolfyscript.utilities.main.Main;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -37,7 +36,10 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class CustomCrafting extends JavaPlugin {

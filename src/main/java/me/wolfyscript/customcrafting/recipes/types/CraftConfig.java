@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import com.google.gson.JsonObject;
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
@@ -237,7 +236,7 @@ public class CraftConfig extends RecipeConfig {
         set("mirror.rotation", rotation);
     }
 
-    public boolean mirrorRotation(){
+    public boolean mirrorRotation() {
         return getBoolean("mirror.rotation");
     }
 }

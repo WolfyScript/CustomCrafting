@@ -53,7 +53,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             if (CustomCrafting.getPlayerCache(player).getItems().isRecipeItem()) {
                 guiHandler.openCluster("recipe_creator");
-            }else{
+            } else {
                 guiHandler.openCluster("none");
             }
             return true;
@@ -173,7 +173,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     if (enchantment != null) {
                         CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().addUnsafeEnchantment(enchantment, level);
                     } else {
-                        api.sendPlayerMessage(player, "none","item_creator", "enchant.invalid_enchant", new String[]{"%ENCHANT%", args[0]});
+                        api.sendPlayerMessage(player, "none", "item_creator", "enchant.invalid_enchant", new String[]{"%ENCHANT%", args[0]});
                         return true;
                     }
                 } else {
@@ -187,7 +187,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 if (enchantment != null) {
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().removeEnchantment(enchantment);
                 } else {
-                    api.sendPlayerMessage( player, "none","item_creator", "enchant.invalid_enchant", new String[]{"%ENCHANT%", args[0]});
+                    api.sendPlayerMessage(player, "none", "item_creator", "enchant.invalid_enchant", new String[]{"%ENCHANT%", args[0]});
                     return true;
                 }
                 return false;
@@ -816,7 +816,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
                 values.put("%VAR%", ItemUtils.getDamage(items.getItem()));
                 return itemStack;
-            }),  (guiHandler, player, s, strings) -> {
+            }), (guiHandler, player, s, strings) -> {
                 try {
                     ItemUtils.setDamage(CustomCrafting.getPlayerCache(player).getItems().getItem(), Integer.parseInt(strings[0]));
                 } catch (NumberFormatException ex) {
@@ -829,7 +829,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
                 values.put("%VAR%", ItemUtils.getDurabilityTag(items.getItem()));
                 return itemStack;
-            }),  (guiHandler, player, s, strings) -> {
+            }), (guiHandler, player, s, strings) -> {
                 try {
                     ItemUtils.setDurabilityTag(CustomCrafting.getPlayerCache(player).getItems().getItem(), "&r" + s);
                 } catch (NumberFormatException ex) {
@@ -976,7 +976,7 @@ public class ItemCreator extends ExtendedGuiWindow {
 
             if (!items.isRecipeItem()) {
                 event.setButton(3, "save_item");
-            }else{
+            } else {
                 event.setButton(2, "apply_item");
                 event.setButton(3, "save_item");
             }
@@ -1029,7 +1029,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 } else if (i == 10) {
                     slot = 13;
                 }
-                event.setButton(slot+i, options.get(j));
+                event.setButton(slot + i, options.get(j));
                 j++;
             }
             if (!items.getItem().getType().equals(Material.AIR)) {

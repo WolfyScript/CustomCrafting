@@ -3,13 +3,11 @@ package me.wolfyscript.customcrafting.recipes.types;
 import com.sun.javafx.geom.Vec2d;
 import me.wolfyscript.customcrafting.recipes.crafting.CraftingData;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface ShapelessCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T> {
 
@@ -24,12 +22,12 @@ public interface ShapelessCraftingRecipe<T extends CraftConfig> extends Crafting
                     continue;
                 }
                 CustomItem item = checkIngredient(usedKeys, itemStack);
-                if(item != null){
+                if (item != null) {
                     foundItems.put(new Vec2d(j, i), item);
                 }
             }
         }
-        if(usedKeys.containsAll(getIngredients().keySet())){
+        if (usedKeys.containsAll(getIngredients().keySet())) {
             return new CraftingData((CraftingRecipe<CraftConfig>) this, foundItems);
         }
         return null;

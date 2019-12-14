@@ -1,6 +1,9 @@
 package me.wolfyscript.customcrafting.data;
 
-import me.wolfyscript.customcrafting.data.cache.*;
+import me.wolfyscript.customcrafting.data.cache.ChatLists;
+import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
+import me.wolfyscript.customcrafting.data.cache.VariantsData;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -136,11 +139,11 @@ public class PlayerCache {
         CACHE = stats;
     }
 
-    public void setDarkMode(boolean darkMode){
+    public void setDarkMode(boolean darkMode) {
         CACHE.put("dark_mode", darkMode);
     }
 
-    public boolean getDarkMode(){
+    public boolean getDarkMode() {
         return (boolean) CACHE.getOrDefault("dark_mode", false);
     }
 
@@ -212,7 +215,7 @@ public class PlayerCache {
     }
 
     public void applyItem(CustomItem customItem) {
-        if(applyItem != null){
+        if (applyItem != null) {
             applyItem.applyItem(getItems(), this, customItem);
             applyItem = null;
         }

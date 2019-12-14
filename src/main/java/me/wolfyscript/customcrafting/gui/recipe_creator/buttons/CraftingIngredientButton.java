@@ -48,7 +48,7 @@ public class CraftingIngredientButton extends ItemInputButton {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             customItem = CustomItem.getByItemStack(inventory.getItem(slot));
                         }
-                        if ( (workbench instanceof EliteCraftConfig && recipeSlot == 36) || ((workbench instanceof AdvancedCraftConfig) && recipeSlot == 9)) {
+                        if ((workbench instanceof EliteCraftConfig && recipeSlot == 36) || ((workbench instanceof AdvancedCraftConfig) && recipeSlot == 9)) {
                             workbench.setResult(0, customItem);
                         } else {
                             workbench.setIngredient(recipeSlot, 0, customItem);

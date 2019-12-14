@@ -11,7 +11,6 @@ import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +86,7 @@ public class RecipeConfig extends CustomConfig {
             reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
         }
         api.sendPlayerMessage(player, "recipe_creator", "save.success");
-        api.sendPlayerMessage(player, "§6"+ (type.equalsIgnoreCase("item") ? "items" : "recipes") +"/" + namespace + "/" + type +"/" + key);
+        api.sendPlayerMessage(player, "§6" + (type.equalsIgnoreCase("item") ? "items" : "recipes") + "/" + namespace + "/" + type + "/" + key);
         return true;
     }
 
@@ -187,11 +186,11 @@ public class RecipeConfig extends CustomConfig {
         return results;
     }
 
-    public void setHidden(boolean hidden){
+    public void setHidden(boolean hidden) {
         set("hidden", hidden);
     }
 
-    public boolean isHidden(){
+    public boolean isHidden() {
         return getBoolean("hidden");
     }
 }

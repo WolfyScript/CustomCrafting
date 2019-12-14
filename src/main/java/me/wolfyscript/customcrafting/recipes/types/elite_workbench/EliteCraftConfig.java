@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 

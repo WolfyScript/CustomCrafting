@@ -54,7 +54,7 @@ public class ChatUtils {
             }
             api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()));
             api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-            api.sendPlayerMessage(player, "none", "recipe_editor","input");
+            api.sendPlayerMessage(player, "none", "recipe_editor", "input");
         }, true), new ClickData(" Recipes:", null));
 
         ArrayList<CustomRecipe> customRecipes = new ArrayList<>();

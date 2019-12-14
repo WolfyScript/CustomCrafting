@@ -14,8 +14,6 @@ import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -35,7 +33,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,7 +102,7 @@ public class RecipeBook extends ExtendedGuiWindow {
             if (knowledgeBook.getCustomRecipe() == null) {
                 event.setButton(4, "recipe_book", "itemCategory");
                 List<CustomRecipe> recipes = new ArrayList<>();
-                switch (knowledgeBook.getSetting()){
+                switch (knowledgeBook.getSetting()) {
                     case WORKBENCH:
                         KnowledgeBook.WorkbenchFilter workbenchFilter = knowledgeBook.getWorkbenchFilter();
                         event.setButton(8, "workbench_filter_button");
@@ -146,18 +143,18 @@ public class RecipeBook extends ExtendedGuiWindow {
                 } else {
                     recipes.addAll(CustomCrafting.getRecipeHandler().getRecipes(knowledgeBook.getSetting()));
                 }
-                if(!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)){
+                if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
                     Iterator<CustomRecipe> recipeIterator = recipes.iterator();
-                    while(recipeIterator.hasNext()){
+                    while (recipeIterator.hasNext()) {
                         CustomRecipe<RecipeConfig> customRecipe = recipeIterator.next();
                         boolean valid = false;
-                        for(CustomItem item : customRecipe.getCustomResults()){
-                            if(knowledgeBook.getItemCategory().isValid(item.getType())){
+                        for (CustomItem item : customRecipe.getCustomResults()) {
+                            if (knowledgeBook.getItemCategory().isValid(item.getType())) {
                                 valid = true;
                                 break;
                             }
                         }
-                        if(!valid){
+                        if (!valid) {
                             recipeIterator.remove();
                         }
                     }
@@ -167,10 +164,10 @@ public class RecipeBook extends ExtendedGuiWindow {
                 if (knowledgeBook.getPage() >= maxPages) {
                     knowledgeBook.setPage(0);
                 }
-                if(knowledgeBook.getPage() != 0){
+                if (knowledgeBook.getPage() != 0) {
                     event.setButton(2, "previous_page");
                 }
-                if(knowledgeBook.getPage()+1 < maxPages){
+                if (knowledgeBook.getPage() + 1 < maxPages) {
                     event.setButton(6, "next_page");
                 }
                 int item = 0;

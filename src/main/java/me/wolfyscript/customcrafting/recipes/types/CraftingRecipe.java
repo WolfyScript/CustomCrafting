@@ -22,7 +22,7 @@ public interface CraftingRecipe<T extends CraftConfig> extends CustomRecipe<T> {
     //void removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, ItemStack[] matrix, int totalAmount, CraftingData craftingData);
 
     default void removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, int totalAmount, CraftingData craftingData) {
-        for(Map.Entry<Vec2d, CustomItem> entry : craftingData.getFoundItems().entrySet()){
+        for (Map.Entry<Vec2d, CustomItem> entry : craftingData.getFoundItems().entrySet()) {
             Vec2d vec = entry.getKey();
             CustomItem item = entry.getValue();
             ItemStack input = ingredientsInput.get((int) vec.y).get((int) vec.x);
@@ -34,7 +34,7 @@ public interface CraftingRecipe<T extends CraftConfig> extends CustomRecipe<T> {
 
     default int getAmountCraftable(List<List<ItemStack>> matrix, CraftingData craftingData) {
         int totalAmount = -1;
-        for(Map.Entry<Vec2d, CustomItem> entry : craftingData.getFoundItems().entrySet()){
+        for (Map.Entry<Vec2d, CustomItem> entry : craftingData.getFoundItems().entrySet()) {
             Vec2d vec = entry.getKey();
             CustomItem item = entry.getValue();
             ItemStack input = matrix.get((int) vec.y).get((int) vec.x);

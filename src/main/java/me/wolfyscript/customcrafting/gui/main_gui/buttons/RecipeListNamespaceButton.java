@@ -11,7 +11,6 @@ import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.inventory.Recipe;
 
-import java.security.Key;
 import java.util.HashMap;
 
 public class RecipeListNamespaceButton extends ActionButton {
@@ -33,32 +32,32 @@ public class RecipeListNamespaceButton extends ActionButton {
                         ((RecipesList) guiWindow).setPage(guiHandler, 0);
                     }
                 } else {
-                    if(namespace.equalsIgnoreCase("minecraft")){
-                        if(event.isShiftClick() && event.isLeftClick()){
+                    if (namespace.equalsIgnoreCase("minecraft")) {
+                        if (event.isShiftClick() && event.isLeftClick()) {
                             for (Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()) {
-                                if(recipe instanceof Keyed){
+                                if (recipe instanceof Keyed) {
                                     String id = ((Keyed) recipe).getKey().toString();
                                     if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
                                         CustomCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                                     }
                                 }
                             }
-                        } else if(event.isShiftClick() && event.isRightClick()){
+                        } else if (event.isShiftClick() && event.isRightClick()) {
                             for (Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()) {
-                                if(recipe instanceof Keyed){
+                                if (recipe instanceof Keyed) {
                                     CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(((Keyed) recipe).getKey().toString());
                                 }
                             }
                         }
-                    }else{
-                        if(event.isShiftClick() && event.isLeftClick()){
+                    } else {
+                        if (event.isShiftClick() && event.isLeftClick()) {
                             for (CustomRecipe recipe : CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
                                 String id = recipe.getId();
                                 if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
                                     CustomCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                                 }
                             }
-                        } else if(event.isShiftClick() && event.isRightClick()){
+                        } else if (event.isShiftClick() && event.isRightClick()) {
                             for (CustomRecipe recipe : CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
                                 CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getId());
                             }

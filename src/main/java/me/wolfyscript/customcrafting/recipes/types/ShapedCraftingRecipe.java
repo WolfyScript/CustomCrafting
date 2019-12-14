@@ -2,18 +2,21 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import com.sun.javafx.geom.Vec2d;
 import me.wolfyscript.customcrafting.recipes.crafting.CraftingData;
-import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRecipe<T> {
 
     String[] getShapeMirrorHorizontal();
+
     String[] getShapeMirrorVertical();
+
     String[] getShapeRotated();
+
     String[] getShape();
 
     @Override
@@ -30,31 +33,31 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
     @Override
     default CraftingData check(List<List<ItemStack>> matrix) {
         CraftingData craftingData = checkShape(matrix, getShape());
-        if(craftingData != null){
+        if (craftingData != null) {
             return craftingData;
         }
-        if(mirrorHorizontal()){
+        if (mirrorHorizontal()) {
             craftingData = checkShape(matrix, getShapeMirrorHorizontal());
-            if(craftingData != null){
+            if (craftingData != null) {
                 return craftingData;
             }
         }
-        if(mirrorVertical()){
+        if (mirrorVertical()) {
             craftingData = checkShape(matrix, getShapeMirrorVertical());
-            if(craftingData != null){
+            if (craftingData != null) {
                 return craftingData;
             }
         }
-        if(mirrorHorizontal() && mirrorVertical() && mirrorRotate()){
+        if (mirrorHorizontal() && mirrorVertical() && mirrorRotate()) {
             craftingData = checkShape(matrix, getShapeRotated());
-            if(craftingData != null){
+            if (craftingData != null) {
                 return craftingData;
             }
         }
         return null;
     }
 
-    default CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape){
+    default CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape) {
         List<Character> containedKeys = new ArrayList<>();
         HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
         for (int i = 0; i < matrix.size(); i++) {
@@ -72,7 +75,7 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
                 }
             }
         }
-        if(containedKeys.containsAll(getIngredients().keySet())){
+        if (containedKeys.containsAll(getIngredients().keySet())) {
             return new CraftingData((CraftingRecipe<CraftConfig>) this, foundItems);
         }
         return null;

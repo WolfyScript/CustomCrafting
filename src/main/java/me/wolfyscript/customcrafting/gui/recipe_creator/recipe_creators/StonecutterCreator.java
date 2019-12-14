@@ -15,7 +15,6 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Locale;
 
@@ -31,10 +30,10 @@ public class StonecutterCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("recipe_creator","save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat("recipe_creator","save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
                     StonecutterConfig stonecutterConfig = cache1.getStonecutterConfig();
                     if (args.length > 1) {
@@ -51,11 +50,11 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                         try {
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
-                                api.sendPlayerMessage(player, "recipe_creator","loading.success");
+                                api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
 
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator","error.loading", new String[]{"%REC%", stonecutterConfig.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "error.loading", new String[]{"%REC%", stonecutterConfig.getId()});
                             ex.printStackTrace();
                             return false;
                         }
@@ -64,7 +63,7 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                     return false;
                 });
             } else {
-                api.sendPlayerMessage(player, "recipe_creator","save.empty");
+                api.sendPlayerMessage(player, "recipe_creator", "save.empty");
             }
             return false;
         })));

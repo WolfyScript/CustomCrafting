@@ -2,14 +2,11 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeMap;
 
 public abstract class Condition {
 
@@ -57,7 +54,7 @@ public abstract class Condition {
         return id;
     }
 
-    public JsonElement toJsonElement(){
+    public JsonElement toJsonElement() {
         JsonObject element = new JsonObject();
         element.addProperty("id", id);
         element.addProperty("option", option.toString());

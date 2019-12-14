@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
@@ -184,7 +183,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             List<String> values = new ArrayList<>();
             values.add("conditions.world_time");
             values.add("conditions.weather");
-            switch (cache.getSetting()){
+            switch (cache.getSetting()) {
                 case WORKBENCH:
                     values.add("conditions.permission");
                     values.add("conditions.advanced_workbench");
@@ -195,7 +194,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                     break;
             }
             int item = 9;
-            for(int i = 0; i < values.size() && item < 45; i++){
+            for (int i = 0; i < values.size() && item < 45; i++) {
                 event.setButton(item++, values.get(i));
             }
         }

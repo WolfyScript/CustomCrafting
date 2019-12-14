@@ -12,7 +12,6 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
-import me.wolfyscript.utilities.main.Main;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +20,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Settings extends ExtendedGuiWindow {
 
@@ -87,11 +88,11 @@ public class Settings extends ExtendedGuiWindow {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
                 int index = availableLangs.indexOf(CustomCrafting.getConfigHandler().getConfig().getLanguage());
                 int nextIndex = index;
-                if(event.isLeftClick() && !event.isShiftClick()){
+                if (event.isLeftClick() && !event.isShiftClick()) {
                     nextIndex = (index + 1 < availableLangs.size()) ? index + 1 : 0;
-                }else if(event.isRightClick() && !event.isShiftClick()){
-                    nextIndex = index - 1 >= 0 ? index - 1 : availableLangs.size()-1;
-                }else if(event.isShiftClick()){
+                } else if (event.isRightClick() && !event.isShiftClick()) {
+                    nextIndex = index - 1 >= 0 ? index - 1 : availableLangs.size() - 1;
+                } else if (event.isShiftClick()) {
                     if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
                         api.sendPlayerMessage(player, "&eReloading Inventories and Languages!");
                         CustomCrafting.getApi().getInventoryAPI().reset();
@@ -116,11 +117,11 @@ public class Settings extends ExtendedGuiWindow {
                 List<String> displayLangs = new ArrayList<>();
                 displayLangs.addAll(availableLangs.subList(index, availableLangs.size()));
                 displayLangs.addAll(availableLangs.subList(0, index));
-                for(int i = 0; i < 5; i++){
-                    if(i < displayLangs.size()){
-                        hashMap.put("%lang"+i+"%", displayLangs.get(i));
-                    }else{
-                        hashMap.put("%lang"+i+"%", "");
+                for (int i = 0; i < 5; i++) {
+                    if (i < displayLangs.size()) {
+                        hashMap.put("%lang" + i + "%", displayLangs.get(i));
+                    } else {
+                        hashMap.put("%lang" + i + "%", "");
                     }
                 }
                 return itemStack;
@@ -142,15 +143,12 @@ public class Settings extends ExtendedGuiWindow {
             availableLangs.clear();
             File langFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "lang");
             String[] filenames = langFolder.list((dir, name) -> {
-                if(name.endsWith(".json")){
-                    return true;
-                }
-                return false;
+                return name.endsWith(".json");
             });
             availableLangs.add("de_DE");
-            for(String filename : filenames){
+            for (String filename : filenames) {
                 String name = filename.replace(".json", "");
-                if(!availableLangs.contains(name)){
+                if (!availableLangs.contains(name)) {
                     availableLangs.add(name);
                 }
             }

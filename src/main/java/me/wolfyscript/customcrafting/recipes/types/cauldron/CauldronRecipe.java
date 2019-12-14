@@ -183,15 +183,15 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
         return handItem;
     }
 
-    public String getMythicMobName(){
+    public String getMythicMobName() {
         return mythicMobName;
     }
 
-    public int getMythicMobLevel(){
+    public int getMythicMobLevel() {
         return mythicMobLevel;
     }
 
-    public Vector getMythicMobMod(){
+    public Vector getMythicMobMod() {
         return mythicMobMod;
     }
 

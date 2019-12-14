@@ -44,9 +44,9 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         break;
                     case "darkmode":
                         CustomCrafting.getPlayerCache(p).setDarkMode(!CustomCrafting.getPlayerCache(p).getDarkMode());
-                        if(CustomCrafting.getPlayerCache(p).getDarkMode()){
+                        if (CustomCrafting.getPlayerCache(p).getDarkMode()) {
                             api.sendPlayerMessage(p, "$commands.darkmode.enabled$");
-                        }else{
+                        } else {
                             api.sendPlayerMessage(p, "$commands.darkmode.disabled$");
                         }
                         break;

@@ -7,21 +7,15 @@ import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
-import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.utils.ItemCategory;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
@@ -66,8 +60,8 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
     }
 
     @EventHandler
-    public void onUpdate(GuiUpdateEvent event){
-        if(event.verify(this)){
+    public void onUpdate(GuiUpdateEvent event) {
+        if (event.verify(this)) {
             event.setButton(0, "back");
             Player player = event.getPlayer();
 
@@ -87,18 +81,18 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                 if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
                     recipes.addAll(CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player));
                 }
-                if(!itemCategory.equals(ItemCategory.SEARCH)){
+                if (!itemCategory.equals(ItemCategory.SEARCH)) {
                     Iterator<CustomRecipe> recipeIterator = recipes.iterator();
-                    while(recipeIterator.hasNext()){
+                    while (recipeIterator.hasNext()) {
                         CustomRecipe recipe = recipeIterator.next();
                         List<CustomItem> customItems = recipe.getCustomResults();
                         boolean allowed = false;
-                        for(CustomItem customItem : customItems){
-                            if(itemCategory.isValid(customItem.getType())){
+                        for (CustomItem customItem : customItems) {
+                            if (itemCategory.isValid(customItem.getType())) {
                                 allowed = true;
                             }
                         }
-                        if(!allowed){
+                        if (!allowed) {
                             recipeIterator.remove();
                         }
                     }

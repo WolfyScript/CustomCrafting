@@ -62,9 +62,9 @@ public class VariantMenu extends ExtendedGuiWindow {
                 case CAULDRON:
                     List<CustomItem> variants = cache.getVariantsData().getVariants();
                     variants.removeIf(item -> item.getType().equals(Material.AIR));
-                    if(cache.getVariantsData().getSlot() == 0){
+                    if (cache.getVariantsData().getSlot() == 0) {
                         cache.getCauldronConfig().setIngredients(variants);
-                    }else{
+                    } else {
                         cache.getCauldronConfig().setResult(variants);
                     }
 

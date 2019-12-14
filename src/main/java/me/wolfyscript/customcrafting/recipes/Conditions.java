@@ -108,7 +108,7 @@ public class Conditions extends HashMap<String, Condition> {
         @Override
         public JsonElement serialize(Conditions conditions, Type type, JsonSerializationContext jsonSerializationContext) {
             JsonElement element = new JsonArray();
-            for(Condition condition : conditions.values()){
+            for (Condition condition : conditions.values()) {
                 ((JsonArray) element).add(condition.toJsonElement());
             }
             return element;
@@ -117,15 +117,15 @@ public class Conditions extends HashMap<String, Condition> {
         @Override
         public Conditions deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             Conditions conditions = new Conditions();
-            if(jsonElement instanceof JsonArray){
+            if (jsonElement instanceof JsonArray) {
                 Iterator<JsonElement> elementIterator = ((JsonArray) jsonElement).iterator();
-                while(elementIterator.hasNext()){
+                while (elementIterator.hasNext()) {
                     JsonElement element = elementIterator.next();
-                    if(element instanceof JsonObject){
+                    if (element instanceof JsonObject) {
                         String id = ((JsonObject) element).getAsJsonPrimitive("id").getAsString();
                         Conditions.Option option = Conditions.Option.valueOf(((JsonObject) element).getAsJsonPrimitive("option").getAsString());
                         Condition condition = conditions.getByID(id);
-                        if(condition != null){
+                        if (condition != null) {
                             condition.setOption(option);
                             condition.fromJsonElement(element);
                         }

@@ -43,7 +43,7 @@ public class ItemCategoryButton extends MultipleChoiceButton {
         }));
     }
 
-    public void setState(GuiHandler guiHandler, ItemCategory itemCategory){
+    public void setState(GuiHandler guiHandler, ItemCategory itemCategory) {
         setState(guiHandler, itemCategory.ordinal());
     }
 }

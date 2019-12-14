@@ -47,7 +47,7 @@ public class WorldTimeCondition extends Condition {
 
     @Override
     public void fromJsonElement(JsonElement jsonElement) {
-        this.time = ((JsonObject)jsonElement).getAsJsonPrimitive("time").getAsInt();
+        this.time = ((JsonObject) jsonElement).getAsJsonPrimitive("time").getAsInt();
     }
 
     public void setTime(long time) {
