@@ -100,9 +100,7 @@ public class RecipeBook extends ExtendedGuiWindow {
             }
             event.setButton(0, "back");
             if (knowledgeBook.getCustomRecipe() == null) {
-                event.setButton(2, "previous_page");
                 event.setButton(4, "recipe_book", "itemCategory");
-                event.setButton(6, "next_page");
                 List<CustomRecipe> recipes = new ArrayList<>();
 
                 if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
@@ -118,7 +116,6 @@ public class RecipeBook extends ExtendedGuiWindow {
                 } else {
                     recipes.addAll(CustomCrafting.getRecipeHandler().getRecipes(knowledgeBook.getSetting()));
                 }
-
                 if(!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)){
                     Iterator<CustomRecipe> recipeIterator = recipes.iterator();
                     while(recipeIterator.hasNext()){
@@ -139,6 +136,12 @@ public class RecipeBook extends ExtendedGuiWindow {
                 int maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
                 if (knowledgeBook.getPage() >= maxPages) {
                     knowledgeBook.setPage(0);
+                }
+                if(knowledgeBook.getPage() != 0){
+                    event.setButton(2, "previous_page");
+                }
+                if(knowledgeBook.getPage()+1 < maxPages){
+                    event.setButton(6, "next_page");
                 }
                 int item = 0;
                 for (int i = 45 * knowledgeBook.getPage(); item < 45 && i < recipes.size(); i++) {
@@ -213,7 +216,6 @@ public class RecipeBook extends ExtendedGuiWindow {
                         }
                         break;
                     case ELITE_WORKBENCH:
-
                         break;
                     case CAMPFIRE:
                     case BLAST_FURNACE:

@@ -22,7 +22,7 @@ import java.util.List;
 public class MainMenu extends ExtendedGuiWindow {
 
     public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 45);
+        super("main_menu", inventoryAPI, 9);
     }
 
     @Override
@@ -75,9 +75,6 @@ public class MainMenu extends ExtendedGuiWindow {
     private void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
-            event.setButton(0, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-            event.setButton(8, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-
             RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
             List<String> availableRecipes = new ArrayList<>();
             if(!recipeHandler.getAvailableAdvancedCraftingRecipes(event.getPlayer()).isEmpty()){
@@ -106,12 +103,9 @@ public class MainMenu extends ExtendedGuiWindow {
                     availableRecipes.add("elite_workbench");
                 }
             }
-            int index = 0;
-            for(int i = 10; i < 45 && index < availableRecipes.size(); i+=2){
-                if(i == 18){
-                    i = 28;
-                }
-                event.setButton(i, availableRecipes.get(index++));
+
+            for(int i = 0; i < 9 && i < availableRecipes.size(); i++){
+                event.setButton(i, availableRecipes.get(i));
             }
         }
     }

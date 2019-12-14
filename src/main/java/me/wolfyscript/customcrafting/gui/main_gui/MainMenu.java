@@ -126,17 +126,21 @@ public class MainMenu extends ExtendedGuiWindow {
         if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null && event.getGuiHandler().getCurrentInv().equals(event.getGuiWindow())) {
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             if (!event.getGuiWindow().getNamespace().startsWith("crafting_grid")) {
-                for (int i = 0; i < 9; i++) {
-                    event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-                }
-                for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize() - 9; i++) {
-                    event.setButton(i, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
-                }
-                for (int i = event.getGuiHandler().getCurrentInv().getSize() - 9; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
-                    event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-                }
-                if (event.getGuiHandler().getCurrentInv().getSize() > 8) {
+                if (event.getGuiHandler().getCurrentInv().getSize() > 9) {
+                    for (int i = 0; i < 9; i++) {
+                        event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+                    }
+                    for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize() - 9; i++) {
+                        event.setButton(i, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                    }
+                    for (int i = event.getGuiHandler().getCurrentInv().getSize() - 9; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
+                        event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+                    }
                     event.setButton(8, "none", "gui_help");
+                }else{
+                    for (int i = 0; i < 9; i++) {
+                        event.setButton(i, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                    }
                 }
             }
         }
