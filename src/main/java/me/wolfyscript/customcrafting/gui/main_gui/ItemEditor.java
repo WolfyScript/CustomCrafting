@@ -62,9 +62,9 @@ public class ItemEditor extends ExtendedGuiWindow {
                     }
                     if (InventoryUtils.hasInventorySpace(player1, customItem)) {
                         player1.getInventory().addItem(customItem.getItemStack());
-                        api.sendPlayerMessage(player1, "$msg.commands.give.success$", new String[]{"%PLAYER%", player1.getDisplayName()}, new String[]{"%ITEM%", customItem.getId()});
+                        api.sendPlayerMessage(player1, "$commands.give.success$", new String[]{"%PLAYER%", player1.getDisplayName()}, new String[]{"%ITEM%", customItem.getId()});
                     } else {
-                        api.sendPlayerMessage(player1, "$msg.commands.give.no_inv_space$");
+                        api.sendPlayerMessage(player1, "$commands.give.no_inv_space$");
                     }
                     return false;
                 }

@@ -128,10 +128,10 @@ public class Settings extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("debug", new ButtonState("debug.disabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().set("debug", false);
+            CustomCrafting.getConfigHandler().getConfig().set("debug", true);
             return true;
         }), new ButtonState("debug.enabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().set("debug", true);
+            CustomCrafting.getConfigHandler().getConfig().set("debug", false);
             return true;
         })));
     }
@@ -161,7 +161,7 @@ public class Settings extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerCache(event.getPlayer()).getDarkMode());
             ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
             ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
-            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), api.hasDebuggingMode());
+            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
 
             event.setButton(0, "none", "back");
 

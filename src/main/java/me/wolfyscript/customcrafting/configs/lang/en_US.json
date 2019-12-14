@@ -1253,6 +1253,22 @@
             "&7Such as World Time, Weather, etc."
           ]
         },
+        "hidden": {
+          "enabled": {
+            "name": "&6Hide Recipe",
+            "lore": [
+              "&eRecipe is hidden in the knowledgebook!",
+              "&7[&aClick&7] Toggle to show recipe"
+            ]
+          },
+          "disabled": {
+            "name": "&6Show Recipe",
+            "lore": [
+              "&eRecipe is shown in the knowledgebook!",
+              "&7[&aClick&7] Toggle to hide recipe"
+            ]
+          }
+        },
         "exact_meta": {
           "enabled": {
             "name": "&aExact Meta",
@@ -1674,6 +1690,80 @@
       }
     },
     "recipe_book": {
+      "global_items": {
+        "itemCategory": {
+          "brewing": {
+            "name": "&6Brewing",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "building_blocks": {
+            "name": "&6Building Blocks",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "decorations": {
+            "name": "&6Decorations",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "combat": {
+            "name": "&6Combat",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "tools": {
+            "name": "&6Tools",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "redstone": {
+            "name": "&6Redstone",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "food": {
+            "name": "&6Food",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "transportation": {
+            "name": "&6Transportation",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "misc": {
+            "name": "&6Misc",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "search": {
+            "name": "&6Browse",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          }
+        }
+      },
       "main_menu": {
         "gui_name": "&8&lRecipe knowledge Book",
         "items": {
