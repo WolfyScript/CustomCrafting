@@ -19,8 +19,6 @@ public interface CraftingRecipe<T extends CraftConfig> extends CustomRecipe<T> {
 
     CraftingData check(List<List<ItemStack>> matrix);
 
-    //void removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, ItemStack[] matrix, int totalAmount, CraftingData craftingData);
-
     default void removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, int totalAmount, CraftingData craftingData) {
         for (Map.Entry<Vec2d, CustomItem> entry : craftingData.getFoundItems().entrySet()) {
             Vec2d vec = entry.getKey();
@@ -46,8 +44,6 @@ public interface CraftingRecipe<T extends CraftConfig> extends CustomRecipe<T> {
         }
         return totalAmount;
     }
-
-    //int getAmountCraftable(List<List<ItemStack>> matrix, CraftingData craftingData);
 
     void load();
 

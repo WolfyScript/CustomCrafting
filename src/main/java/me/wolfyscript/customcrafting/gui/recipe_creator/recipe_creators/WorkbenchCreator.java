@@ -17,6 +17,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -194,6 +196,6 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
 
     private boolean validToSave(PlayerCache cache) {
         AdvancedCraftConfig workbench = cache.getAdvancedCraftConfig();
-        return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
+        return workbench.getIngredients() != null && !workbench.getResult().isEmpty() && !InventoryUtils.isEmpty(new ArrayList<>(workbench.getResult()));
     }
 }

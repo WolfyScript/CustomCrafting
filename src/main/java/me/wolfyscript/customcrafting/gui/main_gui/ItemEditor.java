@@ -98,7 +98,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                         CustomCrafting.getPlayerCache(player).getChatLists().setLastUsedItem(customItem.getId());
                         items1.setItem(false, customItem);
                         sendMessage(player1, "item_editable");
-                        Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler1.changeToInv("item_creator"));
+                        Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler1.changeToInv("item_creator", "main_menu"));
                         return false;
                     }
                     sendMessage(player1, "no_name");
