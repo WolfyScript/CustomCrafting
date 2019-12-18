@@ -104,7 +104,7 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
         if (args.length > 1) {
             if (args[0].equalsIgnoreCase("toggle")) {
                 List<String> recipes = new ArrayList<>();
-                for (Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()) {
+                for (Recipe recipe : CustomCrafting.getRecipeHandler().getVanillaRecipes()) {
                     if (recipe instanceof Keyed) {
                         recipes.add(((Keyed) recipe).getKey().toString());
                     }

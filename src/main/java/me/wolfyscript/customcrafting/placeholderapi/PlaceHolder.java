@@ -91,7 +91,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                             break;
                         return String.valueOf(cache.getAmountCrafted());
                     case "total":
-                        return String.valueOf(CustomCrafting.getRecipeHandler().getAllRecipes().size());
+                        return String.valueOf(CustomCrafting.getRecipeHandler().getVanillaRecipes().size());
                     case "total_custom":
                         return String.valueOf(CustomCrafting.getRecipeHandler().getRecipes().size());
                     case "available":

@@ -35,12 +35,12 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.custom_items.ItemConfig;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.util.NumberConversions;
 
 import java.io.File;
@@ -568,11 +568,18 @@ public class RecipeHandler {
         return disabledRecipes;
     }
 
-    public List<Recipe> getAllRecipes() {
-        allRecipes.clear();
-        Iterator<Recipe> iterator = Bukkit.recipeIterator();
-        while (iterator.hasNext()) {
-            allRecipes.add(iterator.next());
+    public List<Recipe> getVanillaRecipes() {
+        if(allRecipes.isEmpty()){
+            Iterator<Recipe> iterator = Bukkit.recipeIterator();
+            while (iterator.hasNext()) {
+                Recipe recipe = iterator.next();
+                if(recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || (WolfyUtilities.hasVillagePillageUpdate() && recipe instanceof CookingRecipe) || recipe instanceof FurnaceRecipe){
+                    if(recipe instanceof Keyed && ((Keyed) recipe).getKey().toString().startsWith("minecraft")){
+                        allRecipes.add(recipe);
+                    }
+                }
+            }
+            allRecipes.sort(Comparator.comparing(o -> ((Keyed) o).getKey().toString()));
         }
         return allRecipes;
     }

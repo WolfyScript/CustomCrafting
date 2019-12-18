@@ -34,7 +34,7 @@ public class RecipeListNamespaceButton extends ActionButton {
                 } else {
                     if (namespace.equalsIgnoreCase("minecraft")) {
                         if (event.isShiftClick() && event.isLeftClick()) {
-                            for (Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()) {
+                            for (Recipe recipe : CustomCrafting.getRecipeHandler().getVanillaRecipes()) {
                                 if (recipe instanceof Keyed) {
                                     String id = ((Keyed) recipe).getKey().toString();
                                     if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
@@ -43,7 +43,7 @@ public class RecipeListNamespaceButton extends ActionButton {
                                 }
                             }
                         } else if (event.isShiftClick() && event.isRightClick()) {
-                            for (Recipe recipe : CustomCrafting.getRecipeHandler().getAllRecipes()) {
+                            for (Recipe recipe : CustomCrafting.getRecipeHandler().getVanillaRecipes()) {
                                 if (recipe instanceof Keyed) {
                                     CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(((Keyed) recipe).getKey().toString());
                                 }

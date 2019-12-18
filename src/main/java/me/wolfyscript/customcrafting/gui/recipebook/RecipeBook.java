@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.gui.crafting.buttons.ItemCategoryButton;
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -135,13 +135,6 @@ public class RecipeBook extends ExtendedGuiWindow {
                         break;
                     case CAMPFIRE:
                         recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
-                }
-                if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
-
-                } else if (knowledgeBook.getSetting().equals(Setting.ELITE_WORKBENCH)) {
-
-                } else {
-                    recipes.addAll(CustomCrafting.getRecipeHandler().getRecipes(knowledgeBook.getSetting()));
                 }
                 if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
                     Iterator<CustomRecipe> recipeIterator = recipes.iterator();
