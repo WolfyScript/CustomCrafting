@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.crafting.*;
-import me.wolfyscript.customcrafting.gui.crafting.buttons.ItemCategoryButton;
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.*;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;

@@ -799,13 +799,17 @@ public class ItemCreator extends ExtendedGuiWindow {
             return true;
         })));
         {
+            registerButton(new ActionButton("custom_durability.remove", new ButtonState("custom_durability.remove", Material.RED_CONCRETE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomItem.removeCustomDurability(CustomCrafting.getPlayerCache(player).getItems().getItem());
+                return true;
+            })));
             registerButton(new ChatInputButton("custom_durability.set_durability", new ButtonState("custom_durability.set_durability", Material.GREEN_CONCRETE, (values, guiHandler, player, itemStack, slot, help) -> {
                 Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
-                values.put("%VAR%", ItemUtils.getCustomDurability(items.getItem()));
+                values.put("%VAR%", CustomItem.getCustomDurability(items.getItem()));
                 return itemStack;
             }), (guiHandler, player, s, strings) -> {
                 try {
-                    ItemUtils.setCustomDurability(CustomCrafting.getPlayerCache(player).getItems().getItem(), Integer.parseInt(strings[0]));
+                    CustomItem.setCustomDurability(CustomCrafting.getPlayerCache(player).getItems().getItem(), Integer.parseInt(strings[0]));
                 } catch (NumberFormatException ex) {
                     return true;
                 }
@@ -814,11 +818,11 @@ public class ItemCreator extends ExtendedGuiWindow {
             }));
             registerButton(new ChatInputButton("custom_durability.set_damage", new ButtonState("custom_durability.set_damage", Material.RED_CONCRETE, (values, guiHandler, player, itemStack, slot, help) -> {
                 Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
-                values.put("%VAR%", ItemUtils.getDamage(items.getItem()));
+                values.put("%VAR%", CustomItem.getCustomDamage(items.getItem()));
                 return itemStack;
             }), (guiHandler, player, s, strings) -> {
                 try {
-                    ItemUtils.setDamage(CustomCrafting.getPlayerCache(player).getItems().getItem(), Integer.parseInt(strings[0]));
+                    CustomItem.setCustomDamage(CustomCrafting.getPlayerCache(player).getItems().getItem(), Integer.parseInt(strings[0]));
                 } catch (NumberFormatException ex) {
                     return true;
                 }
@@ -827,11 +831,11 @@ public class ItemCreator extends ExtendedGuiWindow {
             }));
             registerButton(new ChatInputButton("custom_durability.set_tag", new ButtonState("custom_durability.set_tag", Material.NAME_TAG, (values, guiHandler, player, itemStack, slot, help) -> {
                 Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
-                values.put("%VAR%", ItemUtils.getDurabilityTag(items.getItem()));
+                values.put("%VAR%", CustomItem.getCustomDurabilityTag(items.getItem()));
                 return itemStack;
             }), (guiHandler, player, s, strings) -> {
                 try {
-                    ItemUtils.setDurabilityTag(CustomCrafting.getPlayerCache(player).getItems().getItem(), "&r" + s);
+                    CustomItem.setCustomDurabilityTag(CustomCrafting.getPlayerCache(player).getItems().getItem(), "&r" + s);
                 } catch (NumberFormatException ex) {
                     return true;
                 }
@@ -1003,12 +1007,12 @@ public class ItemCreator extends ExtendedGuiWindow {
             if (items.getItem() != null && items.getItem().getType().equals(Material.PLAYER_HEAD)) {
                 options.add("player_head.option");
             }
-            options.add("custom_durability.option");
             options.add("permission.option");
             options.add("rarity.option");
             if (WolfyUtilities.hasVillagePillageUpdate()) {
+                options.add("custom_durability.option");
                 options.add("custom_model_data.option");
-                options.add("persistent_data.option");
+                //options.add("persistent_data.option");
                 options.add("elite_workbench.option");
             }
             int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);
@@ -1023,14 +1027,18 @@ public class ItemCreator extends ExtendedGuiWindow {
             }
             int slot = 9;
             int j = 14 * items.getPage();
-            for (int i = 0; i < 14 && j < options.size(); i++) {
+            for (int i = 0; i < 14; i++) {
                 if (i == 3) {
                     slot = 12;
                 } else if (i == 10) {
                     slot = 13;
                 }
-                event.setButton(slot + i, options.get(j));
-                j++;
+                if(j < options.size()){
+                    event.setButton(slot + i, options.get(j));
+                    j++;
+                }else{
+                    event.setButton(slot + i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+                }
             }
             if (!items.getItem().getType().equals(Material.AIR)) {
                 //DRAW Sections
@@ -1113,6 +1121,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(45, "meta_ignore.customModelData");
                         break;
                     case "consume":
+                        ((ToggleButton) event.getGuiWindow().getButton("consume.consume_item")).setState(event.getGuiHandler(), items.getItem().isConsumed());
                         event.setButton(31, "consume.consume_item");
                         event.setButton(38, "consume.replacement");
                         event.setButton(39, items.getItem().hasReplacement() ? "consume.replacement.enabled" : "consume.replacement.disabled");
@@ -1126,6 +1135,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(38, "custom_durability.set_damage");
                         event.setButton(40, "custom_durability.set_tag");
                         event.setButton(42, "custom_durability.set_durability");
+                        event.setButton(49, "custom_durability.remove");
                         event.setButton(45, "meta_ignore.custom_damage");
                         event.setButton(53, "meta_ignore.custom_durability");
                         break;

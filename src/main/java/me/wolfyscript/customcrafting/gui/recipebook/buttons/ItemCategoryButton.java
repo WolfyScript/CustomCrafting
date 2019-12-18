@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.crafting.buttons;
+package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
