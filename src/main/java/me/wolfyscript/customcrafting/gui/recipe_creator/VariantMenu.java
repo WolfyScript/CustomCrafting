@@ -57,6 +57,8 @@ public class VariantMenu extends ExtendedGuiWindow {
                 case CAMPFIRE:
                     if (cache.getVariantsData().getSlot() != 1) {
                         cache.getCookingConfig().setSource(cache.getVariantsData().getVariants());
+                    }else{
+                        cache.getCookingConfig().setResult(cache.getVariantsData().getVariants());
                     }
                     break;
                 case CAULDRON:

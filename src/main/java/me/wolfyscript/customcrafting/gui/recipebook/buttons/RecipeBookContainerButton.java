@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
@@ -27,14 +28,15 @@ public class RecipeBookContainerButton extends Button {
         super("recipe_book.container_" + slot, null);
     }
 
+
     @Override
     public void init(GuiWindow guiWindow) {
-        //NOT NEEDED
+
     }
 
     @Override
     public void init(String s, WolfyUtilities wolfyUtilities) {
-        //NOT NEEDED
+
     }
 
     @Override
@@ -49,12 +51,28 @@ public class RecipeBookContainerButton extends Button {
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
         CustomRecipe recipe = getRecipe(guiHandler);
         if (recipe != null) {
-            ItemBuilder itemB = new ItemBuilder(recipe.getResult());
-            if (recipe.getResult().getType().equals(Material.AIR)) {
-                itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
+            ItemBuilder itemB;
+            if(recipe instanceof CustomAnvilRecipe){
+                if(((CustomAnvilRecipe) recipe).hasInputLeft()){
+                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputLeft().get(0).getRealItem());
+                }else if(((CustomAnvilRecipe) recipe).hasInputRight()){
+                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputRight().get(0).getRealItem());
+                }else if(((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT)){
+                    itemB = new ItemBuilder(recipe.getCustomResult().getRealItem().getRealItem());
+                }else{
+                    itemB = new ItemBuilder(Material.STONE);
+                    itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
+                }
+                itemB.addLoreLine("").addLoreLine(CustomCrafting.getApi().getLanguageAPI().replaceColoredKeys("$inventories.recipe_book.global_items.lores.click$"));
+            }else{
+                itemB = new ItemBuilder(recipe.getCustomResult().getRealItem());
+                if (recipe.getResult().getType().equals(Material.AIR)) {
+                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
+                }
+                itemB.addLoreLine("").addLoreLine(CustomCrafting.getApi().getLanguageAPI().replaceColoredKeys("$inventories.recipe_book.global_items.lores.click$"));
             }
-            itemB.addLoreLine("").addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.recipe_book.recipe_book.items.lores.click$")));
             inventory.setItem(slot, itemB.create());
+
         }
     }
 

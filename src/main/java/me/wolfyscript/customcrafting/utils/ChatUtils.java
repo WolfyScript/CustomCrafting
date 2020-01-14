@@ -46,16 +46,6 @@ public class ChatUtils {
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }
-        api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
-        api.sendPlayerMessage(player, "&7----------------------------------------------------------");
-        api.sendActionMessage(player, new ClickData("§7[§c-§7]", (wolfyUtilities1, p) -> {
-            for (int i = 0; i < 20; i++) {
-                player.sendMessage(" ");
-            }
-            api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()));
-            api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-            api.sendPlayerMessage(player, "none", "recipe_editor", "input");
-        }, true), new ClickData(" Recipes:", null));
 
         ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
         switch (cache.getSetting()) {
@@ -88,24 +78,32 @@ public class ChatUtils {
         }
 
         int currentPage = cache.getChatLists().getCurrentPageRecipes();
-        int maxPages = ((customRecipes.size() % 16) > 0 ? 1 : 0) + customRecipes.size() / 16;
+        int maxPages = ((customRecipes.size() % 15) > 0 ? 1 : 0) + customRecipes.size() / 15;
 
-        for (int i = (currentPage - 1) * 16; i < (currentPage - 1) * 16 + 16 && i < customRecipes.size(); i++) {
-            CustomRecipe recipe = customRecipes.get(i);
-            api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1]), new HoverEvent(recipe.getResult())));
+        api.sendActionMessage(player, new ClickData("[&3« Back&7]", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true),
+                new ClickData("                   &7&lRecipes", null),
+                new ClickData("         &e"+ currentPage + "§7/§6" + maxPages +" ", null), new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
+                    if (currentPage > 1) {
+                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
+                        sendRecipeListExpanded(p);
+                    }
+                }), new ClickData(" [&e&l»&7]", (wolfyUtilities, p) -> {
+                    if (currentPage < maxPages) {
+                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
+                        sendRecipeListExpanded(p);
+                    }
+                }));
+        api.sendPlayerMessage(player, "&8-------------------------------------------------");
+
+        for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
+            if(i < customRecipes.size()){
+                CustomRecipe recipe = customRecipes.get(i);
+                api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1]), new HoverEvent(recipe.getResult())));
+            }else{
+                api.sendPlayerMessage(player, "");
+            }
         }
-
-        api.sendActionMessage(player, new ClickData("§7[§6« previous§7]", (wolfyUtilities1, p) -> {
-            if (currentPage > 1) {
-                cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
-            }
-            sendRecipeListExpanded(p);
-        }), new ClickData("  §a" + currentPage + "§7/§6" + maxPages + "  ", null), new ClickData("§7[§6next »§7]", (wolfyUtilities1, p) -> {
-            if (currentPage < maxPages) {
-                cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
-            }
-            sendRecipeListExpanded(p);
-        }));
+        api.sendPlayerMessage(player, "&8-------------------------------------------------");
         api.sendPlayerMessage(player, "none", "recipe_editor", "input");
     }
 

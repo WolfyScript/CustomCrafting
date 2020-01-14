@@ -142,9 +142,7 @@ public class Settings extends ExtendedGuiWindow {
         if (event.verify(this)) {
             availableLangs.clear();
             File langFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "lang");
-            String[] filenames = langFolder.list((dir, name) -> {
-                return name.endsWith(".json");
-            });
+            String[] filenames = langFolder.list((dir, name) -> name.endsWith(".json"));
             availableLangs.add("de_DE");
             for (String filename : filenames) {
                 String name = filename.replace(".json", "");
@@ -152,7 +150,6 @@ public class Settings extends ExtendedGuiWindow {
                     availableLangs.add(name);
                 }
             }
-
             Player player = event.getPlayer();
 
             ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isLockedDown());
@@ -174,8 +171,6 @@ public class Settings extends ExtendedGuiWindow {
                 event.setButton(12, "advanced_workbench");
                 event.setButton(13, "language");
             }
-
-
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
                 event.setButton(35, "debug");
             }

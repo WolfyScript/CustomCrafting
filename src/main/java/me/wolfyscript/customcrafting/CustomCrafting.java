@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
@@ -19,6 +20,7 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.crafting.CraftListener;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.utils.GsonUtil;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -36,11 +38,9 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -77,9 +77,11 @@ public class CustomCrafting extends JavaPlugin {
     public void onEnable() {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
-        api = new WolfyUtilities(instance);
+        api = WolfyUtilities.getOrCreateAPI(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");
+        InventoryAPI<TestCache> inventoryAPI = new InventoryAPI<>(api.getPlugin(), api, TestCache.class);
+        api.setInventoryAPI(inventoryAPI);
 
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
@@ -184,7 +186,9 @@ public class CustomCrafting extends JavaPlugin {
             try {
                 HttpURLConnection con = (HttpURLConnection) new URL(
                         "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
-                String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String version = bufferedReader.readLine();
                 if (!version.isEmpty() && !version.equals(currentVersion) && !currentVersion.contains("-dev") && !currentVersion.contains("-pre")) {
                     outdated = true;
                     api.sendConsoleWarning("$msg.startup.outdated$");
@@ -193,12 +197,50 @@ public class CustomCrafting extends JavaPlugin {
                         api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
                     }
                 }
+
+                /*
+                String lVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+                String[] lVersionAndDev = lVersion.split("-");
+                int lDev = -1;
+                if(lVersionAndDev.length > 1){
+                    lDev = Integer.parseInt(lVersionAndDev[1].replace("dev", ""));
+                }
+                String[] lVersionVars = lVersionAndDev[0].split("\\.");
+                int lVersionVar = Integer.parseInt(lVersionVars[0]);
+                int lFeatureLayer = Integer.parseInt(lVersionVars[1]);
+                int lImprovementLayer = Integer.parseInt(lVersionVars[2]);
+                int lBugfixLayer = Integer.parseInt(lVersionVars[3]);
+
+                String[] cVersionAndDev = currentVersion.split("-");
+                int cDev = -1;
+                if(cVersionAndDev.length > 1){
+                    cDev = Integer.parseInt(cVersionAndDev[1].replace("dev", ""));
+                }
+                String[] cVersionVars = cVersionAndDev[0].split("\\.");
+                int cVersionVar = Integer.parseInt(cVersionVars[0]);
+                int cFeatureLayer = Integer.parseInt(cVersionVars[1]);
+                int cImprovementLayer = Integer.parseInt(cVersionVars[2]);
+                int cBugfixLayer = Integer.parseInt(cVersionVars[3]);
+
+                if(cVersionVar < lVersionVar || cFeatureLayer < lFeatureLayer || cImprovementLayer < lImprovementLayer || cBugfixLayer < lBugfixLayer){
+                    outdated = true;
+                }else if(cDev > -1){
+                    if(lDev > -1){
+                        if(cDev < lDev){
+                            outdated = true;
+                        }
+                    }else{
+                        outdated = true;
+                    }
+               }
+                 */
+
             } catch (Exception ex) {
+                ex.printStackTrace();
                 api.sendConsoleWarning("$msg.startup.update_check_fail$");
             }
         });
         updater.start();
-
     }
 
     private static boolean canRun() {

@@ -21,6 +21,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.*;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
 import me.wolfyscript.utilities.api.utils.Legacy;
+import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -139,9 +140,11 @@ public class ItemCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("display_name.set", new ButtonState("display_name.set", Material.GREEN_CONCRETE), (guiHandler, player, s, strings) -> {
             CustomItem itemStack = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
+            /*
             if (s.startsWith("&f")) {
                 s = "&r" + s;
             }
+            */
             itemMeta.setDisplayName(WolfyUtilities.translateColorCodes(s));
             itemStack.setItemMeta(itemMeta);
             return false;
@@ -226,28 +229,46 @@ public class ItemCreator extends ExtendedGuiWindow {
             return true;
         })));
         {
-            registerButton(new ActionButton("flags.enchants", new ButtonState("flags.enchants", Material.ENCHANTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(ItemUtils.toggleItemFlag(Objects.requireNonNull(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta()), ItemFlag.HIDE_ENCHANTS));
+            registerButton(new ToggleButton("flags.enchants", new ButtonState("flags.enchants.enabled", Material.ENCHANTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+                return true;
+            }), new ButtonState("flags.enchants.disabled", Material.ENCHANTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 return true;
             })));
-            registerButton(new ActionButton("flags.attributes", new ButtonState("flags.attributes", Material.ENCHANTED_GOLDEN_APPLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(ItemUtils.toggleItemFlag(Objects.requireNonNull(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta()), ItemFlag.HIDE_ATTRIBUTES));
+            registerButton(new ToggleButton("flags.attributes", new ButtonState("flags.attributes.enabled", Material.ENCHANTED_GOLDEN_APPLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).removeItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                return true;
+            }), new ButtonState("flags.attributes.disabled", Material.ENCHANTED_GOLDEN_APPLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 return true;
             })));
-            registerButton(new ActionButton("flags.unbreakable", new ButtonState("flags.unbreakable", Material.BEDROCK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(ItemUtils.toggleItemFlag(Objects.requireNonNull(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta()), ItemFlag.HIDE_UNBREAKABLE));
+            registerButton(new ToggleButton("flags.unbreakable", new ButtonState("flags.unbreakable.enabled", Material.BEDROCK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).removeItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                return true;
+            }), new ButtonState("flags.unbreakable.disabled", Material.BEDROCK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 return true;
             })));
-            registerButton(new ActionButton("flags.destroys", new ButtonState("flags.destroys", Material.TNT, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(ItemUtils.toggleItemFlag(Objects.requireNonNull(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta()), ItemFlag.HIDE_DESTROYS));
+            registerButton(new ToggleButton("flags.destroys", new ButtonState("flags.destroys.enabled", Material.TNT, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).removeItemFlags(ItemFlag.HIDE_DESTROYS);
+                return true;
+            }), new ButtonState("flags.destroys.disabled", Material.TNT, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).addItemFlags(ItemFlag.HIDE_DESTROYS);
                 return true;
             })));
-            registerButton(new ActionButton("flags.placed_on", new ButtonState("flags.placed_on", Material.GRASS_BLOCK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(ItemUtils.toggleItemFlag(Objects.requireNonNull(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta()), ItemFlag.HIDE_PLACED_ON));
+            registerButton(new ToggleButton("flags.placed_on", new ButtonState("flags.placed_on.enabled", Material.GRASS_BLOCK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).removeItemFlags(ItemFlag.HIDE_PLACED_ON);
+                return true;
+            }), new ButtonState("flags.placed_on.disabled", Material.GRASS_BLOCK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).addItemFlags(ItemFlag.HIDE_PLACED_ON);
                 return true;
             })));
-            registerButton(new ActionButton("flags.potion_effects", new ButtonState("flags.potion_effects", Material.POTION, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(ItemUtils.toggleItemFlag(Objects.requireNonNull(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta()), ItemFlag.HIDE_POTION_EFFECTS));
+            registerButton(new ToggleButton("flags.potion_effects", new ButtonState("flags.potion_effects.enabled", Material.POTION, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                return true;
+            }), new ButtonState("flags.potion_effects.disabled", Material.POTION, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                new ItemBuilder(CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem()).addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
                 return true;
             })));
         }
@@ -448,7 +469,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 try {
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().setAttribAmount(Double.parseDouble(args[0]));
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "$msg.gui.item_creator.attribute.amount.error$");
+                    api.sendPlayerMessage(player, "item_creator", "main_menu","attribute.amount.error");
                     return true;
                 }
                 return false;
@@ -468,8 +489,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                     UUID uuid = UUID.fromString(strings[0]);
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().setAttributeUUID(uuid.toString());
                 } catch (IllegalArgumentException ex) {
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.attribute.uuid.error.line1$", new String[]{"%UUID%", strings[0]});
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.attribute.uuid.error.line2$");
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "attribute.uuid.error.line1", new String[]{"%UUID%", strings[0]});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "attribute.uuid.error.line2");
                     return true;
                 }
                 return false;
@@ -501,7 +522,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 return true;
             })));
-            registerButton(new ChatInputButton("player_head.owner", new ButtonState("player_head.owner", Material.NAME_TAG), "$msg.gui.none.item_creator.skull_owner.input$", (guiHandler, player, s, args) -> {
+            registerButton(new ChatInputButton("player_head.owner", new ButtonState("player_head.owner", Material.NAME_TAG), (guiHandler, player, s, args) -> {
                 ItemMeta itemMeta = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta();
                 if (!(itemMeta instanceof SkullMeta)) {
                     return true;
@@ -544,7 +565,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                             particles = Boolean.valueOf(args[4].toLowerCase());
                         }
                     } catch (NumberFormatException e) {
-                        api.sendPlayerMessage(player, "$msg.gui.none.item_creator.potion.error_number$");
+                        api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
                         return true;
                     }
                 }
@@ -552,12 +573,12 @@ public class ItemCreator extends ExtendedGuiWindow {
                     PotionEffect potionEffect = new PotionEffect(type, duration, amplifier, ambient, particles);
                     ((PotionMeta) itemMeta).addCustomEffect(potionEffect, true);
 
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.potion.success$", new String[]{"%TYPE%", type.getName()}, new String[]{"%DUR%", String.valueOf(duration)}, new String[]{"%AMP%", String.valueOf(amplifier)}, new String[]{"%AMB%", String.valueOf(ambient)}, new String[]{"%PAR%", String.valueOf(particles)});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.success", new String[]{"%TYPE%", type.getName()}, new String[]{"%DUR%", String.valueOf(duration)}, new String[]{"%AMP%", String.valueOf(amplifier)}, new String[]{"%AMB%", String.valueOf(ambient)}, new String[]{"%PAR%", String.valueOf(particles)});
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(itemMeta);
                     return false;
 
                 }
-                api.sendPlayerMessage(player, "$msg.gui.item_creator.potion.wrong_args$");
+                api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.wrong_args");
                 return true;
             }));
             registerButton(new ChatInputButton("potion.remove", new ButtonState("potion.remove", Material.RED_CONCRETE), (guiHandler, player, s, args) -> {
@@ -572,7 +593,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(itemMeta);
                     return false;
                 }
-                api.sendPlayerMessage(player, "$msg.gui.none.item_creator.messages.potion.invalid_name$", new String[]{"%NAME%", args[0]});
+                api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.invalid_name", new String[]{"%NAME%", args[0]});
                 return true;
             }));
         }
@@ -607,9 +628,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(s);
                     ((Damageable) itemMeta).setDamage(value);
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(itemMeta);
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.damage.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "damage.value_success", new String[]{"%VALUE%", String.valueOf(value)});
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.damage.invalid_value$", new String[]{"%VALUE%", s});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "damage.invalid_value", new String[]{"%VALUE%", s});
                     return true;
                 }
                 return false;
@@ -636,9 +657,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(s);
                     ((Repairable) itemMeta).setRepairCost(value);
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(itemMeta);
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.repair_cost.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "repair_cost.value_success", new String[]{"%VALUE%", String.valueOf(value)});
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.repair_cost.invalid_value$", new String[]{"%VALUE%", s});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "repair_cost.invalid_value", new String[]{"%VALUE%", s});
                     return true;
                 }
                 return false;
@@ -661,7 +682,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         {
             registerButton(new ChatInputButton("custom_model_data.set", new ButtonState("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
                 Items items = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems();
-                hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : WolfyUtilities.translateColorCodes(api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.gui.none.item_creator.custom_model_data.disabled$"))) + "");
+                hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "&7&l/") + "");
                 return itemStack;
             }), (guiHandler, player, s, strings) -> {
                 ItemMeta itemMeta = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getItemMeta();
@@ -672,9 +693,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(s);
                     itemMeta.setCustomModelData(value);
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setItemMeta(itemMeta);
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.custom_model_data.success$", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "custom_model_data.success", new String[]{"%VALUE%", String.valueOf(value)});
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.custom_model_data.invalid_value$", new String[]{"%VALUE%", s});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "custom_model_data.invalid_value", new String[]{"%VALUE%", s});
                     return true;
                 }
                 return false;
@@ -700,9 +721,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 try {
                     int value = Integer.parseInt(s);
                     CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().setDurabilityCost(value);
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.consume.valid$", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "consume.valid", new String[]{"%VALUE%", String.valueOf(value)});
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.consume.invalid$", new String[]{"%VALUE%", s});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "consume.invalid", new String[]{"%VALUE%", s});
                     return true;
                 }
                 return false;
@@ -755,9 +776,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 try {
                     int value = Integer.parseInt(s);
                     CustomCrafting.getPlayerCache(player).getItems().getItem().setBurnTime(value);
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.fuel.value_success$", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "fuel.value_success", new String[]{"%VALUE%", String.valueOf(value)});
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "$msg.gui.none.item_creator.fuel.invalid_value$", new String[]{"%VALUE%", s});
+                    api.sendPlayerMessage(player, "item_creator", "main_menu", "fuel.invalid_value", new String[]{"%VALUE%", s});
                     return true;
                 }
                 return false;
@@ -924,6 +945,7 @@ public class ItemCreator extends ExtendedGuiWindow {
             return true;
         })));
         {
+            registerButton(new ActionButton("elite_workbench.particles", new ButtonState("elite_workbench.particles", Material.BARRIER)));
             registerButton(new MultipleChoiceButton("elite_workbench.grid_size",
                     new ButtonState("elite_workbench.grid_size.size_3", WolfyUtilities.getSkullViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                         ((EliteWorkbenchData) CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(4);
@@ -967,6 +989,7 @@ public class ItemCreator extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            GuiHandler guiHandler = event.getGuiHandler();
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             Items items = cache.getItems();
             event.setButton(0, "back");
@@ -1059,6 +1082,12 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(45, "meta_ignore.lore");
                         break;
                     case "flags":
+                        ((ToggleButton) event.getGuiWindow().getButton("flags.attributes")).setState(guiHandler, items.getItem().getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES));
+                        ((ToggleButton) event.getGuiWindow().getButton("flags.unbreakable")).setState(guiHandler, items.getItem().getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE));
+                        ((ToggleButton) event.getGuiWindow().getButton("flags.destroys")).setState(guiHandler, items.getItem().getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS));
+                        ((ToggleButton) event.getGuiWindow().getButton("flags.placed_on")).setState(guiHandler, items.getItem().getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON));
+                        ((ToggleButton) event.getGuiWindow().getButton("flags.potion_effects")).setState(guiHandler, items.getItem().getItemMeta().hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS));
+                        ((ToggleButton) event.getGuiWindow().getButton("flags.enchants")).setState(guiHandler, items.getItem().getItemMeta().hasItemFlag(ItemFlag.HIDE_ENCHANTS));
                         event.setButton(37, "flags.attributes");
                         event.setButton(39, "flags.unbreakable");
                         event.setButton(41, "flags.destroys");
@@ -1154,7 +1183,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     case "elite_workbench":
                         ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).getGridSize() - 3);
                         ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).isEnabled());
-                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).isAdvancedRecipes());
+                        event.setButton(37, "elite_workbench.particles");
                         event.setButton(39, "elite_workbench.grid_size");
                         event.setButton(41, "elite_workbench.toggle");
                         event.setButton(43, "elite_workbench.advanced_recipes");
@@ -1184,6 +1213,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         ItemConfig config;
         String namespace = id.split(":")[0];
         String key = id.split(":")[1];
+        
         if (CustomCrafting.hasDataBaseHandler()) {
             config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, key);
         } else {

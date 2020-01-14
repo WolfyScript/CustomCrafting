@@ -1,8 +1,10 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.EliteWorkbenchConditionButton;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
@@ -10,6 +12,7 @@ import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -116,32 +119,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             }
         })));
 
-        registerButton(new ActionButton("conditions.elite_workbench", new ButtonState("elite_workbench", Material.CRAFTING_TABLE, new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                RecipeConfig recipeConfig = CustomCrafting.getPlayerCache(player).getRecipeConfig();
-                Conditions conditions = recipeConfig.getConditions();
-                if (event.getClick().isRightClick()) {
-                    //Change Mode
-                    conditions.getByID("elite_workbench").toggleOption();
-                    recipeConfig.setConditions(conditions);
-                } else {
-                    //CONFIGURE ELITE WORKBENCHES
-                    openChat("elite_workbench", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        ((EliteWorkbenchCondition) conditions.getByID("elite_workbench")).addEliteWorkbenches(s);
-                        recipeConfig.setConditions(conditions);
-                        return false;
-                    });
-                }
-                return true;
-            }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                hashMap.put("%MODE%", CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions().getByID("elite_workbench").getOption().getDisplayString(api));
-                return itemStack;
-            }
-        })));
+        registerButton(new EliteWorkbenchConditionButton());
 
         registerButton(new ActionButton("conditions.permission", new ButtonState("permission", Material.REDSTONE, new ButtonActionRender() {
             @Override

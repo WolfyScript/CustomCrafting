@@ -1,6 +1,6 @@
 {
-  "consumed": false,
-  "item": "H4sIAAAAAAAAAG2PQWvCQBCFn4nFJPRa6NUll17s3Wtp6aH0Jj2IhE0yxsXNRjbT2iL+nv0f+8u6BtSLMAzMm28e8zIgQaRqPLbKUGXlmudDV6YpWJaaRrh76b4NjzLELJsY6buq6U3LpgcQ1Emt+p2WfynGH52lJKgRng6C6ZfFXCy/FtNVfvac7Tu7LclUm5kOcC6OeL6g3lVDFd7tveu8s95tvSu9I+/MsNqIY4Lxp2wJ+eXulrsJyMk9xf1rmKXhlgz32ennCLH+0efkD9fka2WpkP2OKg7cP82VqtwcAQAA",
+  "consumed": true,
+  "item": "{id:\"minecraft:crafting_table\",Count:1b,tag:{HideFlags:1,display:{Lore:['[{\"text\":\"[WU!]$crafting.workbench.lore$\"}]'],Name:\"{\\\"text\\\":\\\"$crafting.workbench.name$\\\"}\"},Enchantments:[{lvl:0s,id:\"minecraft:fire_aspect\"}]}}",
   "durability_cost": 0,
   "meta": "{\"damage\":\"EXACT\",\"potion\":\"EXACT\",\"lore\":\"EXACT\",\"playerHead\":\"EXACT\",\"flags\":\"EXACT\",\"attributes_modifiers\":\"EXACT\",\"customModelData\":\"EXACT\",\"enchant\":\"EXACT\",\"custom_damage\":\"EXACT\",\"name\":\"EXACT\",\"unbreakable\":\"EXACT\",\"custom_durability\":\"EXACT\",\"repairCost\":\"EXACT\"}",
   "fuel": {
@@ -11,7 +11,13 @@
   },
   "rarity_percentage": 1.0,
   "permission": "",
-  "replacement": {
-    "item": "H4sIAAAAAAAAAONiYOBgYMpMYeDPzcxLTS5KTCuxKi7Jz0tlZGB1zi/NK2FkAADx5nVMIwAAAA\u003d\u003d"
+  "custom_data": {
+    "elite_workbench": {
+      "gridSize": 3,
+      "advancedRecipes": false,
+      "keepItems": false,
+      "enabled": false,
+      "allowHoppers": false
+    }
   }
 }

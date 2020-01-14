@@ -9,9 +9,11 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,29 +27,43 @@ public class ResultSlotButton extends ItemInputButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
-                EliteWorkbench eliteWorkbenchData = cache.getEliteWorkbench();
-                if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                    RecipeUtils.consumeRecipe(eliteWorkbenchData.getResult(), eliteWorkbenchData.getContents(), event);
-                    RecipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+                if(event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getClickedInventory().equals(event.getView().getBottomInventory())){
+                    ItemStack itemStack = event.getCurrentItem().clone();
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
-                        EliteWorkbenchData eliteWorkbench = eliteWorkbenchData.getEliteWorkbenchData();
-                        ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbenchData.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbench.isAdvancedRecipes());
-                        if (result != null) {
-                            eliteWorkbenchData.setResult(result);
+                        for (int i = 0; i < eliteWorkbench.getCurrentGridSize()*eliteWorkbench.getCurrentGridSize(); i++) {
+                            ItemStack item = eliteWorkbench.getContents()[i];
+                            if(item == null){
+                                eliteWorkbench.getContents()[i] = itemStack;
+                                break;
+                            }else if(item.isSimilar(itemStack) || itemStack.isSimilar(item)){
+                                if(item.getAmount() + itemStack.getAmount() <= itemStack.getMaxStackSize()){
+                                    eliteWorkbench.getContents()[i].setAmount(item.getAmount() + itemStack.getAmount());
+                                    break;
+                                }
+                            }
                         }
                     });
+                    return false;
+                }else{
+                    if (eliteWorkbench.getResult() != null) {
+                        RecipeUtils.consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), event);
+                        RecipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                    }
                 }
-                return false;
+                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    EliteWorkbenchData eliteWorkbenchData = eliteWorkbench.getEliteWorkbenchData();
+                    ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbench.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbenchData.isAdvancedRecipes());
+                    eliteWorkbench.setResult(result);
+                });
+                return true;
             }
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
                 PlayerCache cache = CustomCrafting.getPlayerCache(player);
                 EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-                if (eliteWorkbench.getResult() != null) {
-                    itemStack = eliteWorkbench.getResult();
-                }
-                return itemStack;
+                return eliteWorkbench.getResult() != null ? eliteWorkbench.getResult() : new ItemStack(Material.AIR);
             }
         }));
     }

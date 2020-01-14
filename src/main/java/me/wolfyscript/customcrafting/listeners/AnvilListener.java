@@ -1,8 +1,11 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -17,7 +20,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class AnvilListener implements Listener {
 
@@ -26,8 +31,11 @@ public class AnvilListener implements Listener {
         Player player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
         List<CustomAnvilRecipe> recipes = CustomCrafting.getRecipeHandler().getAnvilRecipes();
-
+        recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
         for (CustomAnvilRecipe recipe : recipes) {
+            if(CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())){
+                continue;
+            }
             if (recipe.hasInputLeft()) {
                 boolean left = false;
                 if (inventory.getItem(0) != null) {
@@ -62,6 +70,7 @@ public class AnvilListener implements Listener {
             }
             ItemStack inputLeft = inventory.getItem(0);
             ItemStack result;
+
             //RECIPE RESULTS!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                 result = recipe.getCustomResult();
@@ -73,8 +82,8 @@ public class AnvilListener implements Listener {
                             for (Enchantment enchantment : result.getEnchantments().keySet()) {
                                 result.removeEnchantment(enchantment);
                             }
-                            if (inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasEnchants()) {
-                                result.addUnsafeEnchantments(inputLeft.getEnchantments());
+                            for(Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()){
+                                result.addUnsafeEnchantment(entry.getKey(), entry.getValue());
                             }
                         }
                     }
@@ -101,20 +110,34 @@ public class AnvilListener implements Listener {
                     result = inputLeft.clone();
                 }
                 if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-                    ItemMeta itemMeta = result.getItemMeta();
-                    if (itemMeta instanceof Damageable) {
+                    if (WolfyUtilities.hasVillagePillageUpdate() && CustomItem.hasCustomDurability(result)) {
+                        int damage = CustomItem.getCustomDamage(result) - recipe.getDurability();
+                        if (damage < 0) {
+                            damage = 0;
+                        }
+                        CustomItem.setCustomDamage(result, damage);
+                    } else if (ItemUtils.hasCustomDurability(result)) {
+                        int damage = ItemUtils.getDamage(result) - recipe.getDurability();
+                        if (damage >= 0) {
+                            damage = 0;
+                        }
+                        ItemUtils.setDamage(result, damage);
+                    } else if (result.getItemMeta() instanceof Damageable) {
+                        ItemMeta itemMeta = result.getItemMeta();
                         ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() - recipe.getDurability());
                         result.setItemMeta(itemMeta);
                     }
                 }
             }
             int repairCost = recipe.getRepairCost();
+
             ItemMeta inputMeta = inputLeft.getItemMeta();
             if (inputMeta instanceof Repairable) {
+                int itemRepairCost = ((Repairable) inputMeta).getRepairCost();
                 if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.ADD)) {
-                    repairCost = repairCost + recipe.getRepairCost();
+                    repairCost = repairCost + itemRepairCost;
                 } else if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.MULTIPLY)) {
-                    repairCost = ((repairCost > 0 ? repairCost : 1) * recipe.getRepairCost());
+                    repairCost = recipe.getRepairCost() * (itemRepairCost > 0 ? itemRepairCost : 1);
                 }
             }
             if (recipe.isApplyRepairCost()) {

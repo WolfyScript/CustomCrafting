@@ -19,7 +19,7 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
         this.enabled = false;
         this.gridSize = 3;
         this.allowHoppers = false;
-        this.keepItems = true;
+        this.keepItems = false;
     }
 
     public boolean isEnabled() {

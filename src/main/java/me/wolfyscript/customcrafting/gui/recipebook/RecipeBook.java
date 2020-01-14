@@ -9,11 +9,14 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -27,17 +30,18 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButto
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.ItemCategory;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.CookingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RecipeBook extends ExtendedGuiWindow {
@@ -59,32 +63,10 @@ public class RecipeBook extends ExtendedGuiWindow {
             }
             return true;
         })));
-        registerButton(new ActionButton("next_page", new ButtonState("next_page", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            KnowledgeBook book = CustomCrafting.getPlayerCache(player).getKnowledgeBook();
-            book.setPage(book.getPage() + 1);
-            return true;
-        })));
-        registerButton(new ActionButton("previous_page", new ButtonState("previous_page", WolfyUtilities.getSkullViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            KnowledgeBook book = CustomCrafting.getPlayerCache(player).getKnowledgeBook();
-            book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
-            return true;
-        })));
-        registerButton(new MultipleChoiceButton("workbench_filter_button", new ButtonState("workbench_filter_button.all", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ADVANCED);
-            return true;
-        }), new ButtonState("workbench_filter_button.advanced", new ItemBuilder(Material.CRAFTING_TABLE).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.NORMAL);
-            return true;
-        }), new ButtonState("workbench_filter_button.normal", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ALL);
-            return true;
-        })));
-        registerButton(new ToggleButton("permission", new ButtonState("permission.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true), new ButtonState("permission.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true)));
+
         for (int i = 0; i < 45; i++) {
             registerButton(new RecipeBookContainerButton(i));
         }
-        registerButton(new DummyButton("workbench.shapeless_on", new ButtonState("workbench.shapeless_on", WolfyUtilities.getSkullViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"))));
-        registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", WolfyUtilities.getSkullViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"))));
     }
 
     @EventHandler
@@ -98,14 +80,14 @@ public class RecipeBook extends ExtendedGuiWindow {
             for (int i = 1; i < 8; i++) {
                 event.setButton(i, "none", "glass_white");
             }
-            event.setButton(0, "back");
             if (knowledgeBook.getCustomRecipe() == null) {
+                event.setButton(0, "back");
                 event.setButton(4, "recipe_book", "itemCategory");
                 List<CustomRecipe> recipes = new ArrayList<>();
                 switch (knowledgeBook.getSetting()) {
                     case WORKBENCH:
                         KnowledgeBook.WorkbenchFilter workbenchFilter = knowledgeBook.getWorkbenchFilter();
-                        event.setButton(8, "workbench_filter_button");
+                        event.setButton(8, "recipe_book", "workbench.filter_button");
                         for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player)) {
                             if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))) {
                                 recipes.add(recipe);
@@ -139,9 +121,23 @@ public class RecipeBook extends ExtendedGuiWindow {
                 if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
                     Iterator<CustomRecipe> recipeIterator = recipes.iterator();
                     while (recipeIterator.hasNext()) {
-                        CustomRecipe<RecipeConfig> customRecipe = recipeIterator.next();
+                        CustomRecipe customRecipe = recipeIterator.next();
+                        List<CustomItem> items = new ArrayList<>();
+                        if(customRecipe instanceof CustomAnvilRecipe){
+                            CustomAnvilRecipe anvilRecipe = (CustomAnvilRecipe) customRecipe;
+                            if(!anvilRecipe.getInputLeft().isEmpty()){
+                                items.addAll(anvilRecipe.getInputLeft());
+                            }else if(!anvilRecipe.getInputRight().isEmpty()){
+                                items.addAll(anvilRecipe.getInputRight());
+                            }else if(!anvilRecipe.getCustomResults().isEmpty()){
+                                items.addAll(anvilRecipe.getCustomResults());
+                            }
+                        }else{
+                            items.addAll(((CustomRecipe<RecipeConfig>) customRecipe).getCustomResults());
+                        }
+
                         boolean valid = false;
-                        for (CustomItem item : customRecipe.getCustomResults()) {
+                        for (CustomItem item : items) {
                             if (knowledgeBook.getItemCategory().isValid(item.getType())) {
                                 valid = true;
                                 break;
@@ -158,10 +154,10 @@ public class RecipeBook extends ExtendedGuiWindow {
                     knowledgeBook.setPage(0);
                 }
                 if (knowledgeBook.getPage() != 0) {
-                    event.setButton(2, "previous_page");
+                    event.setButton(2, "recipe_book", "previous_page");
                 }
                 if (knowledgeBook.getPage() + 1 < maxPages) {
-                    event.setButton(6, "next_page");
+                    event.setButton(6, "recipe_book", "next_page");
                 }
                 int item = 0;
                 for (int i = 45 * knowledgeBook.getPage(); item < 45 && i < recipes.size(); i++) {
@@ -173,6 +169,7 @@ public class RecipeBook extends ExtendedGuiWindow {
             } else {
                 switch (knowledgeBook.getSetting()) {
                     case WORKBENCH:
+                        event.setButton(0, "back");
                         AdvancedCraftingRecipe craftingRecipe = (AdvancedCraftingRecipe) knowledgeBook.getCustomRecipe();
                         if (!craftingRecipe.getIngredients().isEmpty()) {
                             if (craftingRecipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
@@ -183,17 +180,15 @@ public class RecipeBook extends ExtendedGuiWindow {
                                     event.setButton(i, "none", "glass_purple");
                                 }
                             }
-                            event.setButton(22, craftingRecipe.isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+                            event.setButton(23, "recipe_book", craftingRecipe.isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
                             int invSlot;
                             for (int i = 0; i < 9; i++) {
                                 invSlot = 10 + i + (i / 3) * 6;
                                 List<CustomItem> variants = craftingRecipe.getIngredients(i);
-
                                 int variant = knowledgeBook.getTimerTimings().getOrDefault(i, 0);
-
                                 event.setItem(invSlot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
                             }
-                            event.setItem(24, craftingRecipe.getCustomResult());
+                            event.setItem(25, craftingRecipe.getCustomResult());
                             if (knowledgeBook.getTimerTask() == -1) {
                                 knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
                                     HashMap<Integer, Integer> variantsTimers = knowledgeBook.getTimerTimings();
@@ -229,106 +224,45 @@ public class RecipeBook extends ExtendedGuiWindow {
                                             variantsTimers.put(9, 0);
                                         }
                                     } else {
-                                        event.setItem(24, craftingRecipe.getCustomResult().getRealItem());
+                                        event.setItem(25, craftingRecipe.getCustomResult().getRealItem());
                                     }
                                 }, 1, 20));
                             }
                         }
                         break;
                     case ELITE_WORKBENCH:
-                        break;
-                    case CAMPFIRE:
-                    case BLAST_FURNACE:
-                    case SMOKER:
-                    case FURNACE:
-                        CustomCookingRecipe<CookingConfig> furnaceRecipe = (CustomCookingRecipe<CookingConfig>) knowledgeBook.getCustomRecipe();
-                        if (furnaceRecipe != null) {
-                            if (knowledgeBook.getTimerTask() == -1) {
-                                AtomicInteger i = new AtomicInteger();
-                                knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
-                                    if (i.get() == 0) {
-                                        event.setButton(23, "none", "glass_gray");
-                                        event.setButton(22, "none", "glass_gray");
-                                        event.setButton(21, "none", "glass_gray");
-                                    } else if (i.get() == 1) {
-                                        event.setItem(21, new ItemStack(Material.YELLOW_CONCRETE));
-                                    } else if (i.get() == 2) {
-                                        event.setItem(21, new ItemStack(Material.ORANGE_CONCRETE));
-                                        event.setItem(22, new ItemStack(Material.YELLOW_CONCRETE));
-                                    } else {
-                                        event.setItem(21, new ItemStack(Material.RED_CONCRETE_POWDER));
-                                        event.setItem(22, new ItemStack(Material.ORANGE_CONCRETE));
-                                        event.setItem(23, new ItemStack(Material.YELLOW_CONCRETE));
-                                    }
-                                    if (i.get() < 3) {
-                                        i.getAndIncrement();
-                                    } else {
-                                        i.set(0);
-                                    }
-                                    HashMap<Integer, Integer> variantsTimers = knowledgeBook.getTimerTimings();
-                                    List<CustomItem> variants = furnaceRecipe.getSource();
-                                    int variant = variantsTimers.getOrDefault(0, 0);
-                                    event.setItem(20, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant).getRealItem());
-                                    if (i.get() > 2) {
-                                        if (++variant < variants.size()) {
-                                            variantsTimers.put(0, variant);
-                                        } else {
-                                            variantsTimers.put(0, 0);
-                                        }
-                                    }
-                                    List<ItemStack> variantsResult = new ArrayList<>();
-                                    for (CustomItem customItem : furnaceRecipe.getCustomResults()) {
-                                        if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
-                                            if (customItem.getType() != Material.AIR) {
-                                                variantsResult.add(new ItemBuilder(customItem.getRealItem()).addLoreLine("§7" + (customItem.getRarityPercentage() * 100) + "% possibility").create());
-                                            }
-                                        }
-                                    }
-                                    variant = variantsTimers.getOrDefault(1, 0);
-                                    event.setItem(24, variantsResult.isEmpty() ? new ItemStack(Material.AIR) : variantsResult.get(variant));
-                                    if (i.get() > 2) {
-                                        if (++variant < variantsResult.size()) {
-                                            variantsTimers.put(1, variant);
-                                        } else {
-                                            variantsTimers.put(1, 0);
-                                        }
-                                    }
-                                }, 1, 4));
+                        event.setButton(6, "back");
+                        EliteCraftingRecipe eliteCraftingRecipe = (EliteCraftingRecipe) knowledgeBook.getCustomRecipe();
+                        if (!eliteCraftingRecipe.getIngredients().isEmpty()) {
+                            event.setButton(24, "recipe_book", eliteCraftingRecipe.isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+                            int gridSize = 6;
+                            int startSlot = 0;
+                            int invSlot;
+                            for (int i = 0; i < gridSize*gridSize; i++) {
+                                invSlot = startSlot + i + (i / gridSize) * 3;
+                                List<CustomItem> variants = eliteCraftingRecipe.getIngredients(i);
+                                int variant = knowledgeBook.getTimerTimings().getOrDefault(i, 0);
+                                event.setItem(invSlot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
                             }
-                        }
-                        break;
-                    case ANVIL:
-                        CustomAnvilRecipe customAnvilRecipe = (CustomAnvilRecipe) knowledgeBook.getCustomRecipe();
-                        List<CustomItem> inputLeft = customAnvilRecipe.getInputLeft();
-                        List<CustomItem> inputRight = customAnvilRecipe.getInputRight();
-                        HashMap<Integer, Integer> timerTimings = knowledgeBook.getTimerTimings();
-                        event.setItem(19, inputLeft.isEmpty() ? new ItemStack(Material.AIR) : inputLeft.get(timerTimings.getOrDefault(0, 0)));
-                        event.setItem(21, inputRight.isEmpty() ? new ItemStack(Material.AIR) : inputRight.get(timerTimings.getOrDefault(1, 0)));
-                        if (customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                            event.setItem(25, customAnvilRecipe.getCustomResult());
-                        }
-                        if (knowledgeBook.getTimerTask() == -1) {
-                            knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
-                                HashMap<Integer, Integer> timings = knowledgeBook.getTimerTimings();
-                                for (int i = 0; i < 2; i++) {
-                                    List<CustomItem> variants = i == 0 ? customAnvilRecipe.getInputLeft() : customAnvilRecipe.getInputRight();
-                                    if (!variants.isEmpty()) {
-                                        int variant = timings.getOrDefault(0, 0);
-                                        event.setItem(i == 0 ? 19 : 21, variants.get(variant).getRealItem());
+                            event.setItem(25, eliteCraftingRecipe.getCustomResult());
+                            if (knowledgeBook.getTimerTask() == -1) {
+                                knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
+                                    HashMap<Integer, Integer> variantsTimers = knowledgeBook.getTimerTimings();
+                                    int slot;
+                                    for (int i = 0; i < gridSize*gridSize; i++) {
+                                        slot = startSlot + i + (i / gridSize) * 3;
+                                        List<CustomItem> variants = eliteCraftingRecipe.getIngredients(i);
+                                        int variant = variantsTimers.getOrDefault(i, 0);
+                                        event.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant).getRealItem());
                                         if (++variant < variants.size()) {
-                                            timings.put(i, variant);
+                                            variantsTimers.put(i, variant);
                                         } else {
-                                            timings.put(i, 0);
+                                            variantsTimers.put(i, 0);
                                         }
-                                    } else {
-                                        event.setItem(i == 0 ? 19 : 21, new ItemStack(Material.AIR));
                                     }
-                                }
-                                if (customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                                    event.setItem(25, customAnvilRecipe.getCustomResult().getRealItem());
                                     List<ItemStack> variants = new ArrayList<>();
-                                    if (customAnvilRecipe.getCustomResults().size() > 1) {
-                                        for (CustomItem customItem : customAnvilRecipe.getCustomResults()) {
+                                    if (eliteCraftingRecipe.getCustomResults().size() > 1) {
+                                        for (CustomItem customItem : eliteCraftingRecipe.getCustomResults()) {
                                             if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
                                                 if (customItem.getType() != Material.AIR) {
                                                     ItemBuilder itemBuilder = new ItemBuilder(customItem.getRealItem());
@@ -337,29 +271,258 @@ public class RecipeBook extends ExtendedGuiWindow {
                                                 }
                                             }
                                         }
+                                        int variant = variantsTimers.getOrDefault(9, 0);
+                                        event.setItem(24, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
+                                        if (++variant < variants.size()) {
+                                            variantsTimers.put(9, variant);
+                                        } else {
+                                            variantsTimers.put(9, 0);
+                                        }
+                                    } else {
+                                        event.setItem(25, eliteCraftingRecipe.getCustomResult().getRealItem());
+                                    }
+                                }, 1, 30));
+                            }
+                        }
+                        break;
+                    case CAMPFIRE:
+                    case BLAST_FURNACE:
+                    case SMOKER:
+                    case FURNACE:
+                        event.setButton(0, "back");
+                        CustomCookingRecipe<CookingConfig> furnaceRecipe = (CustomCookingRecipe<CookingConfig>) knowledgeBook.getCustomRecipe();
+                        event.setButton(22, "recipe_book", "cooking.icon");
+                        event.setButton(29, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+
+                        if (furnaceRecipe != null) {
+                            if (knowledgeBook.getTimerTask() == -1) {
+                                AtomicInteger i = new AtomicInteger();
+                                List<CustomItem> variantsSource = new ArrayList<>();
+                                for (CustomItem customItem : furnaceRecipe.getSource()) {
+                                    if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
+                                        if (customItem.getType() != Material.AIR) {
+                                            variantsSource.add(customItem.getRealItem());
+                                        }
+                                    }
+                                }
+                                List<ItemStack> variantsResult = new ArrayList<>();
+                                for (CustomItem customItem : furnaceRecipe.getCustomResults()) {
+                                    if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
+                                        if (customItem.getType() != Material.AIR) {
+                                            variantsResult.add(new ItemBuilder(customItem.getRealItem()).addLoreLine("§8" + (customItem.getRarityPercentage() * 100) + "% possibility").create());
+                                        }
+                                    }
+                                }
+                                event.setItem(20, variantsSource.get(knowledgeBook.getTimerTimings().getOrDefault(0, 0)));
+                                event.setItem(33, variantsResult.get(knowledgeBook.getTimerTimings().getOrDefault(1, 0)));
+
+                                knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
+                                    if (i.get() == 0) {
+                                        event.setButton(32, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                                        event.setButton(31, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                                        event.setButton(30, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                                    } else if (i.get() == 1) {
+                                        event.setItem(30, new ItemStack(Material.YELLOW_CONCRETE));
+                                    } else if (i.get() == 2) {
+                                        event.setItem(30, new ItemStack(Material.ORANGE_CONCRETE));
+                                        event.setItem(31, new ItemStack(Material.YELLOW_CONCRETE));
+                                    } else {
+                                        event.setItem(30, new ItemStack(Material.RED_CONCRETE_POWDER));
+                                        event.setItem(31, new ItemStack(Material.ORANGE_CONCRETE));
+                                        event.setItem(32, new ItemStack(Material.YELLOW_CONCRETE));
+                                    }
+                                    if (i.get() < 3) {
+                                        i.getAndIncrement();
+                                    } else {
+                                        i.set(0);
+                                    }
+                                    HashMap<Integer, Integer> variantsTimers = knowledgeBook.getTimerTimings();
+                                    int variant = variantsTimers.getOrDefault(0, 0);
+                                    if(variantsSource.size() > 1){
+                                        event.setItem(20, variantsSource.get(variant));
+                                        if (i.get() > 2) {
+                                            if (++variant < variantsSource.size()) {
+                                                variantsTimers.put(0, variant);
+                                            } else {
+                                                variantsTimers.put(0, 0);
+                                            }
+                                        }
+                                    }else{
+                                        event.setItem(20, variantsSource.isEmpty() ? new ItemStack(Material.AIR) : variantsSource.get(0));
+                                    }
+                                    if(variantsResult.size() > 1){
+                                        variant = variantsTimers.getOrDefault(1, 0);
+                                        event.setItem(33, variantsResult.get(variant));
+                                        if (i.get() > 2) {
+                                            if (++variant < variantsResult.size()) {
+                                                variantsTimers.put(1, variant);
+                                            } else {
+                                                variantsTimers.put(1, 0);
+                                            }
+                                        }
+                                    }else{
+                                        event.setItem(33, variantsResult.isEmpty() ? new ItemStack(Material.AIR) : variantsResult.get(0));
+                                    }
+                                }, 1, 4));
+                            }
+                        }
+                        break;
+                    case ANVIL:
+                        event.setButton(0, "back");
+                        CustomAnvilRecipe customAnvilRecipe = (CustomAnvilRecipe) knowledgeBook.getCustomRecipe();
+                        List<CustomItem> inputLeft = customAnvilRecipe.getInputLeft();
+                        List<CustomItem> inputRight = customAnvilRecipe.getInputRight();
+                        HashMap<Integer, Integer> timerTimings = knowledgeBook.getTimerTimings();
+                        event.setItem(10, inputLeft.isEmpty() ? new ItemStack(Material.AIR) : inputLeft.get(timerTimings.getOrDefault(0, 0)));
+                        event.setItem(13, inputRight.isEmpty() ? new ItemStack(Material.AIR) : inputRight.get(timerTimings.getOrDefault(1, 0)));
+
+                        event.setButton(19, "none", "glass_green");
+                        event.setButton(22, "none", "glass_green");
+                        event.setButton(28, "none", "glass_green");
+                        event.setButton(29, "none", "glass_green");
+                        event.setButton(30, "none", "glass_green");
+                        event.setButton(32, "none", "glass_green");
+                        event.setButton(33, "none", "glass_green");
+
+                        if (customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+                            event.setButton(31, "recipe_book", "anvil.result");
+                            event.setItem(34, customAnvilRecipe.getCustomResult());
+                        }else if(customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)){
+                            event.setButton(31, "recipe_book", "anvil.durability");
+                            event.setItem(34, inputLeft.isEmpty() ? new ItemStack(Material.AIR) : inputLeft.get(timerTimings.getOrDefault(9, 0)));
+                        }else{
+                            event.setButton(31, "recipe_book", "anvil.none");
+                            event.setItem(34, new ItemStack(Material.AIR));
+                        }
+                        if (knowledgeBook.getTimerTask() == -1) {
+                            knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
+                                HashMap<Integer, Integer> timings = knowledgeBook.getTimerTimings();
+                                for (int i = 0; i < 2; i++) {
+                                    List<CustomItem> variants = new ArrayList<>(i == 0 ? customAnvilRecipe.getInputLeft() : customAnvilRecipe.getInputRight());
+                                    Iterator<CustomItem> iterator = variants.iterator();
+                                    while(iterator.hasNext()){
+                                        CustomItem customItem = iterator.next();
+                                        if(!customItem.hasPermission()){
+                                            continue;
+                                        }
+                                        if(!player.hasPermission(customItem.getPermission())){
+                                            iterator.remove();
+                                        }
+                                    }
+                                    if (variants.size() > 1 && !variants.isEmpty()) {
+                                        int variant = timings.getOrDefault(0, 0);
+                                        event.setItem(i == 0 ? 10 : 13, variants.get(variant).getRealItem());
+                                        if (++variant < variants.size()) {
+                                            timings.put(i, variant);
+                                        } else {
+                                            timings.put(i, 0);
+                                        }
+                                    }
+                                }
+                                if (customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+                                    event.setItem(34, customAnvilRecipe.getCustomResult() != null ? customAnvilRecipe.getCustomResult().getRealItem() : new ItemStack(Material.AIR));
+                                    List<ItemStack> variants = new ArrayList<>();
+                                    if (customAnvilRecipe.getCustomResults().size() > 1) {
+                                        for (CustomItem customItem : customAnvilRecipe.getCustomResults()) {
+                                            if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
+                                                if (customItem.getType() != Material.AIR) {
+                                                    ItemBuilder itemBuilder = new ItemBuilder(customItem.getRealItem());
+                                                    itemBuilder.addLoreLine("§7" + (customItem.getRarityPercentage() * 100) + "%");
+                                                    variants.add(itemBuilder.create());
+                                                }
+                                            }
+                                        }
                                         int variant = timings.getOrDefault(9, 0);
-                                        event.setItem(25, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
+                                        event.setItem(34, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
                                         if (++variant < variants.size()) {
                                             timings.put(9, variant);
                                         } else {
                                             timings.put(9, 0);
                                         }
-                                    } else {
-                                        event.setItem(25, customAnvilRecipe.getCustomResult().getRealItem());
                                     }
+                                }else if(customAnvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)){
+                                    event.setItem(34, inputLeft.isEmpty() ? new ItemStack(Material.AIR) : inputLeft.get(timerTimings.getOrDefault(9, 0)));
+                                    List<CustomItem> variants = new ArrayList<>();
+                                    if (customAnvilRecipe.getInputLeft().size() > 1) {
+                                        for (CustomItem customItem : customAnvilRecipe.getInputLeft()) {
+                                            if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
+                                                variants.add(customItem.getRealItem());
+                                            }
+                                        }
+                                        int variant = timings.getOrDefault(9, 0);
+                                        event.setItem(34, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
+                                        if (++variant < variants.size()) {
+                                            timings.put(9, variant);
+                                        } else {
+                                            timings.put(9, 0);
+                                        }
+                                    }
+                                }else{
+                                    event.setItem(34, new ItemStack(Material.AIR));
                                 }
-                            }, 1, 20));
+                            }, 1, 30));
                         }
                         break;
                     case STONECUTTER:
+                        event.setButton(0, "back");
                         //TODO STONECUTTER
+                        event.setButton(29, "none", "glass_green");
+                        event.setButton(33, "none", "glass_green");
+                        event.setButton(38, "none", "glass_green");
+                        event.setButton(39, "none", "glass_green");
+                        event.setButton(40, "none", "glass_green");
+                        event.setButton(41, "none", "glass_green");
+                        event.setButton(42, "none", "glass_green");
                         CustomStonecutterRecipe stonecutterRecipe = (CustomStonecutterRecipe) knowledgeBook.getCustomRecipe();
                         event.setItem(20, stonecutterRecipe.getSource().get(0));
+                        event.setButton(31, "recipe_book", "stonecutter");
                         event.setItem(24, stonecutterRecipe.getCustomResult().getRealItem());
+                        break;
+                    case CAULDRON:
+                        event.setButton(0, "back");
+                        CauldronRecipe cauldronRecipe = (CauldronRecipe) knowledgeBook.getCustomRecipe();
+                        List<CustomItem> ingredients = cauldronRecipe.getIngredients();
+                        int invSlot;
+                        for (int i = 0; i < 6; i++) {
+                            invSlot = 10 + i + (i / 3) * 6;
+                            if(i < ingredients.size()){
+                                CustomItem customItem = ingredients.get(i);
+                                event.setItem(invSlot, customItem == null ? new ItemStack(Material.AIR) : customItem);
+                            }else{
+                                event.setItem(invSlot, new ItemStack(Material.AIR));
+                            }
+                        }
+                        event.setButton(29, "recipe_book", cauldronRecipe.needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled");
+                        event.setButton(38, "recipe_book", cauldronRecipe.needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled");
+                        event.setItem(34, cauldronRecipe.getCustomResult());
+
+                        if (knowledgeBook.getTimerTask() == -1) {
+                            knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
+                                HashMap<Integer, Integer> timings = knowledgeBook.getTimerTimings();
+                                List<ItemStack> variants = new ArrayList<>();
+                                if (cauldronRecipe.getCustomResults().size() > 1) {
+                                    for (CustomItem customItem : cauldronRecipe.getCustomResults()) {
+                                        if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
+                                            if (customItem.getType() != Material.AIR) {
+                                                ItemBuilder itemBuilder = new ItemBuilder(customItem.getRealItem());
+                                                itemBuilder.addLoreLine("§7" + (customItem.getRarityPercentage() * 100) + "%");
+                                                variants.add(itemBuilder.create());
+                                            }
+                                        }
+                                    }
+                                    int variant = timings.getOrDefault(9, 0);
+                                    event.setItem(34, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
+                                    if (++variant < variants.size()) {
+                                        timings.put(9, variant);
+                                    } else {
+                                        timings.put(9, 0);
+                                    }
+                                }
+                            }, 1, 30));
+                        }
                         break;
                 }
             }
-
         }
     }
 }

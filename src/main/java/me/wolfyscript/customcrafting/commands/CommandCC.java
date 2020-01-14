@@ -10,15 +10,19 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandCC implements CommandExecutor, TabCompleter {
 
@@ -100,7 +104,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             if (args.length >= 3) {
                                 Player target = Bukkit.getPlayer(args[1]);
                                 if (target == null) {
-                                    api.sendPlayerMessage(p, "$msg.commands.give.player_offline$", new String[]{"%PLAYER%", args[1]});
+                                    api.sendPlayerMessage(p, "$commands.give.player_offline$", new String[]{"%PLAYER%", args[1]});
                                     return true;
                                 }
                                 String namespacekey = args[2];
@@ -109,7 +113,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                     try {
                                         amount = Integer.parseInt(args[3]);
                                     } catch (NumberFormatException ex) {
-                                        api.sendPlayerMessage(p, "$msg.commands.give.invalid_amount$");
+                                        api.sendPlayerMessage(p, "$commands.give.invalid_amount$");
                                     }
                                 }
                                 CustomItem customItem = CustomItems.getCustomItem(namespacekey);
@@ -119,15 +123,15 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                         itemStack.setAmount(amount);
                                         target.getInventory().addItem(itemStack);
                                         if (amount > 1) {
-                                            api.sendPlayerMessage(p, "$msg.commands.give.success_amount$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]}, new String[]{"%AMOUNT%", args[3]});
+                                            api.sendPlayerMessage(p, "$commands.give.success_amount$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]}, new String[]{"%AMOUNT%", args[3]});
                                         } else {
-                                            api.sendPlayerMessage(p, "$msg.commands.give.success$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]});
+                                            api.sendPlayerMessage(p, "$commands.give.success$", new String[]{"%PLAYER%", args[1]}, new String[]{"%ITEM%", args[2]});
                                         }
                                     } else {
-                                        api.sendPlayerMessage(p, "$msg.commands.give.no_inv_space$");
+                                        api.sendPlayerMessage(p, "$commands.give.no_inv_space$");
                                     }
                                 } else {
-                                    api.sendPlayerMessage(p, "$msg.commands.give.invalid_item$", new String[]{"%ITEM%", args[2]});
+                                    api.sendPlayerMessage(p, "$commands.give.invalid_item$", new String[]{"%ITEM%", args[2]});
                                 }
                             }
                         }
@@ -169,6 +173,9 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             }
                         }
                         break;
+                    case "getcustomitems":
+
+                        break;
                 }
             }
         } else {
@@ -178,7 +185,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     if (args.length >= 3) {
                         Player target = Bukkit.getPlayer(args[1]);
                         if (target == null) {
-                            api.sendConsoleMessage("$msg.commands.give.player_offline$", args[1]);
+                            api.sendConsoleMessage("$commands.give.player_offline$", args[1]);
                             return true;
                         }
                         String namespacekey = args[2];
@@ -187,7 +194,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             try {
                                 amount = Integer.parseInt(args[3]);
                             } catch (NumberFormatException ex) {
-                                api.sendConsoleMessage("$msg.commands.give.invalid_amount$");
+                                api.sendConsoleMessage("$commands.give.invalid_amount$");
                             }
                         }
                         CustomItem customItem = CustomItems.getCustomItem(namespacekey);
@@ -197,24 +204,24 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                 itemStack.setAmount(amount);
                                 target.getInventory().addItem(itemStack);
                                 if (amount > 1) {
-                                    api.sendConsoleMessage("$msg.commands.give.success_amount$", args[3], args[2], args[1]);
+                                    api.sendConsoleMessage("$commands.give.success_amount$", args[3], args[2], args[1]);
                                 } else {
-                                    api.sendConsoleMessage("$msg.commands.give.success$", args[2], args[1]);
+                                    api.sendConsoleMessage("$commands.give.success$", args[2], args[1]);
                                 }
                             } else {
-                                api.sendConsoleMessage("$msg.commands.give.no_inv_space$");
+                                api.sendConsoleMessage("$commands.give.no_inv_space$");
                             }
                         } else {
-                            api.sendConsoleMessage("$msg.commands.give.invalid_item$", args[2]);
+                            api.sendConsoleMessage("$commands.give.invalid_item$", args[2]);
                         }
                     }
 
                 } else if (args[0].equalsIgnoreCase("lockdown")) {
                     CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
                     if (CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                        api.sendConsoleMessage("$msg.commands.lockdown.enabled$");
+                        api.sendConsoleMessage("$commands.lockdown.enabled$");
                     } else {
-                        api.sendConsoleMessage("$msg.commands.lockdown.disabled$");
+                        api.sendConsoleMessage("$commands.lockdown.disabled$");
                     }
                 }
             }
@@ -249,7 +256,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         WolfyUtilities api = CustomCrafting.getApi();
         api.sendPlayerMessage(p, "~*~*~*~*&8[&3&lCustomCrafting&8]&7~*~*~*~*~");
         Language lang = api.getLanguageAPI().getActiveLanguage();
-        List<String> help = lang.replaceKey("msg.commands.help");
+        List<String> help = lang.replaceKey("commands.help");
         for (String line : help) {
             api.sendPlayerMessage(p, line);
         }
@@ -285,7 +292,6 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                 } else if (strings.length == 3) {
                     switch (strings[1]) {
                         case "advanced_workbench":
-                        case "vanilla_knowledgebook":
                         case "pretty_printing":
                             StringUtil.copyPartialMatches(strings[2], Arrays.asList("true", "false"), results);
                             break;

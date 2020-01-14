@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import me.clip.placeholderapi.util.FileUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -14,6 +15,8 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+
+import java.nio.file.Files;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
@@ -33,10 +36,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
         })));
         registerButton(new ActionButton("edit_recipe", new ButtonState("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageRecipes(1);
-            api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
-            api.sendPlayerMessage(player, "&7----------------------------------------------------------");
-            api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> ChatUtils.sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-            openChat("input", guiHandler, (guiHandler1, player1, s, args) -> {
+            ChatUtils.sendRecipeListExpanded(player);
+            guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
                     if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, player1)) {
@@ -49,38 +50,44 @@ public class RecipeEditor extends ExtendedGuiWindow {
                 }
                 return false;
             });
+            guiHandler.close();
             return true;
         })));
         registerButton(new ActionButton("delete_recipe", new ButtonState("delete_recipe", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageRecipes(1);
-            api.sendActionMessage(player, new ClickData("&3« Back", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
-            api.sendPlayerMessage(player, "&7----------------------------------------------------------");
-            api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> ChatUtils.sendRecipeListExpanded(player1), true), new ClickData(" Recipe List", null));
-            openChat("input", guiHandler, (guiHandler1, player1, s, args) -> {
+            ChatUtils.sendRecipeListExpanded(player);
+            guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
-                    api.sendPlayerMessage(player1, "$msg.gui.none.recipe_editor.delete.confirm$", new String[]{"%recipe%", recipe.getId()});
-                    api.sendActionMessage(player1, new ClickData("$msg.gui.none.recipe_editor.delete.confirmed$", (wolfyUtilities, player2) -> Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
-                        CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
+                    if(recipe == null){
+                        api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
+                        return true;
+                    }
+                    api.sendPlayerMessage(player1, "none", "recipe_editor", "delete.confirm", new String[]{"%recipe%", recipe.getId()});
+                    api.sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         if (CustomCrafting.hasDataBaseHandler()) {
                             CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getNamespace(), recipe.getConfig().getName());
                             player1.sendMessage("§aRecipe deleted!");
                         } else {
                             recipe.getConfig().save();
-                            if (recipe.getConfig().getConfigFile().delete()) {
-                                player1.sendMessage("§aRecipe deleted!");
-                            } else {
-                                recipe.getConfig().getConfigFile().deleteOnExit();
-                                player1.sendMessage("§cCould not delete recipe!");
-                            }
+                            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                                if (recipe.getConfig().getConfigFile().delete()) {
+                                    player1.sendMessage("§aRecipe deleted!");
+                                } else {
+                                    recipe.getConfig().getConfigFile().deleteOnExit();
+                                    player1.sendMessage("§cCould not delete recipe!");
+                                }
+                            });
                         }
+                        CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
                         guiHandler1.openCluster();
-                    })), new ClickData("$msg.gui.none.recipe_editor.delete.declined$", (wolfyUtilities, player2) -> guiHandler1.openCluster()));
+                    })), new ClickData("$inventories.none.recipe_editor.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler1.openCluster()));
                     guiHandler1.cancelChatEvent();
                     return true;
                 }
                 return false;
             });
+            guiHandler.close();
             return true;
         })));
     }

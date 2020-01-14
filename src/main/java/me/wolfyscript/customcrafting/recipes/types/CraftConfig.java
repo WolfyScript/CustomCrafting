@@ -41,6 +41,8 @@ public class CraftConfig extends RecipeConfig {
     */
     public CraftConfig(String type) {
         super(type, "craft_config");
+
+
     }
 
     public void setShapeless(boolean shapeless) {
@@ -60,9 +62,13 @@ public class CraftConfig extends RecipeConfig {
         String[] shape = new String[gridSize];
         int index = 0;
         int row = 0;
-        for (char ingrd : ingredients.keySet()) {
-            List<CustomItem> keyItems = ingredients.get(ingrd);
-            if (InventoryUtils.isEmpty(new ArrayList<>(keyItems))) {
+        for (int i = 0; i < gridSize*gridSize; i++){
+            char ingrd = LETTERS[i];
+            ArrayList<ItemStack> items = new ArrayList<>();
+            if(ingredients.containsKey(ingrd)){
+                items.addAll(ingredients.get(ingrd));
+            }
+            if (items == null || items.isEmpty() || InventoryUtils.isEmpty(items)) {
                 if (shape[row] != null) {
                     shape[row] = shape[row] + " ";
                 } else {

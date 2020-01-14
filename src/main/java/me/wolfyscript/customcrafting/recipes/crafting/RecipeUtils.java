@@ -36,7 +36,6 @@ public class RecipeUtils {
         List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
         List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients, elite, advanced));
         recipesToCheck.sort(Comparator.comparing(CustomRecipe::getPriority));
-        recipesToCheck.forEach(craftingRecipe -> api.sendDebugMessage(" - " + craftingRecipe.getId()));
         if (!recipesToCheck.isEmpty() && !CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
             CustomPreCraftEvent customPreCraftEvent;
             for (CraftingRecipe recipe : recipesToCheck) {
@@ -130,7 +129,7 @@ public class RecipeUtils {
                     if (results.size() < 2 && (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT))) {
                         api.sendDebugMessage("SHIFT-CLICK!");
                         if (resultItem.getAmount() > 0) {
-                            int possible = InventoryUtils.getInventorySpace(player, resultItem) / resultItem.getAmount();
+                            int possible = InventoryUtils.getInventorySpace(event.getView().getBottomInventory(), resultItem) / resultItem.getAmount();
                             if (possible > amount) {
                                 possible = amount;
                             }
@@ -138,9 +137,10 @@ public class RecipeUtils {
                                 api.sendDebugMessage(" possible: " + possible);
                                 recipe.removeMatrix(ingredients, inventory, possible, craftingData);
                             }
+                            event.setCurrentItem(new ItemStack(Material.AIR));
                             Random rd = new Random();
                             for (int i = 0; i < possible; i++) {
-                                player.getInventory().addItem(resultItem);
+                                event.getView().getBottomInventory().addItem(resultItem);
                                 if (!customCraftEvent.getResult().isEmpty()) {
                                     resultItem = customCraftEvent.getResult().get(rd.nextInt(customCraftEvent.getResult().size())).getRealItem();
                                 } else {
@@ -153,14 +153,14 @@ public class RecipeUtils {
                         if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())) {
                             HashMap<String, CustomItem> precraftedItem = RecipeUtils.getPrecraftedItems().getOrDefault(player.getUniqueId(), new HashMap<>());
                             recipe.removeMatrix(ingredients, inventory, 1, craftingData);
-                            if (event.getView().getCursor() != null && event.getView().getCursor().isSimilar(resultItem)) {
+                            if (player.getItemOnCursor() != null && (resultItem.isSimilar(player.getItemOnCursor()) || player.getItemOnCursor().isSimilar(resultItem))) {
                                 event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
                             } else if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR)) {
                                 event.getView().setCursor(resultItem);
                             }
                             precraftedItem.put(recipe.getId(), null);
-                            RecipeUtils.getPrecraftedItems().put(player.getUniqueId(), precraftedItem);
-                            RecipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                            getPrecraftedItems().put(player.getUniqueId(), precraftedItem);
+                            getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
                         }
                     }
                 }

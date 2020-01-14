@@ -42,6 +42,11 @@ public class MainMenu extends ExtendedGuiWindow {
             guiHandler.changeToInv("recipe_book");
             return true;
         })));
+        registerButton(new ActionButton("cauldron", new ButtonState("cauldron", Material.CAULDRON, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(player).getKnowledgeBook().setSetting(Setting.CAULDRON);
+            guiHandler.changeToInv("recipe_book");
+            return true;
+        })));
         if (WolfyUtilities.hasVillagePillageUpdate()) {
             registerButton(new ActionButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 CustomCrafting.getPlayerCache(player).getKnowledgeBook().setSetting(Setting.BLAST_FURNACE);
@@ -85,6 +90,9 @@ public class MainMenu extends ExtendedGuiWindow {
             }
             if (!recipeHandler.getAvailableAnvilRecipes(event.getPlayer()).isEmpty()) {
                 availableRecipes.add("anvil");
+            }
+            if (!recipeHandler.getAvailableCauldronRecipes().isEmpty()) {
+                availableRecipes.add("cauldron");
             }
             if (WolfyUtilities.hasVillagePillageUpdate()) {
                 if (!recipeHandler.getAvailableBlastRecipes().isEmpty()) {

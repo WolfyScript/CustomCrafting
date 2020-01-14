@@ -40,7 +40,7 @@ public class CookingCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PlayerCache cache = CustomCrafting.getPlayerCache(player);
             if (validToSave(cache)) {
-                openChat("save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                openChat("recipe_creator","save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
                     CookingConfig cookingConfig = cache1.getCookingConfig();
                     if (args.length > 1) {
@@ -76,7 +76,6 @@ public class CookingCreator extends ExtendedGuiWindow {
                         }
                         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
                         return false;
-
                     }
                     return false;
                 });

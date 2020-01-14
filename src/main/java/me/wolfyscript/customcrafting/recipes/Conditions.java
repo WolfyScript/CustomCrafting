@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.gson.*;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;

@@ -34,15 +34,14 @@ public class CauldronContainerButton extends ItemInputButton {
                     if (inputSlot == 0 && cauldronConfig.getIngredients() != null) {
                         cache.getVariantsData().setSlot(inputSlot);
                         cache.getVariantsData().setVariants(cauldronConfig.getIngredients());
-
+                        guiHandler.changeToInv("variants");
                     } else if (inputSlot == 1 && cauldronConfig.getResult() != null) {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            cache.getItems().setItem(false, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
+                            cache.getItems().setItem(true, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
                             cache.setApplyItem(APPLY_ITEM);
-                            guiHandler.changeToInv("item_editor");
+                            guiHandler.changeToInv("none", "item_editor");
                         }
                     }
-                    guiHandler.changeToInv("variants");
                     return true;
                 } else {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {

@@ -86,8 +86,8 @@ public class ItemEditor extends ExtendedGuiWindow {
                 guiHandler.changeToInv("item_creator", "main_menu");
             } else {
                 CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageItems(1);
-                api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
-                openChat("input", guiHandler, (guiHandler1, player1, s, args) -> {
+                sendItemListExpanded(player);
+                guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         Items items1 = CustomCrafting.getPlayerCache(player1).getItems();
                         CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
@@ -104,13 +104,14 @@ public class ItemEditor extends ExtendedGuiWindow {
                     sendMessage(player1, "no_name");
                     return true;
                 });
+                guiHandler.close();
             }
             return true;
         })));
         registerButton(new ActionButton("delete_item", new ButtonState("delete_item", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageItems(1);
-            api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
-            openChat("input", guiHandler, (guiHandler1, player1, s, args) -> {
+            sendItemListExpanded(player);
+            guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
                     if (customItem == null) {
@@ -129,6 +130,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                 sendMessage(player1, "no_name");
                 return true;
             });
+            guiHandler.close();
             return true;
         })));
     }
@@ -156,34 +158,37 @@ public class ItemEditor extends ExtendedGuiWindow {
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }
-        api.sendActionMessage(player, new ClickData("§7§n[§c§n-§7§n]", (wolfyUtilities1, p) -> {
-            for (int i = 0; i < 20; i++) {
-                player.sendMessage(" ");
-            }
-            api.sendActionMessage(p, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
-            sendMessage(player, "input");
-        }, true), new ClickData("§n Items:", null));
 
         int currentPage = cache.getChatLists().getCurrentPageItems();
-        int itemsPerPage = cache.getChatLists().getLastUsedItem().equals("") ? 15 : 13;
+        int itemsPerPage = cache.getChatLists().getLastUsedItem().equals("") ? 16 : 14;
         int maxPages = ((CustomItems.getCustomItems().size() % itemsPerPage) > 0 ? 1 : 0) + CustomItems.getCustomItems().size() / itemsPerPage;
 
-        for (int i = (currentPage - 1) * itemsPerPage; i < (currentPage - 1) * itemsPerPage + itemsPerPage && i < CustomItems.getCustomItems().size(); i++) {
-            CustomItem customItem = CustomItems.getCustomItems().get(i);
-            api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " - ", null), new ClickData(customItem.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, customItem.getId().split(":")[0] + " " + customItem.getId().split(":")[1]), new HoverEvent(customItem)));
+        api.sendActionMessage(player, new ClickData("[&3« Back&7]", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true),
+                new ClickData("                   &7&lItems", null),
+                new ClickData("         &e"+ currentPage + "§7/§6" + maxPages +" ", null), new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
+                    if (currentPage > 1) {
+                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
+                        sendItemListExpanded(p);
+                    }
+                }), new ClickData(" [&e&l»&7]", (wolfyUtilities, p) -> {
+                    if (currentPage < maxPages) {
+                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
+                        sendItemListExpanded(p);
+                    }
+                }));
+
+
+        api.sendPlayerMessage(player, "&8-------------------------------------------------");
+
+        for (int i = (currentPage - 1) * itemsPerPage; i < (currentPage - 1) * itemsPerPage + itemsPerPage; i++) {
+            if(i < CustomItems.getCustomItems().size()){
+                CustomItem customItem = CustomItems.getCustomItems().get(i);
+                api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " - ", null), new ClickData(customItem.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, customItem.getId().split(":")[0] + " " + customItem.getId().split(":")[1]), new HoverEvent(customItem)));
+            }else{
+                api.sendPlayerMessage(player, "");
+            }
         }
 
-        api.sendActionMessage(player, new ClickData("§7[§6« previous§7]", (wolfyUtilities1, p) -> {
-            if (currentPage > 1) {
-                cache.getChatLists().setCurrentPageItems(cache.getChatLists().getCurrentPageItems() - 1);
-            }
-            sendItemListExpanded(p);
-        }), new ClickData("  §b" + currentPage + "§7 / §7" + maxPages + "  ", null), new ClickData("§7[§6next »§7]", (wolfyUtilities1, p) -> {
-            if (currentPage < maxPages) {
-                cache.getChatLists().setCurrentPageItems(cache.getChatLists().getCurrentPageItems() + 1);
-            }
-            sendItemListExpanded(p);
-        }));
         if (!cache.getChatLists().getLastUsedItem().equals("")) {
             api.sendPlayerMessage(player, "§ePreviously used:");
             CustomItem customItem = CustomItems.getCustomItem(cache.getChatLists().getLastUsedItem());
@@ -191,8 +196,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                 api.sendActionMessage(player, new ClickData("§b - ", null), new ClickData(customItem.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, customItem.getId().split(":")[0] + " " + customItem.getId().split(":")[1]), new HoverEvent(customItem)));
             }
         }
-        api.sendPlayerMessage(player, "-------------------------------------------------");
-
+        api.sendPlayerMessage(player, "&8-------------------------------------------------");
         sendMessage(player, "input");
     }
 }

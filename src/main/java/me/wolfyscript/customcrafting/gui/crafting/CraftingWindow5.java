@@ -1,13 +1,16 @@
 package me.wolfyscript.customcrafting.gui.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.PlayerCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.ResultSlotButton;
+import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,12 +31,14 @@ public class CraftingWindow5 extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            Player player = event.getPlayer();
             PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
             EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
             if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
                 eliteWorkbench.setCurrentGridSize(5);
                 eliteWorkbench.setContents(new ItemStack[25]);
             }
+
             event.setButton(18, "crafting", "knowledge_book");
             int slot;
             for (int i = 0; i < 25; i++) {

@@ -23,6 +23,7 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
     private List<CustomItem> result;
     private Map<Character, List<CustomItem>> ingredients;
     private WolfyUtilities api;
+    protected int requiredGridSize;
 
     public EliteCraftingRecipe(EliteCraftConfig config) {
         this.result = config.getResult();
@@ -35,6 +36,21 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
         this.hidden = config.isHidden();
+
+        this.requiredGridSize = 6;
+        if (config.isShapeless()){
+            if(ingredients.size() <= 9){
+                requiredGridSize = 3;
+            }else if (ingredients.size() <= 16){
+                requiredGridSize = 4;
+            }else if (ingredients.size() <= 25){
+                requiredGridSize = 5;
+            }else if (ingredients.size() <= 36){
+                requiredGridSize = 6;
+            }
+        }else{
+            config.getShape();
+        }
     }
 
     @Override

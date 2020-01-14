@@ -139,7 +139,7 @@ public class Cauldrons {
             if (block.getRelative(BlockFace.DOWN).getType().equals(Material.CAMPFIRE)) {
                 return ((Campfire) block.getRelative(BlockFace.DOWN).getBlockData()).isLit();
             }
-        } else return block.getRelative(BlockFace.DOWN).getType().equals(Material.FIRE);
+        }
         return false;
     }
 

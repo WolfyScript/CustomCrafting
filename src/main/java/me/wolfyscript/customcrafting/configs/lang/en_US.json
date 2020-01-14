@@ -131,13 +131,6 @@
           ],
           "help": []
         },
-        "main_menu": {
-          "name": "&6Patreon",
-          "lore": [
-            "&7Support me on Patreon and help me",
-            "&7keep this project alive."
-          ]
-        },
         "patreon": {
           "name": "&6&lPatreon",
           "lore": [
@@ -150,15 +143,13 @@
         "instagram": {
           "name": "&5&lInstagram",
           "lore": [
-            "&eSupport me on Instagram by following!",
-            "&eI try to post as frequently as possible."
+            "&eCheck out my Instgram"
           ]
         },
         "youtube": {
           "name": "&c&lYouTube",
           "lore": [
-            "&eSubscribe to my channel.",
-            "&eI will start to upload videos soon I hope..."
+            "&eSubscribe to me on YouTube"
           ]
         },
         "discord": {
@@ -192,7 +183,7 @@
             ]
           },
           "elite_workbench": {
-            "name": "&6Elite Workbench",
+            "name": "&6Elite Workbench &8[&7Beta&8]",
             "help": [
               ""
             ]
@@ -287,7 +278,6 @@
         "messages": {
           "input": "&eType in the folder and name of the item! &6example your_item",
           "error": "&cThis item does not exist or is not loaded!",
-          "item_gui_title": "       &cID ITEM     &3ORIGINAL ITEM",
           "item_applied": "&aItem successfully applied to recipe!",
           "item_editable": "&aThis item can now be edited!",
           "no_name": "&cYou need to type in the item name!"
@@ -316,8 +306,8 @@
           }
         },
         "messages": {
-          "not_existing": "&cThe recipe &6%RECIPE% &cdoesn't exist!",
-          "input": "&eType in the name of the folder and recipe! &6example your_recipe",
+          "not_existing": "&cThe recipe &6%recipe% &cdoesn't exist!",
+          "input": "&eType in the name of the folder and recipe! &6weapons titanium_sword",
           "invalid_recipe": "&cThis recipe is not a %recipe_type%!",
           "delete": {
             "confirm": "&eDo you really want to delete &6%recipe%?",
@@ -479,23 +469,11 @@
             "invalid_enchant": "&cInvalid Enchantment! &4%ENCHANT%&c does not exist!",
             "no_lvl": "&cNo level set!"
           },
-          "lore": {
-            "no_number": "&cError getting the line! Is it a number? It should be!",
-            "error": "&cError the line &4%NUM%&c does not exist!",
-            "success": "&aRemoved Lore in line &6%NUM%"
-          },
           "potion": {
             "error_number": "&cError parsing Numbers! &4<name> <duration> <level> [<ambient> <particles>]",
             "wrong_args": "&cWrong arguments or invalid name! &4<name> <duration> <level> [<ambient> <particles>]",
             "success": "&aAdded Potion Effect &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%",
             "invalid_name": "&cInvalid name! &4%NAME%&c does not exist!"
-          },
-          "variant": {
-            "remove": {
-              "msg": "&eChoose the Item you want to remove!",
-              "line": " &6%NUM%. &7%ITEM%",
-              "success": "&aRemoved &6%ITEM%&a from variants&a!"
-            }
           },
           "attribute": {
             "amount": {
@@ -656,29 +634,53 @@
                 "&7e.g. Hide Enchants"
               ]
             },
-            "flag_enchants": {
-              "name": "%C%Hide Enchants",
-              "help": []
+            "enchants": {
+              "enabled": {
+                "name": "&aHide Enchants"
+              },
+              "disabled": {
+                "name": "&cHide Enchants"
+              }
             },
-            "flag_attributes": {
-              "name": "%C%Hide Attributes",
-              "help": []
+            "attributes": {
+              "enabled": {
+                "name": "&aHide Attributes"
+              },
+              "disabled": {
+                "name": "&cHide Attributes"
+              }
             },
-            "flag_unbreakable": {
-              "name": "%C%Hide Unbreakable",
-              "help": []
+            "unbreakable": {
+              "enabled": {
+                "name": "&aHide Unbreakable"
+              },
+              "disabled": {
+                "name": "&cHide Unbreakable"
+              }
             },
-            "flag_destroys": {
-              "name": "%C%Hide Destroys",
-              "help": []
+            "destroys": {
+              "enabled": {
+                "name": "&aHide Destroys"
+              },
+              "disabled": {
+                "name": "&cHide Destroys"
+              }
             },
-            "flag_placed_on": {
-              "name": "%C%Hide Placed On",
-              "help": []
+            "placed_on": {
+              "enabled": {
+                "name": "&aHide Placed On"
+              },
+              "disabled": {
+                "name": "&cHide Placed On"
+              }
             },
-            "flag_potion_effects": {
-              "name": "%C%Hide Potions",
-              "help": []
+            "potion_effects": {
+              "enabled": {
+                "name": "&aHide Potions"
+              },
+              "disabled": {
+                "name": "&cHide Potions"
+              }
             }
           },
           "player_head": {
@@ -1072,7 +1074,7 @@
           },
           "consume": {
             "option": {
-              "name": "&7Durability Cost & Replacement",
+              "name": "&7Durability Cost && Replacement",
               "lore": [
                 "&cTo use this feature, you need to save the item!"
               ],
@@ -1236,7 +1238,7 @@
           },
           "elite_workbench": {
             "option": {
-              "name": "&6Elite Workbench &8[&71.14+&8]",
+              "name": "&6Elite Workbench &8[&71.14+&8][&7Beta&8]",
               "lore": [
                 "&7Create and Configure your own unique Workbench",
                 "&7with up to 6x6 crafting grid"
@@ -1286,9 +1288,9 @@
               "enabled": {
                 "name": "&aNormal Recipes Allowed",
                 "lore": [
-                  "&7Normal Recipes && Elite Recipes can be crafted.",
+                  "&7Normal Recipes & Elite Recipes can be crafted.",
                   "&eCustom Recipes which are not specificly created for the Advanced Workbench",
-                  "%eand Elite Recipes can be crafted",
+                  "&eand Elite Recipes can be crafted",
                   "&7[&aClick&7] Toggle to Elite Recipes only"
                 ]
               },
@@ -1299,6 +1301,9 @@
                   "&7[&aClick&7] Toggle to allow Normal Recipes"
                 ]
               }
+            },
+            "particles": {
+              "name": "&6Particle Effects &8[&7Coming soon&8]"
             }
           }
         }
@@ -1328,8 +1333,9 @@
         "conditions": {
           "name": "&3Conditions",
           "lore": [
-            "&7Set conditions to further customize your recipe.",
-            "&7Such as World Time, Weather, etc."
+            "&eSet conditions to further customize your recipe.",
+            "&eSuch as World Time, Weather, etc.",
+            "&7[&aClick&7] Configure conditons"
           ]
         },
         "hidden": {
@@ -1403,14 +1409,30 @@
             "enabled": {
               "name": "&aMirror Vertical",
               "lore": [
-                "&7Recipe can be crafted mirrored vertically",
+                "&eRecipe can be crafted mirrored vertically",
                 "&7[&aClick&7] Toggle"
               ]
             },
             "disabled": {
               "name": "&cMirror Vertical",
               "lore": [
-                "&7Recipe is fixed!",
+                "&eRecipe is fixed!",
+                "&7[&aClick&7] Toggle"
+              ]
+            }
+          },
+          "mirrorRotation": {
+            "disabled": {
+              "name": "&cRotate Recipe",
+              "lore": [
+                "&eRecipe cannot be rotated.",
+                "&7[&aClick&7] Toggle"
+              ]
+            },
+            "enabled": {
+              "name": "&aRotate Recipe",
+              "lore": [
+                "&eRecipe can be rotated.",
                 "&7[&aClick&7] Toggle"
               ]
             }
@@ -1434,7 +1456,7 @@
       "conditions": {
         "gui_name": "Conditions",
         "mode_names": {
-          "exact": "&eEquals",
+          "exact": "&eExact value",
           "ignore": "&cDisabled",
           "higher": "&e>",
           "lower": "&e<",
@@ -1478,9 +1500,14 @@
             "name": "&7- Elite Workbench -",
             "lore": [
               "&7Mode:&e %MODE%",
-              "&7Values:&e %VALUE%",
+              "&7Values:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
               "&8[&aRight Click&8] &7toggle on/off",
-              "&8[&aLeft Click&8] &7configure Elite Workbenches"
+              "&8[&aLeft Click&8] &7configure Elite Workbenches",
+              "&8[&aShift Left Click&8] &7remove last entry"
             ]
           },
           "permission": {
@@ -1495,8 +1522,12 @@
         },
         "messages": {
           "world_time": "&eType the time in ticks! e.g. 1500",
-          "elite_workbench": "&eType in the id of the Elite Workbench",
-          "permission": "&eType in the permission string"
+          "elite_workbench": "&eType in the folder and name of the CustomItem! Example: &6workbenches golden_workbench",
+          "permission": "&eType in the permission string",
+          "error": "&cThis item does not exist or is not loaded!",
+          "no_name": "&cYou need to type in the item name!",
+          "not_elite_workbench": "&cThis item is not an Elite Workbench!",
+          "already_existing": "&cYou already added this Item!"
         }
       },
       "workbench": {
@@ -1841,6 +1872,127 @@
               "&7[&aRight Click&7] Previous category"
             ]
           }
+        },
+        "previous_page": {
+          "name": "&2Previous Page",
+          "help": []
+        },
+        "next_page": {
+          "name": "&2Next Page",
+          "help": []
+        },
+        "lores": {
+          "click": "&7[&aClick&7] View Recipe"
+        },
+        "stonecutter": {
+          "name": "&7Stonecutter"
+        },
+        "anvil": {
+          "durability": {
+            "name": "&7Durability",
+            "lore": [
+              "&eItems durability is affected.",
+              "&eAmount of change: &6%var%"
+            ]
+          },
+          "result": {
+            "name": "&7Result",
+            "lore": [
+              "&eRecipe ouputs the set result.",
+              ""
+            ]
+          }
+        },
+        "workbench": {
+          "filter_button": {
+            "all": {
+              "name": "&7Recipe Filter:&3 ALL",
+              "lore": [
+                "&7Showing all recipes"
+              ]
+            },
+            "normal": {
+              "name": "&7Recipe Filter:&3 NORMAL",
+              "lore": [
+                "&7Only showing normal recipes"
+              ]
+            },
+            "advanced": {
+              "name": "&7Recipe Filter:&3 ADVANCED",
+              "lore": [
+                "&7Only showing advanced recipes"
+              ]
+            }
+          },
+          "adv_workbench_on": {
+            "name": "&3Advanced Workbench",
+            "help": [
+              "&7Can only be crafted in",
+              "&7Advanced Workbenches",
+              ""
+            ]
+          },
+          "adv_workbench_off": {
+            "name": "&4Every Workbench",
+            "help": [
+              "&7Can be crafted in every Workbench"
+            ]
+          },
+          "shapeless_off": {
+            "name": "&3Shaped Recipe",
+            "help": [
+              "&7Recipe has a shape!"
+            ]
+          },
+          "shapeless_on": {
+            "name": "&3Shapeless Recipe",
+            "help": [
+              "&7Recipe is shapeless!"
+            ]
+          }
+        },
+        "cooking": {
+          "icon": {
+            "name": "&7&l%type%",
+            "lore": [
+              "&7Cooking Time: &e%time% ticks",
+              "&7Experience: &e%xp%"
+            ]
+          }
+        },
+        "cauldron": {
+          "water": {
+            "enabled": {
+              "name": "&7Cauldron",
+              "lore": [
+                "&eWater is required!",
+                "&eAt least a water level of &6%lvl%&e!"
+              ]
+            },
+            "disabled": {
+              "name": "&7Cauldron",
+              "lore": [
+                "&eNo water is required!"
+              ]
+            }
+          },
+          "fire": {
+            "enabled": {
+              "name": "&6Fire",
+              "lore": [
+                "&eFire is required!",
+                "&eMake sure that you have a lit",
+                "&ecampfire under your cauldron!"
+              ]
+            },
+            "disabled": {
+              "name": "&6Fire",
+              "lore": [
+                "&eNo Fire is required!"
+              ]
+            }
+          }
+
         }
       },
       "main_menu": {
@@ -1886,71 +2038,16 @@
             "help": [
               ""
             ]
+          },
+          "cauldron": {
+            "name": "&6Cauldron Recipes"
           }
         }
       },
       "recipe_book": {
         "gui_name": "&8&lRecipe knowledge Book",
         "items": {
-          "previous_page": {
-            "name": "&2Previous Page",
-            "help": []
-          },
-          "next_page": {
-            "name": "&2Next Page",
-            "help": []
-          },
-          "lores": {
-            "click": "&7[&aClick&7] View Recipe"
-          },
-          "workbench_filter_button": {
-            "all": {
-              "name": "&7Recipe Filter:&3 ALL",
-              "lore": [
-                "&7Showing all recipes"
-              ]
-            },
-            "normal": {
-              "name": "&7Recipe Filter:&3 NORMAL",
-              "lore": [
-                "&7Only showing normal recipes"
-              ]
-            },
-            "advanced": {
-              "name": "&7Recipe Filter:&3 ADVANCED",
-              "lore": [
-                "&7Only showing advanced recipes"
-              ]
-            }
-          },
-          "workbench": {
-            "adv_workbench_on": {
-              "name": "&3Advanced Workbench",
-              "help": [
-                "&7Can only be crafted in",
-                "&7Advanced Workbenches",
-                ""
-              ]
-            },
-            "adv_workbench_off": {
-              "name": "&4Every Workbench",
-              "help": [
-                "&7Can be crafted in every Workbench"
-              ]
-            },
-            "shapeless_off": {
-              "name": "&3Shaped Recipe",
-              "help": [
-                "&7Recipe has a shape!"
-              ]
-            },
-            "shapeless_on": {
-              "name": "&3Shapeless Recipe",
-              "help": [
-                "&7Recipe is shapeless!"
-              ]
-            }
-          }
+
         }
       }
     },
@@ -1975,6 +2072,9 @@
       },
       "crafting_grid6": {
         "gui_name": "&8&lElite Crafting Table"
+      },
+      "recipe_book": {
+        "gui_name": "&8&lRecipe knowledge Book"
       }
     }
   }

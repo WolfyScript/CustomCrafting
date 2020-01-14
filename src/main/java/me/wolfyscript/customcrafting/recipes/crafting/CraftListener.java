@@ -30,7 +30,7 @@ public class CraftListener implements Listener {
 
     @EventHandler
     public void onAdvancedWorkbench(CustomPreCraftEvent event) {
-        if (!event.isCancelled() && event.getRecipe().getId().equals("customcrafting:workbench")) {
+        if (!event.isCancelled() && event.getRecipe().getId().equals("customcrafting:advanced_workbench")) {
             if (!CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()) {
                 event.setCancelled(true);
             }
@@ -40,15 +40,18 @@ public class CraftListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
         if (event.getClickedInventory() instanceof CraftingInventory && event.getSlot() == 0) {
-            CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
-            ItemStack resultItem = inventory.getResult();
-            inventory.setResult(new ItemStack(Material.AIR));
-            ItemStack[] matrix = inventory.getMatrix().clone();
-            RecipeUtils.consumeRecipe(resultItem, matrix, event);
+            if(RecipeUtils.getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId())){
+                Player player = (Player) event.getWhoClicked();
+                CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
+                ItemStack resultItem = inventory.getResult();
+                inventory.setResult(new ItemStack(Material.AIR));
+                ItemStack[] matrix = inventory.getMatrix().clone();
+                RecipeUtils.consumeRecipe(resultItem, matrix, event);
 
-            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> inventory.setMatrix(matrix));
-
-            RecipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> inventory.setMatrix(matrix));
+                player.updateInventory();
+                RecipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+            }
         } else if (event.getClickedInventory() instanceof CraftingInventory) {
             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                 PrepareItemCraftEvent event1 = new PrepareItemCraftEvent((CraftingInventory) event.getClickedInventory(), event.getView(), false);
@@ -82,7 +85,7 @@ public class CraftListener implements Listener {
                     }
                 }
             }
-            player.updateInventory();
+            //player.updateInventory();
         } catch (Exception ex) {
             System.out.println("WHAT HAPPENED? Please report!");
             ex.printStackTrace();

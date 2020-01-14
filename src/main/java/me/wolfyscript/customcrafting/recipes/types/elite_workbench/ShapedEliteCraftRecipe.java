@@ -30,6 +30,18 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements Shape
         this.mirrorHorizontal = config.mirrorHorizontal();
         this.mirrorVertical = config.mirrorVertical();
         this.mirrorRotation = config.mirrorRotation();
+
+        int size = shape.length > shape[0].length() ? shape.length : shape[0].length();
+        if(size <= 3){
+            requiredGridSize = 3;
+        }else if(size <= 4){
+            requiredGridSize = 4;
+        }else if(size <= 5){
+            requiredGridSize = 5;
+        }else if(size <= 6){
+            requiredGridSize = 6;
+        }
+
     }
 
     @Override

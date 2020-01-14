@@ -1,17 +1,25 @@
 {
   "consumed": true,
-  "item": "H4sIAAAAAAAAAHWQsU7DMBCGr0kRSdSRgRWrAwt9gDKiIgbEhhgqVDnxYSw7Z5S4FIT6PH6Pe7I6kQgT0j+cfv33ne6vAArIjILL1hA2nXwLa0v+4FBp3NXe2xmc3fk9hVkFeZA6h/LBKLx3UvcAkNxzZfoPJ79LmD/6DovkZnDzIwJ+BbEW25fnq9flSDakVxN8YK9cWliKI9xOcY7NqB1Hy5E4eo4Hjo4jclQc9TjUo59kxbGA+ZNsEa4nxn/XKMWGayUsNtS8SwotUuir4Y8Mcvfpftu4+GtjT3WH0iZaip0AW4qS7y8BAAA\u003d",
-  "durability_cost": 0.0,
+  "item": "{id:\"minecraft:knowledge_book\",Count:1b,tag:{HideFlags:1,display:{Lore:['[{\"text\":\"[WU!]$crafting.knowledgebook.lore$\"}]','[{\"text\":\"§c§c§_§k§n§o§w§l§e§d§g§e§b§o§o§k\"}]'],Name:\"{\\\"text\\\":\\\"$crafting.knowledgebook.name$\\\"}\"},Enchantments:[{lvl:0s,id:\"minecraft:unbreaking\"}]}}",
+  "durability_cost": 0,
   "meta": "{\"damage\":\"EXACT\",\"potion\":\"EXACT\",\"lore\":\"EXACT\",\"playerHead\":\"EXACT\",\"flags\":\"EXACT\",\"attributes_modifiers\":\"EXACT\",\"customModelData\":\"EXACT\",\"enchant\":\"EXACT\",\"custom_damage\":\"EXACT\",\"name\":\"EXACT\",\"unbreakable\":\"EXACT\",\"custom_durability\":\"EXACT\",\"repairCost\":\"EXACT\"}",
   "fuel": {
-    "burntime": 0.0,
+    "burntime": 0,
     "allowed_blocks": [
       "furnace"
     ]
   },
   "rarity_percentage": 1.0,
   "permission": "",
-  "replacement": {
-    "item": "H4sIAAAAAAAAAONiYOBgYMpMYeDPzcxLTS5KTCuxKi7Jz0tlZGB1zi/NK2FkAADx5nVMIwAAAA\u003d\u003d"
+  "custom_data": {
+    "elite_workbench": {
+      "gridSize": 3,
+      "advancedRecipes": false,
+      "keepItems": false,
+      "enabled": false,
+      "allowHoppers": false
+    }
   }
 }
+
+

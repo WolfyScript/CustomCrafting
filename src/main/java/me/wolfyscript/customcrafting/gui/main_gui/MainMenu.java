@@ -106,9 +106,9 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(10, "workbench");
             event.setButton(12, "furnace");
             event.setButton(14, "anvil");
-            event.setButton(16, "cauldron");
 
             if (WolfyUtilities.hasVillagePillageUpdate()) {
+                event.setButton(16, "cauldron");
                 event.setButton(20, "blast_furnace");
                 event.setButton(22, "smoker");
                 event.setButton(24, "campfire");
