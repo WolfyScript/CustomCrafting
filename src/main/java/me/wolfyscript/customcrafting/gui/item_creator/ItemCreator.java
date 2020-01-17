@@ -979,7 +979,40 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return true;
             })));
         }
-
+        registerButton(new ActionButton("armor_slots.option", new ButtonState("armor_slots.option", Material.IRON_HELMET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getPlayerCache(guiHandler.getPlayer()).setSubSetting("armor_slots");
+            return true;
+        })));
+        {
+            registerButton(new ToggleButton("armor_slots.head", new ButtonState("armor_slots.head.enabled", new ItemBuilder(Material.DIAMOND_HELMET).addEnchantment(Enchantment.ARROW_DAMAGE, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().removeEquipmentSlots(EquipmentSlot.HEAD);
+                return true;
+            }), new ButtonState("armor_slots.head.disabled", Material.DIAMOND_HELMET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().addEquipmentSlots(EquipmentSlot.HEAD);
+                return true;
+            })));
+            registerButton(new ToggleButton("armor_slots.chest", new ButtonState("armor_slots.chest.enabled", new ItemBuilder(Material.DIAMOND_HELMET).addEnchantment(Enchantment.ARROW_DAMAGE, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().removeEquipmentSlots(EquipmentSlot.CHEST);;
+                return true;
+            }), new ButtonState("armor_slots.chest.disabled", Material.DIAMOND_HELMET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().addEquipmentSlots(EquipmentSlot.CHEST);;
+                return true;
+            })));
+            registerButton(new ToggleButton("armor_slots.legs", new ButtonState("armor_slots.legs.enabled", new ItemBuilder(Material.DIAMOND_HELMET).addEnchantment(Enchantment.ARROW_DAMAGE, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().removeEquipmentSlots(EquipmentSlot.LEGS);;
+                return true;
+            }), new ButtonState("armor_slots.legs.disabled", Material.DIAMOND_HELMET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().addEquipmentSlots(EquipmentSlot.LEGS);;
+                return true;
+            })));
+            registerButton(new ToggleButton("armor_slots.feet", new ButtonState("armor_slots.feet.enabled", new ItemBuilder(Material.DIAMOND_HELMET).addEnchantment(Enchantment.ARROW_DAMAGE, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().removeEquipmentSlots(EquipmentSlot.FEET);;
+                return true;
+            }), new ButtonState("armor_slots.feet.disabled", Material.DIAMOND_HELMET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getItems().getItem().addEquipmentSlots(EquipmentSlot.FEET);;
+                return true;
+            })));
+        }
 
         for (String meta : dummyMetaSettings.getMetas()) {
             registerButton(new MetaIgnoreButton(meta));
@@ -1037,6 +1070,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 options.add("custom_model_data.option");
                 //options.add("persistent_data.option");
                 options.add("elite_workbench.option");
+                options.add("armor_slots.option");
             }
             int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);
             if (items.getPage() >= maxPages) {
@@ -1187,6 +1221,16 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(39, "elite_workbench.grid_size");
                         event.setButton(41, "elite_workbench.toggle");
                         event.setButton(43, "elite_workbench.advanced_recipes");
+                        break;
+                    case "armor_slots.option":
+                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.head")).setState(event.getGuiHandler(), items.getItem().hasEquipmentSlot(EquipmentSlot.HEAD));
+                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.chest")).setState(event.getGuiHandler(), items.getItem().hasEquipmentSlot(EquipmentSlot.CHEST));
+                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.legs")).setState(event.getGuiHandler(), items.getItem().hasEquipmentSlot(EquipmentSlot.LEGS));
+                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.feet")).setState(event.getGuiHandler(), items.getItem().hasEquipmentSlot(EquipmentSlot.FEET));
+                        event.setButton(36, "armor_slots.head");
+                        event.setButton(38, "armor_slots.chest");
+                        event.setButton(40, "armor_slots.legs");
+                        event.setButton(42, "armor_slots.feet");
 
                 }
                 if (cache.getSubSetting().startsWith("attribute.generic") || cache.getSubSetting().startsWith("attribute.horse") || cache.getSubSetting().startsWith("attribute.zombie")) {

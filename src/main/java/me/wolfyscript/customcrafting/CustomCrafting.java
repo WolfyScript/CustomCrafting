@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting;
 
 import com.google.gson.GsonBuilder;
-import com.sun.istack.internal.Nullable;
+import jdk.internal.jline.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
