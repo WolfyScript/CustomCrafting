@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -125,22 +126,22 @@ public class MainMenu extends ExtendedGuiWindow {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onUpdateGuis(GuiUpdateEvent event) {
         if (event.getWolfyUtilities().equals(CustomCrafting.getApi()) && event.getGuiHandler().getCurrentInv() != null && event.getGuiHandler().getCurrentInv().equals(event.getGuiWindow())) {
-            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+            PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
             if (!event.getGuiWindow().getNamespace().startsWith("crafting_grid")) {
                 if (event.getGuiHandler().getCurrentInv().getSize() > 9) {
                     for (int i = 0; i < 9; i++) {
-                        event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+                        event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
                     }
                     for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize() - 9; i++) {
-                        event.setButton(i, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                        event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
                     }
                     for (int i = event.getGuiHandler().getCurrentInv().getSize() - 9; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
-                        event.setButton(i, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+                        event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
                     }
                     event.setButton(8, "none", "gui_help");
                 } else {
                     for (int i = 0; i < 9; i++) {
-                        event.setButton(i, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                        event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
                     }
                 }
             }

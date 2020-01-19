@@ -981,7 +981,7 @@ public class ItemCreator extends ExtendedGuiWindow {
             })));
         }
         registerButton(new ActionButton("armor_slots.option", new ButtonState("armor_slots.option", Material.IRON_HELMET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache)guiHandler.getCustomCache()).setSubSetting("armor_slots");
+            ((TestCache) guiHandler.getCustomCache()).setSubSetting("armor_slots");
             return true;
         })));
         {
@@ -1007,12 +1007,71 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return true;
             })));
             registerButton(new ToggleButton("armor_slots.feet", new ButtonState("armor_slots.feet.enabled", new ItemBuilder(Material.DIAMOND_BOOTS).addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                ((TestCache)guiHandler.getCustomCache()).getItems().getItem().removeEquipmentSlots(EquipmentSlot.FEET);
+                ((TestCache) guiHandler.getCustomCache()).getItems().getItem().removeEquipmentSlots(EquipmentSlot.FEET);
                 return true;
             }), new ButtonState("armor_slots.feet.disabled", Material.DIAMOND_BOOTS, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                ((TestCache)guiHandler.getCustomCache()).getItems().getItem().addEquipmentSlots(EquipmentSlot.FEET);
+                ((TestCache) guiHandler.getCustomCache()).getItems().getItem().addEquipmentSlots(EquipmentSlot.FEET);
                 return true;
             })));
+        }
+
+        registerButton(new ActionButton("particle_effects.option", new ButtonState("particle_effects.option", Material.FIREWORK_ROCKET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            ((TestCache) guiHandler.getCustomCache()).setSubSetting("particle_effects");
+            return true;
+        })));
+        {
+            registerButton(new DummyButton("particle_effects.head.dummy", new ButtonState("particle_effects.head.dummy", Material.IRON_HELMET)));
+            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
+                @Override
+                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
+                    return false;
+                }
+
+                @Override
+                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
+                    return null;
+                }
+            })));
+            registerButton(new DummyButton("particle_effects.chest.dummy", new ButtonState("particle_effects.chest.dummy", Material.IRON_CHESTPLATE)));
+            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
+                @Override
+                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
+                    return false;
+                }
+
+                @Override
+                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
+                    return null;
+                }
+            })));
+            registerButton(new DummyButton("particle_effects.legs.dummy", new ButtonState("particle_effects.legs.dummy", Material.IRON_LEGGINGS)));
+            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
+                @Override
+                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
+                    return false;
+                }
+
+                @Override
+                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
+                    return null;
+                }
+            })));
+            registerButton(new DummyButton("particle_effects.feet.dummy", new ButtonState("particle_effects.feet.dummy", Material.IRON_BOOTS)));
+            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
+                @Override
+                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
+                    return false;
+                }
+
+                @Override
+                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
+                    return null;
+                }
+            })));
+            registerButton(new DummyButton("particle_effects.hand.dummy", new ButtonState("particle_effects.hand.dummy", Material.IRON_SWORD)));
+            registerButton(new DummyButton("particle_effects.off_hand.dummy", new ButtonState("particle_effects.off_hand.dummy", Material.SHIELD)));
+            registerButton(new DummyButton("particle_effects.block.dummy", new ButtonState("particle_effects.block.dummy", Material.GRASS_BLOCK)));
+
         }
 
         for (String meta : dummyMetaSettings.getMetas()) {
@@ -1072,8 +1131,12 @@ public class ItemCreator extends ExtendedGuiWindow {
                 options.add("custom_durability.option");
                 options.add("custom_model_data.option");
                 //options.add("persistent_data.option");
-                options.add("elite_workbench.option");
                 options.add("armor_slots.option");
+                options.add("particle_effects.option");
+
+                if (items.getItem().getType().isBlock()) {
+                    options.add("elite_workbench.option");
+                }
             }
             int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);
             if (items.getPage() >= maxPages) {
@@ -1234,6 +1297,16 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(39, "armor_slots.chest");
                         event.setButton(41, "armor_slots.legs");
                         event.setButton(43, "armor_slots.feet");
+                        break;
+                    case "particle_effects":
+                        event.setButton(37, "particle_effects.head.dummy");
+                        event.setButton(38, "particle_effects.chest.dummy");
+                        event.setButton(39, "particle_effects.legs.dummy");
+                        event.setButton(40, "particle_effects.feet.dummy");
+                        event.setButton(41, "particle_effects.hand.dummy");
+                        event.setButton(42, "particle_effects.off_hand.dummy");
+                        event.setButton(43, "particle_effects.block.dummy");
+
 
                 }
                 if (cache.getSubSetting().startsWith("attribute.generic") || cache.getSubSetting().startsWith("attribute.horse") || cache.getSubSetting().startsWith("attribute.zombie")) {

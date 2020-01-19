@@ -5,13 +5,13 @@ import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.crafting.*;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.*;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -233,6 +233,9 @@ public class InventoryHandler {
 
         GuiCluster itemCreator = invAPI.getOrRegisterGuiCluster("item_creator");
         itemCreator.registerGuiWindow(new ItemCreator(invAPI));
+
+        GuiCluster particleCluster = invAPI.getOrRegisterGuiCluster("particle_creator");
+        particleCluster.registerGuiWindow(new me.wolfyscript.customcrafting.gui.particle_creator.MainMenu(invAPI));
 
     }
 

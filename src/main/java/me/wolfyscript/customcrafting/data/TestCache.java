@@ -1,10 +1,7 @@
 package me.wolfyscript.customcrafting.data;
 
 
-import me.wolfyscript.customcrafting.data.cache.ChatLists;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
-import me.wolfyscript.customcrafting.data.cache.VariantsData;
+import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -29,15 +26,11 @@ public class TestCache extends CustomCache {
     private String subSetting;
 
     private Items items = new Items();
-
     private KnowledgeBook knowledgeBook = new KnowledgeBook();
-
     private VariantsData variantsData = new VariantsData();
-
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
-
     private ChatLists chatLists = new ChatLists();
-
+    private ParticleCache particleCache = new ParticleCache();
     private ApplyItem applyItem;
 
     //RECIPE_LIST OF ALL RECIPE CACHE
@@ -52,9 +45,10 @@ public class TestCache extends CustomCache {
     private StonecutterConfig stonecutterConfig = new StonecutterConfig();
     private FurnaceConfig furnaceConfig = new FurnaceConfig();
 
-    public TestCache(){
+    public TestCache() {
         this.setting = Setting.MAIN_MENU;
-
+        this.subSetting = "";
+        this.applyItem = null;
     }
 
     public Setting getSetting() {
@@ -102,6 +96,10 @@ public class TestCache extends CustomCache {
             applyItem.applyItem(getItems(), this, customItem);
             applyItem = null;
         }
+    }
+
+    public ParticleCache getParticleCache() {
+        return particleCache;
     }
 
     public AnvilConfig getAnvilConfig() {

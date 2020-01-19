@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CookingContainerButton;
@@ -133,13 +134,15 @@ public class CookingCreator extends ExtendedGuiWindow {
             TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
             ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), cache.getCookingConfig().isHidden());
 
+            PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
+
             event.setButton(3, "hidden");
             event.setButton(5, "recipe_creator", "conditions");
-            event.setButton(20, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(20, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
             event.setButton(11, "cooking.container_0");
             event.setButton(24, "cooking.container_1");
-            event.setButton(10, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
-            event.setButton(12, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(10, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(12, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
             event.setButton(22, "xp");
             event.setButton(29, "cooking_time");
             event.setButton(44, "save");

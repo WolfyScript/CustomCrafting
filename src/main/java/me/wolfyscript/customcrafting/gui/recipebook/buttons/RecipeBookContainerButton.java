@@ -71,7 +71,6 @@ public class RecipeBookContainerButton extends Button {
                 itemB.addLoreLine("").addLoreLine(CustomCrafting.getApi().getLanguageAPI().replaceColoredKeys("$inventories.recipe_book.global_items.lores.click$"));
             }
             inventory.setItem(slot, itemB.create());
-
         }
     }
 

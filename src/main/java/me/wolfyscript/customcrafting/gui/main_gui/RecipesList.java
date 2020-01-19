@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListContainerButton;
@@ -70,7 +71,7 @@ public class RecipesList extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             GuiHandler guiHandler = event.getGuiHandler();
-            KnowledgeBook knowledgeBook = CustomCrafting.getPlayerStatistics(guiHandler.getPlayer()).getKnowledgeBook();
+            KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
             ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), knowledgeBook.getItemCategory());
             int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
             event.setButton(0, "back");
@@ -129,7 +130,7 @@ public class RecipesList extends ExtendedGuiWindow {
                     Recipe recipe = recipes.get(i);
                     RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
                     if (recipe instanceof CustomRecipe) {
-                        button.setRecipe(event.getGuiHandler(), (CustomRecipe<RecipeConfig>)recipe);
+                        button.setRecipe(event.getGuiHandler(), recipe);
                     } else if (recipe instanceof Keyed) {
                         button.setRecipe(event.getGuiHandler(), recipe);
                     }
