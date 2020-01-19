@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
@@ -35,7 +35,9 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.custom_items.ItemConfig;
-import org.apache.commons.lang.StringUtils;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
+import me.wolfyscript.utilities.api.utils.particles.ParticleEffects;
+import me.wolfyscript.utilities.api.utils.particles.Particles;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -55,12 +57,17 @@ public class RecipeHandler {
 
     private ArrayList<String> disabledRecipes = new ArrayList<>();
 
+    private List<Particles> particlesList;
+    private List<ParticleEffects> particleEffectsList;
+
     private ConfigAPI configAPI;
     private WolfyUtilities api;
 
     public RecipeHandler(WolfyUtilities api) {
         this.configAPI = api.getConfigAPI();
         this.api = api;
+        this.particlesList = new ArrayList<>();
+        this.particleEffectsList = new ArrayList<>();
     }
 
     public void load() {
@@ -105,6 +112,7 @@ public class RecipeHandler {
                     loadConfig(folder.getName(), "campfire");
                     loadConfig(folder.getName(), "stonecutter");
                     loadConfig(folder.getName(), "elite_workbench");
+                    loadConfig(folder.getName(), "particles");
                 }
             }
         }
@@ -112,31 +120,35 @@ public class RecipeHandler {
 
     private void loadConfig(String subfolder, String type) {
         File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
-        HashMap<String, String> recipes = new HashMap<>();
+        LinkedList<String> recipes = new LinkedList<>();
         workbench.listFiles((dir, name) -> {
             String key = name.substring(0, name.lastIndexOf("."));
             String fileType = name.substring(name.lastIndexOf(".") + 1);
-            if (recipes.containsKey(key)) {
-                if (recipes.get(key).equals("yml")) {
-                    if (fileType.equals("json")) {
-                        recipes.put(key, fileType);
-                    }
-                } else {
-                    api.sendConsoleMessage("$msg.startup.recipes.duplicate$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
-                }
-            } else {
-                recipes.put(key, fileType);
+            if(fileType.equalsIgnoreCase("json")){
+                recipes.add(key);
+            }else{
+                api.sendConsoleMessage("$msg.startup.recipes.incompatible$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
             }
             return true;
         });
         if (!recipes.isEmpty()) {
-            for (Map.Entry<String, String> recipe : recipes.entrySet()) {
-                String name = recipe.getKey();
-                String fileType = recipe.getValue();
+            for (String name : recipes) {
                 try {
                     switch (type) {
+                        case "items":
+                            ItemConfig itemConfig = new ItemConfig(subfolder, name, "json", configAPI);
+                            CustomItems.setCustomItem(itemConfig);
+                            break;
+                        case "particles":
+                            Particles particles = new Particles(configAPI, subfolder);
+                            particles.loadParticles();
+                            particlesList.add(particles);
+                            ParticleEffects particleEffects = new ParticleEffects(configAPI, subfolder);
+                            particleEffects.loadEffects();
+                            particleEffectsList.add(particleEffects);
+                            break;
                         case "workbench":
-                            AdvancedCraftConfig config = new AdvancedCraftConfig(configAPI, subfolder, name, fileType);
+                            AdvancedCraftConfig config = new AdvancedCraftConfig(configAPI, subfolder, name);
                             if (config.isShapeless()) {
                                 registerRecipe(new ShapelessCraftRecipe(config));
                             } else {
@@ -144,7 +156,7 @@ public class RecipeHandler {
                             }
                             break;
                         case "elite_workbench":
-                            EliteCraftConfig eliteCraftConfig = new EliteCraftConfig(configAPI, subfolder, name, fileType);
+                            EliteCraftConfig eliteCraftConfig = new EliteCraftConfig(configAPI, subfolder, name);
                             if (eliteCraftConfig.isShapeless()) {
                                 registerRecipe(new ShapelessEliteCraftRecipe(eliteCraftConfig));
                             } else {
@@ -152,31 +164,25 @@ public class RecipeHandler {
                             }
                             break;
                         case "furnace":
-                            registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, subfolder, name, fileType)));
+                            registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, subfolder, name)));
                             break;
                         case "anvil":
-                            registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, subfolder, name, fileType)));
+                            registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, subfolder, name)));
                             break;
                         case "blast_furnace":
-                            registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, subfolder, name, fileType)));
+                            registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, subfolder, name)));
                             break;
                         case "smoker":
-                            registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, subfolder, name, fileType)));
+                            registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, subfolder, name)));
                             break;
                         case "campfire":
-                            registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, subfolder, name, fileType)));
-                            break;
-                        case "items":
-                            ItemConfig itemConfig = new ItemConfig(subfolder, name, fileType, configAPI);
-                            CustomItems.setCustomItem(itemConfig);
+                            registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, subfolder, name)));
                             break;
                         case "stonecutter":
-                            registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, subfolder, name, fileType)));
+                            registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, subfolder, name)));
                             break;
                         case "cauldron":
-                            registerRecipe(new CauldronRecipe(new CauldronConfig(configAPI, subfolder, name, fileType)));
-
-
+                            registerRecipe(new CauldronRecipe(new CauldronConfig(configAPI, subfolder, name)));
                     }
                 } catch (Exception ex) {
                     ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
@@ -188,6 +194,15 @@ public class RecipeHandler {
     public void onSave() {
         CustomCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
         CustomCrafting.getConfigHandler().getConfig().save();
+
+        for(Particles particles : particlesList){
+            particles.setParticles();
+            particles.save();
+        }
+        for (ParticleEffects particleEffects : particleEffectsList){
+            particleEffects.setEffects();
+            particleEffects.save();
+        }
     }
 
     private void loadDataBase() {
@@ -647,8 +662,8 @@ public class RecipeHandler {
         return blocked;
     }
 
-    public boolean loadRecipeIntoCache(CustomRecipe recipe, Player player) {
-        PlayerCache cache = CustomCrafting.getPlayerCache(player);
+    public boolean loadRecipeIntoCache(CustomRecipe recipe, GuiHandler guiHandler) {
+        TestCache cache = (TestCache) guiHandler.getCustomCache();
         switch (cache.getSetting()) {
             case WORKBENCH:
                 if (recipe instanceof AdvancedCraftingRecipe) {
