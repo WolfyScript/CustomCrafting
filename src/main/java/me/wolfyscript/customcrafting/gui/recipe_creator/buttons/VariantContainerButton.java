@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.VariantsData;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -27,12 +27,12 @@ public class VariantContainerButton extends ItemInputButton {
         super("variant_container_" + variantSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                TestCache cache = (TestCache) guiHandler.getCustomCache();
                 VariantsData variantsData = cache.getVariantsData();
                 if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            CustomCrafting.getPlayerCache(player).getItems().setVariant(variantSlot, CustomItem.getByItemStack(inventory.getItem(slot)));
+                            cache.getItems().setVariant(variantSlot, CustomItem.getByItemStack(inventory.getItem(slot)));
                             cache.setApplyItem(APPLY_ITEM);
                             guiHandler.changeToInv("none", "item_editor");
                         }
@@ -45,7 +45,7 @@ public class VariantContainerButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                VariantsData variantsData = CustomCrafting.getPlayerCache(player).getVariantsData();
+                VariantsData variantsData = ((TestCache) guiHandler.getCustomCache()).getVariantsData();
                 if (variantsData.getVariants() != null) {
                     itemStack = variantsData.getVariants().size() > variantSlot ? variantsData.getVariants().get(variantSlot).getIDItem() : new CustomItem(Material.AIR);
                 }

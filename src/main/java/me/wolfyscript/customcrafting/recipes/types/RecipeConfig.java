@@ -30,7 +30,7 @@ public class RecipeConfig extends CustomConfig {
     }
 
     public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override) {
-        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, override, CustomCrafting.getConfigHandler().getConfig().getPreferredFileType());
+        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, override, "json");
     }
 
     public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override, String fileType) {

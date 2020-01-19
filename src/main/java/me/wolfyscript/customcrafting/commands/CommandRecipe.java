@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.commands;
 
 import com.sun.istack.internal.NotNull;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -68,9 +69,9 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
                                     setting = Setting.valueOf(args[1].toUpperCase(Locale.ROOT));
                                     break;
                             }
-                            CustomCrafting.getPlayerCache(player).setSetting(setting);
+                            ((TestCache)api.getInventoryAPI().getGuiHandler(player).getCustomCache()).setSetting(setting);
 
-                            if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, player)) {
+                            if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, api.getInventoryAPI().getGuiHandler(player))) {
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> api.getInventoryAPI().openGui(player, "none", "recipe_creator"), 1);
                             }
                         } else if (label.equalsIgnoreCase("delete")) {

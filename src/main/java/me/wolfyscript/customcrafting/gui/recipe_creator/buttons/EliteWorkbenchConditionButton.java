@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
@@ -27,7 +28,7 @@ public class EliteWorkbenchConditionButton extends ActionButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 GuiWindow window = guiHandler.getCurrentInv();
-                RecipeConfig recipeConfig = CustomCrafting.getPlayerCache(player).getRecipeConfig();
+                RecipeConfig recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipeConfig();
                 Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
@@ -71,7 +72,7 @@ public class EliteWorkbenchConditionButton extends ActionButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                EliteWorkbenchCondition condition = (EliteWorkbenchCondition) CustomCrafting.getPlayerCache(player).getRecipeConfig().getConditions().getByID("elite_workbench");
+                EliteWorkbenchCondition condition = (EliteWorkbenchCondition) ((TestCache) guiHandler.getCustomCache()).getRecipeConfig().getConditions().getByID("elite_workbench");
                 hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.getApi()));
                 for (int i = 0; i < 4; i++) {
                     if (i < condition.getEliteWorkbenches().size()) {

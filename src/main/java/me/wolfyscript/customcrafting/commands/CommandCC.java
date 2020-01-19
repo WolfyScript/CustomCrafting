@@ -10,19 +10,15 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.StringUtil;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandCC implements CommandExecutor, TabCompleter {
 
@@ -47,19 +43,15 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         }
                         break;
                     case "darkmode":
-                        CustomCrafting.getPlayerCache(p).setDarkMode(!CustomCrafting.getPlayerCache(p).getDarkMode());
-                        if (CustomCrafting.getPlayerCache(p).getDarkMode()) {
+                        CustomCrafting.getPlayerStatistics(p).setDarkMode(!CustomCrafting.getPlayerStatistics(p).getDarkMode());
+                        if (CustomCrafting.getPlayerStatistics(p).getDarkMode()) {
                             api.sendPlayerMessage(p, "$commands.darkmode.enabled$");
                         } else {
                             api.sendPlayerMessage(p, "$commands.darkmode.disabled$");
                         }
                         break;
                     case "studio":
-                        if (!invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("recipe_book")) {
-                            invAPI.getGuiHandler(p).openCluster();
-                        } else {
-                            invAPI.openCluster(p, "none");
-                        }
+                        openGUI(p, invAPI);
                         break;
                     case "crafting":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.crafting")) {
@@ -78,7 +70,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         break;
                     case "clear":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.clear")) {
-                            CustomCrafting.renewPlayerCache(p);
+                            CustomCrafting.renewPlayerStatistics(p);
                         }
                         break;
                     case "reload":

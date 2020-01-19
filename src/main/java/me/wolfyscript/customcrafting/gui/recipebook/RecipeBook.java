@@ -1,15 +1,14 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -25,21 +24,13 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.ItemCategory;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.CookingRecipe;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.StringUtil;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,7 +44,7 @@ public class RecipeBook extends ExtendedGuiWindow {
     @Override
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getSkullViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            TestCache cache = (TestCache) guiHandler.getCustomCache();
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             if (book.getCustomRecipe() == null) {
@@ -74,8 +65,8 @@ public class RecipeBook extends ExtendedGuiWindow {
         if (event.verify(this)) {
             RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
             Player player = event.getPlayer();
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
-            KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
+            PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);
+            KnowledgeBook knowledgeBook = ((TestCache) event.getGuiHandler().getCustomCache()).getKnowledgeBook();
             ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), knowledgeBook.getItemCategory());
             for (int i = 1; i < 8; i++) {
                 event.setButton(i, "none", "glass_white");
@@ -292,7 +283,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                         event.setButton(0, "back");
                         CustomCookingRecipe<CookingConfig> furnaceRecipe = (CustomCookingRecipe<CookingConfig>) knowledgeBook.getCustomRecipe();
                         event.setButton(22, "recipe_book", "cooking.icon");
-                        event.setButton(29, "none", cache.getDarkMode() ? "glass_gray" : "glass_white");
+                        event.setButton(29, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
 
                         if (furnaceRecipe != null) {
                             if (knowledgeBook.getTimerTask() == -1) {
@@ -318,9 +309,9 @@ public class RecipeBook extends ExtendedGuiWindow {
 
                                 knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
                                     if (i.get() == 0) {
-                                        event.setButton(32, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
-                                        event.setButton(31, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
-                                        event.setButton(30, "none", cache.getDarkMode() ? "glass_black" : "glass_gray");
+                                        event.setButton(32, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                                        event.setButton(31, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                                        event.setButton(30, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
                                     } else if (i.get() == 1) {
                                         event.setItem(30, new ItemStack(Material.YELLOW_CONCRETE));
                                     } else if (i.get() == 2) {

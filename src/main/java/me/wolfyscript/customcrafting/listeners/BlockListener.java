@@ -44,7 +44,7 @@ public class BlockListener implements Listener {
                             String code = WolfyUtilities.unhideString(line);
                             if (code.equals("cc_workbench")) {
                                 CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
-                                CustomItems.setStoredBlockItem(event.getBlockPlaced().getLocation(), "customcrafting:workbench");
+                                CustomItems.setStoredBlockItem(event.getBlockPlaced().getLocation(), CustomItems.getCustomItem("customcrafting:workbench"));
                                 break;
                             }
                         }

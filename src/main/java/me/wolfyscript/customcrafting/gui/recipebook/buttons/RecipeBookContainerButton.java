@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
@@ -10,7 +10,6 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.Button;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -41,7 +40,7 @@ public class RecipeBookContainerButton extends Button {
 
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-        PlayerCache cache = CustomCrafting.getPlayerCache(player);
+        TestCache cache = (TestCache) guiHandler.getCustomCache();
         KnowledgeBook book = cache.getKnowledgeBook();
         book.setCustomRecipe(getRecipe(guiHandler));
         return true;

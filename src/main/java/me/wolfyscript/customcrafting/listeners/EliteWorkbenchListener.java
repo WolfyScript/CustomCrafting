@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
@@ -32,7 +33,7 @@ public class EliteWorkbenchListener implements Listener {
                         event.setUseItemInHand(Event.Result.DENY);
                         event.setUseInteractedBlock(Event.Result.DENY);
                         event.getPlayer().closeInventory();
-                        CustomCrafting.getPlayerCache(event.getPlayer()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
+                        ((TestCache) api.getInventoryAPI().getGuiHandler(event.getPlayer()).getCustomCache()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
                         api.getInventoryAPI().getGuiHandler(event.getPlayer()).changeToInv("crafting", "crafting_grid" + eliteWorkbench.getGridSize());
                     }
                 }

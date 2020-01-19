@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -42,7 +42,7 @@ public class ChatUtils {
     }
 
     public static void sendRecipeListExpanded(Player player) {
-        PlayerCache cache = CustomCrafting.getPlayerCache(player);
+        TestCache cache = (TestCache)api.getInventoryAPI().getGuiHandler(player).getCustomCache();
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }
@@ -108,7 +108,7 @@ public class ChatUtils {
     }
 
     public static void sendLoreManager(Player player) {
-        ItemMeta itemMeta = CustomCrafting.getPlayerCache(player).getItems().getItem().getItemMeta();
+        ItemMeta itemMeta = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().getItemMeta();
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
@@ -124,7 +124,7 @@ public class ChatUtils {
                 api.sendActionMessage(player, new ClickData("§7[§4-§7] ", (wolfyUtilities, player1) -> {
                     lore.remove(finalI);
                     itemMeta.setLore(lore);
-                    CustomCrafting.getPlayerCache(player).getItems().getItem().setItemMeta(itemMeta);
+                    ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                     sendLoreManager(player1);
                 }, true), new ClickData("" + line, null));
                 i++;
@@ -138,7 +138,7 @@ public class ChatUtils {
     }
 
     public static void sendAttributeModifierManager(Player player) {
-        PlayerCache cache = CustomCrafting.getPlayerCache(player);
+        TestCache cache = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
         Items items = cache.getItems();
         ItemMeta itemMeta = items.getItem().getItemMeta();
         for (int i = 0; i < 15; i++) {
@@ -154,8 +154,9 @@ public class ChatUtils {
                 for (AttributeModifier modifier : modifiers) {
                     api.sendActionMessage(player,
                             new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
-                                itemMeta.removeAttributeModifier(Attribute.valueOf(CustomCrafting.getPlayerCache(player1).getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)), modifier);
-                                CustomCrafting.getPlayerCache(player).getItems().getItem().setItemMeta(itemMeta);
+                                TestCache cache1 = (TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
+                                itemMeta.removeAttributeModifier(Attribute.valueOf(cache1.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)), modifier);
+                                cache1.getItems().getItem().setItemMeta(itemMeta);
                                 sendAttributeModifierManager(player1);
                             }, new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, "§c" + modifier.getName())),
                             new ClickData("§e" + modifier.getName() + "  §b" + modifier.getAmount() + "  §6" + (modifier.getSlot() == null ? "ANY" : modifier.getSlot()) + "  §3" + modifier.getOperation(), null),

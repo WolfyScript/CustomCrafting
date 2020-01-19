@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.VariantContainerButton;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -27,7 +26,7 @@ public class VariantMenu extends ExtendedGuiWindow {
             registerButton(new VariantContainerButton(i));
         }
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            TestCache cache = (TestCache)guiHandler.getCustomCache();
             int resultSlot = 9;
             switch (cache.getSetting()) {
                 case ELITE_WORKBENCH:

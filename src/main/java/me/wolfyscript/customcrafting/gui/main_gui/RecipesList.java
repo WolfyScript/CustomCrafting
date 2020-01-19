@@ -70,7 +70,7 @@ public class RecipesList extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             GuiHandler guiHandler = event.getGuiHandler();
-            KnowledgeBook knowledgeBook = CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getKnowledgeBook();
+            KnowledgeBook knowledgeBook = CustomCrafting.getPlayerStatistics(guiHandler.getPlayer()).getKnowledgeBook();
             ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), knowledgeBook.getItemCategory());
             int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
             event.setButton(0, "back");

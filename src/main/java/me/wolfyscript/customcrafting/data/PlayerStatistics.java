@@ -19,12 +19,11 @@ import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
 import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PlayerCache {
+public class PlayerStatistics {
 
     private UUID uuid;
     private Setting setting;
@@ -56,7 +55,7 @@ public class PlayerCache {
     private StonecutterConfig stonecutterConfig = new StonecutterConfig();
     private FurnaceConfig furnaceConfig = new FurnaceConfig();
 
-    public PlayerCache(UUID uuid) {
+    public PlayerStatistics(UUID uuid) {
         this.uuid = uuid;
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
@@ -66,7 +65,7 @@ public class PlayerCache {
         setAmountNormalCrafted(0);
     }
 
-    public PlayerCache(UUID uuid, HashMap<String, Object> stats) {
+    public PlayerStatistics(UUID uuid, HashMap<String, Object> stats) {
         this(uuid);
         setStats(stats);
     }
@@ -94,21 +93,12 @@ public class PlayerCache {
         this.subSetting = setting;
     }
 
-
     public VariantsData getVariantsData() {
         return variantsData;
     }
 
-    public void setVariantsData(VariantsData variantsData) {
-        this.variantsData = variantsData;
-    }
-
     public KnowledgeBook getKnowledgeBook() {
         return knowledgeBook;
-    }
-
-    public void setKnowledgeBook(KnowledgeBook knowledgeBook) {
-        this.knowledgeBook = knowledgeBook;
     }
 
     public Items getItems() {
@@ -117,10 +107,6 @@ public class PlayerCache {
 
     public void setItems(Items items) {
         this.items = items;
-    }
-
-    private Object getObject(String key) {
-        return CACHE.get(key);
     }
 
     private Object getObjectOrDefault(String key, Object defaultValue) {
@@ -206,27 +192,8 @@ public class PlayerCache {
         return chatLists;
     }
 
-    public void resetChatRecipeList() {
-        this.chatLists = new ChatLists();
-    }
-
-    public void setApplyItem(ApplyItem applyItem) {
-        this.applyItem = applyItem;
-    }
-
-    public void applyItem(CustomItem customItem) {
-        if (applyItem != null) {
-            applyItem.applyItem(getItems(), this, customItem);
-            applyItem = null;
-        }
-    }
-
     public AnvilConfig getAnvilConfig() {
         return anvilConfig;
-    }
-
-    public void resetAnvilConfig() {
-        this.anvilConfig = new AnvilConfig();
     }
 
     public CraftConfig getCraftConfig() {
@@ -253,16 +220,8 @@ public class PlayerCache {
         return advancedCraftConfig;
     }
 
-    public void resetAdvancedCraftConfig() {
-        this.advancedCraftConfig = new AdvancedCraftConfig();
-    }
-
     public EliteCraftConfig getEliteCraftConfig() {
         return eliteCraftConfig;
-    }
-
-    public void resetEliteCraftConfig() {
-        this.eliteCraftConfig = new EliteCraftConfig();
     }
 
     public FurnaceConfig getFurnaceConfig() {
@@ -273,48 +232,24 @@ public class PlayerCache {
         this.furnaceConfig = furnaceConfig;
     }
 
-    public void resetFurnaceConfig() {
-        this.furnaceConfig = new FurnaceConfig();
-    }
-
     public BlastingConfig getBlastingConfig() {
         return blastingConfig;
-    }
-
-    public void resetBlastingConfig() {
-        this.blastingConfig = new BlastingConfig();
     }
 
     public CampfireConfig getCampfireConfig() {
         return campfireConfig;
     }
 
-    public void resetCampfireConfig() {
-        this.campfireConfig = new CampfireConfig();
-    }
-
     public CauldronConfig getCauldronConfig() {
         return cauldronConfig;
-    }
-
-    public void resetCauldronConfig() {
-        this.cauldronConfig = new CauldronConfig();
     }
 
     public SmokerConfig getSmokerConfig() {
         return smokerConfig;
     }
 
-    public void resetSmokerConfig() {
-        this.smokerConfig = new SmokerConfig();
-    }
-
     public StonecutterConfig getStonecutterConfig() {
         return stonecutterConfig;
-    }
-
-    public void resetStonecutterConfig() {
-        this.stonecutterConfig = new StonecutterConfig();
     }
 
     public void setAnvilConfig(AnvilConfig anvilConfig) {

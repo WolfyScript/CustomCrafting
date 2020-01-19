@@ -59,10 +59,10 @@ public class Settings extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("darkMode", new ButtonState("darkMode.disabled", Material.WHITE_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).setDarkMode(true);
+            CustomCrafting.getPlayerStatistics(player).setDarkMode(true);
             return true;
         }), new ButtonState("darkMode.enabled", Material.BLACK_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).setDarkMode(false);
+            CustomCrafting.getPlayerStatistics(player).setDarkMode(false);
             return true;
         })));
 
@@ -153,7 +153,7 @@ public class Settings extends ExtendedGuiWindow {
             Player player = event.getPlayer();
 
             ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isLockedDown());
-            ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerCache(event.getPlayer()).getDarkMode());
+            ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
             ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
             ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
             ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());

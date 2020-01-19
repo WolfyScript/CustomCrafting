@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -25,7 +25,7 @@ public class AnvilContainerButton extends ItemInputButton {
         super("container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                TestCache cache = (TestCache) guiHandler.getCustomCache();
                 AnvilConfig anvilConfig = cache.getAnvilConfig();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
@@ -53,7 +53,7 @@ public class AnvilContainerButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
-                AnvilConfig anvilConfig = CustomCrafting.getPlayerCache(player).getAnvilConfig();
+                AnvilConfig anvilConfig = ((TestCache) guiHandler.getCustomCache()).getAnvilConfig();
                 if (anvilConfig.getInput(inputSlot) != null && !anvilConfig.getInput(inputSlot).isEmpty()) {
                     item = anvilConfig.getInput(inputSlot).get(0);
                 }

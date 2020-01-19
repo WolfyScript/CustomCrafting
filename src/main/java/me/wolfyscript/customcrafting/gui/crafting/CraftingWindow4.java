@@ -1,18 +1,12 @@
 package me.wolfyscript.customcrafting.gui.crafting;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.ResultSlotButton;
-import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,8 +27,7 @@ public class CraftingWindow4 extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
-            Player player = event.getPlayer();
-            PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
+            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
             EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
             if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
                 eliteWorkbench.setCurrentGridSize(4);

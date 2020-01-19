@@ -40,7 +40,7 @@ public class PlayerListener implements Listener {
         }
         if (!CustomCrafting.hasPlayerCache(player)) {
             CustomCrafting.getApi().sendConsoleMessage("Initializing new cache for " + player.getDisplayName());
-            CustomCrafting.renewPlayerCache(player);
+            CustomCrafting.renewPlayerStatistics(player);
         }
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (CustomCrafting.isOutdated()) {

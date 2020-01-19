@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CauldronContainerButton;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -41,10 +41,10 @@ public class CauldronCreator extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            TestCache cache = ((TestCache) guiHandler.getCustomCache());
             if (validToSave(cache)) {
                 openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
-                    PlayerCache cache1 = CustomCrafting.getPlayerCache(player1);
+                    TestCache cache1 = ((TestCache) guiHandler1.getCustomCache());
                     CauldronConfig config = cache1.getCauldronConfig();
                     if (args.length > 1) {
                         if (!config.saveConfig(args[0], args[1], player1)) {
@@ -71,24 +71,24 @@ public class CauldronCreator extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setHidden(false);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setHidden(false);
             return true;
         }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setHidden(true);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setHidden(true);
             return true;
         })));
 
         registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setExactMeta(false);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setExactMeta(false);
             return true;
         }), new ButtonState("recipe_creator", "exact_meta.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setExactMeta(true);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setExactMeta(true);
             return true;
         })));
         registerButton(new ActionButton("priority", new ButtonState("recipe_creator", "priority", WolfyUtilities.getSkullViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d"), new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                RecipePriority priority = CustomCrafting.getPlayerCache(player).getCauldronConfig().getPriority();
+                RecipePriority priority = ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getPriority();
                 int order;
                 order = priority.getOrder();
                 if (order < 2) {
@@ -96,13 +96,13 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 } else {
                     order = -2;
                 }
-                CustomCrafting.getPlayerCache(player).getCauldronConfig().setPriority(RecipePriority.getByOrder(order));
+                ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setPriority(RecipePriority.getByOrder(order));
                 return true;
             }
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                RecipePriority priority = CustomCrafting.getPlayerCache(player).getCauldronConfig().getPriority();
+                RecipePriority priority = ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getPriority();
                 if (priority != null) {
                     hashMap.put("%PRI%", priority.name());
                 }
@@ -120,7 +120,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
                     Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                            TestCache cache = (TestCache) guiHandler.getCustomCache();
                             cache.getItems().setItem(true, CustomItem.getByItemStack(inventory.getItem(slot)));
                             cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronConfig().setHandItem(items.getItem()));
                             guiHandler.changeToInv("none", "item_editor");
@@ -128,13 +128,13 @@ public class CauldronCreator extends ExtendedGuiWindow {
                     });
                     return true;
                 }
-                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> CustomCrafting.getPlayerCache(player).getCauldronConfig().setHandItem(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setHandItem(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                 return false;
             }
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                CustomItem customItem = CustomCrafting.getPlayerCache(player).getCauldronConfig().getHandItem();
+                CustomItem customItem = ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getHandItem();
                 if (customItem != null) {
                     return customItem.getItemStack();
                 }
@@ -144,28 +144,28 @@ public class CauldronCreator extends ExtendedGuiWindow {
 
 
         registerButton(new ToggleButton("dropItems", new ButtonState("dropItems.enabled", Material.DROPPER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setDropItems(false);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setDropItems(false);
             return true;
         }), new ButtonState("dropItems.disabled", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setDropItems(true);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setDropItems(true);
             return true;
         })));
         registerButton(new ToggleButton("fire", new ButtonState("fire.enabled", Material.FLINT_AND_STEEL, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setFire(false);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setFire(false);
             return true;
         }), new ButtonState("fire.disabled", Material.FLINT, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setFire(true);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setFire(true);
             return true;
         })));
         registerButton(new ToggleButton("water", new ButtonState("water.enabled", Material.WATER_BUCKET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setWater(false);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setWater(false);
             return true;
         }), new ButtonState("water.disabled", Material.BUCKET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setWater(true);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setWater(true);
             return true;
         })));
         registerButton(new ChatInputButton("xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%xp%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getXP());
+            hashMap.put("%xp%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getXP());
             return itemStack;
         }), (guiHandler, player, s, args) -> {
             float xp;
@@ -175,11 +175,11 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setXP(xp);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setXP(xp);
             return false;
         }));
         registerButton(new ChatInputButton("cookingTime", new ButtonState("cookingTime", Material.CLOCK, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%time%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getCookingTime());
+            hashMap.put("%time%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getCookingTime());
             return itemStack;
         }), (guiHandler, player, s, args) -> {
             int time;
@@ -189,11 +189,11 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setCookingTime(time);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setCookingTime(time);
             return false;
         }));
         registerButton(new ChatInputButton("waterLevel", new ButtonState("waterLevel", Material.GLASS_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%level%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getWaterLevel());
+            hashMap.put("%level%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getWaterLevel());
             return itemStack;
         }), (guiHandler, player, s, args) -> {
             int waterLvl;
@@ -206,7 +206,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
             if (waterLvl > 3) {
                 waterLvl = 3;
             }
-            CustomCrafting.getPlayerCache(player).getCauldronConfig().setWaterLevel(waterLvl);
+            ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setWaterLevel(waterLvl);
             return false;
         }));
 
@@ -217,7 +217,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                     if (event.getClick().isLeftClick()) {
                         openChat("mythicMob", guiHandler, (guiHandler1, player1, s, args) -> {
                             if (args.length > 1) {
-                                CauldronConfig config = CustomCrafting.getPlayerCache(player).getCauldronConfig();
+                                CauldronConfig config = ((TestCache) guiHandler.getCustomCache()).getCauldronConfig();
                                 MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(args[0]);
                                 if (mythicMob != null) {
                                     int level = 1;
@@ -241,24 +241,26 @@ public class CauldronCreator extends ExtendedGuiWindow {
                                         }
                                     }
                                     config.setMythicMob(args[0], level, modX, modY, modZ);
+                                    guiHandler.openCluster();
                                     return false;
                                 }
                             }
+                            guiHandler.openCluster();
                             return true;
                         });
                     } else {
-                        CustomCrafting.getPlayerCache(player).getCauldronConfig().setMythicMob("<none>", 0, 0, 0.5, 0);
+                        ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setMythicMob("<none>", 0, 0, 0.5, 0);
                     }
                     return true;
                 }
 
                 @Override
                 public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                    hashMap.put("%mob.name%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getMythicMobName());
-                    hashMap.put("%mob.level%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getMythicMobLevel());
-                    hashMap.put("%mob.modX%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getMythicMobMod().getX());
-                    hashMap.put("%mob.modY%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getMythicMobMod().getY());
-                    hashMap.put("%mob.modZ%", CustomCrafting.getPlayerCache(player).getCauldronConfig().getMythicMobMod().getZ());
+                    hashMap.put("%mob.name%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getMythicMobName());
+                    hashMap.put("%mob.level%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getMythicMobLevel());
+                    hashMap.put("%mob.modX%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getMythicMobMod().getX());
+                    hashMap.put("%mob.modY%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getMythicMobMod().getY());
+                    hashMap.put("%mob.modZ%", ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().getMythicMobMod().getZ());
                     return itemStack;
                 }
             })));
@@ -269,7 +271,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             event.setButton(0, "back");
-            PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
+            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
             CauldronConfig cauldronConfig = cache.getCauldronConfig();
             ((ToggleButton) event.getGuiWindow().getButton("fire")).setState(event.getGuiHandler(), cauldronConfig.needsFire());
             ((ToggleButton) event.getGuiWindow().getButton("water")).setState(event.getGuiHandler(), cauldronConfig.needsWater());
@@ -304,7 +306,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
         }
     }
 
-    private boolean validToSave(PlayerCache cache) {
+    private boolean validToSave(TestCache cache) {
         CauldronConfig config = cache.getCauldronConfig();
         return config.getIngredients() != null && !config.getIngredients().isEmpty() && ((config.getResult() != null && !config.getResult().isEmpty()) || (WolfyUtilities.hasMythicMobs() && !config.getMythicMobName().equals("<none>")));
     }

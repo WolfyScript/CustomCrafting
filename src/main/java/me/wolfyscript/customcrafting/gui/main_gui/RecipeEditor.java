@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.clip.placeholderapi.util.FileUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -35,16 +36,16 @@ public class RecipeEditor extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("edit_recipe", new ButtonState("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageRecipes(1);
+            ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
             ChatUtils.sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
-                    if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, player1)) {
+                    if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler1)) {
                         Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", CustomCrafting.getPlayerCache(player1).getSetting().name()});
+                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache)guiHandler.getCustomCache()).getSetting().name()});
                         return true;
                     }
                 }
@@ -54,7 +55,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("delete_recipe", new ButtonState("delete_recipe", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageRecipes(1);
+            ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
             ChatUtils.sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
@@ -103,13 +104,13 @@ public class RecipeEditor extends ExtendedGuiWindow {
     }
 
     private void changeToCreator(GuiHandler guiHandler) {
-        switch (CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getSetting()) {
+        switch (((TestCache)guiHandler.getCustomCache()).getSetting()) {
             case WORKBENCH:
             case ELITE_WORKBENCH:
             case STONECUTTER:
             case CAULDRON:
             case ANVIL:
-                guiHandler.changeToInv("recipe_creator", CustomCrafting.getPlayerCache(guiHandler.getPlayer()).getSetting().getId());
+                guiHandler.changeToInv("recipe_creator", ((TestCache)guiHandler.getCustomCache()).getSetting().getId());
                 break;
             case FURNACE:
             case CAMPFIRE:

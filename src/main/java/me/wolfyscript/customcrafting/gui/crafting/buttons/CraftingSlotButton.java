@@ -1,8 +1,7 @@
 package me.wolfyscript.customcrafting.gui.crafting.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -12,7 +11,6 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +23,7 @@ public class CraftingSlotButton extends ItemInputButton {
         super("crafting.slot_" + recipeSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
                 EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
                 Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
                     int gridSize = eliteWorkbench.getCurrentGridSize();
@@ -43,7 +41,7 @@ public class CraftingSlotButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
                 EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
                 if (eliteWorkbench.getContents() != null) {
                     ItemStack slotItem = eliteWorkbench.getContents()[recipeSlot];

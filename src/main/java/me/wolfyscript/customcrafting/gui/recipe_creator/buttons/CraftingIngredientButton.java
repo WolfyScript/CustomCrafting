@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
@@ -27,7 +27,7 @@ public class CraftingIngredientButton extends ItemInputButton {
         super("crafting.container_" + recipeSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                TestCache cache = (TestCache) guiHandler.getCustomCache();
                 CraftConfig workbench = cache.getCraftConfig();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
@@ -60,7 +60,7 @@ public class CraftingIngredientButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                CraftConfig workbench = CustomCrafting.getPlayerCache(player).getCraftConfig();
+                CraftConfig workbench = ((TestCache) guiHandler.getCustomCache()).getCraftConfig();
                 itemStack = new ItemStack(Material.AIR);
                 if ((workbench instanceof EliteCraftConfig && recipeSlot == 36) || (!(workbench instanceof EliteCraftConfig) && recipeSlot == 9)) {
                     if (workbench.getResult() != null && !workbench.getResult().isEmpty()) {

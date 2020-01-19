@@ -59,7 +59,6 @@ public class DataBaseHandler {
     }
 
     public void init() {
-        CustomCrafting.getConfigHandler().getConfig().setPreferredFileType("json");
         try {
             PreparedStatement itemsTable = dataBase.getPreparedStatement("CREATE TABLE IF NOT EXISTS customcrafting_items" +
                     "(" +

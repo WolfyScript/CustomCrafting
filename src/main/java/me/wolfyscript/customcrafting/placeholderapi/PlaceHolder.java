@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.placeholderapi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
@@ -46,7 +46,7 @@ public class PlaceHolder extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer p, String params) {
         if (p != null) {
-            PlayerCache cache = CustomCrafting.getPlayerCache(p.getUniqueId());
+            PlayerStatistics cache = CustomCrafting.getPlayerStatistics(p.getUniqueId());
             if (params.contains(";")) {
                 //Params with %ccrafting_<option>;<recipe_id>%
                 String recipeID = params.split(";")[1];

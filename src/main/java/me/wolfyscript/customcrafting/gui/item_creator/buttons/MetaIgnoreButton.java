@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.utilities.api.custom_items.Meta;
 import me.wolfyscript.utilities.api.custom_items.MetaSettings;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -19,7 +20,7 @@ public class MetaIgnoreButton extends ActionButton {
 
     public MetaIgnoreButton(String meta) {
         super("meta_ignore." + meta, new ButtonState("meta_ignore", Material.CYAN_CONCRETE, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            hashMap.put("%VAR%", CustomCrafting.getPlayerCache(player).getItems().getItem().getMetaSettings().getMetaByID(meta).getOption().toString());
+            hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getMetaSettings().getMetaByID(meta).getOption().toString());
             return itemStack;
         }));
         this.meta = meta;
@@ -27,7 +28,7 @@ public class MetaIgnoreButton extends ActionButton {
 
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-        Meta meta = CustomCrafting.getPlayerCache(player).getItems().getItem().getMetaSettings().getMetaByID(this.meta);
+        Meta meta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getMetaSettings().getMetaByID(this.meta);
         List<MetaSettings.Option> options = meta.getAvailableOptions();
         int i = options.indexOf(meta.getOption()) + 1;
         if (i >= options.size()) {

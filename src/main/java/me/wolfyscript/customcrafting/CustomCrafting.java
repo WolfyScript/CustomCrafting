@@ -1,11 +1,10 @@
 package me.wolfyscript.customcrafting;
 
 import com.google.gson.GsonBuilder;
-import jdk.internal.jline.internal.Nullable;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
@@ -35,12 +34,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
+import javax.annotation.Nullable;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -50,7 +49,7 @@ public class CustomCrafting extends JavaPlugin {
      */
 
     private static Plugin instance;
-    private static List<PlayerCache> playerCacheList = new ArrayList<>();
+    private static List<PlayerStatistics> playerStatisticsList = new ArrayList<>();
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
     private static RecipeHandler recipeHandler;
@@ -136,7 +135,7 @@ public class CustomCrafting extends JavaPlugin {
             command.setTabCompleter(commandCC);
             getCommand("recipes").setExecutor(new CommandRecipe());
             getCommand("recipes").setTabCompleter(new CommandRecipe());
-            loadPlayerCache();
+            loadPlayerStatistics();
             invHandler.init();
             workbenches = new Workbenches(api);
 
@@ -177,7 +176,7 @@ public class CustomCrafting extends JavaPlugin {
             cauldrons.endAutoSaveTask();
             cauldrons.save();
             getRecipeHandler().onSave();
-            savePlayerCache();
+            savePlayerStatistics();
         }
     }
 
@@ -289,39 +288,39 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public static boolean hasPlayerCache(Player player) {
-        for (PlayerCache playerCache : playerCacheList) {
-            if (playerCache.getUuid().equals(player.getUniqueId()))
+        for (PlayerStatistics playerStatistics : playerStatisticsList) {
+            if (playerStatistics.getUuid().equals(player.getUniqueId()))
                 return true;
         }
         return false;
     }
 
-    public static void renewPlayerCache(Player player) {
+    public static void renewPlayerStatistics(Player player) {
         if (hasPlayerCache(player)) {
-            PlayerCache playerCache = getPlayerCache(player);
-            playerCacheList.remove(playerCache);
+            PlayerStatistics playerStatistics = getPlayerStatistics(player);
+            playerStatisticsList.remove(playerStatistics);
         }
-        playerCacheList.add(new PlayerCache(player.getUniqueId()));
+        playerStatisticsList.add(new PlayerStatistics(player.getUniqueId()));
     }
 
-    public static PlayerCache getPlayerCache(Player player) {
-        return getPlayerCache(player.getUniqueId());
+    public static PlayerStatistics getPlayerStatistics(Player player) {
+        return getPlayerStatistics(player.getUniqueId());
     }
 
-    public static PlayerCache getPlayerCache(UUID uuid) {
-        for (PlayerCache playerCache : playerCacheList) {
-            if (playerCache.getUuid().equals(uuid))
-                return playerCache;
+    public static PlayerStatistics getPlayerStatistics(UUID uuid) {
+        for (PlayerStatistics playerStatistics : playerStatisticsList) {
+            if (playerStatistics.getUuid().equals(uuid))
+                return playerStatistics;
         }
-        PlayerCache playerCache = new PlayerCache(uuid);
-        playerCacheList.add(playerCache);
-        return playerCache;
+        PlayerStatistics playerStatistics = new PlayerStatistics(uuid);
+        playerStatisticsList.add(playerStatistics);
+        return playerStatistics;
     }
 
-    private static void savePlayerCache() {
+    private static void savePlayerStatistics() {
         HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
-        for (PlayerCache playerCache : playerCacheList) {
-            caches.put(playerCache.getUuid(), playerCache.getStats());
+        for (PlayerStatistics playerStatistics : playerStatisticsList) {
+            caches.put(playerStatistics.getUuid(), playerStatistics.getStats());
         }
         try {
             FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat"));
@@ -333,7 +332,7 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    private static void loadPlayerCache() {
+    private static void loadPlayerStatistics() {
         api.sendConsoleMessage("$msg.startup.playerstats$");
         File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
         if (file.exists()) {
@@ -346,7 +345,7 @@ public class CustomCrafting extends JavaPlugin {
                     if (object instanceof HashMap) {
                         HashMap<UUID, HashMap<String, Object>> stats = (HashMap<UUID, HashMap<String, Object>>) object;
                         for (UUID uuid : stats.keySet()) {
-                            playerCacheList.add(new PlayerCache(uuid, stats.get(uuid)));
+                            playerStatisticsList.add(new PlayerStatistics(uuid, stats.get(uuid)));
                         }
                     }
                 } catch (ClassNotFoundException e) {

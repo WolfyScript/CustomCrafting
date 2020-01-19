@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
@@ -16,6 +16,7 @@ import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCr
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -43,7 +44,7 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
     @Override
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getSkullViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            TestCache cache = (TestCache) guiHandler.getCustomCache();
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             if (book.getCustomRecipe() == null) {
@@ -64,10 +65,12 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             event.setButton(0, "back");
+            GuiHandler<TestCache> guiHandler = event.getGuiHandler();
             Player player = event.getPlayer();
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            TestCache cache = guiHandler.getCustomCache();
+
             EliteWorkbench eliteWorkbenchData = cache.getEliteWorkbench();
-            KnowledgeBook knowledgeBook = CustomCrafting.getPlayerCache(player).getKnowledgeBook();
+            KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
             ItemCategory itemCategory = knowledgeBook.getItemCategory();
             ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), itemCategory);
             if (knowledgeBook.getCustomRecipe() == null) {

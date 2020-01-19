@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -31,24 +31,24 @@ public class ItemEditor extends ExtendedGuiWindow {
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openPreviousInv();
-            if (!CustomCrafting.getPlayerCache(player).getSetting().equals(Setting.ITEMS)) {
+            if (!((TestCache)guiHandler.getCustomCache()).getSetting().equals(Setting.ITEMS)) {
                 guiHandler.openCluster("recipe_creator");
             }
             return true;
         })));
         registerButton(new ActionButton("load_item", new ButtonState("load_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            TestCache cache = (TestCache) guiHandler.getCustomCache();
             cache.getChatLists().setCurrentPageItems(1);
             api.sendActionMessage(player, new ClickData("§7[§a+§7]", (wolfyUtilities, player1) -> sendItemListExpanded(player1), true), new ClickData(" Item List", null));
             openChat("input", guiHandler, (guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    Items items = CustomCrafting.getPlayerCache(player1).getItems();
+                    Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
                     CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
                     if (customItem == null) {
                         sendMessage(player1, "error");
                         return true;
                     }
-                    CustomCrafting.getPlayerCache(player).getChatLists().setLastUsedItem(customItem.getId());
+                    ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(customItem.getId());
 
                     if (items.isRecipeItem()) {
                         cache.applyItem(customItem);
@@ -78,24 +78,24 @@ public class ItemEditor extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("edit_item", new ButtonState("edit_item", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            Items items = CustomCrafting.getPlayerCache(player).getItems();
+            Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
             if (items.isRecipeItem()) {
                 if (items.isSaved()) {
                     items.setItem(CustomItems.getCustomItem(items.getId()));
                 }
                 guiHandler.changeToInv("item_creator", "main_menu");
             } else {
-                CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageItems(1);
+                ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageItems(1);
                 sendItemListExpanded(player);
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
-                        Items items1 = CustomCrafting.getPlayerCache(player1).getItems();
+                        Items items1 = ((TestCache) guiHandler.getCustomCache()).getItems();
                         CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
                         if (customItem == null) {
                             sendMessage(player1, "error");
                             return true;
                         }
-                        CustomCrafting.getPlayerCache(player).getChatLists().setLastUsedItem(customItem.getId());
+                        ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(customItem.getId());
                         items1.setItem(false, customItem);
                         sendMessage(player1, "item_editable");
                         Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler1.changeToInv("item_creator", "main_menu"));
@@ -109,7 +109,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("delete_item", new ButtonState("delete_item", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getChatLists().setCurrentPageItems(1);
+            ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageItems(1);
             sendItemListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
@@ -118,7 +118,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                         sendMessage(player1, "error");
                         return true;
                     }
-                    CustomCrafting.getPlayerCache(player1).getChatLists().setLastUsedItem(customItem.getId());
+                    ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(customItem.getId());
                     CustomItems.removeCustomItem(customItem);
                     if (CustomCrafting.hasDataBaseHandler()) {
                         CustomCrafting.getDataBaseHandler().removeItem(customItem.getConfig().getNamespace(), customItem.getConfig().getName());
@@ -139,7 +139,7 @@ public class ItemEditor extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             event.setButton(0, "back");
-            PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
+            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
             if (cache.getItems().isRecipeItem()) {
                 event.setButton(20, "load_item");
                 event.setButton(22, "create_item");
@@ -154,7 +154,7 @@ public class ItemEditor extends ExtendedGuiWindow {
     }
 
     private void sendItemListExpanded(Player player) {
-        PlayerCache cache = CustomCrafting.getPlayerCache(player);
+        TestCache cache = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }

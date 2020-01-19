@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
@@ -103,7 +103,7 @@ public class RecipeUtils {
                     List<List<ItemStack>> ingredients = CustomCrafting.getRecipeHandler().getIngredients(matrix);
                     Player player = (Player) event.getWhoClicked();
                     {//---------COMMANDS AND STATISTICS-------------
-                        PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                        PlayerStatistics cache = CustomCrafting.getPlayerStatistics(player);
                         if (config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()) {
                             for (String command : config.getCommandsSuccessCrafted()) {
                                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getId()));

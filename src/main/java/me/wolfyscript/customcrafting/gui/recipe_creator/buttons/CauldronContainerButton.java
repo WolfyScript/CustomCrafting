@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -28,7 +28,7 @@ public class CauldronContainerButton extends ItemInputButton {
         super("cauldron.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                PlayerCache cache = CustomCrafting.getPlayerCache(player);
+                TestCache cache = (TestCache) guiHandler.getCustomCache();
                 CauldronConfig cauldronConfig = cache.getCauldronConfig();
                 if (event.isRightClick() && event.isShiftClick()) {
                     if (inputSlot == 0 && cauldronConfig.getIngredients() != null) {
@@ -64,7 +64,7 @@ public class CauldronContainerButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
-                CauldronConfig cauldronConfig = CustomCrafting.getPlayerCache(player).getCauldronConfig();
+                CauldronConfig cauldronConfig = ((TestCache) guiHandler.getCustomCache()).getCauldronConfig();
                 List<CustomItem> items = inputSlot == 0 ? cauldronConfig.getIngredients() : cauldronConfig.getResult();
                 if (items != null && !items.isEmpty()) {
                     item = items.get(0);

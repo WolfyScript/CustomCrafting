@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.PlayerCache;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingIngredientButton;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -41,7 +41,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PlayerCache cache = CustomCrafting.getPlayerCache(player);
+            TestCache cache = ((TestCache) guiHandler.getCustomCache());
             if (validToSave(cache)) {
                 openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     EliteCraftConfig config = cache.getEliteCraftConfig();
@@ -81,10 +81,10 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setHidden(false);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setHidden(false);
             return true;
         }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setHidden(true);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setHidden(true);
             return true;
         })));
 
@@ -93,16 +93,16 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
         }
 
         registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setExactMeta(false);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setExactMeta(false);
             return true;
         }), new ButtonState("recipe_creator", "exact_meta.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setExactMeta(true);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setExactMeta(true);
             return true;
         })));
         registerButton(new ActionButton("priority", new ButtonState("recipe_creator", "priority", WolfyUtilities.getSkullViaURL("b8ea57c7551c6ab33b8fed354b43df523f1e357c4b4f551143c34ddeac5b6c8d"), new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                RecipePriority priority = CustomCrafting.getPlayerCache(player).getEliteCraftConfig().getPriority();
+                RecipePriority priority = ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().getPriority();
                 int order;
                 order = priority.getOrder();
                 if (order < 2) {
@@ -110,13 +110,13 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
                 } else {
                     order = -2;
                 }
-                CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setPriority(RecipePriority.getByOrder(order));
+                ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setPriority(RecipePriority.getByOrder(order));
                 return true;
             }
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                RecipePriority priority = CustomCrafting.getPlayerCache(player).getEliteCraftConfig().getPriority();
+                RecipePriority priority = ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().getPriority();
                 if (priority != null) {
                     hashMap.put("%PRI%", priority.name());
                 }
@@ -125,32 +125,32 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("workbench.shapeless", false, new ButtonState("recipe_creator", "workbench.shapeless.enabled", WolfyUtilities.getSkullViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setShapeless(false);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setShapeless(false);
             return true;
         }), new ButtonState("recipe_creator", "workbench.shapeless.disabled", WolfyUtilities.getSkullViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setShapeless(true);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setShapeless(true);
             return true;
         })));
 
         registerButton(new ToggleButton("workbench.mirrorHorizontal", false, new ButtonState("recipe_creator", "workbench.mirrorHorizontal.enabled", WolfyUtilities.getSkullViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorHorizontal(false);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setMirrorHorizontal(false);
             return true;
         }), new ButtonState("recipe_creator", "workbench.mirrorHorizontal.disabled", WolfyUtilities.getSkullViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorHorizontal(true);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setMirrorHorizontal(true);
             return true;
         })));
         registerButton(new ToggleButton("workbench.mirrorVertical", false, new ButtonState("recipe_creator", "workbench.mirrorVertical.enabled", WolfyUtilities.getSkullViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorVertical(false);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setMirrorVertical(false);
             return true;
         }), new ButtonState("recipe_creator", "workbench.mirrorVertical.disabled", WolfyUtilities.getSkullViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorVertical(true);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setMirrorVertical(true);
             return true;
         })));
         registerButton(new ToggleButton("workbench.mirrorRotation", false, new ButtonState("recipe_creator", "workbench.mirrorRotation.enabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorRotation(false);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setMirrorRotation(false);
             return true;
         }), new ButtonState("recipe_creator", "workbench.mirrorRotation.disabled", WolfyUtilities.getSkullViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getPlayerCache(player).getEliteCraftConfig().setMirrorRotation(true);
+            ((TestCache) guiHandler.getCustomCache()).getEliteCraftConfig().setMirrorRotation(true);
             return true;
         })));
     }
@@ -159,7 +159,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             event.setButton(6, "back");
-            PlayerCache cache = CustomCrafting.getPlayerCache(event.getPlayer());
+            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
             EliteCraftConfig workbench = cache.getEliteCraftConfig();
             ((ToggleButton) event.getGuiWindow().getButton("workbench.shapeless")).setState(event.getGuiHandler(), workbench.isShapeless());
             ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), workbench.isExactMeta());
@@ -190,7 +190,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
         }
     }
 
-    private boolean validToSave(PlayerCache cache) {
+    private boolean validToSave(TestCache cache) {
         EliteCraftConfig workbench = cache.getEliteCraftConfig();
         return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
     }

@@ -34,7 +34,8 @@
         "title": "________[Loading Recipes/Items]________",
         "items": "---------[ITEMS]---------",
         "recipes": "--------[RECIPES]--------",
-        "duplicate": "Ignoring duplicate recipe %namespace%:%key% with the config file %key%.%file_type%!"
+        "duplicate": "Ignoring duplicate recipe %namespace%:%key% with the config file %key%.%file_type%!",
+        "incompatible": "Unsupported file type! Ignoring %namespace%:%key% with the config file %key%.%file_type%! "
       }
     },
     "denied_perm": "&cYou lack the permission &4%PERM%&c!",
@@ -1305,6 +1306,79 @@
             "particles": {
               "name": "&6Particle Effects &8[&7Coming soon&8]"
             }
+          },
+          "armor_slots": {
+            "option": {
+              "name": "&6Custom Equipment &8[&71.14+&8]",
+              "lore": [
+                "&7Configure the armor slots this item can",
+                "&7can be equiped to."
+              ]
+            },
+            "head": {
+              "enabled": {
+                "name": "&aHead",
+                "lore": [
+                  "&7Can be equiped on the head.",
+                  "&7[&aClick&7] Disable head"
+                ]
+              },
+              "disabled": {
+                "name": "&cHead",
+                "lore": [
+                  "&7Cannot be equiped on the head.",
+                  "&7[&aClick&7] Enable head"
+                ]
+              }
+            },
+            "chest": {
+              "enabled": {
+                "name": "&aChest",
+                "lore": [
+                  "&7Can be equiped on the chest.",
+                  "&7[&aClick&7] Disable chest"
+                ]
+              },
+              "disabled": {
+                "name": "&cChest",
+                "lore": [
+                  "&7Cannot be equiped on the chest.",
+                  "&7[&aClick&7] Enable chest"
+                ]
+              }
+            },
+            "legs": {
+              "enabled": {
+                "name": "&aLegs",
+                "lore": [
+                  "&7Can be equiped on the legs.",
+                  "&7[&aClick&7] Disable legs"
+                ]
+              },
+              "disabled": {
+                "name": "&cLegs",
+                "lore": [
+                  "&7Cannot be equiped on the legs.",
+                  "&7[&aClick&7] Enable legs"
+                ]
+              }
+            },
+            "feet": {
+              "enabled": {
+                "name": "&aFeet",
+                "lore": [
+                  "&7Can be equiped on the feet.",
+                  "&7[&aClick&7] Disable feet"
+                ]
+              },
+              "disabled": {
+                "name": "&cFeet",
+                "lore": [
+                  "&7Cannot be equiped on the feet.",
+                  "&7[&aClick&7] Enable feet"
+                ]
+              }
+            }
           }
         }
       }
@@ -1690,6 +1764,9 @@
       },
       "cauldron": {
         "gui_name": "&4&lRecipe Creator &8[&7Cauldron&8]",
+        "messages": {
+          "mythicMob": "&eType in the mob you want to add.\n&e<&6mob_name&e> <&6level&e> [<&6x&e> <&6y&e> <&6z&e>]"
+        },
         "items": {
           "cauldron": {
             "name": "&c"
