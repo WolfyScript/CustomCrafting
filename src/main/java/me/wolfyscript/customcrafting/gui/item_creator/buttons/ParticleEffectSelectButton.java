@@ -25,6 +25,7 @@ public class ParticleEffectSelectButton extends ActionButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
 
+                guiHandler.openCluster("particle_creator");
 
                 return false;
             }

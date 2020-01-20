@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.commands;
 
-import com.sun.istack.internal.NotNull;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -22,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.util.StringUtil;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class CommandRecipe implements CommandExecutor, TabCompleter {
@@ -137,8 +137,8 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
         return results;
     }
 
-    @NotNull
-    public static <T extends Collection<? super String>> T copyPartialMatches(@NotNull String token, @NotNull Iterable<String> originals, @NotNull T collection) throws UnsupportedOperationException, IllegalArgumentException {
+    @Nonnull
+    public static <T extends Collection<? super String>> T copyPartialMatches(@Nonnull String token, @Nonnull Iterable<String> originals, @Nonnull T collection) throws UnsupportedOperationException, IllegalArgumentException {
         Validate.notNull(token, "Search token cannot be null");
         Validate.notNull(collection, "Collection cannot be null");
         Validate.notNull(originals, "Originals cannot be null");
