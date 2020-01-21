@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>wolfyscript</groupId>
-    <artifactId>CustomCrafting</artifactId>
-    <version>1.4.4.2</version>
+    <groupId>io.github.wolfyscript</groupId>
+    <artifactId>customcrafting</artifactId>
+    <version>1.5.0.3</version>
     <properties>
         <!-- Generic properties -->
         <java.version>1.8</java.version>
@@ -20,13 +20,17 @@
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
+            <id>mojang</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-            <repository>
-                <id>placeholderapi</id>
-                <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-            </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
 
     </repositories>
 
@@ -34,9 +38,13 @@
         <!--Spigot API-->
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
+            <artifactId>spigot-api</artifactId>
             <version>1.15.1-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.21</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
@@ -64,6 +72,7 @@
                 <includes>
                     <include>*</include>
                 </includes>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
@@ -71,7 +80,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <annotationProcessors/>
+                    <proc>none</proc>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
