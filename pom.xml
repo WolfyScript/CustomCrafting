@@ -16,46 +16,25 @@
 
     <repositories>
         <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>mojang</id>
-            <url>https://libraries.minecraft.net/</url>
-        </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>placeholderapi</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
-
+        <repository>
+            <id>brokko-repo</id>
+            <url>https://www.iani.de/nexus/content/groups/public</url>
+        </repository>
     </repositories>
 
     <dependencies>
-        <!--Spigot API-->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.15.1-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1.1</version>
-        </dependency>
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.10.4</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.wolfyscript</groupId>
+            <artifactId>wolfyutilities</artifactId>
+            <version>1.5.0.2</version>
         </dependency>
     </dependencies>
 

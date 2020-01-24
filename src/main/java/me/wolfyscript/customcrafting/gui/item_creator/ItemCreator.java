@@ -1033,41 +1033,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
             })));
             registerButton(new DummyButton("particle_effects.chest.dummy", new ButtonState("particle_effects.chest.dummy", Material.IRON_CHESTPLATE)));
-            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
-                @Override
-                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                    return false;
-                }
 
-                @Override
-                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                    return null;
-                }
-            })));
             registerButton(new DummyButton("particle_effects.legs.dummy", new ButtonState("particle_effects.legs.dummy", Material.IRON_LEGGINGS)));
-            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
-                @Override
-                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                    return false;
-                }
-
-                @Override
-                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                    return null;
-                }
-            })));
             registerButton(new DummyButton("particle_effects.feet.dummy", new ButtonState("particle_effects.feet.dummy", Material.IRON_BOOTS)));
-            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
-                @Override
-                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                    return false;
-                }
-
-                @Override
-                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                    return null;
-                }
-            })));
             registerButton(new DummyButton("particle_effects.hand.dummy", new ButtonState("particle_effects.hand.dummy", Material.IRON_SWORD)));
             registerButton(new DummyButton("particle_effects.off_hand.dummy", new ButtonState("particle_effects.off_hand.dummy", Material.SHIELD)));
             registerButton(new DummyButton("particle_effects.block.dummy", new ButtonState("particle_effects.block.dummy", Material.GRASS_BLOCK)));

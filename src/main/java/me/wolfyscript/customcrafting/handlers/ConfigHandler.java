@@ -7,8 +7,8 @@ import me.wolfyscript.customcrafting.configs.default_configs.WorkbenchCraftConfi
 import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.config.JsonConfiguration;
 import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
@@ -52,13 +52,13 @@ public class ConfigHandler {
 
     public void loadLang() {
         String chosenLang = CustomCrafting.getConfigHandler().getConfig().getString("language");
-        Config langConf;
+        JsonConfiguration langConf;
         if (CustomCrafting.getInst().getResource("me/wolfyscript/customcrafting/configs/lang/" + chosenLang + ".json") != null) {
             System.out.println("Default language: load latest language");
-            langConf = new Config(configAPI, instance.getDataFolder().getPath() + "/lang", chosenLang, "me/wolfyscript/customcrafting/configs/lang", chosenLang, "json", true);
+            langConf = new JsonConfiguration(configAPI, instance.getDataFolder().getPath() + "/lang", chosenLang, "me/wolfyscript/customcrafting/configs/lang", chosenLang, true);
         } else {
             System.out.println("Custom language: loading default values");
-            langConf = new Config(configAPI, instance.getDataFolder().getPath() + "/lang", chosenLang, "me/wolfyscript/customcrafting/configs/lang", "en_US", "json", false);
+            langConf = new JsonConfiguration(configAPI, instance.getDataFolder().getPath() + "/lang", chosenLang, "me/wolfyscript/customcrafting/configs/lang", "en_US", false);
         }
         langConf.loadDefaults();
         System.out.println("Loaded language \"" + chosenLang + "\" v" + langConf.getString("version") + " translated by " + langConf.getString("author"));
