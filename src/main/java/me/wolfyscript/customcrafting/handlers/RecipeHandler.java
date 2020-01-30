@@ -112,6 +112,13 @@ public class RecipeHandler {
                     loadConfig(folder.getName(), "campfire");
                     loadConfig(folder.getName(), "stonecutter");
                     loadConfig(folder.getName(), "elite_workbench");
+                }
+            }
+            if (WolfyUtilities.hasVillagePillageUpdate()) {
+                api.sendConsoleMessage("");
+                api.sendConsoleMessage("$msg.startup.recipes.particles$");
+                for (File folder : subFolders) {
+                    api.sendConsoleMessage("- " + folder.getName());
                     loadConfig(folder.getName(), "particles");
                 }
             }
@@ -122,12 +129,14 @@ public class RecipeHandler {
         File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
         LinkedList<String> recipes = new LinkedList<>();
         workbench.listFiles((dir, name) -> {
-            String key = name.substring(0, name.lastIndexOf("."));
-            String fileType = name.substring(name.lastIndexOf(".") + 1);
-            if(fileType.equalsIgnoreCase("json")){
-                recipes.add(key);
-            }else{
-                api.sendConsoleMessage("$msg.startup.recipes.incompatible$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
+            if (name.contains(".")) {
+                String key = name.substring(0, name.lastIndexOf("."));
+                String fileType = name.substring(name.lastIndexOf(".") + 1);
+                if (fileType.equalsIgnoreCase("json")) {
+                    recipes.add(key);
+                } else {
+                    api.sendConsoleMessage("$msg.startup.recipes.incompatible$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
+                }
             }
             return true;
         });
@@ -140,10 +149,10 @@ public class RecipeHandler {
                             CustomItems.setCustomItem(itemConfig);
                             break;
                         case "particles":
-                            Particles particles = new Particles(configAPI, subfolder);
+                            Particles particles = new Particles(configAPI, subfolder, CustomCrafting.getInst().getDataFolder().getAbsolutePath() + File.separator + "recipes");
                             particles.loadParticles();
                             particlesList.add(particles);
-                            ParticleEffects particleEffects = new ParticleEffects(configAPI, subfolder);
+                            ParticleEffects particleEffects = new ParticleEffects(configAPI, subfolder, CustomCrafting.getInst().getDataFolder().getAbsolutePath() + File.separator + "recipes");
                             particleEffects.loadEffects();
                             particleEffectsList.add(particleEffects);
                             break;
@@ -392,7 +401,8 @@ public class RecipeHandler {
         for (CraftingRecipe customRecipe : craftingRecipes) {
             if (customRecipe.getIngredients().keySet().size() == size) {
                 if (customRecipe instanceof ShapedCraftingRecipe) {
-                    if (items.size() == ((ShapedCraftingRecipe) customRecipe).getShape().length && items.get(0).size() == ((ShapedCraftingRecipe) customRecipe).getShape()[0].length()) {
+                    ShapedCraftingRecipe recipe = ((ShapedCraftingRecipe) customRecipe);
+                    if (items.size() > 0 && recipe.getShape().length > 0 && items.size() == recipe.getShape().length && items.get(0).size() == recipe.getShape()[0].length()) {
                         recipes.add(customRecipe);
                     }
                 } else {

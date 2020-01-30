@@ -12,13 +12,13 @@ import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class FurnaceListener implements Listener {
@@ -147,6 +147,10 @@ public class FurnaceListener implements Listener {
         List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult());
         for (Recipe recipe : recipes) {
             if (recipe.getResult().isSimilar(event.getResult())) {
+                Furnace furnace = (Furnace) event.getBlock().getState();
+                FurnaceInventory inventory = furnace.getInventory();
+                ItemStack currentResultItem = furnace.getInventory().getResult();
+
                 if (recipe instanceof Keyed && CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
                     event.setCancelled(true);
                     continue;
@@ -155,14 +159,23 @@ public class FurnaceListener implements Listener {
                 if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                     if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                         event.setCancelled(false);
-                        RandomCollection<CustomItem> items = new RandomCollection<>();
-                        for (CustomItem customItem : customRecipe.getCustomResults()) {
-                            items.add(customItem.getRarityPercentage(), customItem);
-                        }
-                        if (!items.isEmpty()) {
-                            ItemStack item = items.next();
-                            if (!event.getResult().isSimilar(item)) {
-                                event.setResult(item);
+                        if (customRecipe.getCustomResults().size() > 1) {
+                            RandomCollection<CustomItem> items = new RandomCollection<>();
+                            for (CustomItem customItem : customRecipe.getCustomResults()) {
+                                items.add(customItem.getRarityPercentage(), customItem);
+                            }
+                            if (!items.isEmpty()) {
+                                CustomItem item = items.next();
+                                if (currentResultItem == null) {
+                                    event.setResult(item);
+                                    break;
+                                }
+                                int nextAmount = currentResultItem.getAmount() + item.getAmount();
+                                if ((item.isSimilar(currentResultItem) || currentResultItem.isSimilar(item)) && nextAmount <= currentResultItem.getMaxStackSize()) {
+                                    inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                                    inventory.getResult().setAmount(nextAmount);
+                                }
+                                event.setCancelled(true);
                             }
                         }
                         break;

@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.MetaIgnoreButton;
+import me.wolfyscript.customcrafting.gui.item_creator.buttons.ParticleEffectSelectButton;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -23,6 +24,7 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.*;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
 import me.wolfyscript.utilities.api.utils.Legacy;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -82,7 +84,6 @@ public class ItemCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("save_item", new ButtonState("save_item", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             Items items = ((TestCache)guiHandler.getCustomCache()).getItems();
             if (!items.getItem().getType().equals(Material.AIR)) {
-                String id = items.getId();
                 //TODO ITEM LIST
                 sendMessage(player, "save.input.line1");
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
@@ -100,6 +101,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         saveItem((TestCache) guiHandler.getCustomCache(), namespace + ":" + key, items.getItem());
                         sendMessage(player, "save.success");
                         api.sendPlayerMessage(player1, "&6" + namespace + "/items/" + key);
+                        Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler.openCluster());
                         return false;
                     }
                     return true;
@@ -946,14 +948,17 @@ public class ItemCreator extends ExtendedGuiWindow {
             return true;
         })));
         {
-            registerButton(new ActionButton("elite_workbench.particles", new ButtonState("elite_workbench.particles", Material.BARRIER)));
+            registerButton(new ActionButton("elite_workbench.particles", new ButtonState("elite_workbench.particles", Material.FIREWORK_ROCKET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).setSubSetting("particle_effects");
+                return true;
+            })));
             registerButton(new MultipleChoiceButton("elite_workbench.grid_size",
                     new ButtonState("elite_workbench.grid_size.size_3", WolfyUtilities.getSkullViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                        ((EliteWorkbenchData) ((TestCache)guiHandler.getCustomCache()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(4);
+                        ((EliteWorkbenchData) ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(4);
                         return true;
                     }),
                     new ButtonState("elite_workbench.grid_size.size_4", WolfyUtilities.getSkullViaURL("cbfb41f866e7e8e593659986c9d6e88cd37677b3f7bd44253e5871e66d1d424"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                        ((EliteWorkbenchData) ((TestCache)guiHandler.getCustomCache()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(5);
+                        ((EliteWorkbenchData) ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getCustomData("elite_workbench")).setGridSize(5);
                         return true;
                     }),
                     new ButtonState("elite_workbench.grid_size.size_5", WolfyUtilities.getSkullViaURL("14d844fee24d5f27ddb669438528d83b684d901b75a6889fe7488dfc4cf7a1c"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -971,7 +976,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                 ((EliteWorkbenchData) ((TestCache)guiHandler.getCustomCache()).getItems().getItem().getCustomData("elite_workbench")).setEnabled(true);
                 return true;
             })));
-
             registerButton(new ToggleButton("elite_workbench.advanced_recipes", new ButtonState("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ((EliteWorkbenchData) ((TestCache)guiHandler.getCustomCache()).getItems().getItem().getCustomData("elite_workbench")).setAdvancedRecipes(false);
                 return true;
@@ -1020,26 +1024,20 @@ public class ItemCreator extends ExtendedGuiWindow {
             return true;
         })));
         {
-            registerButton(new DummyButton("particle_effects.head.dummy", new ButtonState("particle_effects.head.dummy", Material.IRON_HELMET)));
-            registerButton(new ActionButton("particle_effects.head.input", new ButtonState("particle_effects.head.input", Material.AIR, new ButtonActionRender() {
-                @Override
-                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                    return false;
-                }
-
-                @Override
-                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                    return null;
-                }
-            })));
-            registerButton(new DummyButton("particle_effects.chest.dummy", new ButtonState("particle_effects.chest.dummy", Material.IRON_CHESTPLATE)));
-
-            registerButton(new DummyButton("particle_effects.legs.dummy", new ButtonState("particle_effects.legs.dummy", Material.IRON_LEGGINGS)));
-            registerButton(new DummyButton("particle_effects.feet.dummy", new ButtonState("particle_effects.feet.dummy", Material.IRON_BOOTS)));
-            registerButton(new DummyButton("particle_effects.hand.dummy", new ButtonState("particle_effects.hand.dummy", Material.IRON_SWORD)));
-            registerButton(new DummyButton("particle_effects.off_hand.dummy", new ButtonState("particle_effects.off_hand.dummy", Material.SHIELD)));
-            registerButton(new DummyButton("particle_effects.block.dummy", new ButtonState("particle_effects.block.dummy", Material.GRASS_BLOCK)));
-
+            registerButton(new DummyButton("particle_effects.head", new ButtonState("particle_effects.head", Material.IRON_HELMET)));
+            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.HEAD));
+            registerButton(new DummyButton("particle_effects.chest", new ButtonState("particle_effects.chest", Material.IRON_CHESTPLATE)));
+            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.CHEST));
+            registerButton(new DummyButton("particle_effects.legs", new ButtonState("particle_effects.legs", Material.IRON_LEGGINGS)));
+            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.LEGS));
+            registerButton(new DummyButton("particle_effects.feet", new ButtonState("particle_effects.feet", Material.IRON_BOOTS)));
+            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.FEET));
+            registerButton(new DummyButton("particle_effects.hand", new ButtonState("particle_effects.hand", Material.IRON_SWORD)));
+            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.HAND));
+            registerButton(new DummyButton("particle_effects.off_hand", new ButtonState("particle_effects.off_hand", Material.SHIELD)));
+            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.OFF_HAND));
+            registerButton(new DummyButton("particle_effects.block", new ButtonState("particle_effects.block", Material.GRASS_BLOCK)));
+            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.BLOCK));
         }
 
         for (String meta : dummyMetaSettings.getMetas()) {
@@ -1267,13 +1265,21 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(43, "armor_slots.feet");
                         break;
                     case "particle_effects":
-                        event.setButton(37, "particle_effects.head.dummy");
-                        event.setButton(38, "particle_effects.chest.dummy");
-                        event.setButton(39, "particle_effects.legs.dummy");
-                        event.setButton(40, "particle_effects.feet.dummy");
-                        event.setButton(41, "particle_effects.hand.dummy");
-                        event.setButton(42, "particle_effects.off_hand.dummy");
-                        event.setButton(43, "particle_effects.block.dummy");
+                        event.setButton(37, "particle_effects.head");
+                        event.setButton(38, "particle_effects.chest");
+                        event.setButton(39, "particle_effects.legs");
+                        event.setButton(40, "particle_effects.feet");
+                        event.setButton(41, "particle_effects.hand");
+                        event.setButton(42, "particle_effects.off_hand");
+                        event.setButton(43, "particle_effects.block");
+
+                        event.setButton(46, "particle_effects.head.input");
+                        event.setButton(47, "particle_effects.chest.input");
+                        event.setButton(48, "particle_effects.legs.input");
+                        event.setButton(49, "particle_effects.feet.input");
+                        event.setButton(50, "particle_effects.hand.input");
+                        event.setButton(51, "particle_effects.off_hand.input");
+                        event.setButton(52, "particle_effects.block.input");
 
 
                 }

@@ -69,7 +69,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
+                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"));
                         return false;
                     }
                     return false;

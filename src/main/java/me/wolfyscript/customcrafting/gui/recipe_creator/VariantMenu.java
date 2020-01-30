@@ -9,7 +9,7 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import org.bukkit.Material;
+import me.wolfyscript.utilities.api.utils.ItemUtils;
 import org.bukkit.event.EventHandler;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class VariantMenu extends ExtendedGuiWindow {
                 case WORKBENCH:
                     if (cache.getVariantsData().getSlot() == resultSlot) {
                         List<CustomItem> items = cache.getVariantsData().getVariants();
-                        items.removeIf(item -> item.getType().equals(Material.AIR));
+                        items.removeIf(item -> ItemUtils.isAirOrNull(item));
                         cache.getCraftConfig().setResult(items);
                     } else {
                         cache.getCraftConfig().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
@@ -42,7 +42,7 @@ public class VariantMenu extends ExtendedGuiWindow {
                     break;
                 case ANVIL:
                     List<CustomItem> items = cache.getVariantsData().getVariants();
-                    items.removeIf(item -> item.getType().equals(Material.AIR));
+                    items.removeIf(item -> ItemUtils.isAirOrNull(item));
                     cache.getAnvilConfig().setInput(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
                     break;
                 case STONECUTTER:
@@ -62,7 +62,7 @@ public class VariantMenu extends ExtendedGuiWindow {
                     break;
                 case CAULDRON:
                     List<CustomItem> variants = cache.getVariantsData().getVariants();
-                    variants.removeIf(item -> item.getType().equals(Material.AIR));
+                    variants.removeIf(item -> ItemUtils.isAirOrNull(item));
                     if (cache.getVariantsData().getSlot() == 0) {
                         cache.getCauldronConfig().setIngredients(variants);
                     } else {

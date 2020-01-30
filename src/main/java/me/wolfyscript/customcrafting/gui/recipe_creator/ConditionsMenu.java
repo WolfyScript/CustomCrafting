@@ -52,6 +52,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                         try {
                             long value = Long.parseLong(s);
                             ((WorldTimeCondition) conditions.getByID("world_time")).setTime(value);
+                            ((TestCache) guiHandler.getCustomCache()).getRecipeConfig().setConditions(conditions);
                         } catch (NumberFormatException ex) {
                             api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
                         }

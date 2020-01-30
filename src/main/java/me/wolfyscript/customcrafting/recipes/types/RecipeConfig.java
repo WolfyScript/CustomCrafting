@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.JsonConfiguration;
 import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.utils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -152,11 +153,11 @@ public class RecipeConfig extends CustomConfig {
     }
 
     protected void setResult(String path, List<CustomItem> results) {
-        set("result", new JsonObject());
         if (!path.isEmpty() && !path.endsWith(".")) {
             path = path + ".";
         }
-        saveCustomItem(path + "result", results.get(0));
+        set(path + "result", new JsonObject());
+        saveCustomItem(path + "result", !results.isEmpty() && !ItemUtils.isAirOrNull(results.get(0)) ? results.get(0) : null);
         for (int i = 1; i < results.size(); i++) {
             if (!results.get(i).getType().equals(Material.AIR)) {
                 saveCustomItem(path + "result.variants.var" + i, results.get(i));

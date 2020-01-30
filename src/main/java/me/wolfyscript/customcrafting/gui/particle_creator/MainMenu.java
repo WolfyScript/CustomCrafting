@@ -11,6 +11,7 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.Pair;
 import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
 import me.wolfyscript.utilities.api.utils.particles.ParticleEffects;
 import org.bukkit.event.EventHandler;
@@ -21,12 +22,20 @@ import java.util.Map;
 public class MainMenu extends ExtendedGuiWindow {
 
     public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 45);
+        super("main_menu", inventoryAPI, 54);
     }
 
     @Override
     public void onInit() {
-
+        registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            if (((TestCache) guiHandler.getCustomCache()).getParticleCache().getAction() != null) {
+                guiHandler.openCluster("item_creator");
+                ((TestCache) guiHandler.getCustomCache()).getParticleCache().setAction(null);
+            } else {
+                guiHandler.openCluster("none");
+            }
+            return true;
+        })));
         registerButton(new ActionButton("next_page", new ButtonState("next_page", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ParticleCache book = ((TestCache) guiHandler.getCustomCache()).getParticleCache();
             book.setPage(book.getPage() + 1);
@@ -49,10 +58,12 @@ public class MainMenu extends ExtendedGuiWindow {
             TestCache cache = guiHandler.getCustomCache();
             ParticleCache particleCache = cache.getParticleCache();
 
+            event.setButton(0, "back");
+
             Map<NamespacedKey, ParticleEffect> effectsMap = ParticleEffects.getEffects();
             Collection<ParticleEffect> effects = effectsMap.values();
 
-            int maxPages = effects.size() / 45 + (effects.size() % 45 > 0 ? 1 : 0);
+            int maxPages = effects.size() / 54 + (effects.size() % 54 > 0 ? 1 : 0);
             if (particleCache.getPage() >= maxPages) {
                 particleCache.setPage(0);
             }
@@ -66,9 +77,9 @@ public class MainMenu extends ExtendedGuiWindow {
             int i = 0;
             for (Map.Entry<NamespacedKey, ParticleEffect> entry : effectsMap.entrySet()) {
                 int item = 9 + i;
-                if (item < 45) {
+                if (item < 54) {
                     ParticleEffectButton button = (ParticleEffectButton) getButton("particle_effect.slot" + item);
-                    button.setParticleEffect(guiHandler, entry.getValue());
+                    button.setParticleEffect(guiHandler, new Pair<>(entry.getKey(), entry.getValue()));
                     event.setButton(item, button);
                     i++;
                 }

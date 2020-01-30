@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.listeners;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -23,7 +22,7 @@ public class EliteWorkbenchListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (!event.useInteractedBlock().equals(Event.Result.DENY) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !event.getPlayer().isSneaking()) {
             Block block = event.getClickedBlock();
             if (CustomItems.isBlockStored(block.getLocation())) {
                 CustomItem customItem = CustomItems.getStoredBlockItem(block.getLocation());

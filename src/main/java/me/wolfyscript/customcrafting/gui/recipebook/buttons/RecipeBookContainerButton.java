@@ -52,24 +52,24 @@ public class RecipeBookContainerButton extends Button {
         if (recipe != null) {
             ItemBuilder itemB;
             if(recipe instanceof CustomAnvilRecipe){
-                if(((CustomAnvilRecipe) recipe).hasInputLeft()){
-                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputLeft().get(0).getRealItem());
-                }else if(((CustomAnvilRecipe) recipe).hasInputRight()){
-                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputRight().get(0).getRealItem());
-                }else if(((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT)){
+                if (((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                     itemB = new ItemBuilder(recipe.getCustomResult().getRealItem().getRealItem());
-                }else{
+                } else if (((CustomAnvilRecipe) recipe).hasInputLeft()) {
+                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputLeft().get(0).getRealItem());
+                } else if (((CustomAnvilRecipe) recipe).hasInputRight()) {
+                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputRight().get(0).getRealItem());
+
+                } else {
                     itemB = new ItemBuilder(Material.STONE);
                     itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
                 }
-                itemB.addLoreLine("").addLoreLine(CustomCrafting.getApi().getLanguageAPI().replaceColoredKeys("$inventories.recipe_book.global_items.lores.click$"));
-            }else{
+            } else {
                 itemB = new ItemBuilder(recipe.getCustomResult().getRealItem());
                 if (recipe.getResult().getType().equals(Material.AIR)) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
                 }
-                itemB.addLoreLine("").addLoreLine(CustomCrafting.getApi().getLanguageAPI().replaceColoredKeys("$inventories.recipe_book.global_items.lores.click$"));
             }
+            itemB.addLoreLine("").addLoreLine(CustomCrafting.getApi().getLanguageAPI().replaceColoredKeys("$inventories.recipe_book.global_items.lores.click$"));
             inventory.setItem(slot, itemB.create());
         }
     }

@@ -75,7 +75,7 @@ public class CookingCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.changeToInv("main_menu"), 1);
+                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"), 1);
                         return false;
                     }
                     return false;

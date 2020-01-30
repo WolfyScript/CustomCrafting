@@ -50,9 +50,7 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
         }
         if (mirrorHorizontal() && mirrorVertical() && mirrorRotate()) {
             craftingData = checkShape(matrix, getShapeRotated());
-            if (craftingData != null) {
-                return craftingData;
-            }
+            return craftingData;
         }
         return null;
     }
@@ -62,7 +60,7 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
         HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
-                if ((matrix.get(i).get(j) != null && shape[i].charAt(j) != ' ')) {
+                if ((matrix.get(i).get(j) != null && i < shape.length && j < shape[i].length() && shape[i].charAt(j) != ' ')) {
                     CustomItem item = checkIngredient(matrix.get(i).get(j), getIngredients().get(shape[i].charAt(j)));
                     if (item == null) {
                         return null;
@@ -70,7 +68,7 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
                         foundItems.put(new Vec2d(j, i), item);
                         containedKeys.add(shape[i].charAt(j));
                     }
-                } else if (!(matrix.get(i).get(j) == null && shape[i].charAt(j) == ' ')) {
+                } else if (!(matrix.get(i).get(j) == null && (i >= shape.length || j >= shape[i].length() || shape[i].charAt(j) == ' '))) {
                     return null;
                 }
             }

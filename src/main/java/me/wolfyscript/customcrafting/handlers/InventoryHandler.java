@@ -24,7 +24,6 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButto
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
-import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
 import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
@@ -76,7 +75,12 @@ public class InventoryHandler {
         mainCluster.setMainmenu("main_menu");
 
         mainCluster.registerButton(new ActionButton("patreon", new ButtonState("main_menu", "patreon", WolfyUtilities.getSkullViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            api.openBook(player, false,
+            guiHandler.changeToInv("patrons_menu");
+            return true;
+        })), invAPI.getWolfyUtilities());
+
+        /*
+        api.openBook(player, false,
                     new ClickData[]{
                             new ClickData("&c&l      Patreon\n", null),
                             new ClickData("&8Special thanks to my \n&8Patrons\n", null),
@@ -95,8 +99,8 @@ public class InventoryHandler {
                             new ClickData("\n&9&lDiscord Invatation", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Get Invite Link"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr"))
                     }
             );
-            return true;
-        })), invAPI.getWolfyUtilities());
+         */
+
         mainCluster.registerButton(new ActionButton("instagram", new ButtonState("main_menu", "instagram", WolfyUtilities.getSkullViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/_gunnar.h_/")));
             return true;

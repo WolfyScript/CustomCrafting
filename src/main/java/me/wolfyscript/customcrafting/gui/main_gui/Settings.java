@@ -154,7 +154,7 @@ public class Settings extends ExtendedGuiWindow {
 
             ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isLockedDown());
             ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
-            ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+            ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
             ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
             ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
 

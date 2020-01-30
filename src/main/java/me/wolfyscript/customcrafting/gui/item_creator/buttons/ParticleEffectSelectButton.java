@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.utilities.api.custom_items.ParticleData;
+import me.wolfyscript.utilities.api.custom_items.ParticleContent;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -20,28 +20,33 @@ import java.util.Locale;
 
 public class ParticleEffectSelectButton extends ActionButton {
 
-    private ParticleEffect.Action action;
-
-    public ParticleEffectSelectButton(ParticleEffect.Action action, ButtonState state) {
-        super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", Material.AIR, new ButtonActionRender() {
+    public ParticleEffectSelectButton(ParticleEffect.Action action) {
+        super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState("particle_effects.input", Material.BARRIER, new ButtonActionRender() {
             @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-
-                guiHandler.openCluster("particle_creator");
-                return false;
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
+                if (event.getClick().isShiftClick()) {
+                    ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getParticleContent().remove(action);
+                } else {
+                    ((TestCache) guiHandler.getCustomCache()).getParticleCache().setAction(action);
+                    guiHandler.openCluster("particle_creator");
+                }
+                return true;
             }
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
                 Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
-                ParticleData particleData = items.getItem().getParticleData();
-                ParticleEffect particleEffect = ParticleEffects.getEffect(particleData.getParticleEffect(action));
+                ParticleContent ParticleContent = items.getItem().getParticleContent();
+                ParticleEffect particleEffect = ParticleEffects.getEffect(ParticleContent.getParticleEffect(action));
                 if (particleEffect != null) {
-                    itemStack = particleEffect.getIconItem();
+                    itemStack.setType(particleEffect.getIcon());
+                    hashMap.put("%effect_name%", particleEffect.getName());
+                    hashMap.put("%effect_description%", particleEffect.getDescription());
+                } else {
+                    itemStack.setType(Material.AIR);
                 }
                 return itemStack;
             }
         }));
-        this.action = action;
     }
 }

@@ -28,7 +28,7 @@ public class Cauldrons {
     private WolfyUtilities api;
     private int autosaveTask;
     private BukkitTask recipeTick;
-    private int particles;
+    private BukkitTask particles;
     private Random random = new Random();
 
     //Hashmap of all the locations of the valid cauldrons. The Key is the Location. The Value is the current active recipe, which is going to be saved on server shutdown.
@@ -46,7 +46,7 @@ public class Cauldrons {
                 save();
             }
         }, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
-        particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
+        particles = Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> {
             for (Location loc : cauldrons.keySet()) {
                 if (loc != null) {
                     World world = loc.getWorld();
@@ -56,8 +56,7 @@ public class Cauldrons {
                             int level = data.getLevel();
                             if (isCustomCauldronLit(loc.getBlock())) {
                                 if (level > 0) {
-                                    world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
-                                    //world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 5, 0.15, 0.1, 0.15, 0.00000001);
+                                    Bukkit.getScheduler().runTask(api.getPlugin(), () -> world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001));
                                 }
                             }
                         }

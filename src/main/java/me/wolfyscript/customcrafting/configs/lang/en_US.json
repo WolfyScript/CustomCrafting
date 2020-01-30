@@ -30,10 +30,15 @@
       "playerstats": "Loading Player Stats",
       "inventories": "Initiating Inventory GUIs",
       "placeholder": "Registering PlaceHolder",
+      "mythicmobs": {
+        "detected": "Detected MythicMobs on server...",
+        "register": "Registered MythicMobs supported features"
+      },
       "recipes": {
         "title": "________[Loading Recipes/Items]________",
-        "items": "---------[ITEMS]---------",
-        "recipes": "--------[RECIPES]--------",
+        "items": "---------[Items]---------",
+        "recipes": "--------[Recipes]--------",
+        "particles": "-------[Particles]-------",
         "duplicate": "Ignoring duplicate recipe %namespace%:%key% with the config file %key%.%file_type%!",
         "incompatible": "Unsupported file type! Ignoring %namespace%:%key% with the config file %key%.%file_type%! "
       }
@@ -246,6 +251,14 @@
               "&eToggle Recipes on/off"
             ]
           }
+        }
+      },
+      "patrons_menu": {
+        "gui_name": "&6&lPatreon",
+        "gui_help": [
+          "&7Special thanks to my Patrons for supporting this project."
+        ],
+        "items": {
         }
       },
       "item_editor": {
@@ -979,8 +992,8 @@
             "option": {
               "name": "&6Fuel Settings",
               "lore": [
-                "&cThe Item must be saved in order to",
-                "&cbe added as a fuel"
+                "&7Allow this item to be used as fuel in furnaces.",
+                "&cRequires saved Item"
               ]
             },
             "burn_time": {
@@ -1075,15 +1088,11 @@
           },
           "consume": {
             "option": {
-              "name": "&7Durability Cost && Replacement",
+              "name": "&6Durability Cost && Replacement",
               "lore": [
-                "&cTo use this feature, you need to save the item!"
-              ],
-              "help": [
-                "&7Set the Durability that gets",
-                "&7removed when crafting!",
-                "&7Set with which item this item gets replaced",
-                "&7in the crafting grid."
+                "&7Create a item that looses durability or gets replaced",
+                "&7when used inside of a recipe.",
+                "&cRequires saved Item"
               ]
             },
             "durability_cost": {
@@ -1194,7 +1203,8 @@
               "name": "&6Permission",
               "lore": [
                 "&7Set the permission needed to get this item",
-                "&7e.g. used it for crafting or anvil recipes results"
+                "&7e.g. used it for crafting or anvil recipes results",
+                "&cRequires saved Item"
               ]
             },
             "set": {
@@ -1207,10 +1217,11 @@
           },
           "rarity": {
             "option": {
-              "name": "&6Rarity",
+              "name": "&6Rarity &8[&7Beta&8]",
               "lore": [
                 "&7Sets the rarity of this item.",
-                "&7This value can be used in crafting or anvil results"
+                "&7This value can be used in crafting or anvil results",
+                "&cRequires saved Item"
               ]
             },
             "set": {
@@ -1239,10 +1250,11 @@
           },
           "elite_workbench": {
             "option": {
-              "name": "&6Elite Workbench &8[&71.14+&8][&7Beta&8]",
+              "name": "&6Elite Workbench &8[&71.14+&8]",
               "lore": [
                 "&7Create and Configure your own unique Workbench",
-                "&7with up to 6x6 crafting grid"
+                "&7with up to 6x6 crafting grid",
+                "&cRequires saved Item"
               ]
             },
             "grid_size": {
@@ -1279,10 +1291,18 @@
             },
             "toggle": {
               "enabled": {
-                "name": "&aEnabled"
+                "name": "&aEnabled",
+                "lore": [
+                  "&eElite Workbench enabled.",
+                  "&7[&aClick&7] Disable Elite Workbench"
+                ]
               },
               "disabled": {
-                "name": "&cDisabled"
+                "name": "&cDisabled",
+                "lore": [
+                  "&eElite Workbench is disabled.",
+                  "&7[&aClick&7] Enable Elite Workbench"
+                ]
               }
             },
             "advanced_recipes": {
@@ -1304,7 +1324,11 @@
               }
             },
             "particles": {
-              "name": "&6Particle Effects &8[&7Coming soon&8]"
+              "name": "&6Particle Effects",
+              "lore": [
+                "&eSet particles for the workbench.",
+                "&7[&aClick&7] Goto Particle Effects settings"
+              ]
             }
           },
           "armor_slots": {
@@ -1312,7 +1336,8 @@
               "name": "&6Custom Equipment &8[&71.14+&8]",
               "lore": [
                 "&7Configure the armor slots this item can",
-                "&7can be equiped to."
+                "&7can be equiped to.",
+                "&cRequires saved Item"
               ]
             },
             "head": {
@@ -1410,6 +1435,14 @@
             },
             "block": {
               "name": "&6Block"
+            },
+            "input": {
+              "name": "%effect_name%",
+              "lore": [
+                "%effect_description%",
+                "&7[&aClick&7] Change Effect",
+                "&7[&aShift Click&7] Remove Effect"
+              ]
             }
           }
         }
@@ -1683,7 +1716,7 @@
         }
       },
       "cooking": {
-        "gui_name": "&4Recipe Creator &8[&7Cooking/Smelting&8]",
+        "gui_name": "&4Recipe Creator&8[&7Cooking/Smelting&8]",
         "gui_help": [
           "&7Tip:",
           "&eShift &7+ &eRight click &7on Result or Ingredients will ",
@@ -1827,14 +1860,14 @@
             "enabled": {
               "name": "&6Fire required",
               "lore": [
-                "&eFire or lit Campfire is required for this recipe"
+                "&eLit Campfire is required for this recipe"
               ]
             },
             "disabled": {
               "name": "&6No Fire required",
               "lore": [
-                "&eThis recipe will only work if no Fire or lit Campfire",
-                "&eis present!"
+                "&eThis recipe will only work if the Campfire",
+                "&eunder the cauldron is unlit!"
               ]
             }
           },
@@ -2101,7 +2134,6 @@
               ]
             }
           }
-
         }
       },
       "main_menu": {
@@ -2156,7 +2188,6 @@
       "recipe_book": {
         "gui_name": "&8&lRecipe knowledge Book",
         "items": {
-
         }
       }
     },
@@ -2184,6 +2215,23 @@
       },
       "recipe_book": {
         "gui_name": "&8&lRecipe knowledge Book"
+      }
+    },
+    "particle_creator": {
+      "main_menu": {
+        "gui_name": "&7Particle Creator",
+        "items": {
+          "particle_effect": {
+            "select": {
+              "name": "%effect_name%",
+              "lore": [
+                "%effect_description%",
+                "",
+                "&7[&aRight Click&7] Select Effect"
+              ]
+            }
+          }
+        }
       }
     }
   }

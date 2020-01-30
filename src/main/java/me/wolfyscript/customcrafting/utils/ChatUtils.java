@@ -8,6 +8,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.CommandSender;
@@ -80,14 +81,16 @@ public class ChatUtils {
         int currentPage = cache.getChatLists().getCurrentPageRecipes();
         int maxPages = ((customRecipes.size() % 15) > 0 ? 1 : 0) + customRecipes.size() / 15;
 
-        api.sendActionMessage(player, new ClickData("[&3« Back&7]", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true),
-                new ClickData("                   &7&lRecipes", null),
-                new ClickData("         &e"+ currentPage + "§7/§6" + maxPages +" ", null), new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
+        api.sendActionMessage(player, new ClickData("[&3« Back&7]", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(wolfyUtilities.getPlugin(), () -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()), true),
+                new ClickData("                   &7&lRecipes         ", null),
+                new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
                     if (currentPage > 1) {
                         cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
                         sendRecipeListExpanded(p);
                     }
-                }), new ClickData(" [&e&l»&7]", (wolfyUtilities, p) -> {
+                }),
+                new ClickData(" &e" + currentPage + "§7/§6" + maxPages + "", null),
+                new ClickData(" &7[&e&l»&7]", (wolfyUtilities, p) -> {
                     if (currentPage < maxPages) {
                         cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
                         sendRecipeListExpanded(p);

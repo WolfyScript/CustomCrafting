@@ -19,6 +19,7 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.crafting.CraftListener;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.utils.GsonUtil;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
@@ -38,7 +39,10 @@ import javax.annotation.Nullable;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class CustomCrafting extends JavaPlugin {
@@ -65,6 +69,7 @@ public class CustomCrafting extends JavaPlugin {
     private static boolean loaded = false;
 
     public static final Pattern VALID_NAMESPACEKEY = Pattern.compile("[a-z0-9._-]+");
+
 
     @Override
     public void onLoad() {
@@ -150,6 +155,7 @@ public class CustomCrafting extends JavaPlugin {
             }
 
             recipeHandler.load();
+            CustomItems.initiateMissingBlockEffects();
             checkUpdate(null);
             Metrics metrics = new Metrics(this);
             metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
