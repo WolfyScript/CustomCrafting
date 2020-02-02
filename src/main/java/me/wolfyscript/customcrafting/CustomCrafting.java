@@ -13,7 +13,6 @@ import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.*;
-import me.wolfyscript.customcrafting.metrics.Metrics;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.crafting.CraftListener;
@@ -24,6 +23,7 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.utils.GsonUtil;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.PluginCommand;
@@ -76,6 +76,52 @@ public class CustomCrafting extends JavaPlugin {
         CustomItem.registerCustomData(new EliteWorkbenchData());
         GsonBuilder gsonBuilder = GsonUtil.getGsonBuilder();
         gsonBuilder.registerTypeHierarchyAdapter(Conditions.class, new Conditions.Serialization());
+    }
+
+    public static void checkUpdate(@Nullable Player player) {
+        Thread updater = new Thread(() -> {
+            try {
+                HttpURLConnection con = (HttpURLConnection) new URL(
+                        "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String version = bufferedReader.readLine();
+
+                String[] vNew = version.split("\\.");
+                String[] vOld = currentVersion.split("\\.");
+
+                for (int i = 0; i < vNew.length; i++) {
+                    int v1 = Integer.parseInt(vNew[i]);
+                    int v2 = Integer.parseInt(vOld[i]);
+
+                    if (v1 > v2) {
+                        outdated = true;
+                        api.sendConsoleWarning("$msg.startup.outdated$");
+                        if (player != null) {
+                            api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
+                            api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+                        }
+                        return;
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                api.sendConsoleWarning("$msg.startup.update_check_fail$");
+            }
+        });
+        updater.start();
+    }
+
+    public void onDisable() {
+        if (loaded) {
+            getConfigHandler().getConfig().save();
+            workbenches.endTask();
+            workbenches.save();
+            cauldrons.endAutoSaveTask();
+            cauldrons.save();
+            getRecipeHandler().onSave();
+            savePlayerStatistics();
+        }
     }
 
     public void onEnable() {
@@ -157,7 +203,7 @@ public class CustomCrafting extends JavaPlugin {
             recipeHandler.load();
             CustomItems.initiateMissingBlockEffects();
             checkUpdate(null);
-            Metrics metrics = new Metrics(this);
+            Metrics metrics = new Metrics(this, 3211);
             metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
             metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
                 String version = Bukkit.getServer().getName();
@@ -172,80 +218,6 @@ public class CustomCrafting extends JavaPlugin {
             metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
         }
         System.out.println("------------------------------------------------------------------------");
-    }
-
-    public void onDisable() {
-        if (loaded) {
-            getConfigHandler().getConfig().save();
-            workbenches.endTask();
-            workbenches.save();
-            cauldrons.endAutoSaveTask();
-            cauldrons.save();
-            getRecipeHandler().onSave();
-            savePlayerStatistics();
-        }
-    }
-
-    public static void checkUpdate(@Nullable Player player) {
-        Thread updater = new Thread(() -> {
-            try {
-                HttpURLConnection con = (HttpURLConnection) new URL(
-                        "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
-
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String version = bufferedReader.readLine();
-                if (!version.isEmpty() && !version.equals(currentVersion) && !currentVersion.contains("-dev") && !currentVersion.contains("-pre")) {
-                    outdated = true;
-                    api.sendConsoleWarning("$msg.startup.outdated$");
-                    if (player != null) {
-                        api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
-                        api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
-                    }
-                }
-
-                /*
-                String lVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-                String[] lVersionAndDev = lVersion.split("-");
-                int lDev = -1;
-                if(lVersionAndDev.length > 1){
-                    lDev = Integer.parseInt(lVersionAndDev[1].replace("dev", ""));
-                }
-                String[] lVersionVars = lVersionAndDev[0].split("\\.");
-                int lVersionVar = Integer.parseInt(lVersionVars[0]);
-                int lFeatureLayer = Integer.parseInt(lVersionVars[1]);
-                int lImprovementLayer = Integer.parseInt(lVersionVars[2]);
-                int lBugfixLayer = Integer.parseInt(lVersionVars[3]);
-
-                String[] cVersionAndDev = currentVersion.split("-");
-                int cDev = -1;
-                if(cVersionAndDev.length > 1){
-                    cDev = Integer.parseInt(cVersionAndDev[1].replace("dev", ""));
-                }
-                String[] cVersionVars = cVersionAndDev[0].split("\\.");
-                int cVersionVar = Integer.parseInt(cVersionVars[0]);
-                int cFeatureLayer = Integer.parseInt(cVersionVars[1]);
-                int cImprovementLayer = Integer.parseInt(cVersionVars[2]);
-                int cBugfixLayer = Integer.parseInt(cVersionVars[3]);
-
-                if(cVersionVar < lVersionVar || cFeatureLayer < lFeatureLayer || cImprovementLayer < lImprovementLayer || cBugfixLayer < lBugfixLayer){
-                    outdated = true;
-                }else if(cDev > -1){
-                    if(lDev > -1){
-                        if(cDev < lDev){
-                            outdated = true;
-                        }
-                    }else{
-                        outdated = true;
-                    }
-               }
-                 */
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                api.sendConsoleWarning("$msg.startup.update_check_fail$");
-            }
-        });
-        updater.start();
     }
 
     private static boolean canRun() {

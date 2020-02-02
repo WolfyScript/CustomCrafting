@@ -790,7 +790,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                 ((TestCache)guiHandler.getCustomCache()).getItems().getItem().setBurnTime(0);
                 return true;
             })));
-
             registerButton(new ToggleButton("fuel.furnace", new ButtonState("fuel.furnace.enabled", Material.FURNACE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ((TestCache)guiHandler.getCustomCache()).getItems().getItem().getAllowedBlocks().remove(Material.FURNACE);
                 return true;

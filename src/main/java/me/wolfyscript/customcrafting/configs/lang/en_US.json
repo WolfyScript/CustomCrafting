@@ -1407,7 +1407,7 @@
           },
           "particle_effects": {
             "option": {
-              "name": "&6Particle Effects",
+              "name": "&6Particle Effects &8[&7Beta &8|&7 1.14+&8]",
               "lore": [
                 "&7Configure particle effects that",
                 "&7are spawned when holding, equipping",
@@ -1440,6 +1440,7 @@
               "name": "%effect_name%",
               "lore": [
                 "%effect_description%",
+                "",
                 "&7[&aClick&7] Change Effect",
                 "&7[&aShift Click&7] Remove Effect"
               ]
