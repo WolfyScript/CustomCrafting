@@ -72,6 +72,7 @@ public class InventoryHandler {
         mainCluster.registerGuiWindow(new RecipeEditor(invAPI));
         mainCluster.registerGuiWindow(new RecipesList(invAPI));
         mainCluster.registerGuiWindow(new Settings(invAPI));
+        mainCluster.registerGuiWindow(new PatronsMenu(invAPI));
         mainCluster.setMainmenu("main_menu");
 
         mainCluster.registerButton(new ActionButton("patreon", new ButtonState("main_menu", "patreon", WolfyUtilities.getSkullViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -89,14 +90,6 @@ public class InventoryHandler {
                             new ClickData("&8for supporting this project!\n", null),
                             new ClickData("&8[&cBecome a Patron&8]\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")),
                             new ClickData("\n&8Also special thanks to &8the &8&lCommunity &8and &8&lDonators &8for &8supporting my &8projects!\n", null)
-                    },
-                    new ClickData[]{
-                            new ClickData("   &ka&8&lSocialmedia&ka\n", null),
-                            new ClickData("&8Support me on other Socialmedia.\n\n", null),
-                            new ClickData("&5&lInstagram\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto §5Instagram"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/_gunnar.h_/")),
-                            new ClickData("&4&lYouTube\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto §4YouTube"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g")),
-                            new ClickData("\n&8Join the Community on &8the Discord Server", null),
-                            new ClickData("\n&9&lDiscord Invatation", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Get Invite Link"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr"))
                     }
             );
          */
