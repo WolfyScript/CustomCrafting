@@ -186,13 +186,16 @@ public class Cauldrons {
 
     public void save() {
         try {
+            api.sendConsoleMessage("Saving Cauldrons");
             FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "cauldrons.dat"));
             BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
             HashMap<String, List<String>> saveMap = new HashMap<>();
             for (Map.Entry<Location, List<Cauldron>> entry : cauldrons.entrySet()) {
                 List<String> values = new ArrayList<>();
                 for (Cauldron cauldron : entry.getValue()) {
-                    values.add(cauldron.toString());
+                    if (cauldron != null) {
+                        values.add(cauldron.toString());
+                    }
                 }
                 saveMap.put(locationToString(entry.getKey()), values);
             }
@@ -204,6 +207,7 @@ public class Cauldrons {
     }
 
     public void load() {
+        api.sendConsoleMessage("Loading Cauldrons");
         File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "cauldrons.dat");
         if (file.exists()) {
             FileInputStream fis;
@@ -221,14 +225,14 @@ public class Cauldrons {
                                 value.add(Cauldron.fromString(data));
                             }
                         }
-                        cauldrons.put(stringToLocation(entry.getKey()), value);
+                        this.cauldrons.put(stringToLocation(entry.getKey()), value);
                     }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
                 ois.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                api.sendConsoleWarning("Couldn't load cauldrons. No data found");
             }
         }
     }
