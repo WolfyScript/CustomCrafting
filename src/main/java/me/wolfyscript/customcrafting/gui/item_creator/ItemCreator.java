@@ -517,11 +517,10 @@ public class ItemCreator extends ExtendedGuiWindow {
             return true;
         })));
         {
-            registerButton(new ItemInputButton("player_head.texture.input", new ButtonState("", Material.AIR)));
-
+            registerButton(new ItemInputButton("player_head.texture.input", new ButtonState("", Material.AIR, (guiHandler, player, inventory, i, event) -> event.getCurrentItem().getType().equals(Material.PLAYER_HEAD))));
             registerButton(new ActionButton("player_head.texture.apply", new ButtonState("player_head.texture.apply", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 if (inventory.getItem(38) != null && inventory.getItem(38).getType().equals(Material.PLAYER_HEAD)) {
-                    ((TestCache)guiHandler.getCustomCache()).getItems().getItem().setItemMeta(WolfyUtilities.migrateSkullTexture((SkullMeta) inventory.getItem(38).getItemMeta(), ((TestCache)guiHandler.getCustomCache()).getItems().getItem()));
+                    ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(WolfyUtilities.migrateSkullTexture((SkullMeta) inventory.getItem(38).getItemMeta(), ((TestCache) guiHandler.getCustomCache()).getItems().getItem()));
                 }
                 return true;
             })));
