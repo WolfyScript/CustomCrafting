@@ -43,12 +43,18 @@ public class RecipeConfig extends CustomConfig {
         setPathSeparator('.');
     }
 
+    /*
+    Memory Config only! Do not use to load config out of files!
+     */
     public RecipeConfig(String jsonData, ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
         super(jsonData, configAPI, folder, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;
         setPathSeparator('.');
     }
 
+    /*
+    Memory Config only! Do not use to load config out of files!
+     */
     public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
         super(configAPI, folder, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;

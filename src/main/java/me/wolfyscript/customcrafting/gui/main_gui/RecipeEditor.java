@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
-import me.clip.placeholderapi.util.FileUtil;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
@@ -16,8 +15,6 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-
-import java.nio.file.Files;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
@@ -60,29 +57,36 @@ public class RecipeEditor extends ExtendedGuiWindow {
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
-                    if(recipe == null){
+                    if (recipe == null) {
                         api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
                         return true;
                     }
                     api.sendPlayerMessage(player1, "none", "recipe_editor", "delete.confirm", new String[]{"%recipe%", recipe.getId()});
-                    api.sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
-                        if (CustomCrafting.hasDataBaseHandler()) {
-                            CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getNamespace(), recipe.getConfig().getName());
-                            player1.sendMessage("§aRecipe deleted!");
-                        } else {
-                            recipe.getConfig().save();
-                            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
-                                if (recipe.getConfig().getConfigFile().delete()) {
-                                    player1.sendMessage("§aRecipe deleted!");
-                                } else {
-                                    recipe.getConfig().getConfigFile().deleteOnExit();
-                                    player1.sendMessage("§cCould not delete recipe!");
-                                }
-                            });
-                        }
-                        CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
+                    api.sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> {
                         guiHandler1.openCluster();
-                    })), new ClickData("$inventories.none.recipe_editor.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler1.openCluster()));
+                        Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.getInst(), () -> {
+                            CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
+                            if (CustomCrafting.hasDataBaseHandler()) {
+                                CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getNamespace(), recipe.getConfig().getName());
+                                player1.sendMessage("§aRecipe deleted!");
+                            } else {
+                                //recipe.getConfig().save();
+                                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                                    try {
+                                        System.gc();
+                                        if (recipe.getConfig().getConfigFile().delete()) {
+                                            api.sendPlayerMessage(player1, "&aRecipe deleted!");
+                                        } else {
+                                            recipe.getConfig().getConfigFile().deleteOnExit();
+                                            api.sendPlayerMessage(player1, "&cCould not delete recipe!");
+                                        }
+                                    } catch (SecurityException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                });
+                            }
+                        });
+                    }), new ClickData("$inventories.none.recipe_editor.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler1.openCluster()));
                     guiHandler1.cancelChatEvent();
                     return true;
                 }
@@ -108,9 +112,11 @@ public class RecipeEditor extends ExtendedGuiWindow {
             case WORKBENCH:
             case ELITE_WORKBENCH:
             case STONECUTTER:
+            case BREWING:
+            case GRINDSTONE:
             case CAULDRON:
             case ANVIL:
-                guiHandler.changeToInv("recipe_creator", ((TestCache)guiHandler.getCustomCache()).getSetting().getId());
+                guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getSetting().getId());
                 break;
             case FURNACE:
             case CAMPFIRE:

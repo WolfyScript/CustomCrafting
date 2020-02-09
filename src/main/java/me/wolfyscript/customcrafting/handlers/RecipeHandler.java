@@ -145,7 +145,7 @@ public class RecipeHandler {
                 try {
                     switch (type) {
                         case "items":
-                            ItemConfig itemConfig = new ItemConfig(subfolder, name, "json", configAPI);
+                            ItemConfig itemConfig = new ItemConfig(subfolder, name, false, configAPI);
                             CustomItems.setCustomItem(itemConfig);
                             break;
                         case "particles":
@@ -203,7 +203,6 @@ public class RecipeHandler {
     public void onSave() {
         CustomCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
         CustomCrafting.getConfigHandler().getConfig().save();
-
         for(Particles particles : particlesList){
             particles.setParticles();
             particles.save();
@@ -218,7 +217,7 @@ public class RecipeHandler {
         DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
         try {
             api.sendConsoleMessage("$msg.startup.recipes.title$");
-            dataBaseHandler.loadItems(this);
+            dataBaseHandler.loadItems();
             dataBaseHandler.loadRecipes(this);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -290,7 +289,7 @@ public class RecipeHandler {
                                 dataBaseHandler.updateRecipe(new CampfireConfig(configAPI, key, name));
                                 break;
                             case "items":
-                                dataBaseHandler.updateItem(new ItemConfig(configAPI, key, name));
+                                dataBaseHandler.updateItem(new ItemConfig(subfolder, name, "json", configAPI));
                                 break;
                             case "stonecutter":
                                 dataBaseHandler.updateRecipe(new StonecutterConfig(configAPI, key, name));
