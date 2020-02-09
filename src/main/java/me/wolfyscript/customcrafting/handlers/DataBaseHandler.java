@@ -100,22 +100,30 @@ public class DataBaseHandler {
             if (recipe != null) {
                 recipeHandler.registerRecipe(recipe);
             } else {
-                api.sendConsoleMessage("Error loading recipe \"" + namespace + ":" + "\". Couldn't find recipe in DataBase!");
+                api.sendConsoleMessage("Error loading recipe \"" + namespace + ":" + key + "\". Couldn't find recipe in DataBase!");
             }
         }
     }
 
-    public void loadItems(RecipeHandler recipeHandler) throws SQLException {
+    public void loadItems() throws SQLException {
         api.sendConsoleMessage("");
         api.sendConsoleMessage("$msg.startup.recipes.items$");
         ResultSet resultSet = getItems();
-        if (resultSet != null) {
-            while (resultSet.next()) {
-                String namespace = resultSet.getString("rNamespace");
-                String key = resultSet.getString("rKey");
+        if (resultSet == null) {
+            return;
+        }
+        while (resultSet.next()) {
+            String namespace = resultSet.getString("rNamespace");
+            String key = resultSet.getString("rKey");
+            String data = resultSet.getString("rData");
+            if (namespace != null && key != null && data != null && !data.equals("{}")) {
                 api.sendConsoleMessage("- " + namespace + ":" + key);
-                ItemConfig itemConfig = new ItemConfig(resultSet.getString("rData"), configAPI, namespace, key);
-                CustomItems.setCustomItem(itemConfig);
+                ItemConfig itemConfig = new ItemConfig(data, configAPI, namespace, key);
+                if (itemConfig != null) {
+                    CustomItems.setCustomItem(itemConfig);
+                }
+            } else {
+                api.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacekey or data!");
             }
         }
     }
