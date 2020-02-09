@@ -150,7 +150,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         break;
                     case "database":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
-                            if (args.length > 2) {
+                            if (args.length >= 2) {
                                 switch (args[1]) {
                                     case "export_data":
                                         if (CustomCrafting.hasDataBaseHandler()) {
