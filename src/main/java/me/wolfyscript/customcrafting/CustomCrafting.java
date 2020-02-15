@@ -62,8 +62,9 @@ public class CustomCrafting extends JavaPlugin {
     private static Workbenches workbenches = null;
     private static Cauldrons cauldrons = null;
 
-    private static final boolean betaVersion = false;
     private static String currentVersion;
+
+    private static boolean premiumPlus = false;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
@@ -130,17 +131,21 @@ public class CustomCrafting extends JavaPlugin {
         api = WolfyUtilities.getOrCreateAPI(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");
+
         InventoryAPI<TestCache> inventoryAPI = new InventoryAPI<>(api.getPlugin(), api, TestCache.class);
+
         api.setInventoryAPI(inventoryAPI);
 
+        if (!currentVersion.endsWith(".0")) {
+            premiumPlus = true;
+        }
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + instance.getDescription().getVersion() + (betaVersion ? "-beta" : ""));
+        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premiumPlus ? "Premium+" : ""));
         System.out.println(" ");
-        if (betaVersion || currentVersion.contains("-dev") || currentVersion.contains("-pre")) {
-            System.out.println("This is a unstable build! It may contain bugs and game breaking glitches!");
-            System.out.println("Do not use this version on production servers!");
+        if (!currentVersion.endsWith(".0")) {
+            System.out.println("Thanks for actively supporting this plugin on Patreon!");
         }
         System.out.println("------------------------------------------------------------------------");
 
@@ -176,6 +181,7 @@ public class CustomCrafting extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new EnchantListener(), this);
             getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
             getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
+            getServer().getPluginManager().registerEvents(new GrindStoneListener(api), this);
 
             CommandCC commandCC = new CommandCC();
             PluginCommand command = getServer().getPluginCommand("customcrafting");
