@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class Cauldrons {
 
@@ -73,7 +75,7 @@ public class Cauldrons {
                     if (!cauldronEntryValue.isEmpty()) {
                         Levelled levelled = (Levelled) loc.getBlock().getBlockData();
                         int level = levelled.getLevel();
-                        Iterator<Cauldron> cauldronItr = cauldronEntry.getValue().iterator();
+                        Iterator<Cauldron> cauldronItr = cauldronEntryValue.iterator();
                         while (cauldronItr.hasNext()) {
                             Cauldron cauldron = cauldronItr.next();
                             CauldronRecipe recipe = cauldron.getRecipe();
@@ -82,7 +84,7 @@ public class Cauldrons {
                                     //Execute CauldronRecipeDoneEvent
                                     cauldron.setDone(true);
                                     CauldronCookEvent event = new CauldronCookEvent(cauldron);
-                                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                                    Future<Boolean> checkCauldron = Bukkit.getScheduler().callSyncMethod(CustomCrafting.getInst(), () -> {
                                         Bukkit.getPluginManager().callEvent(event);
                                         if (event.isCancelled()) {
                                             cauldron.setDone(false);
@@ -97,10 +99,6 @@ public class Cauldrons {
                                                 }
                                                 loc.getBlock().setBlockData(levelled);
                                             }
-                                            if (event.dropItems()) {
-                                                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), event.getResult()));
-                                                cauldronItr.remove();
-                                            }
                                             if (WolfyUtilities.hasMythicMobs()) {
                                                 if (!cauldron.getRecipe().getMythicMobName().equals("<none>")) {
                                                     MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(cauldron.getRecipe().getMythicMobName());
@@ -110,8 +108,26 @@ public class Cauldrons {
                                                     }
                                                 }
                                             }
+                                            if (event.dropItems()) {
+                                                world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), event.getResult());
+                                                return true;
+                                            }
+
                                         }
+                                        return false;
                                     });
+                                    while (!checkCauldron.isDone()) {
+                                        //Wait for task to be done!
+                                    }
+                                    try {
+                                        if (checkCauldron.get()) {
+                                            cauldronItr.remove();
+                                        }
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
                                     world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
                                     world.spawnParticle(Particle.REDSTONE, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
@@ -176,7 +192,7 @@ public class Cauldrons {
     }
 
     private String locationToString(Location location) {
-        return location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
+        return (location.getWorld() != null ? location.getWorld().getUID() : null) + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
     }
 
     private Location stringToLocation(String loc) {
@@ -197,7 +213,9 @@ public class Cauldrons {
                         values.add(cauldron.toString());
                     }
                 }
-                saveMap.put(locationToString(entry.getKey()), values);
+                if (entry.getKey() != null) {
+                    saveMap.put(locationToString(entry.getKey()), values);
+                }
             }
             oos.writeObject(saveMap);
             oos.close();
