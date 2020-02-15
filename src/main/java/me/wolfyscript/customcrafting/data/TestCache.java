@@ -14,6 +14,7 @@ import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
+import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneConfig;
 import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
@@ -44,6 +45,7 @@ public class TestCache extends CustomCache {
     private SmokerConfig smokerConfig = new SmokerConfig();
     private StonecutterConfig stonecutterConfig = new StonecutterConfig();
     private FurnaceConfig furnaceConfig = new FurnaceConfig();
+    private GrindstoneConfig grindstoneConfig = new GrindstoneConfig();
 
     public TestCache() {
         this.setting = Setting.MAIN_MENU;
@@ -130,6 +132,19 @@ public class TestCache extends CustomCache {
         return null;
     }
 
+    public void resetCookingConfig() {
+        switch (getSetting()) {
+            case CAMPFIRE:
+                resetCampfireConfig();
+            case SMOKER:
+                resetSmokerConfig();
+            case FURNACE:
+                resetFurnaceConfig();
+            case BLAST_FURNACE:
+                resetBlastingConfig();
+        }
+    }
+
     public AdvancedCraftConfig getAdvancedCraftConfig() {
         return advancedCraftConfig;
     }
@@ -180,6 +195,14 @@ public class TestCache extends CustomCache {
 
     public void resetCauldronConfig() {
         this.cauldronConfig = new CauldronConfig();
+    }
+
+    public GrindstoneConfig getGrindstoneConfig() {
+        return grindstoneConfig;
+    }
+
+    public void resetGrindstoneConfig() {
+        this.grindstoneConfig = new GrindstoneConfig();
     }
 
     public SmokerConfig getSmokerConfig() {
@@ -242,6 +265,7 @@ public class TestCache extends CustomCache {
         }
     }
 
+
     public RecipeConfig getRecipeConfig() {
         switch (getSetting()) {
             case CAMPFIRE:
@@ -258,6 +282,8 @@ public class TestCache extends CustomCache {
                 return getStonecutterConfig();
             case CAULDRON:
                 return getCauldronConfig();
+            case GRINDSTONE:
+                return getGrindstoneConfig();
         }
         return null;
     }
