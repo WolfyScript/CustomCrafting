@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -22,7 +23,7 @@ import java.util.List;
 public class MainMenu extends ExtendedGuiWindow {
 
     public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 9);
+        super("main_menu", inventoryAPI, 18);
     }
 
     @Override
@@ -73,12 +74,20 @@ public class MainMenu extends ExtendedGuiWindow {
                 guiHandler.changeToInv("recipe_book");
                 return true;
             })));
+            registerButton(new ActionButton("grindstone", new ButtonState("elite_workbench", Material.GRINDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setSetting(Setting.GRINDSTONE);
+                guiHandler.changeToInv("recipe_book");
+                return true;
+            })));
         }
     }
 
     @EventHandler
     private void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
+            PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
+            event.setButton(8, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+
             RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
             List<String> availableRecipes = new ArrayList<>();
             if (!recipeHandler.getAvailableAdvancedCraftingRecipes(event.getPlayer()).isEmpty()) {
@@ -109,9 +118,12 @@ public class MainMenu extends ExtendedGuiWindow {
                 if (!recipeHandler.getAvailableEliteCraftingRecipes(event.getPlayer()).isEmpty()) {
                     availableRecipes.add("elite_workbench");
                 }
+                if (!recipeHandler.getAvailableGrindstoneRecipes(event.getPlayer()).isEmpty()) {
+                    availableRecipes.add("grindstone");
+                }
             }
 
-            for (int i = 0; i < 9 && i < availableRecipes.size(); i++) {
+            for (int i = 0; i < 10 && i < availableRecipes.size(); i++) {
                 event.setButton(i, availableRecipes.get(i));
             }
         }

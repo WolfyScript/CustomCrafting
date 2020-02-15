@@ -16,6 +16,7 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -32,7 +33,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RecipeBook extends ExtendedGuiWindow {
@@ -68,8 +72,8 @@ public class RecipeBook extends ExtendedGuiWindow {
             PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);
             KnowledgeBook knowledgeBook = ((TestCache) event.getGuiHandler().getCustomCache()).getKnowledgeBook();
             ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), knowledgeBook.getItemCategory());
-            for (int i = 1; i < 8; i++) {
-                event.setButton(i, "none", "glass_white");
+            for (int i = 1; i < 9; i++) {
+                event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
             }
             if (knowledgeBook.getCustomRecipe() == null) {
                 event.setButton(0, "back");
@@ -108,6 +112,9 @@ public class RecipeBook extends ExtendedGuiWindow {
                         break;
                     case CAMPFIRE:
                         recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
+                        break;
+                    case GRINDSTONE:
+                        recipes.addAll(recipeHandler.getAvailableGrindstoneRecipes(player));
                 }
                 if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
                     Iterator<CustomRecipe> recipeIterator = recipes.iterator();
@@ -512,6 +519,53 @@ public class RecipeBook extends ExtendedGuiWindow {
                             }, 1, 30));
                         }
                         break;
+                    case GRINDSTONE:
+                        event.setButton(0, "back");
+                        GrindstoneRecipe grindstoneRecipe = (GrindstoneRecipe) knowledgeBook.getCustomRecipe();
+
+                        List<CustomItem> inputTop = grindstoneRecipe.getInputTop();
+                        List<CustomItem> inputBottom = grindstoneRecipe.getInputBottom();
+                        List<CustomItem> results = grindstoneRecipe.getCustomResults();
+                        timerTimings = knowledgeBook.getTimerTimings();
+
+
+                        event.setItem(11, inputTop.isEmpty() ? new ItemStack(Material.AIR) : inputTop.get(timerTimings.getOrDefault(0, 0)));
+                        event.setButton(12, "none", "glass_green");
+                        event.setButton(21, "none", "glass_green");
+                        event.setButton(22, "recipe_book", "grindstone");
+                        event.setButton(23, "none", "glass_green");
+                        event.setItem(24, results.isEmpty() ? new ItemStack(Material.AIR) : results.get(timerTimings.getOrDefault(2, 0)));
+                        event.setItem(29, inputBottom.isEmpty() ? new ItemStack(Material.AIR) : inputBottom.get(timerTimings.getOrDefault(1, 0)));
+                        event.setButton(30, "none", "glass_green");
+
+
+                        knowledgeBook.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
+                            HashMap<Integer, Integer> timings = knowledgeBook.getTimerTimings();
+                            for (int i = 0; i < 3; i++) {
+                                List<CustomItem> variants = new ArrayList<>(i == 0 ? grindstoneRecipe.getInputTop() : i == 1 ? grindstoneRecipe.getInputBottom() : grindstoneRecipe.getCustomResults());
+                                Iterator<CustomItem> iterator = variants.iterator();
+                                while (iterator.hasNext()) {
+                                    CustomItem customItem = iterator.next();
+                                    if (!customItem.hasPermission()) {
+                                        continue;
+                                    }
+                                    if (!player.hasPermission(customItem.getPermission())) {
+                                        iterator.remove();
+                                    }
+                                }
+                                if (variants.size() > 1 && !variants.isEmpty()) {
+                                    int variant = timings.getOrDefault(0, 0);
+                                    event.setItem(i == 0 ? 11 : i == 1 ? 29 : 25, variants.get(variant).getRealItem());
+                                    if (++variant < variants.size()) {
+                                        timings.put(i, variant);
+                                    } else {
+                                        timings.put(i, 0);
+                                    }
+                                }
+                            }
+                        }, 1, 30));
+                        break;
+
                 }
             }
         }

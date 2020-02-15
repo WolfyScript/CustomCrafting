@@ -15,7 +15,8 @@ public enum Setting {
     SMOKER,
     CAMPFIRE,
     STONECUTTER,
-    CAULDRON;
+    CAULDRON,
+    GRINDSTONE, BREWING;
 
     private String id;
 

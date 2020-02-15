@@ -22,6 +22,8 @@ import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCr
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
+import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneConfig;
+import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
@@ -111,6 +113,7 @@ public class RecipeHandler {
                     loadConfig(folder.getName(), "smoker");
                     loadConfig(folder.getName(), "campfire");
                     loadConfig(folder.getName(), "stonecutter");
+                    loadConfig(folder.getName(), "grindstone");
                     loadConfig(folder.getName(), "elite_workbench");
                 }
             }
@@ -192,6 +195,9 @@ public class RecipeHandler {
                             break;
                         case "cauldron":
                             registerRecipe(new CauldronRecipe(new CauldronConfig(configAPI, subfolder, name)));
+                            break;
+                        case "grindstone":
+                            registerRecipe(new GrindstoneRecipe(new GrindstoneConfig(configAPI, subfolder, name)));
                     }
                 } catch (Exception ex) {
                     ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
@@ -306,7 +312,7 @@ public class RecipeHandler {
     }
 
     public void registerRecipe(CustomRecipe recipe) {
-        if (!(recipe instanceof CraftingRecipe) && !(recipe instanceof CustomAnvilRecipe) && !(recipe instanceof CauldronRecipe)) {
+        if (!(recipe instanceof CraftingRecipe) && !(recipe instanceof CustomAnvilRecipe) && !(recipe instanceof CauldronRecipe) && !(recipe instanceof GrindstoneRecipe)) {
             api.sendDebugMessage("  add to Bukkit...");
             Bukkit.addRecipe(recipe);
         }
@@ -437,6 +443,9 @@ public class RecipeHandler {
                 return new ArrayList<>(getStonecutterRecipes());
             case "cauldron":
                 return new ArrayList<>(getCauldronRecipes());
+            case "grindstone":
+                return new ArrayList<>(getGrindstoneRecipes());
+
         }
         return customRecipes;
     }
@@ -509,6 +518,10 @@ public class RecipeHandler {
         return getRecipes(CauldronRecipe.class);
     }
 
+    public List<GrindstoneRecipe> getGrindstoneRecipes() {
+        return getRecipes(GrindstoneRecipe.class);
+    }
+
     /*
     Get the available recipes only.
     Disabled and hidden recipes are removed!
@@ -574,13 +587,16 @@ public class RecipeHandler {
         return getAvailableRecipes(CauldronRecipe.class);
     }
 
-    public CustomFurnaceRecipe getFurnaceRecipe(String key) {
-        for (CustomFurnaceRecipe recipe : getFurnaceRecipes()) {
-            if (recipe.getId().equals(key)) {
-                return recipe;
+    public List<GrindstoneRecipe> getAvailableGrindstoneRecipes(Player player) {
+        List<GrindstoneRecipe> recipes = getAvailableRecipes(GrindstoneRecipe.class);
+        Iterator<GrindstoneRecipe> iterator = recipes.iterator();
+        while (iterator.hasNext()) {
+            GrindstoneRecipe recipe = iterator.next();
+            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
+                iterator.remove();
             }
         }
-        return null;
+        return recipes;
     }
 
     public HashMap<String, CustomRecipe> getRecipes() {
@@ -715,4 +731,6 @@ public class RecipeHandler {
         }
         return false;
     }
+
+
 }

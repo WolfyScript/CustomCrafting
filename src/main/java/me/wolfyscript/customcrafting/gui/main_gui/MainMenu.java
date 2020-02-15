@@ -61,6 +61,16 @@ public class MainMenu extends ExtendedGuiWindow {
                 guiHandler.changeToInv("recipe_editor");
                 return true;
             })));
+            registerButton(new ActionButton("grindstone", new ButtonState("grindstone", Material.GRINDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.GRINDSTONE);
+                guiHandler.changeToInv("recipe_editor");
+                return true;
+            })));
+            registerButton(new ActionButton("brewing", new ButtonState("brewing", Material.BREWING_STAND, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.BREWING);
+                guiHandler.changeToInv("recipe_editor");
+                return true;
+            })));
             registerButton(new ActionButton("elite_workbench", new ButtonState("elite_workbench", new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.ELITE_WORKBENCH);
                 guiHandler.changeToInv("recipe_editor");
@@ -75,8 +85,6 @@ public class MainMenu extends ExtendedGuiWindow {
 
         registerButton(new ActionButton("item_editor", new ButtonState("item_editor", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();
-            cache.setSetting(Setting.ITEMS);
-            cache.setSetting(Setting.ITEMS);
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
@@ -115,8 +123,10 @@ public class MainMenu extends ExtendedGuiWindow {
                 event.setButton(20, "blast_furnace");
                 event.setButton(22, "smoker");
                 event.setButton(24, "campfire");
-                event.setButton(30, "stonecutter");
-                event.setButton(32, "elite_workbench");
+                event.setButton(28, "stonecutter");
+                event.setButton(30, "grindstone");
+                event.setButton(32, "brewing");
+                event.setButton(34, "elite_workbench");
             }
             event.setButton(36, "item_editor");
             event.setButton(44, "recipe_list");

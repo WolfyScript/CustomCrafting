@@ -138,12 +138,13 @@
           "help": []
         },
         "patreon": {
-          "name": "&6&lPatreon",
+          "name": "&6&ktt   &r&6&lPatreon   &6&ktt",
           "lore": [
-            "&eDonate a bit to support the continuation of the development of my plugins.",
-            "&eAs a patrons you will get credited in CustomCrafting and you can get",
-            "&eearly access to releases and access to indev-builds and more.",
-            "&7[&aClick&7] View Credits and more Information"
+            "&eBecome a Patron and get early acces to ",
+            "&ereleases and development builds.",
+            "&eTake part in Patreon only polls and",
+            "&ehelp shape and improve the plugin",
+            "&7[&aClick&7] View current Patrons Credits"
           ]
         },
         "instagram": {
@@ -227,8 +228,8 @@
           "cauldron": {
             "name": "&6Cauldron",
             "help": [
-              "&eCreate cauldron recipes, which allow",
-              "&eto brew/cook items in the cauldron!"
+              "&7Create cauldron recipes to brew/cook",
+              "&7items inside of the cauldron!"
             ]
           },
           "stonecutter": {
@@ -237,28 +238,52 @@
               ""
             ]
           },
+          "grindstone": {
+            "name": "&6Grindstone Recipe",
+            "help": [
+              ""
+            ]
+          },
+          "brewing": {
+            "name": "&6Brewing Stand Recipe",
+            "lore": [
+              "&8[&7Coming soon&8]"
+            ]
+          },
           "item_editor": {
             "name": "&6Item Creator",
-            "help": [
-              "&eCreate&7/&eEdit custom Items",
-              "&ewith special features e.g. Custom Durability, Furnace Fuel"
+            "lore": [
+              "&7Create&8/&7Edit custom Items",
+              "&7with special features e.g.",
+              "&7Custom Durability&8, Furnace Fuel&8, ",
+              "&7Custom Equipment and more."
             ]
           },
           "recipe_list": {
             "name": "&6Recipe List",
-            "help": [
-              "&eList of recipes",
-              "&eToggle Recipes on/off"
+            "lore": [
+              "&7List of all recipes ",
+              "&8(&7including minecraft recipes&8)",
+              "&7Toggle any Recipe on/off"
             ]
           }
         }
       },
       "patrons_menu": {
-        "gui_name": "&6&lPatreon",
+        "gui_name": "&6&l&ktt         &r&8&lPatreon          &6&l&ktt",
         "gui_help": [
-          "&7Special thanks to my Patrons for supporting this project."
+          "&7Special thanks to my Patrons for supporting",
+          "&7the development of this project."
         ],
         "items": {
+          "patreon": {
+            "name": "",
+            "lore": [
+              "&eBecome a Patron and get early access and take part",
+              "&ein the development of the plugin, ",
+              "&eget access to dev-builds and more."
+            ]
+          }
         }
       },
       "item_editor": {
@@ -402,7 +427,8 @@
             "enabled": {
               "name": "&6Pretty Printing",
               "lore": [
-                "&7Json configs are saved with correct formatting!",
+                "&7Json configs are saved with ",
+                "correct formatting!",
                 "&7[&aClick&7] Toggle one-line printing"
               ]
             },
@@ -458,6 +484,26 @@
                 "&7Debug is disabled!",
                 "&7[&aClick&7] Toggle debug"
               ]
+            }
+          },
+          "creator": {
+            "reset_after_save": {
+              "enabled": {
+                "name": "&6Reset Recipe Creator",
+                "lore": [
+                  "&7Resets the Recipe Creator contents",
+                  "&7after they are saved.",
+                  "&7[&aClick&7] Keep contents after saving"
+                ]
+              },
+              "disabled": {
+                "name": "&6Keep Recipe Creator",
+                "lore": [
+                  "&7Keep the Recipe Creator contents",
+                  "&7after they are saved.",
+                  "&7[&aClick&7] Reset contents after saving"
+                ]
+              }
             }
           }
         }
@@ -1903,7 +1949,7 @@
               "",
               "&eThe time in ticks for the recipe to be done!"
             ],
-            "message": "&3Type in the cooking time in ticks. e.g. 20"
+            "message": "&eType in the cooking time in ticks. e.g. 20"
           },
           "waterLevel": {
             "name": "&3Water Level",
@@ -1929,6 +1975,28 @@
               ""
             ],
             "message": "&eType in the MythicMob you want! <mob_name> [<level> <relative_x> <relative_y> <relative_z>]"
+          }
+        }
+      },
+      "grindstone": {
+        "gui_name": "&4&lCreator &7[&8Grindstone&7]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+          "grindstone": {
+            "name": "&c"
+          },
+          "xp": {
+            "name": "&6Experience",
+            "lore": [
+              "&7Experience: &e%xp%",
+              "",
+              "&eThe amount xp you get when using the grindstone"
+            ],
+            "message": "&eType in the amount of experience. e.g. 0.5"
           }
         }
       },
