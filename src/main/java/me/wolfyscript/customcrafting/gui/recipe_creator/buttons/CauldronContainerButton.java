@@ -67,7 +67,7 @@ public class CauldronContainerButton extends ItemInputButton {
                 CauldronConfig cauldronConfig = ((TestCache) guiHandler.getCustomCache()).getCauldronConfig();
                 List<CustomItem> items = inputSlot == 0 ? cauldronConfig.getIngredients() : cauldronConfig.getResult();
                 if (items != null && !items.isEmpty()) {
-                    item = items.get(0);
+                    item = items.get(0).getRealItem();
                 }
                 return item;
             }
