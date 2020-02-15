@@ -17,6 +17,8 @@ import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCr
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
+import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneConfig;
+import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
@@ -206,6 +208,8 @@ public class DataBaseHandler {
                             return new CustomStonecutterRecipe(new StonecutterConfig(data, configAPI, namespace, key));
                         case "enchant":
                             break;
+                        case "grindstone":
+                            return new GrindstoneRecipe(new GrindstoneConfig(data, configAPI, namespace, key));
                         case "cauldron":
                             return new CauldronRecipe(new CauldronConfig(data, configAPI, namespace, key));
                     }

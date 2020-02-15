@@ -79,21 +79,6 @@ public class InventoryHandler {
             guiHandler.changeToInv("patrons_menu");
             return true;
         })), invAPI.getWolfyUtilities());
-
-        /*
-        api.openBook(player, false,
-                    new ClickData[]{
-                            new ClickData("&c&l      Patreon\n", null),
-                            new ClickData("&8Special thanks to my \n&8Patrons\n", null),
-                            new ClickData("&3&lApprehentice\n", null),
-                            new ClickData("&3&lAlex\n", null),
-                            new ClickData("&8for supporting this project!\n", null),
-                            new ClickData("&8[&cBecome a Patron&8]\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")),
-                            new ClickData("\n&8Also special thanks to &8the &8&lCommunity &8and &8&lDonators &8for &8supporting my &8projects!\n", null)
-                    }
-            );
-         */
-
         mainCluster.registerButton(new ActionButton("instagram", new ButtonState("main_menu", "instagram", WolfyUtilities.getSkullViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/_gunnar.h_/")));
             return true;
@@ -112,6 +97,7 @@ public class InventoryHandler {
         recipeCreator.registerGuiWindow(new CookingCreator(invAPI));
         recipeCreator.registerGuiWindow(new CauldronCreator(invAPI));
         recipeCreator.registerGuiWindow(new StonecutterCreator(invAPI));
+        recipeCreator.registerGuiWindow(new GrindstoneCreator(invAPI));
         recipeCreator.registerGuiWindow(new WorkbenchCreator(invAPI));
         recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI));
         recipeCreator.registerGuiWindow(new ConditionsMenu(invAPI));
@@ -177,34 +163,21 @@ public class InventoryHandler {
             return itemStack;
         })), api);
 
-        if(WolfyUtilities.hasVillagePillageUpdate()){
+        if(WolfyUtilities.hasVillagePillageUpdate()) {
             recipeBook.registerButton(new DummyButton("stonecutter", new ButtonState("stonecutter", Material.STONECUTTER)), api);
-            recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                return itemStack;
-            })), api);
-            recipeBook.registerButton(new DummyButton("campfire", new ButtonState("campire", Material.CAMPFIRE, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                return itemStack;
-            })), api);
-            recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                return itemStack;
-            })), api);
-            recipeBook.registerButton(new DummyButton("smoker", new ButtonState("smoker", Material.SMOKER, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                return itemStack;
-            })), api);
-            recipeBook.registerButton(new DummyButton("cauldron.water.disabled", new ButtonState("cauldron.water.disabled", Material.CAULDRON, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                return itemStack;
-            })), api);
+            recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE)), api);
+            recipeBook.registerButton(new DummyButton("campfire", new ButtonState("campire", Material.CAMPFIRE)), api);
+            recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE)), api);
+            recipeBook.registerButton(new DummyButton("grindstone", new ButtonState("grindstone", Material.GRINDSTONE)), api);
+            recipeBook.registerButton(new DummyButton("smoker", new ButtonState("smoker", Material.SMOKER)), api);
+            recipeBook.registerButton(new DummyButton("cauldron.water.disabled", new ButtonState("cauldron.water.disabled", Material.CAULDRON)), api);
             recipeBook.registerButton(new DummyButton("cauldron.water.enabled", new ButtonState("cauldron.water.enabled", WolfyUtilities.getSkullViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, guiHandler, player, itemStack, i, b) -> {
                 KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-                hashMap.put("%lvl%", ((CauldronRecipe)knowledgeBook.getCustomRecipe()).getWaterLevel());
+                hashMap.put("%lvl%", ((CauldronRecipe) knowledgeBook.getCustomRecipe()).getWaterLevel());
                 return itemStack;
             })), api);
-            recipeBook.registerButton(new DummyButton("cauldron.fire.disabled", new ButtonState("cauldron.fire.disabled", Material.FLINT, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                return itemStack;
-            })), api);
-            recipeBook.registerButton(new DummyButton("cauldron.fire.enabled", new ButtonState("cauldron.fire.enabled", Material.FLINT_AND_STEEL, (hashMap, guiHandler, player, itemStack, i, b) -> {
-                return itemStack;
-            })), api);
+            recipeBook.registerButton(new DummyButton("cauldron.fire.disabled", new ButtonState("cauldron.fire.disabled", Material.FLINT)), api);
+            recipeBook.registerButton(new DummyButton("cauldron.fire.enabled", new ButtonState("cauldron.fire.enabled", Material.FLINT_AND_STEEL)), api);
         }
 
         GuiCluster craftingCluster = new GuiCluster();
