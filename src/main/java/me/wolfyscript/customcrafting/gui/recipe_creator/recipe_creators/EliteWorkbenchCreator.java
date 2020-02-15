@@ -64,6 +64,9 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
                                 CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
+                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                                cache.resetEliteCraftConfig();
+                            }
                         } catch (Exception ex) {
                             api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getId()});
                             ex.printStackTrace();
