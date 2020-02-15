@@ -52,7 +52,9 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
-
+                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                                cache.resetStonecutterConfig();
+                            }
                         } catch (Exception ex) {
                             api.sendPlayerMessage(player, "recipe_creator", "error.loading", new String[]{"%REC%", stonecutterConfig.getId()});
                             ex.printStackTrace();

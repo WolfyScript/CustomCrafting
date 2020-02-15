@@ -70,6 +70,9 @@ public class CookingCreator extends ExtendedGuiWindow {
                             } else {
                                 api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
                             }
+                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                                cache.resetCookingConfig();
+                            }
                         } catch (Exception ex) {
                             api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
                             ex.printStackTrace();

@@ -55,6 +55,9 @@ public class CauldronCreator extends ExtendedGuiWindow {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CauldronRecipe(config));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
+                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                                cache.resetCauldronConfig();
+                            }
                         } catch (Exception ex) {
                             api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", config.getId()});
                             ex.printStackTrace();

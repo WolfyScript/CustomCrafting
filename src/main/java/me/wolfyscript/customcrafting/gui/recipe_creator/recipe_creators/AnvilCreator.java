@@ -53,6 +53,9 @@ public class AnvilCreator extends ExtendedGuiWindow {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
+                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                                cache.resetAnvilConfig();
+                            }
                         } catch (Exception ex) {
                             api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", anvilConfig.getId()});
                             ex.printStackTrace();

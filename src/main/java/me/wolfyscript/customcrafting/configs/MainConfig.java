@@ -24,12 +24,12 @@ public class MainConfig extends Config {
         set("language", lang);
     }
 
-    public boolean isExperimentalFeatures() {
-        return getBoolean("experimental_features");
+    public boolean isResetCreatorAfterSave() {
+        return getBoolean("creator.reset_after_save");
     }
 
-    public void setExperimentalFeatures(boolean experimentalFeatures) {
-        set("experimental_features", experimentalFeatures);
+    public void setResetCreatorAfterSave(boolean reset) {
+        set("creator.reset_after_save", reset);
     }
 
     public boolean resetKnowledgeBookItem() {
@@ -122,14 +122,6 @@ public class MainConfig extends Config {
 
     public void setLockDown(boolean lockdown) {
         set("recipes.lockdown", lockdown);
-    }
-
-    public boolean useVanillaKnowledgeBook() {
-        return getBoolean("vanilla_knowledgebook");
-    }
-
-    public void useVanillaKnowledgeBook(boolean use) {
-        set("vanilla_knowledgebook", use);
     }
 
     public boolean isDatabankEnabled() {

@@ -65,6 +65,9 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                                     customRecipe = new ShapedCraftRecipe(config);
                                 }
                             }
+                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                                cache.resetAdvancedCraftConfig();
+                            }
                             Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");

@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -67,10 +68,10 @@ public class Settings extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("pretty_printing", new ButtonState("pretty_printing.disabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
+            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
             return true;
         }), new ButtonState("pretty_printing.enabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
+            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
             return true;
         })));
 
@@ -135,6 +136,14 @@ public class Settings extends ExtendedGuiWindow {
             CustomCrafting.getConfigHandler().getConfig().set("debug", false);
             return true;
         })));
+
+        registerButton(new ToggleButton("creator.reset_after_save", new ButtonState("creator.reset_after_save.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
+            return true;
+        }), new ButtonState("creator.reset_after_save.enabled", WolfyUtilities.getSkullViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
+            return true;
+        })));
     }
 
     @EventHandler
@@ -157,6 +166,7 @@ public class Settings extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
             ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
             ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
+            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
 
             event.setButton(0, "none", "back");
 
@@ -170,6 +180,7 @@ public class Settings extends ExtendedGuiWindow {
                 event.setButton(11, "pretty_printing");
                 event.setButton(12, "advanced_workbench");
                 event.setButton(13, "language");
+                event.setButton(14, "creator.reset_after_save");
             }
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
                 event.setButton(35, "debug");
