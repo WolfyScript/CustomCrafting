@@ -74,6 +74,7 @@ public class AnvilListener implements Listener {
             //RECIPE RESULTS!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                 result = recipe.getCustomResult();
+
             } else {
                 result = event.getResult();
                 if (result != null && result.hasItemMeta()) {

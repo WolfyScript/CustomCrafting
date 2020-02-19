@@ -108,11 +108,13 @@ public class MainMenu extends ExtendedGuiWindow {
         if (event.verify(this)) {
             event.setButton(0, "settings");
             event.setButton(8, "none", "gui_help");
-            event.setButton(4, "none", "patreon");
 
-            event.setButton(39, "none", "instagram");
-            event.setButton(40, "none", "youtube");
-            event.setButton(41, "none", "discord");
+            if (!event.getPlayer().hasPermission("customcrafting.hide_ads")) {
+                event.setButton(4, "none", "patreon");
+                event.setButton(39, "none", "instagram");
+                event.setButton(40, "none", "youtube");
+                event.setButton(41, "none", "discord");
+            }
 
             event.setButton(10, "workbench");
             event.setButton(12, "furnace");

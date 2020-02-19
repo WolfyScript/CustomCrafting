@@ -65,6 +65,7 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private static boolean premiumPlus = false;
+    private static boolean premium = true;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
@@ -142,9 +143,11 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premiumPlus ? "Premium+" : ""));
+        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premium ? "Premium" : (premiumPlus ? "Premium+" : "")));
         System.out.println(" ");
-        if (!currentVersion.endsWith(".0")) {
+        if (premium) {
+            System.out.println("Thanks for supporting this plugin!");
+        } else if (premiumPlus) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         }
         System.out.println("------------------------------------------------------------------------");
