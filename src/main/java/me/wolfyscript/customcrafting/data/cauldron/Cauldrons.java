@@ -109,7 +109,7 @@ public class Cauldrons {
                                                 }
                                             }
                                             if (event.dropItems()) {
-                                                world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), event.getResult());
+                                                world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), event.getResult().getRealItem());
                                                 return true;
                                             }
 

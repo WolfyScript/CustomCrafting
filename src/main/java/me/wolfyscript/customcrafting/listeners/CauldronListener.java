@@ -91,7 +91,7 @@ public class CauldronListener implements Listener {
                                 event.setUseItemInHand(Event.Result.DENY);
                                 event.setUseInteractedBlock(Event.Result.DENY);
                                 handItem.setAmount(handItem.getAmount() - 1);
-                                ItemStack result = cauldron.getResult().getItemStack();
+                                ItemStack result = cauldron.getResult().getRealItem();
                                 if (InventoryUtils.hasInventorySpace(player, result)) {
                                     player.getInventory().addItem(result);
                                 } else {
