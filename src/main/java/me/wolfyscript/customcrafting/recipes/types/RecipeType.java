@@ -1,12 +1,9 @@
-package me.wolfyscript.customcrafting.gui;
+package me.wolfyscript.customcrafting.recipes.types;
 
 import java.util.Locale;
 
-public enum Setting {
+public enum RecipeType {
 
-    MAIN_MENU,
-    RECIPE_LIST,
-    ITEMS,
     WORKBENCH,
     ELITE_WORKBENCH,
     FURNACE,
@@ -21,7 +18,7 @@ public enum Setting {
 
     private String id;
 
-    Setting() {
+    RecipeType() {
         this.id = this.toString().toLowerCase(Locale.ROOT);
     }
 

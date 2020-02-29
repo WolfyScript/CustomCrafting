@@ -4,8 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,6 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
         this.hidden = config.isHidden();
-        load();
     }
 
     public void setIngredients(Map<Character, List<CustomItem>> ingredients) {
@@ -77,6 +79,11 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
         return id;
     }
 
+    @Override
+    public RecipeType getRecipeType() {
+        return RecipeType.WORKBENCH;
+    }
+
     public AdvancedCraftConfig getConfig() {
         return config;
     }
@@ -104,5 +111,27 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
     @Override
     public boolean isHidden() {
         return hidden;
+    }
+
+    @Override
+    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+        event.setButton(0, "back");
+        if (!getIngredients().isEmpty()) {
+            if (getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
+                for (int i = 1; i < 8; i++) {
+                    event.setButton(i, "none", "glass_purple");
+                }
+                for (int i = 45; i < 54; i++) {
+                    event.setButton(i, "none", "glass_purple");
+                }
+            }
+            event.setButton(23, "recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+            int invSlot;
+            for (int i = 0; i < 9; i++) {
+                invSlot = 10 + i + (i / 3) * 6;
+                event.setButton(invSlot, "recipe_book", "ingredient.container_" + invSlot);
+            }
+            event.setButton(25, "recipe_book", "ingredient.container_25");
+        }
     }
 }

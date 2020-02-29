@@ -1,10 +1,9 @@
 package me.wolfyscript.customcrafting.recipes.types.blast_furnace;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -56,28 +55,6 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     }
 
     @Override
-    public void load() {
-
-    }
-
-    @Override
-    public CustomBlastRecipe save(ConfigAPI configAPI, String namespace, String key) {
-        BlastingConfig config;
-        if (CustomCrafting.hasDataBaseHandler()) {
-            config = new BlastingConfig("{}", configAPI, namespace, key);
-        } else {
-            config = new BlastingConfig(configAPI, namespace, key);
-        }
-        return save(config);
-    }
-
-    @Override
-    public CustomBlastRecipe save(BlastingConfig config) {
-
-        return this;
-    }
-
-    @Override
     public List<CustomItem> getCustomResults() {
         return result;
     }
@@ -110,5 +87,10 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     @Override
     public boolean isHidden() {
         return hidden;
+    }
+
+    @Override
+    public RecipeType getRecipeType() {
+        return RecipeType.BLAST_FURNACE;
     }
 }

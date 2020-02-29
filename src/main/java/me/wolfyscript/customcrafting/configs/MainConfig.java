@@ -32,6 +32,14 @@ public class MainConfig extends Config {
         set("creator.reset_after_save", reset);
     }
 
+    public boolean workbenchFilter() {
+        return getBoolean("knowledgebook.workbench_filter");
+    }
+
+    public void setWorkbenchFilter(boolean show) {
+        set("knowledgebook.workbench_filter", show);
+    }
+
     public boolean resetKnowledgeBookItem() {
         return getBoolean("knowledgebook.reset_item");
     }
@@ -146,6 +154,14 @@ public class MainConfig extends Config {
 
     public String getDataBankPassword() {
         return getString("databank.password");
+    }
+
+    public boolean hideAds() {
+        return getBoolean("secret.hide_ads");
+    }
+
+    public void setHideAds(boolean hideAds) {
+        set("secret.hide_ads", hideAds);
     }
 
 

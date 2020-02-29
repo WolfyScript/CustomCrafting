@@ -3,8 +3,10 @@ package me.wolfyscript.customcrafting.recipes.types.cauldron;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import org.bukkit.entity.Item;
 import org.bukkit.util.Vector;
 
@@ -89,21 +91,6 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
     @Override
     public RecipePriority getPriority() {
         return priority;
-    }
-
-    @Override
-    public void load() {
-
-    }
-
-    @Override
-    public CustomRecipe save(ConfigAPI configAPI, String namespace, String key) {
-        return null;
-    }
-
-    @Override
-    public CustomRecipe save(CauldronConfig config) {
-        return null;
     }
 
     public void setPriority(RecipePriority priority) {
@@ -198,5 +185,23 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
     @Override
     public boolean isHidden() {
         return hidden;
+    }
+
+    @Override
+    public RecipeType getRecipeType() {
+        return RecipeType.CAULDRON;
+    }
+
+    @Override
+    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+        event.setButton(0, "back");
+        int invSlot;
+        for (int i = 0; i < 6; i++) {
+            invSlot = 10 + i + (i / 3) * 6;
+            event.setButton(invSlot, "recipe_book", "ingredient.container_" + invSlot);
+        }
+        event.setButton(29, "recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled");
+        event.setButton(38, "recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled");
+        event.setButton(34, "recipe_book", "ingredient.container_34");
     }
 }

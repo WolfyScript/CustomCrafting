@@ -20,6 +20,7 @@ import java.util.HashMap;
 public class RecipeListContainerButton extends Button {
 
     private HashMap<GuiHandler, Recipe> recipes = new HashMap<>();
+    private HashMap<GuiHandler, CustomRecipe> customRecipes = new HashMap<>();
 
     public RecipeListContainerButton(int slot) {
         super("recipe_list.container_" + slot, null);
@@ -38,8 +39,8 @@ public class RecipeListContainerButton extends Button {
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
         String id;
-        if (getRecipe(guiHandler) instanceof CustomRecipe) {
-            id = ((CustomRecipe) getRecipe(guiHandler)).getId();
+        if (getCustomRecipe(guiHandler) != null) {
+            id = (getCustomRecipe(guiHandler)).getId();
         } else {
             id = ((Keyed) getRecipe(guiHandler)).getKey().toString();
         }
@@ -58,11 +59,11 @@ public class RecipeListContainerButton extends Button {
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        if (getRecipe(guiHandler) instanceof CustomRecipe) {
-            CustomRecipe recipe = (CustomRecipe) getRecipe(guiHandler);
+        if (getCustomRecipe(guiHandler) != null) {
+            CustomRecipe recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult());
-                if (recipe.getResult().getType().equals(Material.AIR)) {
+                ItemBuilder itemB = new ItemBuilder(recipe.getCustomResult());
+                if (recipe.getCustomResult().getType().equals(Material.AIR)) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
                 }
                 itemB.addLoreLine("§8" + recipe.getId());
@@ -89,6 +90,14 @@ public class RecipeListContainerButton extends Button {
                 inventory.setItem(slot, itemB.create());
             }
         }
+    }
+
+    public CustomRecipe getCustomRecipe(GuiHandler guiHandler) {
+        return customRecipes.getOrDefault(guiHandler, null);
+    }
+
+    public void setCustomRecipe(GuiHandler guiHandler, CustomRecipe recipe) {
+        customRecipes.put(guiHandler, recipe);
     }
 
     public Recipe getRecipe(GuiHandler guiHandler) {

@@ -101,7 +101,7 @@ public class ChatUtils {
         for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
             if(i < customRecipes.size()){
                 CustomRecipe recipe = customRecipes.get(i);
-                api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1]), new HoverEvent(recipe.getResult())));
+                api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1]), new HoverEvent(recipe.getCustomResult())));
             }else{
                 api.sendPlayerMessage(player, "");
             }

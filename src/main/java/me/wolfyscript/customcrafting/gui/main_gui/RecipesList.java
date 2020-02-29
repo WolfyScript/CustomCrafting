@@ -91,53 +91,65 @@ public class RecipesList extends ExtendedGuiWindow {
                     item++;
                 }
             } else {
-                List<Recipe> recipes = new ArrayList<>();
                 if (namespace.equalsIgnoreCase("minecraft")) {
+                    List<Recipe> recipes = new ArrayList<>();
                     recipes.addAll(CustomCrafting.getRecipeHandler().getVanillaRecipes());
-                } else {
-                    recipes.addAll(CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace));
-                }
-                if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
-                    Iterator<Recipe> recipeIterator = recipes.iterator();
-                    while (recipeIterator.hasNext()) {
-                        Recipe recipe = recipeIterator.next();
-                        if (recipe instanceof CustomRecipe) {
-                            boolean valid = false;
-                            for (CustomItem item : ((CustomRecipe<RecipeConfig>) recipe).getCustomResults()) {
-                                if (knowledgeBook.getItemCategory().isValid(item.getType())) {
-                                    valid = true;
-                                    break;
-                                }
-                            }
-                            if (!valid) {
-                                recipeIterator.remove();
-                            }
-                        } else {
-                            if (!knowledgeBook.getItemCategory().isValid(recipe.getResult().getType())) {
+                    if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
+                        Iterator<Recipe> recipeIterator = recipes.iterator();
+                        while (recipeIterator.hasNext()) {
+                            if (!knowledgeBook.getItemCategory().isValid(recipeIterator.next().getResult().getType())) {
                                 recipeIterator.remove();
                             }
                         }
                     }
-                }
-
-                maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
-
-                if (currentPage >= maxPages) {
-                    currentPage = 0;
-                }
-                int item = 0;
-                for (int i = 45 * currentPage; item < 45 && i < recipes.size(); i++) {
-                    Recipe recipe = recipes.get(i);
-                    RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
-                    if (recipe instanceof CustomRecipe) {
-                        button.setRecipe(event.getGuiHandler(), recipe);
-                    } else if (recipe instanceof Keyed) {
-                        button.setRecipe(event.getGuiHandler(), recipe);
+                    maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
+                    if (currentPage >= maxPages) {
+                        currentPage = 0;
                     }
-                    event.setButton(9 + item, button);
-                    item++;
+                    int item = 0;
+                    for (int i = 45 * currentPage; item < 45 && i < recipes.size(); i++) {
+                        Recipe recipe = recipes.get(i);
+                        RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
+                        if (recipe instanceof Keyed) {
+                            button.setRecipe(event.getGuiHandler(), recipe);
+                        }
+                        event.setButton(9 + item, button);
+                        item++;
+                    }
+                } else {
+                    List<CustomRecipe> recipes = new ArrayList<>();
+                    recipes.addAll(CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace));
+                    if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
+                        Iterator<CustomRecipe> recipeIterator = recipes.iterator();
+                        while (recipeIterator.hasNext()) {
+                            CustomRecipe recipe = recipeIterator.next();
+                            if (recipe instanceof CustomRecipe) {
+                                boolean valid = false;
+                                for (CustomItem item : ((CustomRecipe<RecipeConfig>) recipe).getCustomResults()) {
+                                    if (knowledgeBook.getItemCategory().isValid(item.getType())) {
+                                        valid = true;
+                                        break;
+                                    }
+                                }
+                                if (!valid) {
+                                    recipeIterator.remove();
+                                }
+                            }
+                        }
+                    }
+                    maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
+                    if (currentPage >= maxPages) {
+                        currentPage = 0;
+                    }
+                    int item = 0;
+                    for (int i = 45 * currentPage; item < 45 && i < recipes.size(); i++) {
+                        CustomRecipe recipe = recipes.get(i);
+                        RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
+                        button.setCustomRecipe(event.getGuiHandler(), recipe);
+                        event.setButton(9 + item, button);
+                        item++;
+                    }
                 }
-                //TODO: VANILLA RECIPES!
             }
             if (currentPage != 0) {
                 event.setButton(2, "previous_page");

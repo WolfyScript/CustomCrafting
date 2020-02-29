@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.ShapedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements ShapedCraftingRecipe<EliteCraftConfig> {
 
@@ -42,20 +41,6 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements Shape
             requiredGridSize = 6;
         }
 
-    }
-
-    @Override
-    public void load() {
-    }
-
-    @Override
-    public ShapedEliteCraftRecipe save(ConfigAPI configAPI, String namespace, String key) {
-        return null;
-    }
-
-    @Override
-    public ShapedEliteCraftRecipe save(EliteCraftConfig config) {
-        return null;
     }
 
     @Override

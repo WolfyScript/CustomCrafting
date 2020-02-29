@@ -4,8 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiWindow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +54,6 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
         }else{
             config.getShape();
         }
-    }
-
-    @Override
-    public void load() {
     }
 
     @Override
@@ -129,5 +128,26 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
     @Override
     public boolean isHidden() {
         return hidden;
+    }
+
+    @Override
+    public RecipeType getRecipeType() {
+        return RecipeType.ELITE_WORKBENCH;
+    }
+
+    @Override
+    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+        event.setButton(6, "back");
+        if (!getIngredients().isEmpty()) {
+            event.setButton(24, "recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+            int gridSize = 6;
+            int startSlot = 0;
+            int invSlot;
+            for (int i = 0; i < gridSize * gridSize; i++) {
+                invSlot = startSlot + i + (i / gridSize) * 3;
+                event.setButton(invSlot, "recipe_book", "ingredient.container_" + invSlot);
+            }
+            event.setButton(25, "recipe_book", "ingredient.container_25");
+        }
     }
 }

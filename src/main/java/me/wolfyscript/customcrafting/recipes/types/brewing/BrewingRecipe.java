@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.recipes.types.grindstone;
+package me.wolfyscript.customcrafting.recipes.types.brewing;
 
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -8,33 +8,32 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
-public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
+public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
 
     private boolean exactMeta, hidden;
-
-    private GrindstoneConfig config;
     private String id;
     private String group;
-
-    private List<CustomItem> inputTop, inputBottom, result;
-    private float xp;
     private RecipePriority priority;
     private Conditions conditions;
+    private BrewingConfig config;
 
-    public GrindstoneRecipe(GrindstoneConfig config) {
-        this.result = config.getResult();
-        this.id = config.getId();
+    private List<CustomItem> ingredient, allowedItems;
+    private int fuelCost;
+
+    public BrewingRecipe(BrewingConfig config) {
         this.config = config;
+        this.id = config.getId();
+        this.group = config.getGroup();
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
-        this.inputTop = config.getInputTop();
-        this.inputBottom = config.getInputBottom();
         this.conditions = config.getConditions();
         this.hidden = config.isHidden();
-        this.group = config.getGroup();
-        this.xp = config.getXP();
+        this.ingredient = config.getIngredient();
+        this.allowedItems = config.getAllowedItems();
+        this.fuelCost = config.getFuelCost();
     }
 
     @Override
@@ -44,7 +43,7 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
 
     @Override
     public RecipeType getRecipeType() {
-        return RecipeType.GRINDSTONE;
+        return RecipeType.BREWING;
     }
 
     @Override
@@ -52,9 +51,21 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
         return group;
     }
 
+    /*
+    Always returns null because this kind of recipe doesn't contain any result items!
+     */
     @Override
     public List<CustomItem> getCustomResults() {
-        return result;
+        return null;
+    }
+
+    /*
+    Always returns null because this kind of recipe doesn't contain any result items!
+     */
+    @Nullable
+    @Override
+    public CustomItem getCustomResult() {
+        return null;
     }
 
     @Override
@@ -63,7 +74,7 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
     }
 
     @Override
-    public GrindstoneConfig getConfig() {
+    public BrewingConfig getConfig() {
         return config;
     }
 
@@ -77,33 +88,32 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
         return conditions;
     }
 
-    public List<CustomItem> getInputTop() {
-        return inputTop;
-    }
-
-    public List<CustomItem> getInputBottom() {
-        return inputBottom;
-    }
-
     @Override
     public boolean isHidden() {
         return hidden;
     }
 
-    public float getXp() {
-        return xp;
+    public int getFuelCost() {
+        return fuelCost;
+    }
+
+    public List<CustomItem> getIngredient() {
+        return ingredient;
+    }
+
+    public List<CustomItem> getAllowedItems() {
+        return allowedItems;
     }
 
     @Override
     public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
-        event.setButton(0, "back");
-        event.setButton(11, "recipe_book", "ingredient.container_11");
-        event.setButton(12, "none", "glass_green");
-        event.setButton(21, "none", "glass_green");
-        event.setButton(22, "recipe_book", "grindstone");
-        event.setButton(23, "none", "glass_green");
-        event.setButton(24, "recipe_book", "ingredient.container_24");
-        event.setButton(29, "recipe_book", "ingredient.container_29");
-        event.setButton(30, "none", "glass_green");
+        //TODO MENU
+
+
     }
+
+    public enum Action {
+
+    }
+
 }

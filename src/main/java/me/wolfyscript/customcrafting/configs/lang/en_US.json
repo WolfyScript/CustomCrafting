@@ -505,6 +505,26 @@
                 ]
               }
             }
+          },
+          "knowledgebook": {
+            "workbench_filter_button": {
+              "enabled": {
+                "name": "&6Show Workbench Filter",
+                "lore": [
+                  "&7Shows the workbench filter button",
+                  "&7inside of the knowledgebook",
+                  "&7[&aClick&7] Hide Workbench Filter"
+                ]
+              },
+              "disabled": {
+                "name": "&6Hide Workbench Filter",
+                "lore": [
+                  "&7Hides the workbench filter button",
+                  "&7inside of the knowledgebook",
+                  "&7[&aClick&7] Show Workbench Filter"
+                ]
+              }
+            }
           }
         }
       }
@@ -2257,6 +2277,18 @@
       "recipe_book": {
         "gui_name": "&8&lRecipe knowledge Book",
         "items": {
+          "next_recipe": {
+            "name": "&7&l» Next",
+            "lore": [
+              "&ePage &7%page%&e/&7%max_pages%"
+            ]
+          },
+          "previous_recipe": {
+            "name": "&7&l« Previous",
+            "lore": [
+              "&ePage &7%page%&e/&7%max_pages%"
+            ]
+          }
         }
       }
     },

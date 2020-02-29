@@ -5,24 +5,32 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.Button;
 import me.wolfyscript.utilities.api.inventory.button.ButtonType;
-import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class IngredientContainerButton extends Button {
 
-    private HashMap<GuiHandler, CustomRecipe> recipes = new HashMap<>();
+    private HashMap<GuiHandler, List<CustomItem>> variantsMap = new HashMap<>();
+    private HashMap<GuiHandler, Integer> timings = new HashMap<>();
+    private HashMap<GuiHandler, Integer> recipeSlots = new HashMap<>();
+
+    private HashMap<GuiHandler, BukkitTask> tasks = new HashMap<>();
 
     public IngredientContainerButton(int slot) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
@@ -38,33 +46,104 @@ public class IngredientContainerButton extends Button {
         //NOT NEEDED
     }
 
+    public static void resetButtons(GuiHandler guiHandler) {
+        GuiCluster cluster = WolfyUtilities.getAPI(CustomCrafting.getInst()).getInventoryAPI().getGuiCluster("recipe_book");
+        for (int i = 0; i < 45; i++) {
+            IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
+            if (button.getVariantsMap(guiHandler) != null) {
+                if (button.getTask(guiHandler) != null) {
+                    button.getTask(guiHandler).cancel();
+                    button.setTask(guiHandler, null);
+                }
+                button.setVariants(guiHandler, null);
+                button.setTiming(guiHandler, 0);
+            }
+        }
+    }
+
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
         KnowledgeBook book = cache.getKnowledgeBook();
-        book.setCustomRecipe(getRecipe(guiHandler));
+        CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
+        List<CustomRecipe> recipes = CustomCrafting.getRecipeHandler().getRecipes(customItem);
+        recipes.remove(book.getCurrentRecipe());
+        if (!recipes.isEmpty()) {
+            GuiCluster cluster = WolfyUtilities.getAPI(CustomCrafting.getInst()).getInventoryAPI().getGuiCluster("recipe_book");
+            for (int i = 0; i < 45; i++) {
+                IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
+                if (button.getVariantsMap(guiHandler) != null) {
+                    if (button.getTask(guiHandler) != null) {
+                        button.getTask(guiHandler).cancel();
+                        button.setTask(guiHandler, null);
+                    }
+                    button.setVariants(guiHandler, null);
+                    button.setTiming(guiHandler, 0);
+                }
+            }
+            book.setSubFolder(book.getSubFolder() + 1);
+            book.setSubFolderPage(0);
+            book.getResearchItems().add(customItem);
+            book.setSubFolderRecipes(recipes);
+            book.applyRecipeToButtons(guiHandler, recipes.get(0));
+        }
         return true;
     }
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        CustomRecipe recipe = getRecipe(guiHandler);
-        if (recipe != null) {
-            ItemBuilder itemB = new ItemBuilder(recipe.getResult());
-            if (recipe.getResult().getType().equals(Material.AIR)) {
-                itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
-            }
-            itemB.addLoreLine("").addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$items.recipe_book.lores.click$")));
-            inventory.setItem(slot, itemB.create());
+        List<CustomItem> variants = getVariantsMap(guiHandler);
+        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(getTiming(guiHandler)));
+        if (getTask(guiHandler) == null) {
+            setTask(guiHandler, Bukkit.getScheduler().runTaskTimerAsynchronously(guiHandler.getApi().getPlugin(), () -> {
+                if (player != null && inventory != null && slot < inventory.getSize()) {
+                    if (!variants.isEmpty()) {
+                        int variant = getTiming(guiHandler);
+                        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
+                        if (++variant < variants.size()) {
+                            setTiming(guiHandler, variant);
+                        } else {
+                            setTiming(guiHandler, 0);
+                        }
+                    }
+                }
+            }, 1, 20));
         }
     }
 
-    public CustomRecipe getRecipe(GuiHandler guiHandler) {
-        return recipes.getOrDefault(guiHandler, null);
+    public void setTiming(GuiHandler guiHandler, int timing) {
+        timings.put(guiHandler, timing);
     }
 
-    public void setRecipe(GuiHandler guiHandler, CustomRecipe recipe) {
-        recipes.put(guiHandler, recipe);
+    public int getTiming(GuiHandler guiHandler) {
+        return timings.getOrDefault(guiHandler, 0);
     }
 
+    public List<CustomItem> getVariantsMap(GuiHandler guiHandler) {
+        return variantsMap.getOrDefault(guiHandler, new ArrayList<>());
+    }
+
+    public void setVariants(GuiHandler guiHandler, List<CustomItem> variants) {
+        if (variants != null) {
+            Iterator<CustomItem> iterator = variants.iterator();
+            while (iterator.hasNext()) {
+                CustomItem customItem = iterator.next();
+                if (!customItem.hasPermission()) {
+                    continue;
+                }
+                if (!guiHandler.getPlayer().hasPermission(customItem.getPermission())) {
+                    iterator.remove();
+                }
+            }
+        }
+        this.variantsMap.put(guiHandler, variants);
+    }
+
+    public void setTask(GuiHandler guiHandler, BukkitTask task) {
+        tasks.put(guiHandler, task);
+    }
+
+    public BukkitTask getTask(GuiHandler guiHandler) {
+        return tasks.get(guiHandler);
+    }
 }

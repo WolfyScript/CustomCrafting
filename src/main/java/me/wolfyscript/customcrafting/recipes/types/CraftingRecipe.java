@@ -45,8 +45,6 @@ public interface CraftingRecipe<T extends CraftConfig> extends CustomRecipe<T> {
         return totalAmount;
     }
 
-    void load();
-
     void setResult(List<CustomItem> result);
 
     void setIngredients(Map<Character, List<CustomItem>> ingredients);

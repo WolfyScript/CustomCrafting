@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.ShapedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements ShapedCraftingRecipe<AdvancedCraftConfig> {
 
@@ -30,20 +29,6 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements ShapedC
         this.mirrorHorizontal = config.mirrorHorizontal();
         this.mirrorVertical = config.mirrorVertical();
         this.mirrorRotation = config.mirrorRotation();
-    }
-
-    @Override
-    public void load() {
-    }
-
-    @Override
-    public ShapedCraftRecipe save(ConfigAPI configAPI, String namespace, String key) {
-        return null;
-    }
-
-    @Override
-    public ShapedCraftRecipe save(AdvancedCraftConfig config) {
-        return null;
     }
 
     @Override
