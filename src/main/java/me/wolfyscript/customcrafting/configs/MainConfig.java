@@ -164,5 +164,4 @@ public class MainConfig extends Config {
         set("secret.hide_ads", hideAds);
     }
 
-
 }

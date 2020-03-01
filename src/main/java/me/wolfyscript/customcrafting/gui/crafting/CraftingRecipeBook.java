@@ -46,7 +46,7 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
             book.setRecipeItems(new ArrayList<>());
-            if (book.getSubFolder() <= 0) {
+            if (book.getSubFolder() == 0) {
                 guiHandler.openPreviousInv();
             } else {
                 book.stopTimerTask();
@@ -57,9 +57,9 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                     book.setSubFolderRecipes(CustomCrafting.getRecipeHandler().getRecipes(item));
                     book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
                     return true;
+                } else {
+                    book.setSubFolderRecipes(new ArrayList<>());
                 }
-                book.setSubFolderRecipes(new ArrayList<>());
-                book.applyRecipeToButtons(guiHandler, book.getCurrentRecipe());
             }
             return true;
         })));
