@@ -72,6 +72,14 @@ public class BrewingConfig extends RecipeConfig {
         }
     }
 
+    public int getBrewTime() {
+        return getInt("brew_time");
+    }
+
+    public void setBrewTime(int fuelCost) {
+        set("brew_time", fuelCost);
+    }
+
     public int getFuelCost() {
         return getInt("fuel_cost");
     }

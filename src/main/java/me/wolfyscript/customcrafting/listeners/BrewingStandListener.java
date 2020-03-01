@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
+import me.wolfyscript.utilities.api.utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,16 +18,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BrewingStandListener implements Listener {
 
     private WolfyUtilities api;
-    private HashMap<Location, Boolean> updateBrewingStands = new HashMap<>();
     private List<Location> activeBrewingStands = new ArrayList<>();
 
     public BrewingStandListener() {
@@ -44,30 +47,19 @@ public class BrewingStandListener implements Listener {
         if (event.getClickedInventory() instanceof BrewerInventory) {
             BrewerInventory inventory = (BrewerInventory) event.getClickedInventory();
             Player player = (Player) event.getWhoClicked();
-            InventoryAction action = event.getAction();
             Location location = inventory.getLocation();
-            System.out.println("Event is called! " + event.getSlot() + " Action: " + action);
 
-            updateBrewingStands.put(location, true);
             if (event.getSlot() != 4) {
                 final ItemStack cursor = event.getCursor(); //And the item in the cursor
                 final ItemStack currentItem = event.getCurrentItem(); //We want to get the item in the slot
                 //Place items
-                if (event.getClickedInventory() == null) {
-                    updateBrewingStands.put(location, false);
-                    return;
-                }
-                if (event.getClickedInventory().getType() != InventoryType.BREWING) {
-                    updateBrewingStands.put(location, false);
-                    return;
-                }
+                if (event.getClickedInventory() == null) return;
+                if (event.getClickedInventory().getType() != InventoryType.BREWING) return;
 
                 if (event.isRightClick()) {
                     //Dropping one item or pick up half
-                    if (event.getAction().equals(InventoryAction.PICKUP_HALF) || event.getAction().equals(InventoryAction.PICKUP_SOME)) {
-                        updateBrewingStands.put(location, false);
+                    if (event.getAction().equals(InventoryAction.PICKUP_HALF) || event.getAction().equals(InventoryAction.PICKUP_SOME))
                         return;
-                    }
                     //Dropping one item
                     if (ItemUtils.isAirOrNull(currentItem)) {
                         event.setCancelled(true);
@@ -91,7 +83,6 @@ public class BrewingStandListener implements Listener {
                 } else {
                     //Placing an item
                     if (ItemUtils.isAirOrNull(event.getCursor())) {
-                        updateBrewingStands.put(location, false);
                         return; //Make sure cursor contains item
                     }
                     if (!ItemUtils.isAirOrNull(currentItem)) {
@@ -118,7 +109,6 @@ public class BrewingStandListener implements Listener {
                     player.updateInventory();//And we update the inventory
                 }
             }
-            updateBrewingStands.put(location, false);
 
             if (event.getSlot() == 3) {
                 //Recipe Checker!
@@ -126,30 +116,43 @@ public class BrewingStandListener implements Listener {
                 final CustomItem potion1 = CustomItem.getByItemStack(inventory.getItem(1));
                 final CustomItem potion2 = CustomItem.getByItemStack(inventory.getItem(2));
 
-                BrewingStand brewingStand = (BrewingStand) location.getBlock().getState();
+                BrewingStand brewingStand = inventory.getHolder();
+
+                Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
+                Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
+                Field fuelLevel = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
+                getTileEntity.setAccessible(true);
+                brewTime.setAccessible(true);
 
                 if (!activeBrewingStands.contains(location)) {
                     if (brewingStand.getFuelLevel() > 0) {
-                        brewingStand.setFuelLevel(brewingStand.getFuelLevel() - 1);
-                        //Start brewing
-                        brewingStand.setBrewingTime(400);
-                        brewingStand.update();
-
-                        activeBrewingStands.add(location);
-                        BukkitTask task = Bukkit.getScheduler().runTaskTimer(CustomCrafting.getInst(), () -> {
-                            if (brewingStand.getBrewingTime() > 0) {
-                                brewingStand.setBrewingTime(brewingStand.getBrewingTime() - 1);
-                                if (!updateBrewingStands.get(location)) {
-                                    brewingStand.update();
+                        try {
+                            Object tileEntityObj = getTileEntity.invoke(brewingStand);
+                            brewTime.setInt(tileEntityObj, 400);
+                            fuelLevel.setInt(tileEntityObj, fuelLevel.getInt(tileEntityObj) - 1);
+                            activeBrewingStands.add(location);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            return;
+                        }
+                        AtomicInteger tick = new AtomicInteger(400);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                if (tick.get() > 0) {
+                                    try {
+                                        Object tileEntityObj = getTileEntity.invoke(brewingStand);
+                                        brewTime.setInt(tileEntityObj, tick.decrementAndGet());
+                                    } catch (IllegalAccessException | InvocationTargetException e) {
+                                        e.printStackTrace();
+                                        cancel();
+                                    }
+                                } else {
+                                    System.out.println("Finished");
+                                    activeBrewingStands.remove(location);
+                                    cancel();
                                 }
-                            } else {
-                                System.out.println("Finished");
                             }
-                        }, 2, 1);
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                            task.cancel();
-                            activeBrewingStands.remove(location);
-                        }, 403);
+                        }.runTaskTimerAsynchronously(CustomCrafting.getInst(), 2, 1);
                     }
                 }
             }

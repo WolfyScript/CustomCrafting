@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingConfig;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
@@ -46,6 +47,7 @@ public class TestCache extends CustomCache {
     private StonecutterConfig stonecutterConfig = new StonecutterConfig();
     private FurnaceConfig furnaceConfig = new FurnaceConfig();
     private GrindstoneConfig grindstoneConfig = new GrindstoneConfig();
+    private BrewingConfig brewingConfig = new BrewingConfig();
 
     public TestCache() {
         this.setting = Setting.MAIN_MENU;
@@ -203,6 +205,14 @@ public class TestCache extends CustomCache {
 
     public void resetGrindstoneConfig() {
         this.grindstoneConfig = new GrindstoneConfig();
+    }
+
+    public BrewingConfig getBrewingConfig() {
+        return brewingConfig;
+    }
+
+    public void resetBrewingConfig() {
+        this.brewingConfig = new BrewingConfig();
     }
 
     public SmokerConfig getSmokerConfig() {

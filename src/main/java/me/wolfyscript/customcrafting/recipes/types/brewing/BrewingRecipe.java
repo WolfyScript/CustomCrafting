@@ -1,5 +1,9 @@
 package me.wolfyscript.customcrafting.recipes.types.brewing;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -22,6 +26,7 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
 
     private List<CustomItem> ingredient, allowedItems;
     private int fuelCost;
+    private int brewTime;
 
     public BrewingRecipe(BrewingConfig config) {
         this.config = config;
@@ -34,6 +39,7 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
         this.ingredient = config.getIngredient();
         this.allowedItems = config.getAllowedItems();
         this.fuelCost = config.getFuelCost();
+        this.brewTime = config.getBrewTime();
     }
 
     @Override
@@ -108,7 +114,13 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
     @Override
     public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
         //TODO MENU
-
+        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
+        KnowledgeBook book = ((TestCache) event.getGuiHandler().getCustomCache()).getKnowledgeBook();
+        event.setButton(0, "back");
+        event.setButton(22, "recipe_book", "brewing.icon");
+        event.setButton(29, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        event.setButton(20, "recipe_book", "ingredient.container_25");
+        event.setButton(33, "recipe_book", "ingredient.container_34");
 
     }
 

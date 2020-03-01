@@ -67,7 +67,7 @@ public class MainMenu extends ExtendedGuiWindow {
                 return true;
             })));
             registerButton(new ActionButton("brewing", new ButtonState("brewing", Material.BREWING_STAND, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.BREWING);
+                ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.BREWING_STAND);
                 guiHandler.changeToInv("recipe_editor");
                 return true;
             })));

@@ -102,6 +102,7 @@ public class InventoryHandler {
         recipeCreator.registerGuiWindow(new GrindstoneCreator(invAPI));
         recipeCreator.registerGuiWindow(new WorkbenchCreator(invAPI));
         recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI));
+        recipeCreator.registerGuiWindow(new BrewingCreator(invAPI));
         recipeCreator.registerGuiWindow(new ConditionsMenu(invAPI));
         recipeCreator.registerGuiWindow(new VariantMenu(invAPI));
 
@@ -163,9 +164,7 @@ public class InventoryHandler {
             }
             return itemStack;
         })), api);
-        recipeBook.registerButton(new DummyButton("furnace", new ButtonState("furnace", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            return itemStack;
-        })), api);
+        recipeBook.registerButton(new DummyButton("furnace", new ButtonState("furnace", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> itemStack)), api);
 
         if(WolfyUtilities.hasVillagePillageUpdate()) {
             recipeBook.registerButton(new DummyButton("stonecutter", new ButtonState("stonecutter", Material.STONECUTTER)), api);

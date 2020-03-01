@@ -112,7 +112,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
             case WORKBENCH:
             case ELITE_WORKBENCH:
             case STONECUTTER:
-            case BREWING:
+            case BREWING_STAND:
             case GRINDSTONE:
             case CAULDRON:
             case ANVIL:

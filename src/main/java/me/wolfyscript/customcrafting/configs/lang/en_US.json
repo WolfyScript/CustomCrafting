@@ -2020,6 +2020,14 @@
           }
         }
       },
+      "brewing_stand": {
+        "gui_name": "&4&lCreator &7[&8Brewing Satnd&7]",
+        "items": {
+          "brewing_stand": {
+            "name": "&4"
+          }
+        }
+      },
       "variants": {
         "gui_name": "&8Variants",
         "gui_help": [
