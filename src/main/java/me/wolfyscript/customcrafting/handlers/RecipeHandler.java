@@ -11,6 +11,8 @@ import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingConfig;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
@@ -114,6 +116,7 @@ public class RecipeHandler {
                     loadConfig(folder.getName(), "campfire");
                     loadConfig(folder.getName(), "stonecutter");
                     loadConfig(folder.getName(), "grindstone");
+                    loadConfig(folder.getName(), "brewing");
                     loadConfig(folder.getName(), "elite_workbench");
                 }
             }
@@ -198,6 +201,9 @@ public class RecipeHandler {
                             break;
                         case "grindstone":
                             registerRecipe(new GrindstoneRecipe(new GrindstoneConfig(configAPI, subfolder, name)));
+                            break;
+                        case "brewing":
+                            registerRecipe(new BrewingRecipe(new BrewingConfig(configAPI, subfolder, name)));
                     }
                 } catch (Exception ex) {
                     ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
@@ -209,11 +215,11 @@ public class RecipeHandler {
     public void onSave() {
         CustomCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
         CustomCrafting.getConfigHandler().getConfig().save();
-        for(Particles particles : particlesList){
+        for (Particles particles : particlesList) {
             particles.setParticles();
             particles.save();
         }
-        for (ParticleEffects particleEffects : particleEffectsList){
+        for (ParticleEffects particleEffects : particleEffectsList) {
             particleEffects.setEffects();
             particleEffects.save();
         }
@@ -255,6 +261,8 @@ public class RecipeHandler {
                     migrateConfigToDB(dataBaseHandler, folder.getName(), "campfire");
                     migrateConfigToDB(dataBaseHandler, folder.getName(), "stonecutter");
                     migrateConfigToDB(dataBaseHandler, folder.getName(), "elite_workbench");
+                    migrateConfigToDB(dataBaseHandler, folder.getName(), "grindstone");
+                    migrateConfigToDB(dataBaseHandler, folder.getName(), "brewing");
                 }
             }
         }
@@ -302,6 +310,9 @@ public class RecipeHandler {
                                 break;
                             case "cauldron":
                                 dataBaseHandler.updateRecipe(new CauldronConfig(configAPI, key, name));
+                                break;
+                            case "brewing":
+                                dataBaseHandler.updateRecipe(new BrewingConfig(configAPI, key, name));
                         }
                     } catch (Exception ex) {
                         ChatUtils.sendRecipeItemLoadingError(key, name, type, ex);
@@ -445,6 +456,8 @@ public class RecipeHandler {
                 return new ArrayList<>(getCauldronRecipes());
             case "grindstone":
                 return new ArrayList<>(getGrindstoneRecipes());
+            case "brewing":
+                return new ArrayList<>(getBrewingRecipes());
 
         }
         return customRecipes;
@@ -485,7 +498,7 @@ public class RecipeHandler {
                 iterator.remove();
             }
         }
-        recipes.sort((o1, o2) -> 0);
+        recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
         return recipes;
     }
 
@@ -527,6 +540,10 @@ public class RecipeHandler {
 
     public List<GrindstoneRecipe> getGrindstoneRecipes() {
         return getRecipes(GrindstoneRecipe.class);
+    }
+
+    public List<BrewingRecipe> getBrewingRecipes() {
+        return getRecipes(BrewingRecipe.class);
     }
 
     /*
@@ -606,6 +623,18 @@ public class RecipeHandler {
         return recipes;
     }
 
+    public List<BrewingRecipe> getAvailableBrewingRecipes(Player player) {
+        List<BrewingRecipe> recipes = getAvailableRecipes(BrewingRecipe.class);
+        Iterator<BrewingRecipe> iterator = recipes.iterator();
+        while (iterator.hasNext()) {
+            BrewingRecipe recipe = iterator.next();
+            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
+                iterator.remove();
+            }
+        }
+        return recipes;
+    }
+
     public TreeMap<String, CustomRecipe> getRecipes() {
         return customRecipes;
     }
@@ -616,12 +645,12 @@ public class RecipeHandler {
     }
 
     public List<Recipe> getVanillaRecipes() {
-        if(allRecipes.isEmpty()){
+        if (allRecipes.isEmpty()) {
             Iterator<Recipe> iterator = Bukkit.recipeIterator();
             while (iterator.hasNext()) {
                 Recipe recipe = iterator.next();
-                if(recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || (WolfyUtilities.hasVillagePillageUpdate() && recipe instanceof CookingRecipe) || recipe instanceof FurnaceRecipe){
-                    if(recipe instanceof Keyed && ((Keyed) recipe).getKey().toString().startsWith("minecraft")){
+                if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || (WolfyUtilities.hasVillagePillageUpdate() && recipe instanceof CookingRecipe) || recipe instanceof FurnaceRecipe) {
+                    if (recipe instanceof Keyed && ((Keyed) recipe).getKey().toString().startsWith("minecraft")) {
                         allRecipes.add(recipe);
                     }
                 }
@@ -735,6 +764,13 @@ public class RecipeHandler {
                     cache.setCauldronConfig(((CauldronRecipe) recipe).getConfig());
                     return true;
                 }
+                return false;
+            case BREWING_STAND:
+                if (recipe instanceof BrewingRecipe) {
+                    cache.setBrewingConfig(((BrewingRecipe) recipe).getConfig());
+                    return true;
+                }
+
         }
         return false;
     }

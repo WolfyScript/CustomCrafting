@@ -2025,6 +2025,24 @@
         "items": {
           "brewing_stand": {
             "name": "&4"
+          },
+          "brewTime": {
+            "name": "&6Brew Time",
+            "lore": [
+              "&7Brew Time: &e%time% ticks",
+              "",
+              "&eThe time in ticks the recipe takes to finish. &4Max &c400 ticks"
+            ],
+            "message": "&eType in the brew time in ticks. &4Max &c400"
+          },
+          "fuelCost": {
+            "name": "&6Fuel Cost",
+            "lore": [
+              "&7Cost: &e%cost%",
+              "",
+              "&eFuel that is required and consumed for the recipe"
+            ],
+            "message": "&eType in the fuel cost. e.g. 2"
           }
         }
       },

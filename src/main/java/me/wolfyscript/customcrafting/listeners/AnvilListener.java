@@ -30,12 +30,9 @@ public class AnvilListener implements Listener {
     public void onCheck(PrepareAnvilEvent event) {
         Player player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
-        List<CustomAnvilRecipe> recipes = CustomCrafting.getRecipeHandler().getAnvilRecipes();
+        List<CustomAnvilRecipe> recipes = CustomCrafting.getRecipeHandler().getAvailableAnvilRecipes(player);
         recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
         for (CustomAnvilRecipe recipe : recipes) {
-            if(CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())){
-                continue;
-            }
             if (recipe.hasInputLeft()) {
                 boolean left = false;
                 if (inventory.getItem(0) != null) {

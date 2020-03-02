@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
@@ -111,50 +112,86 @@ public class BrewingStandListener implements Listener {
             }
 
             if (event.getSlot() == 3) {
-                //Recipe Checker!
-                final CustomItem potion0 = CustomItem.getByItemStack(inventory.getItem(0));
-                final CustomItem potion1 = CustomItem.getByItemStack(inventory.getItem(1));
-                final CustomItem potion2 = CustomItem.getByItemStack(inventory.getItem(2));
+                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                    //Recipe Checker!
+                    final CustomItem ingredient = CustomItem.getByItemStack(inventory.getItem(3));
+                    final CustomItem potion0 = CustomItem.getByItemStack(inventory.getItem(0));
+                    final CustomItem potion1 = CustomItem.getByItemStack(inventory.getItem(1));
+                    final CustomItem potion2 = CustomItem.getByItemStack(inventory.getItem(2));
 
-                BrewingStand brewingStand = inventory.getHolder();
+                    BrewingStand brewingStand = inventory.getHolder();
 
-                Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
-                Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
-                Field fuelLevel = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
-                getTileEntity.setAccessible(true);
-                brewTime.setAccessible(true);
+                    Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
+                    Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
+                    Field fuelLevelField = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
+                    getTileEntity.setAccessible(true);
+                    brewTime.setAccessible(true);
+                    fuelLevelField.setAccessible(true);
 
-                if (!activeBrewingStands.contains(location)) {
-                    if (brewingStand.getFuelLevel() > 0) {
-                        try {
-                            Object tileEntityObj = getTileEntity.invoke(brewingStand);
-                            brewTime.setInt(tileEntityObj, 400);
-                            fuelLevel.setInt(tileEntityObj, fuelLevel.getInt(tileEntityObj) - 1);
-                            activeBrewingStands.add(location);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            return;
-                        }
-                        AtomicInteger tick = new AtomicInteger(400);
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (tick.get() > 0) {
-                                    try {
-                                        Object tileEntityObj = getTileEntity.invoke(brewingStand);
-                                        brewTime.setInt(tileEntityObj, tick.decrementAndGet());
-                                    } catch (IllegalAccessException | InvocationTargetException e) {
-                                        e.printStackTrace();
-                                        cancel();
+                    try {
+                        Object tileEntityObj = getTileEntity.invoke(brewingStand);
+                        if (tileEntityObj != null) {
+                            int fuelLevel = fuelLevelField.getInt(tileEntityObj);
+
+                            //Check if recipe is correct
+                            BrewingRecipe brewingRecipe = null;
+                            for (BrewingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableBrewingRecipes(player)) {
+                                boolean valid = false;
+                                for (CustomItem customItem : recipe.getIngredient()) {
+                                    if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {
+                                        if (fuelLevel >= recipe.getFuelCost()) {
+                                            valid = true;
+                                        }
+                                        break;
                                     }
-                                } else {
-                                    System.out.println("Finished");
-                                    activeBrewingStands.remove(location);
-                                    cancel();
+                                }
+                                if (!valid) continue;
+                                brewingRecipe = recipe;
+                            }
+                            if (brewingRecipe != null) {
+                                brewTime.setInt(tileEntityObj, brewingRecipe.getBrewTime());
+                                fuelLevelField.setInt(tileEntityObj, fuelLevel - brewingRecipe.getFuelCost());
+
+                                if (!activeBrewingStands.contains(location)) {
+                                    if (brewingStand.getFuelLevel() > 0) {
+
+                                        AtomicInteger tick = new AtomicInteger(brewingRecipe.getBrewTime());
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                if (tick.get() > 0) {
+                                                    try {
+                                                        Object tileEntityObj = getTileEntity.invoke(brewingStand);
+                                                        if (tileEntityObj != null) {
+                                                            brewTime.setInt(tileEntityObj, tick.decrementAndGet());
+                                                        } else {
+                                                            System.out.println("BrewingStand removed!");
+                                                            activeBrewingStands.remove(location);
+                                                            cancel();
+                                                        }
+                                                    } catch (IllegalAccessException | InvocationTargetException e) {
+                                                        e.printStackTrace();
+                                                        activeBrewingStands.remove(location);
+                                                        cancel();
+                                                    }
+                                                } else {
+                                                    System.out.println("Finished");
+                                                    activeBrewingStands.remove(location);
+                                                    cancel();
+                                                }
+                                            }
+                                        }.runTaskTimerAsynchronously(CustomCrafting.getInst(), 2, 1);
+                                    }
+                                    activeBrewingStands.add(location);
                                 }
                             }
-                        }.runTaskTimerAsynchronously(CustomCrafting.getInst(), 2, 1);
+                        }
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        return;
                     }
-                }
+
+
+                }, 2);
             }
         }
     }

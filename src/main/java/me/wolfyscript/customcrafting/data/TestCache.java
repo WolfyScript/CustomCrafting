@@ -263,6 +263,10 @@ public class TestCache extends CustomCache {
         this.stonecutterConfig = stonecutterConfig;
     }
 
+    public void setBrewingConfig(BrewingConfig brewingConfig) {
+        this.brewingConfig = brewingConfig;
+    }
+
     public void setCookingConfig(CookingConfig cookingConfig) {
         if (cookingConfig instanceof CampfireConfig) {
             setCampfireConfig((CampfireConfig) cookingConfig);
@@ -274,7 +278,6 @@ public class TestCache extends CustomCache {
             setBlastingConfig((BlastingConfig) cookingConfig);
         }
     }
-
 
     public RecipeConfig getRecipeConfig() {
         switch (getSetting()) {
@@ -294,6 +297,8 @@ public class TestCache extends CustomCache {
                 return getCauldronConfig();
             case GRINDSTONE:
                 return getGrindstoneConfig();
+            case BREWING_STAND:
+                return getBrewingConfig();
         }
         return null;
     }

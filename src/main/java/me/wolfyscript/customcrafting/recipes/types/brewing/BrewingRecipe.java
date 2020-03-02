@@ -103,6 +103,10 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
         return fuelCost;
     }
 
+    public int getBrewTime() {
+        return brewTime;
+    }
+
     public List<CustomItem> getIngredient() {
         return ingredient;
     }

@@ -8,6 +8,8 @@ import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingConfig;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
@@ -212,6 +214,8 @@ public class DataBaseHandler {
                             return new GrindstoneRecipe(new GrindstoneConfig(data, configAPI, namespace, key));
                         case "cauldron":
                             return new CauldronRecipe(new CauldronConfig(data, configAPI, namespace, key));
+                        case "brewing":
+                            return new BrewingRecipe(new BrewingConfig(data, configAPI, namespace, key));
                     }
                 } catch (Exception ex) {
                     ChatUtils.sendRecipeItemLoadingError(namespace, key, type, ex);

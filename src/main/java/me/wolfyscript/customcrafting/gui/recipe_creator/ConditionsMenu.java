@@ -167,6 +167,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                     values.add("conditions.permission");
                     values.add("conditions.elite_workbench");
                     break;
+                case BREWING_STAND:
                 case GRINDSTONE:
                     values.add("conditions.permission");
             }

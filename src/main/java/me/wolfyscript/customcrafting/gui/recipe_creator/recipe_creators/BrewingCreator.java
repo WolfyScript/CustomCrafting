@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingContainerButton;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingConfig;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
@@ -112,7 +113,6 @@ public class BrewingCreator extends ExtendedGuiWindow {
             }
         })));
         registerButton(new DummyButton("brewing_stand", new ButtonState("brewing_stand", Material.BREWING_STAND)));
-
         registerButton(new ChatInputButton("brewTime", new ButtonState("brewTime", Material.CLOCK, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%time%", ((TestCache) guiHandler.getCustomCache()).getBrewingConfig().getBrewTime());
             return itemStack;
@@ -127,7 +127,22 @@ public class BrewingCreator extends ExtendedGuiWindow {
             ((TestCache) guiHandler.getCustomCache()).getBrewingConfig().setBrewTime(time <= 400 ? time : 400);
             return false;
         }));
-
+        registerButton(new ChatInputButton("fuelCost", new ButtonState("fuelCost", Material.BLAZE_POWDER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+            hashMap.put("%cost%", ((TestCache) guiHandler.getCustomCache()).getBrewingConfig().getFuelCost());
+            return itemStack;
+        }), (guiHandler, player, s, args) -> {
+            int cost;
+            try {
+                cost = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                return true;
+            }
+            ((TestCache) guiHandler.getCustomCache()).getBrewingConfig().setFuelCost(cost);
+            return false;
+        }));
+        registerButton(new BrewingContainerButton(0));
+        registerButton(new BrewingContainerButton(1));
     }
 
     @EventHandler
@@ -143,14 +158,13 @@ public class BrewingCreator extends ExtendedGuiWindow {
             event.setButton(5, "priority");
             event.setButton(7, "exact_meta");
 
-            //event.setButton(11, "cauldron.container_0");
+            event.setButton(13, "brewing.container_0");
 
-            event.setButton(13, "brewTime");
+            event.setButton(22, "brewing_stand");
+            event.setButton(21, "brewTime");
 
-            event.setButton(20, "brewing_stand");
-
-            //event.setButton(23, "xp");
-            //event.setButton(25, "cauldron.container_1");
+            event.setButton(23, "fuelCost");
+            event.setButton(31, "brewing.container_1");
 
             event.setButton(44, "save");
         }
