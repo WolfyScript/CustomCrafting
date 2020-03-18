@@ -7,6 +7,6 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 public class KnowledgeBookCraftConfig extends CraftConfig {
 
     public KnowledgeBookCraftConfig(ConfigAPI configAPI) {
-        super(configAPI, "customcrafting", "workbench", "knowledge_book", "me/wolfyscript/customcrafting/configs/default_configs", "knowledge_book_recipe", CustomCrafting.getConfigHandler().getConfig().resetAdvancedWorkbenchRecipe(), "json");
+        super(configAPI, "customcrafting", "workbench", "knowledge_book", "me/wolfyscript/customcrafting/configs/default_configs", "knowledge_book_recipe", CustomCrafting.getConfigHandler().getConfig().resetAdvancedWorkbenchRecipe());
     }
 }

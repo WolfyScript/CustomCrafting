@@ -11,16 +11,12 @@ import java.util.Set;
 
 public class GrindstoneConfig extends RecipeConfig {
 
-    public GrindstoneConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        super(configAPI, folder, "grindstone", name, "grindstone", fileType);
+    public GrindstoneConfig(ConfigAPI configAPI, String folder, String name) {
+        super(configAPI, folder, "grindstone", name, "grindstone");
     }
 
     public GrindstoneConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "grindstone", "grindstone");
-    }
-
-    public GrindstoneConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, "json");
     }
 
     public GrindstoneConfig() {

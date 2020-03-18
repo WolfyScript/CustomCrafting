@@ -9,10 +9,6 @@ public class FurnaceConfig extends CookingConfig {
         super(configAPI, folder, "furnace", name, "furnace_config");
     }
 
-    public FurnaceConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        super(configAPI, folder, "furnace", name, "furnace_config", fileType);
-    }
-
     public FurnaceConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "furnace", "furnace_config");
     }

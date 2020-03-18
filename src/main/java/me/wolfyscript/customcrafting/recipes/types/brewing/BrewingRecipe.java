@@ -11,8 +11,9 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.InventoryUtils;
 
-import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
@@ -27,6 +28,8 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
     private List<CustomItem> ingredient, allowedItems;
     private int fuelCost;
     private int brewTime;
+    private int durationChange;
+    private int amplifierChange;
 
     public BrewingRecipe(BrewingConfig config) {
         this.config = config;
@@ -40,6 +43,8 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
         this.allowedItems = config.getAllowedItems();
         this.fuelCost = config.getFuelCost();
         this.brewTime = config.getBrewTime();
+        this.durationChange = config.getDurationChange();
+        this.amplifierChange = config.getAmplifierChange();
     }
 
     @Override
@@ -62,16 +67,7 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
      */
     @Override
     public List<CustomItem> getCustomResults() {
-        return null;
-    }
-
-    /*
-    Always returns null because this kind of recipe doesn't contain any result items!
-     */
-    @Nullable
-    @Override
-    public CustomItem getCustomResult() {
-        return null;
+        return getIngredient();
     }
 
     @Override
@@ -115,21 +111,32 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
         return allowedItems;
     }
 
+    public int getAmplifierChange() {
+        return amplifierChange;
+    }
+
+    public int getDurationChange() {
+        return durationChange;
+    }
+
     @Override
     public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
         //TODO MENU
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         KnowledgeBook book = ((TestCache) event.getGuiHandler().getCustomCache()).getKnowledgeBook();
         event.setButton(0, "back");
-        event.setButton(22, "recipe_book", "brewing.icon");
-        event.setButton(29, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        event.setButton(20, "recipe_book", "ingredient.container_25");
-        event.setButton(33, "recipe_book", "ingredient.container_34");
+        event.setButton(11, "recipe_book", "ingredient.container_25");
+        event.setButton(20, "recipe_book", "brewing.icon");
+
+        if (!InventoryUtils.isEmpty(new ArrayList<>(this.getAllowedItems()))) {
+            event.setButton(29, "recipe_book", "ingredient.container_34");
+        }
+        if (this.getDurationChange() > 0) {
+            event.setButton(23, "recipe_book", "brewing.potion_duration");
+        }
+        if (this.getAmplifierChange() > 0) {
+            event.setButton(25, "recipe_book", "brewing.potion_amplifier");
+        }
 
     }
-
-    public enum Action {
-
-    }
-
 }
