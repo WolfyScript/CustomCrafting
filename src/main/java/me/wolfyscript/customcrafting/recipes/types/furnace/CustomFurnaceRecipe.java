@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types.furnace;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -51,6 +51,21 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     }
 
     @Override
+    public void load() {
+
+    }
+
+    @Override
+    public CustomFurnaceRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
+
+    @Override
+    public CustomFurnaceRecipe save(FurnaceConfig config) {
+        return null;
+    }
+
+    @Override
     public String getId() {
         return id;
     }
@@ -73,10 +88,5 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     @Override
     public boolean isHidden() {
         return hidden;
-    }
-
-    @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.FURNACE;
     }
 }

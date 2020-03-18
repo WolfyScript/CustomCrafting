@@ -3,23 +3,25 @@ package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.Button;
+import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class RecipeBookContainerButton extends Button {
 
-    private HashMap<GuiHandler, CustomItem> recipes = new HashMap<>();
+    private HashMap<GuiHandler, CustomRecipe> recipes = new HashMap<>();
 
     public RecipeBookContainerButton(int slot) {
         super("recipe_book.container_" + slot, null);
@@ -28,40 +30,55 @@ public class RecipeBookContainerButton extends Button {
 
     @Override
     public void init(GuiWindow guiWindow) {
+
     }
 
     @Override
     public void init(String s, WolfyUtilities wolfyUtilities) {
+
     }
 
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
-        RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
         KnowledgeBook book = cache.getKnowledgeBook();
-        CustomItem customItem = getRecipeItem(guiHandler);
-        List<CustomRecipe> recipes = recipeHandler.getRecipes(customItem);
-        recipes.remove(book.getCurrentRecipe());
-        if (!recipes.isEmpty()) {
-            book.setSubFolder(1);
-            book.setSubFolderPage(0);
-            book.getResearchItems().add(customItem);
-            book.setSubFolderRecipes(recipes);
-            book.applyRecipeToButtons(guiHandler, recipes.get(0));
-        }
+        book.setCustomRecipe(getRecipe(guiHandler));
         return true;
     }
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        inventory.setItem(slot, getRecipeItem(guiHandler).getRealItem());
+        CustomRecipe recipe = getRecipe(guiHandler);
+        if (recipe != null) {
+            ItemBuilder itemB;
+            if(recipe instanceof CustomAnvilRecipe){
+                if (((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+                    itemB = new ItemBuilder(recipe.getCustomResult().getRealItem().getRealItem());
+                } else if (((CustomAnvilRecipe) recipe).hasInputLeft()) {
+                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputLeft().get(0).getRealItem());
+                } else if (((CustomAnvilRecipe) recipe).hasInputRight()) {
+                    itemB = new ItemBuilder(((CustomAnvilRecipe) recipe).getInputRight().get(0).getRealItem());
+
+                } else {
+                    itemB = new ItemBuilder(Material.STONE);
+                    itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
+                }
+            } else {
+                itemB = new ItemBuilder(recipe.getCustomResult().getRealItem());
+                if (recipe.getResult().getType().equals(Material.AIR)) {
+                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
+                }
+            }
+            itemB.addLoreLine("").addLoreLine(CustomCrafting.getApi().getLanguageAPI().replaceColoredKeys("$inventories.recipe_book.global_items.lores.click$"));
+            inventory.setItem(slot, itemB.create());
+        }
     }
 
-    public CustomItem getRecipeItem(GuiHandler guiHandler) {
+    public CustomRecipe getRecipe(GuiHandler guiHandler) {
         return recipes.getOrDefault(guiHandler, null);
     }
 
-    public void setRecipeItem(GuiHandler guiHandler, CustomItem item) {
-        recipes.put(guiHandler, item);
+    public void setRecipe(GuiHandler guiHandler, CustomRecipe recipe) {
+        recipes.put(guiHandler, recipe);
     }
 }

@@ -109,7 +109,7 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(0, "settings");
             event.setButton(8, "none", "gui_help");
 
-            if (!CustomCrafting.getConfigHandler().getConfig().hideAds()) {
+            if (!event.getPlayer().hasPermission("customcrafting.hide_ads")) {
                 event.setButton(4, "none", "patreon");
                 event.setButton(39, "none", "instagram");
                 event.setButton(40, "none", "youtube");

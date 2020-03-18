@@ -67,7 +67,7 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ToggleButton("pretty_printing", false, new ButtonState("pretty_printing.disabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("pretty_printing", new ButtonState("pretty_printing.disabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
             return true;
         }), new ButtonState("pretty_printing.enabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -75,10 +75,10 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ToggleButton("advanced_workbench", false, new ButtonState("advanced_workbench.disabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("advanced_workbench", new ButtonState("advanced_workbench.enabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
             return true;
-        }), new ButtonState("advanced_workbench.enabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState("advanced_workbench.disabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
             return true;
         })));
@@ -129,7 +129,7 @@ public class Settings extends ExtendedGuiWindow {
             }
         })));
 
-        registerButton(new ToggleButton("debug", false, new ButtonState("debug.disabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("debug", new ButtonState("debug.disabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getConfigHandler().getConfig().set("debug", true);
             return true;
         }), new ButtonState("debug.enabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -137,19 +137,11 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ToggleButton("creator.reset_after_save", false, new ButtonState("creator.reset_after_save.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("creator.reset_after_save", new ButtonState("creator.reset_after_save.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
             return true;
         }), new ButtonState("creator.reset_after_save.enabled", WolfyUtilities.getSkullViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
-            return true;
-        })));
-
-        registerButton(new ToggleButton("knowledgebook.workbench_filter_button", false, new ButtonState("knowledgebook.workbench_filter_button.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setWorkbenchFilter(true);
-            return true;
-        }), new ButtonState("knowledgebook.workbench_filter_button.enabled", WolfyUtilities.getSkullViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setWorkbenchFilter(false);
             return true;
         })));
     }
@@ -174,8 +166,7 @@ public class Settings extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
             ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
             ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
-            ((ToggleButton) event.getGuiWindow().getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
-            ((ToggleButton) event.getGuiWindow().getButton("knowledgebook.workbench_filter_button")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().workbenchFilter());
+            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
 
             event.setButton(0, "none", "back");
 
@@ -190,7 +181,6 @@ public class Settings extends ExtendedGuiWindow {
                 event.setButton(12, "advanced_workbench");
                 event.setButton(13, "language");
                 event.setButton(14, "creator.reset_after_save");
-                event.setButton(15, "knowledgebook.workbench_filter_button");
             }
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
                 event.setButton(35, "debug");

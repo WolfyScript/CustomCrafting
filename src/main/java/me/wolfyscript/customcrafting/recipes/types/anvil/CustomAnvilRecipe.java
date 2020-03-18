@@ -1,13 +1,13 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
@@ -74,6 +74,41 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
         this.conditions = new Conditions();
     }
 
+    public CustomAnvilRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        AnvilConfig config;
+        if (CustomCrafting.hasDataBaseHandler()) {
+            config = new AnvilConfig("{}", configAPI, namespace, key);
+        } else {
+            config = new AnvilConfig(configAPI, namespace, key);
+        }
+        return save(config);
+    }
+
+    @Override
+    public CustomAnvilRecipe save(AnvilConfig config) {
+        config.setBlockEnchant(isBlockEnchant());
+        config.setBlockRename(isBlockRename());
+        config.setBlockRepairing(isBlockRepair());
+        config.setExactMeta(isExactMeta());
+        config.setRepairCostMode(getRepairCostMode());
+        config.setRepairCost(getRepairCost());
+        config.setPriority(getPriority());
+        config.setMode(getMode());
+        config.setResult(getCustomResults());
+        config.setDurability(getDurability());
+        config.setInputLeft(getInputLeft());
+        config.setInputRight(getInputRight());
+        config.setConditions(getConditions());
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateRecipe(config);
+        } else {
+            config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        this.config = config;
+        this.id = config.getId();
+        return this;
+    }
+
     @Override
     public String getId() {
         return id;
@@ -91,6 +126,10 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
     @Override
     public RecipePriority getPriority() {
         return priority;
+    }
+
+    @Override
+    public void load() {
     }
 
     @Override
@@ -214,6 +253,12 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
 
     @Override
     @Deprecated
+    public ItemStack getResult() {
+        return ingredients.getOrDefault(2, Collections.singletonList(new CustomItem(Material.AIR))).get(0);
+    }
+
+    @Override
+    @Deprecated
     public String getGroup() {
         return "";
     }
@@ -256,32 +301,5 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
     @Override
     public boolean isHidden() {
         return hidden;
-    }
-
-    @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.ANVIL;
-    }
-
-    @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
-        event.setButton(0, "back");
-        event.setButton(10, "recipe_book", "ingredient.container_10");
-        event.setButton(13, "recipe_book", "ingredient.container_13");
-        event.setButton(19, "none", "glass_green");
-        event.setButton(22, "none", "glass_green");
-        event.setButton(28, "none", "glass_green");
-        event.setButton(29, "none", "glass_green");
-        event.setButton(30, "none", "glass_green");
-        event.setButton(32, "none", "glass_green");
-        event.setButton(33, "none", "glass_green");
-        if (getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-            event.setButton(31, "recipe_book", "anvil.result");
-        } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-            event.setButton(31, "recipe_book", "anvil.durability");
-        } else {
-            event.setButton(31, "recipe_book", "anvil.none");
-        }
-        event.setButton(34, "recipe_book", "ingredient.container_34");
     }
 }

@@ -51,6 +51,7 @@ public class CustomCrafting extends JavaPlugin {
     « 174
     » 175
      */
+
     private static Plugin instance;
     private static List<PlayerStatistics> playerStatisticsList = new ArrayList<>();
     private static WolfyUtilities api;
@@ -62,6 +63,9 @@ public class CustomCrafting extends JavaPlugin {
     private static Cauldrons cauldrons = null;
 
     private static String currentVersion;
+
+    private static boolean premiumPlus = false;
+    private static boolean premium = true;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
@@ -133,9 +137,6 @@ public class CustomCrafting extends JavaPlugin {
 
         api.setInventoryAPI(inventoryAPI);
 
-        boolean premium = true;
-        boolean premiumPlus = false;
-
         if (!currentVersion.endsWith(".0")) {
             premiumPlus = true;
         }
@@ -178,12 +179,12 @@ public class CustomCrafting extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new CraftListener(api), this);
             getServer().getPluginManager().registerEvents(new BlockListener(api), this);
             getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
+            getServer().getPluginManager().registerEvents(new WorkbenchContents(), this);
             getServer().getPluginManager().registerEvents(new AnvilListener(), this);
             getServer().getPluginManager().registerEvents(new EnchantListener(), this);
             getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
             getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
             getServer().getPluginManager().registerEvents(new GrindStoneListener(api), this);
-            getServer().getPluginManager().registerEvents(new BrewingStandListener(), this);
 
             CommandCC commandCC = new CommandCC();
             PluginCommand command = getServer().getPluginCommand("customcrafting");

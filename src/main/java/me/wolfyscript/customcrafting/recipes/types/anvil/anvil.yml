@@ -1,0 +1,45 @@
+repair_cost:
+  #The cost of this recipe
+  amount: 0
+  #If the repair cost should be applied to the results Meta
+  apply_to_result: false
+  #The mode in which the repair cost should be affected by the input.
+  #NONE: nothing will change. amount stays the same
+  #ADD: the repair cost of the input will be added
+  #MULTIPLY: the repair cost will be multiplied by the input repair cost
+  mode: NONE
+
+#Blocks repairing! Only if input_right is blank!
+block_repairing: false
+#Blocks the renaming of the item!
+block_rename: false
+#Blocks the enchanting of the item. Only useful if input_right if left blank!
+block_enchant: false
+
+#The order in which the recipes are checked!
+priority: NORMAL
+
+mode:
+  #DURABILITY (increases or decreases the durability of input_left and set it as the result)
+  durability: 1
+
+  #RESULT (Will always return this item! No matter which you put in the anvil!)
+
+#Each of the inputs can be left blank! So that means you can have both set, or you have either input_left or input_right set!
+#input_left=true, input_right=false:
+#   - The recipe is allowed when input_left contains the item(slot 0)!
+#
+#input_left=false, input_right=true:
+#   - The recipe is allowed if input_right contains the item(slot 1)!
+#   - The items in slot 0 are ignored!
+#
+#input_left=true, input_right=true:
+#   - The recipe is allowed if the input_left contains the item(slot 0) and input_right contains the item(slot 1)!
+
+#Supports multiple choices of items, so you don't need to create a recipe for each tool etc.!
+input_left:
+#multiple CustomItems possible
+
+#Also supports multiple choices!
+input_right:
+#same as for input_left

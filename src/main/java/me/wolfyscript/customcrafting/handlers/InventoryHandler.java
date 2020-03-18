@@ -11,9 +11,7 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -140,7 +138,7 @@ public class InventoryHandler {
         recipeBook.registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", Material.CRAFTING_TABLE)), api);
 
         recipeBook.registerButton(new DummyButton("anvil.durability", new ButtonState("anvil.durability", Material.ANVIL, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            hashMap.put("%var%", ((CustomAnvilRecipe) ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().getCurrentRecipe()).getDurability());
+            hashMap.put("%var%", ((CustomAnvilRecipe)((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().getCustomRecipe()).getDurability());
             return itemStack;
         })), api);
         recipeBook.registerButton(new DummyButton("anvil.result", new ButtonState("anvil.result", Material.ANVIL)), api);
@@ -148,16 +146,14 @@ public class InventoryHandler {
 
         recipeBook.registerButton(new DummyButton("cooking.icon", new ButtonState("cooking.icon", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> {
             KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-
-            RecipeType recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
-            itemStack.setType(Material.matchMaterial(recipeType.toString()));
-            hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
-            if (WolfyUtilities.hasVillagePillageUpdate()) {
-                CookingRecipe cookingRecipe = (CookingRecipe) knowledgeBook.getCurrentRecipe();
+            itemStack.setType(Material.matchMaterial(knowledgeBook.getSetting().toString()));
+            hashMap.put("%type%", "&7"+ StringUtils.capitalize(knowledgeBook.getSetting().getId().replace("_", " ")));
+            if (WolfyUtilities.hasVillagePillageUpdate()){
+                CookingRecipe cookingRecipe = (CookingRecipe) knowledgeBook.getCustomRecipe();
                 hashMap.put("%time%", cookingRecipe.getCookingTime());
                 hashMap.put("%xp%", cookingRecipe.getExperience());
-            } else {
-                FurnaceRecipe recipe = (FurnaceRecipe) knowledgeBook.getCurrentRecipe();
+            }else{
+                FurnaceRecipe recipe = (FurnaceRecipe) knowledgeBook.getCustomRecipe();
                 hashMap.put("%time%", recipe.getCookingTime());
                 hashMap.put("%xp%", recipe.getExperience());
             }
@@ -177,15 +173,11 @@ public class InventoryHandler {
             recipeBook.registerButton(new DummyButton("cauldron.water.disabled", new ButtonState("cauldron.water.disabled", Material.CAULDRON)), api);
             recipeBook.registerButton(new DummyButton("cauldron.water.enabled", new ButtonState("cauldron.water.enabled", WolfyUtilities.getSkullViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, guiHandler, player, itemStack, i, b) -> {
                 KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-                hashMap.put("%lvl%", ((CauldronRecipe) knowledgeBook.getCurrentRecipe()).getWaterLevel());
+                hashMap.put("%lvl%", ((CauldronRecipe) knowledgeBook.getCustomRecipe()).getWaterLevel());
                 return itemStack;
             })), api);
             recipeBook.registerButton(new DummyButton("cauldron.fire.disabled", new ButtonState("cauldron.fire.disabled", Material.FLINT)), api);
             recipeBook.registerButton(new DummyButton("cauldron.fire.enabled", new ButtonState("cauldron.fire.enabled", Material.FLINT_AND_STEEL)), api);
-        }
-
-        for (int i = 0; i < 45; i++) {
-            recipeBook.registerButton(new IngredientContainerButton(i), api);
         }
 
         GuiCluster craftingCluster = new GuiCluster();

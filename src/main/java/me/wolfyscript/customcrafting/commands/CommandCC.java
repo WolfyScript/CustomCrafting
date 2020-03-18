@@ -165,11 +165,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             }
                         }
                         break;
-                    case "hide_ads":
-                        if (ChatUtils.checkPerm(p, "customcrafting.cmd.hide_ads")) {
-                            CustomCrafting.getConfigHandler().getConfig().setHideAds(!CustomCrafting.getConfigHandler().getConfig().hideAds());
-                            api.sendPlayerMessage(p, "Set Hide Ads to: " + CustomCrafting.getConfigHandler().getConfig().hideAds());
-                        }
+                    case "getcustomitems":
+
                         break;
                 }
             }

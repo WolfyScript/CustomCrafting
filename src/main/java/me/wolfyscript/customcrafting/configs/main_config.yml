@@ -59,6 +59,3 @@ recipes:
   pretty_printing: true
   preferred_file_type: "json"
   disabled_recipes: []
-
-knowledgebook:
-  workbench_filter: true

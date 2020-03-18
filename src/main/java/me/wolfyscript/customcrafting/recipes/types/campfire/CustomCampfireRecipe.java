@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types.campfire;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.CampfireRecipe;
@@ -56,6 +56,21 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     }
 
     @Override
+    public void load() {
+
+    }
+
+    @Override
+    public CustomCampfireRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
+
+    @Override
+    public CustomCampfireRecipe save(CampfireConfig config) {
+        return null;
+    }
+
+    @Override
     public CampfireConfig getConfig() {
         return config;
     }
@@ -73,10 +88,5 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     @Override
     public boolean isHidden() {
         return hidden;
-    }
-
-    @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.CAMPFIRE;
     }
 }

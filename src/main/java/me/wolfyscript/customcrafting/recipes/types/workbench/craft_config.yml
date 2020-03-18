@@ -1,0 +1,17 @@
+# Crafting Recipe Config
+
+permissions: false
+advanced_workbench: false
+exactItemMeta: true
+priority: "NORMAL"
+group: ""
+shapeless: true
+shape:
+  - ""
+  - ""
+  - ""
+result:
+
+ingredients:
+
+

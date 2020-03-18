@@ -3,10 +3,8 @@ package me.wolfyscript.customcrafting.recipes.types.grindstone;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
 
 import java.util.List;
 
@@ -43,11 +41,6 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
     }
 
     @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.GRINDSTONE;
-    }
-
-    @Override
     public String getGroup() {
         return group;
     }
@@ -60,6 +53,21 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
     @Override
     public RecipePriority getPriority() {
         return priority;
+    }
+
+    @Override
+    public void load() {
+
+    }
+
+    @Override
+    public CustomRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
+
+    @Override
+    public CustomRecipe save(GrindstoneConfig config) {
+        return null;
     }
 
     @Override
@@ -92,18 +100,5 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
 
     public float getXp() {
         return xp;
-    }
-
-    @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
-        event.setButton(0, "back");
-        event.setButton(11, "recipe_book", "ingredient.container_11");
-        event.setButton(12, "none", "glass_green");
-        event.setButton(21, "none", "glass_green");
-        event.setButton(22, "recipe_book", "grindstone");
-        event.setButton(23, "none", "glass_green");
-        event.setButton(24, "recipe_book", "ingredient.container_24");
-        event.setButton(29, "recipe_book", "ingredient.container_29");
-        event.setButton(30, "none", "glass_green");
     }
 }

@@ -3,10 +3,8 @@ package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
@@ -53,6 +51,21 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
         return priority;
     }
 
+    @Override
+    public void load() {
+        //NO LOADING NEEDED!
+    }
+
+    @Override
+    public CustomRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
+
+    @Override
+    public CustomRecipe save(StonecutterConfig config) {
+        return null;
+    }
+
     public List<CustomItem> getSource() {
         return source;
     }
@@ -75,27 +88,5 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     @Override
     public boolean isHidden() {
         return hidden;
-    }
-
-    @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.STONECUTTER;
-    }
-
-    @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
-        event.setButton(0, "back");
-        //TODO STONECUTTER
-        event.setButton(29, "none", "glass_green");
-        event.setButton(33, "none", "glass_green");
-        event.setButton(38, "none", "glass_green");
-        event.setButton(39, "none", "glass_green");
-        event.setButton(40, "none", "glass_green");
-        event.setButton(41, "none", "glass_green");
-        event.setButton(42, "none", "glass_green");
-
-        event.setItem(20, getSource().get(0));
-        event.setButton(31, "recipe_book", "stonecutter");
-        event.setItem(24, getCustomResult().getRealItem());
     }
 }

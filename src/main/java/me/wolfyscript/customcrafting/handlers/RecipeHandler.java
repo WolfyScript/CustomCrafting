@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -34,7 +35,6 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecip
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -55,7 +55,7 @@ public class RecipeHandler {
 
     private List<Recipe> allRecipes = new ArrayList<>();
 
-    private TreeMap<String, CustomRecipe> customRecipes = new TreeMap<>();
+    private HashMap<String, CustomRecipe> customRecipes = new HashMap<>();
 
     private ArrayList<String> disabledRecipes = new ArrayList<>();
 
@@ -312,9 +312,9 @@ public class RecipeHandler {
     }
 
     public void registerRecipe(CustomRecipe recipe) {
-        if (recipe instanceof Recipe) {
+        if (!(recipe instanceof CraftingRecipe) && !(recipe instanceof CustomAnvilRecipe) && !(recipe instanceof CauldronRecipe) && !(recipe instanceof GrindstoneRecipe)) {
             api.sendDebugMessage("  add to Bukkit...");
-            Bukkit.addRecipe((Recipe) recipe);
+            Bukkit.addRecipe(recipe);
         }
         api.sendDebugMessage("  add to cache...");
         customRecipes.put(recipe.getId(), recipe);
@@ -322,7 +322,7 @@ public class RecipeHandler {
 
     public void injectRecipe(CustomRecipe recipe) {
         api.sendDebugMessage("Inject Recipe:");
-        if (recipe instanceof Recipe) {
+        if (!(recipe instanceof CraftingRecipe) && !(recipe instanceof CustomAnvilRecipe) && !(recipe instanceof CauldronRecipe)) {
             api.sendDebugMessage("  unregister old recipe:");
             unregisterRecipe(recipe);
         }
@@ -450,14 +450,8 @@ public class RecipeHandler {
         return customRecipes;
     }
 
-    public List<CustomRecipe> getRecipes(CustomItem result) {
-        List<CustomRecipe> recipeList = new ArrayList<>();
-        for (CustomRecipe recipe : customRecipes.values()) {
-            if (recipe.getCustomResults().contains(result)) {
-                recipeList.add(recipe);
-            }
-        }
-        return recipeList;
+    public List<CustomRecipe> getRecipes(Setting setting) {
+        return getRecipes(setting.toString().toLowerCase(Locale.ROOT));
     }
 
     //CRAFTING RECIPES
@@ -485,7 +479,6 @@ public class RecipeHandler {
                 iterator.remove();
             }
         }
-        recipes.sort((o1, o2) -> 0);
         return recipes;
     }
 
@@ -606,7 +599,7 @@ public class RecipeHandler {
         return recipes;
     }
 
-    public TreeMap<String, CustomRecipe> getRecipes() {
+    public HashMap<String, CustomRecipe> getRecipes() {
         return customRecipes;
     }
 

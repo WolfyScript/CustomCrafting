@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types.smoker;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
@@ -57,6 +57,21 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
     }
 
     @Override
+    public void load() {
+
+    }
+
+    @Override
+    public CustomSmokerRecipe save(ConfigAPI configAPI, String namespace, String key) {
+        return null;
+    }
+
+    @Override
+    public CustomSmokerRecipe save(SmokerConfig config) {
+        return null;
+    }
+
+    @Override
     public SmokerConfig getConfig() {
         return config;
     }
@@ -74,10 +89,5 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
     @Override
     public boolean isHidden() {
         return hidden;
-    }
-
-    @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.SMOKER;
     }
 }
