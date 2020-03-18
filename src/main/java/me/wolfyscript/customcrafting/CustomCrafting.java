@@ -65,7 +65,7 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private static boolean premiumPlus = false;
-    private static boolean premium = false;
+    private static boolean premium = true;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
