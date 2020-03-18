@@ -20,11 +20,17 @@ import java.util.List;
 
 public class PlayerListener implements Listener {
 
+    private CustomCrafting plugin;
+
+    public PlayerListener(CustomCrafting plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         WolfyUtilities api = CustomCrafting.getApi();
-        if (!CustomCrafting.isLoaded()) {
+        if (!plugin.isLoaded()) {
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg$");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg1$");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg2$");
@@ -43,11 +49,11 @@ public class PlayerListener implements Listener {
             CustomCrafting.renewPlayerStatistics(player);
         }
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
-            if (CustomCrafting.isOutdated()) {
+            if (plugin.isOutdated()) {
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
                 api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
             } else {
-                CustomCrafting.checkUpdate(player);
+                plugin.checkUpdate(player);
             }
         }
     }

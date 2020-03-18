@@ -22,6 +22,12 @@ import java.util.*;
 
 public class CommandCC implements CommandExecutor, TabCompleter {
 
+    private CustomCrafting customCrafting;
+
+    public CommandCC(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         WolfyUtilities api = CustomCrafting.getApi();
@@ -80,7 +86,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                             CustomCrafting.getConfigHandler().getConfig().save();
                             CustomCrafting.getRecipeHandler().onSave();
                             CustomCrafting.getConfigHandler().load();
-                            InventoryHandler invHandler = new InventoryHandler(api);
+                            InventoryHandler invHandler = new InventoryHandler(customCrafting);
                             invHandler.init();
                             CustomCrafting.getApi().sendPlayerMessage(p, "§aReload complete! Reloaded GUIs and languages");
                         }

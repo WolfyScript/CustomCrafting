@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.handlers;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
@@ -15,6 +16,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiCluster;
@@ -35,12 +37,14 @@ import org.bukkit.inventory.FurnaceRecipe;
 
 public class InventoryHandler {
 
+    private CustomCrafting customCrafting;
     private WolfyUtilities api;
     private InventoryAPI invAPI;
 
-    public InventoryHandler(WolfyUtilities api) {
-        this.api = api;
-        this.invAPI = api.getInventoryAPI();
+    public InventoryHandler(CustomCrafting customCrafting) {
+        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.invAPI = this.api.getInventoryAPI();
+        this.customCrafting = customCrafting;
     }
 
     public void init() {
@@ -69,150 +73,173 @@ public class InventoryHandler {
     private void registerInvs() {
         //Main Cluster
         GuiCluster mainCluster = invAPI.getOrRegisterGuiCluster("none");
-        mainCluster.registerGuiWindow(new MainMenu(invAPI));
-        mainCluster.registerGuiWindow(new ItemEditor(invAPI));
-        mainCluster.registerGuiWindow(new RecipeEditor(invAPI));
-        mainCluster.registerGuiWindow(new RecipesList(invAPI));
-        mainCluster.registerGuiWindow(new Settings(invAPI));
-        mainCluster.registerGuiWindow(new PatronsMenu(invAPI));
-        mainCluster.setMainmenu("main_menu");
+        {
+            mainCluster.registerGuiWindow(new MainMenu(invAPI, customCrafting));
+            mainCluster.registerGuiWindow(new ItemEditor(invAPI, customCrafting));
+            mainCluster.registerGuiWindow(new RecipeEditor(invAPI, customCrafting));
+            mainCluster.registerGuiWindow(new RecipesList(invAPI, customCrafting));
+            mainCluster.registerGuiWindow(new Settings(invAPI, customCrafting));
+            mainCluster.registerGuiWindow(new PatronsMenu(invAPI, customCrafting));
+            mainCluster.setMainmenu("main_menu");
 
-        mainCluster.registerButton(new ActionButton("patreon", new ButtonState("main_menu", "patreon", WolfyUtilities.getSkullViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("patrons_menu");
-            return true;
-        })), invAPI.getWolfyUtilities());
-        mainCluster.registerButton(new ActionButton("instagram", new ButtonState("main_menu", "instagram", WolfyUtilities.getSkullViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/_gunnar.h_/")));
-            return true;
-        })), invAPI.getWolfyUtilities());
-        mainCluster.registerButton(new ActionButton("youtube", new ButtonState("main_menu", "youtube", WolfyUtilities.getSkullViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            api.sendActionMessage(player, new ClickData("&7[&3Click here to go to YouTube&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g")));
-            return true;
-        })), invAPI.getWolfyUtilities());
-        mainCluster.registerButton(new ActionButton("discord", new ButtonState("main_menu", "discord", WolfyUtilities.getSkullViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            api.sendActionMessage(player, new ClickData("&7[&3Click here to join Discord&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr")));
-            return true;
-        })), invAPI.getWolfyUtilities());
+            mainCluster.registerButton(new ActionButton("patreon", new ButtonState("main_menu", "patreon", WolfyUtilities.getSkullViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                guiHandler.changeToInv("patrons_menu");
+                return true;
+            })), invAPI.getWolfyUtilities());
+            mainCluster.registerButton(new ActionButton("instagram", new ButtonState("main_menu", "instagram", WolfyUtilities.getSkullViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                api.sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/_gunnar.h_/")));
+                return true;
+            })), invAPI.getWolfyUtilities());
+            mainCluster.registerButton(new ActionButton("youtube", new ButtonState("main_menu", "youtube", WolfyUtilities.getSkullViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                api.sendActionMessage(player, new ClickData("&7[&3Click here to go to YouTube&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g")));
+                return true;
+            })), invAPI.getWolfyUtilities());
+            mainCluster.registerButton(new ActionButton("discord", new ButtonState("main_menu", "discord", WolfyUtilities.getSkullViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                api.sendActionMessage(player, new ClickData("&7[&3Click here to join Discord&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr")));
+                return true;
+            })), invAPI.getWolfyUtilities());
+        }
 
         GuiCluster recipeCreator = invAPI.getOrRegisterGuiCluster("recipe_creator");
-        recipeCreator.registerGuiWindow(new AnvilCreator(invAPI));
-        recipeCreator.registerGuiWindow(new CookingCreator(invAPI));
-        recipeCreator.registerGuiWindow(new CauldronCreator(invAPI));
-        recipeCreator.registerGuiWindow(new StonecutterCreator(invAPI));
-        recipeCreator.registerGuiWindow(new GrindstoneCreator(invAPI));
-        recipeCreator.registerGuiWindow(new WorkbenchCreator(invAPI));
-        recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI));
-        recipeCreator.registerGuiWindow(new BrewingCreator(invAPI));
-        recipeCreator.registerGuiWindow(new ConditionsMenu(invAPI));
-        recipeCreator.registerGuiWindow(new VariantMenu(invAPI));
+        {
+            recipeCreator.registerGuiWindow(new AnvilCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new CookingCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new CauldronCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new StonecutterCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new GrindstoneCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new WorkbenchCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new BrewingCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new ConditionsMenu(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new VariantMenu(invAPI, customCrafting));
 
-        recipeCreator.registerButton(new ActionButton("conditions", new ButtonState("conditions", Material.CYAN_CONCRETE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("conditions");
-            return true;
-        })), api);
+            recipeCreator.registerButton(new ActionButton("conditions", new ButtonState("conditions", Material.CYAN_CONCRETE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                guiHandler.changeToInv("conditions");
+                return true;
+            })), api);
+        }
 
         GuiCluster recipeBook = invAPI.getOrRegisterGuiCluster("recipe_book");
-        recipeBook.registerGuiWindow(new RecipeBook(invAPI));
-        recipeBook.registerGuiWindow(new me.wolfyscript.customcrafting.gui.recipebook.MainMenu(invAPI));
-        recipeBook.setMainmenu("main_menu");
-        recipeBook.registerButton(new ItemCategoryButton(), api);
-        recipeBook.registerButton(new ActionButton("next_page", new ButtonState("next_page", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-            book.setPage(book.getPage() + 1);
-            return true;
-        })), api);
-        recipeBook.registerButton(new ActionButton("previous_page", new ButtonState("previous_page", WolfyUtilities.getSkullViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-            book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
-            return true;
-        })), api);
-        recipeBook.registerButton(new ToggleButton("permission", new ButtonState("permission.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true), new ButtonState("permission.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true)), api);
-        recipeBook.registerButton(new MultipleChoiceButton("workbench.filter_button", new ButtonState("workbench.filter_button.all", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ADVANCED);
-            return true;
-        }), new ButtonState("workbench.filter_button.advanced", new ItemBuilder(Material.CRAFTING_TABLE).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.NORMAL);
-            return true;
-        }), new ButtonState("workbench.filter_button.normal", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ALL);
-            return true;
-        })), api);
-        recipeBook.registerButton(new DummyButton("workbench.shapeless_on", new ButtonState("workbench.shapeless_on", Material.CRAFTING_TABLE)), api);
-        recipeBook.registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", Material.CRAFTING_TABLE)), api);
+        {
+            recipeBook.registerGuiWindow(new RecipeBook(invAPI, customCrafting));
+            recipeBook.registerGuiWindow(new me.wolfyscript.customcrafting.gui.recipebook.MainMenu(invAPI, customCrafting));
+            recipeBook.setMainmenu("main_menu");
+            recipeBook.registerButton(new ItemCategoryButton(), api);
+            recipeBook.registerButton(new ActionButton("next_page", new ButtonState("next_page", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
+                book.setPage(book.getPage() + 1);
+                return true;
+            })), api);
+            recipeBook.registerButton(new ActionButton("previous_page", new ButtonState("previous_page", WolfyUtilities.getSkullViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
+                book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
+                return true;
+            })), api);
+            recipeBook.registerButton(new ToggleButton("permission", new ButtonState("permission.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true), new ButtonState("permission.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true)), api);
+            recipeBook.registerButton(new MultipleChoiceButton("workbench.filter_button", new ButtonState("workbench.filter_button.all", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ADVANCED);
+                return true;
+            }), new ButtonState("workbench.filter_button.advanced", new ItemBuilder(Material.CRAFTING_TABLE).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.NORMAL);
+                return true;
+            }), new ButtonState("workbench.filter_button.normal", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ALL);
+                return true;
+            })), api);
+            recipeBook.registerButton(new DummyButton("workbench.shapeless_on", new ButtonState("workbench.shapeless_on", Material.CRAFTING_TABLE)), api);
+            recipeBook.registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", Material.CRAFTING_TABLE)), api);
 
-        recipeBook.registerButton(new DummyButton("anvil.durability", new ButtonState("anvil.durability", Material.ANVIL, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            hashMap.put("%var%", ((CustomAnvilRecipe) ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().getCurrentRecipe()).getDurability());
-            return itemStack;
-        })), api);
-        recipeBook.registerButton(new DummyButton("anvil.result", new ButtonState("anvil.result", Material.ANVIL)), api);
-        recipeBook.registerButton(new DummyButton("anvil.none", new ButtonState("anvil.none", Material.ANVIL)), api);
-
-        recipeBook.registerButton(new DummyButton("cooking.icon", new ButtonState("cooking.icon", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-
-            RecipeType recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
-            itemStack.setType(Material.matchMaterial(recipeType.toString()));
-            hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
-            if (WolfyUtilities.hasVillagePillageUpdate()) {
-                CookingRecipe cookingRecipe = (CookingRecipe) knowledgeBook.getCurrentRecipe();
-                hashMap.put("%time%", cookingRecipe.getCookingTime());
-                hashMap.put("%xp%", cookingRecipe.getExperience());
-            } else {
-                FurnaceRecipe recipe = (FurnaceRecipe) knowledgeBook.getCurrentRecipe();
-                hashMap.put("%time%", recipe.getCookingTime());
-                hashMap.put("%xp%", recipe.getExperience());
-            }
-            return itemStack;
-        })), api);
-        recipeBook.registerButton(new DummyButton("furnace", new ButtonState("furnace", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> itemStack)), api);
-
-        if(WolfyUtilities.hasVillagePillageUpdate()) {
-            recipeBook.registerButton(new DummyButton("stonecutter", new ButtonState("stonecutter", Material.STONECUTTER)), api);
-            recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE)), api);
-            recipeBook.registerButton(new DummyButton("campfire", new ButtonState("campire", Material.CAMPFIRE)), api);
-            recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE)), api);
-            recipeBook.registerButton(new DummyButton("grindstone", new ButtonState("grindstone", Material.GRINDSTONE)), api);
-            recipeBook.registerButton(new DummyButton("smoker", new ButtonState("smoker", Material.SMOKER)), api);
-            recipeBook.registerButton(new DummyButton("cauldron.water.disabled", new ButtonState("cauldron.water.disabled", Material.CAULDRON)), api);
-            recipeBook.registerButton(new DummyButton("cauldron.water.enabled", new ButtonState("cauldron.water.enabled", WolfyUtilities.getSkullViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, guiHandler, player, itemStack, i, b) -> {
-                KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-                hashMap.put("%lvl%", ((CauldronRecipe) knowledgeBook.getCurrentRecipe()).getWaterLevel());
+            recipeBook.registerButton(new DummyButton("anvil.durability", new ButtonState("anvil.durability", Material.ANVIL, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                hashMap.put("%var%", ((CustomAnvilRecipe) ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().getCurrentRecipe()).getDurability());
                 return itemStack;
             })), api);
-            recipeBook.registerButton(new DummyButton("cauldron.fire.disabled", new ButtonState("cauldron.fire.disabled", Material.FLINT)), api);
-            recipeBook.registerButton(new DummyButton("cauldron.fire.enabled", new ButtonState("cauldron.fire.enabled", Material.FLINT_AND_STEEL)), api);
-        }
+            recipeBook.registerButton(new DummyButton("anvil.result", new ButtonState("anvil.result", Material.ANVIL)), api);
+            recipeBook.registerButton(new DummyButton("anvil.none", new ButtonState("anvil.none", Material.ANVIL)), api);
 
-        for (int i = 0; i < 45; i++) {
-            recipeBook.registerButton(new IngredientContainerButton(i), api);
-        }
+            recipeBook.registerButton(new DummyButton("cooking.icon", new ButtonState("cooking.icon", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
 
-        GuiCluster craftingCluster = new GuiCluster();
-        invAPI.registerCustomGuiCluster("crafting", craftingCluster);
-        craftingCluster.registerGuiWindow(new CraftingWindow3(invAPI));
-        craftingCluster.registerGuiWindow(new CraftingWindow4(invAPI));
-        craftingCluster.registerGuiWindow(new CraftingWindow5(invAPI));
-        craftingCluster.registerGuiWindow(new CraftingWindow6(invAPI));
-        craftingCluster.registerGuiWindow(new CraftingRecipeBook(invAPI));
-        craftingCluster.setMainmenu("crafting_3");
-        craftingCluster.registerButton(new ActionButton("knowledge_book", new ButtonState("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
-            EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-            KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
-            if (eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()) {
-                knowledgeBook.setSetting(Setting.WORKBENCH);
-            } else {
-                knowledgeBook.setSetting(Setting.ELITE_WORKBENCH);
+                RecipeType recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
+                itemStack.setType(Material.matchMaterial(recipeType.toString()));
+                hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
+                if (WolfyUtilities.hasVillagePillageUpdate()) {
+                    CookingRecipe cookingRecipe = (CookingRecipe) knowledgeBook.getCurrentRecipe();
+                    hashMap.put("%time%", cookingRecipe.getCookingTime());
+                    hashMap.put("%xp%", cookingRecipe.getExperience());
+                } else {
+                    FurnaceRecipe recipe = (FurnaceRecipe) knowledgeBook.getCurrentRecipe();
+                    hashMap.put("%time%", recipe.getCookingTime());
+                    hashMap.put("%xp%", recipe.getExperience());
+                }
+                return itemStack;
+            })), api);
+            recipeBook.registerButton(new DummyButton("furnace", new ButtonState("furnace", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> itemStack)), api);
+
+            if (WolfyUtilities.hasVillagePillageUpdate()) {
+                recipeBook.registerButton(new DummyButton("stonecutter", new ButtonState("stonecutter", Material.STONECUTTER)), api);
+                recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE)), api);
+                recipeBook.registerButton(new DummyButton("campfire", new ButtonState("campire", Material.CAMPFIRE)), api);
+                recipeBook.registerButton(new DummyButton("blast_furnace", new ButtonState("blast_furnace", Material.BLAST_FURNACE)), api);
+                recipeBook.registerButton(new DummyButton("grindstone", new ButtonState("grindstone", Material.GRINDSTONE)), api);
+                recipeBook.registerButton(new DummyButton("smoker", new ButtonState("smoker", Material.SMOKER)), api);
+                recipeBook.registerButton(new DummyButton("cauldron.water.disabled", new ButtonState("cauldron.water.disabled", Material.CAULDRON)), api);
+                recipeBook.registerButton(new DummyButton("cauldron.water.enabled", new ButtonState("cauldron.water.enabled", WolfyUtilities.getSkullViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, guiHandler, player, itemStack, i, b) -> {
+                    KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
+                    hashMap.put("%lvl%", ((CauldronRecipe) knowledgeBook.getCurrentRecipe()).getWaterLevel());
+                    return itemStack;
+                })), api);
+                recipeBook.registerButton(new DummyButton("cauldron.fire.disabled", new ButtonState("cauldron.fire.disabled", Material.FLINT)), api);
+                recipeBook.registerButton(new DummyButton("cauldron.fire.enabled", new ButtonState("cauldron.fire.enabled", Material.FLINT_AND_STEEL)), api);
+                recipeBook.registerButton(new DummyButton("brewing.icon", new ButtonState("brewing.icon", Material.BREWING_STAND, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                    BrewingRecipe cookingRecipe = (BrewingRecipe) (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
+                    hashMap.put("%time%", cookingRecipe.getBrewTime());
+                    hashMap.put("%cost%", cookingRecipe.getFuelCost());
+                    return itemStack;
+                })), api);
+                recipeBook.registerButton(new DummyButton("brewing.potion_duration", new ButtonState("brewing.potion_duration", Material.CLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                    BrewingRecipe cookingRecipe = (BrewingRecipe) (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
+                    hashMap.put("%value%", cookingRecipe.getDurationChange());
+                    return itemStack;
+                })), api);
+                recipeBook.registerButton(new DummyButton("brewing.potion_amplifier", new ButtonState("brewing.potion_amplifier", Material.IRON_SWORD, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                    BrewingRecipe cookingRecipe = (BrewingRecipe) (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
+                    hashMap.put("%value%", cookingRecipe.getAmplifierChange());
+                    return itemStack;
+                })), api);
             }
-            guiHandler.changeToInv("recipe_book");
-            return true;
-        })), api);
+            for (int i = 0; i < 45; i++) {
+                recipeBook.registerButton(new IngredientContainerButton(i), api);
+            }
+        }
+
+        GuiCluster craftingCluster = invAPI.getOrRegisterGuiCluster("crafting");
+        {
+            craftingCluster.registerGuiWindow(new CraftingWindow3(invAPI, customCrafting));
+            craftingCluster.registerGuiWindow(new CraftingWindow4(invAPI, customCrafting));
+            craftingCluster.registerGuiWindow(new CraftingWindow5(invAPI, customCrafting));
+            craftingCluster.registerGuiWindow(new CraftingWindow6(invAPI, customCrafting));
+            craftingCluster.registerGuiWindow(new CraftingRecipeBook(invAPI, customCrafting));
+            craftingCluster.setMainmenu("crafting_3");
+            craftingCluster.registerButton(new ActionButton("knowledge_book", new ButtonState("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
+                EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+                KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
+                if (eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()) {
+                    knowledgeBook.setSetting(Setting.WORKBENCH);
+                } else {
+                    knowledgeBook.setSetting(Setting.ELITE_WORKBENCH);
+                }
+                guiHandler.changeToInv("recipe_book");
+                return true;
+            })), api);
+        }
 
         GuiCluster itemCreator = invAPI.getOrRegisterGuiCluster("item_creator");
-        itemCreator.registerGuiWindow(new ItemCreator(invAPI));
+        itemCreator.registerGuiWindow(new ItemCreator(invAPI, customCrafting));
 
         GuiCluster particleCluster = invAPI.getOrRegisterGuiCluster("particle_creator");
-        particleCluster.registerGuiWindow(new me.wolfyscript.customcrafting.gui.particle_creator.MainMenu(invAPI));
+        particleCluster.registerGuiWindow(new me.wolfyscript.customcrafting.gui.particle_creator.MainMenu(invAPI, customCrafting));
+
 
     }
 

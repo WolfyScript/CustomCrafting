@@ -2043,6 +2043,22 @@
               "&eFuel that is required and consumed for the recipe"
             ],
             "message": "&eType in the fuel cost. e.g. 2"
+          },
+          "potion_duration": {
+            "name": "&7Potion Duration",
+            "lore": [
+              "&eDuration Change: &6%value%",
+              "&7[&aLeft Click&7] &eChange Value",
+              "&7[&cRight Click&7] &cReset Action"
+            ]
+          },
+          "potion_amplifier": {
+            "name": "&7Potion Amplifier",
+            "lore": [
+              "&eAmplifier Change: &6%value%",
+              "&7[&aLeft Click&7] &eChange Value",
+              "&7[&cRight Click&7] &cReset Action"
+            ]
           }
         }
       },
@@ -2249,6 +2265,31 @@
               ]
             }
           }
+        },
+        "brewing": {
+          "icon": {
+            "name": "&7&lBrewing",
+            "lore": [
+              "&7Brewing Time: &e%time% ticks",
+              "&7Fuel cost: &e%cost%"
+            ]
+          },
+          "potion_duration": {
+            "name": "&7Potion Duration",
+            "lore": [
+              "&eThis recipe will increase the ",
+              "&eduration of potion effects ",
+              "&eby &6%value% ticks"
+            ]
+          },
+          "potion_amplifier": {
+            "name": "&7Potion Duration",
+            "lore": [
+              "&eThis recipe will increase the ",
+              "&eamplifier of potion effects ",
+              "&eby &6%value% levels"
+            ]
+          }
         }
       },
       "main_menu": {
@@ -2297,6 +2338,9 @@
           },
           "cauldron": {
             "name": "&6Cauldron Recipes"
+          },
+          "brewing": {
+            "name": "&6Brewing Recipes"
           }
         }
       },

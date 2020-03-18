@@ -63,63 +63,70 @@ public class CustomCrafting extends JavaPlugin {
 
     private static String currentVersion;
 
-    private static boolean outdated = false;
-    private static boolean loaded = false;
+    private boolean outdated = false;
+    private boolean loaded = false;
 
     public static final Pattern VALID_NAMESPACEKEY = Pattern.compile("[a-z0-9._-]+");
-
 
     @Override
     public void onLoad() {
         CustomItem.registerCustomData(new EliteWorkbenchData());
         GsonBuilder gsonBuilder = GsonUtil.getGsonBuilder();
         gsonBuilder.registerTypeHierarchyAdapter(Conditions.class, new Conditions.Serialization());
+
     }
 
-    public static void checkUpdate(@Nullable Player player) {
-        Thread updater = new Thread(() -> {
-            try {
-                HttpURLConnection con = (HttpURLConnection) new URL(
-                        "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
-
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String version = bufferedReader.readLine();
-
-                String[] vNew = version.split("\\.");
-                String[] vOld = currentVersion.split("\\.");
-
-                for (int i = 0; i < vNew.length; i++) {
-                    int v1 = Integer.parseInt(vNew[i]);
-                    int v2 = Integer.parseInt(vOld[i]);
-
-                    if (v1 > v2) {
-                        outdated = true;
-                        api.sendConsoleWarning("$msg.startup.outdated$");
-                        if (player != null) {
-                            api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
-                            api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
-                        }
-                        return;
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                api.sendConsoleWarning("$msg.startup.update_check_fail$");
-            }
-        });
-        updater.start();
+    public static boolean hasPlayerCache(Player player) {
+        return playerStatisticsList.stream().anyMatch(playerStatistics -> playerStatistics.getUuid().equals(player.getUniqueId()));
     }
 
-    public void onDisable() {
-        if (loaded) {
-            getConfigHandler().getConfig().save();
-            workbenches.endTask();
-            workbenches.save();
-            cauldrons.endAutoSaveTask();
-            cauldrons.save();
-            getRecipeHandler().onSave();
-            savePlayerStatistics();
+    private static void savePlayerStatistics() {
+        HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
+        playerStatisticsList.forEach(playerStatistics -> caches.put(playerStatistics.getUuid(), playerStatistics.getStats()));
+        try {
+            FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat"));
+            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
+            oos.writeObject(caches);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private static void loadPlayerStatistics() {
+        api.sendConsoleMessage("$msg.startup.playerstats$");
+        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
+        if (file.exists()) {
+            FileInputStream fis;
+            try {
+                fis = new FileInputStream(file);
+                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
+                try {
+                    Object object = ois.readObject();
+                    if (object instanceof HashMap) {
+                        ((HashMap<UUID, HashMap<String, Object>>) object).forEach((uuid, stat) -> playerStatisticsList.add(new PlayerStatistics(uuid, stat)));
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean canRun() {
+        try {
+            RecipeChoice.ExactChoice exactChoice = new RecipeChoice.ExactChoice(new ItemStack(Material.DEBUG_STICK));
+        } catch (NoClassDefFoundError e) {
+            System.out.println("You are using an outdated Spigot version!");
+            System.out.println("You can get the latest Spigot version via BuildTools: ");
+            System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
+            System.out.println("------------------------------------------------------------------------");
+            return false;
+        }
+        return true;
     }
 
     public void onEnable() {
@@ -144,10 +151,11 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
         System.out.println("    v" + instance.getDescription().getVersion() + " " + (premium ? "Premium" : (premiumPlus ? "Premium+" : "")));
         System.out.println(" ");
-        if (premium) {
-            System.out.println("Thanks for supporting this plugin!");
-        } else if (premiumPlus) {
+
+        if (premiumPlus) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
+        } else if (premium) {
+            System.out.println("Thanks for supporting this plugin!");
         }
         System.out.println("------------------------------------------------------------------------");
 
@@ -163,7 +171,7 @@ public class CustomCrafting extends JavaPlugin {
         }
 
         configHandler = new ConfigHandler(api);
-        InventoryHandler invHandler = new InventoryHandler(api);
+        InventoryHandler invHandler = new InventoryHandler(this);
         recipeHandler = new RecipeHandler(api);
         configHandler.load();
 
@@ -171,7 +179,7 @@ public class CustomCrafting extends JavaPlugin {
             dataBaseHandler = new DataBaseHandler(api);
         }
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
         if (loaded) {
             System.out.println("------------------------------------------------------------------------");
@@ -183,9 +191,9 @@ public class CustomCrafting extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
             getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
             getServer().getPluginManager().registerEvents(new GrindStoneListener(api), this);
-            getServer().getPluginManager().registerEvents(new BrewingStandListener(), this);
+            getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
 
-            CommandCC commandCC = new CommandCC();
+            CommandCC commandCC = new CommandCC(this);
             PluginCommand command = getServer().getPluginCommand("customcrafting");
             if (!configHandler.getConfig().isCCenabled()) {
                 command.setAliases(new ArrayList<>());
@@ -228,25 +236,16 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("------------------------------------------------------------------------");
     }
 
-    private static boolean canRun() {
-        try {
-            RecipeChoice.ExactChoice exactChoice = new RecipeChoice.ExactChoice(new ItemStack(Material.DEBUG_STICK));
-        } catch (NoClassDefFoundError e) {
-            System.out.println("You are using an outdated Spigot version!");
-            System.out.println("You can get the latest Spigot version via BuildTools: ");
-            System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
-            System.out.println("------------------------------------------------------------------------");
-            return false;
+    public void onDisable() {
+        if (loaded) {
+            getConfigHandler().getConfig().save();
+            workbenches.endTask();
+            workbenches.save();
+            cauldrons.endAutoSaveTask();
+            cauldrons.save();
+            getRecipeHandler().onSave();
+            savePlayerStatistics();
         }
-        return true;
-    }
-
-    public static boolean isOutdated() {
-        return outdated;
-    }
-
-    public static boolean isLoaded() {
-        return loaded;
     }
 
     public static ConfigHandler getConfigHandler() {
@@ -273,12 +272,38 @@ public class CustomCrafting extends JavaPlugin {
         return cauldrons;
     }
 
-    public static boolean hasPlayerCache(Player player) {
-        for (PlayerStatistics playerStatistics : playerStatisticsList) {
-            if (playerStatistics.getUuid().equals(player.getUniqueId()))
-                return true;
-        }
-        return false;
+    public void checkUpdate(@Nullable Player player) {
+        Thread updater = new Thread(() -> {
+            try {
+                HttpURLConnection con = (HttpURLConnection) new URL(
+                        "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String version = bufferedReader.readLine();
+
+                String[] vNew = version.split("\\.");
+                String[] vOld = currentVersion.split("\\.");
+
+                for (int i = 0; i < vNew.length; i++) {
+                    int v1 = Integer.parseInt(vNew[i]);
+                    int v2 = Integer.parseInt(vOld[i]);
+
+                    if (v1 > v2) {
+                        outdated = true;
+                        api.sendConsoleWarning("$msg.startup.outdated$");
+                        if (player != null) {
+                            api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
+                            api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+                        }
+                        return;
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                api.sendConsoleWarning("$msg.startup.update_check_fail$");
+            }
+        });
+        updater.start();
     }
 
     public static void renewPlayerStatistics(Player player) {
@@ -303,45 +328,12 @@ public class CustomCrafting extends JavaPlugin {
         return playerStatistics;
     }
 
-    private static void savePlayerStatistics() {
-        HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
-        for (PlayerStatistics playerStatistics : playerStatisticsList) {
-            caches.put(playerStatistics.getUuid(), playerStatistics.getStats());
-        }
-        try {
-            FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat"));
-            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
-            oos.writeObject(caches);
-            oos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public boolean isOutdated() {
+        return outdated;
     }
 
-    private static void loadPlayerStatistics() {
-        api.sendConsoleMessage("$msg.startup.playerstats$");
-        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
-        if (file.exists()) {
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream(file);
-                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
-                try {
-                    Object object = ois.readObject();
-                    if (object instanceof HashMap) {
-                        HashMap<UUID, HashMap<String, Object>> stats = (HashMap<UUID, HashMap<String, Object>>) object;
-                        for (UUID uuid : stats.keySet()) {
-                            playerStatisticsList.add(new PlayerStatistics(uuid, stats.get(uuid)));
-                        }
-                    }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                ois.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public boolean isLoaded() {
+        return loaded;
     }
 
     public static boolean hasDataBaseHandler() {
@@ -351,4 +343,5 @@ public class CustomCrafting extends JavaPlugin {
     public static DataBaseHandler getDataBaseHandler() {
         return dataBaseHandler;
     }
+
 }

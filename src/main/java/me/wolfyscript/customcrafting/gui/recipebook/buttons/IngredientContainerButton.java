@@ -65,27 +65,29 @@ public class IngredientContainerButton extends Button {
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
         KnowledgeBook book = cache.getKnowledgeBook();
-        CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
-        List<CustomRecipe> recipes = CustomCrafting.getRecipeHandler().getRecipes(customItem);
-        recipes.remove(book.getCurrentRecipe());
-        if (!recipes.isEmpty()) {
-            GuiCluster cluster = WolfyUtilities.getAPI(CustomCrafting.getInst()).getInventoryAPI().getGuiCluster("recipe_book");
-            for (int i = 0; i < 45; i++) {
-                IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
-                if (button.getVariantsMap(guiHandler) != null) {
-                    if (button.getTask(guiHandler) != null) {
-                        button.getTask(guiHandler).cancel();
-                        button.setTask(guiHandler, null);
+        if (getVariantsMap(guiHandler) != null && getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
+            CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
+            List<CustomRecipe> recipes = CustomCrafting.getRecipeHandler().getRecipes(customItem);
+            recipes.remove(book.getCurrentRecipe());
+            if (!recipes.isEmpty()) {
+                GuiCluster cluster = WolfyUtilities.getAPI(CustomCrafting.getInst()).getInventoryAPI().getGuiCluster("recipe_book");
+                for (int i = 0; i < 45; i++) {
+                    IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
+                    if (button.getVariantsMap(guiHandler) != null) {
+                        if (button.getTask(guiHandler) != null) {
+                            button.getTask(guiHandler).cancel();
+                            button.setTask(guiHandler, null);
+                        }
+                        button.setVariants(guiHandler, null);
+                        button.setTiming(guiHandler, 0);
                     }
-                    button.setVariants(guiHandler, null);
-                    button.setTiming(guiHandler, 0);
                 }
+                book.setSubFolder(book.getSubFolder() + 1);
+                book.setSubFolderPage(0);
+                book.getResearchItems().add(customItem);
+                book.setSubFolderRecipes(recipes);
+                book.applyRecipeToButtons(guiHandler, recipes.get(0));
             }
-            book.setSubFolder(book.getSubFolder() + 1);
-            book.setSubFolderPage(0);
-            book.getResearchItems().add(customItem);
-            book.setSubFolderRecipes(recipes);
-            book.applyRecipeToButtons(guiHandler, recipes.get(0));
         }
         return true;
     }

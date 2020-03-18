@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.commands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -18,11 +17,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.util.StringUtil;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommandRecipe implements CommandExecutor, TabCompleter {
 
@@ -44,9 +43,7 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
                         } else {
                             sender.sendMessage("Disabled recipe " + id);
                             CustomCrafting.getRecipeHandler().getDisabledRecipes().add(id);
-                            for (Player player : Bukkit.getOnlinePlayers()) {
-                                player.undiscoverRecipe(new NamespacedKey(id.split(":")[0], id.split(":")[1]));
-                            }
+                            Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(new NamespacedKey(id.split(":")[0], id.split(":")[1])));
                         }
                     }
                 }
@@ -70,7 +67,6 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
                                     break;
                             }
                             ((TestCache)api.getInventoryAPI().getGuiHandler(player).getCustomCache()).setSetting(setting);
-
                             if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, api.getInventoryAPI().getGuiHandler(player))) {
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> api.getInventoryAPI().openGui(player, "none", "recipe_creator"), 1);
                             }
@@ -104,25 +100,14 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
         List<String> results = new ArrayList<>();
         if (args.length > 1) {
             if (args[0].equalsIgnoreCase("toggle")) {
-                List<String> recipes = new ArrayList<>();
-                for (Recipe recipe : CustomCrafting.getRecipeHandler().getVanillaRecipes()) {
-                    if (recipe instanceof Keyed) {
-                        recipes.add(((Keyed) recipe).getKey().toString());
-                    }
-                }
-                for (CraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes()) {
-                    recipes.add(recipe.getId());
-                }
+                List<String> recipes = CustomCrafting.getRecipeHandler().getVanillaRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> ((Keyed) recipe).getKey().toString()).collect(Collectors.toList());
+                recipes.addAll(CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes().stream().map(recipe -> recipe.getId()).collect(Collectors.toSet()));
                 copyPartialMatches(args[args.length - 1], recipes, results);
             } else if (args[0].equalsIgnoreCase("edit") || args[0].equalsIgnoreCase("delete")) {
                 if (args.length == 2) {
                     StringUtil.copyPartialMatches(args[1], RECIPES, results);
                 } else if (args.length == 3) {
-                    List<String> recipes = new ArrayList<>();
-                    List<CustomRecipe> customRecipes = CustomCrafting.getRecipeHandler().getRecipes(args[1]);
-                    for (CustomRecipe customRecipe : customRecipes) {
-                        recipes.add(customRecipe.getId());
-                    }
+                    List<String> recipes = CustomCrafting.getRecipeHandler().getRecipes(args[1]).stream().map(recipe -> recipe.getId()).collect(Collectors.toList());
                     StringUtil.copyPartialMatches(args[2], recipes, results);
                 }
             }
@@ -143,14 +128,12 @@ public class CommandRecipe implements CommandExecutor, TabCompleter {
         Validate.notNull(collection, "Collection cannot be null");
         Validate.notNull(originals, "Originals cannot be null");
         Iterator var4 = originals.iterator();
-
         while (var4.hasNext()) {
             String string = (String) var4.next();
             if (containsIgnoreCase(string, token)) {
                 collection.add(string);
             }
         }
-
         return collection;
     }
 
