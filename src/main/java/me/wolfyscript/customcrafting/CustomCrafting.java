@@ -65,13 +65,12 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private static boolean premiumPlus = false;
-    private static boolean premium = true;
+    private static boolean premium = false;
 
     private static boolean outdated = false;
     private static boolean loaded = false;
 
     public static final Pattern VALID_NAMESPACEKEY = Pattern.compile("[a-z0-9._-]+");
-
 
     @Override
     public void onLoad() {
@@ -143,7 +142,7 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premium ? "Premium" : (premiumPlus ? "Premium+" : "")));
+        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premium ? "Premium" : (premiumPlus ? "Premium+" : "Free")));
         System.out.println(" ");
         if (premium) {
             System.out.println("Thanks for supporting this plugin!");
