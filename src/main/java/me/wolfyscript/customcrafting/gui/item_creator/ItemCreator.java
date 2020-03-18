@@ -1309,7 +1309,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         if (CustomCrafting.hasDataBaseHandler()) {
             config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, key);
         } else {
-            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, CustomCrafting.getInst().getDataFolder() + "/recipes/" + namespace + "/items", key, true, "json");
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, CustomCrafting.getInst().getDataFolder() + "/recipes/" + namespace + "/items", key, true);
         }
         config.setCustomItem(customItem);
         if (CustomItems.getCustomItem(id) != null) {

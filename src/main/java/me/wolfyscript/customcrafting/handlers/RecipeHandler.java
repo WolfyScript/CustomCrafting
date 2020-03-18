@@ -295,7 +295,7 @@ public class RecipeHandler {
                                 dataBaseHandler.updateRecipe(new CampfireConfig(configAPI, key, name));
                                 break;
                             case "items":
-                                dataBaseHandler.updateItem(new ItemConfig(subfolder, name, "json", configAPI));
+                                dataBaseHandler.updateItem(new ItemConfig(subfolder, name, configAPI));
                                 break;
                             case "stonecutter":
                                 dataBaseHandler.updateRecipe(new StonecutterConfig(configAPI, key, name));

@@ -39,7 +39,7 @@
         <dependency>
             <groupId>io.github.wolfyscript</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.5.6.0</version>
+            <version>1.5.6.9</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>

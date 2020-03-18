@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.config.JsonConfiguration;
 import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
@@ -122,17 +121,7 @@ public class RecipeConfig extends CustomConfig {
     }
 
     public Conditions getConditions() {
-        if (configuration instanceof JsonConfiguration) {
-            Conditions object = ((JsonConfiguration) configuration).get(Conditions.class, "conditions", new Conditions());
-            return object;
-        } else {
-            Object object = get("conditions");
-            if (object instanceof Conditions) {
-                return (Conditions) object;
-            }
-        }
-        Conditions conditions = new Conditions();
-        return conditions;
+        return get(Conditions.class, "conditions", new Conditions());
     }
 
     public void setConditions(Conditions conditions) {
