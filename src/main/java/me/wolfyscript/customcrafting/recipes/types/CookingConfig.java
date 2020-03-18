@@ -10,12 +10,8 @@ import java.util.Set;
 
 public class CookingConfig extends RecipeConfig {
 
-    public CookingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, String fileType) {
-        super(configAPI, folder, type, name, defaultName, fileType);
-    }
-
     public CookingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
-        this(configAPI, folder, type, name, defaultName, "json");
+        super(configAPI, folder, type, name, defaultName);
     }
 
     public CookingConfig(String jsonData, ConfigAPI configAPI, String namespace, String key, String type, String defName) {

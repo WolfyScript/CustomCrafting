@@ -11,20 +11,12 @@ import java.util.Set;
 
 public class BrewingConfig extends RecipeConfig {
 
-    public BrewingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, String fileType) {
-        super(configAPI, folder, type, name, defaultName, fileType);
-    }
-
-    public BrewingConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        super(configAPI, folder, "brewing", name, "brewing", fileType);
+    public BrewingConfig(ConfigAPI configAPI, String folder, String name) {
+        super(configAPI, folder, "brewing", name, "brewing");
     }
 
     public BrewingConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "brewing", "brewing");
-    }
-
-    public BrewingConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, "json");
     }
 
     public BrewingConfig() {
@@ -86,6 +78,22 @@ public class BrewingConfig extends RecipeConfig {
 
     public void setFuelCost(int fuelCost) {
         set("fuel_cost", fuelCost);
+    }
+
+    public int getDurationChange() {
+        return getInt("duration_change");
+    }
+
+    public void setDurationChange(int durationChange) {
+        set("duration_change", durationChange);
+    }
+
+    public int getAmplifierChange() {
+        return getInt("amplifier_change");
+    }
+
+    public void setAmplifierChange(int durationChange) {
+        set("amplifier_change", durationChange);
     }
 
 

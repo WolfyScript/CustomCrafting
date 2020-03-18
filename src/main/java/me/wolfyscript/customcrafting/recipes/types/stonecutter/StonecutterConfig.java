@@ -11,16 +11,12 @@ import java.util.Set;
 
 public class StonecutterConfig extends RecipeConfig {
 
-    public StonecutterConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        super(configAPI, folder, "stonecutter", name, "stonecutter", fileType);
+    public StonecutterConfig(ConfigAPI configAPI, String folder, String name) {
+        super(configAPI, folder, "stonecutter", name, "stonecutter");
     }
 
     public StonecutterConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
         super(jsonData, configAPI, namespace, key, "stonecutter", "stonecutter");
-    }
-
-    public StonecutterConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, "json");
     }
 
     public StonecutterConfig() {

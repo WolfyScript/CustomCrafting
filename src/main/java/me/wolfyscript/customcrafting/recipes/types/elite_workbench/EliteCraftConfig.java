@@ -5,24 +5,16 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class EliteCraftConfig extends CraftConfig {
 
-    public EliteCraftConfig(ConfigAPI configAPI, String folder, String name, String defaultPath, String defaultName, boolean override, String fileType) {
-        super(configAPI, folder, "elite_workbench", name, defaultPath, defaultName, override, fileType);
+    public EliteCraftConfig(ConfigAPI configAPI, String folder, String name, String defaultName, boolean override) {
+        super(configAPI, folder, "elite_workbench", name, defaultName, override);
     }
 
-    public EliteCraftConfig(ConfigAPI configAPI, String folder, String name, String defaultName, boolean override, String fileType) {
-        super(configAPI, folder, "elite_workbench", name, defaultName, override, fileType);
-    }
-
-    public EliteCraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name, String fileType) {
-        this(configAPI, folder, name, defaultName, false, fileType);
-    }
-
-    public EliteCraftConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        this(configAPI, "craft_config", folder, name, fileType);
+    public EliteCraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
+        this(configAPI, folder, name, defaultName, false);
     }
 
     public EliteCraftConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, "craft_config", folder, name, "json");
+        this(configAPI, "craft_config", folder, name);
     }
 
     public EliteCraftConfig() {

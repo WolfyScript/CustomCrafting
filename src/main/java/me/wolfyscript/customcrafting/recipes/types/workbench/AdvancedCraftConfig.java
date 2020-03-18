@@ -5,24 +5,16 @@ import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class AdvancedCraftConfig extends CraftConfig {
 
-    public AdvancedCraftConfig(ConfigAPI configAPI, String folder, String name, String defaultPath, String defaultName, boolean override, String fileType) {
-        super(configAPI, folder, "workbench", name, defaultPath, defaultName, override, fileType);
+    public AdvancedCraftConfig(ConfigAPI configAPI, String folder, String name, String defaultName, boolean override) {
+        super(configAPI, folder, "workbench", name, defaultName, override);
     }
 
-    public AdvancedCraftConfig(ConfigAPI configAPI, String folder, String name, String defaultName, boolean override, String fileType) {
-        super(configAPI, folder, "workbench", name, defaultName, override, fileType);
-    }
-
-    public AdvancedCraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name, String fileType) {
-        this(configAPI, folder, name, defaultName, false, fileType);
-    }
-
-    public AdvancedCraftConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        this(configAPI, "craft_config", folder, name, fileType);
+    public AdvancedCraftConfig(ConfigAPI configAPI, String defaultName, String folder, String name) {
+        this(configAPI, folder, name, defaultName, false);
     }
 
     public AdvancedCraftConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, "craft_config", folder, name, "json");
+        this(configAPI, "craft_config", folder, name);
     }
 
     /*

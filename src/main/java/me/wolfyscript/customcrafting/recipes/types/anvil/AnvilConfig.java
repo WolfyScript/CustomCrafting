@@ -12,11 +12,7 @@ import java.util.Set;
 public class AnvilConfig extends RecipeConfig {
 
     public AnvilConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, "json");
-    }
-
-    public AnvilConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        super(configAPI, folder, "anvil", name, "anvil", fileType);
+        super(configAPI, folder, "anvil", name, "anvil");
     }
 
     public AnvilConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {

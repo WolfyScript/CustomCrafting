@@ -13,20 +13,20 @@ public class CraftConfig extends RecipeConfig {
 
     private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
-    public CraftConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override, String fileType) {
-        super(configAPI, folder, type, name, defaultPath, defaultName, override, fileType);
+    public CraftConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override) {
+        super(configAPI, folder, type, name, defaultPath, defaultName, override);
     }
 
-    public CraftConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override, String fileType) {
-        super(configAPI, folder, type, name, defaultName, override, fileType);
+    public CraftConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override) {
+        super(configAPI, folder, type, name, defaultName, override);
     }
 
-    public CraftConfig(ConfigAPI configAPI, String defaultName, String type, String folder, String name, String fileType) {
-        this(configAPI, folder, type, name, defaultName, false, fileType);
+    public CraftConfig(ConfigAPI configAPI, String defaultName, String type, String folder, String name) {
+        this(configAPI, folder, type, name, defaultName, false);
     }
 
     public CraftConfig(ConfigAPI configAPI, String type, String folder, String name) {
-        this(configAPI, "craft_config", type, folder, name, "json");
+        this(configAPI, "craft_config", type, folder, name);
     }
 
     /*

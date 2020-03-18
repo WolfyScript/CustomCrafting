@@ -13,11 +13,7 @@ import java.util.Set;
 public class CauldronConfig extends RecipeConfig {
 
     public CauldronConfig(ConfigAPI configAPI, String folder, String name) {
-        this(configAPI, folder, name, "json");
-    }
-
-    public CauldronConfig(ConfigAPI configAPI, String folder, String name, String fileType) {
-        super(configAPI, folder, "cauldron", name, "cauldron", fileType);
+        super(configAPI, folder, "cauldron", name, "cauldron");
     }
 
     /*

@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.config.JsonConfiguration;
 import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
@@ -22,24 +21,17 @@ public class RecipeConfig extends CustomConfig {
 
     private String type;
 
-    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, String fileType) {
-        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, false, fileType);
-    }
-
-    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override, String fileType) {
-        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, override, fileType);
+    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
+        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, false);
     }
 
     public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override) {
-        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, override, "json");
+        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, override);
     }
 
-    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override, String fileType) {
-        super(configAPI, folder, name, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + folder + "/" + type, defaultPath, defaultName, override, fileType);
+    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override) {
+        super(configAPI, folder, name, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + folder + "/" + type, defaultPath, defaultName, override);
         this.type = type;
-        if (getType().equals(Type.YAML)) {
-            setSaveAfterValueSet(true);
-        }
         setPathSeparator('.');
     }
 
@@ -54,12 +46,12 @@ public class RecipeConfig extends CustomConfig {
 
     /*
     Memory Config only! Do not use to load config out of files!
-     */
+
     public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
         super(configAPI, folder, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;
         setPathSeparator('.');
-    }
+    } */
 
     @Override
     public void init() {
@@ -122,17 +114,8 @@ public class RecipeConfig extends CustomConfig {
     }
 
     public Conditions getConditions() {
-        if (configuration instanceof JsonConfiguration) {
-            Conditions object = ((JsonConfiguration) configuration).get(Conditions.class, "conditions", new Conditions());
-            return object;
-        } else {
-            Object object = get("conditions");
-            if (object instanceof Conditions) {
-                return (Conditions) object;
-            }
-        }
-        Conditions conditions = new Conditions();
-        return conditions;
+        Conditions object = get(Conditions.class, "conditions", new Conditions());
+        return object;
     }
 
     public void setConditions(Conditions conditions) {
