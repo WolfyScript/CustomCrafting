@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.PatronButton;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -14,8 +15,8 @@ import org.bukkit.event.EventHandler;
 
 public class PatronsMenu extends ExtendedGuiWindow {
 
-    public PatronsMenu(InventoryAPI inventoryAPI) {
-        super("patrons_menu", inventoryAPI, 27);
+    public PatronsMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("patrons_menu", inventoryAPI, 27, customCrafting);
     }
 
     @Override
@@ -35,6 +36,8 @@ public class PatronsMenu extends ExtendedGuiWindow {
         })));
         registerButton(new PatronButton("Apprehentice", "Foxtrot200", "db61eab0-7fb1-48db-986f-125e73787976"));
         registerButton(new PatronButton("Alex", "LeftAlex", "af1ef7e4-acc3-44a1-8323-8f50b92be2c9"));
+        registerButton(new PatronButton("Vincent Deniau", "VinceTheWolf", "a307c2b3-463a-4db6-8a6a-07419909af72"));
+        //registerButton(new PatronButton("Vincent Deniau", "VinceTheWolf", "a307c2b3-463a-4db6-8a6a-07419909af72"));
     }
 
     @EventHandler
@@ -42,8 +45,9 @@ public class PatronsMenu extends ExtendedGuiWindow {
         if (event.verify(this)) {
             event.setButton(0, "back");
 
-            event.setButton(12, "patron.apprehentice");
-            event.setButton(14, "patron.alex");
+            event.setButton(11, "patron.apprehentice");
+            event.setButton(13, "patron.alex");
+            event.setButton(15, "patron.vincent_deniau");
         }
     }
 
