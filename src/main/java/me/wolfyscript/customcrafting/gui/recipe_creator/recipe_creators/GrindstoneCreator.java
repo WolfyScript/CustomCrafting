@@ -29,8 +29,8 @@ import java.util.HashMap;
 
 public class GrindstoneCreator extends ExtendedGuiWindow {
 
-    public GrindstoneCreator(InventoryAPI inventoryAPI) {
-        super("grindstone", inventoryAPI, 45);
+    public GrindstoneCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("grindstone", inventoryAPI, 45, customCrafting);
     }
 
     @Override

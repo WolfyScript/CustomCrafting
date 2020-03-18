@@ -19,8 +19,8 @@ import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends ExtendedGuiWindow {
 
-    public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 45);
+    public MainMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("main_menu", inventoryAPI, 45, customCrafting);
     }
 
     @Override

@@ -48,14 +48,14 @@ public class ItemCreator extends ExtendedGuiWindow {
 
     private static final MetaSettings dummyMetaSettings = new MetaSettings();
 
-    public ItemCreator(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 54);
+    public ItemCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("main_menu", inventoryAPI, 54, customCrafting);
     }
 
     @Override
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            if (((TestCache)guiHandler.getCustomCache()).getItems().isRecipeItem()) {
+            if (((TestCache) guiHandler.getCustomCache()).getItems().isRecipeItem()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
                 guiHandler.openCluster("none");
@@ -1309,7 +1309,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         if (CustomCrafting.hasDataBaseHandler()) {
             config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, key);
         } else {
-            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, CustomCrafting.getInst().getDataFolder() + "/recipes/" + namespace + "/items", key, true, "json");
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, CustomCrafting.getInst().getDataFolder() + "/recipes/" + namespace + "/items", key, true);
         }
         config.setCustomItem(customItem);
         if (CustomItems.getCustomItem(id) != null) {

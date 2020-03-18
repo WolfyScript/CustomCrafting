@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.particle_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.ParticleCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
@@ -21,8 +22,8 @@ import java.util.Map;
 
 public class MainMenu extends ExtendedGuiWindow {
 
-    public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 54);
+    public MainMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("main_menu", inventoryAPI, 54, customCrafting);
     }
 
     @Override

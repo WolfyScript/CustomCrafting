@@ -28,8 +28,8 @@ import org.bukkit.event.EventHandler;
 
 public class CookingCreator extends ExtendedGuiWindow {
 
-    public CookingCreator(InventoryAPI inventoryAPI) {
-        super("cooking", inventoryAPI, 45);
+    public CookingCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("cooking", inventoryAPI, 45, customCrafting);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CookingCreator extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = (TestCache)guiHandler.getCustomCache();
+            TestCache cache = (TestCache) guiHandler.getCustomCache();
             if (validToSave(cache)) {
                 openChat("recipe_creator","save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     TestCache cache1 = (TestCache)guiHandler1.getCustomCache();

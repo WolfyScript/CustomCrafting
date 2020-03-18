@@ -28,8 +28,8 @@ import java.util.HashMap;
 
 public class AnvilCreator extends ExtendedGuiWindow {
 
-    public AnvilCreator(InventoryAPI inventoryAPI) {
-        super("anvil", inventoryAPI, 45);
+    public AnvilCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("anvil", inventoryAPI, 45, customCrafting);
     }
 
     @Override

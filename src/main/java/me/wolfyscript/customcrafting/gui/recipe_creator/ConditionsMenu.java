@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.EliteWorkbenchConditionButton;
@@ -28,8 +29,8 @@ import java.util.List;
 
 public class ConditionsMenu extends ExtendedGuiWindow {
 
-    public ConditionsMenu(InventoryAPI inventoryAPI) {
-        super("conditions", inventoryAPI, 45);
+    public ConditionsMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("conditions", inventoryAPI, 45, customCrafting);
     }
 
     @Override

@@ -33,8 +33,8 @@ public class RecipesList extends ExtendedGuiWindow {
     private HashMap<GuiHandler, String> namespaces = new HashMap<>();
     private static int maxPages = 0;
 
-    public RecipesList(InventoryAPI inventoryAPI) {
-        super("recipe_list", inventoryAPI, 54);
+    public RecipesList(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("recipe_list", inventoryAPI, 54, customCrafting);
     }
 
     @Override

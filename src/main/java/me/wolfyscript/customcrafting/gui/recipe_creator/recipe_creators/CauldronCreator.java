@@ -30,8 +30,8 @@ import java.util.HashMap;
 
 public class CauldronCreator extends ExtendedGuiWindow {
 
-    public CauldronCreator(InventoryAPI inventoryAPI) {
-        super("cauldron", inventoryAPI, 45);
+    public CauldronCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("cauldron", inventoryAPI, 45, customCrafting);
     }
 
     @Override

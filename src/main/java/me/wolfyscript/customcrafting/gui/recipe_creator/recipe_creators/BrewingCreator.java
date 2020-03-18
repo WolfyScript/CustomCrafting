@@ -29,8 +29,8 @@ import java.util.HashMap;
 
 public class BrewingCreator extends ExtendedGuiWindow {
 
-    public BrewingCreator(InventoryAPI inventoryAPI) {
-        super("brewing_stand", inventoryAPI, 45);
+    public BrewingCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("brewing_stand", inventoryAPI, 45, customCrafting);
     }
 
     @Override
@@ -143,6 +143,71 @@ public class BrewingCreator extends ExtendedGuiWindow {
         }));
         registerButton(new BrewingContainerButton(0));
         registerButton(new BrewingContainerButton(1));
+
+        registerButton(new ActionButton("potion_duration", new ButtonState("potion_duration", Material.CLOCK, new ButtonActionRender() {
+            @Override
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
+                BrewingConfig config = cache.getBrewingConfig();
+                if (event.getClick().isRightClick()) {
+                    //Change Mode
+                    config.setDurationChange(0);
+                    return true;
+                } else {
+                    //Change Value
+                    openChat("potion_duration", guiHandler, (guiHandler1, player1, s, strings) -> {
+                        try {
+                            int value = Integer.parseInt(s);
+                            config.setDurationChange(value);
+                        } catch (NumberFormatException ex) {
+                            api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        }
+                        return false;
+                    });
+                }
+                return true;
+            }
+
+            @Override
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
+                hashMap.put("%value%", cache.getBrewingConfig().getDurationChange());
+                return itemStack;
+            }
+        })));
+
+        registerButton(new ActionButton("potion_amplifier", new ButtonState("potion_amplifier", Material.IRON_SWORD, new ButtonActionRender() {
+            @Override
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
+                BrewingConfig config = cache.getBrewingConfig();
+                if (event.getClick().isRightClick()) {
+                    //Change Mode
+                    config.setDurationChange(0);
+                    return true;
+                } else {
+                    //Change Value
+                    openChat("potion_amplifier", guiHandler, (guiHandler1, player1, s, strings) -> {
+                        try {
+                            int value = Integer.parseInt(s);
+                            config.setAmplifierChange(value);
+                        } catch (NumberFormatException ex) {
+                            api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        }
+                        return false;
+                    });
+                }
+                return true;
+            }
+
+            @Override
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
+                hashMap.put("%value%", cache.getBrewingConfig().getAmplifierChange());
+                return itemStack;
+            }
+        })));
+
     }
 
     @EventHandler
@@ -165,6 +230,9 @@ public class BrewingCreator extends ExtendedGuiWindow {
 
             event.setButton(23, "fuelCost");
             event.setButton(31, "brewing.container_1");
+
+            event.setButton(33, "potion_duration");
+            event.setButton(34, "potion_amplifier");
 
             event.setButton(44, "save");
         }

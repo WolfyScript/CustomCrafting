@@ -22,8 +22,8 @@ import java.util.List;
 
 public class MainMenu extends ExtendedGuiWindow {
 
-    public MainMenu(InventoryAPI inventoryAPI) {
-        super("main_menu", inventoryAPI, 18);
+    public MainMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("main_menu", inventoryAPI, 18, customCrafting);
     }
 
     @Override
@@ -79,6 +79,11 @@ public class MainMenu extends ExtendedGuiWindow {
                 guiHandler.changeToInv("recipe_book");
                 return true;
             })));
+            registerButton(new ActionButton("brewing", new ButtonState("brewing", Material.BREWING_STAND, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setSetting(Setting.BREWING_STAND);
+                guiHandler.changeToInv("recipe_book");
+                return true;
+            })));
         }
     }
 
@@ -120,6 +125,9 @@ public class MainMenu extends ExtendedGuiWindow {
                 }
                 if (!recipeHandler.getAvailableGrindstoneRecipes(event.getPlayer()).isEmpty()) {
                     availableRecipes.add("grindstone");
+                }
+                if (!recipeHandler.getAvailableBrewingRecipes(event.getPlayer()).isEmpty()) {
+                    availableRecipes.add("brewing");
                 }
             }
 

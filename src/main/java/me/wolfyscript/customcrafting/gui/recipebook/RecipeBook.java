@@ -13,7 +13,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -37,8 +36,8 @@ import java.util.stream.Collectors;
 
 public class RecipeBook extends ExtendedGuiWindow {
 
-    public RecipeBook(InventoryAPI inventoryAPI) {
-        super("recipe_book", inventoryAPI, 54);
+    public RecipeBook(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("recipe_book", inventoryAPI, 54, customCrafting);
     }
 
     @Override
@@ -127,7 +126,6 @@ public class RecipeBook extends ExtendedGuiWindow {
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
             }
-
             if (knowledgeBook.getSubFolder() == 0) {
                 event.setButton(0, "back");
                 event.setButton(4, "recipe_book", "itemCategory");
@@ -139,11 +137,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                             if (CustomCrafting.getConfigHandler().getConfig().workbenchFilter()) {
                                 event.setButton(8, "recipe_book", "workbench.filter_button");
                             }
-                            for (AdvancedCraftingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player)) {
-                                if (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))) {
-                                    recipes.add(recipe);
-                                }
-                            }
+                            recipes = CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player).stream().filter(recipe -> workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))).collect(Collectors.toList());
                             break;
                         case ELITE_WORKBENCH:
                             recipes.addAll(recipeHandler.getAvailableEliteCraftingRecipes(player));
@@ -171,6 +165,9 @@ public class RecipeBook extends ExtendedGuiWindow {
                             break;
                         case GRINDSTONE:
                             recipes.addAll(recipeHandler.getAvailableGrindstoneRecipes(player));
+                            break;
+                        case BREWING_STAND:
+                            recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
                     }
                     if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
                         Iterator<CustomRecipe> recipeIterator = recipes.iterator();
@@ -189,14 +186,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                             } else {
                                 items.addAll(((CustomRecipe<RecipeConfig>) customRecipe).getCustomResults());
                             }
-                            boolean valid = false;
-                            for (CustomItem item : items) {
-                                if (knowledgeBook.getItemCategory().isValid(item.getType())) {
-                                    valid = true;
-                                    break;
-                                }
-                            }
-                            if (!valid) {
+                            if (items.stream().filter(item -> knowledgeBook.getItemCategory().isValid(item.getType())).collect(Collectors.toSet()).size() <= 0) {
                                 recipeIterator.remove();
                             }
                         }

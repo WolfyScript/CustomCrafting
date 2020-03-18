@@ -32,8 +32,8 @@ import java.util.Locale;
 
 public class WorkbenchCreator extends ExtendedGuiWindow {
 
-    public WorkbenchCreator(InventoryAPI inventoryAPI) {
-        super("workbench", inventoryAPI, 45);
+    public WorkbenchCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("workbench", inventoryAPI, 45, customCrafting);
     }
 
     @Override

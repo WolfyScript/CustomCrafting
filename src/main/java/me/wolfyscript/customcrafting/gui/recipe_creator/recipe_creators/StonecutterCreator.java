@@ -20,8 +20,8 @@ import java.util.Locale;
 
 public class StonecutterCreator extends ExtendedGuiWindow {
 
-    public StonecutterCreator(InventoryAPI inventoryAPI) {
-        super("stonecutter", inventoryAPI, 45);
+    public StonecutterCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("stonecutter", inventoryAPI, 45, customCrafting);
     }
 
     @Override

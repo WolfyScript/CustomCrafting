@@ -29,8 +29,8 @@ public class Settings extends ExtendedGuiWindow {
 
     static List<String> availableLangs = new ArrayList<>();
 
-    public Settings(InventoryAPI inventoryAPI) {
-        super("settings", inventoryAPI, 45);
+    public Settings(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("settings", inventoryAPI, 45, customCrafting);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class Settings extends ExtendedGuiWindow {
                         CustomCrafting.getConfigHandler().getConfig().save();
                         CustomCrafting.getRecipeHandler().onSave();
                         CustomCrafting.getConfigHandler().load();
-                        InventoryHandler invHandler = new InventoryHandler(api);
+                        InventoryHandler invHandler = new InventoryHandler(customCrafting);
                         invHandler.init();
                         api.sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
                         return true;

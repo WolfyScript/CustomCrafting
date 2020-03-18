@@ -23,8 +23,8 @@ import org.bukkit.event.EventHandler;
 
 public class ItemEditor extends ExtendedGuiWindow {
 
-    public ItemEditor(InventoryAPI inventoryAPI) {
-        super("item_editor", inventoryAPI, 45);
+    public ItemEditor(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("item_editor", inventoryAPI, 45, customCrafting);
     }
 
     @Override

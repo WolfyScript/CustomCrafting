@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 
 public class CraftingRecipeBook extends ExtendedGuiWindow {
 
-    public CraftingRecipeBook(InventoryAPI inventoryAPI) {
-        super("recipe_book", inventoryAPI, 54);
+    public CraftingRecipeBook(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("recipe_book", inventoryAPI, 54, customCrafting);
     }
 
     @Override

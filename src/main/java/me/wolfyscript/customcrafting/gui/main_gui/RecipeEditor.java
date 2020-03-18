@@ -18,8 +18,8 @@ import org.bukkit.event.EventHandler;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
-    public RecipeEditor(InventoryAPI inventoryAPI) {
-        super("recipe_editor", inventoryAPI, 45);
+    public RecipeEditor(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("recipe_editor", inventoryAPI, 45, customCrafting);
     }
 
     @Override

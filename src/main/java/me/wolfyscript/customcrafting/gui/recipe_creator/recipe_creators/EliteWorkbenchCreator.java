@@ -30,8 +30,8 @@ import java.util.Locale;
 
 public class EliteWorkbenchCreator extends ExtendedGuiWindow {
 
-    public EliteWorkbenchCreator(InventoryAPI inventoryAPI) {
-        super("elite_workbench", inventoryAPI, 54);
+    public EliteWorkbenchCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("elite_workbench", inventoryAPI, 54, customCrafting);
     }
 
     @Override

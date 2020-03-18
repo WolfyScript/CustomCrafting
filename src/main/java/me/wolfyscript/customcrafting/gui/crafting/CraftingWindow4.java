@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.crafting;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
@@ -12,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class CraftingWindow4 extends ExtendedGuiWindow {
 
-    public CraftingWindow4(InventoryAPI inventoryAPI) {
-        super("crafting_grid4", inventoryAPI, 36);
+    public CraftingWindow4(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("crafting_grid4", inventoryAPI, 36, customCrafting);
     }
 
     @Override
