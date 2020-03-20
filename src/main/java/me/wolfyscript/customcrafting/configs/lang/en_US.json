@@ -247,7 +247,7 @@
           "brewing": {
             "name": "&6Brewing Stand Recipe",
             "lore": [
-              "&8[&7Coming soon&8]"
+              ""
             ]
           },
           "item_editor": {
@@ -2074,6 +2074,41 @@
     },
     "recipe_book": {
       "global_items": {
+        "conditions": {
+          "world_time": {
+            "name": "&7- World Time - ",
+            "lore": [
+              "&eThis recipe can be crafted at",
+              "&6%mode% %value% time of day!"
+            ]
+          },
+          "weather": {
+            "modes": {
+              "storm": "&eRain/Snow",
+              "thunder": "&eThunder",
+              "storm_thunder": "&eRain/Snow &7+ &eThunder",
+              "none": "&eSunshine"
+            },
+            "name": "&7- World Weather -",
+            "lore": [
+              "&eThis recipe requires ",
+              "&6%value% &ewhen crafted!"
+            ]
+          },
+          "advanced_workbench": {
+            "name": "&7- Advanced Workbench -",
+            "lore": [
+              "&7Mode:&e %MODE%"
+            ]
+          },
+          "permission": {
+            "name": "&7- Permission - ",
+            "lore": [
+              "&7Permission:&e %VALUE%",
+              "&7Mode:&e %MODE%"
+            ]
+          }
+        },
         "itemCategory": {
           "brewing": {
             "name": "&6Brewing",
@@ -2290,6 +2325,12 @@
               "&eby &6%value% levels"
             ]
           }
+        },
+        "back_to_list": {
+          "name": "&7&lReturn",
+          "lore": [
+            "&7» &eReturn to Recipe List"
+          ]
         }
       },
       "main_menu": {

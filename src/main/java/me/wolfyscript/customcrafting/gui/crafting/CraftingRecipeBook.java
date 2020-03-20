@@ -164,14 +164,17 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                 if (knowledgeBook.getSubFolderPage() >= maxPages) {
                     knowledgeBook.setSubFolderPage(0);
                 }
+
+                CustomRecipe customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+                customRecipe.renderMenu(this, event);
+
                 if (knowledgeBook.getSubFolderPage() > 0) {
                     event.setButton(48, "previous_recipe");
                 }
+                event.setButton(49, "recipe_book", "back_to_list");
                 if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
                     event.setButton(50, "next_recipe");
                 }
-                CustomRecipe customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
-                customRecipe.renderMenu(this, event);
             }
         }
     }

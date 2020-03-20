@@ -73,7 +73,6 @@ public class CustomCrafting extends JavaPlugin {
         CustomItem.registerCustomData(new EliteWorkbenchData());
         GsonBuilder gsonBuilder = GsonUtil.getGsonBuilder();
         gsonBuilder.registerTypeHierarchyAdapter(Conditions.class, new Conditions.Serialization());
-
     }
 
     public static boolean hasPlayerCache(Player player) {

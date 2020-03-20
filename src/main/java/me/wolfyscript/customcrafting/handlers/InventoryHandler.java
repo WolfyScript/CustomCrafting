@@ -14,6 +14,10 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
+import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
@@ -34,6 +38,8 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
+
+import java.util.ArrayList;
 
 public class InventoryHandler {
 
@@ -135,6 +141,18 @@ public class InventoryHandler {
                 book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
                 return true;
             })), api);
+
+            recipeBook.registerButton(new ActionButton("back_to_list", new ButtonState("back_to_list", Material.BARRIER, (guiHandler, player, inventory, slot, inventoryClickEvent) -> {
+                TestCache cache = (TestCache) guiHandler.getCustomCache();
+                KnowledgeBook book = cache.getKnowledgeBook();
+                book.stopTimerTask();
+                IngredientContainerButton.resetButtons(guiHandler);
+                book.setRecipeItems(new ArrayList<>());
+                book.setSubFolderRecipes(new ArrayList<>());
+                book.setSubFolder(0);
+                return true;
+            })), api);
+
             recipeBook.registerButton(new ToggleButton("permission", new ButtonState("permission.disabled", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true), new ButtonState("permission.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> true)), api);
             recipeBook.registerButton(new MultipleChoiceButton("workbench.filter_button", new ButtonState("workbench.filter_button.all", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ADVANCED);
@@ -210,6 +228,29 @@ public class InventoryHandler {
             for (int i = 0; i < 45; i++) {
                 recipeBook.registerButton(new IngredientContainerButton(i), api);
             }
+
+
+            recipeBook.registerButton(new DummyButton("conditions.world_time", new ButtonState("conditions.world_time", Material.CLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                CustomRecipe recipe = (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
+                hashMap.put("%value%", ((WorldTimeCondition) recipe.getConditions().getByID("world_time")).getTime());
+                hashMap.put("%mode%", recipe.getConditions().getByID("world_time").getOption().getDisplayString(api));
+                return itemStack;
+            })), api);
+
+            recipeBook.registerButton(new ActionButton("conditions.weather", new ButtonState("conditions.weather", Material.WATER_BUCKET, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                CustomRecipe recipe = (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
+                hashMap.put("%value%", ((WeatherCondition) recipe.getConditions().getByID("weather")).getWeather().getDisplay(api));
+                //hashMap.put("%mode%", recipeConfig.getConditions().getByID("weather").getOption().getDisplayString(api));
+                return itemStack;
+            })), api);
+
+            recipeBook.registerButton(new ActionButton("conditions.permission", new ButtonState("conditions.permission", Material.REDSTONE, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                CustomRecipe recipe = (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
+                hashMap.put("%value%", ((PermissionCondition) recipe.getConditions().getByID("permission")).getPermission());
+                //hashMap.put("%mode%", recipeConfig.getConditions().getByID("permission").getOption().getDisplayString(api));
+                return itemStack;
+            })), api);
+
         }
 
         GuiCluster craftingCluster = invAPI.getOrRegisterGuiCluster("crafting");

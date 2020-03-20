@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
@@ -13,6 +15,7 @@ import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftConfig> {
 
@@ -138,10 +141,22 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
     @Override
     public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
         event.setButton(6, "back");
+        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         if (!getIngredients().isEmpty()) {
             event.setButton(24, "recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+            if (getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT)) {
+
+            }
+            List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("advanced_workbench") && !condition.getId().equals("permission")).collect(Collectors.toList());
+            int startSlot = 9 / (conditions.size() + 1);
+            int slot = 0;
+            for (Condition condition : conditions) {
+                if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
+                    event.setButton(36 + startSlot + slot, "recipe_book", "conditions." + condition.getId());
+                    slot += 2;
+                }
+            }
             int gridSize = 6;
-            int startSlot = 0;
             int invSlot;
             for (int i = 0; i < gridSize * gridSize; i++) {
                 invSlot = startSlot + i + (i / gridSize) * 3;

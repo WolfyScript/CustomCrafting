@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
@@ -13,6 +15,7 @@ import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedCraftConfig> {
 
@@ -115,14 +118,31 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
 
     @Override
     public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(0, "back");
         if (!getIngredients().isEmpty()) {
             if (getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
-                for (int i = 1; i < 8; i++) {
+                for (int i = 1; i < 9; i++) {
                     event.setButton(i, "none", "glass_purple");
                 }
-                for (int i = 45; i < 54; i++) {
+                for (int i = 36; i < 45; i++) {
                     event.setButton(i, "none", "glass_purple");
+                }
+            } else {
+                for (int i = 36; i < 45; i++) {
+                    event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+                }
+            }
+            if (getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT)) {
+
+            }
+            List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("advanced_workbench") && !condition.getId().equals("permission")).collect(Collectors.toList());
+            int startSlot = 9 / (conditions.size() + 1);
+            int slot = 0;
+            for (Condition condition : conditions) {
+                if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
+                    event.setButton(36 + startSlot + slot, "recipe_book", "conditions." + condition.getId());
+                    slot += 2;
                 }
             }
             event.setButton(23, "recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
