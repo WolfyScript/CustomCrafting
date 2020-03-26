@@ -128,15 +128,11 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
                 for (int i = 36; i < 45; i++) {
                     event.setButton(i, "none", "glass_purple");
                 }
-            } else {
-                for (int i = 36; i < 45; i++) {
-                    event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-                }
             }
             if (getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT)) {
-
+                //TODO display for admins
             }
-            List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("advanced_workbench") && !condition.getId().equals("permission")).collect(Collectors.toList());
+            List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
             int startSlot = 9 / (conditions.size() + 1);
             int slot = 0;
             for (Condition condition : conditions) {

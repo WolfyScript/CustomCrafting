@@ -59,7 +59,7 @@ public class BrewingCreator extends ExtendedGuiWindow {
                                 cache.resetBrewingConfig();
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", config.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getId()});
                             ex.printStackTrace();
                             return false;
                         }
@@ -207,7 +207,6 @@ public class BrewingCreator extends ExtendedGuiWindow {
                 return itemStack;
             }
         })));
-
     }
 
     @EventHandler
@@ -223,16 +222,16 @@ public class BrewingCreator extends ExtendedGuiWindow {
             event.setButton(5, "priority");
             event.setButton(7, "exact_meta");
 
-            event.setButton(13, "brewing.container_0");
+            event.setButton(11, "brewing.container_0");
 
-            event.setButton(22, "brewing_stand");
-            event.setButton(21, "brewTime");
+            event.setButton(20, "brewing_stand");
+            event.setButton(19, "brewTime");
 
-            event.setButton(23, "fuelCost");
-            event.setButton(31, "brewing.container_1");
+            event.setButton(21, "fuelCost");
+            event.setButton(29, "brewing.container_1");
 
-            event.setButton(33, "potion_duration");
-            event.setButton(34, "potion_amplifier");
+            event.setButton(23, "potion_duration");
+            event.setButton(25, "potion_amplifier");
 
             event.setButton(44, "save");
         }

@@ -68,13 +68,13 @@ public class CookingCreator extends ExtendedGuiWindow {
                                 CustomRecipe finalCustomRecipe = customRecipe;
                                 Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
                             } else {
-                                api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
+                                api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", cookingConfig.getId()});
                             }
                             if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetCookingConfig();
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", cookingConfig.getId()});
                             ex.printStackTrace();
                             return false;
                         }
