@@ -189,7 +189,7 @@ public class CustomCrafting extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new EnchantListener(), this);
             getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
             getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
-            getServer().getPluginManager().registerEvents(new GrindStoneListener(api), this);
+            getServer().getPluginManager().registerEvents(new GrindStoneListener(this), this);
             getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
 
             CommandCC commandCC = new CommandCC(this);
