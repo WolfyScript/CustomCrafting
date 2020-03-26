@@ -14,6 +14,7 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
+import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
@@ -147,6 +148,7 @@ public class InventoryHandler {
                 KnowledgeBook book = cache.getKnowledgeBook();
                 book.stopTimerTask();
                 IngredientContainerButton.resetButtons(guiHandler);
+                book.setResearchItems(new ArrayList<>());
                 book.setRecipeItems(new ArrayList<>());
                 book.setSubFolderRecipes(new ArrayList<>());
                 book.setSubFolder(0);
@@ -229,25 +231,27 @@ public class InventoryHandler {
                 recipeBook.registerButton(new IngredientContainerButton(i), api);
             }
 
-
             recipeBook.registerButton(new DummyButton("conditions.world_time", new ButtonState("conditions.world_time", Material.CLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 CustomRecipe recipe = (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
                 hashMap.put("%value%", ((WorldTimeCondition) recipe.getConditions().getByID("world_time")).getTime());
-                hashMap.put("%mode%", recipe.getConditions().getByID("world_time").getOption().getDisplayString(api));
+
+                if (recipe.getConditions().getByID("world_time").getOption().equals(Conditions.Option.EXACT)) {
+                    hashMap.put("%mode%", "");
+                } else {
+                    hashMap.put("%mode%", recipe.getConditions().getByID("world_time").getOption().getDisplayString(api));
+                }
                 return itemStack;
             })), api);
 
             recipeBook.registerButton(new ActionButton("conditions.weather", new ButtonState("conditions.weather", Material.WATER_BUCKET, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 CustomRecipe recipe = (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
                 hashMap.put("%value%", ((WeatherCondition) recipe.getConditions().getByID("weather")).getWeather().getDisplay(api));
-                //hashMap.put("%mode%", recipeConfig.getConditions().getByID("weather").getOption().getDisplayString(api));
                 return itemStack;
             })), api);
 
             recipeBook.registerButton(new ActionButton("conditions.permission", new ButtonState("conditions.permission", Material.REDSTONE, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 CustomRecipe recipe = (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
                 hashMap.put("%value%", ((PermissionCondition) recipe.getConditions().getByID("permission")).getPermission());
-                //hashMap.put("%mode%", recipeConfig.getConditions().getByID("permission").getOption().getDisplayString(api));
                 return itemStack;
             })), api);
 

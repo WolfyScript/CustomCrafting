@@ -82,7 +82,7 @@
     },
     "darkmode": {
       "enabled": "&aEnabled Dark Mode for the GUIs!",
-      "disabled": "&cDisabled Dar Mode for the GUIs!"
+      "disabled": "&cDisabled Dark Mode for the GUIs!"
     },
     "give": {
       "player_offline": "&cThe player &4%PLAYER% &cis not online!",
@@ -2076,33 +2076,27 @@
       "global_items": {
         "conditions": {
           "world_time": {
-            "name": "&7- World Time - ",
+            "name": "&6&l» World Time «",
             "lore": [
-              "&eThis recipe can be crafted at",
-              "&6%mode% %value% time of day!"
+              "&7This recipe can be crafted when the ",
+              "&7world time is %mode% %value%&7!"
             ]
           },
           "weather": {
-            "modes": {
-              "storm": "&eRain/Snow",
-              "thunder": "&eThunder",
-              "storm_thunder": "&eRain/Snow &7+ &eThunder",
-              "none": "&eSunshine"
-            },
-            "name": "&7- World Weather -",
+            "name": "&6&l» World Weather «",
             "lore": [
-              "&eThis recipe requires ",
-              "&6%value% &ewhen crafted!"
+              "&7This recipe requires ",
+              "&6%value% &7to be crafted!"
             ]
           },
           "advanced_workbench": {
-            "name": "&7- Advanced Workbench -",
+            "name": "&6&l» Advanced Workbench «",
             "lore": [
-              "&7Mode:&e %MODE%"
+              "&7This recipe can only be crafted "
             ]
           },
           "permission": {
-            "name": "&7- Permission - ",
+            "name": "&6&l» Permission «",
             "lore": [
               "&7Permission:&e %VALUE%",
               "&7Mode:&e %MODE%"
@@ -2325,6 +2319,9 @@
               "&eby &6%value% levels"
             ]
           }
+        },
+        "grindstone": {
+          "name": "&7&lGrindstone"
         },
         "back_to_list": {
           "name": "&7&lReturn",
