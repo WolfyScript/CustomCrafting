@@ -37,7 +37,7 @@ public class PatronsMenu extends ExtendedGuiWindow {
         registerButton(new PatronButton("Apprehentice", "Foxtrot200", "db61eab0-7fb1-48db-986f-125e73787976"));
         registerButton(new PatronButton("Alex", "LeftAlex", "af1ef7e4-acc3-44a1-8323-8f50b92be2c9"));
         registerButton(new PatronButton("Vincent Deniau", "VinceTheWolf", "a307c2b3-463a-4db6-8a6a-07419909af72"));
-        //registerButton(new PatronButton("Vincent Deniau", "VinceTheWolf", "a307c2b3-463a-4db6-8a6a-07419909af72"));
+        registerButton(new PatronButton("Arthur Neumann", ""));
     }
 
     @EventHandler
@@ -45,9 +45,10 @@ public class PatronsMenu extends ExtendedGuiWindow {
         if (event.verify(this)) {
             event.setButton(0, "back");
 
-            event.setButton(11, "patron.apprehentice");
-            event.setButton(13, "patron.alex");
-            event.setButton(15, "patron.vincent_deniau");
+            event.setButton(10, "patron.apprehentice");
+            event.setButton(12, "patron.alex");
+            event.setButton(14, "patron.vincent_deniau");
+            event.setButton(16, "patron.arthur_neumann");
         }
     }
 

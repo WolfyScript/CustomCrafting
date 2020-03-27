@@ -26,25 +26,48 @@ public class PatronButton extends DummyButton {
 
     private ItemStack head;
 
-    public PatronButton(String name, String minecraftName, String uuid) {
+    public PatronButton(String name, String minecraftName, String uuid, ItemStack head) {
         super("patron." + name.replace(" ", "_").toLowerCase(Locale.ROOT), new ButtonState("", Material.PLAYER_HEAD, null));
         this.minecraftName = minecraftName;
         this.name = name;
-        this.uuid = UUID.fromString(uuid);
 
-        try {
-            URL url_1 = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
-            InputStreamReader reader_1 = new InputStreamReader(url_1.openStream());
-            JsonObject textureProperty = (JsonObject) new JsonParser().parse(reader_1).getAsJsonObject().get("properties").getAsJsonArray().get(0);
-            head = WolfyUtilities.getSkullByValue(textureProperty.get("value").getAsString());
-            ItemMeta itemMeta = head.getItemMeta();
-            itemMeta.setDisplayName("§6§l" + name);
-            itemMeta.setLore(Arrays.asList("§8aka. " + minecraftName));
-            head.setItemMeta(itemMeta);
-        } catch (IOException e) {
-            System.err.println("Could not get skin data from session servers!");
-            e.printStackTrace();
+        if (!uuid.isEmpty() && head == null) {
+            this.uuid = UUID.fromString(uuid);
+            try {
+                URL url_1 = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
+                InputStreamReader reader_1 = new InputStreamReader(url_1.openStream());
+                JsonObject textureProperty = (JsonObject) new JsonParser().parse(reader_1).getAsJsonObject().get("properties").getAsJsonArray().get(0);
+                this.head = WolfyUtilities.getSkullByValue(textureProperty.get("value").getAsString());
+
+            } catch (IOException e) {
+                System.err.println("Could not get skin data from session servers!");
+            }
+        } else if (head != null) {
+            this.head = head;
         }
+        if (this.head == null) {
+            this.head = new ItemStack(Material.CREEPER_HEAD);
+        }
+
+        ItemMeta itemMeta = this.head.getItemMeta();
+        itemMeta.setDisplayName("§6§l" + name);
+        if (!minecraftName.isEmpty()) {
+            itemMeta.setLore(Arrays.asList("§8aka. " + minecraftName));
+        }
+        this.head.setItemMeta(itemMeta);
+
+    }
+
+    public PatronButton(String name, String minecraftName, String uuid) {
+        this(name, minecraftName, uuid, null);
+    }
+
+    public PatronButton(String name, String minecraftName, ItemStack head) {
+        this(name, minecraftName, "", head);
+    }
+
+    public PatronButton(String name, String minecraftName) {
+        this(name, minecraftName, "", null);
     }
 
     @Override
