@@ -74,6 +74,7 @@ public class RecipeBook extends ExtendedGuiWindow {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
                 TestCache cache = (TestCache) guiHandler.getCustomCache();
                 KnowledgeBook book = cache.getKnowledgeBook();
+                book.stopTimerTask();
                 IngredientContainerButton.resetButtons(guiHandler);
                 int nextPage = book.getSubFolderPage() + 1;
                 if (nextPage < book.getSubFolderRecipes().size()) {
@@ -96,6 +97,7 @@ public class RecipeBook extends ExtendedGuiWindow {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
                 TestCache cache = (TestCache) guiHandler.getCustomCache();
                 KnowledgeBook book = cache.getKnowledgeBook();
+                book.stopTimerTask();
                 IngredientContainerButton.resetButtons(guiHandler);
                 if (book.getSubFolderPage() > 0) {
                     book.setSubFolderPage(book.getSubFolderPage() - 1);

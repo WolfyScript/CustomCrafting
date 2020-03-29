@@ -213,6 +213,6 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
         }
         event.setButton(23, "recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled");
         event.setButton(32, "recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled");
-        event.setButton(25, "recipe_book", "ingredient.container_34");
+        event.setButton(25, "recipe_book", "ingredient.container_25");
     }
 }

@@ -67,9 +67,9 @@ public class ItemCreator extends ExtendedGuiWindow {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
                 GuiWindow guiWindow = guiHandler.getCurrentInv();
-                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                     ItemStack item = inventory.getItem(i);
-                    ((TestCache)guiHandler.getCustomCache()).getItems().setItem(new CustomItem(item != null ? item : new ItemStack(Material.AIR)));
+                    ((TestCache) guiHandler.getCustomCache()).getItems().setItem(new CustomItem(item != null ? item : new ItemStack(Material.AIR)));
                     ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
                 }, 1);
                 return false;
@@ -747,7 +747,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 @Override
                 public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent inventoryClickEvent) {
                     TestCache cache = ((TestCache)guiHandler.getCustomCache());
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
                         ItemStack replacement = inventory.getItem(slot);
                         if (replacement != null) {
                             cache.getItems().getItem().setReplacement(CustomItem.getByItemStack(replacement));

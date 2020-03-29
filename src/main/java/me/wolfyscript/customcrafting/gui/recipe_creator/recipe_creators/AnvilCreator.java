@@ -49,7 +49,7 @@ public class AnvilCreator extends ExtendedGuiWindow {
                             return true;
                         }
                         try {
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
@@ -61,7 +61,7 @@ public class AnvilCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"), 1);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openCluster("none"), 1);
                     }
                     return false;
                 });

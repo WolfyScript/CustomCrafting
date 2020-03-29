@@ -213,7 +213,7 @@ public class KnowledgeBook {
                             }
                         }
                     }
-                    ((IngredientContainerButton) cluster.getButton("ingredient.container_20")).setVariants(guiHandler, variantsSource);
+                    ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, variantsSource);
 
                     List<CustomItem> variantsResult = new ArrayList<>();
                     for (CustomItem customItem : furnaceRecipe.getCustomResults()) {
@@ -223,7 +223,7 @@ public class KnowledgeBook {
                             }
                         }
                     }
-                    ((IngredientContainerButton) cluster.getButton("ingredient.container_33")).setVariants(guiHandler, variantsResult);
+                    ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, variantsResult);
                 }
                 return;
             case ANVIL:
@@ -231,7 +231,7 @@ public class KnowledgeBook {
                 List<CustomItem> inputLeft = new ArrayList<>();
                 customAnvilRecipe.getInputLeft().forEach(item -> inputLeft.add(item.getRealItem()));
                 List<CustomItem> inputRight = new ArrayList<>();
-                customAnvilRecipe.getInputRight().forEach(item -> inputLeft.add(item.getRealItem()));
+                customAnvilRecipe.getInputRight().forEach(item -> inputRight.add(item.getRealItem()));
 
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
@@ -265,7 +265,7 @@ public class KnowledgeBook {
                         ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
                     }
                 }
-                ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(cauldronRecipe.getCustomResult().getRealItem()));
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, Collections.singletonList(cauldronRecipe.getCustomResult().getRealItem()));
                 return;
             case GRINDSTONE:
                 GrindstoneRecipe grindstoneRecipe = (GrindstoneRecipe) recipe;
@@ -281,9 +281,9 @@ public class KnowledgeBook {
                 return;
             case BREWING:
                 BrewingRecipe brewingRecipe = (BrewingRecipe) recipe;
-                ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, brewingRecipe.getCustomResults().stream().map(item -> item.getRealItem()).collect(Collectors.toList()));
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, brewingRecipe.getCustomResults().stream().map(item -> item.getRealItem()).collect(Collectors.toList()));
                 if (!brewingRecipe.getAllowedItems().isEmpty()) {
-                    ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, brewingRecipe.getAllowedItems().stream().map(item -> item.getRealItem()).collect(Collectors.toList()));
+                    ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, brewingRecipe.getAllowedItems().stream().map(item -> item.getRealItem()).collect(Collectors.toList()));
                 }
 
 

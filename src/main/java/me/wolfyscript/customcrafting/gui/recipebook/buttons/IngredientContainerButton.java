@@ -28,7 +28,6 @@ public class IngredientContainerButton extends Button {
 
     private HashMap<GuiHandler, List<CustomItem>> variantsMap = new HashMap<>();
     private HashMap<GuiHandler, Integer> timings = new HashMap<>();
-    private HashMap<GuiHandler, Integer> recipeSlots = new HashMap<>();
 
     private HashMap<GuiHandler, BukkitTask> tasks = new HashMap<>();
 

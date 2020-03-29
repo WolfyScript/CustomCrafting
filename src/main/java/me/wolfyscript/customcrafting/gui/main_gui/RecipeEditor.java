@@ -39,7 +39,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                 if (args.length > 1) {
                     CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
                     if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler1)) {
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> changeToCreator(guiHandler), 1);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
                         api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache)guiHandler.getCustomCache()).getSetting().name()});
@@ -64,14 +64,14 @@ public class RecipeEditor extends ExtendedGuiWindow {
                     api.sendPlayerMessage(player1, "none", "recipe_editor", "delete.confirm", new String[]{"%recipe%", recipe.getId()});
                     api.sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> {
                         guiHandler1.openCluster();
-                        Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.getInst(), () -> {
+                        Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
                             CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
                             if (CustomCrafting.hasDataBaseHandler()) {
                                 CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getNamespace(), recipe.getConfig().getName());
                                 player1.sendMessage("§aRecipe deleted!");
                             } else {
                                 //recipe.getConfig().save();
-                                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                                Bukkit.getScheduler().runTask(customCrafting, () -> {
                                     try {
                                         System.gc();
                                         if (recipe.getConfig().getConfigFile().delete()) {

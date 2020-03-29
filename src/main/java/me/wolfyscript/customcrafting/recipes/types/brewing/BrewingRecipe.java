@@ -125,11 +125,11 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         KnowledgeBook book = ((TestCache) event.getGuiHandler().getCustomCache()).getKnowledgeBook();
         event.setButton(0, "back");
-        event.setButton(11, "recipe_book", "ingredient.container_25");
+        event.setButton(11, "recipe_book", "ingredient.container_11");
         event.setButton(20, "recipe_book", "brewing.icon");
 
         if (!InventoryUtils.isEmpty(new ArrayList<>(this.getAllowedItems()))) {
-            event.setButton(29, "recipe_book", "ingredient.container_34");
+            event.setButton(29, "recipe_book", "ingredient.container_29");
         }
         if (this.getDurationChange() > 0) {
             event.setButton(23, "recipe_book", "brewing.potion_duration");

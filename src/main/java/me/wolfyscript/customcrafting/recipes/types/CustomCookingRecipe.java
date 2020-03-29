@@ -38,27 +38,27 @@ public interface CustomCookingRecipe<T extends CookingConfig> extends CustomReci
                 slot += 2;
             }
         }
-        event.setButton(22, "recipe_book", "cooking.icon");
-        event.setButton(29, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        event.setButton(20, "recipe_book", "ingredient.container_20");
-        event.setButton(33, "recipe_book", "ingredient.container_33");
+        event.setButton(13, "recipe_book", "cooking.icon");
+        event.setButton(20, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        event.setButton(11, "recipe_book", "ingredient.container_11");
+        event.setButton(24, "recipe_book", "ingredient.container_24");
 
         if (book.getTimerTask() == -1) {
             AtomicInteger i = new AtomicInteger();
             book.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
                 if (i.get() == 0) {
-                    event.setButton(32, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
-                    event.setButton(31, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
-                    event.setButton(30, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                    event.setButton(23, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                    event.setButton(22, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                    event.setButton(21, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
                 } else if (i.get() == 1) {
-                    event.setItem(30, new ItemStack(Material.YELLOW_CONCRETE));
+                    event.setItem(21, new ItemStack(Material.YELLOW_CONCRETE));
                 } else if (i.get() == 2) {
-                    event.setItem(30, new ItemStack(Material.ORANGE_CONCRETE));
-                    event.setItem(31, new ItemStack(Material.YELLOW_CONCRETE));
+                    event.setItem(21, new ItemStack(Material.ORANGE_CONCRETE));
+                    event.setItem(22, new ItemStack(Material.YELLOW_CONCRETE));
                 } else {
-                    event.setItem(30, new ItemStack(Material.RED_CONCRETE_POWDER));
-                    event.setItem(31, new ItemStack(Material.ORANGE_CONCRETE));
-                    event.setItem(32, new ItemStack(Material.YELLOW_CONCRETE));
+                    event.setItem(21, new ItemStack(Material.RED_CONCRETE_POWDER));
+                    event.setItem(22, new ItemStack(Material.ORANGE_CONCRETE));
+                    event.setItem(23, new ItemStack(Material.YELLOW_CONCRETE));
                 }
                 if (i.get() < 3) {
                     i.getAndIncrement();

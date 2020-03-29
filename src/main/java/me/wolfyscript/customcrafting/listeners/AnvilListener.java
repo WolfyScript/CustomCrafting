@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilData;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -20,11 +21,17 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AnvilListener implements Listener {
+
+    private static HashMap<UUID, AnvilData> preCraftedRecipes = new HashMap<>();
+
+    private CustomCrafting customCrafting;
+
+    public AnvilListener(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+    }
 
     @EventHandler
     public void onCheck(PrepareAnvilEvent event) {
@@ -32,17 +39,20 @@ public class AnvilListener implements Listener {
         AnvilInventory inventory = event.getInventory();
         List<CustomAnvilRecipe> recipes = CustomCrafting.getRecipeHandler().getAvailableAnvilRecipes(player);
         recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
+        preCraftedRecipes.remove(player.getUniqueId());
         for (CustomAnvilRecipe recipe : recipes) {
+            CustomItem finalInputLeft = null;
+            CustomItem finalInputRight = null;
+
             if (recipe.hasInputLeft()) {
-                boolean left = false;
                 if (inventory.getItem(0) != null) {
                     for (CustomItem customItem : recipe.getInputLeft()) {
                         if (customItem.isSimilar(inventory.getItem(0), recipe.isExactMeta())) {
-                            left = true;
+                            finalInputLeft = customItem.clone();
                             break;
                         }
                     }
-                    if (!left) {
+                    if (finalInputLeft == null) {
                         continue;
                     }
                 } else {
@@ -50,15 +60,14 @@ public class AnvilListener implements Listener {
                 }
             }
             if (recipe.hasInputRight()) {
-                boolean right = false;
                 if (inventory.getItem(1) != null) {
                     for (CustomItem customItem : recipe.getInputRight()) {
                         if (customItem.isSimilar(inventory.getItem(1), recipe.isExactMeta())) {
-                            right = true;
+                            finalInputRight = customItem.clone();
                             break;
                         }
                     }
-                    if (!right) {
+                    if (finalInputRight == null) {
                         continue;
                     }
                 } else {
@@ -145,6 +154,11 @@ public class AnvilListener implements Listener {
                     result.setItemMeta(itemMeta);
                 }
             }
+
+            //Save current active recipe to consume correct item inputs!
+            AnvilData anvilData = new AnvilData(recipe, finalInputLeft, finalInputRight);
+            preCraftedRecipes.put(player.getUniqueId(), anvilData);
+
             /*
                  Set the values and result 1 tick after they are replaced by NMS.
                  So the player will get the correct Item and the correct values are displayed!
@@ -165,7 +179,34 @@ public class AnvilListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() instanceof AnvilInventory) {
             AnvilInventory inventory = (AnvilInventory) event.getClickedInventory();
+            Player player = (Player) event.getWhoClicked();
             //TODO: Input consume method
+            if (event.getSlot() == 2) {
+                if (preCraftedRecipes.get(player.getUniqueId()) != null) {
+                    //Custom Recipe
+                    AnvilData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
+                    CustomItem inputLeft = grindstoneData.getInputLeft();
+                    CustomItem inputRight = grindstoneData.getInputRight();
+
+                    final ItemStack itemLeft = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
+                    final ItemStack itemRight = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
+
+                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                        if (inputLeft != null) {
+                            inputLeft.consumeItem(itemLeft, 1, inventory);
+                            inventory.setItem(0, itemLeft);
+                        }
+                        if (inputRight != null) {
+                            inputRight.consumeItem(itemRight, 1, inventory);
+                            inventory.setItem(1, itemRight);
+                        }
+                        preCraftedRecipes.remove(player.getUniqueId());
+                    }, 1);
+                    return;
+                } else {
+                    //Vanilla Recipe
+                }
+            }
         }
     }
 }

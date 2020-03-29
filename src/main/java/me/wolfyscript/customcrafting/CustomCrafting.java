@@ -128,6 +128,27 @@ public class CustomCrafting extends JavaPlugin {
         return true;
     }
 
+    @Deprecated
+    public static Plugin getInst() {
+        return instance;
+    }
+
+    public void onDisable() {
+        if (loaded) {
+            getConfigHandler().getConfig().save();
+            workbenches.endTask();
+            workbenches.save();
+            cauldrons.endAutoSaveTask();
+            cauldrons.save();
+            getRecipeHandler().onSave();
+            savePlayerStatistics();
+        }
+    }
+
+    public static ConfigHandler getConfigHandler() {
+        return configHandler;
+    }
+
     public void onEnable() {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
@@ -185,7 +206,7 @@ public class CustomCrafting extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new CraftListener(api), this);
             getServer().getPluginManager().registerEvents(new BlockListener(api), this);
             getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
-            getServer().getPluginManager().registerEvents(new AnvilListener(), this);
+            getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
             getServer().getPluginManager().registerEvents(new EnchantListener(), this);
             getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
             getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
@@ -233,26 +254,6 @@ public class CustomCrafting extends JavaPlugin {
             metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
         }
         System.out.println("------------------------------------------------------------------------");
-    }
-
-    public void onDisable() {
-        if (loaded) {
-            getConfigHandler().getConfig().save();
-            workbenches.endTask();
-            workbenches.save();
-            cauldrons.endAutoSaveTask();
-            cauldrons.save();
-            getRecipeHandler().onSave();
-            savePlayerStatistics();
-        }
-    }
-
-    public static ConfigHandler getConfigHandler() {
-        return configHandler;
-    }
-
-    public static Plugin getInst() {
-        return instance;
     }
 
     public static WolfyUtilities getApi() {

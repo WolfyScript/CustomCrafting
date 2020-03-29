@@ -159,6 +159,9 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                 for (int i = 1; i < 9; i++) {
                     event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
                 }
+                for (int i = 36; i < 45; i++) {
+                    event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+                }
                 event.setButton(0, "back");
                 int maxPages = recipes.size();
                 if (knowledgeBook.getSubFolderPage() >= maxPages) {

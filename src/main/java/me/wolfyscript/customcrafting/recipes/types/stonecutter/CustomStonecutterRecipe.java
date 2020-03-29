@@ -86,8 +86,8 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
         event.setButton(0, "back");
         //TODO STONECUTTER
-        event.setItem(20, getSource().get(0));
-        event.setItem(24, getCustomResult().getRealItem());
+        event.setButton(20, "recipe_book", "ingredient.container_20");
+        event.setButton(24, "recipe_book", "ingredient.container_24");
         event.setButton(29, "none", "glass_green");
         event.setButton(30, "none", "glass_green");
         event.setButton(31, "recipe_book", "stonecutter");

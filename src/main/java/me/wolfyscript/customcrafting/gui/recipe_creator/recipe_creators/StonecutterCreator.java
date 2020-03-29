@@ -48,7 +48,7 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                             stonecutterConfig.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
                         }
                         try {
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                 CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
@@ -60,7 +60,7 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"));
+                        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openCluster("none"));
                     }
                     return false;
                 });
