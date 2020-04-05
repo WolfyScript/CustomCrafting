@@ -1060,13 +1060,10 @@ public class ItemCreator extends ExtendedGuiWindow {
             event.setButton(14, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
             event.setButton(22, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
 
-            if (!items.isRecipeItem()) {
-                event.setButton(3, "save_item");
-            } else {
+            if (items.isRecipeItem()) {
                 event.setButton(2, "apply_item");
-                event.setButton(3, "save_item");
             }
-
+            event.setButton(3, "save_item");
 
             List<String> options = new ArrayList<>();
             options.add("display_name.option");
@@ -1112,6 +1109,8 @@ public class ItemCreator extends ExtendedGuiWindow {
             if (items.getPage() + 1 < maxPages) {
                 event.setButton(5, "page_next");
             }
+
+
             int slot = 9;
             int j = 14 * items.getPage();
             for (int i = 0; i < 14; i++) {
@@ -1127,6 +1126,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                     event.setButton(slot + i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
                 }
             }
+
+
             if (!items.getItem().getType().equals(Material.AIR)) {
                 //DRAW Sections
                 switch (cache.getSubSetting()) {
@@ -1176,15 +1177,19 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(45, "meta_ignore.attributes_modifiers");
                         break;
                     case "player_head":
-                        event.setButton(38, "player_head.texture.input");
-                        event.setButton(39, "player_head.texture.apply");
-                        event.setButton(41, "player_head.owner");
-                        event.setButton(45, "meta_ignore.playerHead");
+                        if (items.getItem() != null && items.getItem().getType().equals(Material.PLAYER_HEAD)) {
+                            event.setButton(38, "player_head.texture.input");
+                            event.setButton(39, "player_head.texture.apply");
+                            event.setButton(41, "player_head.owner");
+                            event.setButton(45, "meta_ignore.playerHead");
+                        }
                         break;
                     case "potion":
-                        event.setButton(39, "potion.add");
-                        event.setButton(41, "potion.remove");
-                        event.setButton(45, "meta_ignore.potion");
+                        if (items.getItem() != null && items.getItem().hasItemMeta() && items.getItem().getItemMeta() instanceof PotionMeta) {
+                            event.setButton(39, "potion.add");
+                            event.setButton(41, "potion.remove");
+                            event.setButton(45, "meta_ignore.potion");
+                        }
                         break;
                     case "damage":
                         event.setButton(39, "damage.set");
@@ -1245,12 +1250,14 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(41, "rarity.reset");
                         break;
                     case "elite_workbench":
-                        ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).getGridSize() - 3);
-                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).isEnabled());
-                        event.setButton(37, "elite_workbench.particles");
-                        event.setButton(39, "elite_workbench.grid_size");
-                        event.setButton(41, "elite_workbench.toggle");
-                        event.setButton(43, "elite_workbench.advanced_recipes");
+                        if (items.getItem().getType().isBlock()) {
+                            ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).getGridSize() - 3);
+                            ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).isEnabled());
+                            event.setButton(37, "elite_workbench.particles");
+                            event.setButton(39, "elite_workbench.grid_size");
+                            event.setButton(41, "elite_workbench.toggle");
+                            event.setButton(43, "elite_workbench.advanced_recipes");
+                        }
                         break;
                     case "armor_slots":
                         ((ToggleButton) event.getGuiWindow().getButton("armor_slots.head")).setState(event.getGuiHandler(), items.getItem().hasEquipmentSlot(EquipmentSlot.HEAD));
@@ -1297,6 +1304,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     event.setButton(40, "attribute.save");
                     event.setButton(49, "attribute.delete");
                 }
+
             }
         }
     }

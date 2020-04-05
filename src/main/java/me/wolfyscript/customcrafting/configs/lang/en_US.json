@@ -2022,6 +2022,10 @@
       },
       "brewing_stand": {
         "gui_name": "&4&lCreator &7[&8Brewing Satnd&7]",
+        "messages": {
+          "potion_duration": "&eType in the amount of ticks the potions duration should change",
+          "potion_aplifier": "&eType in the amount of levels the potions amplifier should change"
+        },
         "items": {
           "brewing_stand": {
             "name": "&4"
