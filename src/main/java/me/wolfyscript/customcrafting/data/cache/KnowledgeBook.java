@@ -184,9 +184,7 @@ public class KnowledgeBook {
                 EliteCraftingRecipe eliteCraftingRecipe = (EliteCraftingRecipe) recipe;
                 if (!eliteCraftingRecipe.getIngredients().isEmpty()) {
                     List<CustomItem> results = new ArrayList<>();
-                    eliteCraftingRecipe.getCustomResults().forEach(item -> {
-                        results.add(item.getRealItem());
-                    });
+                    eliteCraftingRecipe.getCustomResults().forEach(item -> results.add(item.getRealItem()));
                     ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, results);
                     int gridSize = 6;
                     int startSlot = 0;
@@ -195,7 +193,8 @@ public class KnowledgeBook {
                         invSlot = startSlot + i + (i / gridSize) * 3;
                         List<CustomItem> variants = new ArrayList<>();
                         eliteCraftingRecipe.getIngredients(i).forEach(item -> variants.add(item.getRealItem()));
-                        ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, variants);
+                        IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot);
+                        button.setVariants(guiHandler, variants);
                     }
                 }
                 return;
