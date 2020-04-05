@@ -109,14 +109,18 @@ public class InventoryHandler {
 
         GuiCluster recipeCreator = invAPI.getOrRegisterGuiCluster("recipe_creator");
         {
-            recipeCreator.registerGuiWindow(new AnvilCreator(invAPI, customCrafting));
-            recipeCreator.registerGuiWindow(new CookingCreator(invAPI, customCrafting));
-            recipeCreator.registerGuiWindow(new CauldronCreator(invAPI, customCrafting));
-            recipeCreator.registerGuiWindow(new StonecutterCreator(invAPI, customCrafting));
-            recipeCreator.registerGuiWindow(new GrindstoneCreator(invAPI, customCrafting));
             recipeCreator.registerGuiWindow(new WorkbenchCreator(invAPI, customCrafting));
-            recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI, customCrafting));
-            recipeCreator.registerGuiWindow(new BrewingCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new CookingCreator(invAPI, customCrafting));
+            recipeCreator.registerGuiWindow(new AnvilCreator(invAPI, customCrafting));
+
+            if (WolfyUtilities.hasVillagePillageUpdate()) {
+                recipeCreator.registerGuiWindow(new CauldronCreator(invAPI, customCrafting));
+                recipeCreator.registerGuiWindow(new StonecutterCreator(invAPI, customCrafting));
+                recipeCreator.registerGuiWindow(new GrindstoneCreator(invAPI, customCrafting));
+                recipeCreator.registerGuiWindow(new EliteWorkbenchCreator(invAPI, customCrafting));
+                recipeCreator.registerGuiWindow(new BrewingCreator(invAPI, customCrafting));
+            }
+
             recipeCreator.registerGuiWindow(new ConditionsMenu(invAPI, customCrafting));
             recipeCreator.registerGuiWindow(new VariantMenu(invAPI, customCrafting));
 
@@ -227,7 +231,7 @@ public class InventoryHandler {
                     return itemStack;
                 })), api);
             }
-            for (int i = 0; i < 45; i++) {
+            for (int i = 0; i < 54; i++) {
                 recipeBook.registerButton(new IngredientContainerButton(i), api);
             }
 
