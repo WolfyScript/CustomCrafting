@@ -6,7 +6,7 @@
 
     <groupId>io.github.wolfyscript</groupId>
     <artifactId>customcrafting</artifactId>
-    <version>1.5.5.0</version>
+    <version>1.5.5.1</version>
 
     <properties>
         <!-- Generic properties -->
@@ -99,6 +99,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -128,6 +129,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
         <resources>
             <resource>
