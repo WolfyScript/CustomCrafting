@@ -71,7 +71,6 @@ public class CraftListener implements Listener {
                 e.getInventory().setResult(result);
             } else {
                 api.sendDebugMessage("No valid recipe!");
-                RecipeUtils.getPreCraftedRecipes().remove(player.getUniqueId());
                 if (e.getRecipe() != null) {
                     if (e.getRecipe() instanceof Keyed) {
                         api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());

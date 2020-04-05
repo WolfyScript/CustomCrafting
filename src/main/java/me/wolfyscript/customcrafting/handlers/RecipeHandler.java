@@ -82,6 +82,7 @@ public class RecipeHandler {
         } else {
             loadConfigs();
         }
+
         //TEST Recipes. Used when no creator is available!
     }
 

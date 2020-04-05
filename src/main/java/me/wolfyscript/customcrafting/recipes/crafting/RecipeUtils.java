@@ -32,6 +32,7 @@ public class RecipeUtils {
     private static HashMap<UUID, HashMap<String, CustomItem>> precraftedItems = new HashMap<>();
 
     public static ItemStack preCheckRecipe(ItemStack[] matrix, Player player, boolean isRepair, Inventory inventory, boolean elite, boolean advanced) {
+        preCraftedRecipes.remove(player.getUniqueId());
         RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
         List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
         List<CraftingRecipe> recipesToCheck = new ArrayList<>(recipeHandler.getSimilarRecipes(ingredients, elite, advanced));
