@@ -56,6 +56,13 @@ public class BrewingStandListener implements Listener {
             if (event.getSlot() != 4) {
                 final ItemStack cursor = event.getCursor(); //And the item in the cursor
                 final ItemStack currentItem = event.getCurrentItem(); //We want to get the item in the slot
+
+                /* DEBUG STUFF
+                System.out.println("Action: "+event.getAction());
+                System.out.println("Cursor: "+cursor);
+                System.out.println("CurrentItem: "+currentItem);
+                 */
+
                 //Place items
                 if (event.getClickedInventory() == null) return;
                 if (event.getClickedInventory().getType() != InventoryType.BREWING) return;
@@ -91,7 +98,7 @@ public class BrewingStandListener implements Listener {
                         }
                     }
                 } else {
-                    if (event.getAction().equals(InventoryAction.PICKUP_ALL) || ItemUtils.isAirOrNull(event.getCursor())) {
+                    if (event.getAction().equals(InventoryAction.PICKUP_ALL) || ItemUtils.isAirOrNull(event.getCursor()) || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR)) {
                         //Make sure cursor contains item and the item isn't picked up
                         Bukkit.getScheduler().runTask(customCrafting, () -> {
                             if (ItemUtils.isAirOrNull(inventory.getItem(3))) {
@@ -133,108 +140,114 @@ public class BrewingStandListener implements Listener {
 
                     BrewingStand brewingStand = inventory.getHolder();
 
-                    Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
-                    Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
-                    Field fuelLevelField = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
-                    getTileEntity.setAccessible(true);
-                    brewTime.setAccessible(true);
-                    fuelLevelField.setAccessible(true);
+                    if (!isBrewingStandEmpty(inventory)) {
+                        Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
+                        Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
+                        Field fuelLevelField = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
+                        getTileEntity.setAccessible(true);
+                        brewTime.setAccessible(true);
+                        fuelLevelField.setAccessible(true);
 
-                    try {
-                        Object tileEntityObj = getTileEntity.invoke(brewingStand);
-                        if (tileEntityObj != null) {
-                            int fuelLevel = fuelLevelField.getInt(tileEntityObj);
-                            //Check if recipe is correct
-                            BrewingRecipe brewingRecipe = null;
-                            CustomItem item = null;
-                            for (BrewingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableBrewingRecipes(player)) {
-                                item = null;
-                                for (CustomItem customItem : recipe.getIngredient()) {
-                                    if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {
-                                        if (fuelLevel >= recipe.getFuelCost()) {
-                                            item = customItem;
+                        try {
+                            Object tileEntityObj = getTileEntity.invoke(brewingStand);
+                            if (tileEntityObj != null) {
+                                int fuelLevel = fuelLevelField.getInt(tileEntityObj);
+                                //Check if recipe is correct
+                                BrewingRecipe brewingRecipe = null;
+                                CustomItem item = null;
+                                for (BrewingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableBrewingRecipes(player)) {
+                                    item = null;
+                                    for (CustomItem customItem : recipe.getIngredient()) {
+                                        if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {
+                                            if (fuelLevel >= recipe.getFuelCost()) {
+                                                item = customItem;
+                                            }
+                                            break;
                                         }
-                                        break;
                                     }
+                                    if (item == null) continue;
+                                    brewingRecipe = recipe;
                                 }
-                                if (item == null) continue;
-                                brewingRecipe = recipe;
-                            }
-                            if (brewingRecipe != null) {
-                                brewTime.setInt(tileEntityObj, brewingRecipe.getBrewTime());
-                                fuelLevelField.setInt(tileEntityObj, fuelLevel - brewingRecipe.getFuelCost());
+                                if (brewingRecipe != null) {
+                                    brewTime.setInt(tileEntityObj, brewingRecipe.getBrewTime());
+                                    fuelLevelField.setInt(tileEntityObj, fuelLevel - brewingRecipe.getFuelCost());
 
-                                if (!activeBrewingStands.containsKey(location)) {
-                                    if (brewingStand.getFuelLevel() > 0) {
+                                    if (!activeBrewingStands.containsKey(location)) {
+                                        if (brewingStand.getFuelLevel() > 0) {
 
-                                        AtomicInteger tick = new AtomicInteger(400);
-                                        int multiplier = -1 * (400 / brewingRecipe.getBrewTime());
+                                            AtomicInteger tick = new AtomicInteger(400);
+                                            int multiplier = -1 * (400 / brewingRecipe.getBrewTime());
 
-                                        final CustomItem finalIngredient = item;
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                if (activeBrewingStands.containsKey(location)) {
-                                                    if (tick.get() > 0) {
-                                                        try {
-                                                            Object tileEntityObj = getTileEntity.invoke(brewingStand);
-                                                            if (tileEntityObj != null) {
-                                                                brewTime.setInt(tileEntityObj, tick.getAndAdd(multiplier));
-                                                            } else {
+                                            final CustomItem finalIngredient = item;
+                                            new BukkitRunnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (activeBrewingStands.containsKey(location)) {
+                                                        if (tick.get() > 0) {
+                                                            try {
+                                                                Object tileEntityObj = getTileEntity.invoke(brewingStand);
+                                                                if (tileEntityObj != null) {
+                                                                    brewTime.setInt(tileEntityObj, tick.getAndAdd(multiplier));
+                                                                } else {
+                                                                    activeBrewingStands.remove(location);
+                                                                    cancel();
+                                                                }
+                                                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                                                e.printStackTrace();
                                                                 activeBrewingStands.remove(location);
                                                                 cancel();
                                                             }
-                                                        } catch (IllegalAccessException | InvocationTargetException e) {
-                                                            e.printStackTrace();
+                                                        } else {
+                                                            BrewingRecipe recipe = (BrewingRecipe) CustomCrafting.getRecipeHandler().getRecipe(activeBrewingStands.get(location));
+
+                                                            BrewerInventory brewerInventory = brewingStand.getInventory();
+                                                            final CustomItem input0 = CustomItem.getByItemStack(brewerInventory.getItem(0));
+                                                            final CustomItem input1 = CustomItem.getByItemStack(brewerInventory.getItem(1));
+                                                            final CustomItem input2 = CustomItem.getByItemStack(brewerInventory.getItem(2));
+
+                                                            finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());
+
+                                                            if (recipe.getDurationChange() != 0) {
+                                                                int i = recipe.getDurationChange();
+                                                                increasePotionDuration(input0, i);
+                                                                increasePotionDuration(input1, i);
+                                                                increasePotionDuration(input2, i);
+                                                            }
+                                                            if (recipe.getAmplifierChange() != 0) {
+                                                                int i = recipe.getAmplifierChange();
+                                                                increasePotionAmplifier(input0, i);
+                                                                increasePotionAmplifier(input1, i);
+                                                                increasePotionAmplifier(input2, i);
+                                                            }
+
+                                                            brewerInventory.setItem(0, input0);
+                                                            brewerInventory.setItem(1, input1);
+                                                            brewerInventory.setItem(2, input2);
+
                                                             activeBrewingStands.remove(location);
                                                             cancel();
                                                         }
                                                     } else {
-                                                        BrewingRecipe recipe = (BrewingRecipe) CustomCrafting.getRecipeHandler().getRecipe(activeBrewingStands.get(location));
-
-                                                        BrewerInventory brewerInventory = brewingStand.getInventory();
-                                                        final CustomItem input0 = CustomItem.getByItemStack(brewerInventory.getItem(0));
-                                                        final CustomItem input1 = CustomItem.getByItemStack(brewerInventory.getItem(1));
-                                                        final CustomItem input2 = CustomItem.getByItemStack(brewerInventory.getItem(2));
-
-                                                        finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());
-
-                                                        if (recipe.getDurationChange() != 0) {
-                                                            int i = recipe.getDurationChange();
-                                                            increasePotionDuration(input0, i);
-                                                            increasePotionDuration(input1, i);
-                                                            increasePotionDuration(input2, i);
-                                                        }
-                                                        if (recipe.getAmplifierChange() != 0) {
-                                                            int i = recipe.getAmplifierChange();
-                                                            increasePotionAmplifier(input0, i);
-                                                            increasePotionAmplifier(input1, i);
-                                                            increasePotionAmplifier(input2, i);
-                                                        }
-
-                                                        brewerInventory.setItem(0, input0);
-                                                        brewerInventory.setItem(1, input1);
-                                                        brewerInventory.setItem(2, input2);
-
-                                                        activeBrewingStands.remove(location);
                                                         cancel();
                                                     }
-                                                } else {
-                                                    cancel();
                                                 }
-                                            }
-                                        }.runTaskTimerAsynchronously(customCrafting, 2, 1);
+                                            }.runTaskTimerAsynchronously(customCrafting, 2, 1);
+                                        }
+                                        activeBrewingStands.put(location, brewingRecipe.getId());
                                     }
-                                    activeBrewingStands.put(location, brewingRecipe.getId());
                                 }
                             }
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            return;
                         }
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        return;
                     }
                 }, 2);
             }
         }
+    }
+
+    private boolean isBrewingStandEmpty(BrewerInventory inventory) {
+        return ItemUtils.isAirOrNull(inventory.getItem(0)) && ItemUtils.isAirOrNull(inventory.getItem(1)) && ItemUtils.isAirOrNull(inventory.getItem(2));
     }
 
     private void increasePotionDuration(ItemStack itemStack, int durationChange) {

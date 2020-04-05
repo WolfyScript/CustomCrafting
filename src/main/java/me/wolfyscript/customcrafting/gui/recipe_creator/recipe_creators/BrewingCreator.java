@@ -228,7 +228,7 @@ public class BrewingCreator extends ExtendedGuiWindow {
             event.setButton(19, "brewTime");
 
             event.setButton(21, "fuelCost");
-            event.setButton(29, "brewing.container_1");
+            //event.setButton(29, "brewing.container_1");
 
             event.setButton(23, "potion_duration");
             event.setButton(25, "potion_amplifier");
