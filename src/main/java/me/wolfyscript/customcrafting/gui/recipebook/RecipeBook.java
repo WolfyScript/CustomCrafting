@@ -13,6 +13,7 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -241,15 +242,25 @@ public class RecipeBook extends ExtendedGuiWindow {
                 }
 
                 CustomRecipe customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
-                customRecipe.renderMenu(this, event);
 
-                if (knowledgeBook.getSubFolderPage() > 0) {
-                    event.setButton(48, "previous_recipe");
+                if (customRecipe instanceof EliteCraftingRecipe) {
+                    if (knowledgeBook.getSubFolderPage() > 0) {
+                        event.setButton(51, "previous_recipe");
+                    }
+                    event.setButton(52, "recipe_book", "back_to_list");
+                    if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
+                        event.setButton(53, "next_recipe");
+                    }
+                } else {
+                    if (knowledgeBook.getSubFolderPage() > 0) {
+                        event.setButton(48, "previous_recipe");
+                    }
+                    event.setButton(49, "recipe_book", "back_to_list");
+                    if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
+                        event.setButton(50, "next_recipe");
+                    }
                 }
-                event.setButton(49, "recipe_book", "back_to_list");
-                if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
-                    event.setButton(50, "next_recipe");
-                }
+                customRecipe.renderMenu(this, event);
             }
         }
     }

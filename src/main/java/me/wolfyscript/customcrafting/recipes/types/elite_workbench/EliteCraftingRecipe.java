@@ -138,6 +138,10 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
         return RecipeType.ELITE_WORKBENCH;
     }
 
+    public int getRequiredGridSize() {
+        return requiredGridSize;
+    }
+
     @Override
     public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
         event.setButton(6, "back");
@@ -156,6 +160,7 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
                     slot += 2;
                 }
             }
+            startSlot = 0;
             int gridSize = 6;
             int invSlot;
             for (int i = 0; i < gridSize * gridSize; i++) {
