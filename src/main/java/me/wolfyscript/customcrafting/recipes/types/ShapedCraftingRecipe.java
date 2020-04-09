@@ -58,6 +58,9 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
     default CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape) {
         List<Character> containedKeys = new ArrayList<>();
         HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
+        if (getIngredients() == null || getIngredients().isEmpty()) {
+            return null;
+        }
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
                 if ((matrix.get(i).get(j) != null && i < shape.length && j < shape[i].length() && shape[i].charAt(j) != ' ')) {
@@ -80,6 +83,7 @@ public interface ShapedCraftingRecipe<T extends CraftConfig> extends CraftingRec
     }
 
     default CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
+
         for (CustomItem ingredient : ingredients) {
             if (ingredient.isSimilar(input, isExactMeta())) {
                 return ingredient.clone();

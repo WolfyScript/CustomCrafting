@@ -6,7 +6,7 @@
 
     <groupId>io.github.wolfyscript</groupId>
     <artifactId>customcrafting</artifactId>
-    <version>1.5.5.1</version>
+    <version>1.5.5.2</version>
 
     <properties>
         <!-- Generic properties -->
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>io.github.wolfyscript</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.5.6.11</version>
+            <version>1.5.6.12</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>io.lumine.xikage</groupId>
             <artifactId>mythicmobs</artifactId>
-            <version>4.6.5</version>
+            <version>4.9.0</version>
         </dependency>
     </dependencies>
 
@@ -99,37 +99,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <id>copy-installed</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>${project.packaging}</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>io.github.wolfyscript</groupId>
-                                    <artifactId>wolfyutilities</artifactId>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>D:\Minecraft\PluginTestServer\Paper1.15\plugins</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
         <resources>
             <resource>

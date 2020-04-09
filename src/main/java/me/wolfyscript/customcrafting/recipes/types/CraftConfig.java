@@ -124,7 +124,9 @@ public class CraftConfig extends RecipeConfig {
                 for (String itemKey : itemKeys) {
                     CustomItem itemStack;
                     itemStack = getCustomItem("ingredients." + key + "." + itemKey);
-                    data.add(itemStack);
+                    if (itemStack != null) {
+                        data.add(itemStack);
+                    }
                 }
                 result.put(key.charAt(0), data);
             }

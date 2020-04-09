@@ -8,6 +8,8 @@ import me.wolfyscript.customcrafting.gui.crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.ResultSlotButton;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.events.GuiCloseEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,6 +29,9 @@ public class CraftingWindow3 extends ExtendedGuiWindow {
             registerButton(new CraftingSlotButton(i));
         }
         registerButton(new ResultSlotButton());
+
+        registerButton(new DummyButton("texture_dark", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9013, null)));
+        registerButton(new DummyButton("texture_light", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9003, null)));
     }
 
     @EventHandler
@@ -52,9 +57,10 @@ public class CraftingWindow3 extends ExtendedGuiWindow {
     public void onUpdateMain(GuiUpdateEvent event) {
         if (event.getGuiHandler().getCurrentInv() != null) {
             if (event.getGuiHandler().getCurrentInv().getNamespace().startsWith("crafting_grid")) {
-                for (int i = 0; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
+                for (int i = 0; i < event.getGuiHandler().getCurrentInv().getSize() - 1; i++) {
                     event.setButton(i, "none", "glass_black");
                 }
+                event.setButton(event.getGuiHandler().getCurrentInv().getSize() - 1, CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode() ? "texture_dark" : "texture_light");
             }
         }
     }

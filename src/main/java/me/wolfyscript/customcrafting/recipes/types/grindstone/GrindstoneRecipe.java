@@ -7,6 +7,8 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -105,5 +107,11 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
         event.setButton(24, "recipe_book", "ingredient.container_24");
         event.setButton(29, "recipe_book", "ingredient.container_29");
         event.setButton(30, "none", "glass_green");
+
+        ItemStack whiteGlass = event.getInventory().getItem(53);
+        ItemMeta itemMeta = whiteGlass.getItemMeta();
+        itemMeta.setCustomModelData(9008);
+        whiteGlass.setItemMeta(itemMeta);
+        event.setItem(53, whiteGlass);
     }
 }

@@ -1680,6 +1680,43 @@
               "&8[&aLeft Click&8] &7set Time"
             ]
           },
+          "player_experience": {
+            "name": "&7- Player Experience - ",
+            "lore": [
+              "&7Experience:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7set Experience Level"
+            ]
+          },
+          "world_name": {
+            "name": "&7- World Name -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Values:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&aRight Click&8] &7toggle on/off",
+              "&8[&aLeft Click&8] &7Add World Name",
+              "&8[&aShift Left Click&8] &7remove last entry"
+            ]
+          },
+          "world_biome": {
+            "name": "&7- World Biome -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Biomes:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&aRight Click&8] &7toggle on/off",
+              "&8[&aLeft Click&8] &7Add Biome",
+              "&8[&aShift Left Click&8] &7remove last entry"
+            ]
+          },
           "weather": {
             "modes": {
               "storm": "&eRain/Snow",
@@ -1725,15 +1762,20 @@
               "&8[&aLeft Click&8] &7change Permission"
             ]
           }
+
         },
         "messages": {
           "world_time": "&eType the time in ticks! e.g. 1500",
+          "world_name": "&eType in the exact world name",
+          "world_biome": "&eType in the exact biome name",
+          "missing_world": "&cThis world does not exist!",
           "elite_workbench": "&eType in the folder and name of the CustomItem! Example: &6workbenches golden_workbench",
+          "player_experience": "&eType in the experience required!",
           "permission": "&eType in the permission string",
           "error": "&cThis item does not exist or is not loaded!",
           "no_name": "&cYou need to type in the item name!",
           "not_elite_workbench": "&cThis item is not an Elite Workbench!",
-          "already_existing": "&cYou already added this Item!"
+          "already_existing": "&cYou already added this item!"
         }
       },
       "workbench": {

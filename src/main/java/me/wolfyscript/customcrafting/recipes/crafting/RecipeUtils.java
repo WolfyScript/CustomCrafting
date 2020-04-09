@@ -68,12 +68,13 @@ public class RecipeUtils {
         return null;
     }
 
-    public static boolean checkRecipe(CraftingRecipe recipe, List<List<ItemStack>> ingredients, Player player, RecipeHandler recipeHandler, CustomPreCraftEvent customPreCraftEvent) {
+    public static boolean checkRecipe(CraftingRecipe recipe, List<List<ItemStack>> matrix, Player player, RecipeHandler recipeHandler, CustomPreCraftEvent customPreCraftEvent) {
         customPreCraftEvent.setCancelled(true);
         CraftingData craftingData = null;
         if (!recipeHandler.getDisabledRecipes().contains(recipe.getId())) {
             if (recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, player.getTargetBlock(null, 5), player.getOpenInventory()))) {
-                craftingData = recipe.check(ingredients);
+                if (matrix == null || matrix.isEmpty()) return false;
+                craftingData = recipe.check(matrix);
                 if (craftingData != null) {
                     customPreCraftEvent.setCancelled(false);
                 }

@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
+package me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;

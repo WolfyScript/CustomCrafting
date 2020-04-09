@@ -8,8 +8,10 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,5 +96,10 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
         event.setButton(32, "none", "glass_green");
         event.setButton(33, "none", "glass_green");
 
+        ItemStack whiteGlass = event.getInventory().getItem(53);
+        ItemMeta itemMeta = whiteGlass.getItemMeta();
+        itemMeta.setCustomModelData(9007);
+        whiteGlass.setItemMeta(itemMeta);
+        event.setItem(53, whiteGlass);
     }
 }

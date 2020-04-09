@@ -8,6 +8,9 @@ import me.wolfyscript.customcrafting.gui.crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.crafting.buttons.ResultSlotButton;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,6 +26,8 @@ public class CraftingWindow5 extends ExtendedGuiWindow {
             registerButton(new CraftingSlotButton(i));
         }
         registerButton(new ResultSlotButton());
+        registerButton(new DummyButton("texture_light", new ButtonState("none", "background", Material.WHITE_STAINED_GLASS_PANE, 9005, null)));
+        registerButton(new DummyButton("texture_dark", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9015, null)));
     }
 
     @EventHandler
@@ -42,6 +47,7 @@ public class CraftingWindow5 extends ExtendedGuiWindow {
                 event.setButton(slot, "crafting.slot_" + i);
             }
             event.setButton(25, "result_slot");
+
         }
     }
 
