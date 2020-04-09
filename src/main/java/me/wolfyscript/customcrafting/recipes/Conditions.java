@@ -22,7 +22,10 @@ public class Conditions extends HashMap<String, Condition> {
         addCondition(new AdvancedWorkbenchCondition());
         addCondition(new EliteWorkbenchCondition());
         addCondition(new WorldTimeCondition());
+        addCondition(new WorldNameCondition());
         addCondition(new WeatherCondition());
+        addCondition(new ExperienceCondition());
+        addCondition(new WorldBiomeCondition());
     }
 
     public boolean checkConditions(CustomRecipe customRecipe, Data data) {

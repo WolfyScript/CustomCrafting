@@ -3,8 +3,11 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.EliteWorkbenchConditionButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.EliteWorkbenchConditionButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.WorldBiomeConditionButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.WorldNameConditionButton;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.conditions.ExperienceCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
@@ -73,6 +76,39 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             }
         })));
 
+        registerButton(new ActionButton("conditions.player_experience", new ButtonState("player_experience", Material.EXPERIENCE_BOTTLE, new ButtonActionRender() {
+            @Override
+            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+                Conditions conditions = ((TestCache) guiHandler.getCustomCache()).getRecipeConfig().getConditions();
+                if (event.getClick().isRightClick()) {
+                    //Change Mode
+                    conditions.getByID("player_experience").toggleOption();
+                } else {
+                    //Change Value
+                    openChat("player_experience", guiHandler, (guiHandler1, player1, s, strings) -> {
+                        try {
+                            int value = Integer.parseInt(s);
+                            ((ExperienceCondition) conditions.getByID("player_experience")).setExpLevel(value);
+                            ((TestCache) guiHandler.getCustomCache()).getRecipeConfig().setConditions(conditions);
+                        } catch (NumberFormatException ex) {
+                            api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        }
+                        return false;
+                    });
+                }
+                ((TestCache) guiHandler.getCustomCache()).getRecipeConfig().setConditions(conditions);
+                return true;
+            }
+
+            @Override
+            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
+                RecipeConfig recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipeConfig();
+                hashMap.put("%VALUE%", ((ExperienceCondition) recipeConfig.getConditions().getByID("player_experience")).getExpLevel());
+                hashMap.put("%MODE%", recipeConfig.getConditions().getByID("player_experience").getOption().getDisplayString(api));
+                return itemStack;
+            }
+        })));
+
         registerButton(new ActionButton("conditions.weather", new ButtonState("weather", Material.WATER_BUCKET, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -118,6 +154,8 @@ public class ConditionsMenu extends ExtendedGuiWindow {
         })));
 
         registerButton(new EliteWorkbenchConditionButton());
+        registerButton(new WorldBiomeConditionButton());
+        registerButton(new WorldNameConditionButton());
 
         registerButton(new ActionButton("conditions.permission", new ButtonState("permission", Material.REDSTONE, new ButtonActionRender() {
             @Override
@@ -153,24 +191,29 @@ public class ConditionsMenu extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
-            TestCache cache = (TestCache)event.getGuiHandler().getCustomCache();
+            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
             event.setButton(0, "back");
 
             List<String> values = new ArrayList<>();
             values.add("conditions.world_time");
+            values.add("conditions.world_name");
+            values.add("conditions.world_biome");
             values.add("conditions.weather");
             switch (cache.getSetting()) {
                 case WORKBENCH:
                     values.add("conditions.permission");
+                    values.add("conditions.player_experience");
                     values.add("conditions.advanced_workbench");
                     break;
                 case ELITE_WORKBENCH:
                     values.add("conditions.permission");
+                    values.add("conditions.player_experience");
                     values.add("conditions.elite_workbench");
                     break;
                 case BREWING_STAND:
                 case GRINDSTONE:
                     values.add("conditions.permission");
+                    values.add("conditions.player_experience");
             }
             int item = 9;
             for (int i = 0; i < values.size() && item < 45; i++) {
