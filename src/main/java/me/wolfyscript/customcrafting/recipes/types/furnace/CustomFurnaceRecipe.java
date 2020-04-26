@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.RecipeChoice;
 
@@ -19,13 +19,13 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     private RecipePriority priority;
     private List<CustomItem> result;
     private List<CustomItem> source;
-    private String id;
+    private NamespacedKey namespacedKey;
     private FurnaceConfig config;
     private Conditions conditions;
 
     public CustomFurnaceRecipe(FurnaceConfig config) {
-        super(new NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
-        this.id = config.getId();
+        super(new org.bukkit.NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
@@ -51,8 +51,14 @@ public class CustomFurnaceRecipe extends FurnaceRecipe implements CustomCookingR
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

@@ -10,11 +10,6 @@ softdepend:
 description: Create your own custom recipes for workbenches and furnaces. Disable Vanilla recipes and more.
 
 commands:
-  customcrafting:
-    usage: /customcrafting <label>
-    aliases:
-      - cc
-    description: Main command
   recipes:
     usage: /recipes <label>
     description: Command to quick edit, delete, toggle recipes

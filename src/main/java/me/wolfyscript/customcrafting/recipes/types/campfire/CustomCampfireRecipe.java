@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.inventory.CampfireRecipe;
 import org.bukkit.inventory.RecipeChoice;
 
@@ -19,13 +19,13 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     private RecipePriority recipePriority;
     private List<CustomItem> result;
     private List<CustomItem> source;
-    private String id;
     private CampfireConfig config;
     private Conditions conditions;
+    private NamespacedKey namespacedKey;
 
     public CustomCampfireRecipe(CampfireConfig config) {
-        super(new NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
-        this.id = config.getId();
+        super(new org.bukkit.NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
@@ -41,8 +41,14 @@ public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookin
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public me.wolfyscript.utilities.api.utils.NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

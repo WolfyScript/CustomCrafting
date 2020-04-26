@@ -24,7 +24,7 @@ public class CauldronContainerButton extends ItemInputButton {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getCauldronConfig().setResult(Collections.singletonList(items.getItem()));
 
-    public CauldronContainerButton(int inputSlot) {
+    public CauldronContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("cauldron.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -44,7 +44,7 @@ public class CauldronContainerButton extends ItemInputButton {
                     }
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
                         CustomItem input = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
                         if (inputSlot == 0) {
                             List<CustomItem> inputs = cauldronConfig.getIngredients();

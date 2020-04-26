@@ -21,7 +21,7 @@ import java.util.List;
 
 public class CookingContainerButton extends ItemInputButton {
 
-    public CookingContainerButton(int inputSlot) {
+    public CookingContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("cooking.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -38,7 +38,7 @@ public class CookingContainerButton extends ItemInputButton {
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> cooking.setIngredient(inputSlot, 0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                    Bukkit.getScheduler().runTask(customCrafting, () -> cooking.setIngredient(inputSlot, 0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                 }
 
                 return false;

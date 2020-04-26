@@ -8,12 +8,20 @@ import java.util.List;
 
 public class MainConfig extends Config {
 
-    public MainConfig(ConfigAPI configAPI) {
-        super(configAPI, CustomCrafting.getInst().getDataFolder().getPath(), "main_config", "me/wolfyscript/customcrafting/configs", "main_config", "yml", false);
+    public MainConfig(ConfigAPI configAPI, CustomCrafting customCrafting) {
+        super(configAPI, customCrafting.getDataFolder().getPath(), "main_config", "me/wolfyscript/customcrafting/configs", "main_config", "yml", false);
     }
 
     @Override
     public void init() {
+    }
+
+    public List<String> getCustomCraftingAlias() {
+        return getStringList("commands.alias");
+    }
+
+    public boolean isCCenabled() {
+        return getBoolean("commands.cc");
     }
 
     public String getLanguage() {
@@ -103,7 +111,6 @@ public class MainConfig extends Config {
     public void setPrettyPrinting(boolean prettyPrinting) {
         set("recipes.pretty_printing", prettyPrinting);
     }
-
     public boolean displayContents() {
         return getBoolean("workbench.contents.display_items");
     }
@@ -114,10 +121,6 @@ public class MainConfig extends Config {
 
     public List<String> getCommandsDeniedCraft() {
         return getStringList("workbench.commands.denied_craft");
-    }
-
-    public boolean isCCenabled() {
-        return getBoolean("commands.cc");
     }
 
     public boolean isLockedDown() {

@@ -18,6 +18,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -56,7 +57,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                         try {
                             AdvancedCraftingRecipe customRecipe;
                             if (CustomCrafting.hasDataBaseHandler()) {
-                                customRecipe = (AdvancedCraftingRecipe) CustomCrafting.getDataBaseHandler().getRecipe(namespace, key);
+                                customRecipe = (AdvancedCraftingRecipe) CustomCrafting.getDataBaseHandler().getRecipe(new NamespacedKey(namespace, key));
                             } else {
                                 api.sendDebugMessage("Loading Recipe...");
                                 if (config.isShapeless()) {
@@ -65,11 +66,11 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                                     customRecipe = new ShapedCraftRecipe(config);
                                 }
                             }
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetAdvancedCraftConfig();
                             }
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                                customCrafting.getRecipeHandler().injectRecipe(customRecipe);
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
                         } catch (Exception ex) {
@@ -77,7 +78,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"));
+                        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openCluster("none"));
                         return false;
                     }
                     return false;
@@ -89,7 +90,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
         })));
 
         for (int i = 0; i < 10; i++) {
-            registerButton(new CraftingIngredientButton(i));
+            registerButton(new CraftingIngredientButton(i, customCrafting));
         }
 
         registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {

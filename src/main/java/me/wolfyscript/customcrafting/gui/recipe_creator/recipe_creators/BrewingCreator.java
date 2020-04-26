@@ -51,11 +51,11 @@ public class BrewingCreator extends ExtendedGuiWindow {
                             return true;
                         }
                         try {
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(new BrewingRecipe(config));
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                                customCrafting.getRecipeHandler().injectRecipe(new BrewingRecipe(config));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetBrewingConfig();
                             }
                         } catch (Exception ex) {
@@ -63,7 +63,7 @@ public class BrewingCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"), 1);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openCluster("none"), 1);
                     }
                     return false;
                 });
@@ -141,8 +141,8 @@ public class BrewingCreator extends ExtendedGuiWindow {
             ((TestCache) guiHandler.getCustomCache()).getBrewingConfig().setFuelCost(cost);
             return false;
         }));
-        registerButton(new BrewingContainerButton(0));
-        registerButton(new BrewingContainerButton(1));
+        registerButton(new BrewingContainerButton(0, customCrafting));
+        registerButton(new BrewingContainerButton(1, customCrafting));
 
         registerButton(new ActionButton("potion_duration", new ButtonState("potion_duration", Material.CLOCK, new ButtonActionRender() {
             @Override

@@ -26,13 +26,15 @@ import java.util.List;
 
 public class IngredientContainerButton extends Button {
 
+    private final CustomCrafting customCrafting;
     private HashMap<GuiHandler, List<CustomItem>> variantsMap = new HashMap<>();
     private HashMap<GuiHandler, Integer> timings = new HashMap<>();
 
     private HashMap<GuiHandler, BukkitTask> tasks = new HashMap<>();
 
-    public IngredientContainerButton(int slot) {
+    public IngredientContainerButton(int slot, CustomCrafting customCrafting) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
+        this.customCrafting = customCrafting;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class IngredientContainerButton extends Button {
     }
 
     public static void resetButtons(GuiHandler guiHandler) {
-        GuiCluster cluster = WolfyUtilities.getAPI(CustomCrafting.getInst()).getInventoryAPI().getGuiCluster("recipe_book");
+        GuiCluster cluster = guiHandler.getApi().getInventoryAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 45; i++) {
             IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
             if (button.getVariantsMap(guiHandler) != null) {
@@ -66,10 +68,10 @@ public class IngredientContainerButton extends Button {
         KnowledgeBook book = cache.getKnowledgeBook();
         if (getVariantsMap(guiHandler) != null && getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
-            List<CustomRecipe> recipes = CustomCrafting.getRecipeHandler().getRecipes(customItem);
+            List<CustomRecipe> recipes = customCrafting.getRecipeHandler().getRecipes(customItem);
             recipes.remove(book.getCurrentRecipe());
             if (!recipes.isEmpty()) {
-                GuiCluster cluster = WolfyUtilities.getAPI(CustomCrafting.getInst()).getInventoryAPI().getGuiCluster("recipe_book");
+                GuiCluster cluster = WolfyUtilities.getAPI(customCrafting).getInventoryAPI().getGuiCluster("recipe_book");
                 for (int i = 0; i < 45; i++) {
                     IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
                     if (button.getVariantsMap(guiHandler) != null) {

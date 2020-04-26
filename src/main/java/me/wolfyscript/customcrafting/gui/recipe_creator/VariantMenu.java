@@ -24,7 +24,7 @@ public class VariantMenu extends ExtendedGuiWindow {
     @Override
     public void onInit() {
         for (int i = 0; i < 45; i++) {
-            registerButton(new VariantContainerButton(i));
+            registerButton(new VariantContainerButton(i, customCrafting));
         }
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();

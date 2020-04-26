@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -10,26 +11,26 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class CommandCC implements CommandExecutor, TabCompleter {
+public class CommandCC extends BukkitCommand {
 
     private CustomCrafting customCrafting;
 
     public CommandCC(CustomCrafting customCrafting) {
+        super("customcrafting", "The main command of CustomCrafting", "/customcrafting <label>", customCrafting.getConfigHandler().getConfig().getCustomCraftingAlias());
         this.customCrafting = customCrafting;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String s, @NotNull String[] args) {
         WolfyUtilities api = CustomCrafting.getApi();
         if (sender instanceof Player) {
             Player p = (Player) sender;
@@ -40,8 +41,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                 switch (args[0].toLowerCase(Locale.ROOT)) {
                     case "lockdown":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.lockdown")) {
-                            CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
-                            if (CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
+                            customCrafting.getConfigHandler().getConfig().toggleLockDown();
+                            if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
                                 api.sendPlayerMessage(p, "$commands.lockdown.enabled$");
                             } else {
                                 api.sendPlayerMessage(p, "$commands.lockdown.disabled$");
@@ -83,17 +84,23 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
                             CustomCrafting.getApi().getInventoryAPI().reset();
                             CustomCrafting.getApi().getLanguageAPI().unregisterLanguages();
-                            CustomCrafting.getConfigHandler().getConfig().save();
-                            CustomCrafting.getRecipeHandler().onSave();
-                            CustomCrafting.getConfigHandler().load();
+                            customCrafting.getConfigHandler().getConfig().save();
+                            customCrafting.getRecipeHandler().onSave();
+                            customCrafting.getConfigHandler().load();
                             InventoryHandler invHandler = new InventoryHandler(customCrafting);
                             invHandler.init();
                             CustomCrafting.getApi().sendPlayerMessage(p, "§aReload complete! Reloaded GUIs and languages");
                         }
                         break;
                     case "knowledge":
+                        //TODO Check if main categories exist. if not directly open the recipe list else the main menu
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.knowledge")) {
-                            invAPI.openCluster(p, "recipe_book");
+                            Categories categories = customCrafting.getRecipeHandler().getCategories();
+                            if (categories.getSortedMainCategories().size() > 1) {
+                                invAPI.openCluster(p, "recipe_book");
+                            } else {
+                                invAPI.openGui(p, "recipe_book", "recipe_book");
+                            }
                         }
                         break;
                     case "give":
@@ -136,7 +143,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         break;
                     case "debug":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.debug")) {
-                            CustomCrafting.getConfigHandler().getConfig().set("debug", !api.hasDebuggingMode());
+                            customCrafting.getConfigHandler().getConfig().set("debug", !api.hasDebuggingMode());
                             api.sendPlayerMessage(p, "Set Debug to: " + api.hasDebuggingMode());
                         }
                         break;
@@ -146,7 +153,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                 switch (args[1]) {
                                     case "pretty_printing":
                                         if (args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("false")) {
-                                            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
+                                            customCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.valueOf(args[2].toLowerCase(Locale.ROOT)));
                                             api.sendPlayerMessage(p, "&aSet &epretty printing &ato &e" + args[2].toLowerCase(Locale.ROOT));
                                         }
                                         break;
@@ -161,7 +168,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                                     case "export_data":
                                         if (CustomCrafting.hasDataBaseHandler()) {
                                             api.sendPlayerMessage(p, "Exporting json configs to Database.");
-                                            Thread thread = new Thread(() -> CustomCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler()));
+                                            Thread thread = new Thread(() -> customCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler()));
                                             thread.run();
                                         } else {
                                             api.sendPlayerMessage(p, "&4No Database found!");
@@ -173,8 +180,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                         break;
                     case "hide_ads":
                         if (ChatUtils.checkPerm(p, "customcrafting.cmd.hide_ads")) {
-                            CustomCrafting.getConfigHandler().getConfig().setHideAds(!CustomCrafting.getConfigHandler().getConfig().hideAds());
-                            api.sendPlayerMessage(p, "Set Hide Ads to: " + CustomCrafting.getConfigHandler().getConfig().hideAds());
+                            customCrafting.getConfigHandler().getConfig().setHideAds(!customCrafting.getConfigHandler().getConfig().hideAds());
+                            api.sendPlayerMessage(p, "Set Hide Ads to: " + customCrafting.getConfigHandler().getConfig().hideAds());
                         }
                         break;
                 }
@@ -218,8 +225,8 @@ public class CommandCC implements CommandExecutor, TabCompleter {
                     }
 
                 } else if (args[0].equalsIgnoreCase("lockdown")) {
-                    CustomCrafting.getConfigHandler().getConfig().toggleLockDown();
-                    if (CustomCrafting.getConfigHandler().getConfig().isLockedDown()) {
+                    customCrafting.getConfigHandler().getConfig().toggleLockDown();
+                    if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
                         api.sendConsoleMessage("$commands.lockdown.enabled$");
                     } else {
                         api.sendConsoleMessage("$commands.lockdown.disabled$");
@@ -247,7 +254,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
         api.sendPlayerMessage(p, "      &n     by &b&n&lWolfyScript&7&n      ");
         api.sendPlayerMessage(p, "        ------------------");
         api.sendPlayerMessage(p, "");
-        api.sendPlayerMessage(p, "             &nVersion:&r&b " + CustomCrafting.getInst().getDescription().getVersion());
+        api.sendPlayerMessage(p, "             &nVersion:&r&b " + customCrafting.getDescription().getVersion());
         api.sendPlayerMessage(p, "");
         api.sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
         api.sendPlayerMessage(p, "$msg.commands.info$");
@@ -269,7 +276,7 @@ public class CommandCC implements CommandExecutor, TabCompleter {
     private final List<String> DATABASE = Arrays.asList("export_data");
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] strings) {
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] strings) throws IllegalArgumentException {
         List<String> results = new ArrayList<>();
         if (strings.length > 1) {
             if (strings[0].equalsIgnoreCase("give")) {

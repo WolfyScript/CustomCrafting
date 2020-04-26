@@ -88,7 +88,7 @@ public class MainMenu extends ExtendedGuiWindow {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
-            cache.getItems().setId("");
+            cache.getItems().setNamespacedKey(null);
             guiHandler.changeToInv("item_editor");
             return true;
         })));
@@ -109,7 +109,7 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(0, "settings");
             event.setButton(8, "none", "gui_help");
 
-            if (!CustomCrafting.getConfigHandler().getConfig().hideAds()) {
+            if (!customCrafting.getConfigHandler().getConfig().hideAds()) {
                 event.setButton(4, "none", "patreon");
                 event.setButton(39, "none", "instagram");
                 event.setButton(40, "none", "youtube");

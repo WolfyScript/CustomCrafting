@@ -1,9 +1,8 @@
-package me.wolfyscript.customcrafting.gui.crafting.buttons;
+package me.wolfyscript.customcrafting.gui.elite_crafting.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -19,21 +18,21 @@ import java.util.HashMap;
 
 public class CraftingSlotButton extends ItemInputButton {
 
-    public CraftingSlotButton(int recipeSlot) {
+    public CraftingSlotButton(int recipeSlot, CustomCrafting customCrafting) {
         super("crafting.slot_" + recipeSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 TestCache cache = ((TestCache) guiHandler.getCustomCache());
                 EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                Bukkit.getScheduler().runTask(customCrafting, () -> {
                     int gridSize = eliteWorkbench.getCurrentGridSize();
                     int startSlot = (gridSize == 3 ? 2 : gridSize == 4 || gridSize == 5 ? 1 : 0);
                     int itemSlot;
-                    for (int i = 0; i < gridSize*gridSize; i++) {
-                        itemSlot =  startSlot + i + (i / gridSize) * (9-gridSize);
+                    for (int i = 0; i < gridSize * gridSize; i++) {
+                        itemSlot = startSlot + i + (i / gridSize) * (9 - gridSize);
                         eliteWorkbench.getContents()[i] = inventory.getItem(itemSlot);
                     }
-                    ItemStack result = RecipeUtils.preCheckRecipe(eliteWorkbench.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes());
+                    ItemStack result = customCrafting.getRecipeUtils().preCheckRecipe(eliteWorkbench.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes());
                     eliteWorkbench.setResult(result);
                 });
                 return false;

@@ -11,6 +11,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
     private Conditions conditions;
 
     private AdvancedCraftConfig config;
-    private String id;
+    private NamespacedKey namespacedKey;
     private String group;
     private List<CustomItem> result;
     private Map<Character, List<CustomItem>> ingredients;
@@ -32,7 +33,7 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
 
     public AdvancedCraftingRecipe(AdvancedCraftConfig config) {
         this.result = config.getResult();
-        this.id = config.getId();
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.ingredients = config.getIngredients();
         this.group = config.getGroup();
@@ -78,8 +79,14 @@ public abstract class AdvancedCraftingRecipe implements CraftingRecipe<AdvancedC
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

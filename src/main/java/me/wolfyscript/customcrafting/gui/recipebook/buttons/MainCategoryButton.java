@@ -16,27 +16,24 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class ItemCategoryButton extends Button {
+public class MainCategoryButton extends Button {
 
     private CustomCrafting customCrafting;
     private Categories categories;
-    private HashMap<GuiHandler, Integer> categoryMap;
+    private Category category;
 
-    public ItemCategoryButton(CustomCrafting customCrafting) {
-        super("itemCategory", ButtonType.NORMAL);
+    public MainCategoryButton(String categoryId, CustomCrafting customCrafting) {
+        super("mainCategory." + categoryId, ButtonType.NORMAL);
         this.customCrafting = customCrafting;
         this.categories = customCrafting.getRecipeHandler().getCategories();
-        this.categoryMap = new HashMap<>();
+        this.category = categories.getMainCategory(categoryId);
     }
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        Category category = categories.getSwitchCategory(categoryMap.getOrDefault(guiHandler, 0));
         if (category != null) {
             ItemStack itemStack = new ItemStack(category.getIcon());
             ItemMeta itemMeta = itemStack.getItemMeta();
@@ -63,21 +60,12 @@ public class ItemCategoryButton extends Button {
 
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-        if (!categories.getSortedSwitchCategories().isEmpty()) {
-            int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
-            if (currentIndex < categories.getSortedSwitchCategories().size() - 1) {
-                categoryMap.put(guiHandler, currentIndex + 1);
-            } else {
-                categoryMap.put(guiHandler, 0);
-            }
+        if (category != null) {
             KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
+            knowledgeBook.setCategory(category);
             knowledgeBook.setRecipeItems(new ArrayList<>());
+            guiHandler.changeToInv("recipe_book");
         }
         return true;
-    }
-
-    @Nullable
-    public Category getCategory(GuiHandler guiHandler) {
-        return categories.getSwitchCategory(categoryMap.getOrDefault(guiHandler, 0));
     }
 }

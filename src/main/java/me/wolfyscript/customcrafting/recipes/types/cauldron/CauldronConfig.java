@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.cauldron;
 
 import com.google.gson.JsonObject;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.util.Vector;
 
@@ -12,15 +12,15 @@ import java.util.Set;
 
 public class CauldronConfig extends RecipeConfig {
 
-    public CauldronConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, folder, "cauldron", name, "cauldron");
+    public CauldronConfig(CustomCrafting customCrafting, String folder, String name) {
+        super(customCrafting, folder, "cauldron", name, "cauldron");
     }
 
     /*
     Memory Config only! Do not use to load config out of files!
      */
-    public CauldronConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
-        super(jsonData, configAPI, namespace, "cauldron", key, "cauldron");
+    public CauldronConfig(String jsonData, CustomCrafting customCrafting, String namespace, String key) {
+        super(jsonData, customCrafting, namespace, "cauldron", key, "cauldron");
     }
 
     public CauldronConfig() {

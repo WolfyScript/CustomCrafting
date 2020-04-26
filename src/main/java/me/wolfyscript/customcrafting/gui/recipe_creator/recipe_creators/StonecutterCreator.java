@@ -45,14 +45,14 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                         if (CustomCrafting.hasDataBaseHandler()) {
                             CustomCrafting.getDataBaseHandler().updateRecipe(stonecutterConfig);
                         } else {
-                            stonecutterConfig.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+                            stonecutterConfig.reload(customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
                         }
                         try {
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
+                                customCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetStonecutterConfig();
                             }
                         } catch (Exception ex) {
@@ -78,8 +78,8 @@ public class StonecutterCreator extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new StonecutterContainerButton(0));
-        registerButton(new StonecutterContainerButton(1));
+        registerButton(new StonecutterContainerButton(0, customCrafting));
+        registerButton(new StonecutterContainerButton(1, customCrafting));
     }
 
     @EventHandler

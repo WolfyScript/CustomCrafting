@@ -12,6 +12,7 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import java.util.List;
 public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
 
     private boolean exactMeta, hidden;
-    private String id;
     private String group;
     private RecipePriority priority;
     private Conditions conditions;
@@ -30,10 +30,11 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
     private int brewTime;
     private int durationChange;
     private int amplifierChange;
+    private NamespacedKey namespacedKey;
 
     public BrewingRecipe(BrewingConfig config) {
         this.config = config;
-        this.id = config.getId();
+        this.namespacedKey = config.getNamespacedKey();
         this.group = config.getGroup();
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
@@ -48,8 +49,14 @@ public class BrewingRecipe implements CustomRecipe<BrewingConfig> {
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

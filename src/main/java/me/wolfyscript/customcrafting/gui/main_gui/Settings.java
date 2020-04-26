@@ -41,7 +41,7 @@ public class Settings extends ExtendedGuiWindow {
                 api.sendPlayerMessage(player, "&cAre you sure you want to enable LockDown mode?");
                 api.sendPlayerMessage(player, "&c&lThis will disable all the custom recipes!");
                 api.sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
-                    CustomCrafting.getConfigHandler().getConfig().setLockDown(true);
+                    customCrafting.getConfigHandler().getConfig().setLockDown(true);
                     wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster();
                 }, true), new ClickData("&7 -- ", null), new ClickData("&7[&cNO&7]", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
             }
@@ -52,7 +52,7 @@ public class Settings extends ExtendedGuiWindow {
                 api.sendPlayerMessage(player, "&cAre you sure you want to disable LockDown mode?");
                 api.sendPlayerMessage(player, "&c&lThis will enable all the custom recipes!");
                 api.sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
-                    CustomCrafting.getConfigHandler().getConfig().setLockDown(false);
+                    customCrafting.getConfigHandler().getConfig().setLockDown(false);
                     wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster();
                 }, true), new ClickData("&7 -- ", null), new ClickData("&7[&cNO&7]", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
             }
@@ -68,18 +68,18 @@ public class Settings extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("pretty_printing", false, new ButtonState("pretty_printing.disabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
+            customCrafting.getConfigHandler().getConfig().setPrettyPrinting(true);
             return true;
         }), new ButtonState("pretty_printing.enabled", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
+            customCrafting.getConfigHandler().getConfig().setPrettyPrinting(false);
             return true;
         })));
 
         registerButton(new ToggleButton("advanced_workbench", false, new ButtonState("advanced_workbench.disabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
+            customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(true);
             return true;
         }), new ButtonState("advanced_workbench.enabled", Material.CRAFTING_TABLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
+            customCrafting.getConfigHandler().getConfig().setAdvancedWorkbenchEnabled(false);
             return true;
         })));
 
@@ -87,7 +87,7 @@ public class Settings extends ExtendedGuiWindow {
 
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
-                int index = availableLangs.indexOf(CustomCrafting.getConfigHandler().getConfig().getLanguage());
+                int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
                 int nextIndex = index;
                 if (event.isLeftClick() && !event.isShiftClick()) {
                     nextIndex = (index + 1 < availableLangs.size()) ? index + 1 : 0;
@@ -98,9 +98,9 @@ public class Settings extends ExtendedGuiWindow {
                         api.sendPlayerMessage(player, "&eReloading Inventories and Languages!");
                         CustomCrafting.getApi().getInventoryAPI().reset();
                         CustomCrafting.getApi().getLanguageAPI().unregisterLanguages();
-                        CustomCrafting.getConfigHandler().getConfig().save();
-                        CustomCrafting.getRecipeHandler().onSave();
-                        CustomCrafting.getConfigHandler().load();
+                        customCrafting.getConfigHandler().getConfig().save();
+                        customCrafting.getRecipeHandler().onSave();
+                        customCrafting.getConfigHandler().load();
                         InventoryHandler invHandler = new InventoryHandler(customCrafting);
                         invHandler.init();
                         api.sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
@@ -108,13 +108,13 @@ public class Settings extends ExtendedGuiWindow {
                     }
                     return true;
                 }
-                CustomCrafting.getConfigHandler().getConfig().setlanguage(availableLangs.get(nextIndex));
+                customCrafting.getConfigHandler().getConfig().setlanguage(availableLangs.get(nextIndex));
                 return true;
             }
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                int index = availableLangs.indexOf(CustomCrafting.getConfigHandler().getConfig().getLanguage());
+                int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
                 List<String> displayLangs = new ArrayList<>();
                 displayLangs.addAll(availableLangs.subList(index, availableLangs.size()));
                 displayLangs.addAll(availableLangs.subList(0, index));
@@ -130,26 +130,26 @@ public class Settings extends ExtendedGuiWindow {
         })));
 
         registerButton(new ToggleButton("debug", false, new ButtonState("debug.disabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().set("debug", true);
+            customCrafting.getConfigHandler().getConfig().set("debug", true);
             return true;
         }), new ButtonState("debug.enabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().set("debug", false);
+            customCrafting.getConfigHandler().getConfig().set("debug", false);
             return true;
         })));
 
         registerButton(new ToggleButton("creator.reset_after_save", false, new ButtonState("creator.reset_after_save.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
+            customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
             return true;
         }), new ButtonState("creator.reset_after_save.enabled", WolfyUtilities.getSkullViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
+            customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
             return true;
         })));
 
         registerButton(new ToggleButton("knowledgebook.workbench_filter_button", false, new ButtonState("knowledgebook.workbench_filter_button.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setWorkbenchFilter(true);
+            customCrafting.getConfigHandler().getConfig().setWorkbenchFilter(true);
             return true;
         }), new ButtonState("knowledgebook.workbench_filter_button.enabled", WolfyUtilities.getSkullViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            CustomCrafting.getConfigHandler().getConfig().setWorkbenchFilter(false);
+            customCrafting.getConfigHandler().getConfig().setWorkbenchFilter(false);
             return true;
         })));
     }
@@ -158,7 +158,7 @@ public class Settings extends ExtendedGuiWindow {
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
             availableLangs.clear();
-            File langFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "lang");
+            File langFolder = new File(customCrafting.getDataFolder() + File.separator + "lang");
             String[] filenames = langFolder.list((dir, name) -> name.endsWith(".json"));
             availableLangs.add("de_DE");
             for (String filename : filenames) {
@@ -169,13 +169,13 @@ public class Settings extends ExtendedGuiWindow {
             }
             Player player = event.getPlayer();
 
-            ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isLockedDown());
+            ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isLockedDown());
             ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
-            ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-            ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
+            ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+            ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
             ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
-            ((ToggleButton) event.getGuiWindow().getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
-            ((ToggleButton) event.getGuiWindow().getButton("knowledgebook.workbench_filter_button")).setState(event.getGuiHandler(), !CustomCrafting.getConfigHandler().getConfig().workbenchFilter());
+            ((ToggleButton) event.getGuiWindow().getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
+            ((ToggleButton) event.getGuiWindow().getButton("knowledgebook.workbench_filter_button")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().workbenchFilter());
 
             event.setButton(0, "none", "back");
 

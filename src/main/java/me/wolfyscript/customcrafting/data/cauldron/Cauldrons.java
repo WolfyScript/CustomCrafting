@@ -13,7 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Campfire;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -27,28 +26,29 @@ import java.util.concurrent.Future;
 
 public class Cauldrons {
 
+    private final CustomCrafting customCrafting;
     private WolfyUtilities api;
     private int autosaveTask;
-    private BukkitTask recipeTick;
-    private BukkitTask particles;
+    private boolean isBeingSaved = false;
     private Random random = new Random();
 
     //Hashmap of all the locations of the valid cauldrons. The Key is the Location. The Value is the current active recipe, which is going to be saved on server shutdown.
     private HashMap<Location, List<Cauldron>> cauldrons = new HashMap<>();
 
-    public Cauldrons(WolfyUtilities api) {
-        this.api = api;
+    public Cauldrons(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+        this.api = WolfyUtilities.getAPI(customCrafting);
         load();
         autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
-            if (CustomCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
+            if (customCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
                 api.sendConsoleMessage("[$msg.auto_save.start$]");
                 save();
                 api.sendConsoleMessage("[$msg.auto_save.complete$]");
             } else {
                 save();
             }
-        }, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
-        particles = Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> {
+        }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> {
             for (Location loc : cauldrons.keySet()) {
                 if (loc != null) {
                     World world = loc.getWorld();
@@ -66,7 +66,8 @@ public class Cauldrons {
                 }
             }
         }, 10, 4);
-        recipeTick = Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> cauldrons.entrySet().stream().filter(locationListEntry -> locationListEntry.getKey() != null && locationListEntry.getKey().getWorld() != null).filter(locationListEntry -> !locationListEntry.getValue().isEmpty()).forEach(locationListEntry -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> cauldrons.entrySet().stream().filter(locationListEntry -> locationListEntry.getKey() != null && locationListEntry.getKey().getWorld() != null).filter(locationListEntry -> !locationListEntry.getValue().isEmpty()).forEach(locationListEntry -> {
+            if (isBeingSaved) return;
             Location loc = locationListEntry.getKey().clone();
             World world = loc.getWorld();
             Levelled levelled = (Levelled) loc.getBlock().getBlockData();
@@ -80,7 +81,7 @@ public class Cauldrons {
                         //Execute CauldronRecipeDoneEvent
                         cauldron.setDone(true);
                         CauldronCookEvent event = new CauldronCookEvent(cauldron);
-                        Future<Boolean> checkCauldron = Bukkit.getScheduler().callSyncMethod(CustomCrafting.getInst(), () -> {
+                        Future<Boolean> checkCauldron = Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
                             Bukkit.getPluginManager().callEvent(event);
                             if (event.isCancelled()) {
                                 cauldron.setDone(false);
@@ -132,7 +133,7 @@ public class Cauldrons {
                     cauldron.decreasePassedTicks(2);
                     if (cauldron.getPassedTicks() <= 0) {
                         for (CustomItem customItem : cauldron.getRecipe().getIngredients()) {
-                            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
+                            Bukkit.getScheduler().runTask(customCrafting, () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
                         }
                         cauldronItr.remove();
                     }
@@ -195,7 +196,8 @@ public class Cauldrons {
     public void save() {
         try {
             api.sendConsoleMessage("Saving Cauldrons");
-            FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "cauldrons.dat"));
+            this.isBeingSaved = true;
+            FileOutputStream fos = new FileOutputStream(new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"));
             BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
             HashMap<String, List<String>> saveMap = new HashMap<>();
             for (Map.Entry<Location, List<Cauldron>> entry : cauldrons.entrySet()) {
@@ -211,6 +213,7 @@ public class Cauldrons {
             }
             oos.writeObject(saveMap);
             oos.close();
+            this.isBeingSaved = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -218,7 +221,7 @@ public class Cauldrons {
 
     public void load() {
         api.sendConsoleMessage("Loading Cauldrons");
-        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "cauldrons.dat");
+        File file = new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
         if (file.exists()) {
             FileInputStream fis;
             try {
@@ -232,7 +235,7 @@ public class Cauldrons {
                         List<Cauldron> value = new ArrayList<>();
                         if (entry.getValue() != null) {
                             for (String data : entry.getValue()) {
-                                value.add(Cauldron.fromString(data));
+                                value.add(Cauldron.fromString(customCrafting, data));
                             }
                         }
                         this.cauldrons.put(stringToLocation(entry.getKey()), value);

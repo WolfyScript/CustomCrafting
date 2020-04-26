@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BrewingStandListener implements Listener {
 
     private CustomCrafting customCrafting;
-    private Map<Location, String> activeBrewingStands = new HashMap<>();
+    private Map<Location, NamespacedKey> activeBrewingStands = new HashMap<>();
 
     public BrewingStandListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -155,7 +156,7 @@ public class BrewingStandListener implements Listener {
                                 //Check if recipe is correct
                                 BrewingRecipe brewingRecipe = null;
                                 CustomItem item = null;
-                                for (BrewingRecipe recipe : CustomCrafting.getRecipeHandler().getAvailableBrewingRecipes(player)) {
+                                for (BrewingRecipe recipe : customCrafting.getRecipeHandler().getAvailableBrewingRecipes(player)) {
                                     item = null;
                                     for (CustomItem customItem : recipe.getIngredient()) {
                                         if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {
@@ -198,7 +199,7 @@ public class BrewingStandListener implements Listener {
                                                                 cancel();
                                                             }
                                                         } else {
-                                                            BrewingRecipe recipe = (BrewingRecipe) CustomCrafting.getRecipeHandler().getRecipe(activeBrewingStands.get(location));
+                                                            BrewingRecipe recipe = (BrewingRecipe) customCrafting.getRecipeHandler().getRecipe(activeBrewingStands.get(location));
 
                                                             BrewerInventory brewerInventory = brewingStand.getInventory();
                                                             final CustomItem input0 = CustomItem.getByItemStack(brewerInventory.getItem(0));
@@ -233,7 +234,7 @@ public class BrewingStandListener implements Listener {
                                                 }
                                             }.runTaskTimerAsynchronously(customCrafting, 2, 1);
                                         }
-                                        activeBrewingStands.put(location, brewingRecipe.getId());
+                                        activeBrewingStands.put(location, brewingRecipe.getNamespacedKey());
                                     }
                                 }
                             }

@@ -51,11 +51,11 @@ public class CauldronCreator extends ExtendedGuiWindow {
                             return true;
                         }
                         try {
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(new CauldronRecipe(config));
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                                customCrafting.getRecipeHandler().injectRecipe(new CauldronRecipe(config));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetCauldronConfig();
                             }
                         } catch (Exception ex) {
@@ -63,7 +63,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"), 1);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openCluster("none"), 1);
                     }
                     return false;
                 });
@@ -115,13 +115,13 @@ public class CauldronCreator extends ExtendedGuiWindow {
 
         registerButton(new DummyButton("cauldron", new ButtonState("cauldron", Material.CAULDRON)));
 
-        registerButton(new CauldronContainerButton(0));
-        registerButton(new CauldronContainerButton(1));
+        registerButton(new CauldronContainerButton(0, customCrafting));
+        registerButton(new CauldronContainerButton(1, customCrafting));
         registerButton(new ItemInputButton("handItem_container", new ButtonState("handItem_container", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             TestCache cache = (TestCache) guiHandler.getCustomCache();
                             cache.getItems().setItem(true, CustomItem.getByItemStack(inventory.getItem(slot)));
@@ -131,7 +131,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                     });
                     return true;
                 }
-                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setHandItem(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                Bukkit.getScheduler().runTask(customCrafting, () -> ((TestCache) guiHandler.getCustomCache()).getCauldronConfig().setHandItem(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                 return false;
             }
 
@@ -302,7 +302,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                 event.setButton(33, "handItem_container");
             }
             if (WolfyUtilities.hasMythicMobs()) {
-                event.setButton(13, "mythicMob");
+                event.setButton(14, "mythicMob");
             }
 
             event.setButton(44, "save");

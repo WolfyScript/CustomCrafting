@@ -66,11 +66,11 @@ public class CookingCreator extends ExtendedGuiWindow {
                             }
                             if (customRecipe != null) {
                                 CustomRecipe finalCustomRecipe = customRecipe;
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
+                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> customCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
                             } else {
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", cookingConfig.getId()});
                             }
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetCookingConfig();
                             }
                         } catch (Exception ex) {
@@ -78,7 +78,7 @@ public class CookingCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"), 1);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openCluster("none"), 1);
                         return false;
                     }
                     return false;
@@ -97,8 +97,8 @@ public class CookingCreator extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new CookingContainerButton(0));
-        registerButton(new CookingContainerButton(1));
+        registerButton(new CookingContainerButton(0, customCrafting));
+        registerButton(new CookingContainerButton(1, customCrafting));
 
         registerButton(new ChatInputButton("xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%XP%", ((TestCache) guiHandler.getCustomCache()).getCookingConfig().getXP());

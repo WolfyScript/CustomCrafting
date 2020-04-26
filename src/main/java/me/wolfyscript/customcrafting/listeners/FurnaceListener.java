@@ -23,9 +23,11 @@ import java.util.List;
 
 public class FurnaceListener implements Listener {
 
+    private CustomCrafting customCrafting;
     private List<InventoryType> invs = new ArrayList<>();
 
-    public FurnaceListener() {
+    public FurnaceListener(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
         invs.add(InventoryType.FURNACE);
         if (WolfyUtilities.hasVillagePillageUpdate()) {
             invs.add(InventoryType.BLAST_FURNACE);
@@ -56,7 +58,7 @@ public class FurnaceListener implements Listener {
                                                 int possibleAmount = fuel.getMaxStackSize() - fuel.getAmount();
                                                 fuel.setAmount(fuel.getAmount() + (input.getAmount() < possibleAmount ? input.getAmount() : possibleAmount));
                                                 input.setAmount(input.getAmount() - possibleAmount);
-                                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                                     furnaceInventory.setFuel(fuel);
                                                     event.getWhoClicked().setItemOnCursor(input);
                                                 }, 1);
@@ -64,7 +66,7 @@ public class FurnaceListener implements Listener {
                                                 if (customItem.getType().isFuel()) {
                                                     event.setCancelled(true);
                                                 }
-                                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                                     event.getWhoClicked().setItemOnCursor(furnaceInventory.getFuel());
                                                     furnaceInventory.setFuel(input);
                                                 }, 1);
@@ -74,7 +76,7 @@ public class FurnaceListener implements Listener {
                                                 if (customItem.getType().isFuel()) {
                                                     event.setCancelled(true);
                                                 }
-                                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                                     event.getWhoClicked().setItemOnCursor(new ItemStack(Material.AIR));
                                                     furnaceInventory.setFuel(input);
                                                 }, 1);
@@ -97,7 +99,7 @@ public class FurnaceListener implements Listener {
                                                 if (customItem.getType().isFuel()) {
                                                     event.setCancelled(true);
                                                 }
-                                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                                     event.getWhoClicked().setItemOnCursor(furnaceInventory.getFuel());
                                                     furnaceInventory.setFuel(input);
                                                 }, 1);
@@ -105,7 +107,7 @@ public class FurnaceListener implements Listener {
                                         } else {
                                             event.setCancelled(true);
                                             input.setAmount(input.getAmount() - 1);
-                                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                                 ItemStack itemStack = new ItemStack(input);
                                                 itemStack.setAmount(1);
                                                 furnaceInventory.setFuel(itemStack);
@@ -151,11 +153,11 @@ public class FurnaceListener implements Listener {
                 FurnaceInventory inventory = furnace.getInventory();
                 ItemStack currentResultItem = furnace.getInventory().getResult();
 
-                if (recipe instanceof Keyed && CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
+                if (recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
                     event.setCancelled(true);
                     continue;
                 }
-                CustomCookingRecipe<CookingConfig> customRecipe = (CustomCookingRecipe<CookingConfig>) CustomCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+                CustomCookingRecipe<CookingConfig> customRecipe = (CustomCookingRecipe<CookingConfig>) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
                 if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                     if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                         event.setCancelled(false);

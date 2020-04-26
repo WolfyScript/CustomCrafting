@@ -1,0 +1,146 @@
+{
+  "categories": {
+    "main": {
+      "sort": [
+      ],
+      "options": [
+        {
+          "id": "default",
+          "icon": "CRAFTING_TABLE",
+          "name": "$knowledgebook.category.main.name$",
+          "itemCategories": [
+            "SEARCH"
+          ]
+        },
+        {
+          "id": "customcrafting",
+          "icon": "CRAFTING_TABLE",
+          "name": "$knowledgebook.category.customcrafting.name$",
+          "recipes": [
+            "customcrafting:advanced_workbench",
+            "customcrafting:knowledge_book"
+          ]
+        }
+      ]
+    },
+    "elite_workbench": {
+    },
+    "switch": {
+      "sort": [
+        "search"
+      ],
+      "options": [
+        {
+          "id": "brewing",
+          "icon": "GLASS_BOTTLE",
+          "name": "$knowledgebook.category.brewing.name$",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "BREWING"
+          ]
+        },
+        {
+          "id": "building_blocks",
+          "icon": "BRICKS",
+          "name": "$knowledgebook.category.building_blocks.name$",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "BUILDING_BLOCKS"
+          ]
+        },
+        {
+          "id": "decorations",
+          "name": "$knowledgebook.category.decorations.name$",
+          "icon": "PEONY",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "DECORATIONS"
+          ]
+        },
+        {
+          "id": "combat",
+          "name": "$knowledgebook.category.combat.name$",
+          "icon": "GOLDEN_SWORD",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "COMBAT"
+          ]
+        },
+        {
+          "id": "tools",
+          "name": "$knowledgebook.category.tools.name$",
+          "icon": "IRON_AXE",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "TOOLS"
+          ]
+        },
+        {
+          "id": "redstone",
+          "name": "$knowledgebook.category.redstone.name$",
+          "icon": "REDSTONE",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "REDSTONE"
+          ]
+        },
+        {
+          "id": "food",
+          "name": "$knowledgebook.category.food.name$",
+          "icon": "APPLE",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "FOOD"
+          ]
+        },
+        {
+          "id": "transportation",
+          "name": "$knowledgebook.category.transportation.name$",
+          "icon": "POWERED_RAIL",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "TRANSPORTATION"
+          ]
+        },
+        {
+          "id": "misc",
+          "name": "$knowledgebook.category.misc.name$",
+          "icon": "LAVA_BUCKET",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "MISC"
+          ]
+        },
+        {
+          "id": "search",
+          "name": "$knowledgebook.category.search.name$",
+          "icon": "COMPASS",
+          "description": [
+            "$knowledgebook.category_navigation$"
+          ],
+          "itemCategories": [
+            "SEARCH"
+          ]
+        }
+      ]
+    }
+  }
+}

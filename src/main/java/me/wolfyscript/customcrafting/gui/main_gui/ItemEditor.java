@@ -13,6 +13,7 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
@@ -81,7 +82,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
             if (items.isRecipeItem()) {
                 if (items.isSaved()) {
-                    items.setItem(CustomItems.getCustomItem(items.getId()));
+                    items.setItem(CustomItems.getCustomItem(items.getNamespacedKey()));
                 }
                 guiHandler.changeToInv("item_creator", "main_menu");
             } else {
@@ -113,15 +114,16 @@ public class ItemEditor extends ExtendedGuiWindow {
             sendItemListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
+                    CustomItem customItem = CustomItems.getCustomItem(new NamespacedKey(args[0], args[1]), false);
                     if (customItem == null) {
                         sendMessage(player1, "error");
                         return true;
                     }
                     ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(customItem.getId());
                     CustomItems.removeCustomItem(customItem);
+                    System.gc();
                     if (CustomCrafting.hasDataBaseHandler()) {
-                        CustomCrafting.getDataBaseHandler().removeItem(customItem.getConfig().getNamespace(), customItem.getConfig().getName());
+                        CustomCrafting.getDataBaseHandler().removeItem(customItem.getConfig().getNamespacedKey());
                     } else {
                         customItem.getConfig().getConfigFile().deleteOnExit();
                     }

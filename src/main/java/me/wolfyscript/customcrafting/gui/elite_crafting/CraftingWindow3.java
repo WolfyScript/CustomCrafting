@@ -1,11 +1,11 @@
-package me.wolfyscript.customcrafting.gui.crafting;
+package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.crafting.buttons.CraftingSlotButton;
-import me.wolfyscript.customcrafting.gui.crafting.buttons.ResultSlotButton;
+import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.CraftingSlotButton;
+import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.ResultSlotButton;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -26,9 +26,9 @@ public class CraftingWindow3 extends ExtendedGuiWindow {
     @Override
     public void onInit() {
         for (int i = 0; i < 9; i++) {
-            registerButton(new CraftingSlotButton(i));
+            registerButton(new CraftingSlotButton(i, customCrafting));
         }
-        registerButton(new ResultSlotButton());
+        registerButton(new ResultSlotButton(customCrafting));
 
         registerButton(new DummyButton("texture_dark", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9013, null)));
         registerButton(new DummyButton("texture_light", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9003, null)));

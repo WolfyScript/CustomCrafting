@@ -50,10 +50,10 @@ public class AnvilCreator extends ExtendedGuiWindow {
                         }
                         try {
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
+                                customCrafting.getRecipeHandler().injectRecipe(new CustomAnvilRecipe(anvilConfig));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetAnvilConfig();
                             }
                         } catch (Exception ex) {
@@ -79,9 +79,9 @@ public class AnvilCreator extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new AnvilContainerButton(0));
-        registerButton(new AnvilContainerButton(1));
-        registerButton(new AnvilContainerButton(2));
+        registerButton(new AnvilContainerButton(0, customCrafting));
+        registerButton(new AnvilContainerButton(1, customCrafting));
+        registerButton(new AnvilContainerButton(2, customCrafting));
 
         registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getAnvilConfig().setExactMeta(false);

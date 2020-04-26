@@ -7,10 +7,10 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +24,19 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
     private Conditions conditions;
 
     private EliteCraftConfig config;
-    private String id;
+    private NamespacedKey namespacedKey;
     private String group;
     private List<CustomItem> result;
     private Map<Character, List<CustomItem>> ingredients;
-    private WolfyUtilities api;
     protected int requiredGridSize;
 
     public EliteCraftingRecipe(EliteCraftConfig config) {
         this.result = config.getResult();
-        this.id = config.getId();
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.ingredients = config.getIngredients();
         this.group = config.getGroup();
         this.priority = config.getPriority();
-        this.api = CustomCrafting.getApi();
         this.exactMeta = config.isExactMeta();
         this.conditions = config.getConditions();
         this.hidden = config.isHidden();
@@ -49,14 +47,19 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
                 requiredGridSize = 3;
             }else if (ingredients.size() <= 16){
                 requiredGridSize = 4;
-            }else if (ingredients.size() <= 25){
+            } else if (ingredients.size() <= 25) {
                 requiredGridSize = 5;
-            }else if (ingredients.size() <= 36){
+            } else if (ingredients.size() <= 36) {
                 requiredGridSize = 6;
             }
-        }else{
+        } else {
             config.getShape();
         }
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override
@@ -104,8 +107,9 @@ public abstract class EliteCraftingRecipe implements CraftingRecipe<EliteCraftCo
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
     }
 
     @Override

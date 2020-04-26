@@ -4,6 +4,8 @@ import com.google.gson.GsonBuilder;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.configs.recipebook.Categories;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
@@ -16,17 +18,20 @@ import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.crafting.CraftListener;
+import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.utils.GsonUtil;
+import me.wolfyscript.utilities.api.utils.Reflection;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -37,6 +42,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,7 +62,11 @@ public class CustomCrafting extends JavaPlugin {
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
     private static RecipeHandler recipeHandler;
+    private RecipeUtils recipeUtils;
     private static DataBaseHandler dataBaseHandler = null;
+
+    //Utils
+    private ChatUtils chatUtils;
 
     private static Workbenches workbenches = null;
     private static Cauldrons cauldrons = null;
@@ -68,22 +78,29 @@ public class CustomCrafting extends JavaPlugin {
 
     public static final Pattern VALID_NAMESPACEKEY = Pattern.compile("[a-z0-9._-]+");
 
+    @Deprecated
+    public static Plugin getInst() {
+        return instance;
+    }
+
     @Override
     public void onLoad() {
         CustomItem.registerCustomData(new EliteWorkbenchData());
         GsonBuilder gsonBuilder = GsonUtil.getGsonBuilder();
         gsonBuilder.registerTypeHierarchyAdapter(Conditions.class, new Conditions.Serialization());
+        gsonBuilder.registerTypeHierarchyAdapter(Category.class, new Category.Serializer());
+        gsonBuilder.registerTypeHierarchyAdapter(Categories.class, new Categories.Serializer());
     }
 
     public static boolean hasPlayerCache(Player player) {
         return playerStatisticsList.stream().anyMatch(playerStatistics -> playerStatistics.getUuid().equals(player.getUniqueId()));
     }
 
-    private static void savePlayerStatistics() {
+    private void savePlayerStatistics() {
         HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
         playerStatisticsList.forEach(playerStatistics -> caches.put(playerStatistics.getUuid(), playerStatistics.getStats()));
         try {
-            FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat"));
+            FileOutputStream fos = new FileOutputStream(new File(getDataFolder() + File.separator + "playerstats.dat"));
             BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
             oos.writeObject(caches);
             oos.close();
@@ -92,9 +109,9 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    private static void loadPlayerStatistics() {
+    private void loadPlayerStatistics() {
         api.sendConsoleMessage("$msg.startup.playerstats$");
-        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "playerstats.dat");
+        File file = new File(getDataFolder() + File.separator + "playerstats.dat");
         if (file.exists()) {
             FileInputStream fis;
             try {
@@ -128,11 +145,6 @@ public class CustomCrafting extends JavaPlugin {
         return true;
     }
 
-    @Deprecated
-    public static Plugin getInst() {
-        return instance;
-    }
-
     public void onDisable() {
         if (loaded) {
             getConfigHandler().getConfig().save();
@@ -145,7 +157,7 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    public static ConfigHandler getConfigHandler() {
+    public ConfigHandler getConfigHandler() {
         return configHandler;
     }
 
@@ -189,47 +201,51 @@ public class CustomCrafting extends JavaPlugin {
                 System.out.println("Creating new folder");
             }
         }
-
-        configHandler = new ConfigHandler(api);
-        InventoryHandler invHandler = new InventoryHandler(this);
-        recipeHandler = new RecipeHandler(api);
+        recipeUtils = new RecipeUtils(this);
+        chatUtils = new ChatUtils(this);
+        configHandler = new ConfigHandler(this);
         configHandler.load();
+        recipeHandler = new RecipeHandler(this);
 
         if (configHandler.getConfig().isDatabankEnabled()) {
-            dataBaseHandler = new DataBaseHandler(api);
+            dataBaseHandler = new DataBaseHandler(this);
         }
+
+        InventoryHandler invHandler = new InventoryHandler(this);
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
         if (loaded) {
             System.out.println("------------------------------------------------------------------------");
-            getServer().getPluginManager().registerEvents(new CraftListener(api), this);
+            getServer().getPluginManager().registerEvents(new CraftListener(this), this);
             getServer().getPluginManager().registerEvents(new BlockListener(api), this);
-            getServer().getPluginManager().registerEvents(new FurnaceListener(), this);
+            getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
             getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
-            getServer().getPluginManager().registerEvents(new EnchantListener(), this);
-            getServer().getPluginManager().registerEvents(new CauldronListener(api), this);
+            //getServer().getPluginManager().registerEvents(new EnchantListener(), this);
+            getServer().getPluginManager().registerEvents(new CauldronListener(this), this);
             getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
             getServer().getPluginManager().registerEvents(new GrindStoneListener(this), this);
             getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
 
-            CommandCC commandCC = new CommandCC(this);
-            PluginCommand command = getServer().getPluginCommand("customcrafting");
-            if (!configHandler.getConfig().isCCenabled()) {
-                command.setAliases(new ArrayList<>());
+            final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
+            serverCommandMap.setAccessible(true);
+            try {
+                CommandMap commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
+                commandMap.register("customcrafting", new CommandCC(this));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
-            command.setExecutor(commandCC);
-            command.setTabCompleter(commandCC);
-            getCommand("recipes").setExecutor(new CommandRecipe());
-            getCommand("recipes").setTabCompleter(new CommandRecipe());
+
+            getCommand("recipes").setExecutor(new CommandRecipe(this));
+            getCommand("recipes").setTabCompleter(new CommandRecipe(this));
             loadPlayerStatistics();
             invHandler.init();
-            workbenches = new Workbenches(api);
+            workbenches = new Workbenches(this);
 
-            cauldrons = new Cauldrons(api);
+            cauldrons = new Cauldrons(this);
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 api.sendConsoleMessage("$msg.startup.placeholder$");
-                new PlaceHolder().register();
+                new PlaceHolder(this).register();
             }
             if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
                 api.sendConsoleMessage("$msg.startup.mythicmobs.detected$");
@@ -246,7 +262,7 @@ public class CustomCrafting extends JavaPlugin {
                 if (WolfyUtilities.hasSpigot()) {
                     version = "Spigot";
                 }
-                if (WolfyUtilities.hasClass("com.destroystokyo.paper.entity.TargetEntityInfo")) {
+                if (WolfyUtilities.hasClass("com.destroystokyo.paper.Title")) {
                     version = "Paper";
                 }
                 return version;
@@ -260,8 +276,16 @@ public class CustomCrafting extends JavaPlugin {
         return api;
     }
 
-    public static RecipeHandler getRecipeHandler() {
+    public RecipeHandler getRecipeHandler() {
         return recipeHandler;
+    }
+
+    public RecipeUtils getRecipeUtils() {
+        return recipeUtils;
+    }
+
+    public ChatUtils getChatUtils() {
+        return chatUtils;
     }
 
     public static Workbenches getWorkbenches() {

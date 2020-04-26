@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmokingRecipe;
 
@@ -14,18 +14,18 @@ import java.util.List;
 
 public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRecipe<SmokerConfig> {
 
+    private final NamespacedKey namespacedKey;
     private boolean exactMeta, hidden;
 
     private RecipePriority priority;
     private List<CustomItem> result;
     private List<CustomItem> source;
-    private String id;
     private SmokerConfig config;
     private Conditions conditions;
 
     public CustomSmokerRecipe(SmokerConfig config) {
-        super(new NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
-        this.id = config.getId();
+        super(new org.bukkit.NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
@@ -42,8 +42,14 @@ public class CustomSmokerRecipe extends SmokingRecipe implements CustomCookingRe
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public me.wolfyscript.utilities.api.utils.NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

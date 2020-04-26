@@ -1,16 +1,16 @@
 package me.wolfyscript.customcrafting.recipes.types.smoker;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class SmokerConfig extends CookingConfig {
 
-    public SmokerConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, folder, "smoker", name, "smoker");
+    public SmokerConfig(CustomCrafting customCrafting, String folder, String name) {
+        super(customCrafting, folder, "smoker", name, "smoker");
     }
 
-    public SmokerConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
-        super(jsonData, configAPI, namespace, key, "smoker", "smoker");
+    public SmokerConfig(String jsonData, CustomCrafting customCrafting, String namespace, String key) {
+        super(jsonData, customCrafting, namespace, key, "smoker", "smoker");
     }
 
     public SmokerConfig() {

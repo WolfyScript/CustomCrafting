@@ -37,7 +37,7 @@ public class AnvilListener implements Listener {
     public void onCheck(PrepareAnvilEvent event) {
         Player player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
-        List<CustomAnvilRecipe> recipes = CustomCrafting.getRecipeHandler().getAvailableAnvilRecipes(player);
+        List<CustomAnvilRecipe> recipes = customCrafting.getRecipeHandler().getAvailableAnvilRecipes(player);
         recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
         preCraftedRecipes.remove(player.getUniqueId());
         for (CustomAnvilRecipe recipe : recipes) {
@@ -167,7 +167,7 @@ public class AnvilListener implements Listener {
             ItemStack finalResult = result;
             inventory.setRepairCost(finalRepairCost);
             event.setResult(finalResult);
-            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
                 inventory.setRepairCost(finalRepairCost);
                 event.setResult(finalResult);
                 player.updateInventory();

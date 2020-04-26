@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import com.google.gson.JsonObject;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.ArrayList;
@@ -10,12 +10,12 @@ import java.util.Set;
 
 public class CookingConfig extends RecipeConfig {
 
-    public CookingConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
-        super(configAPI, folder, type, name, defaultName);
+    public CookingConfig(CustomCrafting customCrafting, String folder, String type, String name, String defaultName) {
+        super(customCrafting, folder, type, name, defaultName);
     }
 
-    public CookingConfig(String jsonData, ConfigAPI configAPI, String namespace, String key, String type, String defName) {
-        super(jsonData, configAPI, namespace, type, key, defName);
+    public CookingConfig(String jsonData, CustomCrafting customCrafting, String namespace, String key, String type, String defName) {
+        super(jsonData, customCrafting, namespace, type, key, defName);
     }
 
     public CookingConfig(String type, String defaultName) {

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class GrindstoneContainerButton extends ItemInputButton {
 
-    public GrindstoneContainerButton(int inputSlot) {
+    public GrindstoneContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("grindstone.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -52,7 +52,7 @@ public class GrindstoneContainerButton extends ItemInputButton {
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
                         CustomItem item = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
                         switch (inputSlot) {
                             case 0:

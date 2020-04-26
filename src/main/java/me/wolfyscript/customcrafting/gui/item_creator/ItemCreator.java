@@ -88,20 +88,15 @@ public class ItemCreator extends ExtendedGuiWindow {
                 sendMessage(player, "save.input.line1");
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
-                        String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        if (!CustomCrafting.VALID_NAMESPACEKEY.matcher(namespace).matches()) {
-                            api.sendPlayerMessage(player1, "&cInvalid Namespace! Namespaces may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
-                            return true;
+                        try {
+                            me.wolfyscript.utilities.api.utils.NamespacedKey namespacedKey = new me.wolfyscript.utilities.api.utils.NamespacedKey(args[0].toLowerCase(Locale.ROOT).replace(" ", "_"), args[1].toLowerCase(Locale.ROOT).replace(" ", "_"));
+                            saveItem((TestCache) guiHandler.getCustomCache(), namespacedKey, items.getItem());
+                            sendMessage(player, "save.success");
+                            api.sendPlayerMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
+                            Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler.openCluster());
+                        } catch (IllegalArgumentException e) {
+                            api.sendPlayerMessage(player1, e.getMessage());
                         }
-                        if (!CustomCrafting.VALID_NAMESPACEKEY.matcher(key).matches()) {
-                            api.sendPlayerMessage(player1, "&cInvalid key! Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
-                            return true;
-                        }
-                        saveItem((TestCache) guiHandler.getCustomCache(), namespace + ":" + key, items.getItem());
-                        sendMessage(player, "save.success");
-                        api.sendPlayerMessage(player1, "&6" + namespace + "/items/" + key);
-                        Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler.openCluster());
                         return false;
                     }
                     return true;
@@ -115,8 +110,8 @@ public class ItemCreator extends ExtendedGuiWindow {
             if (!cache.getItems().getItem().getType().equals(Material.AIR)) {
                 CustomItem customItem = cache.getItems().getItem();
                 if (cache.getItems().isSaved()) {
-                    saveItem(cache, cache.getItems().getId(), customItem);
-                    customItem = CustomItems.getCustomItem(cache.getItems().getId());
+                    saveItem(cache, cache.getItems().getNamespacedKey(), customItem);
+                    customItem = CustomItems.getCustomItem(cache.getItems().getNamespacedKey());
                 }
                 cache.applyItem(customItem);
                 guiHandler.openCluster("recipe_creator");
@@ -143,11 +138,6 @@ public class ItemCreator extends ExtendedGuiWindow {
         registerButton(new ChatInputButton("display_name.set", new ButtonState("display_name.set", Material.GREEN_CONCRETE), (guiHandler, player, s, strings) -> {
             CustomItem itemStack = ((TestCache)guiHandler.getCustomCache()).getItems().getItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
-            /*
-            if (s.startsWith("&f")) {
-                s = "&r" + s;
-            }
-            */
             itemMeta.setDisplayName(WolfyUtilities.translateColorCodes(s));
             itemStack.setItemMeta(itemMeta);
             return false;
@@ -157,6 +147,7 @@ public class ItemCreator extends ExtendedGuiWindow {
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setDisplayName(null);
             itemStack.setItemMeta(itemMeta);
+
             return true;
         })));
 
@@ -1253,6 +1244,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                         if (items.getItem().getType().isBlock()) {
                             ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).getGridSize() - 3);
                             ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).isEnabled());
+                            ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.advanced_recipes")).setState(event.getGuiHandler(), ((EliteWorkbenchData) items.getItem().getCustomData("elite_workbench")).isAdvancedRecipes());
                             event.setButton(37, "elite_workbench.particles");
                             event.setButton(39, "elite_workbench.grid_size");
                             event.setButton(41, "elite_workbench.toggle");
@@ -1285,8 +1277,6 @@ public class ItemCreator extends ExtendedGuiWindow {
                         event.setButton(50, "particle_effects.hand.input");
                         event.setButton(51, "particle_effects.off_hand.input");
                         event.setButton(52, "particle_effects.block.input");
-
-
                 }
                 if (cache.getSubSetting().startsWith("attribute.generic") || cache.getSubSetting().startsWith("attribute.horse") || cache.getSubSetting().startsWith("attribute.zombie")) {
                     event.setButton(36, "attribute.slot_head");
@@ -1304,29 +1294,26 @@ public class ItemCreator extends ExtendedGuiWindow {
                     event.setButton(40, "attribute.save");
                     event.setButton(49, "attribute.delete");
                 }
-
             }
         }
     }
 
-    public static void saveItem(TestCache cache, String id, CustomItem customItem) {
+    public void saveItem(TestCache cache, me.wolfyscript.utilities.api.utils.NamespacedKey namespacedKey, CustomItem customItem) {
         ItemConfig config;
-        String namespace = id.split(":")[0];
-        String key = id.split(":")[1];
-        
+
         if (CustomCrafting.hasDataBaseHandler()) {
-            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, key);
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespacedKey.getNamespace(), namespacedKey.getKey());
         } else {
-            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespace, CustomCrafting.getInst().getDataFolder() + "/recipes/" + namespace + "/items", key, true);
+            config = new ItemConfig(CustomCrafting.getApi().getConfigAPI(), namespacedKey.getNamespace(), customCrafting.getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/items", namespacedKey.getKey(), true);
         }
         config.setCustomItem(customItem);
-        if (CustomItems.getCustomItem(id) != null) {
-            CustomItems.removeCustomItem(id);
+        if (CustomItems.getCustomItem(namespacedKey) != null) {
+            CustomItems.removeCustomItem(namespacedKey);
         }
         if (CustomCrafting.hasDataBaseHandler()) {
             CustomCrafting.getDataBaseHandler().updateItem(config);
         } else {
-            config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+            config.reload(customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
         }
         CustomItem customItem1 = new CustomItem(config);
         cache.getItems().setItem(customItem1);

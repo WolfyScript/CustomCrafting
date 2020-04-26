@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import com.google.gson.JsonObject;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
 import org.bukkit.Material;
@@ -13,27 +13,27 @@ public class CraftConfig extends RecipeConfig {
 
     private static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
-    public CraftConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override) {
-        super(configAPI, folder, type, name, defaultPath, defaultName, override);
+    public CraftConfig(CustomCrafting customCrafting, String folder, String type, String name, String defaultPath, String defaultName, boolean override) {
+        super(customCrafting, folder, type, name, defaultPath, defaultName, override);
     }
 
-    public CraftConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override) {
-        super(configAPI, folder, type, name, defaultName, override);
+    public CraftConfig(CustomCrafting customCrafting, String folder, String type, String name, String defaultName, boolean override) {
+        super(customCrafting, folder, type, name, defaultName, override);
     }
 
-    public CraftConfig(ConfigAPI configAPI, String defaultName, String type, String folder, String name) {
-        this(configAPI, folder, type, name, defaultName, false);
+    public CraftConfig(CustomCrafting customCrafting, String defaultName, String type, String folder, String name) {
+        this(customCrafting, folder, type, name, defaultName, false);
     }
 
-    public CraftConfig(ConfigAPI configAPI, String type, String folder, String name) {
-        this(configAPI, "craft_config", type, folder, name);
+    public CraftConfig(CustomCrafting customCrafting, String type, String folder, String name) {
+        this(customCrafting, "craft_config", type, folder, name);
     }
 
     /*
     Creates a json Memory only Config used for DataBase management!
      */
-    public CraftConfig(String jsonData, ConfigAPI configAPI, String type, String folder, String name) {
-        super(jsonData, configAPI, folder, type, name, "craft_config");
+    public CraftConfig(String jsonData, CustomCrafting customCrafting, String type, String folder, String name) {
+        super(jsonData, customCrafting, folder, type, name, "craft_config");
     }
 
     /*

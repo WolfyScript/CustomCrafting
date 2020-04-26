@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AnvilContainerButton extends ItemInputButton {
 
-    public AnvilContainerButton(int inputSlot) {
+    public AnvilContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -37,7 +37,7 @@ public class AnvilContainerButton extends ItemInputButton {
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
                         CustomItem input = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
                         List<CustomItem> inputs = anvilConfig.getInput(inputSlot);
                         if (inputs.size() > 0) {

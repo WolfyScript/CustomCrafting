@@ -1,16 +1,16 @@
 package me.wolfyscript.customcrafting.recipes.types.furnace;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 
 public class FurnaceConfig extends CookingConfig {
 
-    public FurnaceConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, folder, "furnace", name, "furnace_config");
+    public FurnaceConfig(CustomCrafting customCrafting, String folder, String name) {
+        super(customCrafting, folder, "furnace", name, "furnace_config");
     }
 
-    public FurnaceConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
-        super(jsonData, configAPI, namespace, key, "furnace", "furnace_config");
+    public FurnaceConfig(String jsonData, CustomCrafting customCrafting, String namespace, String key) {
+        super(jsonData, customCrafting, namespace, key, "furnace", "furnace_config");
     }
 
     public FurnaceConfig() {

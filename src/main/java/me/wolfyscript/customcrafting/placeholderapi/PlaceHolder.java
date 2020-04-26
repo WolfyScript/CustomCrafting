@@ -14,6 +14,12 @@ import org.bukkit.entity.Player;
 
 public class PlaceHolder extends PlaceholderExpansion {
 
+    private CustomCrafting customCrafting;
+
+    public PlaceHolder(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+    }
+
     @Override
     public boolean canRegister() {
         return true;
@@ -50,7 +56,7 @@ public class PlaceHolder extends PlaceholderExpansion {
             if (params.contains(";")) {
                 //Params with %ccrafting_<option>;<recipe_id>%
                 String recipeID = params.split(";")[1];
-                CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(recipeID);
+                CustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(recipeID);
                 String option = params.split(";")[0];
                 switch (option) {
                     case "type":
@@ -91,19 +97,13 @@ public class PlaceHolder extends PlaceholderExpansion {
                             break;
                         return String.valueOf(cache.getAmountCrafted());
                     case "total":
-                        return String.valueOf(CustomCrafting.getRecipeHandler().getVanillaRecipes().size());
+                        return String.valueOf(customCrafting.getRecipeHandler().getVanillaRecipes().size());
                     case "total_custom":
-                        return String.valueOf(CustomCrafting.getRecipeHandler().getRecipes().size());
+                        return String.valueOf(customCrafting.getRecipeHandler().getRecipes().size());
                     case "available":
                         if (p.isOnline()) {
-                            int i = 0;
                             Player player = Bukkit.getPlayer(p.getUniqueId());
-                            for (String id : CustomCrafting.getRecipeHandler().getRecipes().keySet()) {
-                                if (WolfyUtilities.hasPermission(player, "customcrafting.craft." + id)) {
-                                    i++;
-                                }
-                            }
-                            return String.valueOf(i);
+                            return String.valueOf(customCrafting.getRecipeHandler().getRecipes().keySet().stream().filter(namespacedKey -> WolfyUtilities.hasPermission(player, "customcrafting.craft." + namespacedKey.getNamespace() + "." + namespacedKey.getKey())).count());
                         }
                         break;
                 }

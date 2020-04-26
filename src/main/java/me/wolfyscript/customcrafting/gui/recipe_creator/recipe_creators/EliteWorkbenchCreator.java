@@ -60,11 +60,11 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
                                     customRecipe = new ShapedEliteCraftRecipe(config);
                                 }
                             }
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(customRecipe);
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                                customCrafting.getRecipeHandler().injectRecipe(customRecipe);
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetEliteCraftConfig();
                             }
                         } catch (Exception ex) {
@@ -72,7 +72,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"));
+                        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openCluster("none"));
                         return false;
                     }
                     return false;
@@ -92,7 +92,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
         })));
 
         for (int i = 0; i < 37; i++) {
-            registerButton(new CraftingIngredientButton(i));
+            registerButton(new CraftingIngredientButton(i, customCrafting));
         }
 
         registerButton(new ToggleButton("exact_meta", new ButtonState("recipe_creator", "exact_meta.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {

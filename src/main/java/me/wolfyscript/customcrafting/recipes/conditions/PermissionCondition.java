@@ -36,7 +36,7 @@ public class PermissionCondition extends Condition {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
-        String permissionString = permission.replace("%namespace%", recipe.getId().split(":")[0]).replace("%recipe_name%", recipe.getId().split(":")[1]);
+        String permissionString = permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey());
         return WolfyUtilities.hasPermission(player, permissionString);
     }
 

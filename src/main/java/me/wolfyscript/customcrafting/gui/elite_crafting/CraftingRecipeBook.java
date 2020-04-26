@@ -1,12 +1,12 @@
-package me.wolfyscript.customcrafting.gui.crafting;
+package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
@@ -23,7 +23,6 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.utils.ItemCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 
@@ -54,7 +53,7 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                 book.setSubFolder(book.getSubFolder() - 1);
                 if (book.getSubFolder() > 0) {
                     CustomItem item = book.getResearchItem();
-                    book.setSubFolderRecipes(CustomCrafting.getRecipeHandler().getRecipes(item));
+                    book.setSubFolderRecipes(customCrafting.getRecipeHandler().getRecipes(item));
                     book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
                     return true;
                 } else {
@@ -64,7 +63,7 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
             return true;
         })));
         for (int i = 0; i < 45; i++) {
-            registerButton(new RecipeBookContainerButton(i));
+            registerButton(new RecipeBookContainerButton(i, customCrafting));
         }
         registerButton(new DummyButton("workbench.shapeless_on", new ButtonState("workbench.shapeless_on", WolfyUtilities.getSkullViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"))));
         registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", WolfyUtilities.getSkullViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"))));
@@ -80,8 +79,8 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
             PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);
             EliteWorkbench eliteWorkbenchData = cache.getEliteWorkbench();
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
-            ItemCategory itemCategory = knowledgeBook.getItemCategory();
-            ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), itemCategory);
+
+            Category category = ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
             if (knowledgeBook.getSubFolder() == 0) {
                 event.setButton(0, "back");
                 event.setButton(2, "recipe_book", "previous_page");
@@ -90,7 +89,7 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                 if (knowledgeBook.getRecipeItems().isEmpty()) {
                     List<CustomRecipe> recipes = new ArrayList<>();
 
-                    recipes.addAll(CustomCrafting.getRecipeHandler().getAvailableEliteCraftingRecipes(player));
+                    recipes.addAll(customCrafting.getRecipeHandler().getAvailableEliteCraftingRecipes(player));
 
                     Iterator<CustomRecipe> iterator = recipes.iterator();
                     while (iterator.hasNext()) {
@@ -112,21 +111,16 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
                             }
                         }
                     }
-                    if (knowledgeBook.getSetting().equals(Setting.WORKBENCH)) {
-                        recipes.addAll(CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player));
+                    EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
+                    if (eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()) {
+                        recipes.addAll(customCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player));
                     }
-                    if (!itemCategory.equals(ItemCategory.SEARCH)) {
+                    if (category != null) {
                         Iterator<CustomRecipe> recipeIterator = recipes.iterator();
                         while (recipeIterator.hasNext()) {
                             CustomRecipe recipe = recipeIterator.next();
                             List<CustomItem> customItems = recipe.getCustomResults();
-                            boolean allowed = false;
-                            for (CustomItem customItem : customItems) {
-                                if (itemCategory.isValid(customItem.getType())) {
-                                    allowed = true;
-                                }
-                            }
-                            if (!allowed) {
+                            if (!category.isValid(recipe) && customItems.stream().noneMatch(customItem -> category.isValid(customItem.getType()))) {
                                 recipeIterator.remove();
                             }
                         }

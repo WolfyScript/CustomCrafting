@@ -20,18 +20,23 @@ import org.bukkit.inventory.ItemStack;
 
 public class CraftListener implements Listener {
 
+    private CustomCrafting customCrafting;
+    private RecipeUtils recipeUtils;
     private WolfyUtilities api;
 
-    private MainConfig config = CustomCrafting.getConfigHandler().getConfig();
+    private MainConfig config;
 
-    public CraftListener(WolfyUtilities api) {
-        this.api = api;
+    public CraftListener(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+        this.recipeUtils = customCrafting.getRecipeUtils();
+        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.config = customCrafting.getConfigHandler().getConfig();
     }
 
     @EventHandler
     public void onAdvancedWorkbench(CustomPreCraftEvent event) {
-        if (!event.isCancelled() && event.getRecipe().getId().equals("customcrafting:advanced_workbench")) {
-            if (!CustomCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()) {
+        if (!event.isCancelled() && event.getRecipe().getNamespacedKey().toString().equals("customcrafting:advanced_workbench")) {
+            if (!customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()) {
                 event.setCancelled(true);
             }
         }
@@ -40,20 +45,20 @@ public class CraftListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
         if (event.getClickedInventory() instanceof CraftingInventory && event.getSlot() == 0) {
-            if(RecipeUtils.getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId())){
+            if (recipeUtils.getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId())) {
                 Player player = (Player) event.getWhoClicked();
                 CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
                 ItemStack resultItem = inventory.getResult();
                 inventory.setResult(new ItemStack(Material.AIR));
                 ItemStack[] matrix = inventory.getMatrix().clone();
-                RecipeUtils.consumeRecipe(resultItem, matrix, event);
+                recipeUtils.consumeRecipe(resultItem, matrix, event);
 
-                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> inventory.setMatrix(matrix));
+                Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix));
                 player.updateInventory();
-                RecipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                recipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
             }
         } else if (event.getClickedInventory() instanceof CraftingInventory) {
-            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                 PrepareItemCraftEvent event1 = new PrepareItemCraftEvent((CraftingInventory) event.getClickedInventory(), event.getView(), false);
                 Bukkit.getPluginManager().callEvent(event1);
             }, 1);
@@ -64,9 +69,9 @@ public class CraftListener implements Listener {
     public void onPreCraft(PrepareItemCraftEvent e) {
         Player player = (Player) e.getView().getPlayer();
         try {
-            RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+            RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
-            ItemStack result = RecipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
+            ItemStack result = recipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (result != null) {
                 e.getInventory().setResult(result);
             } else {
@@ -89,7 +94,7 @@ public class CraftListener implements Listener {
             System.out.println("WHAT HAPPENED? Please report!");
             ex.printStackTrace();
             System.out.println("WHAT HAPPENED? Please report!");
-            RecipeUtils.getPreCraftedRecipes().remove(player.getUniqueId());
+            recipeUtils.getPreCraftedRecipes().remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }

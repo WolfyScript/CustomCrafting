@@ -21,7 +21,7 @@ import java.util.List;
 
 public class BrewingContainerButton extends ItemInputButton {
 
-    public BrewingContainerButton(int recipeSlot) {
+    public BrewingContainerButton(int recipeSlot, CustomCrafting customCrafting) {
         super("brewing.container_" + recipeSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -43,7 +43,7 @@ public class BrewingContainerButton extends ItemInputButton {
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
                         CustomItem customItem = new CustomItem(Material.AIR);
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             customItem = CustomItem.getByItemStack(inventory.getItem(slot));

@@ -32,16 +32,18 @@ import java.util.*;
 
 public class CauldronListener implements Listener {
 
+    private CustomCrafting customCrafting;
     private WolfyUtilities api;
 
-    public CauldronListener(WolfyUtilities api) {
-        this.api = api;
+    public CauldronListener(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+        this.api = WolfyUtilities.getAPI(customCrafting);
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if(WolfyUtilities.hasVillagePillageUpdate()){
+        if (WolfyUtilities.hasVillagePillageUpdate()) {
             if (block.getType().equals(Material.CAULDRON)) {
                 if (CustomCrafting.getCauldrons().isCauldron(block.getLocation())) {
                     CustomCrafting.getCauldrons().removeCauldron(block.getLocation());
@@ -91,6 +93,7 @@ public class CauldronListener implements Listener {
                                 event.setUseItemInHand(Event.Result.DENY);
                                 event.setUseInteractedBlock(Event.Result.DENY);
                                 handItem.setAmount(handItem.getAmount() - 1);
+
                                 ItemStack result = cauldron.getResult().getRealItem();
                                 if (InventoryUtils.hasInventorySpace(player, result)) {
                                     player.getInventory().addItem(result);
@@ -130,10 +133,10 @@ public class CauldronListener implements Listener {
                     if (!items.isEmpty()) {
                         int level = ((Levelled) loc.getBlock().getBlockData()).getLevel();
                         //Check for new possible Recipes
-                        List<CauldronRecipe> recipes = CustomCrafting.getRecipeHandler().getCauldronRecipes();
+                        List<CauldronRecipe> recipes = customCrafting.getRecipeHandler().getCauldronRecipes();
                         recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
                         for (CauldronRecipe recipe : recipes) {
-                            if (cauldronEntryValue.isEmpty() || cauldronEntryValue.get(0).getRecipe().getId().equals(recipe.getId())) {
+                            if (cauldronEntryValue.isEmpty() || cauldronEntryValue.get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {
                                 if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || cauldrons.isCustomCauldronLit(loc.getBlock()))) {
                                     List<Item> validItems = recipe.checkRecipe(items);
                                     if (validItems != null) {

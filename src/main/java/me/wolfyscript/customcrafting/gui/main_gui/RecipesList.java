@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
@@ -16,7 +17,6 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.ItemCategory;
 import org.bukkit.Keyed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -67,8 +67,8 @@ public class RecipesList extends ExtendedGuiWindow {
         })));
 
         for (int i = 0; i < 45; i++) {
-            registerButton(new RecipeListContainerButton(i));
-            registerButton(new RecipeListNamespaceButton(i));
+            registerButton(new RecipeListContainerButton(i, customCrafting));
+            registerButton(new RecipeListNamespaceButton(i, customCrafting));
         }
     }
 
@@ -77,7 +77,7 @@ public class RecipesList extends ExtendedGuiWindow {
         if (event.verify(this)) {
             GuiHandler guiHandler = event.getGuiHandler();
             KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-            ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), knowledgeBook.getItemCategory());
+            Category category = ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
             int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
             event.setButton(0, "back");
             event.setButton(4, "recipe_book", "itemCategory");
@@ -86,7 +86,7 @@ public class RecipesList extends ExtendedGuiWindow {
             if (namespace.isEmpty()) {
                 List<String> namespaceList = new ArrayList<>();
                 namespaceList.add("minecraft");
-                namespaceList.addAll(CustomCrafting.getRecipeHandler().getNamespaces());
+                namespaceList.addAll(customCrafting.getRecipeHandler().getNamespaces());
                 maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
                 int item = 0;
                 for (int i = 45 * currentPage; item < 45 && i < namespaceList.size(); i++) {
@@ -98,11 +98,11 @@ public class RecipesList extends ExtendedGuiWindow {
             } else {
                 if (namespace.equalsIgnoreCase("minecraft")) {
                     List<Recipe> recipes = new ArrayList<>();
-                    recipes.addAll(CustomCrafting.getRecipeHandler().getVanillaRecipes());
-                    if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
+                    recipes.addAll(customCrafting.getRecipeHandler().getVanillaRecipes());
+                    if (category != null) {
                         Iterator<Recipe> recipeIterator = recipes.iterator();
                         while (recipeIterator.hasNext()) {
-                            if (!knowledgeBook.getItemCategory().isValid(recipeIterator.next().getResult().getType())) {
+                            if (category.isValid(recipeIterator.next().getResult().getType())) {
                                 recipeIterator.remove();
                             }
                         }
@@ -123,21 +123,23 @@ public class RecipesList extends ExtendedGuiWindow {
                     }
                 } else {
                     List<CustomRecipe> recipes = new ArrayList<>();
-                    recipes.addAll(CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace));
-                    if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
+                    recipes.addAll(customCrafting.getRecipeHandler().getRecipesByNamespace(namespace));
+                    if (category != null) {
                         Iterator<CustomRecipe> recipeIterator = recipes.iterator();
                         while (recipeIterator.hasNext()) {
                             CustomRecipe recipe = recipeIterator.next();
                             if (recipe instanceof CustomRecipe) {
-                                boolean valid = false;
-                                for (CustomItem item : ((CustomRecipe<RecipeConfig>) recipe).getCustomResults()) {
-                                    if (knowledgeBook.getItemCategory().isValid(item.getType())) {
-                                        valid = true;
-                                        break;
+                                if (!category.isValid(recipe)) {
+                                    boolean valid = false;
+                                    for (CustomItem item : ((CustomRecipe<RecipeConfig>) recipe).getCustomResults()) {
+                                        if (category.isValid(item.getType())) {
+                                            valid = true;
+                                            break;
+                                        }
                                     }
-                                }
-                                if (!valid) {
-                                    recipeIterator.remove();
+                                    if (!valid) {
+                                        recipeIterator.remove();
+                                    }
                                 }
                             }
                         }

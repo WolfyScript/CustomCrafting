@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
@@ -40,6 +41,7 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.particles.ParticleEffects;
 import me.wolfyscript.utilities.api.utils.particles.Particles;
 import org.bukkit.Bukkit;
@@ -57,9 +59,11 @@ import java.util.stream.Collectors;
 
 public class RecipeHandler {
 
+    private final CustomCrafting customCrafting;
+    private Categories categories;
     private List<Recipe> allRecipes = new ArrayList<>();
 
-    private TreeMap<String, CustomRecipe> customRecipes = new TreeMap<>();
+    private TreeMap<NamespacedKey, CustomRecipe> customRecipes = new TreeMap<>();
 
     private ArrayList<String> disabledRecipes = new ArrayList<>();
 
@@ -69,11 +73,13 @@ public class RecipeHandler {
     private ConfigAPI configAPI;
     private WolfyUtilities api;
 
-    public RecipeHandler(WolfyUtilities api) {
+    public RecipeHandler(CustomCrafting customCrafting) {
+        this.api = WolfyUtilities.getAPI(customCrafting);
         this.configAPI = api.getConfigAPI();
-        this.api = api;
+        this.customCrafting = customCrafting;
         this.particlesList = new ArrayList<>();
         this.particleEffectsList = new ArrayList<>();
+        this.categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
     }
 
     public void load() {
@@ -87,11 +93,11 @@ public class RecipeHandler {
     }
 
     private void loadConfigs() {
-        if (!CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
-            disabledRecipes.addAll(CustomCrafting.getConfigHandler().getConfig().getDisabledRecipes());
+        if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
+            disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes());
         }
         api.sendConsoleMessage("$msg.startup.recipes.title$");
-        File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
+        File recipesFolder = new File(customCrafting.getDataFolder() + File.separator + "recipes");
         List<File> subFolders = null;
         File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
         if (dirs != null) {
@@ -121,6 +127,7 @@ public class RecipeHandler {
                     loadConfig(folder.getName(), "brewing");
                     loadConfig(folder.getName(), "elite_workbench");
                 }
+
             });
             if (WolfyUtilities.hasVillagePillageUpdate()) {
                 api.sendConsoleMessage("");
@@ -134,7 +141,7 @@ public class RecipeHandler {
     }
 
     private void loadConfig(String subfolder, String type) {
-        File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
+        File workbench = new File(customCrafting.getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
         LinkedList<String> recipes = new LinkedList<>();
         workbench.listFiles((dir, name) -> {
             if (name.contains(".")) {
@@ -156,15 +163,15 @@ public class RecipeHandler {
                         CustomItems.setCustomItem(itemConfig);
                         break;
                     case "particles":
-                        Particles particles = new Particles(configAPI, subfolder, CustomCrafting.getInst().getDataFolder().getAbsolutePath() + File.separator + "recipes");
+                        Particles particles = new Particles(configAPI, subfolder, customCrafting.getDataFolder().getAbsolutePath() + File.separator + "recipes");
                         particles.loadParticles();
                         particlesList.add(particles);
-                        ParticleEffects particleEffects = new ParticleEffects(configAPI, subfolder, CustomCrafting.getInst().getDataFolder().getAbsolutePath() + File.separator + "recipes");
+                        ParticleEffects particleEffects = new ParticleEffects(configAPI, subfolder, customCrafting.getDataFolder().getAbsolutePath() + File.separator + "recipes");
                         particleEffects.loadEffects();
                         particleEffectsList.add(particleEffects);
                         break;
                     case "workbench":
-                        AdvancedCraftConfig config = new AdvancedCraftConfig(configAPI, subfolder, name);
+                        AdvancedCraftConfig config = new AdvancedCraftConfig(customCrafting, subfolder, name);
                         if (config.isShapeless()) {
                             registerRecipe(new ShapelessCraftRecipe(config));
                         } else {
@@ -172,7 +179,7 @@ public class RecipeHandler {
                         }
                         break;
                     case "elite_workbench":
-                        EliteCraftConfig eliteCraftConfig = new EliteCraftConfig(configAPI, subfolder, name);
+                        EliteCraftConfig eliteCraftConfig = new EliteCraftConfig(customCrafting, subfolder, name);
                         if (eliteCraftConfig.isShapeless()) {
                             registerRecipe(new ShapelessEliteCraftRecipe(eliteCraftConfig));
                         } else {
@@ -180,31 +187,31 @@ public class RecipeHandler {
                         }
                         break;
                     case "furnace":
-                        registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(configAPI, subfolder, name)));
+                        registerRecipe(new CustomFurnaceRecipe(new FurnaceConfig(customCrafting, subfolder, name)));
                         break;
                     case "anvil":
-                        registerRecipe(new CustomAnvilRecipe(new AnvilConfig(configAPI, subfolder, name)));
+                        registerRecipe(new CustomAnvilRecipe(new AnvilConfig(customCrafting, subfolder, name)));
                         break;
                     case "blast_furnace":
-                        registerRecipe(new CustomBlastRecipe(new BlastingConfig(configAPI, subfolder, name)));
+                        registerRecipe(new CustomBlastRecipe(new BlastingConfig(customCrafting, subfolder, name)));
                         break;
                     case "smoker":
-                        registerRecipe(new CustomSmokerRecipe(new SmokerConfig(configAPI, subfolder, name)));
+                        registerRecipe(new CustomSmokerRecipe(new SmokerConfig(customCrafting, subfolder, name)));
                         break;
                     case "campfire":
-                        registerRecipe(new CustomCampfireRecipe(new CampfireConfig(configAPI, subfolder, name)));
+                        registerRecipe(new CustomCampfireRecipe(new CampfireConfig(customCrafting, subfolder, name)));
                         break;
                     case "stonecutter":
-                        registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(configAPI, subfolder, name)));
+                        registerRecipe(new CustomStonecutterRecipe(new StonecutterConfig(customCrafting, subfolder, name)));
                         break;
                     case "cauldron":
-                        registerRecipe(new CauldronRecipe(new CauldronConfig(configAPI, subfolder, name)));
+                        registerRecipe(new CauldronRecipe(new CauldronConfig(customCrafting, subfolder, name)));
                         break;
                     case "grindstone":
-                        registerRecipe(new GrindstoneRecipe(new GrindstoneConfig(configAPI, subfolder, name)));
+                        registerRecipe(new GrindstoneRecipe(new GrindstoneConfig(customCrafting, subfolder, name)));
                         break;
                     case "brewing":
-                        registerRecipe(new BrewingRecipe(new BrewingConfig(configAPI, subfolder, name)));
+                        registerRecipe(new BrewingRecipe(new BrewingConfig(customCrafting, subfolder, name)));
                 }
             } catch (Exception ex) {
                 ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
@@ -213,8 +220,8 @@ public class RecipeHandler {
     }
 
     public void onSave() {
-        CustomCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
-        CustomCrafting.getConfigHandler().getConfig().save();
+        customCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
+        customCrafting.getConfigHandler().getConfig().save();
         particlesList.forEach(particles -> {
             particles.setParticles();
             particles.save();
@@ -238,7 +245,7 @@ public class RecipeHandler {
 
     public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
         api.sendConsoleMessage("Exporting configs to database...");
-        File recipesFolder = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes");
+        File recipesFolder = new File(customCrafting.getDataFolder() + File.separator + "recipes");
         List<File> subFolders = null;
         File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
         if (dirs != null) {
@@ -270,7 +277,7 @@ public class RecipeHandler {
     }
 
     private void migrateConfigToDB(DataBaseHandler dataBaseHandler, String subfolder, String type) {
-        File workbench = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
+        File workbench = new File(customCrafting.getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
         File[] files = workbench.listFiles((dir, name) -> (name.split("\\.").length > 1));
         if (files != null) {
             for (File file : files) {
@@ -282,37 +289,37 @@ public class RecipeHandler {
                     try {
                         switch (type) {
                             case "workbench":
-                                dataBaseHandler.updateRecipe(new AdvancedCraftConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new AdvancedCraftConfig(customCrafting, key, name));
                                 break;
                             case "elite_workbench":
-                                dataBaseHandler.updateRecipe(new EliteCraftConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new EliteCraftConfig(customCrafting, key, name));
                                 break;
                             case "furnace":
-                                dataBaseHandler.updateRecipe(new FurnaceConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new FurnaceConfig(customCrafting, key, name));
                                 break;
                             case "anvil":
-                                dataBaseHandler.updateRecipe(new AnvilConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new AnvilConfig(customCrafting, key, name));
                                 break;
                             case "blast_furnace":
-                                dataBaseHandler.updateRecipe(new BlastingConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new BlastingConfig(customCrafting, key, name));
                                 break;
                             case "smoker":
-                                dataBaseHandler.updateRecipe(new SmokerConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new SmokerConfig(customCrafting, key, name));
                                 break;
                             case "campfire":
-                                dataBaseHandler.updateRecipe(new CampfireConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new CampfireConfig(customCrafting, key, name));
                                 break;
                             case "items":
                                 dataBaseHandler.updateItem(new ItemConfig(subfolder, name, configAPI));
                                 break;
                             case "stonecutter":
-                                dataBaseHandler.updateRecipe(new StonecutterConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new StonecutterConfig(customCrafting, key, name));
                                 break;
                             case "cauldron":
-                                dataBaseHandler.updateRecipe(new CauldronConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new CauldronConfig(customCrafting, key, name));
                                 break;
                             case "brewing":
-                                dataBaseHandler.updateRecipe(new BrewingConfig(configAPI, key, name));
+                                dataBaseHandler.updateRecipe(new BrewingConfig(customCrafting, key, name));
                         }
                     } catch (Exception ex) {
                         ChatUtils.sendRecipeItemLoadingError(key, name, type, ex);
@@ -328,7 +335,7 @@ public class RecipeHandler {
             Bukkit.addRecipe((Recipe) recipe);
         }
         api.sendDebugMessage("  add to cache...");
-        customRecipes.put(recipe.getId(), recipe);
+        customRecipes.put(recipe.getNamespacedKey(), recipe);
     }
 
     public void injectRecipe(CustomRecipe recipe) {
@@ -361,9 +368,9 @@ public class RecipeHandler {
     }
 
     public void unregisterRecipe(CustomRecipe customRecipe) {
-        customRecipes.remove(customRecipe.getId());
-        if (customRecipes.containsKey(customRecipe.getId())) {
-            unregisterRecipe(customRecipe.getId());
+        customRecipes.remove(customRecipe.getNamespacedKey().toString());
+        if (customRecipes.containsKey(customRecipe.getNamespacedKey().toString())) {
+            unregisterRecipe(customRecipe.getNamespacedKey().toString());
         }
     }
 
@@ -372,7 +379,7 @@ public class RecipeHandler {
      */
     public List<CustomRecipe> getRecipeGroup(String group) {
         List<CustomRecipe> groupRecipes = new ArrayList<>();
-        for (String id : customRecipes.keySet()) {
+        for (NamespacedKey id : customRecipes.keySet()) {
             if (customRecipes.get(id).getGroup().equals(group))
                 groupRecipes.add(customRecipes.get(id));
         }
@@ -380,23 +387,11 @@ public class RecipeHandler {
     }
 
     public List<String> getNamespaces() {
-        List<String> namespaces = new ArrayList<>();
-        customRecipes.keySet().forEach(namespace -> {
-            if (!namespaces.contains(namespace.split(":")[0])) {
-                namespaces.add(namespace.split(":")[0]);
-            }
-        });
-        return namespaces;
+        return customRecipes.keySet().stream().map(namespacedKey -> namespacedKey.toString()).collect(Collectors.toList());
     }
 
     public List<CustomRecipe> getRecipesByNamespace(String namespace) {
-        List<CustomRecipe> namespaceRecipes = new ArrayList<>();
-        customRecipes.entrySet().forEach(recipeEntry -> {
-            if (recipeEntry.getKey().split(":")[0].equalsIgnoreCase(namespace)) {
-                namespaceRecipes.add(recipeEntry.getValue());
-            }
-        });
-        return namespaceRecipes;
+        return customRecipes.entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(entry -> entry.getValue()).collect(Collectors.toList());
     }
 
     public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {
@@ -423,8 +418,14 @@ public class RecipeHandler {
         return recipes;
     }
 
+    public CustomRecipe getRecipe(NamespacedKey namespacedKey) {
+        return customRecipes.get(namespacedKey);
+    }
+
+
+    @Deprecated
     public CustomRecipe getRecipe(String key) {
-        return customRecipes.get(key);
+        return customRecipes.get(new NamespacedKey(key.split(":")[0], key.split(":")[1]));
     }
 
     public List<CustomRecipe> getRecipes(String type) {
@@ -473,13 +474,7 @@ public class RecipeHandler {
 
     public <T extends CustomRecipe> List<T> getAvailableRecipes(Class<T> type) {
         List<T> recipes = getRecipes(type);
-        Iterator<T> iterator = recipes.iterator();
-        while (iterator.hasNext()) {
-            T recipe = iterator.next();
-            if (recipe.isHidden() || CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                iterator.remove();
-            }
-        }
+        recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
         recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
         return recipes;
     }
@@ -535,25 +530,13 @@ public class RecipeHandler {
      */
     public List<AdvancedCraftingRecipe> getAvailableAdvancedCraftingRecipes(Player player) {
         List<AdvancedCraftingRecipe> recipes = getAvailableRecipes(AdvancedCraftingRecipe.class);
-        Iterator<AdvancedCraftingRecipe> iterator = recipes.iterator();
-        while (iterator.hasNext()) {
-            AdvancedCraftingRecipe recipe = iterator.next();
-            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                iterator.remove();
-            }
-        }
+        recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         return recipes;
     }
 
     public List<EliteCraftingRecipe> getAvailableEliteCraftingRecipes(Player player) {
         List<EliteCraftingRecipe> recipes = getAvailableRecipes(EliteCraftingRecipe.class);
-        Iterator<EliteCraftingRecipe> iterator = recipes.iterator();
-        while (iterator.hasNext()) {
-            EliteCraftingRecipe recipe = iterator.next();
-            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                iterator.remove();
-            }
-        }
+        recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         return recipes;
     }
 
@@ -579,13 +562,7 @@ public class RecipeHandler {
 
     public List<CustomAnvilRecipe> getAvailableAnvilRecipes(Player player) {
         List<CustomAnvilRecipe> recipes = getAvailableRecipes(CustomAnvilRecipe.class);
-        Iterator<CustomAnvilRecipe> iterator = recipes.iterator();
-        while (iterator.hasNext()) {
-            CustomAnvilRecipe recipe = iterator.next();
-            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                iterator.remove();
-            }
-        }
+        recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         return recipes;
     }
 
@@ -595,29 +572,17 @@ public class RecipeHandler {
 
     public List<GrindstoneRecipe> getAvailableGrindstoneRecipes(Player player) {
         List<GrindstoneRecipe> recipes = getAvailableRecipes(GrindstoneRecipe.class);
-        Iterator<GrindstoneRecipe> iterator = recipes.iterator();
-        while (iterator.hasNext()) {
-            GrindstoneRecipe recipe = iterator.next();
-            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                iterator.remove();
-            }
-        }
+        recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         return recipes;
     }
 
     public List<BrewingRecipe> getAvailableBrewingRecipes(Player player) {
         List<BrewingRecipe> recipes = getAvailableRecipes(BrewingRecipe.class);
-        Iterator<BrewingRecipe> iterator = recipes.iterator();
-        while (iterator.hasNext()) {
-            BrewingRecipe recipe = iterator.next();
-            if (!recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))) {
-                iterator.remove();
-            }
-        }
+        recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         return recipes;
     }
 
-    public TreeMap<String, CustomRecipe> getRecipes() {
+    public TreeMap<NamespacedKey, CustomRecipe> getRecipes() {
         return customRecipes;
     }
 
@@ -755,5 +720,7 @@ public class RecipeHandler {
         return false;
     }
 
-
+    public Categories getCategories() {
+        return categories;
+    }
 }

@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
@@ -17,7 +18,6 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.utils.ItemCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,10 +30,11 @@ import java.util.stream.Collectors;
 
 public class KnowledgeBook {
 
+    private final CustomCrafting customCrafting;
     private int page, subFolder, subFolderPage;
+    private Category category;
     private Setting setting;
     private WorkbenchFilter workbenchFilter;
-    private ItemCategory itemCategory;
 
     private int timerTask;
     private HashMap<Integer, Integer> timerTimings;
@@ -43,9 +44,11 @@ public class KnowledgeBook {
     private List<CustomItem> researchItems;
 
     public KnowledgeBook() {
+        this.customCrafting = (CustomCrafting) Bukkit.getPluginManager().getPlugin("CustomCrafting");
         this.page = 0;
         this.subFolder = 0;
         this.subFolderPage = 0;
+        this.category = null;
         this.setting = Setting.MAIN_MENU;
         this.researchItems = new ArrayList<>();
         this.recipeItems = new ArrayList<>();
@@ -53,7 +56,6 @@ public class KnowledgeBook {
         this.timerTimings = new HashMap<>();
         this.subFolderRecipes = new ArrayList<>();
         workbenchFilter = WorkbenchFilter.ALL;
-        this.itemCategory = ItemCategory.SEARCH;
     }
 
     public HashMap<Integer, Integer> getTimerTimings() {
@@ -91,12 +93,12 @@ public class KnowledgeBook {
         this.page = page;
     }
 
-    public Setting getSetting() {
-        return setting;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setSetting(Setting setting) {
-        this.setting = setting;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public HashMap<Character, ArrayList<CustomItem>> getIngredients() {
@@ -109,14 +111,6 @@ public class KnowledgeBook {
 
     public void setWorkbenchFilter(WorkbenchFilter workbenchFilter) {
         this.workbenchFilter = workbenchFilter;
-    }
-
-    public void setItemCategory(ItemCategory itemCategory) {
-        this.itemCategory = itemCategory;
-    }
-
-    public ItemCategory getItemCategory() {
-        return itemCategory;
     }
 
     public int getSubFolder() {
@@ -164,7 +158,7 @@ public class KnowledgeBook {
     }
 
     public void applyRecipeToButtons(GuiHandler guiHandler, CustomRecipe recipe) {
-        GuiCluster cluster = WolfyUtilities.getAPI(CustomCrafting.getInst()).getInventoryAPI().getGuiCluster("recipe_book");
+        GuiCluster cluster = WolfyUtilities.getAPI(customCrafting).getInventoryAPI().getGuiCluster("recipe_book");
         Player player = guiHandler.getPlayer();
         switch (recipe.getRecipeType()) {
             case WORKBENCH:

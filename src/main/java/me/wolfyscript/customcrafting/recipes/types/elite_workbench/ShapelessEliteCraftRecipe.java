@@ -21,4 +21,5 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements Sh
     public boolean isShapeless() {
         return true;
     }
+
 }

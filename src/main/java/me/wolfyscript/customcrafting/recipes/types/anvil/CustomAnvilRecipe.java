@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Material;
 
 import java.util.*;
@@ -28,12 +29,12 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
 
     private HashMap<Integer, List<CustomItem>> ingredients;
 
-    private String id;
+    private NamespacedKey namespacedKey;
     private AnvilConfig config;
 
     public CustomAnvilRecipe(AnvilConfig config) {
         this.config = config;
-        this.id = config.getId();
+        this.namespacedKey = config.getNamespacedKey();
         this.ingredients = new HashMap<>();
         this.exactMeta = config.isExactMeta();
         this.blockEnchant = config.isBlockEnchant();
@@ -58,7 +59,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
 
     public CustomAnvilRecipe() {
         this.config = null;
-        this.id = "";
+        this.namespacedKey = null;
         this.exactMeta = true;
         this.ingredients = new HashMap<>();
         this.ingredients.put(2, new ArrayList<>(Collections.singleton(new CustomItem(Material.AIR))));
@@ -75,8 +76,14 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     public int getDurability() {

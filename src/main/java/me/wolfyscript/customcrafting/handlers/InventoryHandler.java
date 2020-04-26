@@ -2,10 +2,8 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
-import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.gui.crafting.*;
+import me.wolfyscript.customcrafting.gui.elite_crafting.*;
 import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.*;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
@@ -139,7 +137,7 @@ public class InventoryHandler {
             recipeBook.registerGuiWindow(new RecipeBook(invAPI, customCrafting));
             recipeBook.registerGuiWindow(new me.wolfyscript.customcrafting.gui.recipebook.MainMenu(invAPI, customCrafting));
             recipeBook.setMainmenu("main_menu");
-            recipeBook.registerButton(new ItemCategoryButton(), api);
+            recipeBook.registerButton(new ItemCategoryButton(customCrafting), api);
             recipeBook.registerButton(new ActionButton("next_page", new ButtonState("next_page", WolfyUtilities.getSkullViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
                 book.setPage(book.getPage() + 1);
@@ -236,7 +234,7 @@ public class InventoryHandler {
                 })), api);
             }
             for (int i = 0; i < 54; i++) {
-                recipeBook.registerButton(new IngredientContainerButton(i), api);
+                recipeBook.registerButton(new IngredientContainerButton(i, customCrafting), api);
             }
 
             recipeBook.registerButton(new DummyButton("conditions.world_time", new ButtonState("conditions.world_time", Material.CLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
@@ -275,13 +273,11 @@ public class InventoryHandler {
             craftingCluster.setMainmenu("crafting_3");
             craftingCluster.registerButton(new ActionButton("knowledge_book", new ButtonState("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 TestCache cache = ((TestCache) guiHandler.getCustomCache());
-                EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
                 KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
-                if (eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()) {
-                    knowledgeBook.setSetting(Setting.WORKBENCH);
-                } else {
-                    knowledgeBook.setSetting(Setting.ELITE_WORKBENCH);
-                }
+                knowledgeBook.setRecipeItems(new ArrayList<>());
+                knowledgeBook.stopTimerTask();
+                IngredientContainerButton.resetButtons(guiHandler);
+                knowledgeBook.setRecipeItems(new ArrayList<>());
                 guiHandler.changeToInv("recipe_book");
                 return true;
             })), api);

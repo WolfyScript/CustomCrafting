@@ -45,7 +45,7 @@ public interface CustomCookingRecipe<T extends CookingConfig> extends CustomReci
 
         if (book.getTimerTask() == -1) {
             AtomicInteger i = new AtomicInteger();
-            book.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(CustomCrafting.getInst(), () -> {
+            book.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(event.getWolfyUtilities().getPlugin(), () -> {
                 if (i.get() == 0) {
                     event.setButton(23, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
                     event.setButton(22, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");

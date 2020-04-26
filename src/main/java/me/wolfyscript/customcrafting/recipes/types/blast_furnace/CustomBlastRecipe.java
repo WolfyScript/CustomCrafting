@@ -5,8 +5,8 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -19,15 +19,16 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     private boolean exactMeta, hidden;
 
     private RecipePriority priority;
+
     private List<CustomItem> result;
     private List<CustomItem> source;
-    private String id;
     private BlastingConfig config;
     private Conditions conditions;
+    private NamespacedKey namespacedKey;
 
     public CustomBlastRecipe(BlastingConfig config) {
-        super(new NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
-        this.id = config.getId();
+        super(new org.bukkit.NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.result = config.getResult();
         this.source = config.getSource();
@@ -39,9 +40,8 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     }
 
     public CustomBlastRecipe() {
-        super(new NamespacedKey("null", "null"), new ItemStack(Material.STONE), Material.STONE, 0, 0);
+        super(new org.bukkit.NamespacedKey("null", "null"), new ItemStack(Material.STONE), Material.STONE, 0, 0);
         this.config = null;
-        this.id = "";
         this.result = new ArrayList<>();
         this.source = new ArrayList<>();
         this.priority = RecipePriority.NORMAL;
@@ -65,8 +65,14 @@ public class CustomBlastRecipe extends BlastingRecipe implements CustomCookingRe
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

@@ -23,14 +23,14 @@ public class VariantContainerButton extends ItemInputButton {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getVariantsData().putVariant(items.getVariantSlot(), customItem);
 
-    public VariantContainerButton(int variantSlot) {
+    public VariantContainerButton(int variantSlot, CustomCrafting customCrafting) {
         super("variant_container_" + variantSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 TestCache cache = (TestCache) guiHandler.getCustomCache();
                 VariantsData variantsData = cache.getVariantsData();
                 if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                             cache.getItems().setVariant(variantSlot, CustomItem.getByItemStack(inventory.getItem(slot)));
                             cache.setApplyItem(APPLY_ITEM);
@@ -39,7 +39,7 @@ public class VariantContainerButton extends ItemInputButton {
                     });
                     return true;
                 }
-                Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> variantsData.putVariant(variantSlot, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                Bukkit.getScheduler().runTask(customCrafting, () -> variantsData.putVariant(variantSlot, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                 return false;
             }
 

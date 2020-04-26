@@ -77,7 +77,7 @@ public class GrindStoneListener implements Listener {
                 event.setCancelled(true);
                 boolean validItem = false;
                 if (event.getSlot() == 0) {
-                    for (GrindstoneRecipe grindstoneRecipe : CustomCrafting.getRecipeHandler().getGrindstoneRecipes()) {
+                    for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
                         if (grindstoneRecipe.getInputTop() != null && !grindstoneRecipe.getInputTop().isEmpty()) {
                             if (ItemUtils.isAirOrNull(cursor)) {
                                 continue;
@@ -98,7 +98,7 @@ public class GrindStoneListener implements Listener {
                         break;
                     }
                 } else {
-                    for (GrindstoneRecipe grindstoneRecipe : CustomCrafting.getRecipeHandler().getGrindstoneRecipes()) {
+                    for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
                         if (grindstoneRecipe.getInputBottom() != null && !grindstoneRecipe.getInputBottom().isEmpty()) {
                             if (ItemUtils.isAirOrNull(cursor)) {
                                 continue;
@@ -130,7 +130,7 @@ public class GrindStoneListener implements Listener {
                     return;
                 }
 
-                //Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                //Bukkit.getScheduler().runTask(customCrafting, () -> {
                 //Place item when the item is valid
                 if (event.getClickedInventory() == null) return;
                 if (event.getClickedInventory().getType() != InventoryType.GRINDSTONE) return;
@@ -188,11 +188,11 @@ public class GrindStoneListener implements Listener {
                 }
                 player.updateInventory();//Update the inventory
 
-                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
+                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                     //Only check the opposite item depending on which slot was clicked
                     preCraftedRecipes.remove(player.getUniqueId());
                     GrindstoneRecipe foundRecipe = null;
-                    for (GrindstoneRecipe grindstoneRecipe : CustomCrafting.getRecipeHandler().getGrindstoneRecipes()) {
+                    for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
                         if (event.getSlot() == 0) {
                             ItemStack input = inventory.getItem(1);
                             if (grindstoneRecipe.getInputBottom() != null && !grindstoneRecipe.getInputBottom().isEmpty()) {
@@ -250,14 +250,14 @@ public class GrindStoneListener implements Listener {
                     }
                     HashMap<String, CustomItem> precraftedItem = precraftedItems.getOrDefault(player, new HashMap<>());
                     CustomItem result = new CustomItem(Material.AIR);
-                    if (precraftedItem.get(foundRecipe.getId()) == null) {
+                    if (precraftedItem.get(foundRecipe.getNamespacedKey().toString()) == null) {
                         if (!items.isEmpty()) {
                             result = items.next();
-                            precraftedItem.put(foundRecipe.getId(), result);
+                            precraftedItem.put(foundRecipe.getNamespacedKey().toString(), result);
                             precraftedItems.put(player.getUniqueId(), precraftedItem);
                         }
                     } else {
-                        result = precraftedItem.get(foundRecipe.getId());
+                        result = precraftedItem.get(foundRecipe.getNamespacedKey().toString());
                     }
                     preCraftedRecipes.put(player.getUniqueId(), new GrindstoneData(foundRecipe, finalInputTop.get(), finalInputBottom.get()));
                     inventory.setItem(2, result.getItemStack());

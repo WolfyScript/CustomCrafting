@@ -20,17 +20,17 @@ import java.util.List;
 
 public class PlayerListener implements Listener {
 
-    private CustomCrafting plugin;
+    private CustomCrafting customCrafting;
 
-    public PlayerListener(CustomCrafting plugin) {
-        this.plugin = plugin;
+    public PlayerListener(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         WolfyUtilities api = CustomCrafting.getApi();
-        if (!plugin.isLoaded()) {
+        if (!customCrafting.isLoaded()) {
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg$");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg1$");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg2$");
@@ -41,19 +41,19 @@ public class PlayerListener implements Listener {
             api.sendPlayerMessage(player, "");
             api.sendPlayerMessage(player, "$msg.player.error.loading.msg6$");
         }
-        for (CustomFurnaceRecipe customFurnaceRecipe : CustomCrafting.getRecipeHandler().getFurnaceRecipes()) {
-            player.undiscoverRecipe(new NamespacedKey(customFurnaceRecipe.getId().split(":")[0], customFurnaceRecipe.getId().split(":")[1]));
+        for (CustomFurnaceRecipe customFurnaceRecipe : customCrafting.getRecipeHandler().getFurnaceRecipes()) {
+            player.undiscoverRecipe(new NamespacedKey(customFurnaceRecipe.getNamespacedKey().getNamespace(), customFurnaceRecipe.getNamespacedKey().getKey()));
         }
         if (!CustomCrafting.hasPlayerCache(player)) {
             CustomCrafting.getApi().sendConsoleMessage("Initializing new cache for " + player.getDisplayName());
             CustomCrafting.renewPlayerStatistics(player);
         }
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
-            if (plugin.isOutdated()) {
+            if (customCrafting.isOutdated()) {
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
                 api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
             } else {
-                plugin.checkUpdate(player);
+                customCrafting.checkUpdate(player);
             }
         }
     }

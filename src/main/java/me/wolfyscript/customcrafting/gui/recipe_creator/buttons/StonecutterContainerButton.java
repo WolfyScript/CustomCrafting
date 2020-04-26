@@ -24,7 +24,7 @@ public class StonecutterContainerButton extends ItemInputButton {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getStonecutterConfig().setResult(items.getItem());
 
-    public StonecutterContainerButton(int inputSlot) {
+    public StonecutterContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("stonecutter.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
@@ -33,7 +33,7 @@ public class StonecutterContainerButton extends ItemInputButton {
                 if (inputSlot == 1) {
                     //RESULT STUFF
                     if (event.isRightClick() && event.isShiftClick()) {
-                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
+                        Bukkit.getScheduler().runTask(customCrafting, () -> {
                             if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                                 cache.getItems().setItem(true, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
                                 cache.setApplyItem(APPLY_ITEM);
@@ -42,7 +42,7 @@ public class StonecutterContainerButton extends ItemInputButton {
                         });
                         return true;
                     } else {
-                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> stonecutter.setResult(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                        Bukkit.getScheduler().runTask(customCrafting, () -> stonecutter.setResult(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                     }
                 } else {
                     if (event.isRightClick() && event.isShiftClick()) {
@@ -55,7 +55,7 @@ public class StonecutterContainerButton extends ItemInputButton {
                         guiHandler.changeToInv("variants");
                         return true;
                     } else {
-                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> stonecutter.setSource(0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                        Bukkit.getScheduler().runTask(customCrafting, () -> stonecutter.setSource(0, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                     }
                 }
                 return false;

@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
 import com.google.gson.JsonObject;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 import java.util.ArrayList;
@@ -11,12 +11,12 @@ import java.util.Set;
 
 public class AnvilConfig extends RecipeConfig {
 
-    public AnvilConfig(ConfigAPI configAPI, String folder, String name) {
-        super(configAPI, folder, "anvil", name, "anvil");
+    public AnvilConfig(CustomCrafting customCrafting, String folder, String name) {
+        super(customCrafting, folder, "anvil", name, "anvil");
     }
 
-    public AnvilConfig(String jsonData, ConfigAPI configAPI, String namespace, String key) {
-        super(jsonData, configAPI, namespace, "anvil", key, "anvil");
+    public AnvilConfig(String jsonData, CustomCrafting customCrafting, String namespace, String key) {
+        super(jsonData, customCrafting, namespace, "anvil", key, "anvil");
     }
 
     public AnvilConfig() {

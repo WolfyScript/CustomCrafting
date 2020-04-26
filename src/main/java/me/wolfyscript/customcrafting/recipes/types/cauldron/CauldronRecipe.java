@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.entity.Item;
 import org.bukkit.util.Vector;
 
@@ -36,11 +37,11 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
     private int mythicMobLevel;
     private Vector mythicMobMod;
 
-    private String id;
+    private NamespacedKey namespacedKey;
     private CauldronConfig config;
 
     public CauldronRecipe(CauldronConfig config) {
-        this.id = config.getId();
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.result = config.getResult();
         this.ingredients = config.getIngredients();
@@ -117,17 +118,19 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override
     public String getGroup() {
         return group;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override

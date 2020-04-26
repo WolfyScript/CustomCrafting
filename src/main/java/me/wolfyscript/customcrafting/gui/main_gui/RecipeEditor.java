@@ -4,13 +4,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -34,15 +34,19 @@ public class RecipeEditor extends ExtendedGuiWindow {
         })));
         registerButton(new ActionButton("edit_recipe", new ButtonState("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
-            ChatUtils.sendRecipeListExpanded(player);
+            customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
-                    if (CustomCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler1)) {
+                    CustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
+                    if (recipe == null) {
+                        api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
+                        return true;
+                    }
+                    if (customCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler1)) {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache)guiHandler.getCustomCache()).getSetting().name()});
+                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getSetting().name()});
                         return true;
                     }
                 }
@@ -53,21 +57,21 @@ public class RecipeEditor extends ExtendedGuiWindow {
         })));
         registerButton(new ActionButton("delete_recipe", new ButtonState("delete_recipe", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
-            ChatUtils.sendRecipeListExpanded(player);
+            customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    CustomRecipe recipe = CustomCrafting.getRecipeHandler().getRecipe(args[0] + ":" + args[1]);
+                    CustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
                     if (recipe == null) {
                         api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
                         return true;
                     }
-                    api.sendPlayerMessage(player1, "none", "recipe_editor", "delete.confirm", new String[]{"%recipe%", recipe.getId()});
+                    api.sendPlayerMessage(player1, "none", "recipe_editor", "delete.confirm", new String[]{"%recipe%", recipe.getNamespacedKey().toString()});
                     api.sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> {
                         guiHandler1.openCluster();
                         Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
-                            CustomCrafting.getRecipeHandler().unregisterRecipe(recipe);
+                            customCrafting.getRecipeHandler().unregisterRecipe(recipe);
                             if (CustomCrafting.hasDataBaseHandler()) {
-                                CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getNamespace(), recipe.getConfig().getName());
+                                CustomCrafting.getDataBaseHandler().removeRecipe(recipe.getConfig().getNamespacedKey().getNamespace(), recipe.getConfig().getNamespacedKey().getKey());
                                 player1.sendMessage("§aRecipe deleted!");
                             } else {
                                 //recipe.getConfig().save();

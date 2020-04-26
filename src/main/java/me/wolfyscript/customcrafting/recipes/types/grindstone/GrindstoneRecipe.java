@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -17,7 +18,7 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
     private boolean exactMeta, hidden;
 
     private GrindstoneConfig config;
-    private String id;
+    private NamespacedKey namespacedKey;
     private String group;
 
     private List<CustomItem> inputTop, inputBottom, result;
@@ -27,7 +28,7 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
 
     public GrindstoneRecipe(GrindstoneConfig config) {
         this.result = config.getResult();
-        this.id = config.getId();
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
@@ -40,8 +41,14 @@ public class GrindstoneRecipe implements CustomRecipe<GrindstoneConfig> {
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

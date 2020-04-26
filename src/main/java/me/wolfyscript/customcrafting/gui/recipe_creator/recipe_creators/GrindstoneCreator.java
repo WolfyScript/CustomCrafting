@@ -50,11 +50,11 @@ public class GrindstoneCreator extends ExtendedGuiWindow {
                             return true;
                         }
                         try {
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(new GrindstoneRecipe(config));
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                                customCrafting.getRecipeHandler().injectRecipe(new GrindstoneRecipe(config));
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                            if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                                 cache.resetGrindstoneConfig();
                             }
                         } catch (Exception ex) {
@@ -62,7 +62,7 @@ public class GrindstoneCreator extends ExtendedGuiWindow {
                             ex.printStackTrace();
                             return false;
                         }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"), 1);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openCluster("none"), 1);
                     }
                     return false;
                 });
@@ -112,9 +112,9 @@ public class GrindstoneCreator extends ExtendedGuiWindow {
             }
         })));
 
-        registerButton(new GrindstoneContainerButton(0));
-        registerButton(new GrindstoneContainerButton(1));
-        registerButton(new GrindstoneContainerButton(2));
+        registerButton(new GrindstoneContainerButton(0, customCrafting));
+        registerButton(new GrindstoneContainerButton(1, customCrafting));
+        registerButton(new GrindstoneContainerButton(2, customCrafting));
 
         registerButton(new DummyButton("grindstone", new ButtonState("grindstone", Material.GRINDSTONE)));
 

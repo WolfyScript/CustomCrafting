@@ -19,6 +19,50 @@
       ]
     }
   },
+  "knowledgebook": {
+    "category_navigation": [
+      "&7[&aLeft Click&7] Next category",
+      "&7[&aRight Click&7] Previous category"
+    ],
+    "category": {
+      "main": {
+        "name": "&6Recipes"
+      },
+      "customcrafting": {
+        "name": "&6CustomCrafting"
+      },
+      "brewing": {
+        "name": "&6Brewing"
+      },
+      "building_blocks": {
+        "name": "&6Building Blocks"
+      },
+      "decorations": {
+        "name": "&6Decorations"
+      },
+      "combat": {
+        "name": "&6Combat"
+      },
+      "tools": {
+        "name": "&6Tools"
+      },
+      "redstone": {
+        "name": "&6Redstone"
+      },
+      "food": {
+        "name": "&6Food"
+      },
+      "transportation": {
+        "name": "&6Transportation"
+      },
+      "misc": {
+        "name": "&6Misc"
+      },
+      "search": {
+        "name": "&6Browse"
+      }
+    }
+  },
   "msg": {
     "auto_save": {
       "start": "   Auto save data   ",
@@ -1762,7 +1806,6 @@
               "&8[&aLeft Click&8] &7change Permission"
             ]
           }
-
         },
         "messages": {
           "world_time": "&eType the time in ticks! e.g. 1500",
@@ -2146,78 +2189,6 @@
             "lore": [
               "&7Permission:&e %VALUE%",
               "&7Mode:&e %MODE%"
-            ]
-          }
-        },
-        "itemCategory": {
-          "brewing": {
-            "name": "&6Brewing",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "building_blocks": {
-            "name": "&6Building Blocks",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "decorations": {
-            "name": "&6Decorations",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "combat": {
-            "name": "&6Combat",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "tools": {
-            "name": "&6Tools",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "redstone": {
-            "name": "&6Redstone",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "food": {
-            "name": "&6Food",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "transportation": {
-            "name": "&6Transportation",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "misc": {
-            "name": "&6Misc",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "search": {
-            "name": "&6Browse",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
             ]
           }
         },

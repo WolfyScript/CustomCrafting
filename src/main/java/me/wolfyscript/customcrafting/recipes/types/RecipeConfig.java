@@ -5,10 +5,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.ItemUtils;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -19,36 +20,39 @@ import java.util.Set;
 
 public class RecipeConfig extends CustomConfig {
 
+    private CustomCrafting customCrafting;
     private String type;
 
-    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
-        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, false);
+    public RecipeConfig(CustomCrafting customCrafting, String folder, String type, String name, String defaultName) {
+        this(customCrafting, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, false);
     }
 
-    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName, boolean override) {
-        this(configAPI, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, override);
+    public RecipeConfig(CustomCrafting customCrafting, String folder, String type, String name, String defaultName, boolean override) {
+        this(customCrafting, folder, type, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName, override);
     }
 
-    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultPath, String defaultName, boolean override) {
-        super(configAPI, folder, name, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + folder + "/" + type, defaultPath, defaultName, override);
+    public RecipeConfig(CustomCrafting customCrafting, String folder, String type, String name, String defaultPath, String defaultName, boolean override) {
+        super(WolfyUtilities.getAPI(customCrafting).getConfigAPI(), folder, name, customCrafting.getDataFolder() + "/recipes/" + folder + "/" + type, defaultPath, defaultName, override);
         this.type = type;
+        this.customCrafting = customCrafting;
         setPathSeparator('.');
     }
 
     /*
     Memory Config only! Do not use to load config out of files!
      */
-    public RecipeConfig(String jsonData, ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
-        super(jsonData, configAPI, folder, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
+    public RecipeConfig(String jsonData, CustomCrafting customCrafting, String folder, String type, String name, String defaultName) {
+        super(jsonData, WolfyUtilities.getAPI(customCrafting).getConfigAPI(), folder, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;
+        this.customCrafting = customCrafting;
         setPathSeparator('.');
     }
 
     /*
     Memory Config only! Do not use to load config out of files!
 
-    public RecipeConfig(ConfigAPI configAPI, String folder, String type, String name, String defaultName) {
-        super(configAPI, folder, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
+    public RecipeConfig(CustomCrafting customCrafting, String folder, String type, String name, String defaultName) {
+        super(customCrafting, folder, name, "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;
         setPathSeparator('.');
     } */
@@ -59,18 +63,25 @@ public class RecipeConfig extends CustomConfig {
     }
 
     /*
-            Creates a json Memory only Config. can be used for anything. to save it use the linkToFile(String, String, String) method!
-        */
+        Creates a json Memory only Config with no link to an file and no existing namespaceKey. Can be used for anything to help create custom recipe configs and save them when done.
+        To save it use the linkToFile(String, String, String) method!
+    */
     public RecipeConfig(String type, String defaultName) {
-        super(CustomCrafting.getApi().getConfigAPI(), "", "", "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
+        super(CustomCrafting.getApi().getConfigAPI(), "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;
         setPathSeparator('.');
     }
 
+    @Deprecated
     public void linkToFile(String namespace, String name) {
         super.linkToFile(namespace, name, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + namespace + "/" + type);
     }
 
+    public void linkToFile(NamespacedKey namespacedKey) {
+        super.linkToFile(namespacedKey, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/" + type);
+    }
+
+    @Deprecated
     public boolean saveConfig(String namespace, String key, Player player) {
         namespace = namespace.toLowerCase(Locale.ROOT).replace(" ", "_");
         key = key.toLowerCase(Locale.ROOT).replace(" ", "_");
@@ -82,10 +93,22 @@ public class RecipeConfig extends CustomConfig {
         if (CustomCrafting.hasDataBaseHandler()) {
             CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
         } else {
-            reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+            reload(customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
         }
         api.sendPlayerMessage(player, "recipe_creator", "save.success");
         api.sendPlayerMessage(player, "§6" + (type.equalsIgnoreCase("item") ? "items" : "recipes") + "/" + namespace + "/" + type + "/" + key);
+        return true;
+    }
+
+    public boolean saveConfig(NamespacedKey namespacedKey, Player player) {
+        linkToFile(namespacedKey);
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
+        } else {
+            reload(customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        }
+        api.sendPlayerMessage(player, "recipe_creator", "save.success");
+        api.sendPlayerMessage(player, "§6" + (type.equalsIgnoreCase("item") ? "items" : "recipes") + "/" + namespacedKey.getNamespace() + "/" + type + "/" + namespacedKey.getKey());
         return true;
     }
 

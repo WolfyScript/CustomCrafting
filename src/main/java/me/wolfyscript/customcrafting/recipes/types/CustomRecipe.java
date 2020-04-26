@@ -5,13 +5,17 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public interface CustomRecipe<T extends RecipeConfig> {
 
+    @Deprecated
     String getId();
+
+    NamespacedKey getNamespacedKey();
 
     RecipeType getRecipeType();
 

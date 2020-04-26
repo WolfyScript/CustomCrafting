@@ -7,7 +7,7 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import org.bukkit.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
@@ -21,16 +21,16 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     private boolean exactMeta, hidden;
 
     private StonecutterConfig config;
-    private String id;
     private List<CustomItem> result;
     private List<CustomItem> source;
     private RecipePriority priority;
     private Conditions conditions;
+    private NamespacedKey namespacedKey;
 
     public CustomStonecutterRecipe(StonecutterConfig config) {
-        super(new NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())));
+        super(new org.bukkit.NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())));
         this.result = config.getResult();
-        this.id = config.getId();
+        this.namespacedKey = config.getNamespacedKey();
         this.config = config;
         this.priority = config.getPriority();
         this.exactMeta = config.isExactMeta();
@@ -41,8 +41,14 @@ public class CustomStonecutterRecipe extends StonecuttingRecipe implements Custo
     }
 
     @Override
+    @Deprecated
     public String getId() {
-        return id;
+        return namespacedKey.toString();
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     @Override

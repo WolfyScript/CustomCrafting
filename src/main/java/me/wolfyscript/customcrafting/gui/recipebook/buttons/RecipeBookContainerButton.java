@@ -20,9 +20,11 @@ import java.util.List;
 public class RecipeBookContainerButton extends Button {
 
     private HashMap<GuiHandler, CustomItem> recipes = new HashMap<>();
+    private final CustomCrafting customCrafting;
 
-    public RecipeBookContainerButton(int slot) {
+    public RecipeBookContainerButton(int slot, CustomCrafting customCrafting) {
         super("recipe_book.container_" + slot, null);
+        this.customCrafting = customCrafting;
     }
 
 
@@ -37,7 +39,7 @@ public class RecipeBookContainerButton extends Button {
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
-        RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+        RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         KnowledgeBook book = cache.getKnowledgeBook();
         CustomItem customItem = getRecipeItem(guiHandler);
         List<CustomRecipe> recipes = recipeHandler.getRecipes(customItem);

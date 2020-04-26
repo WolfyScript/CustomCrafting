@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
@@ -9,7 +10,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
-import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
@@ -22,7 +22,6 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.ItemCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -44,7 +43,7 @@ public class RecipeBook extends ExtendedGuiWindow {
     @Override
     public void onInit() {
         for (int i = 0; i < 45; i++) {
-            registerButton(new RecipeBookContainerButton(i));
+            registerButton(new RecipeBookContainerButton(i, customCrafting));
         }
         registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getSkullViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (guiHandler, player, inventory, slot, inventoryClickEvent) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();
@@ -55,12 +54,11 @@ public class RecipeBook extends ExtendedGuiWindow {
             if (book.getSubFolder() == 0) {
                 guiHandler.openPreviousInv();
             } else {
-                book.stopTimerTask();
                 book.getResearchItems().remove(book.getSubFolder() - 1);
                 book.setSubFolder(book.getSubFolder() - 1);
                 if (book.getSubFolder() > 0) {
                     CustomItem item = book.getResearchItem();
-                    book.setSubFolderRecipes(CustomCrafting.getRecipeHandler().getRecipes(item));
+                    book.setSubFolderRecipes(customCrafting.getRecipeHandler().getRecipes(item));
                     book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
                     return true;
                 } else {
@@ -120,11 +118,13 @@ public class RecipeBook extends ExtendedGuiWindow {
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
-            RecipeHandler recipeHandler = CustomCrafting.getRecipeHandler();
+            RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
             Player player = event.getPlayer();
             PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);
             KnowledgeBook knowledgeBook = ((TestCache) event.getGuiHandler().getCustomCache()).getKnowledgeBook();
-            ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).setState(event.getGuiHandler(), knowledgeBook.getItemCategory());
+
+            Category category = knowledgeBook.getCategory();
+            Category switchCategory = ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(event.getGuiHandler());
 
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
@@ -134,45 +134,19 @@ public class RecipeBook extends ExtendedGuiWindow {
                 event.setButton(4, "recipe_book", "itemCategory");
                 if (knowledgeBook.getRecipeItems().isEmpty()) {
                     List<CustomRecipe> recipes = new ArrayList<>();
-                    switch (knowledgeBook.getSetting()) {
-                        case WORKBENCH:
-                            KnowledgeBook.WorkbenchFilter workbenchFilter = knowledgeBook.getWorkbenchFilter();
-                            if (CustomCrafting.getConfigHandler().getConfig().workbenchFilter()) {
-                                event.setButton(8, "recipe_book", "workbench.filter_button");
-                            }
-                            recipes = CustomCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player).stream().filter(recipe -> workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ALL) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.NORMAL) && !recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) || (workbenchFilter.equals(KnowledgeBook.WorkbenchFilter.ADVANCED) && recipe.getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT))).collect(Collectors.toList());
-                            break;
-                        case ELITE_WORKBENCH:
-                            recipes.addAll(recipeHandler.getAvailableEliteCraftingRecipes(player));
-                            break;
-                        case ANVIL:
-                            recipes.addAll(recipeHandler.getAvailableAnvilRecipes(player));
-                            break;
-                        case STONECUTTER:
-                            recipes.addAll(recipeHandler.getAvailableStonecutterRecipes());
-                            break;
-                        case CAULDRON:
-                            recipes.addAll(recipeHandler.getAvailableCauldronRecipes());
-                            break;
-                        case FURNACE:
-                            recipes.addAll(recipeHandler.getAvailableFurnaceRecipes());
-                            break;
-                        case BLAST_FURNACE:
-                            recipes.addAll(recipeHandler.getAvailableBlastRecipes());
-                            break;
-                        case SMOKER:
-                            recipes.addAll(recipeHandler.getAvailableSmokerRecipes());
-                            break;
-                        case CAMPFIRE:
-                            recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
-                            break;
-                        case GRINDSTONE:
-                            recipes.addAll(recipeHandler.getAvailableGrindstoneRecipes(player));
-                            break;
-                        case BREWING_STAND:
-                            recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
-                    }
-                    if (!knowledgeBook.getItemCategory().equals(ItemCategory.SEARCH)) {
+                    recipes.addAll(customCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player));
+                    recipes.addAll(recipeHandler.getAvailableEliteCraftingRecipes(player));
+                    recipes.addAll(recipeHandler.getAvailableAnvilRecipes(player));
+                    recipes.addAll(recipeHandler.getAvailableStonecutterRecipes());
+                    recipes.addAll(recipeHandler.getAvailableCauldronRecipes());
+                    recipes.addAll(recipeHandler.getAvailableFurnaceRecipes());
+                    recipes.addAll(recipeHandler.getAvailableBlastRecipes());
+                    recipes.addAll(recipeHandler.getAvailableSmokerRecipes());
+                    recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
+                    recipes.addAll(recipeHandler.getAvailableGrindstoneRecipes(player));
+                    recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
+
+                    if (switchCategory != null) {
                         Iterator<CustomRecipe> recipeIterator = recipes.iterator();
                         while (recipeIterator.hasNext()) {
                             CustomRecipe customRecipe = recipeIterator.next();
@@ -189,11 +163,18 @@ public class RecipeBook extends ExtendedGuiWindow {
                             } else {
                                 items.addAll(((CustomRecipe<RecipeConfig>) customRecipe).getCustomResults());
                             }
-                            if (items.stream().filter(item -> knowledgeBook.getItemCategory().isValid(item.getType())).collect(Collectors.toSet()).size() <= 0) {
+                            if (category != null) {
+                                if (!category.isValid(customRecipe) && items.stream().noneMatch(customItem -> category.isValid(customItem.getType()))) {
+                                    recipeIterator.remove();
+                                    continue;
+                                }
+                            }
+                            if (!switchCategory.isValid(customRecipe) && items.stream().noneMatch(customItem -> switchCategory.isValid(customItem.getType()))) {
                                 recipeIterator.remove();
                             }
                         }
                     }
+
                     List<CustomItem> recipeItems = new ArrayList<>();
                     recipes.stream().map(recipe -> {
                         if (recipe instanceof CustomAnvilRecipe) {
