@@ -188,6 +188,12 @@ public class CustomCrafting extends JavaPlugin {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         } else if (premium) {
             System.out.println("Thanks for supporting this plugin!");
+            System.out.println();
+            System.out.println("Special thanks to my Patreons for supporting this project: ");
+            System.out.println("    Apprehentice");
+            System.out.println("    Alex");
+            System.out.println("    Vincent Deniau");
+            System.out.println("    Nat R");
         }
         System.out.println("------------------------------------------------------------------------");
 
