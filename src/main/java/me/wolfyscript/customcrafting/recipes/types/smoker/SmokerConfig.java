@@ -13,7 +13,7 @@ public class SmokerConfig extends CookingConfig {
         super(jsonData, customCrafting, namespace, key, "smoker", "smoker");
     }
 
-    public SmokerConfig() {
-        super("smoker");
+    public SmokerConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "smoker");
     }
 }

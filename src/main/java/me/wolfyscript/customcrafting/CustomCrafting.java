@@ -35,7 +35,6 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -57,7 +56,7 @@ public class CustomCrafting extends JavaPlugin {
     « 174
     » 175
      */
-    private static Plugin instance;
+    private static CustomCrafting instance;
     private static List<PlayerStatistics> playerStatisticsList = new ArrayList<>();
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
@@ -79,7 +78,7 @@ public class CustomCrafting extends JavaPlugin {
     public static final Pattern VALID_NAMESPACEKEY = Pattern.compile("[a-z0-9._-]+");
 
     @Deprecated
-    public static Plugin getInst() {
+    public static CustomCrafting getInst() {
         return instance;
     }
 

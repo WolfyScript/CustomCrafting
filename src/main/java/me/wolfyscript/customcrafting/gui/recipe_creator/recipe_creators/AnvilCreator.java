@@ -57,7 +57,7 @@ public class AnvilCreator extends ExtendedGuiWindow {
                                 cache.resetAnvilConfig();
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", anvilConfig.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", anvilConfig.getNamespacedKey().toString()});
                             ex.printStackTrace();
                             return false;
                         }

@@ -17,8 +17,8 @@ public class EliteCraftConfig extends CraftConfig {
         this(customCrafting, "craft_config", folder, name);
     }
 
-    public EliteCraftConfig() {
-        super("elite_workbench");
+    public EliteCraftConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "elite_workbench");
     }
 
     /*

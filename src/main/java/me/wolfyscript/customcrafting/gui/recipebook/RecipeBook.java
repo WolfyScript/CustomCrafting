@@ -135,16 +135,19 @@ public class RecipeBook extends ExtendedGuiWindow {
                 if (knowledgeBook.getRecipeItems().isEmpty()) {
                     List<CustomRecipe> recipes = new ArrayList<>();
                     recipes.addAll(customCrafting.getRecipeHandler().getAvailableAdvancedCraftingRecipes(player));
-                    recipes.addAll(recipeHandler.getAvailableEliteCraftingRecipes(player));
                     recipes.addAll(recipeHandler.getAvailableAnvilRecipes(player));
-                    recipes.addAll(recipeHandler.getAvailableStonecutterRecipes());
-                    recipes.addAll(recipeHandler.getAvailableCauldronRecipes());
+
+                    if (WolfyUtilities.hasVillagePillageUpdate()) {
+                        recipes.addAll(recipeHandler.getAvailableEliteCraftingRecipes(player));
+                        recipes.addAll(recipeHandler.getAvailableStonecutterRecipes());
+                        recipes.addAll(recipeHandler.getAvailableCauldronRecipes());
+                        recipes.addAll(recipeHandler.getAvailableBlastRecipes());
+                        recipes.addAll(recipeHandler.getAvailableSmokerRecipes());
+                        recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
+                        recipes.addAll(recipeHandler.getAvailableGrindstoneRecipes(player));
+                        recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
+                    }
                     recipes.addAll(recipeHandler.getAvailableFurnaceRecipes());
-                    recipes.addAll(recipeHandler.getAvailableBlastRecipes());
-                    recipes.addAll(recipeHandler.getAvailableSmokerRecipes());
-                    recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
-                    recipes.addAll(recipeHandler.getAvailableGrindstoneRecipes(player));
-                    recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
 
                     if (switchCategory != null) {
                         Iterator<CustomRecipe> recipeIterator = recipes.iterator();

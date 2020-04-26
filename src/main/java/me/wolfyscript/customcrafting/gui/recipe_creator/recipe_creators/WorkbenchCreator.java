@@ -18,7 +18,6 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,7 +28,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class WorkbenchCreator extends ExtendedGuiWindow {
 
@@ -49,15 +47,13 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                 openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     AdvancedCraftConfig config = cache.getAdvancedCraftConfig();
                     if (args.length > 1) {
-                        String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        if (!config.saveConfig(namespace, key, player1)) {
+                        if (!config.saveConfig(args[0], args[1], player1)) {
                             return true;
                         }
                         try {
                             AdvancedCraftingRecipe customRecipe;
                             if (CustomCrafting.hasDataBaseHandler()) {
-                                customRecipe = (AdvancedCraftingRecipe) CustomCrafting.getDataBaseHandler().getRecipe(new NamespacedKey(namespace, key));
+                                customRecipe = (AdvancedCraftingRecipe) CustomCrafting.getDataBaseHandler().getRecipe(config.getNamespacedKey());
                             } else {
                                 api.sendDebugMessage("Loading Recipe...");
                                 if (config.isShapeless()) {
@@ -74,7 +70,7 @@ public class WorkbenchCreator extends ExtendedGuiWindow {
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.success");
                             }, 1);
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getNamespacedKey().toString()});
                             ex.printStackTrace();
                             return false;
                         }

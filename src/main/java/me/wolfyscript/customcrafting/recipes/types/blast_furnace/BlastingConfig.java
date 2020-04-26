@@ -13,7 +13,7 @@ public class BlastingConfig extends CookingConfig {
         super(jsonData, customCrafting, namespace, key, "blast_furnace", "blast_furnace");
     }
 
-    public BlastingConfig() {
-        super("blast_furnace");
+    public BlastingConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "blast_furnace");
     }
 }

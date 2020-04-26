@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.data;
 
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -25,6 +26,7 @@ import me.wolfyscript.utilities.api.inventory.cache.CustomCache;
 public class TestCache extends CustomCache {
 
     private Setting setting;
+    private CustomCrafting customCrafting;
     private String subSetting;
 
     private Items items = new Items();
@@ -37,22 +39,35 @@ public class TestCache extends CustomCache {
 
     //RECIPE_LIST OF ALL RECIPE CACHE
 
-    private AnvilConfig anvilConfig = new AnvilConfig();
-    private AdvancedCraftConfig advancedCraftConfig = new AdvancedCraftConfig();
-    private EliteCraftConfig eliteCraftConfig = new EliteCraftConfig();
-    private BlastingConfig blastingConfig = new BlastingConfig();
-    private CampfireConfig campfireConfig = new CampfireConfig();
-    private CauldronConfig cauldronConfig = new CauldronConfig();
-    private SmokerConfig smokerConfig = new SmokerConfig();
-    private StonecutterConfig stonecutterConfig = new StonecutterConfig();
-    private FurnaceConfig furnaceConfig = new FurnaceConfig();
-    private GrindstoneConfig grindstoneConfig = new GrindstoneConfig();
-    private BrewingConfig brewingConfig = new BrewingConfig();
+    private AnvilConfig anvilConfig;
+    private AdvancedCraftConfig advancedCraftConfig;
+    private EliteCraftConfig eliteCraftConfig;
+    private BlastingConfig blastingConfig;
+    private CampfireConfig campfireConfig;
+    private CauldronConfig cauldronConfig;
+    private SmokerConfig smokerConfig;
+    private StonecutterConfig stonecutterConfig;
+    private FurnaceConfig furnaceConfig;
+    private GrindstoneConfig grindstoneConfig;
+    private BrewingConfig brewingConfig;
 
     public TestCache() {
+        this.customCrafting = CustomCrafting.getInst();
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;
+
+        this.anvilConfig = new AnvilConfig(customCrafting);
+        this.advancedCraftConfig = new AdvancedCraftConfig(customCrafting);
+        this.eliteCraftConfig = new EliteCraftConfig(customCrafting);
+        this.blastingConfig = new BlastingConfig(customCrafting);
+        this.campfireConfig = new CampfireConfig(customCrafting);
+        this.cauldronConfig = new CauldronConfig(customCrafting);
+        this.smokerConfig = new SmokerConfig(customCrafting);
+        this.stonecutterConfig = new StonecutterConfig(customCrafting);
+        this.furnaceConfig = new FurnaceConfig(customCrafting);
+        this.grindstoneConfig = new GrindstoneConfig(customCrafting);
+        this.brewingConfig = new BrewingConfig(customCrafting);
     }
 
     public Setting getSetting() {
@@ -111,7 +126,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetAnvilConfig() {
-        this.anvilConfig = new AnvilConfig();
+        this.anvilConfig = new AnvilConfig(customCrafting);
     }
 
     public CraftConfig getCraftConfig() {
@@ -152,7 +167,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetAdvancedCraftConfig() {
-        this.advancedCraftConfig = new AdvancedCraftConfig();
+        this.advancedCraftConfig = new AdvancedCraftConfig(customCrafting);
     }
 
     public EliteCraftConfig getEliteCraftConfig() {
@@ -160,7 +175,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetEliteCraftConfig() {
-        this.eliteCraftConfig = new EliteCraftConfig();
+        this.eliteCraftConfig = new EliteCraftConfig(customCrafting);
     }
 
     public FurnaceConfig getFurnaceConfig() {
@@ -172,7 +187,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetFurnaceConfig() {
-        this.furnaceConfig = new FurnaceConfig();
+        this.furnaceConfig = new FurnaceConfig(customCrafting);
     }
 
     public BlastingConfig getBlastingConfig() {
@@ -180,7 +195,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetBlastingConfig() {
-        this.blastingConfig = new BlastingConfig();
+        this.blastingConfig = new BlastingConfig(customCrafting);
     }
 
     public CampfireConfig getCampfireConfig() {
@@ -188,7 +203,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetCampfireConfig() {
-        this.campfireConfig = new CampfireConfig();
+        this.campfireConfig = new CampfireConfig(customCrafting);
     }
 
     public CauldronConfig getCauldronConfig() {
@@ -196,7 +211,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetCauldronConfig() {
-        this.cauldronConfig = new CauldronConfig();
+        this.cauldronConfig = new CauldronConfig(customCrafting);
     }
 
     public GrindstoneConfig getGrindstoneConfig() {
@@ -204,7 +219,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetGrindstoneConfig() {
-        this.grindstoneConfig = new GrindstoneConfig();
+        this.grindstoneConfig = new GrindstoneConfig(customCrafting);
     }
 
     public BrewingConfig getBrewingConfig() {
@@ -212,7 +227,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetBrewingConfig() {
-        this.brewingConfig = new BrewingConfig();
+        this.brewingConfig = new BrewingConfig(customCrafting);
     }
 
     public SmokerConfig getSmokerConfig() {
@@ -220,7 +235,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetSmokerConfig() {
-        this.smokerConfig = new SmokerConfig();
+        this.smokerConfig = new SmokerConfig(customCrafting);
     }
 
     public StonecutterConfig getStonecutterConfig() {
@@ -228,7 +243,7 @@ public class TestCache extends CustomCache {
     }
 
     public void resetStonecutterConfig() {
-        this.stonecutterConfig = new StonecutterConfig();
+        this.stonecutterConfig = new StonecutterConfig(customCrafting);
     }
 
     public void setAnvilConfig(AnvilConfig anvilConfig) {

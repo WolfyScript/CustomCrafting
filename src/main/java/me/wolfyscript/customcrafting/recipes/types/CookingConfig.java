@@ -18,12 +18,12 @@ public class CookingConfig extends RecipeConfig {
         super(jsonData, customCrafting, namespace, type, key, defName);
     }
 
-    public CookingConfig(String type, String defaultName) {
-        super(type, defaultName);
+    public CookingConfig(CustomCrafting customCrafting, String type, String defaultName) {
+        super(customCrafting, type, defaultName);
     }
 
-    public CookingConfig(String type) {
-        super(type);
+    public CookingConfig(CustomCrafting customCrafting, String type) {
+        super(customCrafting, type);
     }
 
     public void setXP(float xp) {

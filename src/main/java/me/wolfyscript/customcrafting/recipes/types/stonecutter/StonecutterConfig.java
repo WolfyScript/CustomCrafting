@@ -19,8 +19,8 @@ public class StonecutterConfig extends RecipeConfig {
         super(jsonData, customCrafting, namespace, key, "stonecutter", "stonecutter");
     }
 
-    public StonecutterConfig() {
-        super("stonecutter");
+    public StonecutterConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "stonecutter");
     }
 
     public void setSource(List<CustomItem> source) {

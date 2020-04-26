@@ -16,8 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 
-import java.util.Locale;
-
 public class StonecutterCreator extends ExtendedGuiWindow {
 
     public StonecutterCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
@@ -37,9 +35,7 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                     TestCache cache1 = ((TestCache) guiHandler1.getCustomCache());
                     StonecutterConfig stonecutterConfig = cache1.getStonecutterConfig();
                     if (args.length > 1) {
-                        String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        if (!stonecutterConfig.saveConfig(namespace, key, player1)) {
+                        if (!stonecutterConfig.saveConfig(args[0], args[1], player1)) {
                             return true;
                         }
                         if (CustomCrafting.hasDataBaseHandler()) {
@@ -56,7 +52,7 @@ public class StonecutterCreator extends ExtendedGuiWindow {
                                 cache.resetStonecutterConfig();
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "error.loading", new String[]{"%REC%", stonecutterConfig.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "error.loading", new String[]{"%REC%", stonecutterConfig.getNamespacedKey().toString()});
                             ex.printStackTrace();
                             return false;
                         }

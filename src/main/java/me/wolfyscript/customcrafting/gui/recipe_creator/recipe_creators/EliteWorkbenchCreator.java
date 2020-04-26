@@ -26,7 +26,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 public class EliteWorkbenchCreator extends ExtendedGuiWindow {
 
@@ -52,7 +51,7 @@ public class EliteWorkbenchCreator extends ExtendedGuiWindow {
                         try {
                             EliteCraftingRecipe customRecipe;
                             if (CustomCrafting.hasDataBaseHandler()) {
-                                customRecipe = (EliteCraftingRecipe) CustomCrafting.getDataBaseHandler().getRecipe(args[0].toLowerCase(Locale.ROOT).replace(" ", "_"), args[1].toLowerCase(Locale.ROOT).replace(" ", "_"));
+                                customRecipe = (EliteCraftingRecipe) CustomCrafting.getDataBaseHandler().getRecipe(config.getNamespacedKey());
                             } else {
                                 if (config.isShapeless()) {
                                     customRecipe = new ShapelessEliteCraftRecipe(config);

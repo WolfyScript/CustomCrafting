@@ -58,7 +58,7 @@ public class GrindstoneCreator extends ExtendedGuiWindow {
                                 cache.resetGrindstoneConfig();
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getNamespacedKey().toString()});
                             ex.printStackTrace();
                             return false;
                         }

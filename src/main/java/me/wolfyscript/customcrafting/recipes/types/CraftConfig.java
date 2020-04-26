@@ -39,8 +39,8 @@ public class CraftConfig extends RecipeConfig {
     /*
    Creates a json Memory only Config. can be used for anything. to save it use the linkToFile() method!
     */
-    public CraftConfig(String type) {
-        super(type, "craft_config");
+    public CraftConfig(CustomCrafting customCrafting, String type) {
+        super(customCrafting, type, "craft_config");
 
 
     }

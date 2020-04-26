@@ -13,7 +13,7 @@ public class CampfireConfig extends CookingConfig {
         super(jsonData, customCrafting, namespace, key, "campfire", "campfire");
     }
 
-    public CampfireConfig() {
-        super("campfire");
+    public CampfireConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "campfire");
     }
 }

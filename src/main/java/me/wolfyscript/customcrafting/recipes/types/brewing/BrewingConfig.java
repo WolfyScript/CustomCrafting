@@ -19,8 +19,8 @@ public class BrewingConfig extends RecipeConfig {
         super(jsonData, customCrafting, namespace, key, "brewing", "brewing");
     }
 
-    public BrewingConfig() {
-        super("brewing");
+    public BrewingConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "brewing");
     }
 
 

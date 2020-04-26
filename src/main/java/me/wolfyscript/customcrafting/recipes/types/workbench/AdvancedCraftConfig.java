@@ -27,8 +27,8 @@ public class AdvancedCraftConfig extends CraftConfig {
     /*
     Creates a json Memory only Config. can be used for anything. to save it use the linkToFile() method!
      */
-    public AdvancedCraftConfig() {
-        super("workbench");
+    public AdvancedCraftConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "workbench");
     }
 
     public void setNeedWorkbench(boolean workbench) {

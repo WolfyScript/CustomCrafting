@@ -19,8 +19,8 @@ public class AnvilConfig extends RecipeConfig {
         super(jsonData, customCrafting, namespace, "anvil", key, "anvil");
     }
 
-    public AnvilConfig() {
-        super("anvil");
+    public AnvilConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "anvil");
     }
 
     public void setPermission(boolean perm) {

@@ -19,8 +19,8 @@ public class GrindstoneConfig extends RecipeConfig {
         super(jsonData, customCrafting, namespace, key, "grindstone", "grindstone");
     }
 
-    public GrindstoneConfig() {
-        super("grindstone");
+    public GrindstoneConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "grindstone");
     }
 
     public List<CustomItem> getInputTop() {

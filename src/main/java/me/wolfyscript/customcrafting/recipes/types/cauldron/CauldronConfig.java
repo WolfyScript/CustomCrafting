@@ -23,8 +23,8 @@ public class CauldronConfig extends RecipeConfig {
         super(jsonData, customCrafting, namespace, "cauldron", key, "cauldron");
     }
 
-    public CauldronConfig() {
-        super("cauldron");
+    public CauldronConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "cauldron");
     }
 
     public boolean dropItems() {

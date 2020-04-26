@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
-import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomConfig;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -66,9 +65,10 @@ public class RecipeConfig extends CustomConfig {
         Creates a json Memory only Config with no link to an file and no existing namespaceKey. Can be used for anything to help create custom recipe configs and save them when done.
         To save it use the linkToFile(String, String, String) method!
     */
-    public RecipeConfig(String type, String defaultName) {
-        super(CustomCrafting.getApi().getConfigAPI(), "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
+    public RecipeConfig(CustomCrafting customCrafting, String type, String defaultName) {
+        super(WolfyUtilities.getAPI(customCrafting).getConfigAPI(), "me/wolfyscript/customcrafting/recipes/types/" + type, defaultName);
         this.type = type;
+        this.customCrafting = customCrafting;
         setPathSeparator('.');
     }
 
@@ -81,26 +81,15 @@ public class RecipeConfig extends CustomConfig {
         super.linkToFile(namespacedKey, configAPI.getApi().getPlugin().getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/" + type);
     }
 
-    @Deprecated
+    public RecipeConfig(CustomCrafting customCrafting, String type) {
+        this(customCrafting, type, type);
+    }
+
     public boolean saveConfig(String namespace, String key, Player player) {
         namespace = namespace.toLowerCase(Locale.ROOT).replace(" ", "_");
         key = key.toLowerCase(Locale.ROOT).replace(" ", "_");
-        if (!RecipeUtils.testNameSpaceKey(namespace, key)) {
-            api.sendPlayerMessage(player, "&cInvalid Namespace or Key! Namespaces & Keys may only contain lowercase alphanumeric characters, periods, underscores, and hyphens!");
-            return false;
-        }
-        linkToFile(namespace, key);
-        if (CustomCrafting.hasDataBaseHandler()) {
-            CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
-        } else {
-            reload(customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-        }
-        api.sendPlayerMessage(player, "recipe_creator", "save.success");
-        api.sendPlayerMessage(player, "§6" + (type.equalsIgnoreCase("item") ? "items" : "recipes") + "/" + namespace + "/" + type + "/" + key);
-        return true;
-    }
+        NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
 
-    public boolean saveConfig(NamespacedKey namespacedKey, Player player) {
         linkToFile(namespacedKey);
         if (CustomCrafting.hasDataBaseHandler()) {
             CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
@@ -110,10 +99,6 @@ public class RecipeConfig extends CustomConfig {
         api.sendPlayerMessage(player, "recipe_creator", "save.success");
         api.sendPlayerMessage(player, "§6" + (type.equalsIgnoreCase("item") ? "items" : "recipes") + "/" + namespacedKey.getNamespace() + "/" + type + "/" + namespacedKey.getKey());
         return true;
-    }
-
-    public RecipeConfig(String type) {
-        this(type, type);
     }
 
     public String getConfigType() {

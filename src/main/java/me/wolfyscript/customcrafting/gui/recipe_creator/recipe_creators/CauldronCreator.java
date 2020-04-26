@@ -59,7 +59,7 @@ public class CauldronCreator extends ExtendedGuiWindow {
                                 cache.resetCauldronConfig();
                             }
                         } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getId()});
+                            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", config.getNamespacedKey().toString()});
                             ex.printStackTrace();
                             return false;
                         }

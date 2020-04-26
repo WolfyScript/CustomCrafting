@@ -13,7 +13,7 @@ public class FurnaceConfig extends CookingConfig {
         super(jsonData, customCrafting, namespace, key, "furnace", "furnace_config");
     }
 
-    public FurnaceConfig() {
-        super("furnace", "furnace_config");
+    public FurnaceConfig(CustomCrafting customCrafting) {
+        super(customCrafting, "furnace", "furnace_config");
     }
 }
