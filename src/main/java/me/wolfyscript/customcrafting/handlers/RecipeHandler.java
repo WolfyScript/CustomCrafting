@@ -60,18 +60,18 @@ import java.util.stream.Collectors;
 public class RecipeHandler {
 
     private final CustomCrafting customCrafting;
-    private Categories categories;
-    private List<Recipe> allRecipes = new ArrayList<>();
+    private final Categories categories;
+    private final List<Recipe> allRecipes = new ArrayList<>();
 
-    private TreeMap<NamespacedKey, CustomRecipe> customRecipes = new TreeMap<>();
+    private final TreeMap<NamespacedKey, CustomRecipe> customRecipes = new TreeMap<>();
 
-    private ArrayList<String> disabledRecipes = new ArrayList<>();
+    private final ArrayList<String> disabledRecipes = new ArrayList<>();
 
-    private List<Particles> particlesList;
-    private List<ParticleEffects> particleEffectsList;
+    private final List<Particles> particlesList;
+    private final List<ParticleEffects> particleEffectsList;
 
-    private ConfigAPI configAPI;
-    private WolfyUtilities api;
+    private final ConfigAPI configAPI;
+    private final WolfyUtilities api;
 
     public RecipeHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.getAPI(customCrafting);
@@ -613,41 +613,26 @@ public class RecipeHandler {
         for (int y = 0; y < gridSize; y++) {
             items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
         }
-        ListIterator<List<ItemStack>> listIterator = items.listIterator();
-        boolean rowBlocked = false, columnBlocked = false;
-        while (!rowBlocked && listIterator.hasNext()) {
-            List<ItemStack> row = listIterator.next();
-            if (row.parallelStream().allMatch(Objects::isNull)) {
-                listIterator.remove();
-            } else {
-                rowBlocked = true;
-            }
+        ListIterator<List<ItemStack>> iterator = items.listIterator();
+        while (iterator.hasNext()) {
+            if (!iterator.next().parallelStream().allMatch(Objects::isNull)) break;
+            iterator.remove();
         }
-        while (listIterator.hasNext()) {
-            listIterator.next();
-        }
-        rowBlocked = false;
-        while (!rowBlocked && listIterator.hasPrevious()) {
-            List<ItemStack> row = listIterator.previous();
-            if (row.parallelStream().allMatch(Objects::isNull)) {
-                listIterator.remove();
-            } else {
-                rowBlocked = true;
-            }
+        iterator = items.listIterator(items.size());
+        while (iterator.hasPrevious()) {
+            if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
+            iterator.remove();
         }
         if (!items.isEmpty()) {
-            while (!columnBlocked) {
+            while (true) {
                 if (checkColumn(items, 0)) {
-                    columnBlocked = true;
+                    break;
                 }
             }
-            columnBlocked = false;
-            int column = items.get(0).size() - 1;
-            while (!columnBlocked) {
-                if (checkColumn(items, column)) {
+            boolean columnBlocked = false;
+            for (int i = items.get(0).size() - 1; !columnBlocked && i > 0; i--) {
+                if (checkColumn(items, i)) {
                     columnBlocked = true;
-                } else {
-                    column--;
                 }
             }
         }
@@ -655,18 +640,9 @@ public class RecipeHandler {
     }
 
     private boolean checkColumn(List<List<ItemStack>> items, int column) {
-        boolean blocked = false;
-        for (List<ItemStack> item : items) {
-            if (item.get(column) != null) {
-                blocked = true;
-            }
-        }
-        if (!blocked) {
-            for (List<ItemStack> item : items) {
-                item.remove(column);
-            }
-        }
-        return blocked;
+        if (items.stream().anyMatch(item -> item.get(column) != null)) return true;
+        items.forEach(item -> item.remove(column));
+        return false;
     }
 
     public boolean loadRecipeIntoCache(CustomRecipe recipe, GuiHandler guiHandler) {

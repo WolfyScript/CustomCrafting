@@ -34,8 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class BrewingStandListener implements Listener {
 
-    private CustomCrafting customCrafting;
-    private Map<Location, NamespacedKey> activeBrewingStands = new HashMap<>();
+    private final CustomCrafting customCrafting;
+    private final Map<Location, NamespacedKey> activeBrewingStands = new HashMap<>();
 
     public BrewingStandListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
