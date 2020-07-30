@@ -1,11 +1,10 @@
 package me.wolfyscript.customcrafting;
 
-import com.google.gson.GsonBuilder;
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
+import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.configs.recipebook.Categories;
-import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
@@ -16,30 +15,26 @@ import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.crafting.CraftListener;
-import me.wolfyscript.customcrafting.recipes.crafting.RecipeUtils;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.RecipeUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.utils.GsonUtil;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.Reflection;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
+import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
@@ -48,7 +43,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -57,7 +51,7 @@ public class CustomCrafting extends JavaPlugin {
     » 175
      */
     private static CustomCrafting instance;
-    private static List<PlayerStatistics> playerStatisticsList = new ArrayList<>();
+    private static final List<PlayerStatistics> playerStatisticsList = new ArrayList<>();
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
     private static RecipeHandler recipeHandler;
@@ -73,11 +67,10 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private boolean outdated = false;
-    private boolean loaded = false;
+    private final boolean premium = false;
+    private boolean premiumPlus = false;
 
-    public static final Pattern VALID_NAMESPACEKEY = Pattern.compile("[a-z0-9._-]+");
-
-    @Deprecated
+    @Nullable
     public static CustomCrafting getInst() {
         return instance;
     }
@@ -85,10 +78,8 @@ public class CustomCrafting extends JavaPlugin {
     @Override
     public void onLoad() {
         CustomItem.registerCustomData(new EliteWorkbenchData());
-        GsonBuilder gsonBuilder = GsonUtil.getGsonBuilder();
-        gsonBuilder.registerTypeHierarchyAdapter(Conditions.class, new Conditions.Serialization());
-        gsonBuilder.registerTypeHierarchyAdapter(Category.class, new Category.Serializer());
-        gsonBuilder.registerTypeHierarchyAdapter(Categories.class, new Categories.Serializer());
+        CustomItem.registerCustomData(new KnowledgeBookData());
+        CustomItem.registerCustomData(new CauldronData());
     }
 
     public static boolean hasPlayerCache(Player player) {
@@ -131,29 +122,14 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    private static boolean canRun() {
-        try {
-            RecipeChoice.ExactChoice exactChoice = new RecipeChoice.ExactChoice(new ItemStack(Material.DEBUG_STICK));
-        } catch (NoClassDefFoundError e) {
-            System.out.println("You are using an outdated Spigot version!");
-            System.out.println("You can get the latest Spigot version via BuildTools: ");
-            System.out.println("    https://www.spigotmc.org/wiki/buildtools/");
-            System.out.println("------------------------------------------------------------------------");
-            return false;
-        }
-        return true;
-    }
-
     public void onDisable() {
-        if (loaded) {
-            getConfigHandler().getConfig().save();
-            workbenches.endTask();
-            workbenches.save();
-            cauldrons.endAutoSaveTask();
-            cauldrons.save();
-            getRecipeHandler().onSave();
-            savePlayerStatistics();
-        }
+        getConfigHandler().getConfig().save();
+        workbenches.endTask();
+        workbenches.save();
+        cauldrons.endAutoSaveTask();
+        cauldrons.save();
+        getRecipeHandler().onSave();
+        savePlayerStatistics();
     }
 
     public ConfigHandler getConfigHandler() {
@@ -171,9 +147,6 @@ public class CustomCrafting extends JavaPlugin {
 
         api.setInventoryAPI(inventoryAPI);
 
-        boolean premium = true;
-        boolean premiumPlus = false;
-
         if (!currentVersion.endsWith(".0")) {
             premiumPlus = true;
         }
@@ -187,16 +160,14 @@ public class CustomCrafting extends JavaPlugin {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         } else if (premium) {
             System.out.println("Thanks for supporting this plugin!");
-            System.out.println();
-            System.out.println("Special thanks to my Patreons for supporting this project: ");
-            System.out.println("    Apprehentice");
-            System.out.println("    Alex");
-            System.out.println("    Vincent Deniau");
-            System.out.println("    Nat R");
         }
+        System.out.println();
+        System.out.println("Special thanks to my Patreons for supporting this project: ");
+        System.out.println("    Apprehentice        gizmonster");
+        System.out.println("    Alex                Nick coburn");
+        System.out.println("    Vincent Deniau      TheDutchRuben");
+        System.out.println("    Nat R               ");
         System.out.println("------------------------------------------------------------------------");
-
-        loaded = canRun();
 
         File mainConfig = new File(getDataFolder(), "Main-Config.yml");
         if (mainConfig.exists()) {
@@ -220,60 +191,64 @@ public class CustomCrafting extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 
-        if (loaded) {
-            System.out.println("------------------------------------------------------------------------");
-            getServer().getPluginManager().registerEvents(new CraftListener(this), this);
-            getServer().getPluginManager().registerEvents(new BlockListener(api), this);
-            getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
-            getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
-            //getServer().getPluginManager().registerEvents(new EnchantListener(), this);
-            getServer().getPluginManager().registerEvents(new CauldronListener(this), this);
-            getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
-            getServer().getPluginManager().registerEvents(new GrindStoneListener(this), this);
-            getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
+        System.out.println("------------------------------------------------------------------------");
+        getServer().getPluginManager().registerEvents(new CraftListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(api), this);
+        getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
+        getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
+        //getServer().getPluginManager().registerEvents(new EnchantListener(), this);
+        getServer().getPluginManager().registerEvents(new CauldronListener(this), this);
+        getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
+        getServer().getPluginManager().registerEvents(new GrindStoneListener(this), this);
+        getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
 
-            final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
-            serverCommandMap.setAccessible(true);
-            try {
-                CommandMap commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
-                commandMap.register("customcrafting", new CommandCC(this));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            getCommand("recipes").setExecutor(new CommandRecipe(this));
-            getCommand("recipes").setTabCompleter(new CommandRecipe(this));
-            loadPlayerStatistics();
-            invHandler.init();
-            workbenches = new Workbenches(this);
-
-            cauldrons = new Cauldrons(this);
-            if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                api.sendConsoleMessage("$msg.startup.placeholder$");
-                new PlaceHolder(this).register();
-            }
-            if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
-                api.sendConsoleMessage("$msg.startup.mythicmobs.detected$");
-                api.sendConsoleMessage("$msg.startup.mythicmobs.register$");
-            }
-
-            recipeHandler.load();
-            CustomItems.initiateMissingBlockEffects();
-            checkUpdate(null);
-            Metrics metrics = new Metrics(this, 3211);
-            metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
-            metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
-                String version = Bukkit.getServer().getName();
-                if (WolfyUtilities.hasSpigot()) {
-                    version = "Spigot";
-                }
-                if (WolfyUtilities.hasClass("com.destroystokyo.paper.Title")) {
-                    version = "Paper";
-                }
-                return version;
-            }));
-            metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
+        final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
+        serverCommandMap.setAccessible(true);
+        try {
+            CommandMap commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
+            commandMap.register("customcrafting", new CommandCC(this));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
+
+        getCommand("recipes").setExecutor(new CommandRecipe(this));
+        getCommand("recipes").setTabCompleter(new CommandRecipe(this));
+        loadPlayerStatistics();
+        invHandler.init();
+        workbenches = new Workbenches(this);
+
+        cauldrons = new Cauldrons(this);
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            api.sendConsoleMessage("$msg.startup.placeholder$");
+            new PlaceHolder(this).register();
+        }
+        if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
+            api.sendConsoleMessage("$msg.startup.mythicmobs.detected$");
+            api.sendConsoleMessage("$msg.startup.mythicmobs.register$");
+        }
+
+        recipeHandler.load();
+        CustomItems.initiateMissingBlockEffects();
+
+        //Don't check for updates when it's a Premium+ version, because there isn't a way yet to do so!
+        if (!premiumPlus) {
+            checkUpdate(null);
+        }
+
+        Metrics metrics = new Metrics(this, 3211);
+        metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
+        metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
+            String version = Bukkit.getServer().getName();
+            if (WolfyUtilities.hasSpigot()) {
+                version = "Spigot";
+            }
+            if (WolfyUtilities.hasClass("com.destroystokyo.paper.Title")) {
+                version = "Paper";
+            }
+            return version;
+        }));
+        metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
+
         System.out.println("------------------------------------------------------------------------");
     }
 
@@ -348,12 +323,8 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public static PlayerStatistics getPlayerStatistics(UUID uuid) {
-        for (PlayerStatistics playerStatistics : playerStatisticsList) {
-            if (playerStatistics.getUuid().equals(uuid))
-                return playerStatistics;
-        }
-        PlayerStatistics playerStatistics = new PlayerStatistics(uuid);
-        playerStatisticsList.add(playerStatistics);
+        PlayerStatistics playerStatistics = playerStatisticsList.stream().filter(pS -> pS.getUuid().equals(uuid)).findFirst().orElse(new PlayerStatistics(uuid));
+        if (!playerStatisticsList.contains(playerStatistics)) playerStatisticsList.add(playerStatistics);
         return playerStatistics;
     }
 
@@ -361,8 +332,12 @@ public class CustomCrafting extends JavaPlugin {
         return outdated;
     }
 
-    public boolean isLoaded() {
-        return loaded;
+    public boolean isPremium() {
+        return premium;
+    }
+
+    public boolean isPremiumPlus() {
+        return premiumPlus;
     }
 
     public static boolean hasDataBaseHandler() {
@@ -373,4 +348,47 @@ public class CustomCrafting extends JavaPlugin {
         return dataBaseHandler;
     }
 
+    public void saveItem(me.wolfyscript.utilities.api.utils.NamespacedKey namespacedKey, CustomItem customItem) {
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().updateItem(namespacedKey, customItem);
+        } else {
+            try {
+                File file = new File(getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/items", namespacedKey.getKey() + ".json");
+                file.getParentFile().mkdirs();
+                if (file.exists() || file.createNewFile()) {
+                    JacksonUtil.getObjectWriter(getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (CustomItems.getCustomItem(namespacedKey) != null) {
+            CustomItems.removeCustomItem(namespacedKey);
+        }
+        CustomItems.addCustomItem(namespacedKey, customItem);
+    }
+
+    public boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
+        if (!CustomItems.hasCustomItem(namespacedKey)) {
+            if (player != null) getApi().sendPlayerMessage(player, "error");
+            return false;
+        }
+        CustomItems.removeCustomItem(namespacedKey);
+        System.gc();
+        if (CustomCrafting.hasDataBaseHandler()) {
+            CustomCrafting.getDataBaseHandler().removeItem(namespacedKey);
+            return true;
+        } else {
+            File file = new File(getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/items", namespacedKey.getKey() + ".json");
+            if (file.delete()) {
+                if (player != null) getApi().sendPlayerMessage(player, "&aCustomItem deleted!");
+                return true;
+            } else {
+                file.deleteOnExit();
+                if (player != null)
+                    getApi().sendPlayerMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
+            }
+        }
+        return false;
+    }
 }

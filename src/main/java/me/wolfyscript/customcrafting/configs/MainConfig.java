@@ -159,12 +159,4 @@ public class MainConfig extends Config {
         return getString("databank.password");
     }
 
-    public boolean hideAds() {
-        return getBoolean("secret.hide_ads");
-    }
-
-    public void setHideAds(boolean hideAds) {
-        set("secret.hide_ads", hideAds);
-    }
-
 }

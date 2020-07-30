@@ -1,21 +1,20 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class WorldNameCondition extends Condition {
 
-    private List<String> worldNames;
+    private final List<String> worldNames;
 
     public WorldNameCondition() {
         super("world_name");
@@ -25,7 +24,7 @@ public class WorldNameCondition extends Condition {
     }
 
     @Override
-    public boolean check(CustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
@@ -37,25 +36,22 @@ public class WorldNameCondition extends Condition {
     }
 
     @Override
-    public JsonElement toJsonElement() {
-        JsonObject jsonObject = (JsonObject) super.toJsonElement();
-        JsonArray jsonArray = new JsonArray();
-        worldNames.forEach(s -> jsonArray.add(s));
-        jsonObject.add("names", jsonArray);
-        return jsonObject;
+    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
+        gen.writeArrayFieldStart("names");
+        for (String s : worldNames) {
+            gen.writeString(s);
+        }
+        gen.writeEndArray();
     }
 
     @Override
-    public void fromJsonElement(JsonElement jsonElement) {
-        JsonObject jsonObject = (JsonObject) jsonElement;
-        JsonArray jsonArray = jsonObject.getAsJsonArray("names");
-        Iterator<JsonElement> iterator = jsonArray.iterator();
-        while (iterator.hasNext()) {
-            JsonElement element = iterator.next();
-            if (element instanceof JsonPrimitive) {
-                addWorldName(element.getAsString());
+    public void readFromJson(JsonNode node) {
+        JsonNode array = node.get("names");
+        array.elements().forEachRemaining(element -> {
+            if(element.isValueNode()){
+                addWorldName(element.asText());
             }
-        }
+        });
     }
 
     public void addWorldName(String worldName) {

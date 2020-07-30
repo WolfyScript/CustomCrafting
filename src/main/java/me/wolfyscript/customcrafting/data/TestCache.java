@@ -1,55 +1,47 @@
 package me.wolfyscript.customcrafting.data;
 
-
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
-import me.wolfyscript.customcrafting.recipes.types.CraftConfig;
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
-import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingConfig;
-import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
-import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
-import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneConfig;
-import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
+import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
+import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
+import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
+import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.cache.CustomCache;
+
+import java.util.HashMap;
 
 public class TestCache extends CustomCache {
 
     private Setting setting;
-    private CustomCrafting customCrafting;
+    private final CustomCrafting customCrafting;
     private String subSetting;
 
     private Items items = new Items();
-    private KnowledgeBook knowledgeBook = new KnowledgeBook();
-    private VariantsData variantsData = new VariantsData();
+    private final KnowledgeBook knowledgeBook = new KnowledgeBook();
+    private final VariantsData variantsData = new VariantsData();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
-    private ChatLists chatLists = new ChatLists();
-    private ParticleCache particleCache = new ParticleCache();
+    private final ChatLists chatLists = new ChatLists();
+    private final ParticleCache particleCache = new ParticleCache();
     private ApplyItem applyItem;
 
     //RECIPE_LIST OF ALL RECIPE CACHE
 
-    private AnvilConfig anvilConfig;
-    private AdvancedCraftConfig advancedCraftConfig;
-    private EliteCraftConfig eliteCraftConfig;
-    private BlastingConfig blastingConfig;
-    private CampfireConfig campfireConfig;
-    private CauldronConfig cauldronConfig;
-    private SmokerConfig smokerConfig;
-    private StonecutterConfig stonecutterConfig;
-    private FurnaceConfig furnaceConfig;
-    private GrindstoneConfig grindstoneConfig;
-    private BrewingConfig brewingConfig;
+    private final HashMap<Class<? extends CustomRecipe>, CustomRecipe> recipes = new HashMap<>();
 
     public TestCache() {
         this.customCrafting = CustomCrafting.getInst();
@@ -57,17 +49,17 @@ public class TestCache extends CustomCache {
         this.subSetting = "";
         this.applyItem = null;
 
-        this.anvilConfig = new AnvilConfig(customCrafting);
-        this.advancedCraftConfig = new AdvancedCraftConfig(customCrafting);
-        this.eliteCraftConfig = new EliteCraftConfig(customCrafting);
-        this.blastingConfig = new BlastingConfig(customCrafting);
-        this.campfireConfig = new CampfireConfig(customCrafting);
-        this.cauldronConfig = new CauldronConfig(customCrafting);
-        this.smokerConfig = new SmokerConfig(customCrafting);
-        this.stonecutterConfig = new StonecutterConfig(customCrafting);
-        this.furnaceConfig = new FurnaceConfig(customCrafting);
-        this.grindstoneConfig = new GrindstoneConfig(customCrafting);
-        this.brewingConfig = new BrewingConfig(customCrafting);
+        setCustomRecipe(new CustomAnvilRecipe());
+        setCustomRecipe(CraftingRecipe.class, new ShapedCraftRecipe());
+        setCustomRecipe(EliteCraftingRecipe.class, new ShapedEliteCraftRecipe());
+        setCustomRecipe(new CustomBlastRecipe());
+        setCustomRecipe(new CustomCampfireRecipe());
+        setCustomRecipe(new CustomSmokerRecipe());
+        setCustomRecipe(new CustomFurnaceRecipe());
+        setCustomRecipe(new CustomStonecutterRecipe());
+        setCustomRecipe(new GrindstoneRecipe());
+        setCustomRecipe(new CauldronRecipe());
+        setCustomRecipe(new BrewingRecipe());
     }
 
     public Setting getSetting() {
@@ -121,203 +113,6 @@ public class TestCache extends CustomCache {
         return particleCache;
     }
 
-    public AnvilConfig getAnvilConfig() {
-        return anvilConfig;
-    }
-
-    public void resetAnvilConfig() {
-        this.anvilConfig = new AnvilConfig(customCrafting);
-    }
-
-    public CraftConfig getCraftConfig() {
-        if (getSetting().equals(Setting.ELITE_WORKBENCH))
-            return getEliteCraftConfig();
-        return getAdvancedCraftConfig();
-    }
-
-    public CookingConfig getCookingConfig() {
-        switch (getSetting()) {
-            case CAMPFIRE:
-                return getCampfireConfig();
-            case SMOKER:
-                return getSmokerConfig();
-            case FURNACE:
-                return getFurnaceConfig();
-            case BLAST_FURNACE:
-                return getBlastingConfig();
-        }
-        return null;
-    }
-
-    public void resetCookingConfig() {
-        switch (getSetting()) {
-            case CAMPFIRE:
-                resetCampfireConfig();
-            case SMOKER:
-                resetSmokerConfig();
-            case FURNACE:
-                resetFurnaceConfig();
-            case BLAST_FURNACE:
-                resetBlastingConfig();
-        }
-    }
-
-    public AdvancedCraftConfig getAdvancedCraftConfig() {
-        return advancedCraftConfig;
-    }
-
-    public void resetAdvancedCraftConfig() {
-        this.advancedCraftConfig = new AdvancedCraftConfig(customCrafting);
-    }
-
-    public EliteCraftConfig getEliteCraftConfig() {
-        return eliteCraftConfig;
-    }
-
-    public void resetEliteCraftConfig() {
-        this.eliteCraftConfig = new EliteCraftConfig(customCrafting);
-    }
-
-    public FurnaceConfig getFurnaceConfig() {
-        return furnaceConfig;
-    }
-
-    public void setFurnaceConfig(FurnaceConfig furnaceConfig) {
-        this.furnaceConfig = furnaceConfig;
-    }
-
-    public void resetFurnaceConfig() {
-        this.furnaceConfig = new FurnaceConfig(customCrafting);
-    }
-
-    public BlastingConfig getBlastingConfig() {
-        return blastingConfig;
-    }
-
-    public void resetBlastingConfig() {
-        this.blastingConfig = new BlastingConfig(customCrafting);
-    }
-
-    public CampfireConfig getCampfireConfig() {
-        return campfireConfig;
-    }
-
-    public void resetCampfireConfig() {
-        this.campfireConfig = new CampfireConfig(customCrafting);
-    }
-
-    public CauldronConfig getCauldronConfig() {
-        return cauldronConfig;
-    }
-
-    public void resetCauldronConfig() {
-        this.cauldronConfig = new CauldronConfig(customCrafting);
-    }
-
-    public GrindstoneConfig getGrindstoneConfig() {
-        return grindstoneConfig;
-    }
-
-    public void resetGrindstoneConfig() {
-        this.grindstoneConfig = new GrindstoneConfig(customCrafting);
-    }
-
-    public BrewingConfig getBrewingConfig() {
-        return brewingConfig;
-    }
-
-    public void resetBrewingConfig() {
-        this.brewingConfig = new BrewingConfig(customCrafting);
-    }
-
-    public SmokerConfig getSmokerConfig() {
-        return smokerConfig;
-    }
-
-    public void resetSmokerConfig() {
-        this.smokerConfig = new SmokerConfig(customCrafting);
-    }
-
-    public StonecutterConfig getStonecutterConfig() {
-        return stonecutterConfig;
-    }
-
-    public void resetStonecutterConfig() {
-        this.stonecutterConfig = new StonecutterConfig(customCrafting);
-    }
-
-    public void setAnvilConfig(AnvilConfig anvilConfig) {
-        this.anvilConfig = anvilConfig;
-    }
-
-    public void setAdvancedCraftConfig(AdvancedCraftConfig advancedCraftConfig) {
-        this.advancedCraftConfig = advancedCraftConfig;
-    }
-
-    public void setEliteCraftConfig(EliteCraftConfig eliteCraftConfig) {
-        this.eliteCraftConfig = eliteCraftConfig;
-    }
-
-    public void setBlastingConfig(BlastingConfig blastingConfig) {
-        this.blastingConfig = blastingConfig;
-    }
-
-    public void setCampfireConfig(CampfireConfig campfireConfig) {
-        this.campfireConfig = campfireConfig;
-    }
-
-    public void setCauldronConfig(CauldronConfig cauldronConfig) {
-        this.cauldronConfig = cauldronConfig;
-    }
-
-    public void setSmokerConfig(SmokerConfig smokerConfig) {
-        this.smokerConfig = smokerConfig;
-    }
-
-    public void setStonecutterConfig(StonecutterConfig stonecutterConfig) {
-        this.stonecutterConfig = stonecutterConfig;
-    }
-
-    public void setBrewingConfig(BrewingConfig brewingConfig) {
-        this.brewingConfig = brewingConfig;
-    }
-
-    public void setCookingConfig(CookingConfig cookingConfig) {
-        if (cookingConfig instanceof CampfireConfig) {
-            setCampfireConfig((CampfireConfig) cookingConfig);
-        } else if (cookingConfig instanceof SmokerConfig) {
-            setSmokerConfig((SmokerConfig) cookingConfig);
-        } else if (cookingConfig instanceof FurnaceConfig) {
-            setFurnaceConfig((FurnaceConfig) cookingConfig);
-        } else if (cookingConfig instanceof BlastingConfig) {
-            setBlastingConfig((BlastingConfig) cookingConfig);
-        }
-    }
-
-    public RecipeConfig getRecipeConfig() {
-        switch (getSetting()) {
-            case CAMPFIRE:
-            case SMOKER:
-            case FURNACE:
-            case BLAST_FURNACE:
-                return getCookingConfig();
-            case ELITE_WORKBENCH:
-            case WORKBENCH:
-                return getCraftConfig();
-            case ANVIL:
-                return getAnvilConfig();
-            case STONECUTTER:
-                return getStonecutterConfig();
-            case CAULDRON:
-                return getCauldronConfig();
-            case GRINDSTONE:
-                return getGrindstoneConfig();
-            case BREWING_STAND:
-                return getBrewingConfig();
-        }
-        return null;
-    }
-
     public EliteWorkbench getEliteWorkbench() {
         return eliteWorkbench;
     }
@@ -326,4 +121,164 @@ public class TestCache extends CustomCache {
         this.eliteWorkbench = eliteWorkbench;
     }
 
+    public <T extends CustomRecipe> void setCustomRecipe(T customRecipe){
+        recipes.put(customRecipe.getClass(), customRecipe);
+    }
+
+    /*
+    Used when multiple Objects of the same sub type exist and shouldn't exist parallel inside the Map
+     */
+    public <T extends CustomRecipe> void setCustomRecipe(Class<T> tClass, T customRecipe){
+        recipes.put(tClass, customRecipe);
+    }
+
+    public <T extends CustomRecipe> T getCustomRecipe(Class<T> recipeType){
+        return (T) recipes.get(recipeType);
+    }
+
+    /***************************************************************
+     * Util methods to get specific kinds of Recipes that are cached into this class
+     * Used for the GUI Recipe Creators!
+     *
+     ***************************************************************/
+
+    public CraftingRecipe getCraftRecipe() {
+        if (getSetting().equals(Setting.ELITE_WORKBENCH))
+            return getCustomRecipe(EliteCraftingRecipe.class);
+        return getCustomRecipe(CraftingRecipe.class);
+    }
+
+    public CustomCookingRecipe<?> getCookingRecipe() {
+        switch (getSetting()) {
+            case CAMPFIRE:
+                return getCampfireRecipe();
+            case SMOKER:
+                return getSmokerRecipe();
+            case FURNACE:
+                return getFurnaceRecipe();
+            case BLAST_FURNACE:
+                return getBlastRecipe();
+        }
+        return null;
+    }
+
+    public CustomCookingRecipe resetCookingRecipe() {
+        switch (getSetting()) {
+            case CAMPFIRE:
+                setCustomRecipe(new CustomCampfireRecipe());
+            case SMOKER:
+                setCustomRecipe(new CustomSmokerRecipe());
+            case FURNACE:
+                setCustomRecipe(new CustomFurnaceRecipe());
+            case BLAST_FURNACE:
+                setCustomRecipe(new CustomBlastRecipe());
+        }
+        return null;
+    }
+
+    public void resetRecipe(){
+        switch (getSetting()) {
+            case CAMPFIRE:
+            case SMOKER:
+            case FURNACE:
+            case BLAST_FURNACE:
+                resetCookingRecipe();
+                break;
+            case ELITE_WORKBENCH:
+                setCustomRecipe(EliteCraftingRecipe.class, new ShapedEliteCraftRecipe());
+                break;
+            case WORKBENCH:
+                setCustomRecipe(CraftingRecipe.class, new ShapedCraftRecipe());
+                break;
+            case ANVIL:
+                setCustomRecipe(new CustomAnvilRecipe());
+                break;
+            case STONECUTTER:
+                setCustomRecipe(new CustomStonecutterRecipe());
+                break;
+            case CAULDRON:
+                setCustomRecipe(new CauldronRecipe());
+                break;
+            case GRINDSTONE:
+                setCustomRecipe(new GrindstoneRecipe());
+                break;
+            case BREWING_STAND:
+                setCustomRecipe(new BrewingRecipe());
+        }
+    }
+
+    public CustomRecipe getRecipe() {
+        switch (getSetting()) {
+            case CAMPFIRE:
+            case SMOKER:
+            case FURNACE:
+            case BLAST_FURNACE:
+                return getCookingRecipe();
+            case ELITE_WORKBENCH:
+                return getEliteCraftingRecipe();
+            case WORKBENCH:
+                return getCraftRecipe();
+            case ANVIL:
+                return getAnvilRecipe();
+            case STONECUTTER:
+                return getStonecutterRecipe();
+            case CAULDRON:
+                return getCauldronRecipe();
+            case GRINDSTONE:
+                return getGrindstoneRecipe();
+            case BREWING_STAND:
+                return getBrewingRecipe();
+        }
+        return null;
+    }
+
+    /***************************************************************
+     * Getters and setters for all the Recipes that are saved in this cache.
+     * Usage for the GUI Creator!
+     *
+     ***************************************************************/
+
+    public CraftingRecipe getCraftingRecipe() {
+        return getCustomRecipe(CraftingRecipe.class);
+    }
+
+    public CustomAnvilRecipe getAnvilRecipe() {
+        return getCustomRecipe(CustomAnvilRecipe.class);
+    }
+
+    public EliteCraftingRecipe getEliteCraftingRecipe() {
+        return getCustomRecipe(EliteCraftingRecipe.class);
+    }
+
+    public CustomBlastRecipe getBlastRecipe() {
+        return getCustomRecipe(CustomBlastRecipe.class);
+    }
+
+    public CustomCampfireRecipe getCampfireRecipe() {
+        return getCustomRecipe(CustomCampfireRecipe.class);
+    }
+
+    public CauldronRecipe getCauldronRecipe() {
+        return getCustomRecipe(CauldronRecipe.class);
+    }
+
+    public CustomSmokerRecipe getSmokerRecipe() {
+        return getCustomRecipe(CustomSmokerRecipe.class);
+    }
+
+    public CustomStonecutterRecipe getStonecutterRecipe() {
+        return getCustomRecipe(CustomStonecutterRecipe.class);
+    }
+
+    public CustomFurnaceRecipe getFurnaceRecipe() {
+        return getCustomRecipe(CustomFurnaceRecipe.class);
+    }
+
+    public GrindstoneRecipe getGrindstoneRecipe() {
+        return getCustomRecipe(GrindstoneRecipe.class);
+    }
+
+    public BrewingRecipe getBrewingRecipe() {
+        return getCustomRecipe(BrewingRecipe.class);
+    }
 }

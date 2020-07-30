@@ -14,4 +14,8 @@ public class ExtendedGuiWindow extends GuiWindow {
         super(namespace, inventoryAPI, size);
         this.customCrafting = customCrafting;
     }
+
+    public CustomCrafting getCustomCrafting() {
+        return customCrafting;
+    }
 }

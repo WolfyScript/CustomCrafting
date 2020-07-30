@@ -23,9 +23,9 @@ import java.util.HashMap;
 
 public class ItemCategoryButton extends Button {
 
-    private CustomCrafting customCrafting;
-    private Categories categories;
-    private HashMap<GuiHandler, Integer> categoryMap;
+    private final CustomCrafting customCrafting;
+    private final Categories categories;
+    private final HashMap<GuiHandler, Integer> categoryMap;
 
     public ItemCategoryButton(CustomCrafting customCrafting) {
         super("itemCategory", ButtonType.NORMAL);
@@ -44,7 +44,7 @@ public class ItemCategoryButton extends Button {
             LanguageAPI languageAPI = WolfyUtilities.getAPI(customCrafting).getLanguageAPI();
 
             itemMeta.setDisplayName(languageAPI.replaceColoredKeys(category.getName()));
-            itemMeta.setLore(languageAPI.getActiveLanguage().replaceKeys(category.getDescription()));
+            itemMeta.setLore(languageAPI.replaceColoredKeys(category.getDescription()));
 
             itemStack.setItemMeta(itemMeta);
             inventory.setItem(slot, itemStack);

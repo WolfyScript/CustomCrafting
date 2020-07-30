@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class RecipeBookContainerButton extends Button {
 
-    private HashMap<GuiHandler, CustomItem> recipes = new HashMap<>();
+    private final HashMap<GuiHandler, CustomItem> recipes = new HashMap<>();
     private final CustomCrafting customCrafting;
 
     public RecipeBookContainerButton(int slot, CustomCrafting customCrafting) {
@@ -42,7 +42,7 @@ public class RecipeBookContainerButton extends Button {
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         KnowledgeBook book = cache.getKnowledgeBook();
         CustomItem customItem = getRecipeItem(guiHandler);
-        List<CustomRecipe> recipes = recipeHandler.getRecipes(customItem);
+        List<ICustomRecipe> recipes = recipeHandler.getAvailableRecipes(customItem, player);
         recipes.remove(book.getCurrentRecipe());
         if (!recipes.isEmpty()) {
             book.setSubFolder(1);
@@ -56,7 +56,7 @@ public class RecipeBookContainerButton extends Button {
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        inventory.setItem(slot, getRecipeItem(guiHandler).getRealItem());
+        inventory.setItem(slot, getRecipeItem(guiHandler).create());
     }
 
     public CustomItem getRecipeItem(GuiHandler guiHandler) {

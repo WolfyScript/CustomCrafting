@@ -1,14 +1,16 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Locale;
 
 public class WeatherCondition extends Condition {
@@ -37,7 +39,7 @@ public class WeatherCondition extends Condition {
     }
 
     @Override
-    public boolean check(CustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
@@ -59,32 +61,31 @@ public class WeatherCondition extends Condition {
     }
 
     @Override
-    public void fromJsonElement(JsonElement jsonElement) {
+    public void readFromJson(JsonNode node) {
         try {
-            this.weather = Weather.valueOf(((JsonObject) jsonElement).getAsJsonPrimitive("weather").getAsString());
+            this.weather = Weather.valueOf(node.get("weather").asText());
         } catch (IllegalArgumentException ex) {
-            //EMPTY CATCH
+            ex.printStackTrace();
         }
     }
 
     @Override
-    public JsonElement toJsonElement() {
-        JsonObject jsonObject = (JsonObject) super.toJsonElement();
-        jsonObject.addProperty("weather", weather.toString());
-        return jsonObject;
+    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
+        gen.writeStringField("weather", weather.toString());
+
     }
 
     public enum Weather {
         STORM, THUNDER, STORM_THUNDER, NONE;
 
-        private String display;
+        private final String display;
 
         Weather() {
             this.display = "$inventories.recipe_creator.conditions.items.weather.modes." + super.toString().toLowerCase(Locale.ROOT) + "$";
         }
 
         public String getDisplay(WolfyUtilities api) {
-            return api.getLanguageAPI().getActiveLanguage().replaceKeys(display);
+            return api.getLanguageAPI().replaceKeys(display);
         }
     }
 }

@@ -1,12 +1,11 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilData;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.ItemUtils;
+import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -25,9 +24,9 @@ import java.util.*;
 
 public class AnvilListener implements Listener {
 
-    private static HashMap<UUID, AnvilData> preCraftedRecipes = new HashMap<>();
+    private static final HashMap<UUID, AnvilData> preCraftedRecipes = new HashMap<>();
 
-    private CustomCrafting customCrafting;
+    private final CustomCrafting customCrafting;
 
     public AnvilListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -38,7 +37,7 @@ public class AnvilListener implements Listener {
         Player player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
         List<CustomAnvilRecipe> recipes = customCrafting.getRecipeHandler().getAvailableAnvilRecipes(player);
-        recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
+        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         preCraftedRecipes.remove(player.getUniqueId());
         for (CustomAnvilRecipe recipe : recipes) {
             CustomItem finalInputLeft = null;
@@ -75,19 +74,18 @@ public class AnvilListener implements Listener {
                 }
             }
             ItemStack inputLeft = inventory.getItem(0);
-            ItemStack result;
+            ItemBuilder result;
 
             //RECIPE RESULTS!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                result = recipe.getCustomResult();
-
+                result = new ItemBuilder(recipe.getCustomResult().create());
             } else {
-                result = event.getResult();
-                if (result != null && result.hasItemMeta()) {
+                result = new ItemBuilder(event.getResult());
+                if (result != null && result.create().hasItemMeta()) {
                     if (recipe.isBlockEnchant()) {
-                        if (result.hasItemMeta() && result.getItemMeta().hasEnchants()) {
-                            for (Enchantment enchantment : result.getEnchantments().keySet()) {
-                                result.removeEnchantment(enchantment);
+                        if (result.create().hasItemMeta() && result.getItemMeta().hasEnchants()) {
+                            for (Enchantment enchantment : result.create().getEnchantments().keySet()) {
+                                result.create().removeEnchantment(enchantment);
                             }
                             for(Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()){
                                 result.addUnsafeEnchantment(entry.getKey(), entry.getValue());
@@ -113,22 +111,16 @@ public class AnvilListener implements Listener {
                         }
                     }
                 }
-                if (result == null || result.getType().equals(Material.AIR)) {
-                    result = inputLeft.clone();
+                if (result == null || result.create().getType().equals(Material.AIR)) {
+                    result = new ItemBuilder(inputLeft.clone());
                 }
                 if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-                    if (WolfyUtilities.hasVillagePillageUpdate() && CustomItem.hasCustomDurability(result)) {
-                        int damage = CustomItem.getCustomDamage(result) - recipe.getDurability();
+                    if (result.hasCustomDurability()) {
+                        int damage = result.getCustomDamage() - recipe.getDurability();
                         if (damage < 0) {
                             damage = 0;
                         }
-                        CustomItem.setCustomDamage(result, damage);
-                    } else if (ItemUtils.hasCustomDurability(result)) {
-                        int damage = ItemUtils.getDamage(result) - recipe.getDurability();
-                        if (damage >= 0) {
-                            damage = 0;
-                        }
-                        ItemUtils.setDamage(result, damage);
+                        result.setCustomDamage(damage);
                     } else if (result.getItemMeta() instanceof Damageable) {
                         ItemMeta itemMeta = result.getItemMeta();
                         ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() - recipe.getDurability());
@@ -164,7 +156,8 @@ public class AnvilListener implements Listener {
                  So the player will get the correct Item and the correct values are displayed!
             */
             final int finalRepairCost = repairCost;
-            ItemStack finalResult = result;
+            ItemStack finalResult = result.create();
+
             inventory.setRepairCost(finalRepairCost);
             event.setResult(finalResult);
             Bukkit.getScheduler().runTask(customCrafting, () -> {

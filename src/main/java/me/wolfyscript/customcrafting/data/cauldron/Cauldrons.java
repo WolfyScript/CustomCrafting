@@ -27,10 +27,10 @@ import java.util.concurrent.Future;
 public class Cauldrons {
 
     private final CustomCrafting customCrafting;
-    private WolfyUtilities api;
-    private int autosaveTask;
+    private final WolfyUtilities api;
+    private final int autosaveTask;
     private boolean isBeingSaved = false;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     //Hashmap of all the locations of the valid cauldrons. The Key is the Location. The Value is the current active recipe, which is going to be saved on server shutdown.
     private HashMap<Location, List<Cauldron>> cauldrons = new HashMap<>();
@@ -106,7 +106,7 @@ public class Cauldrons {
                                     }
                                 }
                                 if (event.dropItems()) {
-                                    world.dropItemNaturally(loc.clone().add(0.0, 0.5, 0.0), event.getResult().getRealItem());
+                                    world.dropItemNaturally(loc.clone().add(0.0, 0.5, 0.0), event.getResult().create());
                                     return true;
                                 }
                             }
@@ -143,10 +143,8 @@ public class Cauldrons {
     }
 
     public boolean isCustomCauldronLit(Block block) {
-        if (WolfyUtilities.hasVillagePillageUpdate()) {
-            if (block.getRelative(BlockFace.DOWN).getType().equals(Material.CAMPFIRE)) {
-                return ((Campfire) block.getRelative(BlockFace.DOWN).getBlockData()).isLit();
-            }
+        if (block.getRelative(BlockFace.DOWN).getType().equals(Material.CAMPFIRE)) {
+            return ((Campfire) block.getRelative(BlockFace.DOWN).getBlockData()).isLit();
         }
         return false;
     }
@@ -185,12 +183,22 @@ public class Cauldrons {
     }
 
     private String locationToString(Location location) {
+        if(location == null) return null;
         return (location.getWorld() != null ? location.getWorld().getUID() : null) + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
     }
 
     private Location stringToLocation(String loc) {
         String[] args = loc.split(";");
-        return new Location(Bukkit.getWorld(UUID.fromString(args[0])), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+        try{
+            UUID uuid = UUID.fromString(args[0]);
+            World world = Bukkit.getWorld(uuid);
+            if(world != null){
+                return new Location(world, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+            }
+        }catch (IllegalArgumentException e){
+            api.sendConsoleWarning("Couldn't find world "+args[0]);
+        }
+        return null;
     }
 
     public void save() {
@@ -208,7 +216,10 @@ public class Cauldrons {
                     }
                 }
                 if (entry.getKey() != null) {
-                    saveMap.put(locationToString(entry.getKey()), values);
+                    String loc = locationToString(entry.getKey());
+                    if(loc != null){
+                        saveMap.put(loc, values);
+                    }
                 }
             }
             oos.writeObject(saveMap);
@@ -238,7 +249,10 @@ public class Cauldrons {
                                 value.add(Cauldron.fromString(customCrafting, data));
                             }
                         }
-                        this.cauldrons.put(stringToLocation(entry.getKey()), value);
+                        Location location = stringToLocation(entry.getKey());
+                        if(location != null){
+                            this.cauldrons.put(location, value);
+                        }
                     }
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();

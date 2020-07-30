@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.main_gui.RecipesList;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class RecipeListNamespaceButton extends ActionButton {
 
     private final CustomCrafting customCrafting;
-    private HashMap<GuiHandler, String> namespaces = new HashMap<>();
+    private final HashMap<GuiHandler, String> namespaces = new HashMap<>();
 
 
     public RecipeListNamespaceButton(int slot, CustomCrafting customCrafting) {
@@ -54,14 +54,14 @@ public class RecipeListNamespaceButton extends ActionButton {
                         }
                     } else {
                         if (event.isShiftClick() && event.isLeftClick()) {
-                            for (CustomRecipe recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                            for (ICustomRecipe recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
                                 String id = recipe.getNamespacedKey().toString();
                                 if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
                                     customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                                 }
                             }
                         } else if (event.isShiftClick() && event.isRightClick()) {
-                            for (CustomRecipe recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                            for (ICustomRecipe recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
                                 customCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getNamespacedKey().toString());
                             }
                         }

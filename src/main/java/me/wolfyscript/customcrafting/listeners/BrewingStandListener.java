@@ -3,9 +3,10 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.ItemUtils;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.Reflection;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -137,7 +138,7 @@ public class BrewingStandListener implements Listener {
             if (event.getSlot() == 3) {
                 Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                     //Recipe Checker!
-                    final CustomItem ingredient = CustomItem.getByItemStack(inventory.getItem(3));
+                    final ItemStack ingredient = inventory.getItem(3);
 
                     BrewingStand brewingStand = inventory.getHolder();
 
@@ -158,7 +159,7 @@ public class BrewingStandListener implements Listener {
                                 CustomItem item = null;
                                 for (BrewingRecipe recipe : customCrafting.getRecipeHandler().getAvailableBrewingRecipes(player)) {
                                     item = null;
-                                    for (CustomItem customItem : recipe.getIngredient()) {
+                                    for (CustomItem customItem : recipe.getIngredients()) {
                                         if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {
                                             if (fuelLevel >= recipe.getFuelCost()) {
                                                 item = customItem;
@@ -202,9 +203,9 @@ public class BrewingStandListener implements Listener {
                                                             BrewingRecipe recipe = (BrewingRecipe) customCrafting.getRecipeHandler().getRecipe(activeBrewingStands.get(location));
 
                                                             BrewerInventory brewerInventory = brewingStand.getInventory();
-                                                            final CustomItem input0 = CustomItem.getByItemStack(brewerInventory.getItem(0));
-                                                            final CustomItem input1 = CustomItem.getByItemStack(brewerInventory.getItem(1));
-                                                            final CustomItem input2 = CustomItem.getByItemStack(brewerInventory.getItem(2));
+                                                            final ItemBuilder input0 = new ItemBuilder(brewerInventory.getItem(0));
+                                                            final ItemBuilder input1 = new ItemBuilder(brewerInventory.getItem(1));
+                                                            final ItemBuilder input2 = new ItemBuilder(brewerInventory.getItem(2));
 
                                                             finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());
 
@@ -221,9 +222,9 @@ public class BrewingStandListener implements Listener {
                                                                 increasePotionAmplifier(input2, i);
                                                             }
 
-                                                            brewerInventory.setItem(0, input0);
-                                                            brewerInventory.setItem(1, input1);
-                                                            brewerInventory.setItem(2, input2);
+                                                            brewerInventory.setItem(0, input0.create());
+                                                            brewerInventory.setItem(1, input1.create());
+                                                            brewerInventory.setItem(2, input2.create());
 
                                                             activeBrewingStands.remove(location);
                                                             cancel();
@@ -251,27 +252,27 @@ public class BrewingStandListener implements Listener {
         return ItemUtils.isAirOrNull(inventory.getItem(0)) && ItemUtils.isAirOrNull(inventory.getItem(1)) && ItemUtils.isAirOrNull(inventory.getItem(2));
     }
 
-    private void increasePotionDuration(ItemStack itemStack, int durationChange) {
-        if (itemStack != null && itemStack.getItemMeta() instanceof PotionMeta) {
-            PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
+    private void increasePotionDuration(ItemBuilder itemBuilder, int durationChange) {
+        if (itemBuilder != null && itemBuilder.getItemMeta() instanceof PotionMeta) {
+            PotionMeta potionMeta = (PotionMeta) itemBuilder.getItemMeta();
             List<PotionEffect> effects = new ArrayList<>(potionMeta.getCustomEffects());
             for (PotionEffect effect : effects) {
                 potionMeta.removeCustomEffect(effect.getType());
                 potionMeta.addCustomEffect(new PotionEffect(effect.getType(), effect.getDuration() + durationChange, effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), effect.hasIcon()), true);
             }
-            itemStack.setItemMeta(potionMeta);
+            itemBuilder.setItemMeta(potionMeta);
         }
     }
 
-    public void increasePotionAmplifier(ItemStack itemStack, int amplifierChange) {
-        if (itemStack != null && itemStack.getItemMeta() instanceof PotionMeta) {
-            PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
+    public void increasePotionAmplifier(ItemBuilder itemBuilder, int amplifierChange) {
+        if (itemBuilder != null && itemBuilder.getItemMeta() instanceof PotionMeta) {
+            PotionMeta potionMeta = (PotionMeta) itemBuilder.getItemMeta();
             List<PotionEffect> effects = new ArrayList<>(potionMeta.getCustomEffects());
             for (PotionEffect effect : effects) {
                 potionMeta.removeCustomEffect(effect.getType());
                 potionMeta.addCustomEffect(new PotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier() + amplifierChange, effect.isAmbient(), effect.hasParticles(), effect.hasIcon()), true);
             }
-            itemStack.setItemMeta(potionMeta);
+            itemBuilder.setItemMeta(potionMeta);
         }
     }
 

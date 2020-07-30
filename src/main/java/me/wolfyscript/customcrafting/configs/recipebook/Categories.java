@@ -1,19 +1,30 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import com.google.gson.*;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonParser;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@JsonSerialize(using = Categories.Serializer.class)
+@JsonDeserialize(using = Categories.Deserializer.class)
 public class Categories {
 
     private List<String> sortedMainCategories;
     private List<String> sortedSwitchCategories;
 
-    private HashMap<String, Category> mainCategories = new HashMap<>();
-    private HashMap<String, Category> switchCategories = new HashMap<>();
+    private final HashMap<String, Category> mainCategories = new HashMap<>();
+    private final HashMap<String, Category> switchCategories = new HashMap<>();
 
     public Categories(List<String> sortedMainCategories, List<String> sortedSwitchCategories) {
         this.sortedSwitchCategories = sortedSwitchCategories;
@@ -73,68 +84,85 @@ public class Categories {
         this.sortedSwitchCategories = sortedSwitchCategories;
     }
 
-    public static class Serializer implements JsonSerializer<Categories>, JsonDeserializer<Categories> {
+    public static class Serializer extends StdSerializer<Categories> {
 
-        @Override
-        public Categories deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-            Categories categories = new Categories();
-            if (jsonObject.has("main")) {
-                JsonObject mainCategories = jsonObject.getAsJsonObject("main");
-                ArrayList<String> sortedMainList = new ArrayList<>();
-                if (mainCategories.has("sort")) {
-                    JsonArray sortedMain = mainCategories.getAsJsonArray("sort");
-                    sortedMain.forEach(jsonElement -> sortedMainList.add(jsonElement.getAsString()));
-                }
-                categories.setSortedMainCategories(sortedMainList);
+        public Serializer() {
+            super(Categories.class);
+        }
 
-                mainCategories.getAsJsonArray("options").forEach(entry -> {
-                    JsonObject object = entry.getAsJsonObject();
-                    categories.registerMainCategory(object.get("id").getAsString(), context.deserialize(object, Category.class));
-                });
-            }
-            if (jsonObject.has("switch")) {
-                JsonObject switchCategories = jsonObject.getAsJsonObject("switch");
-                ArrayList<String> sortedSwitchList = new ArrayList<>();
-                if (switchCategories.has("sort")) {
-                    JsonArray sortedSwitch = switchCategories.getAsJsonArray("sort");
-                    sortedSwitch.forEach(jsonElement -> sortedSwitchList.add(jsonElement.getAsString()));
-                }
-                categories.setSortedSwitchCategories(sortedSwitchList);
-
-                switchCategories.getAsJsonArray("options").forEach(entry -> {
-                    JsonObject object = entry.getAsJsonObject();
-                    categories.registerSwitchCategory(object.get("id").getAsString(), context.deserialize(object, Category.class));
-                });
-            }
-            return categories;
+        protected Serializer(Class<Categories> t) {
+            super(t);
         }
 
         @Override
-        public JsonElement serialize(Categories categories, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject root = new JsonObject();
+        public void serialize(Categories categories, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
+            gen.writeStartObject();
+            {
+                gen.writeObjectFieldStart("main");
+                {
+                    gen.writeArrayFieldStart("options");
+                    for (Map.Entry<String, Category> entry : categories.mainCategories.entrySet()) {
+                        gen.writeStartObject();
+                        entry.getValue().writeToJson(gen);
+                        gen.writeStringField("id", entry.getKey());
+                        gen.writeEndObject();
+                    }
+                    gen.writeEndArray();
+                }
+                gen.writeEndObject();
 
-            JsonObject mainCategories = new JsonObject();
-            JsonArray options = new JsonArray();
-            categories.mainCategories.forEach((key, category) -> {
-                JsonObject jsonObject = (JsonObject) context.serialize(category, Category.class);
-                jsonObject.addProperty("id", key);
-                options.add(jsonObject);
-            });
-            mainCategories.add("options", options);
-            root.add("main", mainCategories);
+                gen.writeObjectFieldStart("switch");
+                {
+                    gen.writeArrayFieldStart("options");
+                    for (Map.Entry<String, Category> entry : categories.switchCategories.entrySet()) {
+                        gen.writeStartObject();
+                        entry.getValue().writeToJson(gen);
+                        gen.writeStringField("id", entry.getKey());
+                        gen.writeEndObject();
+                    }
+                    gen.writeEndArray();
+                }
+                gen.writeEndObject();
+            }
+            gen.writeEndObject();
+        }
+    }
 
-            JsonObject switchCategories = new JsonObject();
-            JsonArray options1 = new JsonArray();
-            categories.switchCategories.forEach((key, category) -> {
-                JsonObject jsonObject = (JsonObject) context.serialize(category, Category.class);
-                jsonObject.addProperty("id", key);
-                options1.add(jsonObject);
-            });
-            switchCategories.add("options", options1);
-            root.add("switch", switchCategories);
+    public static class Deserializer extends StdDeserializer<Categories> {
 
-            return root;
+        public Deserializer() {
+            super(Categories.class);
+        }
+
+        protected Deserializer(Class<?> vc) {
+            super(vc);
+        }
+
+        @Override
+        public Categories deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            JsonNode node = jsonParser.readValueAsTree();
+            Categories categories = new Categories();
+            if (node.has("main")) {
+                JsonNode mainCategories = node.get("main");
+                ArrayList<String> sortedMainList = new ArrayList<>();
+                if (mainCategories.has("sort")) {
+                    JsonNode sortedMain = mainCategories.get("sort");
+                    sortedMain.elements().forEachRemaining(element -> sortedMainList.add(element.asText()));
+                }
+                categories.setSortedMainCategories(sortedMainList);
+                mainCategories.get("options").elements().forEachRemaining(element -> categories.registerMainCategory(element.get("id").asText(), Category.readFromJson(element)));
+            }
+            if (node.has("switch")) {
+                JsonNode switchCategories = node.get("switch");
+                ArrayList<String> sortedSwitchList = new ArrayList<>();
+                if (switchCategories.has("sort")) {
+                    JsonNode sortedSwitch = switchCategories.get("sort");
+                    sortedSwitch.elements().forEachRemaining(jsonElement -> sortedSwitchList.add(jsonElement.asText()));
+                }
+                categories.setSortedSwitchCategories(sortedSwitchList);
+                switchCategories.get("options").elements().forEachRemaining(element -> categories.registerSwitchCategory(element.get("id").asText(), Category.readFromJson(element)));
+            }
+            return categories;
         }
     }
 

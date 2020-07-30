@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.utils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class ChatUtils {
 
-    private static WolfyUtilities api = CustomCrafting.getApi();
+    private static final WolfyUtilities api = CustomCrafting.getApi();
     private final CustomCrafting customCrafting;
 
 
@@ -42,7 +42,7 @@ public class ChatUtils {
             if (sender instanceof Player) {
                 api.sendPlayerMessage((Player) sender, "$msg.denied_perm$", new String[]{"%PERM%", perm});
             } else {
-                sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+                sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
             }
         }
         return false;
@@ -54,7 +54,7 @@ public class ChatUtils {
             player.sendMessage(" ");
         }
 
-        ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
+        ArrayList<ICustomRecipe> customRecipes = new ArrayList<>();
         switch (cache.getSetting()) {
             case WORKBENCH:
                 customRecipes.addAll(customCrafting.getRecipeHandler().getAdvancedCraftingRecipes());
@@ -106,8 +106,8 @@ public class ChatUtils {
 
         for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
             if(i < customRecipes.size()){
-                CustomRecipe recipe = customRecipes.get(i);
-                api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey()), new HoverEvent(recipe.getCustomResult())));
+                ICustomRecipe recipe = customRecipes.get(i);
+                api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey()), new HoverEvent(recipe.getCustomResult().create())));
             }else{
                 api.sendPlayerMessage(player, "");
             }

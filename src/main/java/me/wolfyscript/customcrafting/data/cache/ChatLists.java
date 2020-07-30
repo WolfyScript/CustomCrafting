@@ -1,19 +1,21 @@
 package me.wolfyscript.customcrafting.data.cache;
 
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
+
 public class ChatLists {
 
     private int currentPageRecipes;
     private int currentPageItems;
 
     private String lastUsedRecipe;
-    private String lastUsedItem;
+    private NamespacedKey lastUsedItem;
 
 
     public ChatLists() {
         this.currentPageRecipes = 1;
         this.currentPageItems = 1;
         this.lastUsedRecipe = "";
-        this.lastUsedItem = "";
+        this.lastUsedItem = null;
     }
 
     public int getCurrentPageRecipes() {
@@ -40,11 +42,11 @@ public class ChatLists {
         this.lastUsedRecipe = lastUsedRecipe;
     }
 
-    public String getLastUsedItem() {
+    public NamespacedKey getLastUsedItem() {
         return lastUsedItem;
     }
 
-    public void setLastUsedItem(String lastUsedItem) {
+    public void setLastUsedItem(NamespacedKey lastUsedItem) {
         this.lastUsedItem = lastUsedItem;
     }
 }

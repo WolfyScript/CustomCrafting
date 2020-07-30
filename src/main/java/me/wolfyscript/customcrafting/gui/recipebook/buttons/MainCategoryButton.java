@@ -21,9 +21,9 @@ import java.util.ArrayList;
 
 public class MainCategoryButton extends Button {
 
-    private CustomCrafting customCrafting;
-    private Categories categories;
-    private Category category;
+    private final CustomCrafting customCrafting;
+    private final Categories categories;
+    private final Category category;
 
     public MainCategoryButton(String categoryId, CustomCrafting customCrafting) {
         super("mainCategory." + categoryId, ButtonType.NORMAL);
@@ -41,7 +41,7 @@ public class MainCategoryButton extends Button {
             LanguageAPI languageAPI = WolfyUtilities.getAPI(customCrafting).getLanguageAPI();
 
             itemMeta.setDisplayName(languageAPI.replaceColoredKeys(category.getName()));
-            itemMeta.setLore(languageAPI.getActiveLanguage().replaceKeys(category.getDescription()));
+            itemMeta.setLore(languageAPI.replaceColoredKeys(category.getDescription()));
 
             itemStack.setItemMeta(itemMeta);
             inventory.setItem(slot, itemStack);

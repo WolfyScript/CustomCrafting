@@ -1,0 +1,2073 @@
+{
+  "author": "WolfyScript",
+  "version": "5.0.0",
+  "info": [
+    "YouTube:",
+    "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
+  ],
+  "crafting": {
+    "workbench": {
+      "name": "&6Erweiterte Werkbank",
+      "lore": [
+        "&7Werkbank für erweitertes Craften"
+      ]
+    },
+    "knowledgebook": {
+      "name": "&6Buch des Wissens",
+      "lore": [
+        "&7Enthält interressante Rezepte..."
+      ]
+    }
+  },
+  "msg": {
+    "auto_save": {
+      "start": "   Autospeichern   ",
+      "complete": " Autospeichern "
+    },
+    "startup": {
+      "outdated": "Deine Version ist veraltet! Eine neue Version ist verfügbar! Lade es hier herunter : https://www.spigotmc.org/resources/55883/",
+      "update_check_fail": "Fehler beim überprüfen von Updates!",
+      "playerstats": "Lade Player Stats",
+      "inventories": "Inventory GUIs werden initiert",
+      "placeholder": "Registriere PlaceHolder",
+      "recipes": {
+        "title": "________[Lade Recipes/Items]________",
+        "items": "---------[ITEMS]---------",
+        "recipes": "--------[RECIPES]--------",
+        "duplicate": "Ingnoriere doppeltes Rezept %namespace%:%key% mit der Configdatei %key%.%file_type%!"
+      }
+    },
+    "denied_perm": "&cDu hast nicht die Permission &4%PERM%&c!",
+    "player": {
+      "outdated": {
+        "msg": "&cDeine Version ist veraltet! Eine neue Version ist verfügbar!",
+        "msg2": "&aLade es jetzt herunter!",
+        "link": " &7[&3Klick Hier&7]"
+      },
+      "error": {
+        "loading": {
+          "msg": "&cPlugin Deaktiviert! Beim laden ist ein Fehler aufgetreten!",
+          "msg1": "Stell sicher, dass du die neuste Spigot oder Paper Version hast!",
+          "msg2": "&7Bei Nutzung von 1.13.x stell sicher, dass es die neuste Version ist!",
+          "msg3": "&7Wie man die neuste Version bekommt, findet ihr hier:",
+          "msg4": "   &7[&6Spigot&7]",
+          "msg5": "   &7[&3Paper&7]",
+          "msg6": "&cWenn dies nicht funktioniert und es ein Error Nachricht in der Konsole gibt dann Kontaktiere mich auf Discord oder SpigotMC!"
+        }
+      }
+    }
+  },
+  "commands": {
+    "help": [
+      "",
+      "            &bHauptbefehl: &e/cc",
+      "",
+      "                &3/cc &6<label>",
+      "  &6help     &7-  &3zeigt die Liste von Befehlen",
+      "  &6clear    &7-  &3Setzt den Player Cache zurück!",
+      "  &6info      &7-  &3Zeigt infos über das plugin an",
+      "  &6studio    &7-  &3Öffnet das GUI Studio",
+      "  &6give     &7-  &3Gebe Spielern Custom Items"
+    ],
+    "info": "&3gebe &6\"/cc help\" &3für hilfe ein!",
+    "lockdown": {
+      "enabled": "&7[&c&lLOCKDOWN&7] &aAktiviert! &cRezepte sind nun geblockt!",
+      "disabled": "&7[&c&lLOCKDOWN&7] &cDeaktiviert! &cRezepte sind nicht mehr blockiert!"
+    },
+    "darkmode": {
+      "enabled": "&aDunklen Modus Aktiviert!",
+      "disabled": "&cDunklen Modus Deaktiviert!"
+    },
+    "give": {
+      "player_offline": "&cDer Spieler &4%PLAYER% &cist nicht online!",
+      "invalid_amount": "&cInvalide Menge! Ist es eine Zahl?",
+      "success": "&aGebe &e%ITEM%&a an &e%PLAYER%",
+      "success_amount": "&aGebe &e%AMOUNT%x %ITEM%&a an &e%PLAYER%",
+      "no_inv_space": "&cKein Platz im Inventar!",
+      "invalid_item": "&cDas Item &4%ITEM%&c existiert nicht!"
+    },
+    "recipes": {
+      "toggle": {
+        "enabled": "",
+        "disabled": ""
+      },
+      "edit": {
+        "invalid": ""
+      },
+      "delete": {
+        "invalid": ""
+      }
+    }
+  },
+  "inventories": {
+    "none": {
+      "global_items": {
+        "background": {
+          "name": "&4"
+        },
+        "back": {
+          "name": "&5Zurück",
+          "help": []
+        },
+        "close": {
+          "name": "&4Schließen",
+          "help": []
+        },
+        "gui_help_on": {
+          "name": "&3&lHilfe",
+          "lore": [
+            "%wolfyutilities.help%",
+            "<empty>",
+            "&7[&aAktiviert&7] &eKlick um Knopfbeschreibungen zu deaktivieren!"
+          ],
+          "help": []
+        },
+        "gui_help_off": {
+          "name": "&3&lHilfe",
+          "lore": [
+            "%wolfyutilities.help%",
+            "<empty>",
+            "&7[&cDeaktiviert&7] &eKlick um Knopfbeschreibung zu aktivieren!"
+          ],
+          "help": []
+        },
+        "patreon": {
+          "name": "&6&lPatreon",
+          "lore": [
+            "&eSpende ein kleines bisschen um die Entwicklung meiner Plugins zu unterstützen!",
+            "&eAls Patron wirst du in die Credits geschrieben und du kannst",
+            "&eUpdates früher bekommen und Zugang zu indev-builds und mehr bekommen."
+          ]
+        },
+        "instagram": {
+          "name": "&5&lInstagram",
+          "lore": [
+            "&eUnterstütze mich auf Instagram."
+          ]
+        },
+        "youtube": {
+          "name": "&c&lYouTube",
+          "lore": [
+            "&eAbonniere mich auf YouTube."
+          ]
+        },
+        "discord": {
+          "name": "&9&lDiscord",
+          "lore": [
+            "&eBrauchst du Support? Bug gefunden? Hast Verbesserungsvorschläge oder Ideen?",
+            "&eTrete dem Discord bei und trete der community bei!"
+          ]
+        }
+      },
+      "main_menu": {
+        "gui_name": "&3&lCustomCrafting &7[&8%plugin.version%&7]",
+        "gui_help": [
+          "&7Optionen:",
+          "&7- Klick auf die Art von Rezept zum erstellen!",
+          "&7- ItemCreator unten links oder RecipeList unten rechts.",
+          "&7- Einstellungen oben links"
+        ],
+        "items": {
+          "settings": {
+            "name": "&7&lEinstellungen",
+            "lore": [
+              "&eStelle die haupt Einstellungen ein",
+              "&eohne den Server zu stoppen!"
+            ]
+          },
+          "workbench": {
+            "name": "&6Werkbank Rezept",
+            "help": [
+              "&7Erstelle Werkbank Rezepte."
+            ]
+          },
+          "elite_workbench": {
+            "name": "&6Elite Werkbank",
+            "help": [
+              ""
+            ]
+          },
+          "anvil": {
+            "name": "&6Amboss Rezepte",
+            "help": [
+              ""
+            ]
+          },
+          "furnace": {
+            "name": "&6Ofen Rezepte",
+            "help": [
+              ""
+            ]
+          },
+          "blast_furnace": {
+            "name": "&6Schmelzofen Rezepte",
+            "help": [
+              ""
+            ]
+          },
+          "smoker": {
+            "name": "&6Räucherofen Rezepte",
+            "help": [
+              ""
+            ]
+          },
+          "campfire": {
+            "name": "&6Lagerfeuer Rezepte",
+            "help": [
+              ""
+            ]
+          },
+          "cauldron": {
+            "name": "&6Kessel",
+            "help": [
+              "&eErstell Kessel Rezepte, welche es erlauben",
+              "&eItems im Kessel zu kochen/brauen!"
+            ]
+          },
+          "stonecutter": {
+            "name": "&6Steinsäge Rezepte",
+            "help": [
+              ""
+            ]
+          },
+          "item_editor": {
+            "name": "&6Item Ersteller",
+            "help": [
+              "&eErstelle&7/&eBearbeite Custom Items",
+              "&emit speziellen Funktionen z.B. eigene Haltbarkeit, Ofen Brennstoff"
+            ]
+          },
+          "recipe_list": {
+            "name": "&6RezeptListe",
+            "help": [
+              "&eListe von allen Rezepten",
+              "&eSchalte Rezepte an/aus"
+            ]
+          }
+        }
+      },
+      "item_editor": {
+        "gui_name": "&0&lItem Editor",
+        "items": {
+          "load_item": {
+            "name": "&6Laden",
+            "help": [
+              "&7Lade ein Custom Item"
+            ]
+          },
+          "create_item": {
+            "name": "&6Erstellen",
+            "help": [
+              "&7Erstelle ein Custom Item"
+            ]
+          },
+          "edit_item": {
+            "name": "&7Edit",
+            "help": [
+              "&7Editiere ein Custom Item"
+            ]
+          },
+          "delete_item": {
+            "name": "&4Lösche",
+            "help": [
+              "&7Lösche ein CustomItem"
+            ]
+          }
+        },
+        "messages": {
+          "input": "&eGebe den ordner und namen des Items ein! z.B. &6waffen diamant_messer",
+          "error": "&cDieses Item existiert nicht oder ist nicht geladen!",
+          "item_applied": "&aItem erfolgreich ins Rezept übernommen!",
+          "item_editable": "&aItem kann jetzt bearbeitet werden!",
+          "no_name": "&cDu musst den Item Namen eingeben!"
+        }
+      },
+      "recipe_editor": {
+        "gui_name": "&4&lRezepteditor",
+        "items": {
+          "create_recipe": {
+            "name": "&6Erstellen",
+            "help": [
+              "&7Erstelle dein Rezept"
+            ]
+          },
+          "edit_recipe": {
+            "name": "&7Editieren",
+            "help": [
+              "&7Editiere ein Rezept"
+            ]
+          },
+          "delete_recipe": {
+            "name": "&4Löschen",
+            "help": [
+              "&7Lösche ein Rezept"
+            ]
+          }
+        },
+        "messages": {
+          "not_existing": "&cDas Rezept &6%RECIPE% &cexistiert nicht!",
+          "input": "&eGebe den ordner und namen des Rezeptes ein! &6waffen diamant_messer",
+          "invalid_recipe": "&cDieses Rezept ist kein %recipe_type%!",
+          "delete": {
+            "confirm": "&eMöchtest du wirklich das Rezept &6%recipe% &elöschen?",
+            "confirmed": "&7[&aJa&7]  ",
+            "declined": "&7[&cNein&7]"
+          }
+        }
+      },
+      "recipe_list": {
+        "gui_name": "&8&lRezeptliste",
+        "gui_help": [
+          "&7Schalte Rezepte an/aus",
+          "&7Wenn ein Rezept aus ist, dann kann es nicht mehr genutzt werden!",
+          "&7Auch für Spieler mit Berechtigung!"
+        ],
+        "items": {
+          "lores": {
+            "disabled": "&7&l[&c&lDeaktiviert&7&l]",
+            "enabled": "&7&l[&a&lAktiviert&7&l]"
+          },
+          "namespace": {
+            "name": "&7%namespace%",
+            "lore": [
+              "&7[&aClick&7] Open namespace",
+              "&7[&aShift Left Click&7] Disable all recipes",
+              "&7[&aShift Right Click&7] Enable all recipes"
+            ]
+          },
+          "previous_page": {
+            "name": "&2Vorherige Seite",
+            "help": []
+          },
+          "next_page": {
+            "name": "&2Nächste Seite",
+            "help": []
+          }
+        }
+      },
+      "settings": {
+        "gui_name": "&8Einstellungen",
+        "gui_help": [
+          "&7Editiere die Einstellungen der main-config",
+          "&7",
+          "&7Be careful with Lockdown!"
+        ],
+        "items": {
+          "lockdown": {
+            "enabled": {
+              "name": "&4&lLockDown!",
+              "lore": [
+                "&7[&3Aktiviert&7]",
+                "&4Rezepte werden geblockt!"
+              ]
+            },
+            "disabled": {
+              "name": "&4LockDown",
+              "lore": [
+                "&7[&8Deaktiviert&7]",
+                "&7Rezepte werden nicht geblockt!"
+              ]
+            }
+          },
+          "darkMode": {
+            "enabled": {
+              "name": "&7Dunkler Modus",
+              "lore": [
+                "&7[&aClick&7] Wechsel zum Hellen Modus"
+              ]
+            },
+            "disabled": {
+              "name": "&7Heller Modus",
+              "lore": [
+                "&7[&aClick&7] Wechsel zum Dunklem Modus"
+              ]
+            }
+          },
+          "pretty_printing": {
+            "enabled": {
+              "name": "&6Schöne Config",
+              "lore": [
+                "&7Json configs werden in richtiger Formatierung gespeichert!",
+                "&7[&aKlick&7] Schalte Kompakte Config ein"
+              ]
+            },
+            "disabled": {
+              "name": "&6Kompakte Config",
+              "lore": [
+                "&7Json configs werden in einer Zeile gespeichert!",
+                "&7[&aKlick&7] Schalte Schöne Config ein"
+              ]
+            }
+          },
+          "advanced_workbench": {
+            "enabled": {
+              "name": "&aErweiterte Werkbank",
+              "lore": [
+                "&7Erweiterte Werkbank ist aktiviert!",
+                "&7[&aKlick&7] Schalte erweiterte Werkbank aus"
+              ]
+            },
+            "disabled": {
+              "name": "&cErweiterte Werkbank",
+              "lore": [
+                "&7Erweiterte Werkbank ist deaktiviert!",
+                "&7[&aKlick&7] Schalte erweiterte Werkbank an"
+              ]
+            }
+          },
+          "language": {
+            "name": "&6Sprache",
+            "lore": [
+              "&e» &l%lang0%",
+              "&7%lang1%",
+              "&7%lang2%",
+              "&7%lang3%",
+              "&7%lang4%",
+              "&7[&aLinks Klick&7] Nächste Sprache",
+              "&7[&aRechts Klick&7] Vorherige Sprache",
+              "&7[&aShift Klick&7] Lade Sprache & GUIs neu"
+            ]
+          },
+          "debug": {
+            "enabled": {
+              "name": "&aDebug",
+              "lore": [
+                "&7Debug ist aktiviert!",
+                "&7Du könnstest jetzt viele Nachrichten bekommen!",
+                "&7[&aKlick&7] Schalte Debug aus"
+              ]
+            },
+            "disabled": {
+              "name": "&cDebug",
+              "lore": [
+                "&7Debug ist deaktiviert!",
+                "&7[&aKlick&7] Schalte Debug an"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "item_creator": {
+      "main_menu": {
+        "gui_name": "&0&lItem Ersteller",
+        "gui_help": [
+          "&7Plaziere ein Item welches du editieren möchtest oben in die Mitte!",
+          "&eEinige Funktionen sind nur verfügbar, wenn man das Item speichert!"
+        ],
+        "messages": {
+          "save": {
+            "input": {
+              "line1": "&eGebe den Ordner und Item Namen ein",
+              "line2": "&6e.g. weapons ultimate_sword"
+            },
+            "success": "&aItem gespeichert unter:"
+          },
+          "enchant": {
+            "invalid_lvl": "&cUngültiges Level! Gebe eine Zahl ein!",
+            "invalid_enchant": "&cUngültige Verzauberung! &4%ENCHANT%&c existiert nicht!",
+            "no_lvl": "&cKein Level gesetzt"
+          },
+          "potion": {
+            "error_number": "&cUngültige Zahl! &4<name> <duration> <level> [<ambient> <particles>]",
+            "wrong_args": "&cFalsche Argumente oder ungültiger Name! &4<name> <duration> <level> [<ambient> <particles>]",
+            "success": "&aTrank effect hinzugefügt &6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%",
+            "invalid_name": "&cUngültiger Name! &4%NAME%&c existiert nicht!"
+          },
+          "attribute": {
+            "amount": {
+              "error": "&cError parsing number! Is it a number? It should be!"
+            },
+            "uuid": {
+              "error": {
+                "line1": "&cUngültige UUID: &4%UUID%",
+                "line2": "&cType in a valid UUID!"
+              }
+            }
+          },
+          "damage": {
+            "invalid_type": "&cDas derzeitige Item unterstützt Schadenswerte nicht!",
+            "value_success": "&aItem Schaden wurde auf &6%VALUE%&a gesetzt!",
+            "invalid_value": "&cDer Wert &4%VALUE%&c ist keine Zahl!"
+          },
+          "repair": {
+            "invalid_type": "&cDas derzeitige Item unterstützt Reperaturkosten nicht!",
+            "value_success": "&aReperaturkosten wurden auf &6%VALUE%&a gesetzt!",
+            "invalid_value": "&cDer Wert &4%VALUE%&c ist keine Zahl!"
+          },
+          "fuel": {
+            "value_success": "&aBrenndauer wurde auf &6%VALUE% ticks &agesetzt&a!",
+            "invalid_value": "&cDer Wert &4%VALUE%&c ist keine Zahl!"
+          },
+          "custom_model_data": {
+            "disabled": "&l&cDeaktiviert",
+            "success": "&aModel Data Wert auf &6%VALUE%&a gesetzt!",
+            "invalid_value": "&cDer Wert &4%VALUE%&c ist keine Zahl!"
+          },
+          "consume": {
+            "valid": "&aHaltbarkeitskosten auf &e%VALUE% gesetzt!",
+            "invalid": "&cDer Wert &4%VALUE%&c ist keine Zahl!"
+          }
+        },
+        "items": {
+          "invalid_version": {
+            "name": "&cUngültige Minecraft Version",
+            "lore": [
+              "&7Dieses Feature ist nicht kompatibel",
+              "&7mit der derzeitigen Minecraft Version!",
+              "&7Du brauchst mindestens 1.14 um es zu nutzen!"
+            ]
+          },
+          "page_next": {
+            "name": "&7Nächste Seite",
+            "lore": [
+              ""
+            ]
+          },
+          "page_previous": {
+            "name": "&7Vorherige Seite",
+            "lore": [
+              ""
+            ]
+          },
+          "save_item": {
+            "name": "&aItem speichern",
+            "lore": [
+              "&eSpeichert das item in eine Datei!",
+              "&eEingabe: &3<ordner> <item_name>"
+            ]
+          },
+          "apply_item": {
+            "name": "&aApply Item",
+            "help": [
+              "&7Applies the Item to the recipe"
+            ]
+          },
+          "meta_ignore": {
+            "name": "&7Mode: &3%VAR%",
+            "lore": [
+              "&eChange the way this meta is checked!",
+              "&7Ignore specific meta e.g. DisplayName",
+              "&7Numeric meta can also be configured to",
+              "&7only allow for Higher or Lower values!"
+            ],
+            "help": [
+              "&7----------------------------------------",
+              "&3EXACT &7- Meta must be exactly the same!",
+              "&3IGNORE &7- Meta is ignored and not needed!",
+              "&7For numeric items:",
+              "&3HIGHER &7- The value can be higher than the set value!",
+              "&3LOWER &7- The value can be lower than the set value!"
+            ]
+          },
+          "display_name": {
+            "option": {
+              "name": "&6Change name",
+              "lore": [
+                "&7Edit Display Name"
+              ]
+            },
+            "set": {
+              "name": "&6Set Display Name",
+              "lore": [
+                "&7Change Display Name"
+              ],
+              "message": "&eType in the name! Use &6&& &efor formatting codes!"
+            },
+            "remove": {
+              "name": "&3Remove Display Name",
+              "lore": [
+                "&7Removes Display Name and",
+                "&7reset it to default"
+              ]
+            }
+          },
+          "enchantments": {
+            "option": {
+              "name": "&6Enchantments",
+              "lore": [
+                "&7Edit Enchantments"
+              ]
+            },
+            "add": {
+              "name": "&6Add Enchantment",
+              "help": [],
+              "message": "&eType in the enchantment and level! &6unbreaking 5"
+            },
+            "remove": {
+              "name": "&4Remove Enchantment",
+              "help": [],
+              "message": "&eType in the enchantment! &6unbreaking"
+            }
+          },
+          "lore": {
+            "option": {
+              "name": "&6Edit Lore",
+              "lore": [
+                "&7Add or Remove Lore lines"
+              ]
+            },
+            "add": {
+              "name": "&6Add Lore",
+              "help": [],
+              "message": "&eType in the lore! Use &6& &efor formatting codes!"
+            },
+            "remove": {
+              "name": "&4Remove Lore",
+              "help": [],
+              "message": "&eType in the line of the lore you want to remove!"
+            }
+          },
+          "flags": {
+            "option": {
+              "name": "&6Set Flags",
+              "lore": [
+                "&7Toggle Item Flags",
+                "&7e.g. Hide Enchants"
+              ]
+            },
+            "enchants": {
+              "enabled": {
+                "name": "&aHide Enchants"
+              },
+              "disabled": {
+                "name": "&cHide Enchants"
+              }
+            },
+            "attributes": {
+              "enabled": {
+                "name": "&aHide Attributes"
+              },
+              "disabled": {
+                "name": "&cHide Attributes"
+              }
+            },
+            "unbreakable": {
+              "enabled": {
+                "name": "&aHide Unbreakable"
+              },
+              "disabled": {
+                "name": "&cHide Unbreakable"
+              }
+            },
+            "destroys": {
+              "enabled": {
+                "name": "&aHide Destroys"
+              },
+              "disabled": {
+                "name": "&cHide Destroys"
+              }
+            },
+            "placed_on": {
+              "enabled": {
+                "name": "&aHide Placed On"
+              },
+              "disabled": {
+                "name": "&cHide Placed On"
+              }
+            },
+            "potion_effects": {
+              "enabled": {
+                "name": "&aHide Potions"
+              },
+              "disabled": {
+                "name": "&cHide Potions"
+              }
+            }
+          },
+          "player_head": {
+            "option": {
+              "name": "&6Skull Settings",
+              "lore": [
+                "&7Add Textures to Player Heads"
+              ]
+            },
+            "texture": {
+              "apply": {
+                "name": "&6Apply Texture",
+                "lore": [
+                  "&eApplies the texture of the Player Head",
+                  "&7«« &ePut the player head with the texture in the empty slot!",
+                  "&7[&aClick&7] Apply texture"
+                ]
+              }
+            },
+            "owner": {
+              "name": "&6Set Skull Owner",
+              "lore": [
+                "&eSets the Skull Owner",
+                "&7[&aClick&7] Input Player's UUID or name"
+              ],
+              "message": "&eType in the Player Name!"
+            }
+          },
+          "unbreakable": {
+            "enabled": {
+              "name": "&aUnbreakable",
+              "lore": [
+                "&7[&aClick&7] Disable Unbreakable"
+              ]
+            },
+            "disabled": {
+              "name": "&cBreakable",
+              "lore": [
+                "&7[&aClick&7] Enable Unbreakable"
+              ]
+            }
+          },
+          "potion": {
+            "option": {
+              "name": "&6Potion Effects",
+              "lore": [
+                "&7Configure Potion Effects"
+              ]
+            },
+            "add": {
+              "name": "&aAdd Potion Effect",
+              "lore": [
+                "&eAdd a Potion Effect",
+                "&eInput: &6<name> <duration> <level> [<ambient> <particles>]",
+                "&7[&aClick&7] Input Potion Effect"
+              ],
+              "message": "&eType in the Potion! &6<name> <duration> <level> [<ambient> <particles>]"
+            },
+            "remove": {
+              "name": "&4Remove Potion Effect",
+              "lore": [
+                "&eRemove a Potion Effect of the specific type",
+                "&eInput: &6<name>",
+                "&7[&aClick&7] Input potion name"
+              ],
+              "message": "&eType in the Potion name you want to remove!"
+            }
+          },
+          "attribute": {
+            "option": {
+              "name": "&6Set Attributes",
+              "lore": [
+                "&7Add or remove Attribute Modifiers"
+              ]
+            },
+            "generic_max_health": {
+              "name": "&6Generic Max Health",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_follow_range": {
+              "name": "&6Generic Follow Range",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_knockback_resistance": {
+              "name": "&6Generic Knockback Resistance",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_movement_speed": {
+              "name": "&6Generic Movement Speed",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_flying_speed": {
+              "name": "&6Generic Flying Speed",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_attack_damage": {
+              "name": "&6Generic Attack Damage",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_attack_speed": {
+              "name": "&6Generic Attack Speed",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_armor": {
+              "name": "&6Generic Armor",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_armor_toughness": {
+              "name": "&6Generic Armor Toughness",
+              "lore": [
+                "&7[&aClick&7] Configure Modifier"
+              ]
+            },
+            "generic_luck": {
+              "name": "&6Generic Luck",
+              "lore": []
+            },
+            "horse_jump_strength": {
+              "name": "&6Horse Jump Strength",
+              "lore": []
+            },
+            "zombie_spawn_reinforcements": {
+              "name": "&6Zombie Spawn Reinforcements",
+              "lore": []
+            },
+            "add_number": {
+              "name": "%C%Add number",
+              "lore": [
+                "§eAdds all of the modifiers' amounts to the current value of the attribute."
+              ]
+            },
+            "add_scalar": {
+              "name": "%C%Multiply number",
+              "lore": [
+                "&eMultiplies the current value of the attribute by (1 + x), ",
+                "&ewhere x is the sum of the modifiers' amounts"
+              ]
+            },
+            "multiply_scalar_1": {
+              "name": "%C%Multiply scalar",
+              "lore": [
+                "&eThe most complex option! Enable help (Top Right) for more info!",
+                "&eFor every modifier, multiplies the current value of the attribute by (1 + x),",
+                "&ewhere x is the amount of the particular modifier."
+              ],
+              "help": [
+                "&7---------------------------------------------------",
+                "&eFunctions the same as Operation 1(Multiply) if there is only a single modifier ",
+                "&ewith operation 1 or 2(Multiply Scalar).",
+                "&eHowever, for multiple modifiers it will multiply the modifiers ",
+                "&erather than adding them. ",
+                "&eFor example, modifying an attribute with {Amount:2,Operation:2} and ",
+                "&e{Amount:4,Operation:2} with a Base of 3 results in 45 (3*(1 + 2)*(1 + 4) = 45)",
+                "&6See Minecraft Wiki: &3https://minecraft.gamepedia.com/Attribute#Operations"
+              ]
+            },
+            "slot_hand": {
+              "name": "&6Hand",
+              "lore": [
+                "&7[&aClick&7] Toggle on/off"
+              ]
+            },
+            "slot_off_hand": {
+              "name": "&6Off_Hand",
+              "lore": [
+                "&7[&aClick&7] Toggle on/off"
+              ]
+            },
+            "slot_feet": {
+              "name": "&6Feet",
+              "lore": [
+                "&7[&aClick&7] Toggle on/off"
+              ]
+            },
+            "slot_legs": {
+              "name": "&6Legs",
+              "lore": [
+                "&7[&aClick&7] Toggle on/off"
+              ]
+            },
+            "slot_chest": {
+              "name": "&6Chest",
+              "lore": [
+                "&7[&aClick&7] Toggle on/off"
+              ]
+            },
+            "slot_head": {
+              "name": "&6Head",
+              "lore": [
+                "&7[&aClick&7] Toggle on/off"
+              ]
+            },
+            "save": {
+              "name": "&aAdd Attribute",
+              "lore": [
+                "&eApplies an attribute modifier to the item",
+                "&ewith the set options and values.",
+                "&7[&aClick&7] Add attribute modifier"
+              ]
+            },
+            "delete": {
+              "name": "&cRemove Attribute",
+              "lore": [
+                "&eRemoves the attribute modifiers",
+                "&eof this item.",
+                "&7[&aClick&7] Open Chat GUI"
+              ]
+            },
+            "set_amount": {
+              "name": "&7Amount: &e%NUMBER%",
+              "lore": [
+                "&eSet the value of this modifier",
+                "",
+                "&7[&aClick&7] Input number value"
+              ],
+              "message": "&eType in the amount you want! For example&6 0.4"
+            },
+            "set_name": {
+              "name": "&7Name: &e%NAME%",
+              "lore": [
+                "&eSets the name of this modifier",
+                "&7[&aClick&7] Input the name"
+              ],
+              "message": "&eType in the name!"
+            },
+            "set_uuid": {
+              "name": "&7UUID: &e%UUID%",
+              "lore": [
+                "&eSets the uuid of this modifier",
+                "&cMust be a valid UUID format!",
+                "&7[&aClick&7] Input the UUID"
+              ],
+              "message": "&eType in the uuid for the attribute! Must be a valid UUID!"
+            }
+          },
+          "damage": {
+            "option": {
+              "name": "&6Set Item Damage",
+              "lore": [
+                "&7Set the damage value of the Item"
+              ]
+            },
+            "set": {
+              "name": "&6Set Damage",
+              "lore": [
+                "&eSet the damage value!",
+                "&7[&aClick&7] Input number value"
+              ],
+              "message": "&eType in the amount of damage!"
+            },
+            "reset": {
+              "name": "&cReset Damage",
+              "help": [
+                "&eResets the damage value to 0",
+                "&7[&aClick&7] Reset Damage"
+              ]
+            }
+          },
+          "repair_cost": {
+            "option": {
+              "name": "&6Repair Cost",
+              "lore": [
+                "&7Set the repair cost for this item!",
+                "&7e.g. to prevent repairing"
+              ]
+            },
+            "set": {
+              "name": "&6Set Repair Cost",
+              "message": "&eType in the amount of cost"
+            },
+            "reset": {
+              "name": "&cReset Repair Cost",
+              "lore": [
+                "&7Resets Repair Cost to 0"
+              ]
+            }
+          },
+          "fuel": {
+            "option": {
+              "name": "&6Fuel Settings",
+              "lore": [
+                "&cThe Item must be saved in order to",
+                "&cbe added as a fuel"
+              ]
+            },
+            "burn_time": {
+              "set": {
+                "name": "&aBurn Time: &7%VAR% ticks",
+                "lore": [
+                  "&7[&aClick&7] Set Burn Time"
+                ],
+                "help": [
+                  "&7Sets the burn time in ticks!",
+                  "&720 ticks = 1 second",
+                  "&cSet it to 0 will disable this to be",
+                  "&csaved as a fuel!"
+                ],
+                "message": "&eType in the Burn Time in ticks!"
+              },
+              "reset": {
+                "name": "&cReset Burn Time",
+                "lore": [
+                  "&7The item item will not be saved",
+                  "&7as a fuel anymore!"
+                ]
+              }
+            },
+            "furnace": {
+              "enabled": {
+                "name": "&aFurnace",
+                "lore": [
+                  "&7Can be used in Furnace"
+                ]
+              },
+              "disabled": {
+                "name": "&cFurnace",
+                "lore": [
+                  "&7Cannot be used in Furnace"
+                ]
+              }
+            },
+            "blast_furnace": {
+              "enabled": {
+                "name": "&aBlast Furnace",
+                "lore": [
+                  "&7Can be used in Blast Furnace"
+                ]
+              },
+              "disabled": {
+                "name": "&cBlast Furnace",
+                "lore": [
+                  "&7Cannot be used in Blast Furnace"
+                ]
+              }
+            },
+            "smoker": {
+              "enabled": {
+                "name": "&aSmoker",
+                "lore": [
+                  "&7Can be used in Smoker"
+                ]
+              },
+              "disabled": {
+                "name": "&cSmoker",
+                "lore": [
+                  "&7Cannot be used in Smoker"
+                ]
+              }
+            }
+          },
+          "custom_model_data": {
+            "option": {
+              "name": "&6Custom Model Data &8[&71.14+&8]",
+              "lore": [
+                "&7Set the Custom Model Data",
+                "&7Used for custom Models and Textures!",
+                "&7Available since Minecraft 1.14"
+              ]
+            },
+            "set": {
+              "name": "&7Model Data: &7%VAR%",
+              "help": [
+                "&7Sets the Custom Model Data",
+                "&7for this item!"
+              ],
+              "message": "&eType in the Custom Model Data!"
+            },
+            "reset": {
+              "name": "&cRemove Model Data",
+              "help": [
+                "&7Removes the Custom Model Data",
+                "&7from this item!"
+              ]
+            }
+          },
+          "consume": {
+            "option": {
+              "name": "&7Durability Cost && Replacement",
+              "lore": [
+                "&cTo use this feature, you need to save the item!"
+              ],
+              "help": [
+                "&7Set the Durability that gets",
+                "&7removed when crafting!",
+                "&7Set with which item this item gets replaced",
+                "&7in the crafting grid."
+              ]
+            },
+            "durability_cost": {
+              "enabled": {
+                "name": "&7Durability cost: &3%VAR%",
+                "lore": [
+                  "&7>0 = &3decrease durability!",
+                  "&7 0 = &3removed completely! Use replacement to prevent it!",
+                  "&7<0 = &3increase durability!"
+                ],
+                "message": "&eType in the durability cost, which will be subtracted from the item when used in the crafting grid"
+              },
+              "disabled": {
+                "name": "&7Durability cost: &4&lDisabled",
+                "lore": [
+                  "&cItem must not be stackable!",
+                  "&cReplacement must be disabled!"
+                ]
+              }
+            },
+            "consume_item": {
+              "enabled": {
+                "name": "&aConsumed",
+                "lore": [
+                  "&7Item will be consumed!"
+                ]
+              },
+              "disabled": {
+                "name": "&cNot Consumed",
+                "lore": [
+                  "&7The item wil not be consumed!"
+                ]
+              }
+            },
+            "replacement": {
+              "enabled": {
+                "name": "&aReplacement enabled!",
+                "lore": [
+                  "&7Durability cost is blocked now!"
+                ]
+              },
+              "disabled": {
+                "name": "&cReplacement disabled!"
+              }
+            }
+          },
+          "custom_durability": {
+            "option": {
+              "name": "&6Custom Durability && Damage &8[&71.14+&8]",
+              "lore": [
+                "&7Set Custom Durability and damage to your item!",
+                "&7This will replace the vanilla Durability and Damage!"
+              ]
+            },
+            "remove": {
+              "name": "&cRemove",
+              "lore": [
+                "&eRemove the Custom Durability of this item.",
+                "&7[&aClick&7] Remove Custom Durability"
+              ]
+            },
+            "set_durability": {
+              "name": "&7Set Durability: &3%VAR%",
+              "lore": [
+                "&eSet a custom durability for this item.",
+                "&7[&aClick&7] Input Durability"
+              ],
+              "message": "&eType in the custom durability. &cMax value: 2,147,483,647"
+            },
+            "set_damage": {
+              "name": "&7Set Damage: &3%VAR%",
+              "lore": [
+                "&eSet the damage the item has.",
+                "&7[&aClick&7] Input Damage"
+              ],
+              "message": "&eType in the custom Damage of the item. &cMax value: 2,147,483,647"
+            },
+            "set_tag": {
+              "name": "&7Set Tag: &3%VAR%",
+              "lore": [
+                "&eSet the tag which displays the durability and damage",
+                "&7&nReplacements: ",
+                "&6%dur% &7-> &ethe durability that's left for use",
+                "&6%max_dur% &7-> &emax durability of the item",
+                "&7[&aClick&7] Input the custom tag"
+              ],
+              "message": "&eType in the Tag that should appear at the bottom of the lore! %dur%"
+            }
+          },
+          "localized_name": {
+            "option": {
+              "name": "&6Localized Name",
+              "lore": [
+                "&7Set the localized name to use",
+                "&7translations of resource packs, etc."
+              ]
+            },
+            "set": {
+              "name": "&7Set Localized Name: &f%VAR%",
+              "message": "&eType in the localized name"
+            },
+            "remove": {
+              "name": "&cRemove Localized Name"
+            }
+          },
+          "permission": {
+            "option": {
+              "name": "&6Permission",
+              "lore": [
+                "&7Set the permission needed to get this item",
+                "&7e.g. used it for crafting or anvil recipes results"
+              ]
+            },
+            "set": {
+              "name": "&7Set Permssion: &3%VAR%",
+              "message": "&eType in the permission string that players need to get this item"
+            },
+            "remove": {
+              "name": "&7Remove Permission"
+            }
+          },
+          "rarity": {
+            "option": {
+              "name": "&6Rarity",
+              "lore": [
+                "&7Sets the rarity of this item.",
+                "&7This value can be used in crafting or anvil results"
+              ]
+            },
+            "set": {
+              "name": "&7Set Rarity Percentage: &3%VAR%",
+              "lore": [
+                "&7Type in a value of 1.0 or lower",
+                "&7e.g. 1.0 -> 100%",
+                "     &70.04 -> 4%"
+              ],
+              "message": "&eType in the percentage of how rare this item should be. &cThe number must be smaller than 1.0!"
+            },
+            "reset": {
+              "name": "&7Reset the rarity percentage",
+              "lore": [
+                "&7Resets the percentage to 1.0 (100%)"
+              ]
+            }
+          },
+          "persistent_data": {
+            "option": {
+              "name": "&6Persistent NBT Data &8[&71.14+&8]",
+              "lore": [
+                "&7Store custom data in NBT, linked to an key."
+              ]
+            }
+          },
+          "elite_workbench": {
+            "option": {
+              "name": "&6Elite Workbench &8[&71.14+&8][&7Beta&8]",
+              "lore": [
+                "&7Create and Configure your own unique Workbench",
+                "&7with up to 6x6 crafting grid"
+              ]
+            },
+            "grid_size": {
+              "size_3": {
+                "name": "&7Grid size: &73&8x&73",
+                "lore": [
+                  "&7Vanilla style crafting in a 3x3 crafting table",
+                  "&7[&aClick&7] Toggle to 4x4 crafting grid"
+                ]
+              },
+              "size_4": {
+                "name": "&7Grid size: &e4&8x&e4",
+                "lore": [
+                  "&eMore space for crafting. Create advanced items",
+                  "&ethat require more material to create.",
+                  "&7[&aClick&7] Toggle to 5x5 crafting grid"
+                ]
+              },
+              "size_5": {
+                "name": "&7Grid size: &65&8x&65",
+                "lore": [
+                  "&eEven more slots... to create more complex recipes",
+                  "&7[&aClick&7] Toggle to 6x6 crafting grid"
+                ]
+              },
+              "size_6": {
+                "name": "&7Grid size: &46&8x&46",
+                "lore": [
+                  "&eA very big crafting grid to create very complex recipes.",
+                  "&cThese recipes need more resources and may result in lag if used too often in a short time!",
+                  "&7[&aClick&7] Toggle to 3x3 crafting grid"
+                ]
+              }
+            },
+            "toggle": {
+              "enabled": {
+                "name": "&aEnabled"
+              },
+              "disabled": {
+                "name": "&cDisabled"
+              }
+            },
+            "advanced_recipes": {
+              "enabled": {
+                "name": "&aNormal Recipes Allowed",
+                "lore": [
+                  "&7Normal Recipes & Elite Recipes can be crafted.",
+                  "&eCustom Recipes which are not specificly created for the Advanced Workbench",
+                  "&eand Elite Recipes can be crafted",
+                  "&7[&aClick&7] Toggle to Elite Recipes only"
+                ]
+              },
+              "disabled": {
+                "name": "&7Only Elite Recipes",
+                "lore": [
+                  "&eOnly Elite Recipes can be crafted!",
+                  "&7[&aClick&7] Toggle to allow Normal Recipes"
+                ]
+              }
+            },
+            "particles": {
+              "name": "&6Particle Effects &8[&7Coming soon&8]"
+            }
+          }
+        }
+      }
+    },
+    "recipe_creator": {
+      "global_items": {
+        "save": {
+          "name": "&3Save",
+          "help": [
+            "&7Save the recipe",
+            "&7Input: &3<namespace> <recipe_name>"
+          ]
+        },
+        "priority": {
+          "name": "&3Priority:&7 %PRI%",
+          "help": [
+            "&7Sets the priority of this recipe!",
+            "&7Priorities: ",
+            "&9LOWEST&7: will be checked first",
+            "&bLOW&7",
+            "&3NORMAL&7: normal priority",
+            "&cHIGH&7",
+            "&4HIGHEST&7: will be checked last"
+          ]
+        },
+        "conditions": {
+          "name": "&3Conditions",
+          "lore": [
+            "&eSet conditions to further customize your recipe.",
+            "&eSuch as World Time, Weather, etc.",
+            "&7[&aClick&7] Configure conditons"
+          ]
+        },
+        "hidden": {
+          "enabled": {
+            "name": "&6Hide Recipe",
+            "lore": [
+              "&eRecipe is hidden in the knowledgebook!",
+              "&7[&aClick&7] Toggle to show recipe"
+            ]
+          },
+          "disabled": {
+            "name": "&6Show Recipe",
+            "lore": [
+              "&eRecipe is shown in the knowledgebook!",
+              "&7[&aClick&7] Toggle to hide recipe"
+            ]
+          }
+        },
+        "exact_meta": {
+          "enabled": {
+            "name": "&aExact Meta",
+            "help": [],
+            "lore": [
+              "&7Items need to be exactly the same!",
+              "&7That means if you put in a IronSword with no damage ",
+              "&7then IronSwords with damage won't be allowed!"
+            ]
+          },
+          "disabled": {
+            "name": "&3Ignore Meta",
+            "help": [],
+            "lore": [
+              "&7Items without Meta will only",
+              "&7be checked for their type!",
+              "&7Items with Meta still need to be exact!"
+            ]
+          }
+        },
+        "workbench": {
+          "shapeless": {
+            "enabled": {
+              "name": "&3Shapeless Recipe",
+              "help": [
+                "&7Recipe is shapeless!"
+              ]
+            },
+            "disabled": {
+              "name": "&3Shaped Recipe",
+              "help": [
+                "&7Recipe has a shape!"
+              ]
+            }
+          },
+          "mirrorHorizontal": {
+            "enabled": {
+              "name": "&aMirror Horizontal",
+              "lore": [
+                "&7Recipe can be crafted mirrored horizontally",
+                "&7[&aClick&7] Toggle"
+              ]
+            },
+            "disabled": {
+              "name": "&cMirror Horizontal",
+              "lore": [
+                "&7Recipe is fixed!",
+                "&7[&aClick&7] Toggle"
+              ]
+            }
+          },
+          "mirrorVertical": {
+            "enabled": {
+              "name": "&aMirror Vertical",
+              "lore": [
+                "&eRecipe can be crafted mirrored vertically",
+                "&7[&aClick&7] Toggle"
+              ]
+            },
+            "disabled": {
+              "name": "&cMirror Vertical",
+              "lore": [
+                "&eRecipe is fixed!",
+                "&7[&aClick&7] Toggle"
+              ]
+            }
+          },
+          "mirrorRotation": {
+            "disabled": {
+              "name": "&cRotate Recipe",
+              "lore": [
+                "&eRecipe cannot be rotated.",
+                "&7[&aClick&7] Toggle"
+              ]
+            },
+            "enabled": {
+              "name": "&aRotate Recipe",
+              "lore": [
+                "&eRecipe can be rotated.",
+                "&7[&aClick&7] Toggle"
+              ]
+            }
+          }
+        }
+      },
+      "global_messages": {
+        "override": "&3type the namespace and key from the recipe!",
+        "valid_number": "&cType in a valid number!",
+        "save": {
+          "input": "&3Type in the name of the folder and item! &6folder recipe_name",
+          "empty": "&cCannot save a empty recipe! Check the Result and the Source/ingredients",
+          "success": "&aRecipe successfully saved to:"
+        },
+        "loading": {
+          "error": "&cError occurred while loading recipe &4%REC%",
+          "success": "&aLoaded and injected recipe successful!",
+          "warning": "&cIt is better to restart the Server after you're done, to prevent recipes from not working correctly!"
+        }
+      },
+      "conditions": {
+        "gui_name": "Conditions",
+        "mode_names": {
+          "exact": "&eExact value",
+          "ignore": "&cDisabled",
+          "higher": "&e>",
+          "lower": "&e<",
+          "higher_lower": "&eHigher or Lower",
+          "higher_exact": "&e>=",
+          "lower_exact": "&e<="
+        },
+        "items": {
+          "world_time": {
+            "name": "&7- World Time - ",
+            "lore": [
+              "&7Time:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7set Time"
+            ]
+          },
+          "weather": {
+            "modes": {
+              "storm": "&eRain/Snow",
+              "thunder": "&eThunder",
+              "storm_thunder": "&eRain/Snow &7+ &eThunder",
+              "none": "&eSunshine"
+            },
+            "name": "&7- World Weather -",
+            "lore": [
+              "&7Weather:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7toggle Weather"
+            ]
+          },
+          "advanced_workbench": {
+            "name": "&7- Advanced Workbench -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&8[&aLeft Click&8] &7toggle on/off"
+            ]
+          },
+          "elite_workbench": {
+            "name": "&7- Elite Workbench -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Values:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&aRight Click&8] &7toggle on/off",
+              "&8[&aLeft Click&8] &7configure Elite Workbenches",
+              "&8[&aShift Left Click&8] &7remove last entry"
+            ]
+          },
+          "permission": {
+            "name": "&7- Permission - ",
+            "lore": [
+              "&7Permission:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7change Permission"
+            ]
+          }
+        },
+        "messages": {
+          "world_time": "&eType the time in ticks! e.g. 1500",
+          "elite_workbench": "&eType in the folder and name of the CustomItem! Example: &6workbenches golden_workbench",
+          "permission": "&eType in the permission string",
+          "error": "&cThis item does not exist or is not loaded!",
+          "no_name": "&cYou need to type in the item name!",
+          "not_elite_workbench": "&cThis item is not an Elite Workbench!",
+          "already_existing": "&cYou already added this Item!"
+        }
+      },
+      "workbench": {
+        "gui_name": "&4&lCreator &7[&8Workbench&7]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+          "adv_workbench": {
+            "enabled": {
+              "name": "&3Advanced Workbench",
+              "help": [
+                "&7Can only be crafted in",
+                "&7Advanced Workbenches",
+                ""
+              ]
+            },
+            "disabled": {
+              "name": "&4Every Workbench",
+              "help": [
+                "&7Can be crafted in every Workbench"
+              ]
+            }
+          }
+        }
+      },
+      "elite_workbench": {
+        "gui_name": "&4&lCreator &7[&8Elite Workbench&7]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift&7+&eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+        }
+      },
+      "stonecutter": {
+        "gui_name": "&4&lRecipe Creator &8[&7Stonecutter&8]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+        }
+      },
+      "cooking": {
+        "gui_name": "&4Recipe Creator &8[&7Cooking/Smelting&8]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+          "xp": {
+            "name": "&3Experience",
+            "help": [],
+            "lore": [
+              "&6%XP% Exp"
+            ],
+            "message": "&3Type in the amount of experience. e.g. 0.5"
+          },
+          "cooking_time": {
+            "name": "&6Cooking Time",
+            "help": [
+              "&7Set the time how long the item",
+              "&7needs to cook in ticks",
+              "&3Tip: 20ticks = 1sec"
+            ],
+            "lore": [
+              "&6%TIME% ticks"
+            ],
+            "message": "&3Type in the cooking time in ticks. e.g. 20"
+          }
+        }
+      },
+      "anvil": {
+        "gui_name": "&4&lRecipe Creator &8[&7Anvil&8]",
+        "gui_help": [
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7on Result or Ingredients will ",
+          "&7allow you to edit the item/s"
+        ],
+        "items": {
+          "mode": {
+            "name": "&7Mode:&6 %MODE%",
+            "help": [
+              ""
+            ]
+          },
+          "repair_cost": {
+            "name": "&7Repair Cost:&6 %VAR%",
+            "lore": [
+              "&eThe Repair Cost for this recipe.",
+              "&eMust be greater than 0, else the recipe won't work!",
+              "&7[&aClick&7] Input Repair Cost"
+            ],
+            "message": "&3Type in the amount of repair_cost. &cMust be greater than 0!"
+          },
+          "block_repair": {
+            "true": {
+              "name": "&aRepairing blocked"
+            },
+            "false": {
+              "name": "&cRepairing allowed"
+            }
+          },
+          "block_rename": {
+            "true": {
+              "name": "&aRenaming blocked"
+            },
+            "false": {
+              "name": "&cRenaming allowed"
+            }
+          },
+          "block_enchant": {
+            "true": {
+              "name": "&aEnchanting blocked"
+            },
+            "false": {
+              "name": "&cEnchanting allowed"
+            }
+          },
+          "durability": {
+            "name": "&7Durability:&6 %VAR%",
+            "lore": [
+              ""
+            ],
+            "message": "&3Type in the amount of durability. &6>0 increase&7, <0 decrease"
+          },
+          "repair_apply": {
+            "true": {
+              "name": "&aApply to Result",
+              "lore": [
+                "&7Applies the repair cost",
+                "&7to the result's MetaData!"
+              ]
+            },
+            "false": {
+              "name": "&cNot Applied!",
+              "lore": [
+                "&7The result's MetaData stays the same!"
+              ]
+            }
+          },
+          "repair_mode": {
+            "name": "&7RepairCost mode: &3%VAR%",
+            "lore": [
+              "&eThe mode how the repaircost should be ",
+              "&eaffected by the left input!",
+              "&3NONE &7- Not affected at all",
+              "&3ADD &7- Gets added to recipe repaircost!",
+              "&3MULTIPLY &7- Gets multiplied with recipe repaircost",
+              "&7[&aClick&7] Toggle Mode"
+            ]
+          }
+        }
+      },
+      "cauldron": {
+        "gui_name": "&4&lRecipe Creator &8[&7Cauldron&8]",
+        "items": {
+          "cauldron": {
+            "name": "&c"
+          },
+          "dropItems": {
+            "enabled": {
+              "name": "&6Drop Items",
+              "lore": [
+                "&eItems drop out of the cauldron when done.",
+                "",
+                "&7[&aClick&7] toggle to keep items"
+              ]
+            },
+            "disabled": {
+              "name": "&6Keep Items",
+              "lore": [
+                "&eItems stay in the cauldron when recipe is done.",
+                "&ePlayer right click replaces the item in their hand.",
+                "&e« Set the required item for the player to hold on right click!",
+                "     &eLeave blank to require empty hand!",
+                "&7[&aClick&7] toggle to drop items"
+              ]
+            }
+          },
+          "fire": {
+            "enabled": {
+              "name": "&6Fire required",
+              "lore": [
+                "&eFire or lit Campfire is required for this recipe"
+              ]
+            },
+            "disabled": {
+              "name": "&6No Fire required",
+              "lore": [
+                "&eThis recipe will only work if no Fire or lit Campfire",
+                "&eis present!"
+              ]
+            }
+          },
+          "water": {
+            "disabled": {
+              "name": "&3No Water required!",
+              "lore": [
+                "&eRecipe will only work if cauldron is empty!"
+              ]
+            },
+            "enabled": {
+              "name": "&3Water required!",
+              "lore": [
+                "&eRecipe will only work with water in it!",
+                "&eExcept water level is set to 0!"
+              ]
+            }
+          },
+          "xp": {
+            "name": "&6Experience",
+            "lore": [
+              "&7Experience: &e%xp%",
+              "",
+              "&eThe amount xp you get when the recipe is done."
+            ],
+            "message": "&3Type in the amount of experience. e.g. 0.5"
+          },
+          "cookingTime": {
+            "name": "&6Cooking Time",
+            "lore": [
+              "&7Time: &e%time% ticks",
+              "",
+              "&eThe time in ticks for the recipe to be done!"
+            ],
+            "message": "&3Type in the cooking time in ticks. e.g. 20"
+          },
+          "waterLevel": {
+            "name": "&3Water Level",
+            "lore": [
+              "&7Required: &e%level%",
+              "",
+              "&eDefines the lowest cauldron water level",
+              "&ethis recipe should be able to be made with.",
+              "&eThe Water is consumed when the recipe is done!"
+            ],
+            "message": "&eType in the amount of water the cauldron needs to have! &cMax: &43"
+          },
+          "mythicMob": {
+            "name": "&6MythicMob",
+            "lore": [
+              "&7-Mob Settings-",
+              "&7Name: &e%mob.name%",
+              "&7Level: &e%mob.level%",
+              "&7Spawn location (relative): ",
+              "   &7x: &e%mob.modX%",
+              "   &7y: &e%mob.modY%",
+              "   &7z: &e%mob.modZ%",
+              ""
+            ],
+            "message": "&eType in the MythicMob you want! <mob_name> [<level> <relative_x> <relative_y> <relative_z>]"
+          }
+        }
+      },
+      "variants": {
+        "gui_name": "&8Variants",
+        "gui_help": [
+          "&7Setup the variants of the chosen slot.",
+          "&7Put in as many Items you want.",
+          "&7Tip:",
+          "&eShift &7+ &eRight click &7will open the ItemEditor"
+        ]
+      }
+    },
+    "recipe_book": {
+      "global_items": {
+        "itemCategory": {
+          "brewing": {
+            "name": "&6Brewing",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "building_blocks": {
+            "name": "&6Building Blocks",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "decorations": {
+            "name": "&6Decorations",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "combat": {
+            "name": "&6Combat",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "tools": {
+            "name": "&6Tools",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "redstone": {
+            "name": "&6Redstone",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "food": {
+            "name": "&6Food",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "transportation": {
+            "name": "&6Transportation",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "misc": {
+            "name": "&6Misc",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          },
+          "search": {
+            "name": "&6Browse",
+            "lore": [
+              "&7[&aLeft Click&7] Next category",
+              "&7[&aRight Click&7] Previous category"
+            ]
+          }
+        },
+        "previous_page": {
+          "name": "&2Previous Page",
+          "help": []
+        },
+        "next_page": {
+          "name": "&2Next Page",
+          "help": []
+        },
+        "lores": {
+          "click": "&7[&aClick&7] View Recipe"
+        },
+        "stonecutter": {
+          "name": "&7Stonecutter"
+        },
+        "anvil": {
+          "durability": {
+            "name": "&7Durability",
+            "lore": [
+              "&eItems durability is affected.",
+              "&eAmount of change: &6%var%"
+            ]
+          },
+          "result": {
+            "name": "&7Result",
+            "lore": [
+              "&eRecipe ouputs the set result.",
+              ""
+            ]
+          }
+        },
+        "workbench": {
+          "filter_button": {
+            "all": {
+              "name": "&7Recipe Filter:&3 ALL",
+              "lore": [
+                "&7Showing all recipes"
+              ]
+            },
+            "normal": {
+              "name": "&7Recipe Filter:&3 NORMAL",
+              "lore": [
+                "&7Only showing normal recipes"
+              ]
+            },
+            "advanced": {
+              "name": "&7Recipe Filter:&3 ADVANCED",
+              "lore": [
+                "&7Only showing advanced recipes"
+              ]
+            }
+          },
+          "adv_workbench_on": {
+            "name": "&3Advanced Workbench",
+            "help": [
+              "&7Can only be crafted in",
+              "&7Advanced Workbenches",
+              ""
+            ]
+          },
+          "adv_workbench_off": {
+            "name": "&4Every Workbench",
+            "help": [
+              "&7Can be crafted in every Workbench"
+            ]
+          },
+          "shapeless_off": {
+            "name": "&3Shaped Recipe",
+            "help": [
+              "&7Recipe has a shape!"
+            ]
+          },
+          "shapeless_on": {
+            "name": "&3Shapeless Recipe",
+            "help": [
+              "&7Recipe is shapeless!"
+            ]
+          }
+        },
+        "cooking": {
+          "icon": {
+            "name": "&7&l%type%",
+            "lore": [
+              "&7Cooking Time: &e%time% ticks",
+              "&7Experience: &e%xp%"
+            ]
+          }
+        },
+        "cauldron": {
+          "water": {
+            "enabled": {
+              "name": "&7Cauldron",
+              "lore": [
+                "&eWater is required!",
+                "&eAt least a water level of &6%lvl%&e!"
+              ]
+            },
+            "disabled": {
+              "name": "&7Cauldron",
+              "lore": [
+                "&eNo water is required!"
+              ]
+            }
+          },
+          "fire": {
+            "enabled": {
+              "name": "&6Fire",
+              "lore": [
+                "&eFire is required!",
+                "&eMake sure that you have a lit",
+                "&ecampfire under your cauldron!"
+              ]
+            },
+            "disabled": {
+              "name": "&6Fire",
+              "lore": [
+                "&eNo Fire is required!"
+              ]
+            }
+          }
+
+        }
+      },
+      "main_menu": {
+        "gui_name": "&8&lRecipe knowledge Book",
+        "items": {
+          "elite_workbench": {
+            "name": "&6Elite Workbench Recipes"
+          },
+          "workbench": {
+            "name": "&6Workbench Recipes",
+            "help": []
+          },
+          "furnace": {
+            "name": "&6Furnace Recipes",
+            "help": []
+          },
+          "anvil": {
+            "name": "&6Anvil Recipes",
+            "help": [
+              ""
+            ]
+          },
+          "blast_furnace": {
+            "name": "&6Blasting Recipes",
+            "help": [
+              ""
+            ]
+          },
+          "smoker": {
+            "name": "&6Smoking Recipes",
+            "help": [
+              ""
+            ]
+          },
+          "campfire": {
+            "name": "&6Campfire Recipes",
+            "help": [
+              ""
+            ]
+          },
+          "stonecutter": {
+            "name": "&6Stonecutter Recipes",
+            "help": [
+              ""
+            ]
+          },
+          "cauldron": {
+            "name": "&6Cauldron Recipes"
+          }
+        }
+      },
+      "recipe_book": {
+        "gui_name": "&8&lRecipe knowledge Book",
+        "items": {
+
+        }
+      }
+    },
+    "crafting": {
+      "global_items": {
+        "knowledge_book": {
+          "name": "&eKnowledge Book",
+          "lore": [
+          ]
+        }
+      },
+      "crafting_grid3": {
+        "gui_name": "&8&lElite Crafting Table",
+        "items": {
+        }
+      },
+      "crafting_grid4": {
+        "gui_name": "&8&lElite Crafting Table"
+      },
+      "crafting_grid5": {
+        "gui_name": "&8&lElite Crafting Table"
+      },
+      "crafting_grid6": {
+        "gui_name": "&8&lElite Crafting Table"
+      },
+      "recipe_book": {
+        "gui_name": "&8&lRecipe knowledge Book"
+      }
+    }
+  }
+}

@@ -1,10 +1,12 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public abstract class Condition {
     protected Conditions.Option option;
 
     private ItemStack iconEnabled, iconDisabled;
-    private String id;
+    private final String id;
     private List<Conditions.Option> availableOptions;
 
     protected Condition(String id) {
@@ -48,20 +50,25 @@ public abstract class Condition {
         this.option = availableOptions.get(index);
     }
 
-    public abstract boolean check(CustomRecipe recipe, Conditions.Data data);
+    public abstract boolean check(ICustomRecipe recipe, Conditions.Data data);
 
     public String getId() {
         return id;
     }
 
-    public JsonElement toJsonElement() {
-        JsonObject element = new JsonObject();
-        element.addProperty("id", id);
-        element.addProperty("option", option.toString());
-        return element;
+    /**
+     *
+     *
+     * @param gen the current JsonGenerator
+     * @throws IOException
+     */
+    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
+
     }
 
-    public abstract void fromJsonElement(JsonElement jsonElement);
+    public void readFromJson(JsonNode node){
+        //Not every Condition needs this method as they just extend this clas with no extra variables!
+    }
 
     public ItemStack getIconEnabled() {
         return iconEnabled;

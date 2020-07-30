@@ -1,13 +1,15 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import com.google.gson.*;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.utilities.api.utils.ItemCategory;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.inventory.ItemCategory;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class Category {
         this.materials = new ArrayList<>();
     }
 
+    @JsonGetter
     public Material getIcon() {
         return icon;
     }
@@ -77,9 +80,9 @@ public class Category {
         this.itemCategories = itemCategories;
     }
 
-    public boolean isValid(CustomRecipe recipe) {
+    public boolean isValid(ICustomRecipe recipe) {
         if (recipes.isEmpty()) return false;
-        return recipes.contains(new NamespacedKey(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey()));
+        return recipes.contains(recipe.getNamespacedKey());
     }
 
     public boolean isValid(Material material) {
@@ -92,86 +95,73 @@ public class Category {
         return materials.contains(material);
     }
 
-    public static class Serializer implements JsonSerializer<Category>, JsonDeserializer<Category> {
-
-        @Override
-        public Category deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            //This could be useful if I can't parse in the WolfyUtilies and CustomCrafting oject! -> WolfyUtilities api = WolfyUtilities.getAPI(Bukkit.getPluginManager().getPlugin("CustomCrafting"));
-
-            JsonObject jsonObject = json.getAsJsonObject();
-            Category category = new Category();
-
-            String displayName = jsonObject.get("name").getAsString();
-            Material icon = Material.matchMaterial(jsonObject.get("icon").getAsString());
-
-            List<String> description = new ArrayList<>();
-            if (jsonObject.has("description")) {
-                jsonObject.getAsJsonArray("description").forEach(jsonElement -> description.add(jsonElement.getAsString()));
-            }
-
-            List<NamespacedKey> recipes = new ArrayList<>();
-            if (jsonObject.has("recipes")) {
-                jsonObject.getAsJsonArray("recipes").forEach(jsonElement -> {
-                    String[] recipe = jsonElement.getAsString().split(":");
-                    recipes.add(new NamespacedKey(recipe[0], recipe[1]));
-                });
-            }
-
-            List<Material> materials = new ArrayList<>();
-            if (jsonObject.has("materials")) {
-                jsonObject.getAsJsonArray("materials").forEach(jsonElement -> {
-                    Material material = Material.matchMaterial(jsonElement.getAsString());
-                    if (material != null) {
-                        materials.add(material);
-                    }
-                });
-            }
-
-            List<ItemCategory> itemCategories = new ArrayList<>();
-            if (jsonObject.has("itemCategories")) {
-                jsonObject.getAsJsonArray("itemCategories").forEach(jsonElement -> {
-                    String materialNmn = jsonElement.getAsString();
-                    try {
-                        ItemCategory itemCategory = ItemCategory.valueOf(materialNmn);
-                        itemCategories.add(itemCategory);
-                    } catch (IllegalArgumentException ex) {
-                        Bukkit.getLogger().warning("Failed to load ItemCategory for Category: must be BREWING, BUILDING_BLOCKS, DECORATIONS, COMBAT, TOOLS, REDSTONE,  FOOD, TRANSPORTATION, MISC, SEARCH! Got " + materialNmn);
-                    }
-                });
-            }
-
-            category.setIcon(icon);
-            category.setName(displayName);
-            category.setDescription(description);
-            category.setItemCategories(itemCategories);
-            category.setMaterials(materials);
-            category.setRecipes(recipes);
-            return category;
+    public void writeToJson(JsonGenerator gen) throws IOException {
+        gen.writeStringField("icon", getIcon().name());
+        gen.writeStringField("name", getName());
+        gen.writeArrayFieldStart("description");
+        for (String s : getDescription()) {
+            gen.writeString(s);
         }
-
-        @Override
-        public JsonElement serialize(Category category, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject root = new JsonObject();
-
-            root.addProperty("icon", category.getIcon().name());
-            root.addProperty("name", category.getName());
-
-            JsonArray description = new JsonArray();
-            category.getDescription().forEach(s -> description.add(s));
-            root.add("description", description);
-
-            JsonArray materials = new JsonArray();
-            category.getMaterials().forEach(material -> materials.add(material.name()));
-            root.add("materials", materials);
-
-            JsonArray recipes = new JsonArray();
-            category.getRecipes().forEach(namespacedKey -> recipes.add(namespacedKey.toString()));
-            root.add("recipes", recipes);
-
-            JsonArray itemCategories = new JsonArray();
-            category.getItemCategories().forEach(itemCategory -> itemCategories.add(itemCategory.name()));
-            root.add("itemCategories", itemCategories);
-            return root;
+        gen.writeEndArray();
+        gen.writeArrayFieldStart("materials");
+        for (Material material : getMaterials()) {
+            gen.writeString(material.toString());
         }
+        gen.writeEndArray();
+        gen.writeArrayFieldStart("recipes");
+        for (NamespacedKey recipe : getRecipes()) {
+            gen.writeString(recipe.toString());
+        }
+        gen.writeEndArray();
+        gen.writeArrayFieldStart("itemCategories");
+        for (ItemCategory category : getItemCategories()) {
+            gen.writeString(category.toString());
+        }
+        gen.writeEndArray();
+    }
+
+    public static Category readFromJson(JsonNode node){
+        Category category = new Category();
+        String displayName = node.get("name").asText();
+        Material icon = Material.matchMaterial(node.get("icon").asText());
+        List<String> description = new ArrayList<>();
+        if (node.has("description")) {
+            node.get("description").forEach(jsonElement -> description.add(jsonElement.asText()));
+        }
+        List<NamespacedKey> recipes = new ArrayList<>();
+        if (node.has("recipes")) {
+            node.get("recipes").forEach(jsonElement -> {
+                String[] recipe = jsonElement.asText().split(":");
+                recipes.add(new NamespacedKey(recipe[0], recipe[1]));
+            });
+        }
+        List<Material> materials = new ArrayList<>();
+        if (node.has("materials")) {
+            node.get("materials").forEach(jsonElement -> {
+                Material material = Material.matchMaterial(jsonElement.asText());
+                if (material != null) {
+                    materials.add(material);
+                }
+            });
+        }
+        List<ItemCategory> itemCategories = new ArrayList<>();
+        if (node.has("itemCategories")) {
+            node.get("itemCategories").forEach(jsonElement -> {
+                String materialNmn = jsonElement.asText();
+                try {
+                    ItemCategory itemCategory = ItemCategory.valueOf(materialNmn);
+                    itemCategories.add(itemCategory);
+                } catch (IllegalArgumentException ex) {
+                    Bukkit.getLogger().warning("Failed to load ItemCategory for Category: must be BREWING, BUILDING_BLOCKS, DECORATIONS, COMBAT, TOOLS, REDSTONE,  FOOD, TRANSPORTATION, MISC, SEARCH! Got " + materialNmn);
+                }
+            });
+        }
+        category.setIcon(icon);
+        category.setName(displayName);
+        category.setDescription(description);
+        category.setItemCategories(itemCategories);
+        category.setMaterials(materials);
+        category.setRecipes(recipes);
+        return category;
     }
 }

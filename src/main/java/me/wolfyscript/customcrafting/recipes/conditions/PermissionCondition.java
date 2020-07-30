@@ -1,13 +1,16 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class PermissionCondition extends Condition {
 
@@ -28,7 +31,7 @@ public class PermissionCondition extends Condition {
     }
 
     @Override
-    public boolean check(CustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
         if (recipe instanceof CustomCookingRecipe && data.getPlayer() == null) {
             return true;
         }
@@ -41,14 +44,13 @@ public class PermissionCondition extends Condition {
     }
 
     @Override
-    public JsonElement toJsonElement() {
-        JsonObject jsonObject = (JsonObject) super.toJsonElement();
-        jsonObject.addProperty("permission", permission);
-        return jsonObject;
+    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
+        super.writeJson(gen);
+        gen.writeStringField("permission", permission);
     }
 
     @Override
-    public void fromJsonElement(JsonElement jsonElement) {
-        this.permission = ((JsonObject) jsonElement).getAsJsonPrimitive("permission").getAsString();
+    public void readFromJson(JsonNode node) {
+        this.permission = node.get("permission").asText();
     }
 }

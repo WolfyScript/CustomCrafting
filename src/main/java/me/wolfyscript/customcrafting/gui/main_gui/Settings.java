@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -13,6 +12,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
+import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -137,18 +137,18 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ToggleButton("creator.reset_after_save", false, new ButtonState("creator.reset_after_save.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("creator.reset_after_save", false, new ButtonState("creator.reset_after_save.disabled", PlayerHeadUtils.getViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(true);
             return true;
-        }), new ButtonState("creator.reset_after_save.enabled", WolfyUtilities.getSkullViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState("creator.reset_after_save.enabled", PlayerHeadUtils.getViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
             return true;
         })));
 
-        registerButton(new ToggleButton("knowledgebook.workbench_filter_button", false, new ButtonState("knowledgebook.workbench_filter_button.disabled", WolfyUtilities.getSkullViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton("knowledgebook.workbench_filter_button", false, new ButtonState("knowledgebook.workbench_filter_button.disabled", PlayerHeadUtils.getViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             customCrafting.getConfigHandler().getConfig().setWorkbenchFilter(true);
             return true;
-        }), new ButtonState("knowledgebook.workbench_filter_button.enabled", WolfyUtilities.getSkullViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState("knowledgebook.workbench_filter_button.enabled", PlayerHeadUtils.getViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             customCrafting.getConfigHandler().getConfig().setWorkbenchFilter(false);
             return true;
         })));

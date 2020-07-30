@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.PatronButton;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -11,21 +10,22 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
+import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.event.EventHandler;
 
 public class PatronsMenu extends ExtendedGuiWindow {
 
     public PatronsMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("patrons_menu", inventoryAPI, 27, customCrafting);
+        super("patrons_menu", inventoryAPI, 36, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openPreviousInv();
             return true;
         })));
-        registerButton(new ActionButton("patreon", new ButtonState("patreon", WolfyUtilities.getSkullViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("patreon", new ButtonState("patreon", PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             api.openBook(player, false,
                     new ClickData[]{
                             new ClickData("&8[&cBecome a Patron&8]\n\n\n\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")),
@@ -38,6 +38,9 @@ public class PatronsMenu extends ExtendedGuiWindow {
         registerButton(new PatronButton("Alex", "LeftAlex", "af1ef7e4-acc3-44a1-8323-8f50b92be2c9"));
         registerButton(new PatronButton("Vincent Deniau", "VinceTheWolf", "a307c2b3-463a-4db6-8a6a-07419909af72"));
         registerButton(new PatronButton("Nat R", "1Jack", "956faa3f-df9e-402b-bc13-39c03d4b4a5b"));
+        registerButton(new PatronButton("gizmonster", "gizmonster", "e502d121-de9d-4f5d-b7e5-0da747c4e2e8"));
+        registerButton(new PatronButton("Nick coburn"));
+        registerButton(new PatronButton("TheDutchRuben"));
     }
 
     @EventHandler
@@ -49,6 +52,9 @@ public class PatronsMenu extends ExtendedGuiWindow {
             event.setButton(12, "patron.alex");
             event.setButton(14, "patron.vincent_deniau");
             event.setButton(16, "patron.nat_r");
+            event.setButton(20, "patron.gizmonster");
+            event.setButton(22, "patron.nick_coburn");
+            event.setButton(24, "patron.thedutchruben");
         }
     }
 

@@ -64,3 +64,5 @@ recipes:
 
 knowledgebook:
   workbench_filter: true
+  reset_item: true
+  reset_recipe: true

@@ -2,65 +2,33 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.config.JsonConfiguration;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import org.bukkit.Material;
+import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
-public class RecipeBookConfig extends JsonConfiguration {
+public class RecipeBookConfig {
 
-    private WolfyUtilities api;
+    private final WolfyUtilities api;
+    private Categories categories;
 
     public RecipeBookConfig(CustomCrafting customCrafting) {
-        super(WolfyUtilities.getAPI(customCrafting).getConfigAPI(), customCrafting.getDataFolder().getPath(), "recipe_book", "me/wolfyscript/customcrafting/configs/recipebook", "recipebook", false);
+        customCrafting.saveResource("recipe_book.json", false);
         this.api = WolfyUtilities.getAPI(customCrafting);
-    }
-
-    public List<String> getSwitchCategoriesOrder() {
-        return getStringList("categories.orders.switchConditions");
-    }
-
-    public List<String> getMainCategoriesOrder() {
-        return getStringList("categories.orders.mainConditions");
+        try {
+            JsonNode node = JacksonUtil.getObjectMapper().readTree(new File(customCrafting.getDataFolder(), "recipe_book.json"));
+            this.categories = JacksonUtil.getObjectMapper().convertValue(node.get("categories"), Categories.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Categories getCategories() {
-        return get(Categories.class, "categories");
+        return categories;
     }
 
     public void setCategories(Categories categories) {
-        set("categories.categories", categories);
+        this.categories = categories;
     }
-
-    public void saveCustomItem(String path, CustomItem customItem) {
-        if (customItem != null) {
-            if (!customItem.getId().isEmpty() && !customItem.getId().equals("NULL")) {
-                this.set(path + ".item_key", customItem.getId());
-                this.set(path + ".custom_amount", customItem.getAmount() != CustomItems.getCustomItem(customItem.getId()).getAmount() ? customItem.getAmount() : 0);
-            } else {
-                this.setItem(path + ".item", customItem.getItemStack());
-            }
-        } else {
-            this.setItem(path + ".item", null);
-        }
-
-    }
-
-    public CustomItem getCustomItem(String path) {
-        String id = this.getString(path + ".item_key");
-        if (id != null && !id.isEmpty()) {
-            CustomItem customItem = CustomItems.getCustomItem(id);
-            int i = this.getInt(path + ".custom_amount");
-            if (i != 0) {
-                customItem.setAmount(i);
-            }
-
-            return customItem;
-        } else {
-            return this.getItem(path + ".item") != null ? new CustomItem(this.getItem(path + ".item")) : new CustomItem(Material.AIR);
-        }
-    }
-
 }

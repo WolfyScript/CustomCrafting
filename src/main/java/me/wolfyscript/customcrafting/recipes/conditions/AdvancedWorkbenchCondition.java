@@ -1,11 +1,10 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.google.gson.JsonElement;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
 import org.bukkit.Location;
 
 public class AdvancedWorkbenchCondition extends Condition {
@@ -17,11 +16,11 @@ public class AdvancedWorkbenchCondition extends Condition {
     }
 
     @Override
-    public boolean check(CustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
-        if (recipe instanceof AdvancedCraftingRecipe) {
+        if (recipe instanceof CraftingRecipe) {
             if (data.getBlock() != null) {
                 Location location = data.getBlock().getLocation();
                 return CustomCrafting.getWorkbenches().isWorkbench(location);
@@ -29,10 +28,5 @@ public class AdvancedWorkbenchCondition extends Condition {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void fromJsonElement(JsonElement jsonElement) {
-        //Not NECESSARY!
     }
 }

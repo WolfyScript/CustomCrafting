@@ -675,6 +675,32 @@
               "&7Applies the Item to the recipe"
             ]
           },
+          "reference": {
+            "wolfyutilities": {
+              "name": "&l&6WolfyUtilities",
+              "lore": [
+                "&7This item was created with WolfyUtilities",
+                "&7and is linked to &e%item_key%&7!",
+                "&6To edit the item use CustomCrafting or the API!"
+              ]
+            },
+            "oraxen": {
+              "name": "&l&6Oraxen",
+              "lore": [
+                "&7This item was created with Oraxen",
+                "&7and is linked to &e%item_key%&7!",
+                "&6To edit the item use Oraxen!"
+              ]
+            },
+            "itemsadder": {
+              "name": "&l&6ItemsAdder",
+              "lore": [
+                "&7This item was created with ItemsAdder",
+                "&7and is linked to &e%item_key%&7!",
+                "&6To edit the item use ItemsAdder!"
+              ]
+            }
+          },
           "meta_ignore": {
             "name": "&7Mode: &3%VAR%",
             "lore": [
@@ -1173,7 +1199,7 @@
           },
           "custom_model_data": {
             "option": {
-              "name": "&6Custom Model Data &8[&71.14+&8]",
+              "name": "&6Custom Model Data",
               "lore": [
                 "&7Set the Custom Model Data",
                 "&7Used for custom Models and Textures!",
@@ -1251,7 +1277,7 @@
           },
           "custom_durability": {
             "option": {
-              "name": "&6Custom Durability && Damage &8[&71.14+&8]",
+              "name": "&6Custom Durability && Damage",
               "lore": [
                 "&7Set Custom Durability and damage to your item!",
                 "&7This will replace the vanilla Durability and Damage!"
@@ -1352,7 +1378,7 @@
           },
           "persistent_data": {
             "option": {
-              "name": "&6Persistent NBT Data &8[&71.14+&8]",
+              "name": "&6Persistent NBT Data ",
               "lore": [
                 "&7Store custom data in NBT, linked to an key."
               ]
@@ -1360,7 +1386,7 @@
           },
           "elite_workbench": {
             "option": {
-              "name": "&6Elite Workbench &8[&71.14+&8]",
+              "name": "&6Elite Workbench &8[&7Beta&8]",
               "lore": [
                 "&7Create and Configure your own unique Workbench",
                 "&7with up to 6x6 crafting grid",
@@ -1443,7 +1469,7 @@
           },
           "armor_slots": {
             "option": {
-              "name": "&6Custom Equipment &8[&71.14+&8]",
+              "name": "&6Custom Equipment",
               "lore": [
                 "&7Configure the armor slots this item can",
                 "&7can be equiped to.",
@@ -1517,7 +1543,7 @@
           },
           "particle_effects": {
             "option": {
-              "name": "&6Particle Effects &8[&7Beta &8|&7 1.14+&8]",
+              "name": "&6Particle Effects &8[&7Experimental]",
               "lore": [
                 "&7Configure particle effects that",
                 "&7are spawned when holding, equipping",

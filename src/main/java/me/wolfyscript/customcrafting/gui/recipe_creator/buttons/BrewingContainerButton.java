@@ -2,12 +2,13 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingConfig;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,16 +27,16 @@ public class BrewingContainerButton extends ItemInputButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 TestCache cache = (TestCache) guiHandler.getCustomCache();
-                BrewingConfig brewingConfig = cache.getBrewingConfig();
+                BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
                     if (recipeSlot == 0) {
-                        if (brewingConfig.getIngredient() != null) {
-                            variants = brewingConfig.getIngredient();
+                        if (brewingRecipe.getIngredients() != null) {
+                            variants = brewingRecipe.getIngredients();
                         }
                     } else {
-                        if (brewingConfig.getAllowedItems() != null) {
-                            variants = brewingConfig.getAllowedItems();
+                        if (brewingRecipe.getAllowedItems() != null) {
+                            variants = brewingRecipe.getAllowedItems();
                         }
                     }
                     cache.getVariantsData().setSlot(recipeSlot);
@@ -46,25 +47,25 @@ public class BrewingContainerButton extends ItemInputButton {
                     Bukkit.getScheduler().runTask(customCrafting, () -> {
                         CustomItem customItem = new CustomItem(Material.AIR);
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            customItem = CustomItem.getByItemStack(inventory.getItem(slot));
+                            customItem = CustomItem.getReferenceByItemStack(inventory.getItem(slot));
                         }
                         List<CustomItem> inputs;
                         if (recipeSlot == 0) {
-                            inputs = brewingConfig.getIngredient();
+                            inputs = brewingRecipe.getIngredients();
                             if (inputs.size() > 0) {
                                 inputs.set(0, customItem);
                             } else {
                                 inputs.add(customItem);
                             }
-                            brewingConfig.setIngredient(inputs);
+                            brewingRecipe.setIngredients(inputs);
                         } else {
-                            inputs = brewingConfig.getAllowedItems();
+                            inputs = brewingRecipe.getAllowedItems();
                             if (inputs.size() > 0) {
                                 inputs.set(0, customItem);
                             } else {
                                 inputs.add(customItem);
                             }
-                            brewingConfig.setAllowedItems(inputs);
+                            brewingRecipe.setAllowedItems(inputs);
                         }
                     });
                 }
@@ -73,15 +74,15 @@ public class BrewingContainerButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                BrewingConfig brewingConfig = ((TestCache) guiHandler.getCustomCache()).getBrewingConfig();
+                BrewingRecipe brewingRecipe = ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe();
                 itemStack = new ItemStack(Material.AIR);
                 if (recipeSlot == 0) {
-                    if (brewingConfig.getIngredient() != null && !brewingConfig.getIngredient().isEmpty()) {
-                        itemStack = brewingConfig.getIngredient().get(0).getRealItem();
+                    if (!InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getIngredients())) {
+                        itemStack = brewingRecipe.getIngredients().get(0).create();
                     }
                 } else {
-                    if (brewingConfig.getAllowedItems() != null && !brewingConfig.getAllowedItems().isEmpty()) {
-                        itemStack = brewingConfig.getAllowedItems().get(0).getRealItem();
+                    if (!InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getAllowedItems())) {
+                        itemStack = brewingRecipe.getAllowedItems().get(0).create();
                     }
                 }
                 return itemStack;

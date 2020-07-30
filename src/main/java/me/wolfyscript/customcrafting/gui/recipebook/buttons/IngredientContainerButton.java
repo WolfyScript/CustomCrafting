@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiCluster;
@@ -27,10 +27,10 @@ import java.util.List;
 public class IngredientContainerButton extends Button {
 
     private final CustomCrafting customCrafting;
-    private HashMap<GuiHandler, List<CustomItem>> variantsMap = new HashMap<>();
-    private HashMap<GuiHandler, Integer> timings = new HashMap<>();
+    private final HashMap<GuiHandler, List<CustomItem>> variantsMap = new HashMap<>();
+    private final HashMap<GuiHandler, Integer> timings = new HashMap<>();
 
-    private HashMap<GuiHandler, BukkitTask> tasks = new HashMap<>();
+    private final HashMap<GuiHandler, BukkitTask> tasks = new HashMap<>();
 
     public IngredientContainerButton(int slot, CustomCrafting customCrafting) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
@@ -68,7 +68,7 @@ public class IngredientContainerButton extends Button {
         KnowledgeBook book = cache.getKnowledgeBook();
         if (getVariantsMap(guiHandler) != null && getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
-            List<CustomRecipe> recipes = customCrafting.getRecipeHandler().getRecipes(customItem);
+            List<ICustomRecipe> recipes = customCrafting.getRecipeHandler().getRecipes(customItem);
             recipes.remove(book.getCurrentRecipe());
             if (!recipes.isEmpty()) {
                 GuiCluster cluster = WolfyUtilities.getAPI(customCrafting).getInventoryAPI().getGuiCluster("recipe_book");
@@ -96,13 +96,13 @@ public class IngredientContainerButton extends Button {
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
         List<CustomItem> variants = getVariantsMap(guiHandler);
-        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(getTiming(guiHandler)));
+        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(getTiming(guiHandler)).create());
         if (getTask(guiHandler) == null) {
             setTask(guiHandler, Bukkit.getScheduler().runTaskTimerAsynchronously(guiHandler.getApi().getPlugin(), () -> {
                 if (player != null && inventory != null && slot < inventory.getSize()) {
                     if (!variants.isEmpty()) {
                         int variant = getTiming(guiHandler);
-                        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant));
+                        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant).create());
                         if (++variant < variants.size()) {
                             setTiming(guiHandler, variant);
                         } else {

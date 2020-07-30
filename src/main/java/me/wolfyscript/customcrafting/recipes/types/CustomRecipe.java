@@ -1,43 +1,158 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 
-import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface CustomRecipe<T extends RecipeConfig> {
+public abstract class CustomRecipe implements ICustomRecipe {
 
-    @Deprecated
-    String getId();
+    protected NamespacedKey namespacedKey;
+    protected boolean exactMeta, hidden;
 
-    NamespacedKey getNamespacedKey();
+    protected RecipePriority priority;
+    protected Conditions conditions;
+    protected String group;
+    protected WolfyUtilities api;
+    protected ObjectMapper mapper;
 
-    RecipeType getRecipeType();
+    public CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        this.mapper = JacksonUtil.getObjectMapper();
+        this.api = CustomCrafting.getApi();
+        this.namespacedKey = namespacedKey;
+        //Get fields from JsonNode
+        this.group = node.path("group").asText("");
+        this.priority = RecipePriority.valueOf(node.path("priority").asText("NORMAL"));
+        this.exactMeta = node.path("exactItemMeta").asBoolean(true);
+        this.conditions = mapper.convertValue(node.path("conditions"), Conditions.class);
+        if(this.conditions == null){
+            this.conditions = new Conditions();
+        }
+        this.hidden = node.path("hidden").asBoolean(false);
 
-    String getGroup();
-
-    @Nullable
-    default CustomItem getCustomResult() {
-        return getCustomResults().get(0).getRealItem();
+        //Sets the result of the recipe if one exists in the config
+        if (node.has("result")) {
+            List<CustomItem> results = new ArrayList<>();
+            JsonNode resultNode = node.path("result");
+            if (resultNode.isObject()) {
+                results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
+                resultNode.path("variants").forEach(jsonNode -> results.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class))));
+            } else {
+                resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+            }
+            setResult(results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+        }
     }
 
-    List<CustomItem> getCustomResults();
+    public CustomRecipe() {
+        this.mapper = JacksonUtil.getObjectMapper();
+        this.api = CustomCrafting.getApi();
+        this.namespacedKey = null;
 
-    RecipePriority getPriority();
+        this.group = "";
+        this.priority = RecipePriority.NORMAL;
+        this.exactMeta = true;
+        this.conditions = new Conditions();
+        this.hidden = false;
+    }
 
-    T getConfig();
+    public CustomRecipe(CustomRecipe craftingRecipe) {
+        this.mapper = JacksonUtil.getObjectMapper();
+        this.api = CustomCrafting.getApi();
+        this.namespacedKey = craftingRecipe.getNamespacedKey();
 
-    boolean isExactMeta();
+        this.group = craftingRecipe.getGroup();
+        this.priority = craftingRecipe.getPriority();
+        this.exactMeta = craftingRecipe.isExactMeta();
+        this.conditions = craftingRecipe.getConditions();
+        this.hidden = craftingRecipe.isHidden();
+    }
 
-    Conditions getConditions();
+    @Override
+    public WolfyUtilities getAPI() {
+        return api;
+    }
 
-    boolean isHidden();
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
+    }
 
-    void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event);
+    @Override
+    public void setNamespacedKey(NamespacedKey namespacedKey) {
+        this.namespacedKey = namespacedKey;
+    }
 
+    @Override
+    public RecipePriority getPriority() {
+        return priority;
+    }
+
+    @Override
+    public void setPriority(RecipePriority priority) {
+        this.priority = priority;
+    }
+
+    @Override
+    public boolean isExactMeta() {
+        return exactMeta;
+    }
+
+    @Override
+    public void setExactMeta(boolean exactMeta) {
+        this.exactMeta = exactMeta;
+    }
+
+    @Override
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    @Override
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    @Override
+    public String getGroup() {
+        return group;
+    }
+
+    @Override
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public Conditions getConditions() {
+        return conditions;
+    }
+
+    @Override
+    public void setConditions(Conditions conditions) {
+        this.conditions = conditions;
+    }
+
+    @Override
+    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
+        gen.writeStringField("group", group);
+        gen.writeBooleanField("hidden", hidden);
+        gen.writeStringField("priority", priority.toString());
+        gen.writeBooleanField("exactItemMeta", exactMeta);
+        gen.writeObjectField("conditions", conditions);
+    }
 }

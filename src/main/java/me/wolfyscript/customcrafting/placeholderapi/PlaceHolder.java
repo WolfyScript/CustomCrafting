@@ -3,10 +3,11 @@ package me.wolfyscript.customcrafting.placeholderapi;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
+import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.ICraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
 
 public class PlaceHolder extends PlaceholderExpansion {
 
-    private CustomCrafting customCrafting;
+    private final CustomCrafting customCrafting;
 
     public PlaceHolder(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -56,11 +57,11 @@ public class PlaceHolder extends PlaceholderExpansion {
             if (params.contains(";")) {
                 //Params with %ccrafting_<option>;<recipe_id>%
                 String recipeID = params.split(";")[1];
-                CustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(recipeID);
+                ICustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(recipeID);
                 String option = params.split(";")[0];
                 switch (option) {
                     case "type":
-                        if (recipe instanceof CraftingRecipe) {
+                        if (recipe instanceof ICraftingRecipe) {
                             return "workbench";
                         }
                         if (recipe instanceof CustomFurnaceRecipe) {
@@ -72,17 +73,17 @@ public class PlaceHolder extends PlaceholderExpansion {
                             break;
                         return String.valueOf(cache.getRecipeCrafts(recipeID));
                     case "workbench":
-                        if (recipe instanceof AdvancedCraftConfig) {
-                            return String.valueOf(((AdvancedCraftConfig) recipe).needsAdvancedWorkbench());
+                        if (recipe instanceof CraftingRecipe) {
+                            return String.valueOf((recipe).getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT));
                         }
                         break;
                     case "permission":
-                        if (recipe instanceof AdvancedCraftConfig) {
-                            return String.valueOf(((AdvancedCraftConfig) recipe).needsPermission());
+                        if (recipe instanceof CraftingRecipe) {
+                            return String.valueOf((recipe).getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT));
                         }
                         break;
                     case "has_perm":
-                        if (recipe instanceof AdvancedCraftConfig) {
+                        if (recipe instanceof CraftingRecipe) {
                             if (p.isOnline()) {
                                 Player player = Bukkit.getPlayer(p.getUniqueId());
                                 return String.valueOf(WolfyUtilities.hasPermission(player, "customcrafting.craft." + recipeID));

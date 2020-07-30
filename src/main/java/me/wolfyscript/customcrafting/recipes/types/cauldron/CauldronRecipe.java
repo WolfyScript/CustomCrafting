@@ -2,29 +2,29 @@ package me.wolfyscript.customcrafting.recipes.types.cauldron;
 
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import org.bukkit.entity.Item;
 import org.bukkit.util.Vector;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
-
-    private boolean exactMeta, hidden;
-    private String group;
-    private Conditions conditions;
+public class CauldronRecipe extends CustomRecipe {
 
     private int cookingTime;
     private int waterLevel;
-    private RecipePriority priority;
     private float xp;
     private CustomItem handItem;
     private List<CustomItem> result;
@@ -37,67 +37,109 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
     private int mythicMobLevel;
     private Vector mythicMobMod;
 
-    private NamespacedKey namespacedKey;
-    private CauldronConfig config;
-
-    public CauldronRecipe(CauldronConfig config) {
-        this.namespacedKey = config.getNamespacedKey();
-        this.config = config;
-        this.result = config.getResult();
-        this.ingredients = config.getIngredients();
-        this.dropItems = config.dropItems();
-        this.priority = config.getPriority();
-        this.exactMeta = config.isExactMeta();
-        this.group = config.getGroup();
-        this.xp = config.getXP();
-        this.cookingTime = config.getCookingTime();
-        this.needsFire = config.needsFire();
-        this.conditions = config.getConditions();
-        this.waterLevel = config.getWaterLevel();
-        this.needsWater = config.needsWater();
-        this.handItem = config.getHandItem();
-        this.mythicMobLevel = config.getMythicMobLevel();
-        this.mythicMobMod = config.getMythicMobMod();
-        this.mythicMobName = config.getMythicMobName();
-        this.hidden = config.isHidden();
+    public CauldronRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        super(namespacedKey, node);
+        this.xp = node.path("exp").floatValue();
+        this.cookingTime = node.path("cookingTime").asInt(60);
+        this.waterLevel = node.path("waterLevel").asInt(1);
+        this.needsWater = node.path("water").asBoolean(true);
+        this.needsFire = node.path("fire").asBoolean(true);
+        {
+            JsonNode dropNode = node.path("dropItems");
+            this.dropItems = dropNode.path("enabled").asBoolean();
+            this.handItem = new CustomItem(mapper.convertValue(dropNode.path("handItem"), APIReference.class));
+        }
+        {
+            List<CustomItem> ingredients = new ArrayList<>();
+            JsonNode ingredientNode = node.path("ingredients");
+            ingredientNode.elements().forEachRemaining(n -> ingredients.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+            setResult(ingredients.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+        }
+        if(result == null){
+            this.result = new ArrayList<>();
+        }
+        {
+            JsonNode mythicMobNode = node.path("mythicMob");
+            this.mythicMobName = mythicMobNode.path("name").asText();
+            this.mythicMobLevel = mythicMobNode.path("level").asInt();
+            Vector vector = new Vector(0, 0, 0);
+            vector.setX(mythicMobNode.path("modX").asDouble());
+            vector.setY(mythicMobNode.path("modY").asDouble());
+            vector.setZ(mythicMobNode.path("modZ").asDouble());
+            this.mythicMobMod = vector;
+        }
     }
 
-    @Override
-    public boolean isExactMeta() {
-        return exactMeta;
+    public CauldronRecipe() {
+        super();
+        this.result = new ArrayList<>();
+        this.ingredients = new ArrayList<>();
+        this.dropItems = true;
+        this.xp = 0;
+        this.cookingTime = 80;
+        this.needsFire = false;
+        this.waterLevel = 0;
+        this.needsWater = true;
+        this.handItem = null;
+        this.mythicMobLevel = 0;
+        this.mythicMobMod = null;
+        this.mythicMobName = "";
     }
 
-    public void setExactMeta(boolean exactMeta) {
-        this.exactMeta = exactMeta;
+    public CauldronRecipe(CauldronRecipe cauldronRecipe) {
+        super(cauldronRecipe);
+        this.result = cauldronRecipe.getCustomResults();
+        this.ingredients = cauldronRecipe.getIngredients();
+        this.dropItems = cauldronRecipe.dropItems();
+        this.xp = cauldronRecipe.getXp();
+        this.cookingTime = cauldronRecipe.getCookingTime();
+        this.needsFire = cauldronRecipe.needsFire();
+        this.waterLevel = cauldronRecipe.getWaterLevel();
+        this.needsWater = cauldronRecipe.needsWater();
+        this.handItem = cauldronRecipe.getHandItem();
+        this.mythicMobName = cauldronRecipe.getMythicMobName();
+        this.mythicMobLevel = cauldronRecipe.getMythicMobLevel();
+        this.mythicMobMod = cauldronRecipe.getMythicMobMod();
     }
 
     public int getCookingTime() {
         return cookingTime;
     }
 
+    public void setCookingTime(int cookingTime) {
+        this.cookingTime = cookingTime;
+    }
+
     public boolean needsFire() {
         return needsFire;
+    }
+
+    public void setNeedsFire(boolean needsFire) {
+        this.needsFire = needsFire;
     }
 
     public int getWaterLevel() {
         return waterLevel;
     }
 
+    public void setWaterLevel(int waterLevel) {
+        this.waterLevel = waterLevel;
+    }
+
     public boolean needsWater() {
         return needsWater;
+    }
+
+    public void setNeedsWater(boolean needsWater) {
+        this.needsWater = needsWater;
     }
 
     public float getXp() {
         return xp;
     }
 
-    @Override
-    public RecipePriority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(RecipePriority priority) {
-        this.priority = priority;
+    public void setXp(float xp) {
+        this.xp = xp;
     }
 
     @Override
@@ -115,31 +157,6 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
 
     public void setIngredients(List<CustomItem> ingredients) {
         this.ingredients = ingredients;
-    }
-
-    @Override
-    @Deprecated
-    public String getId() {
-        return namespacedKey.toString();
-    }
-
-    @Override
-    public NamespacedKey getNamespacedKey() {
-        return namespacedKey;
-    }
-
-    @Override
-    public String getGroup() {
-        return group;
-    }
-
-    @Override
-    public CauldronConfig getConfig() {
-        return config;
-    }
-
-    public void setConfig(CauldronConfig config) {
-        this.config = config;
     }
 
     public boolean dropItems() {
@@ -166,35 +183,76 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
         return null;
     }
 
-    @Override
-    public Conditions getConditions() {
-        return conditions;
-    }
-
     public CustomItem getHandItem() {
         return handItem;
+    }
+
+    public void setHandItem(CustomItem handItem) {
+        this.handItem = handItem;
     }
 
     public String getMythicMobName() {
         return mythicMobName;
     }
 
+    public void setMythicMobName(String mythicMobName) {
+        this.mythicMobName = mythicMobName;
+    }
+
     public int getMythicMobLevel() {
         return mythicMobLevel;
+    }
+
+    public void setMythicMobLevel(int mythicMobLevel) {
+        this.mythicMobLevel = mythicMobLevel;
     }
 
     public Vector getMythicMobMod() {
         return mythicMobMod;
     }
 
-    @Override
-    public boolean isHidden() {
-        return hidden;
+    public void setMythicMobMod(Vector mythicMobMod) {
+        this.mythicMobMod = mythicMobMod;
     }
 
     @Override
     public RecipeType getRecipeType() {
         return RecipeType.CAULDRON;
+    }
+
+    @Override
+    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
+        super.writeToJson(gen, serializerProvider);
+        gen.writeObjectFieldStart("dropItems");
+        gen.writeBooleanField("enabled", dropItems);
+        gen.writeObjectField("handItem", handItem.getApiReference());
+        gen.writeEndObject();
+        gen.writeNumberField("exp", xp);
+        gen.writeNumberField("cookingTime", cookingTime);
+        gen.writeNumberField("waterLevel", waterLevel);
+        gen.writeBooleanField("water", needsWater);
+        gen.writeBooleanField("fire", needsFire);
+        {
+            gen.writeArrayFieldStart("result");
+            for (CustomItem customItem : getCustomResults()) {
+                gen.writeObject(customItem.getApiReference());
+            }
+            gen.writeEndArray();
+        }
+        {
+            gen.writeArrayFieldStart("ingredients");
+            for (CustomItem customItem : getIngredients()) {
+                gen.writeObject(customItem.getApiReference());
+            }
+            gen.writeEndArray();
+        }
+        gen.writeObjectFieldStart("mythicMob");
+        gen.writeStringField("name", mythicMobName);
+        gen.writeNumberField("level", mythicMobLevel);
+        gen.writeNumberField("modX", mythicMobMod.getX());
+        gen.writeNumberField("modY", mythicMobMod.getY());
+        gen.writeNumberField("modZ", mythicMobMod.getZ());
+        gen.writeEndObject();
     }
 
     @Override
@@ -217,5 +275,11 @@ public class CauldronRecipe implements CustomRecipe<CauldronConfig> {
         event.setButton(23, "recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled");
         event.setButton(32, "recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled");
         event.setButton(25, "recipe_book", "ingredient.container_25");
+    }
+
+    public void setMythicMob(String name, int level, double modX, double modY, double modZ) {
+        this.mythicMobName = name;
+        this.mythicMobLevel = level;
+        this.mythicMobMod = new Vector(modX, modY, modZ);
     }
 }

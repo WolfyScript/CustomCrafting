@@ -32,14 +32,14 @@ public class VariantContainerButton extends ItemInputButton {
                 if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
                     Bukkit.getScheduler().runTask(customCrafting, () -> {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            cache.getItems().setVariant(variantSlot, CustomItem.getByItemStack(inventory.getItem(slot)));
+                            cache.getItems().setVariant(variantSlot, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
                             cache.setApplyItem(APPLY_ITEM);
                             guiHandler.changeToInv("none", "item_editor");
                         }
                     });
                     return true;
                 }
-                Bukkit.getScheduler().runTask(customCrafting, () -> variantsData.putVariant(variantSlot, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+                Bukkit.getScheduler().runTask(customCrafting, () -> variantsData.putVariant(variantSlot, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
                 return false;
             }
 
@@ -47,7 +47,7 @@ public class VariantContainerButton extends ItemInputButton {
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
                 VariantsData variantsData = ((TestCache) guiHandler.getCustomCache()).getVariantsData();
                 if (variantsData.getVariants() != null) {
-                    itemStack = variantsData.getVariants().size() > variantSlot ? variantsData.getVariants().get(variantSlot).getIDItem() : new CustomItem(Material.AIR);
+                    itemStack = variantsData.getVariants().size() > variantSlot ? variantsData.getVariants().get(variantSlot).getIDItem() : new ItemStack(Material.AIR);
                 }
                 return itemStack;
             }

@@ -1,25 +1,25 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class EliteWorkbenchCondition extends Condition {
 
-    private List<String> eliteWorkbenches;
+    private final List<String> eliteWorkbenches;
 
     public EliteWorkbenchCondition() {
         super("elite_workbench");
@@ -29,7 +29,7 @@ public class EliteWorkbenchCondition extends Condition {
     }
 
     @Override
-    public boolean check(CustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
@@ -37,8 +37,8 @@ public class EliteWorkbenchCondition extends Condition {
             if (data.getBlock() != null) {
                 Location location = data.getBlock().getLocation();
                 CustomItem customItem = CustomItems.getStoredBlockItem(location);
-                if (customItem != null) {
-                    if (eliteWorkbenches.contains(customItem.getId())) {
+                if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef) {
+                    if (eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().toString())) {
                         EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData("elite_workbench");
                         return eliteWorkbenchData.isEnabled();
                     }
@@ -50,25 +50,22 @@ public class EliteWorkbenchCondition extends Condition {
     }
 
     @Override
-    public JsonElement toJsonElement() {
-        JsonObject jsonObject = (JsonObject) super.toJsonElement();
-        JsonArray jsonArray = new JsonArray();
-        eliteWorkbenches.forEach(s -> jsonArray.add(s));
-        jsonObject.add("elite_workbenches", jsonArray);
-        return jsonObject;
+    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
+        gen.writeArrayFieldStart("elite_workbenches");
+        for (String s : eliteWorkbenches) {
+            gen.writeString(s);
+        }
+        gen.writeEndArray();
     }
 
     @Override
-    public void fromJsonElement(JsonElement jsonElement) {
-        JsonObject jsonObject = (JsonObject) jsonElement;
-        JsonArray jsonArray = jsonObject.getAsJsonArray("elite_workbenches");
-        Iterator<JsonElement> iterator = jsonArray.iterator();
-        while (iterator.hasNext()) {
-            JsonElement element = iterator.next();
-            if (element instanceof JsonPrimitive) {
-                addEliteWorkbenches(element.getAsString());
+    public void readFromJson(JsonNode node) {
+        JsonNode array = node.get("elite_workbenches");
+        array.elements().forEachRemaining(element -> {
+            if(element.isValueNode()){
+                addEliteWorkbenches(element.asText());
             }
-        }
+        });
     }
 
     public void addEliteWorkbenches(String eliteWorkbenches) {

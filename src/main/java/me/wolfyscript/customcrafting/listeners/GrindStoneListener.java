@@ -4,10 +4,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneData;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.ItemUtils;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,9 +25,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class GrindStoneListener implements Listener {
 
-    private static HashMap<UUID, GrindstoneData> preCraftedRecipes = new HashMap<>();
-    private static HashMap<UUID, HashMap<String, CustomItem>> precraftedItems = new HashMap<>();
-    private CustomCrafting customCrafting;
+    private static final HashMap<UUID, GrindstoneData> preCraftedRecipes = new HashMap<>();
+    private static final HashMap<UUID, HashMap<String, CustomItem>> precraftedItems = new HashMap<>();
+    private final CustomCrafting customCrafting;
 
     public GrindStoneListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -37,74 +36,170 @@ public class GrindStoneListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
-        if (WolfyUtilities.hasVillagePillageUpdate()) {
-            if (!event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE)) return;
-            Player player = (Player) event.getWhoClicked();
-            InventoryAction action = event.getAction();
-            Inventory inventory = event.getClickedInventory();
-            if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(inventory.getItem(2)) && (action.toString().startsWith("PICKUP_") || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY))) {
-                //Take out item!
-                if (preCraftedRecipes.get(player.getUniqueId()) != null) {
-                    //Custom Recipe
-                    final ItemStack itemTop = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
-                    final ItemStack itemBottom = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
-                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                        GrindstoneData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
-                        CustomItem inputTop = grindstoneData.getInputTop();
-                        CustomItem inputBottom = grindstoneData.getInputBottom();
-                        if (inputTop != null) {
-                            inputTop.consumeItem(itemTop, 1, inventory);
-                            inventory.setItem(0, itemTop);
-                        }
-                        if (inputBottom != null) {
-                            inputBottom.consumeItem(itemBottom, 1, inventory);
-                            inventory.setItem(1, itemBottom);
-                        }
-                        preCraftedRecipes.remove(player.getUniqueId());
-                    }, 1);
-                    return;
-                } else {
-                    //Vanilla Recipe
-                }
-            } else if (event.getSlot() != 2) {
-                //Place in items and click empty result slot
-                final ItemStack cursor = event.getCursor(); //And the item in the cursor
-                final ItemStack currentItem = event.getCurrentItem(); //We want to get the item in the slot
 
-                AtomicReference<CustomItem> finalInputTop = new AtomicReference<>();
-                AtomicReference<CustomItem> finalInputBottom = new AtomicReference<>();
+        if (!event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE)) return;
+        Player player = (Player) event.getWhoClicked();
+        InventoryAction action = event.getAction();
+        Inventory inventory = event.getClickedInventory();
+        if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(inventory.getItem(2)) && (action.toString().startsWith("PICKUP_") || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY))) {
+            //Take out item!
+            if (preCraftedRecipes.get(player.getUniqueId()) != null) {
+                //Custom Recipe
+                final ItemStack itemTop = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
+                final ItemStack itemBottom = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
+                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                    GrindstoneData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
+                    CustomItem inputTop = grindstoneData.getInputTop();
+                    CustomItem inputBottom = grindstoneData.getInputBottom();
+                    if (inputTop != null) {
+                        inputTop.consumeItem(itemTop, 1, inventory);
+                        inventory.setItem(0, itemTop);
+                    }
+                    if (inputBottom != null) {
+                        inputBottom.consumeItem(itemBottom, 1, inventory);
+                        inventory.setItem(1, itemBottom);
+                    }
+                    preCraftedRecipes.remove(player.getUniqueId());
+                }, 1);
+                return;
+            } else {
+                //Vanilla Recipe
+            }
+        } else if (event.getSlot() != 2) {
+            //Place in items and click empty result slot
+            final ItemStack cursor = event.getCursor(); //And the item in the cursor
+            final ItemStack currentItem = event.getCurrentItem(); //We want to get the item in the slot
 
-                event.setCancelled(true);
-                boolean validItem = false;
-                if (event.getSlot() == 0) {
-                    for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
-                        if (grindstoneRecipe.getInputTop() != null && !grindstoneRecipe.getInputTop().isEmpty()) {
-                            if (ItemUtils.isAirOrNull(cursor)) {
-                                continue;
-                            }
-                            for (CustomItem customItem : grindstoneRecipe.getInputTop()) {
-                                if (customItem.isSimilar(cursor, grindstoneRecipe.isExactMeta())) {
-                                    finalInputTop.set(customItem.clone());
-                                    break;
-                                }
-                            }
-                            if (finalInputTop.get() == null) {
-                                continue;
-                            }
-                        } else if (!ItemUtils.isAirOrNull(cursor)) {
+            AtomicReference<CustomItem> finalInputTop = new AtomicReference<>();
+            AtomicReference<CustomItem> finalInputBottom = new AtomicReference<>();
+
+            event.setCancelled(true);
+            boolean validItem = false;
+            if (event.getSlot() == 0) {
+                for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
+                    if (grindstoneRecipe.getInputTop() != null && !grindstoneRecipe.getInputTop().isEmpty()) {
+                        if (ItemUtils.isAirOrNull(cursor)) {
                             continue;
                         }
-                        validItem = true;
-                        break;
+                        for (CustomItem customItem : grindstoneRecipe.getInputTop()) {
+                            if (customItem.isSimilar(cursor, grindstoneRecipe.isExactMeta())) {
+                                finalInputTop.set(customItem.clone());
+                                break;
+                            }
+                        }
+                        if (finalInputTop.get() == null) {
+                            continue;
+                        }
+                    } else if (!ItemUtils.isAirOrNull(cursor)) {
+                        continue;
+                    }
+                    validItem = true;
+                    break;
+                }
+            } else {
+                for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
+                    if (grindstoneRecipe.getInputBottom() != null && !grindstoneRecipe.getInputBottom().isEmpty()) {
+                        if (ItemUtils.isAirOrNull(cursor)) {
+                            continue;
+                        }
+                        for (CustomItem customItem : grindstoneRecipe.getInputBottom()) {
+                            if (customItem.isSimilar(cursor, grindstoneRecipe.isExactMeta())) {
+                                finalInputBottom.set(customItem.clone());
+                                break;
+                            }
+                        }
+                        if (finalInputBottom.get() == null) {
+                            continue;
+                        }
+                    } else if (!ItemUtils.isAirOrNull(cursor)) {
+                        continue;
+                    }
+                    if (!grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), event.getView()))) {
+                        continue;
+                    }
+                    validItem = true;
+                    break;
+                }
+            }
+            if (!validItem) {
+                preCraftedRecipes.remove(player.getUniqueId());
+                if (ItemUtils.isAirOrNull(cursor) || allowedInGrindstone(cursor.getType())) {
+                    event.setCancelled(false);
+                }
+                return;
+            }
+
+            //Bukkit.getScheduler().runTask(customCrafting, () -> {
+            //Place item when the item is valid
+            if (event.getClickedInventory() == null) return;
+            if (event.getClickedInventory().getType() != InventoryType.GRINDSTONE) return;
+            if (event.isRightClick()) {
+                //Dropping one item or pick up half
+                if (event.getAction().equals(InventoryAction.PICKUP_HALF) || event.getAction().equals(InventoryAction.PICKUP_SOME)) {
+                    return;
+                }
+                //Dropping one item
+                if (ItemUtils.isAirOrNull(currentItem)) {
+                    event.setCancelled(true);
+                    ItemStack itemStack = cursor.clone();
+                    cursor.setAmount(cursor.getAmount() - 1);
+                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                        itemStack.setAmount(1);
+                        inventory.setItem(event.getSlot(), itemStack);
+                        event.getWhoClicked().setItemOnCursor(cursor);
+                    }, 1);
+                } else if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
+                    event.setCancelled(false);
+                    if (currentItem.getAmount() < currentItem.getMaxStackSize()) {
+                        if (cursor.getAmount() > 0) {
+                            event.setCancelled(true);
+                            currentItem.setAmount(currentItem.getAmount() + 1);
+                            cursor.setAmount(cursor.getAmount() - 1);
+                        }
+                    }
+                }
+            } else {
+                //Placing an item
+                if (ItemUtils.isAirOrNull(event.getCursor())) {
+                    return; //Make sure cursor contains item
+                }
+                if (!ItemUtils.isAirOrNull(currentItem)) {
+                    if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
+                        event.setCancelled(true);
+                        int possibleAmount = currentItem.getMaxStackSize() - currentItem.getAmount();
+                        currentItem.setAmount(currentItem.getAmount() + (cursor.getAmount() < possibleAmount ? cursor.getAmount() : possibleAmount));
+                        cursor.setAmount(cursor.getAmount() - possibleAmount);
+                    } else {
+                        if (!ItemUtils.isAirOrNull(cursor)) {
+                            event.setCancelled(true);
+                            ItemStack itemStack = new ItemStack(cursor);
+                            event.getView().setCursor(currentItem);
+                            inventory.setItem(event.getSlot(), itemStack);
+                        }
                     }
                 } else {
-                    for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
+                    ItemStack itemStack = new ItemStack(cursor);
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
+                        inventory.setItem(event.getSlot(), itemStack);
+                        event.getView().setCursor(new ItemStack(Material.AIR));
+                    });
+                }
+            }
+            player.updateInventory();//Update the inventory
+
+            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                //Only check the opposite item depending on which slot was clicked
+                preCraftedRecipes.remove(player.getUniqueId());
+                GrindstoneRecipe foundRecipe = null;
+                for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
+                    if (event.getSlot() == 0) {
+                        ItemStack input = inventory.getItem(1);
                         if (grindstoneRecipe.getInputBottom() != null && !grindstoneRecipe.getInputBottom().isEmpty()) {
-                            if (ItemUtils.isAirOrNull(cursor)) {
+                            if (ItemUtils.isAirOrNull(input)) {
                                 continue;
                             }
                             for (CustomItem customItem : grindstoneRecipe.getInputBottom()) {
-                                if (customItem.isSimilar(cursor, grindstoneRecipe.isExactMeta())) {
+                                if (customItem.isSimilar(input, grindstoneRecipe.isExactMeta())) {
                                     finalInputBottom.set(customItem.clone());
                                     break;
                                 }
@@ -112,171 +207,75 @@ public class GrindStoneListener implements Listener {
                             if (finalInputBottom.get() == null) {
                                 continue;
                             }
-                        } else if (!ItemUtils.isAirOrNull(cursor)) {
+                        } else if (!ItemUtils.isAirOrNull(input)) {
                             continue;
                         }
-                        if (!grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), event.getView()))) {
+                    } else {
+                        ItemStack input = inventory.getItem(0);
+                        if (grindstoneRecipe.getInputTop() != null && !grindstoneRecipe.getInputTop().isEmpty()) {
+                            if (ItemUtils.isAirOrNull(input)) {
+                                continue;
+                            }
+                            for (CustomItem customItem : grindstoneRecipe.getInputTop()) {
+                                if (customItem.isSimilar(input, grindstoneRecipe.isExactMeta())) {
+                                    finalInputTop.set(customItem.clone());
+                                    break;
+                                }
+                            }
+                            if (finalInputTop.get() == null) {
+                                continue;
+                            }
+                        } else if (!ItemUtils.isAirOrNull(input)) {
                             continue;
                         }
-                        validItem = true;
-                        break;
                     }
+                    if (!grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), event.getView()))) {
+                        continue;
+                    }
+                    foundRecipe = grindstoneRecipe;
+                    break;
                 }
-                if (!validItem) {
-                    preCraftedRecipes.remove(player.getUniqueId());
+                if (foundRecipe == null) {
                     if (ItemUtils.isAirOrNull(cursor) || allowedInGrindstone(cursor.getType())) {
                         event.setCancelled(false);
                     }
-                    return;
+                    return; //Returns and uses Vanilla recipe instead
                 }
-
-                //Bukkit.getScheduler().runTask(customCrafting, () -> {
-                //Place item when the item is valid
-                if (event.getClickedInventory() == null) return;
-                if (event.getClickedInventory().getType() != InventoryType.GRINDSTONE) return;
-                if (event.isRightClick()) {
-                    //Dropping one item or pick up half
-                    if (event.getAction().equals(InventoryAction.PICKUP_HALF) || event.getAction().equals(InventoryAction.PICKUP_SOME)) {
-                        return;
+                RandomCollection<CustomItem> items = new RandomCollection<>();
+                for (CustomItem customItem : foundRecipe.getCustomResults()) {
+                    if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
+                        items.add(customItem.getRarityPercentage(), customItem.clone());
                     }
-                    //Dropping one item
-                    if (ItemUtils.isAirOrNull(currentItem)) {
-                        event.setCancelled(true);
-                        ItemStack itemStack = cursor.clone();
-                        cursor.setAmount(cursor.getAmount() - 1);
-                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                            itemStack.setAmount(1);
-                            inventory.setItem(event.getSlot(), itemStack);
-                            event.getWhoClicked().setItemOnCursor(cursor);
-                        }, 1);
-                    } else if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
-                        event.setCancelled(false);
-                        if (currentItem.getAmount() < currentItem.getMaxStackSize()) {
-                            if (cursor.getAmount() > 0) {
-                                event.setCancelled(true);
-                                currentItem.setAmount(currentItem.getAmount() + 1);
-                                cursor.setAmount(cursor.getAmount() - 1);
-                            }
-                        }
+                }
+                HashMap<String, CustomItem> precraftedItem = precraftedItems.getOrDefault(player, new HashMap<>());
+                CustomItem result = new CustomItem(Material.AIR);
+                if (precraftedItem.get(foundRecipe.getNamespacedKey().toString()) == null) {
+                    if (!items.isEmpty()) {
+                        result = items.next();
+                        precraftedItem.put(foundRecipe.getNamespacedKey().toString(), result);
+                        precraftedItems.put(player.getUniqueId(), precraftedItem);
                     }
                 } else {
-                    //Placing an item
-                    if (ItemUtils.isAirOrNull(event.getCursor())) {
-                        return; //Make sure cursor contains item
-                    }
-                    if (!ItemUtils.isAirOrNull(currentItem)) {
-                        if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
-                            event.setCancelled(true);
-                            int possibleAmount = currentItem.getMaxStackSize() - currentItem.getAmount();
-                            currentItem.setAmount(currentItem.getAmount() + (cursor.getAmount() < possibleAmount ? cursor.getAmount() : possibleAmount));
-                            cursor.setAmount(cursor.getAmount() - possibleAmount);
-                        } else {
-                            if (!ItemUtils.isAirOrNull(cursor)) {
-                                event.setCancelled(true);
-                                ItemStack itemStack = new ItemStack(cursor);
-                                event.getView().setCursor(currentItem);
-                                inventory.setItem(event.getSlot(), itemStack);
-                            }
-                        }
-                    } else {
-                        ItemStack itemStack = new ItemStack(cursor);
-                        Bukkit.getScheduler().runTask(customCrafting, () -> {
-                            inventory.setItem(event.getSlot(), itemStack);
-                            event.getView().setCursor(new ItemStack(Material.AIR));
-                        });
-                    }
+                    result = precraftedItem.get(foundRecipe.getNamespacedKey().toString());
                 }
-                player.updateInventory();//Update the inventory
+                preCraftedRecipes.put(player.getUniqueId(), new GrindstoneData(foundRecipe, finalInputTop.get(), finalInputBottom.get()));
+                inventory.setItem(2, result.getItemStack());
+                player.updateInventory();
+            }, 2);
 
-                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                    //Only check the opposite item depending on which slot was clicked
-                    preCraftedRecipes.remove(player.getUniqueId());
-                    GrindstoneRecipe foundRecipe = null;
-                    for (GrindstoneRecipe grindstoneRecipe : customCrafting.getRecipeHandler().getGrindstoneRecipes()) {
-                        if (event.getSlot() == 0) {
-                            ItemStack input = inventory.getItem(1);
-                            if (grindstoneRecipe.getInputBottom() != null && !grindstoneRecipe.getInputBottom().isEmpty()) {
-                                if (ItemUtils.isAirOrNull(input)) {
-                                    continue;
-                                }
-                                for (CustomItem customItem : grindstoneRecipe.getInputBottom()) {
-                                    if (customItem.isSimilar(input, grindstoneRecipe.isExactMeta())) {
-                                        finalInputBottom.set(customItem.clone());
-                                        break;
-                                    }
-                                }
-                                if (finalInputBottom.get() == null) {
-                                    continue;
-                                }
-                            } else if (!ItemUtils.isAirOrNull(input)) {
-                                continue;
-                            }
-                        } else {
-                            ItemStack input = inventory.getItem(0);
-                            if (grindstoneRecipe.getInputTop() != null && !grindstoneRecipe.getInputTop().isEmpty()) {
-                                if (ItemUtils.isAirOrNull(input)) {
-                                    continue;
-                                }
-                                for (CustomItem customItem : grindstoneRecipe.getInputTop()) {
-                                    if (customItem.isSimilar(input, grindstoneRecipe.isExactMeta())) {
-                                        finalInputTop.set(customItem.clone());
-                                        break;
-                                    }
-                                }
-                                if (finalInputTop.get() == null) {
-                                    continue;
-                                }
-                            } else if (!ItemUtils.isAirOrNull(input)) {
-                                continue;
-                            }
-                        }
-                        if (!grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), event.getView()))) {
-                            continue;
-                        }
-                        foundRecipe = grindstoneRecipe;
-                        break;
-                    }
-                    if (foundRecipe == null) {
-                        if (ItemUtils.isAirOrNull(cursor) || allowedInGrindstone(cursor.getType())) {
-                            event.setCancelled(false);
-                        }
-                        return; //Returns and uses Vanilla recipe instead
-                    }
-                    RandomCollection<CustomItem> items = new RandomCollection<>();
-                    for (CustomItem customItem : foundRecipe.getCustomResults()) {
-                        if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
-                            items.add(customItem.getRarityPercentage(), customItem.clone());
-                        }
-                    }
-                    HashMap<String, CustomItem> precraftedItem = precraftedItems.getOrDefault(player, new HashMap<>());
-                    CustomItem result = new CustomItem(Material.AIR);
-                    if (precraftedItem.get(foundRecipe.getNamespacedKey().toString()) == null) {
-                        if (!items.isEmpty()) {
-                            result = items.next();
-                            precraftedItem.put(foundRecipe.getNamespacedKey().toString(), result);
-                            precraftedItems.put(player.getUniqueId(), precraftedItem);
-                        }
-                    } else {
-                        result = precraftedItem.get(foundRecipe.getNamespacedKey().toString());
-                    }
-                    preCraftedRecipes.put(player.getUniqueId(), new GrindstoneData(foundRecipe, finalInputTop.get(), finalInputBottom.get()));
-                    inventory.setItem(2, result.getItemStack());
-                    player.updateInventory();
-                }, 2);
-
-            }
         }
+
     }
 
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
         if (event.getInventory() == null) return;
-        if (WolfyUtilities.hasVillagePillageUpdate()) {
-            if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE)) return;
-            if (event.getInventorySlots().isEmpty()) return;
-            event.setCancelled(true);
 
-            //TODO: DRAG ITEMS INTO GRINDSTONE!
+        if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE)) return;
+        if (event.getInventorySlots().isEmpty()) return;
+        event.setCancelled(true);
+
+        //TODO: DRAG ITEMS INTO GRINDSTONE!
 
             /* Player player = (Player) event.getWhoClicked();
             Inventory inventory = event.getInventory();
@@ -418,7 +417,7 @@ public class GrindStoneListener implements Listener {
             preCraftedRecipes.put(player.getUniqueId(), new GrindstoneData(foundRecipe, finalInputTop, finalInputBottom));
             inventory.setItem(2, result.getRealItem());
              */
-        }
+
     }
 
     private boolean isTool(Material material) {
@@ -456,7 +455,6 @@ public class GrindStoneListener implements Listener {
 
     private boolean allowedInGrindstone(Material material) {
         if (isTool(material)) return true;
-        if (WolfyUtilities.hasVillagePillageUpdate() && material.equals(Material.CROSSBOW)) return true;
         switch (material) {
             case LEATHER_BOOTS:
             case LEATHER_HELMET:
