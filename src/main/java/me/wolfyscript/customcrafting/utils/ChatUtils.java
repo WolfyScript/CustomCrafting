@@ -71,6 +71,12 @@ public class ChatUtils {
             case STONECUTTER:
                 customRecipes.addAll(customCrafting.getRecipeHandler().getStonecutterRecipes());
                 break;
+            case GRINDSTONE:
+                customRecipes.addAll(customCrafting.getRecipeHandler().getGrindstoneRecipes());
+                break;
+            case BREWING_STAND:
+                customRecipes.addAll(customCrafting.getRecipeHandler().getBrewingRecipes());
+                break;
             case SMOKER:
                 customRecipes.addAll(customCrafting.getRecipeHandler().getSmokerRecipes());
                 break;
@@ -105,9 +111,14 @@ public class ChatUtils {
         api.sendPlayerMessage(player, "&8-------------------------------------------------");
 
         for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
-            if(i < customRecipes.size()){
+            if(i < customRecipes.size()) {
                 ICustomRecipe recipe = customRecipes.get(i);
-                api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey()), new HoverEvent(recipe.getCustomResult().create())));
+                ClickEvent commandSuggest = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey());
+                if (recipe.getCustomResult() == null) {
+                    api.sendActionMessage(player, new ClickData(" - §7[§c!§7] §c", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§cFailed to load result item!")));
+                } else {
+                    api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getCustomResult().create())));
+                }
             }else{
                 api.sendPlayerMessage(player, "");
             }

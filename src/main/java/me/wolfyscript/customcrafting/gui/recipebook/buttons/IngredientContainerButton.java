@@ -49,16 +49,20 @@ public class IngredientContainerButton extends Button {
 
     public static void resetButtons(GuiHandler guiHandler) {
         GuiCluster cluster = guiHandler.getApi().getInventoryAPI().getGuiCluster("recipe_book");
-        for (int i = 0; i < 45; i++) {
-            IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
-            if (button.getVariantsMap(guiHandler) != null) {
-                if (button.getTask(guiHandler) != null) {
-                    button.getTask(guiHandler).cancel();
-                    button.setTask(guiHandler, null);
+        for (int i = 0; i < 54; i++) {
+            Button btn = cluster.getButton("ingredient.container_" + i);
+            if (btn != null) {
+                IngredientContainerButton button = (IngredientContainerButton) btn;
+                if (button.getVariantsMap(guiHandler) != null) {
+                    if (button.getTask(guiHandler) != null) {
+                        button.getTask(guiHandler).cancel();
+                        button.setTask(guiHandler, null);
+                    }
+                    button.setVariants(guiHandler, null);
+                    button.setTiming(guiHandler, 0);
                 }
-                button.setVariants(guiHandler, null);
-                button.setTiming(guiHandler, 0);
             }
+
         }
     }
 

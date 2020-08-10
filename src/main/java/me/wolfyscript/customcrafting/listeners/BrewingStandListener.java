@@ -38,8 +38,15 @@ public class BrewingStandListener implements Listener {
     private final CustomCrafting customCrafting;
     private final Map<Location, NamespacedKey> activeBrewingStands = new HashMap<>();
 
+    private final Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
+    private final Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
+    private final Field fuelLevelField = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
+
     public BrewingStandListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
+        this.getTileEntity.setAccessible(true);
+        this.brewTime.setAccessible(true);
+        this.fuelLevelField.setAccessible(true);
     }
 
 
@@ -114,7 +121,7 @@ public class BrewingStandListener implements Listener {
                         if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
                             event.setCancelled(true);
                             int possibleAmount = currentItem.getMaxStackSize() - currentItem.getAmount();
-                            currentItem.setAmount(currentItem.getAmount() + (cursor.getAmount() < possibleAmount ? cursor.getAmount() : possibleAmount));
+                            currentItem.setAmount(currentItem.getAmount() + (Math.min(cursor.getAmount(), possibleAmount)));
                             cursor.setAmount(cursor.getAmount() - possibleAmount);
                         } else {
                             if (!ItemUtils.isAirOrNull(cursor)) {
@@ -139,17 +146,9 @@ public class BrewingStandListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                     //Recipe Checker!
                     final ItemStack ingredient = inventory.getItem(3);
-
                     BrewingStand brewingStand = inventory.getHolder();
 
-                    if (!isBrewingStandEmpty(inventory)) {
-                        Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
-                        Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
-                        Field fuelLevelField = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
-                        getTileEntity.setAccessible(true);
-                        brewTime.setAccessible(true);
-                        fuelLevelField.setAccessible(true);
-
+                    if (brewingStand != null && !isBrewingStandEmpty(inventory)) {
                         try {
                             Object tileEntityObj = getTileEntity.invoke(brewingStand);
                             if (tileEntityObj != null) {
@@ -239,8 +238,7 @@ public class BrewingStandListener implements Listener {
                                     }
                                 }
                             }
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            return;
+                        } catch (IllegalAccessException | InvocationTargetException ignored) {
                         }
                     }
                 }, 2);

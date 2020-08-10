@@ -30,7 +30,7 @@ public class CraftingIngredientButton extends ItemInputButton {
                 CraftingRecipe workbench = cache.getCraftRecipe();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
-                    if ((workbench instanceof EliteCraftingRecipe && recipeSlot == 36) || recipeSlot == 9) {
+                    if ((!(workbench instanceof EliteCraftingRecipe) && recipeSlot == 9) || (workbench instanceof EliteCraftingRecipe && recipeSlot == 36)) {
                         if (workbench.getCustomResults() != null) {
                             variants = workbench.getCustomResults();
                         }
@@ -44,7 +44,7 @@ public class CraftingIngredientButton extends ItemInputButton {
                 } else {
                     Bukkit.getScheduler().runTask(customCrafting, () -> {
                         CustomItem customItem = inventory.getItem(slot) != null ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : null;
-                        if ((workbench instanceof EliteCraftingRecipe && recipeSlot == 36) || recipeSlot == 9) {
+                        if ((!(workbench instanceof EliteCraftingRecipe) && recipeSlot == 9) || (workbench instanceof EliteCraftingRecipe && recipeSlot == 36)) {
                             workbench.setResult(0, customItem);
                         } else {
                             workbench.setIngredient(recipeSlot, 0, customItem);
@@ -58,7 +58,7 @@ public class CraftingIngredientButton extends ItemInputButton {
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
                 CraftingRecipe workbench = ((TestCache) guiHandler.getCustomCache()).getCraftRecipe();
                 itemStack = new ItemStack(Material.AIR);
-                if ((workbench instanceof EliteCraftingRecipe && recipeSlot == 36) || recipeSlot == 9) {
+                if ((!(workbench instanceof EliteCraftingRecipe) && recipeSlot == 9) || (workbench instanceof EliteCraftingRecipe && recipeSlot == 36)) {
                     if (workbench.getCustomResult() != null) {
                         itemStack = workbench.getCustomResult().create();
                     }

@@ -89,11 +89,7 @@ public class Cauldrons {
                             } else {
                                 if (event.getRecipe().getWaterLevel() > 0) {
                                     int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
-                                    if (newLevel > 0) {
-                                        levelled.setLevel(newLevel);
-                                    } else {
-                                        levelled.setLevel(0);
-                                    }
+                                    levelled.setLevel(Math.max(newLevel, 0));
                                     loc.getBlock().setBlockData(levelled);
                                 }
                                 if (WolfyUtilities.hasMythicMobs()) {
@@ -119,9 +115,7 @@ public class Cauldrons {
                             if (checkCauldron.get()) {
                                 cauldronItr.remove();
                             }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
+                        } catch (InterruptedException | ExecutionException e) {
                             e.printStackTrace();
                         }
                     } else {
@@ -183,8 +177,8 @@ public class Cauldrons {
     }
 
     private String locationToString(Location location) {
-        if(location == null) return null;
-        return (location.getWorld() != null ? location.getWorld().getUID() : null) + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
+        if (location == null || location.getWorld() == null) return null;
+        return location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
     }
 
     private Location stringToLocation(String loc) {

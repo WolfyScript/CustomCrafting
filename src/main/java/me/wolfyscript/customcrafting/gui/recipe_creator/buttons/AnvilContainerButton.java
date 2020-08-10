@@ -8,6 +8,7 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class AnvilContainerButton extends ItemInputButton {
                     return true;
                 } else {
                     Bukkit.getScheduler().runTask(customCrafting, () -> {
-                        CustomItem input = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
+                        CustomItem input = !ItemUtils.isAirOrNull(inventory.getItem(slot)) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
                         List<CustomItem> inputs = anvilRecipe.getInput(inputSlot);
                         if (inputs.size() > 0) {
                             inputs.set(0, input);

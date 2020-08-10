@@ -13,6 +13,7 @@ import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.util.Vector;
 
@@ -53,7 +54,7 @@ public class CauldronRecipe extends CustomRecipe {
             List<CustomItem> ingredients = new ArrayList<>();
             JsonNode ingredientNode = node.path("ingredients");
             ingredientNode.elements().forEachRemaining(n -> ingredients.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
-            setResult(ingredients.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+            setIngredients(ingredients.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
         }
         if(result == null){
             this.result = new ArrayList<>();
@@ -80,9 +81,9 @@ public class CauldronRecipe extends CustomRecipe {
         this.needsFire = false;
         this.waterLevel = 0;
         this.needsWater = true;
-        this.handItem = null;
+        this.handItem = new CustomItem(Material.AIR);
         this.mythicMobLevel = 0;
-        this.mythicMobMod = null;
+        this.mythicMobMod = new Vector();
         this.mythicMobName = "";
     }
 
@@ -140,15 +141,6 @@ public class CauldronRecipe extends CustomRecipe {
 
     public void setXp(float xp) {
         this.xp = xp;
-    }
-
-    @Override
-    public List<CustomItem> getCustomResults() {
-        return result;
-    }
-
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
     }
 
     public List<CustomItem> getIngredients() {
@@ -218,6 +210,16 @@ public class CauldronRecipe extends CustomRecipe {
     @Override
     public RecipeType getRecipeType() {
         return RecipeType.CAULDRON;
+    }
+
+    @Override
+    public List<CustomItem> getCustomResults() {
+        return this.result;
+    }
+
+    @Override
+    public void setResult(List<CustomItem> result) {
+        this.result = result;
     }
 
     @Override

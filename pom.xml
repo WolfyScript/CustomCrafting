@@ -6,7 +6,7 @@
 
     <groupId>io.github.wolfyscript</groupId>
     <artifactId>customcrafting</artifactId>
-    <version>1.6-dev5</version>
+    <version>1.6.0.2</version>
 
     <properties>
         <!-- Generic properties -->
@@ -17,12 +17,12 @@
 
     <repositories>
         <repository>
-            <id>placeholderapi</id>
-            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <id>wolfyscript</id>
+            <url>https://maven.wolfyscript.com/repository/public/</url>
         </repository>
         <repository>
-            <id>brokko-repo</id>
-            <url>https://www.iani.de/nexus/content/groups/public</url>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
             <id>CodeMC</id>
@@ -48,15 +48,21 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>19.0.0</version>
+            <groupId>com.wolfyscript</groupId>
+            <artifactId>wolfyutilities</artifactId>
+            <version>1.6.0.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lumine.xikage</groupId>
+            <artifactId>mythicmobs</artifactId>
+            <version>4.9.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -66,35 +72,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>19.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.10.4</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.wolfyscript</groupId>
-            <artifactId>wolfyutilities</artifactId>
-            <version>1.6-dev5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.github.intellectualsites.plotsquared</groupId>
-                    <artifactId>PlotSquared-API</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.github.intellectualsites.plotsquared</groupId>
-                    <artifactId>PlotSquared-BukkitAPI</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>1.7</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.lumine.xikage</groupId>
-            <artifactId>mythicmobs</artifactId>
-            <version>4.9.0</version>
         </dependency>
     </dependencies>
 

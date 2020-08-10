@@ -22,7 +22,6 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.Reflection;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -36,7 +35,6 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,7 +65,7 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private boolean outdated = false;
-    private final boolean premium = false;
+    private final boolean premium = true;
     private boolean premiumPlus = false;
 
     @Nullable
@@ -163,10 +161,14 @@ public class CustomCrafting extends JavaPlugin {
         }
         System.out.println();
         System.out.println("Special thanks to my Patreons for supporting this project: ");
-        System.out.println("    Apprehentice        gizmonster");
-        System.out.println("    Alex                Nick coburn");
-        System.out.println("    Vincent Deniau      TheDutchRuben");
-        System.out.println("    Nat R               ");
+        System.out.println(
+                "       Apprehentice        Alex            Vincent Deniau\n" +
+                        "       Nat R               gizmonster      Nick coburn\n" +
+                        "       TheDutchRuben       Beng701         Eli2t\n" +
+                        "       르 미                 Ananass Me      Thomas Texier\n" +
+                        "       Ethonion"
+        );
+        System.out.println();
         System.out.println("------------------------------------------------------------------------");
 
         File mainConfig = new File(getDataFolder(), "Main-Config.yml");
@@ -202,17 +204,10 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GrindStoneListener(this), this);
         getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
 
-        final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
-        serverCommandMap.setAccessible(true);
-        try {
-            CommandMap commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
-            commandMap.register("customcrafting", new CommandCC(this));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        CommandMap commandMap = getServer().getCommandMap();
+        commandMap.register("customcrafting", new CommandCC(this));
+        commandMap.register("recipes", "customcrafting", new CommandRecipe(this));
 
-        getCommand("recipes").setExecutor(new CommandRecipe(this));
-        getCommand("recipes").setTabCompleter(new CommandRecipe(this));
         loadPlayerStatistics();
         invHandler.init();
         workbenches = new Workbenches(this);
@@ -291,8 +286,10 @@ public class CustomCrafting extends JavaPlugin {
                 for (int i = 0; i < vNew.length; i++) {
                     int v1 = Integer.parseInt(vNew[i]);
                     int v2 = Integer.parseInt(vOld[i]);
-
-                    if (v1 > v2) {
+                    if (v2 > v1) {
+                        outdated = false;
+                        return;
+                    } else if (v1 > v2) {
                         outdated = true;
                         api.sendConsoleWarning("$msg.startup.outdated$");
                         if (player != null) {
@@ -303,7 +300,6 @@ public class CustomCrafting extends JavaPlugin {
                     }
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
                 api.sendConsoleWarning("$msg.startup.update_check_fail$");
             }
         });

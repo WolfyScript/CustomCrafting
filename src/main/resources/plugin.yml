@@ -1,15 +1,10 @@
 name: CustomCrafting
 main: me.wolfyscript.customcrafting.CustomCrafting
 version: ${project.version}
-api-version: 1.13
+api-version: "1.16"
 
 depend:
   - WolfyUtilities
 softdepend:
   - PlaceholderAPI
 description: Create your own custom recipes for workbenches and furnaces. Disable Vanilla recipes and more.
-
-commands:
-  recipes:
-    usage: /recipes <label>
-    description: Command to quick edit, delete, toggle recipes

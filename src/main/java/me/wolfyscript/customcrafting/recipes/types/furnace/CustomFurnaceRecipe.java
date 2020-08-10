@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.furnace;
 
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -25,7 +26,7 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<FurnaceRecipe> {
 
     @Override
     public FurnaceRecipe getVanillaRecipe() {
-        return new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(customItem -> customItem.create()).collect(Collectors.toList())), getExp(), getCookingTime());
+        return new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())), getExp(), getCookingTime());
     }
 
     @Override

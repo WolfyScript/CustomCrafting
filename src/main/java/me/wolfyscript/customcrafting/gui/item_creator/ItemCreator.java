@@ -85,16 +85,20 @@ public class ItemCreator extends ExtendedGuiWindow {
         registerButton(new ActionButton("save_item", new ButtonState("save_item", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
-                //TODO ITEM LIST
                 sendMessage(player, "save.input.line1");
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         try {
                             me.wolfyscript.utilities.api.utils.NamespacedKey namespacedKey = new me.wolfyscript.utilities.api.utils.NamespacedKey(args[0].toLowerCase(Locale.ROOT).replace(" ", "_"), args[1].toLowerCase(Locale.ROOT).replace(" ", "_"));
+                            CustomItem customItem = items.getItem();
+                            if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
+                                api.sendPlayerMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
+                                return true;
+                            }
                             customCrafting.saveItem(namespacedKey, items.getItem());
                             sendMessage(player, "save.success");
                             api.sendPlayerMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
-                            Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler.openCluster());
+                            Bukkit.getScheduler().runTask(api.getPlugin(), (Runnable) guiHandler::openCluster);
                         } catch (IllegalArgumentException e) {
                             api.sendPlayerMessage(player1, e.getMessage());
                         }

@@ -16,7 +16,7 @@ import org.bukkit.event.EventHandler;
 public class PatronsMenu extends ExtendedGuiWindow {
 
     public PatronsMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("patrons_menu", inventoryAPI, 36, customCrafting);
+        super("patrons_menu", inventoryAPI, 45, customCrafting);
     }
 
     @Override
@@ -41,6 +41,12 @@ public class PatronsMenu extends ExtendedGuiWindow {
         registerButton(new PatronButton("gizmonster", "gizmonster", "e502d121-de9d-4f5d-b7e5-0da747c4e2e8"));
         registerButton(new PatronButton("Nick coburn"));
         registerButton(new PatronButton("TheDutchRuben"));
+        registerButton(new PatronButton("Beng701"));
+        registerButton(new PatronButton("Eli2t"));
+        registerButton(new PatronButton("르 미"));
+        registerButton(new PatronButton("Ananass Me"));
+        registerButton(new PatronButton("Thomas Texier"));
+        registerButton(new PatronButton("Ethonion"));
     }
 
     @EventHandler
@@ -52,9 +58,16 @@ public class PatronsMenu extends ExtendedGuiWindow {
             event.setButton(12, "patron.alex");
             event.setButton(14, "patron.vincent_deniau");
             event.setButton(16, "patron.nat_r");
-            event.setButton(20, "patron.gizmonster");
-            event.setButton(22, "patron.nick_coburn");
-            event.setButton(24, "patron.thedutchruben");
+            event.setButton(18, "patron.gizmonster");
+            event.setButton(20, "patron.nick_coburn");
+            event.setButton(22, "patron.thedutchruben");
+            event.setButton(24, "patron.beng701");
+            event.setButton(26, "patron.eli2t");
+            event.setButton(28, "patron.르_미");
+            event.setButton(30, "patron.ananass_me");
+            event.setButton(32, "patron.thomas_texier");
+            event.setButton(34, "patron.ethonion");
+
         }
     }
 

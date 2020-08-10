@@ -17,7 +17,7 @@
           "icon": "CRAFTING_TABLE",
           "name": "$knowledgebook.category.customcrafting.name$",
           "recipes": [
-            "customcrafting:advanced_workbench",
+            "customcrafting:workbench",
             "customcrafting:knowledge_book"
           ]
         }

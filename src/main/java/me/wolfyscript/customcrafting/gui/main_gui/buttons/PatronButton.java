@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 public class PatronButton extends DummyButton {
@@ -35,22 +36,25 @@ public class PatronButton extends DummyButton {
         }
         this.head.setItemMeta(skullMeta);
 
+
         Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.getInst(), () -> {
             try {
-                URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
-                InputStreamReader reader = new InputStreamReader(url.openStream());
-                JsonObject textureProperty = (JsonObject) new JsonParser().parse(reader).getAsJsonObject().get("properties").getAsJsonArray().get(0);
-                this.head = PlayerHeadUtils.getViaValue(textureProperty.get("value").getAsString());
-
-                ItemMeta meta = this.head.getItemMeta();
-                meta.setDisplayName("§6§l" + name);
-                if (!minecraftName.isEmpty()) {
-                    meta.setLore(Arrays.asList("§8aka. " + minecraftName));
+                if (!uuid.isEmpty()) {
+                    URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
+                    InputStreamReader reader = new InputStreamReader(url.openStream());
+                    JsonObject textureProperty = (JsonObject) new JsonParser().parse(reader).getAsJsonObject().get("properties").getAsJsonArray().get(0);
+                    this.head = PlayerHeadUtils.getViaValue(textureProperty.get("value").getAsString());
                 }
-                this.head.setItemMeta(meta);
             } catch (IOException e) {
                 Bukkit.getLogger().info("Could not get skin data from session servers!");
             }
+            ItemMeta meta = this.head.getItemMeta();
+            meta.setDisplayName("§6§l" + name);
+            if (!minecraftName.isEmpty()) {
+                meta.setLore(Collections.singletonList("§8aka. " + minecraftName));
+            }
+            this.head.setItemMeta(meta);
+
         });
     }
 

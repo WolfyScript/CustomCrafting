@@ -473,7 +473,7 @@ public class RecipeHandler {
     }
 
     public <T extends ICustomRecipe> List<T> getRecipes(Class<T> type) {
-        return customRecipes.values().stream().filter(recipe -> type.isInstance(recipe)).map(recipe -> (T) recipe).collect(Collectors.toList());
+        return customRecipes.values().stream().filter(type::isInstance).map(recipe -> (T) recipe).collect(Collectors.toList());
     }
 
     public <T extends ICustomRecipe> List<T> getAvailableRecipes(Class<T> type) {
@@ -601,7 +601,7 @@ public class RecipeHandler {
             while (iterator.hasNext()) {
                 Recipe recipe = iterator.next();
                 if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe) {
-                    if (recipe instanceof Keyed && ((Keyed) recipe).getKey().toString().startsWith("minecraft")) {
+                    if (((Keyed) recipe).getKey().toString().startsWith("minecraft")) {
                         allRecipes.add(recipe);
                     }
                 }

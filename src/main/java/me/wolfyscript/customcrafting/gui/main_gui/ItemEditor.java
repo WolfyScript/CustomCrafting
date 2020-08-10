@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -180,19 +181,31 @@ public class ItemEditor extends ExtendedGuiWindow {
 
         int i = (currentPage - 1) * itemsPerPage;
         for (Map.Entry<NamespacedKey, CustomItem> entry : CustomItems.getCustomItems().entrySet()) {
-            api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " - ", null), new ClickData(entry.getKey().toString(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, entry.getKey().getNamespace() + " " + entry.getKey().getKey()), new HoverEvent(entry.getValue().create())));
-            if(i < (currentPage - 1) * itemsPerPage + itemsPerPage){
-                i++;
-            }else{
-                break;
+            NamespacedKey namespacedKey = entry.getKey();
+            CustomItem customItem = entry.getValue();
+            if (customItem != null) {
+                if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
+                    api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " -&7[&c!&7] &4" + namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
+                } else {
+                    api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
+                }
+                if (i < (currentPage - 1) * itemsPerPage + itemsPerPage) {
+                    i++;
+                } else {
+                    break;
+                }
             }
         }
         if (cache.getChatLists().getLastUsedItem() != null) {
             api.sendPlayerMessage(player, "§ePreviously used:");
             NamespacedKey namespacedKey = cache.getChatLists().getLastUsedItem();
-            CustomItem customItem = CustomItems.getCustomItems().get(namespacedKey);
+            CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
             if (customItem != null) {
-                api.sendActionMessage(player, new ClickData("§b - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
+                if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
+                    api.sendActionMessage(player, new ClickData("§b -&7[&c!&7] &4" + namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
+                } else {
+                    api.sendActionMessage(player, new ClickData("§b - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
+                }
             }
         }
         api.sendPlayerMessage(player, "&8-------------------------------------------------");

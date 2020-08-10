@@ -17,7 +17,6 @@ import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -55,7 +54,7 @@ public class FurnaceListener implements Listener {
                                             if (fuel.isSimilar(input)) {
                                                 event.setCancelled(true);
                                                 int possibleAmount = fuel.getMaxStackSize() - fuel.getAmount();
-                                                fuel.setAmount(fuel.getAmount() + (input.getAmount() < possibleAmount ? input.getAmount() : possibleAmount));
+                                                fuel.setAmount(fuel.getAmount() + (Math.min(input.getAmount(), possibleAmount)));
                                                 input.setAmount(input.getAmount() - possibleAmount);
                                                 Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                                                     furnaceInventory.setFuel(fuel);
@@ -156,7 +155,7 @@ public class FurnaceListener implements Listener {
                     event.setCancelled(true);
                     continue;
                 }
-                CustomCookingRecipe<CookingRecipe> customRecipe = (CustomCookingRecipe) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+                CustomCookingRecipe<? extends Recipe> customRecipe = (CustomCookingRecipe<? extends Recipe>) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
                 if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                     if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                         event.setCancelled(false);
