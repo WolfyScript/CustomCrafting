@@ -22,6 +22,7 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.Reflection;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -35,6 +36,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -65,7 +67,7 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private boolean outdated = false;
-    private final boolean premium = true;
+    private final boolean premium = false;
     private boolean premiumPlus = false;
 
     @Nullable
@@ -151,7 +153,7 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premium ? "Premium" : (premiumPlus ? "Premium+" : "")));
+        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premiumPlus ? "Premium+" : "Free"));
         System.out.println(" ");
 
         if (premiumPlus) {
@@ -204,9 +206,15 @@ public class CustomCrafting extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GrindStoneListener(this), this);
         getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
 
-        CommandMap commandMap = getServer().getCommandMap();
-        commandMap.register("customcrafting", new CommandCC(this));
-        commandMap.register("recipes", "customcrafting", new CommandRecipe(this));
+        final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
+        serverCommandMap.setAccessible(true);
+        try {
+            CommandMap commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
+            commandMap.register("customcrafting", new CommandCC(this));
+            commandMap.register("recipes", "customcrafting", new CommandRecipe(this));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         loadPlayerStatistics();
         invHandler.init();

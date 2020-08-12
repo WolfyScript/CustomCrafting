@@ -227,7 +227,7 @@ public class RecipeHandler {
 
     public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
         api.sendConsoleMessage("Exporting configs to database...");
-        getRecipes().values().forEach((iCustomRecipe) -> dataBaseHandler.updateRecipe(iCustomRecipe));
+        getRecipes().values().forEach(dataBaseHandler::updateRecipe);
         /*
         File recipesFolder = new File(customCrafting.getDataFolder() + File.separator + "recipes");
         List<File> subFolders = null;
@@ -320,7 +320,7 @@ public class RecipeHandler {
     public void registerRecipe(ICustomRecipe recipe) {
         if (recipe instanceof ICustomVanillaRecipe) {
             api.sendDebugMessage("  - add to Bukkit");
-            Bukkit.addRecipe(((ICustomVanillaRecipe) recipe).getVanillaRecipe());
+            Bukkit.addRecipe(((ICustomVanillaRecipe<?>) recipe).getVanillaRecipe());
         }
         api.sendDebugMessage("  - cache custom recipe");
         customRecipes.put(recipe.getNamespacedKey(), recipe);

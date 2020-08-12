@@ -38,9 +38,18 @@ public class BrewingStandListener implements Listener {
     private final CustomCrafting customCrafting;
     private final Map<Location, NamespacedKey> activeBrewingStands = new HashMap<>();
 
-    private final Method getTileEntity = Reflection.getMethod(Reflection.getOBC("block.CraftBrewingStand"), "getTileEntity");
-    private final Field brewTime = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "brewTime");
-    private final Field fuelLevelField = Reflection.getField(Reflection.getNMS("TileEntityBrewingStand"), "fuelLevel");
+    private final Method getTileEntity;
+    private final Field brewTime;
+    private final Field fuelLevelField;
+
+    {
+        Class<?> craftBrewingStand = Reflection.getOBC("block.CraftBlockEntityState");
+        Class<?> tileEntityBrewingStand = Reflection.getNMS("TileEntityBrewingStand");
+
+        getTileEntity = Reflection.getDeclaredMethod(craftBrewingStand, "getTileEntity");
+        brewTime = Reflection.getField(tileEntityBrewingStand, "brewTime");
+        fuelLevelField = Reflection.getField(tileEntityBrewingStand, "fuelLevel");
+    }
 
     public BrewingStandListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;

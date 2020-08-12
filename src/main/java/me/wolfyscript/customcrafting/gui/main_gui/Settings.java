@@ -11,6 +11,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
@@ -21,9 +22,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Settings extends ExtendedGuiWindow {
 
@@ -96,13 +100,18 @@ public class Settings extends ExtendedGuiWindow {
                 } else if (event.isShiftClick()) {
                     if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
                         api.sendPlayerMessage(player, "&eReloading Inventories and Languages!");
-                        CustomCrafting.getApi().getInventoryAPI().reset();
-                        CustomCrafting.getApi().getLanguageAPI().unregisterLanguages();
+                        InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
+                        LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
+                        invAPI.reset();
+                        langAPI.unregisterLanguages();
                         customCrafting.getConfigHandler().getConfig().save();
                         customCrafting.getRecipeHandler().onSave();
-                        customCrafting.getConfigHandler().load();
-                        InventoryHandler invHandler = new InventoryHandler(customCrafting);
-                        invHandler.init();
+                        try {
+                            customCrafting.getConfigHandler().loadLang();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        new InventoryHandler(customCrafting).init();
                         api.sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
                         return true;
                     }
@@ -160,12 +169,8 @@ public class Settings extends ExtendedGuiWindow {
             availableLangs.clear();
             File langFolder = new File(customCrafting.getDataFolder() + File.separator + "lang");
             String[] filenames = langFolder.list((dir, name) -> name.endsWith(".json"));
-            availableLangs.add("de_DE");
-            for (String filename : filenames) {
-                String name = filename.replace(".json", "");
-                if (!availableLangs.contains(name)) {
-                    availableLangs.add(name);
-                }
+            if (filenames != null) {
+                availableLangs.addAll(Arrays.stream(filenames).map(s -> s.replace(".json", "")).distinct().collect(Collectors.toList()));
             }
             Player player = event.getPlayer();
 

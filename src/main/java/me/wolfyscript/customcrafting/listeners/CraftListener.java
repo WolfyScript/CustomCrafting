@@ -45,22 +45,27 @@ public class CraftListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
-        if (event.getClickedInventory() instanceof CraftingInventory && event.getSlot() == 0) {
+        if (event.getClickedInventory() == null) return;
+        if (!(event.getClickedInventory() instanceof CraftingInventory)) return;
+        Player player = (Player) event.getWhoClicked();
+        CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
+
+        if (event.getSlot() == 0) {
+            if (event.getCurrentItem() == null) return;
+            if (event.getCursor() != null && !event.getCursor().isSimilar(event.getCurrentItem())) return;
+
             if (recipeUtils.getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId())) {
-                Player player = (Player) event.getWhoClicked();
-                CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
                 ItemStack resultItem = inventory.getResult();
                 inventory.setResult(new ItemStack(Material.AIR));
                 ItemStack[] matrix = inventory.getMatrix().clone();
                 recipeUtils.consumeRecipe(resultItem, matrix, event);
-
                 Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix));
                 player.updateInventory();
                 recipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
             }
-        } else if (event.getClickedInventory() instanceof CraftingInventory) {
+        } else {
             Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                PrepareItemCraftEvent event1 = new PrepareItemCraftEvent((CraftingInventory) event.getClickedInventory(), event.getView(), false);
+                PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(inventory, event.getView(), false);
                 Bukkit.getPluginManager().callEvent(event1);
             }, 1);
         }

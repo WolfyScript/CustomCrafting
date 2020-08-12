@@ -53,7 +53,6 @@ public class CauldronListener implements Listener {
                 CustomCrafting.getCauldrons().removeCauldron(location);
             }
         }
-
     }
 
     @EventHandler

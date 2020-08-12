@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,6 @@ public class ConfigHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
 
         {
@@ -98,7 +98,8 @@ public class ConfigHandler {
         languageAPI.registerLanguage(fallBackLanguage);
         System.out.println("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + fallBackLanguage.getAuthors().stream().collect(Collectors.joining()));
 
-        if (customCrafting.getResource("me/wolfyscript/customcrafting/configs/lang/" + chosenLang + ".json") != null) {
+        File file = new File(customCrafting.getDataFolder(), "lang/" + chosenLang + ".json");
+        if (file.exists()) {
             Language language = new Language(customCrafting, chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);

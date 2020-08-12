@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class SaveSubCommand extends AbstractSubCommand {
@@ -27,7 +28,7 @@ public class SaveSubCommand extends AbstractSubCommand {
         WolfyUtilities api = CustomCrafting.getApi();
         if (sender instanceof Player) {
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle")) {
-                CustomItems.getCustomItems().forEach((namespacedKey, customItem) -> {
+                new TreeMap<>(CustomItems.getCustomItems()).forEach((namespacedKey, customItem) -> {
                     api.sendConsoleMessage("Saving item: " + namespacedKey.toString());
                     customCrafting.saveItem(namespacedKey, customItem);
                 });
@@ -39,7 +40,7 @@ public class SaveSubCommand extends AbstractSubCommand {
                 sender.sendMessage("§cNotice that some recipes must be recreated due incompatibility! These are: ");
                 sender.sendMessage("§c- recipes that caused errors when saving (their config is corrupted from now on)");
                 sender.sendMessage("§c- recipes that don't work when the server is restarted");
-                sender.sendMessage("§eYou can also report the errors for further information!");
+                sender.sendMessage("§eYou can get or ask for further information on the discord!");
             }
         }
         return true;

@@ -14,14 +14,14 @@ import java.util.List;
 public class ClearSubCommand extends AbstractSubCommand {
 
     public ClearSubCommand(CustomCrafting customCrafting) {
-        super("clear", new ArrayList<>(), customCrafting);
+        super("reset_player", new ArrayList<>(), customCrafting);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            if (ChatUtils.checkPerm(p, "customcrafting.cmd.clear")) {
+            if (ChatUtils.checkPerm(p, "customcrafting.cmd.reset_player")) {
                 CustomCrafting.renewPlayerStatistics(p);
             }
         }

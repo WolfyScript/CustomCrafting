@@ -6,7 +6,7 @@
 
     <groupId>io.github.wolfyscript</groupId>
     <artifactId>customcrafting</artifactId>
-    <version>1.6.0.2</version>
+    <version>1.6.1.1</version>
 
     <properties>
         <!-- Generic properties -->
@@ -50,8 +50,14 @@
         <dependency>
             <groupId>com.wolfyscript</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.6.0.3</version>
+            <version>1.6.0.4</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.plotsquared</groupId>
+                    <artifactId>PlotSquared-Bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.lumine.xikage</groupId>
