@@ -51,7 +51,7 @@ public class ResultSlotButton extends ItemInputButton {
                 }
                 Bukkit.getScheduler().runTask(customCrafting, () -> {
                     EliteWorkbenchData eliteWorkbenchData = eliteWorkbench.getEliteWorkbenchData();
-                    ItemStack result = customCrafting.getRecipeUtils().preCheckRecipe(eliteWorkbench.getContents(), player, false, inventory, true, eliteWorkbench != null && eliteWorkbenchData.isAdvancedRecipes());
+                    ItemStack result = customCrafting.getRecipeUtils().preCheckRecipe(eliteWorkbench.getContents(), player, false, inventory, true, eliteWorkbenchData.isAdvancedRecipes());
                     eliteWorkbench.setResult(result);
                 });
                 return true;

@@ -380,11 +380,11 @@ public class RecipeHandler {
     }
 
     public List<String> getNamespaces() {
-        return customRecipes.keySet().stream().map(namespacedKey -> namespacedKey.getNamespace()).distinct().collect(Collectors.toList());
+        return customRecipes.keySet().stream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
     }
 
     public List<ICustomRecipe> getRecipesByNamespace(String namespace) {
-        return customRecipes.entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(entry -> entry.getValue()).collect(Collectors.toList());
+        return customRecipes.entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
     public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {

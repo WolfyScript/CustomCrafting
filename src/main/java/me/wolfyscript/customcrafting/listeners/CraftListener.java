@@ -1,12 +1,12 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -25,13 +25,10 @@ public class CraftListener implements Listener {
     private final RecipeUtils recipeUtils;
     private final WolfyUtilities api;
 
-    private final MainConfig config;
-
     public CraftListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.recipeUtils = customCrafting.getRecipeUtils();
         this.api = WolfyUtilities.getAPI(customCrafting);
-        this.config = customCrafting.getConfigHandler().getConfig();
     }
 
     @EventHandler
@@ -45,17 +42,17 @@ public class CraftListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null) return;
-        if (!(event.getClickedInventory() instanceof CraftingInventory)) return;
+        if (event.getClickedInventory() == null || !(event.getClickedInventory() instanceof CraftingInventory)) return;
         Player player = (Player) event.getWhoClicked();
         CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
+        ItemStack resultItem = inventory.getResult();
 
         if (event.getSlot() == 0) {
-            if (event.getCurrentItem() == null) return;
-            if (event.getCursor() != null && !event.getCursor().isSimilar(event.getCurrentItem())) return;
-
+            if (resultItem == null || (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem))) {
+                event.setCancelled(true);
+                return;
+            }
             if (recipeUtils.getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId())) {
-                ItemStack resultItem = inventory.getResult();
                 inventory.setResult(new ItemStack(Material.AIR));
                 ItemStack[] matrix = inventory.getMatrix().clone();
                 recipeUtils.consumeRecipe(resultItem, matrix, event);

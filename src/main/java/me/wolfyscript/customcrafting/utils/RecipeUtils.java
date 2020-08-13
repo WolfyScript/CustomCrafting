@@ -15,6 +15,7 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,14 +53,14 @@ public class RecipeUtils {
                         customPreCraftEvent.getResult().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).forEach(customItem -> items.add(customItem.getRarityPercentage(), customItem.clone()));
                         HashMap<NamespacedKey, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
                         CustomItem result = new CustomItem(Material.AIR);
-                        if (precraftedItem.get(recipe.getNamespacedKey().toString()) == null) {
+                        if (precraftedItem.get(recipe.getNamespacedKey()) == null) {
                             if (!items.isEmpty()) {
                                 result = items.next();
                                 precraftedItem.put(recipe.getNamespacedKey(), result);
                                 precraftedItems.put(player.getUniqueId(), precraftedItem);
                             }
                         } else {
-                            result = precraftedItem.get(recipe.getNamespacedKey().toString());
+                            result = precraftedItem.get(recipe.getNamespacedKey());
                         }
                         return result.create();
                     }
@@ -148,10 +149,11 @@ public class RecipeUtils {
                         }
                     } else if (event.getClick().equals(ClickType.LEFT) || event.getClick().equals(ClickType.RIGHT)) {
                         api.sendDebugMessage("ONE-CLICK!");
-                        if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR) || (event.getView().getCursor() != null && event.getView().getCursor().getAmount() < event.getCursor().getMaxStackSize())) {
+                        ItemStack cursor = event.getView().getCursor();
+                        if (ItemUtils.isAirOrNull(cursor) || cursor.getAmount() < cursor.getMaxStackSize()) {
                             HashMap<NamespacedKey, CustomItem> precraftedItem = getPrecraftedItems().getOrDefault(player.getUniqueId(), new HashMap<>());
                             recipe.removeMatrix(ingredients, inventory, 1, craftingData);
-                            if (player.getItemOnCursor() != null && (resultItem.isSimilar(player.getItemOnCursor()) || player.getItemOnCursor().isSimilar(resultItem))) {
+                            if (resultItem.isSimilar(player.getItemOnCursor()) || player.getItemOnCursor().isSimilar(resultItem)) {
                                 event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
                             } else if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR)) {
                                 event.getView().setCursor(resultItem);
