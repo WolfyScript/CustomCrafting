@@ -67,7 +67,6 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private boolean outdated = false;
-    private final boolean premium = false;
     private boolean premiumPlus = false;
 
     @Nullable
@@ -153,13 +152,11 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premiumPlus ? "Premium+" : "Free"));
+        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premiumPlus ? "Patreon" : "Free"));
         System.out.println(" ");
 
         if (premiumPlus) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
-        } else if (premium) {
-            System.out.println("Thanks for supporting this plugin!");
         }
         System.out.println();
         System.out.println("Special thanks to my Patreons for supporting this project: ");
@@ -174,6 +171,7 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println("------------------------------------------------------------------------");
 
         File mainConfig = new File(getDataFolder(), "Main-Config.yml");
+
         if (mainConfig.exists()) {
             System.out.println("Found old CustomCrafting data! renaming folder...");
             if (getDataFolder().renameTo(new File(getDataFolder().getParentFile(), "CustomCrafting_old"))) {
@@ -334,10 +332,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public boolean isOutdated() {
         return outdated;
-    }
-
-    public boolean isPremium() {
-        return premium;
     }
 
     public boolean isPremiumPlus() {
