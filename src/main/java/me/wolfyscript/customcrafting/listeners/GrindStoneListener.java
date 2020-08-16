@@ -97,6 +97,7 @@ public class GrindStoneListener implements Listener {
             if (event.getAction().toString().startsWith("PICKUP_") || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
                 return;
             }
+
             event.setCancelled(true);
 
             ItemStack calculatedCursor = cursor;

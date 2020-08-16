@@ -14,9 +14,10 @@ public enum RecipeType {
     STONECUTTER,
     CAULDRON,
     GRINDSTONE,
-    BREWING;
+    BREWING,
+    SMITHING;
 
-    private String id;
+    private final String id;
 
     RecipeType() {
         this.id = this.toString().toLowerCase(Locale.ROOT);

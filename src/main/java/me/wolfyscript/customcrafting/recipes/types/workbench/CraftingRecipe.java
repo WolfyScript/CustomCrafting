@@ -48,7 +48,6 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
 
     public CraftingRecipe(){
         super();
-
         this.result = new ArrayList<>();
         this.ingredients = new HashMap<>();
     }
