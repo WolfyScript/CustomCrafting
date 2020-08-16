@@ -76,24 +76,13 @@ public class GrindstoneContainerButton extends ItemInputButton {
                 GrindstoneRecipe grindstone = cache.getGrindstoneRecipe();
                 switch (inputSlot) {
                     case 0:
-                        if (grindstone.getInputTop() != null && !grindstone.getInputTop().isEmpty()) {
-                            itemStack = grindstone.getInputTop().get(0).create();
-                        }
-                        break;
+                        return !InventoryUtils.isCustomItemsListEmpty(grindstone.getInputTop()) ? grindstone.getInputTop().get(0).create() : new ItemStack(Material.AIR);
                     case 1:
-                        if (grindstone.getInputBottom() != null && !grindstone.getInputBottom().isEmpty()) {
-                            itemStack = grindstone.getInputBottom().get(0).create();
-                        }
-                        break;
+                        return !InventoryUtils.isCustomItemsListEmpty(grindstone.getInputBottom()) ? grindstone.getInputBottom().get(0).create() : new ItemStack(Material.AIR);
                     case 2:
-                        if (!InventoryUtils.isCustomItemsListEmpty(grindstone.getCustomResults())) {
-                            itemStack = grindstone.getCustomResult().create();
-                        }
+                        return !InventoryUtils.isCustomItemsListEmpty(grindstone.getCustomResults()) ? grindstone.getCustomResult().create() : new ItemStack(Material.AIR);
                 }
-                if (itemStack == null) {
-                    itemStack = new ItemStack(Material.AIR);
-                }
-                return itemStack;
+                return itemStack == null ? new ItemStack(Material.AIR) : itemStack;
             }
         }));
     }

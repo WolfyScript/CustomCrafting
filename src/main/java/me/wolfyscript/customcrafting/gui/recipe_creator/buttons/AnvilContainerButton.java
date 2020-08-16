@@ -8,6 +8,7 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -55,10 +56,7 @@ public class AnvilContainerButton extends ItemInputButton {
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
                 CustomAnvilRecipe anvilRecipe = ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe();
-                if (anvilRecipe.getInput(inputSlot) != null && !anvilRecipe.getInput(inputSlot).isEmpty()) {
-                    item = anvilRecipe.getInput(inputSlot).get(0).create();
-                }
-                return item;
+                return InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInput(inputSlot)) ? new ItemStack(Material.AIR) : anvilRecipe.getInput(inputSlot).get(0).create();
             }
         }));
     }

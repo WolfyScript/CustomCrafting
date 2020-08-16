@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -68,15 +69,10 @@ public class StonecutterContainerButton extends ItemInputButton {
                 CustomStonecutterRecipe stonecutter = ((TestCache) guiHandler.getCustomCache()).getStonecutterRecipe();
                 if (inputSlot == 1) {
                     //RESULT STUFF
-                    if (!ItemUtils.isAirOrNull(stonecutter.getCustomResult())) {
-                        itemStack = stonecutter.getCustomResult().create();
-                    }
+                    return !ItemUtils.isAirOrNull(stonecutter.getCustomResult()) ? stonecutter.getCustomResult().create() : new ItemStack(Material.AIR);
                 } else {
-                    if (stonecutter.getSource() != null && !stonecutter.getSource().isEmpty()) {
-                        itemStack = stonecutter.getSource().get(0).create();
-                    }
+                    return !InventoryUtils.isCustomItemsListEmpty(stonecutter.getSource()) ? stonecutter.getSource().get(0).create() : new ItemStack(Material.AIR);
                 }
-                return itemStack;
             }
         }));
     }

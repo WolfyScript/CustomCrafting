@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -66,10 +67,7 @@ public class CauldronContainerButton extends ItemInputButton {
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
                 CauldronRecipe recipe = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe();
                 List<CustomItem> items = inputSlot == 0 ? recipe.getIngredients() : recipe.getCustomResults();
-                if (items != null && !items.isEmpty()) {
-                    item = items.get(0).create();
-                }
-                return item;
+                return !InventoryUtils.isCustomItemsListEmpty(items) ? items.get(0).create() : new ItemStack(Material.AIR);
             }
         }));
     }

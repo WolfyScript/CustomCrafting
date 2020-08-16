@@ -75,17 +75,11 @@ public class BrewingContainerButton extends ItemInputButton {
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
                 BrewingRecipe brewingRecipe = ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe();
-                itemStack = new ItemStack(Material.AIR);
                 if (recipeSlot == 0) {
-                    if (!InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getIngredients())) {
-                        itemStack = brewingRecipe.getIngredients().get(0).create();
-                    }
+                    return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getIngredients()) ? brewingRecipe.getIngredients().get(0).create() : new ItemStack(Material.AIR);
                 } else {
-                    if (!InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getAllowedItems())) {
-                        itemStack = brewingRecipe.getAllowedItems().get(0).create();
-                    }
+                    return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getAllowedItems()) ? brewingRecipe.getAllowedItems().get(0).create() : new ItemStack(Material.AIR);
                 }
-                return itemStack;
             }
         }));
     }

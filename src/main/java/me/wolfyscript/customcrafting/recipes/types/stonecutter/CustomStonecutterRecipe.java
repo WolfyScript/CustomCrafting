@@ -36,18 +36,18 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
     public CustomStonecutterRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         {
-            List<CustomItem> results = new ArrayList<>();
-            JsonNode resultNode = node.path("source");
-            if (resultNode.isObject()) {
-                results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
-                JsonNode variantsNode = resultNode.path("variants");
+            List<CustomItem> sources = new ArrayList<>();
+            JsonNode sourceNode = node.path("source");
+            if (sourceNode.isObject()) {
+                sources.add(new CustomItem(mapper.convertValue(sourceNode, APIReference.class)));
+                JsonNode variantsNode = sourceNode.path("variants");
                 for (JsonNode jsonNode : variantsNode) {
-                    results.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class)));
+                    sources.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class)));
                 }
             } else {
-                resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+                sourceNode.elements().forEachRemaining(n -> sources.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
             }
-            this.source = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
+            this.source = sources.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
         }
     }
 
@@ -89,7 +89,7 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
         gen.writeObjectField("result", result.get(0).getApiReference());
         {
             gen.writeArrayFieldStart("source");
-            for (CustomItem customItem : getCustomResults()) {
+            for (CustomItem customItem : getSource()) {
                 gen.writeObject(customItem.getApiReference());
             }
             gen.writeEndArray();
@@ -122,6 +122,6 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
 
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
-        return new StonecuttingRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(customItem -> customItem.create()).collect(Collectors.toList())));
+        return new StonecuttingRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())));
     }
 }

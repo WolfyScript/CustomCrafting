@@ -162,7 +162,7 @@ public class TestCache extends CustomCache {
         return null;
     }
 
-    public CustomCookingRecipe resetCookingRecipe() {
+    public void resetCookingRecipe() {
         switch (getSetting()) {
             case CAMPFIRE:
                 setCustomRecipe(new CustomCampfireRecipe());
@@ -173,7 +173,6 @@ public class TestCache extends CustomCache {
             case BLAST_FURNACE:
                 setCustomRecipe(new CustomBlastRecipe());
         }
-        return null;
     }
 
     public void resetRecipe(){
