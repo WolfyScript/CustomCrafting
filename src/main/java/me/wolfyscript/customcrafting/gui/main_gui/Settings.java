@@ -105,7 +105,6 @@ public class Settings extends ExtendedGuiWindow {
                         invAPI.reset();
                         langAPI.unregisterLanguages();
                         customCrafting.getConfigHandler().getConfig().save();
-                        customCrafting.getRecipeHandler().onSave();
                         try {
                             customCrafting.getConfigHandler().loadLang();
                         } catch (IOException e) {

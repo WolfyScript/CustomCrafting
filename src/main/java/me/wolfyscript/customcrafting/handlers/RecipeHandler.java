@@ -228,93 +228,7 @@ public class RecipeHandler {
     public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
         api.sendConsoleMessage("Exporting configs to database...");
         getRecipes().values().forEach(dataBaseHandler::updateRecipe);
-        /*
-        File recipesFolder = new File(customCrafting.getDataFolder() + File.separator + "recipes");
-        List<File> subFolders = null;
-        File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
-        if (dirs != null) {
-            subFolders = new ArrayList<>(Arrays.asList(dirs));
-        }
-        if (subFolders != null) {
-            for (File folder : subFolders) {
-                api.sendConsoleMessage("- " + folder.getName());
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "items");
-            }
-            for (File folder : subFolders) {
-                api.sendConsoleMessage("- " + folder.getName());
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "workbench");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "furnace");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "anvil");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "cauldron");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "blast_furnace");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "smoker");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "campfire");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "stonecutter");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "elite_workbench");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "grindstone");
-                migrateConfigToDB(dataBaseHandler, folder.getName(), "brewing");
-            }
-        }
-         */
         api.sendConsoleMessage("Exported configs to database successfully.");
-    }
-
-    private void migrateConfigToDB(DataBaseHandler dataBaseHandler, String subfolder, String type) {
-        //File workbench = new File(customCrafting.getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
-
-        /*
-        File[] files = workbench.listFiles((dir, name) -> (name.split("\\.").length > 1));
-        if (files != null) {
-
-            for (File file : files) {
-                String fileName = file.getName();
-                String key = file.getParentFile().getParentFile().getName().toLowerCase();
-                String name = fileName.substring(0, file.getName().lastIndexOf("."));
-                String fileType = fileName.substring(file.getName().lastIndexOf(".") + 1);
-                NamespacedKey namespacedKey = new NamespacedKey(subfolder, name);
-                if (fileType.equals("json")) {
-                    try {
-                        switch (type) {
-                            case "workbench":
-                                dataBaseHandler.updateRecipe(new AdvancedCraftConfig(customCrafting, key, name));
-                                break;
-                            case "elite_workbench":
-                                dataBaseHandler.updateRecipe(new EliteCraftConfig(customCrafting, key, name));
-                                break;
-                            case "furnace":
-                                dataBaseHandler.updateRecipe(new FurnaceConfig(customCrafting, key, name));
-                                break;
-                            case "anvil":
-                                dataBaseHandler.updateRecipe(new AnvilConfig(customCrafting, key, name));
-                                break;
-                            case "blast_furnace":
-                                dataBaseHandler.updateRecipe(new BlastingConfig(customCrafting, key, name));
-                                break;
-                            case "smoker":
-                                dataBaseHandler.updateRecipe(new SmokerConfig(customCrafting, key, name));
-                                break;
-                            case "campfire":
-                                dataBaseHandler.updateRecipe(new CampfireConfig(customCrafting, key, name));
-                                break;
-                            case "items":
-                                dataBaseHandler.updateItem(namespacedKey, CustomItems.getCustomItem(namespacedKey));
-                                break;
-                            case "stonecutter":
-                                dataBaseHandler.updateRecipe(new StonecutterConfig(customCrafting, key, name));
-                                break;
-                            case "cauldron":
-                                dataBaseHandler.updateRecipe(new CauldronConfig(customCrafting, key, name));
-                                break;
-                            case "brewing":
-                                dataBaseHandler.updateRecipe(new BrewingConfig(customCrafting, key, name));
-                        }
-                    } catch (Exception ex) {
-                        ChatUtils.sendRecipeItemLoadingError(key, name, type, ex);
-                    }
-                }
-            }
-        }
-        */
     }
 
     public void registerRecipe(ICustomRecipe recipe) {
@@ -334,11 +248,11 @@ public class RecipeHandler {
         api.sendDebugMessage("[- - Done - -]");
     }
 
-    public void unregisterRecipe(NamespacedKey namespacedKey) {
-        if(WolfyUtilities.hasBuzzyBeesUpdate()){
+    public void unregisterVanillaRecipe(NamespacedKey namespacedKey) {
+        if (WolfyUtilities.hasBuzzyBeesUpdate()) {
             api.sendDebugMessage("      -> using new API method");
             Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
-        }else{
+        } else {
             api.sendDebugMessage("      -> using old method");
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
             boolean inject = false;
@@ -363,7 +277,7 @@ public class RecipeHandler {
     public void unregisterRecipe(ICustomRecipe customRecipe) {
         customRecipes.remove(customRecipe.getNamespacedKey());
         if (customRecipe instanceof ICustomVanillaRecipe) {
-            unregisterRecipe(customRecipe.getNamespacedKey());
+            unregisterVanillaRecipe(customRecipe.getNamespacedKey());
         }
     }
 
@@ -649,7 +563,7 @@ public class RecipeHandler {
         return false;
     }
 
-    public boolean loadRecipeIntoCache(ICustomRecipe recipe, GuiHandler guiHandler) {
+    public boolean loadRecipeIntoCache(ICustomRecipe recipe, GuiHandler<?> guiHandler) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
         switch (cache.getSetting()) {
             case WORKBENCH:
