@@ -6,10 +6,12 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
@@ -37,6 +39,10 @@ public class MainMenu extends ExtendedGuiWindow {
         registerButton(new RecipeTypeButton("brewing", Setting.BREWING_STAND, Material.BREWING_STAND));
         registerButton(new RecipeTypeButton("elite_workbench", Setting.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new RecipeTypeButton("cauldron", Setting.CAULDRON, Material.CAULDRON));
+        if (WolfyUtilities.hasNetherUpdate()) {
+            registerButton(new DummyButton("smithing", new ButtonState("smithing", Material.SMITHING_TABLE)));
+        }
+
         registerButton(new ActionButton("item_editor", new ButtonState("item_editor", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();
             cache.setSetting(Setting.ITEMS);
@@ -72,13 +78,25 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(12, "furnace");
             event.setButton(14, "anvil");
             event.setButton(16, "cauldron");
-            event.setButton(20, "blast_furnace");
-            event.setButton(22, "smoker");
-            event.setButton(24, "campfire");
-            event.setButton(28, "stonecutter");
-            event.setButton(30, "grindstone");
-            event.setButton(32, "brewing");
-            event.setButton(34, "elite_workbench");
+
+            if (WolfyUtilities.hasNetherUpdate()) {
+                event.setButton(19, "blast_furnace");
+                event.setButton(21, "smoker");
+                event.setButton(23, "campfire");
+                event.setButton(25, "stonecutter");
+                event.setButton(28, "grindstone");
+                event.setButton(30, "brewing");
+                event.setButton(32, "elite_workbench");
+                event.setButton(34, "smithing");
+            } else {
+                event.setButton(20, "blast_furnace");
+                event.setButton(22, "smoker");
+                event.setButton(24, "campfire");
+                event.setButton(28, "stonecutter");
+                event.setButton(30, "grindstone");
+                event.setButton(32, "brewing");
+                event.setButton(34, "elite_workbench");
+            }
             event.setButton(36, "item_editor");
             event.setButton(44, "recipe_list");
         }

@@ -294,6 +294,12 @@
               ""
             ]
           },
+          "smithing": {
+            "name": "&6Smithing Recipe &8[&7Coming Soon&8]",
+            "lore": [
+              ""
+            ]
+          },
           "item_editor": {
             "name": "&6Item Creator",
             "lore": [

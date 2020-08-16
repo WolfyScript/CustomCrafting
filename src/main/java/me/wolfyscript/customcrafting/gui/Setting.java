@@ -17,9 +17,10 @@ public enum Setting {
     STONECUTTER,
     CAULDRON,
     GRINDSTONE,
-    BREWING_STAND;
+    BREWING_STAND,
+    SMITHING_TABLE;
 
-    private String id;
+    private final String id;
 
     Setting() {
         this.id = this.toString().toLowerCase(Locale.ROOT);
