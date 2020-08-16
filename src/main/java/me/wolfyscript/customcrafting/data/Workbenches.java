@@ -18,6 +18,7 @@ import java.util.UUID;
 
 public class Workbenches {
 
+    private final CustomCrafting customCrafting;
     private WolfyUtilities api;
     private int task;
     private int particles;
@@ -25,18 +26,19 @@ public class Workbenches {
     private HashMap<String, List<ItemStack>> workbenches = new HashMap<>();
     private List<String> furnaces = new ArrayList<>();
 
-    public Workbenches(WolfyUtilities api) {
-        this.api = api;
+    public Workbenches(CustomCrafting customCrafting) {
+        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.customCrafting = customCrafting;
         load();
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
-            if (CustomCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
+            if (customCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
                 api.sendConsoleMessage("[$msg.auto_save.start$]");
                 save();
                 api.sendConsoleMessage("[$msg.auto_save.complete$]");
             } else {
                 save();
             }
-        }, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, CustomCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
+        }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
 
         particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
             for (String loc : workbenches.keySet()) {
@@ -101,7 +103,7 @@ public class Workbenches {
 
     public void save() {
         try {
-            FileOutputStream fos = new FileOutputStream(new File(CustomCrafting.getInst().getDataFolder() + File.separator + "workbenches.dat"));
+            FileOutputStream fos = new FileOutputStream(new File(customCrafting.getDataFolder() + File.separator + "workbenches.dat"));
             BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
             oos.writeObject(workbenches);
             oos.writeObject(furnaces);
@@ -112,7 +114,7 @@ public class Workbenches {
     }
 
     public void load() {
-        File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "workbenches.dat");
+        File file = new File(customCrafting.getDataFolder() + File.separator + "workbenches.dat");
         if (file.exists()) {
             FileInputStream fis;
             try {

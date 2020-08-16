@@ -5,31 +5,36 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Map;
 
 public class ItemEditor extends ExtendedGuiWindow {
 
-    public ItemEditor(InventoryAPI inventoryAPI) {
-        super("item_editor", inventoryAPI, 45);
+    public ItemEditor(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("item_editor", inventoryAPI, 45, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openPreviousInv();
             if (!((TestCache) guiHandler.getCustomCache()).getSetting().equals(Setting.ITEMS)) {
                 guiHandler.openCluster("recipe_creator");
@@ -43,12 +48,14 @@ public class ItemEditor extends ExtendedGuiWindow {
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
                     Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
-                    CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
-                    if (customItem == null) {
+
+                    NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
+                    if (!CustomItems.hasCustomItem(namespacedKey)) {
                         sendMessage(player1, "error");
                         return true;
                     }
-                    ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(customItem.getId());
+                    CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
+                    ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(namespacedKey);
 
                     if (items.isRecipeItem()) {
                         cache.applyItem(customItem);
@@ -60,9 +67,10 @@ public class ItemEditor extends ExtendedGuiWindow {
                         }
                         return false;
                     }
-                    if (InventoryUtils.hasInventorySpace(player1, customItem)) {
-                        player1.getInventory().addItem(customItem.getItemStack());
-                        api.sendPlayerMessage(player1, "$commands.give.success$", new String[]{"%PLAYER%", player1.getDisplayName()}, new String[]{"%ITEM%", customItem.getId()});
+                    ItemStack itemStack = customItem.create();
+                    if (InventoryUtils.hasInventorySpace(player1, itemStack)) {
+                        player1.getInventory().addItem(itemStack);
+                        api.sendPlayerMessage(player1, "$commands.give.success$", new String[]{"%PLAYER%", player1.getDisplayName()}, new String[]{"%ITEM%", namespacedKey.toString()});
                     } else {
                         api.sendPlayerMessage(player1, "$commands.give.no_inv_space$");
                     }
@@ -71,6 +79,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                 sendMessage(player1, "no_name");
                 return true;
             });
+            Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             return true;
         })));
         registerButton(new ActionButton("create_item", new ButtonState("create_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -81,7 +90,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
             if (items.isRecipeItem()) {
                 if (items.isSaved()) {
-                    items.setItem(CustomItems.getCustomItem(items.getId()));
+                    items.setItem(CustomItems.getCustomItem(items.getNamespacedKey()));
                 }
                 guiHandler.changeToInv("item_creator", "main_menu");
             } else {
@@ -90,13 +99,13 @@ public class ItemEditor extends ExtendedGuiWindow {
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         Items items1 = ((TestCache) guiHandler.getCustomCache()).getItems();
-                        CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
-                        if (customItem == null) {
+                        NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
+                        if (!CustomItems.hasCustomItem(namespacedKey)) {
                             sendMessage(player1, "error");
                             return true;
                         }
-                        ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(customItem.getId());
-                        items1.setItem(false, customItem);
+                        ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(namespacedKey);
+                        items1.setItem(false, CustomItems.getCustomItem(namespacedKey));
                         sendMessage(player1, "item_editable");
                         Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler1.changeToInv("item_creator", "main_menu"));
                         return false;
@@ -104,7 +113,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                     sendMessage(player1, "no_name");
                     return true;
                 });
-                guiHandler.close();
+                Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             }
             return true;
         })));
@@ -113,24 +122,13 @@ public class ItemEditor extends ExtendedGuiWindow {
             sendItemListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    CustomItem customItem = CustomItems.getCustomItem(args[0], args[1], false);
-                    if (customItem == null) {
-                        sendMessage(player1, "error");
-                        return true;
-                    }
-                    ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(customItem.getId());
-                    CustomItems.removeCustomItem(customItem);
-                    if (CustomCrafting.hasDataBaseHandler()) {
-                        CustomCrafting.getDataBaseHandler().removeItem(customItem.getConfig().getNamespace(), customItem.getConfig().getName());
-                    } else {
-                        customItem.getConfig().getConfigFile().deleteOnExit();
-                    }
-                    return false;
+                    NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
+                    return !customCrafting.deleteItem(namespacedKey, player1);
                 }
                 sendMessage(player1, "no_name");
                 return true;
             });
-            guiHandler.close();
+            Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             return true;
         })));
     }
@@ -160,7 +158,7 @@ public class ItemEditor extends ExtendedGuiWindow {
         }
 
         int currentPage = cache.getChatLists().getCurrentPageItems();
-        int itemsPerPage = cache.getChatLists().getLastUsedItem().equals("") ? 16 : 14;
+        int itemsPerPage = cache.getChatLists().getLastUsedItem() != null ? 16 : 14;
         int maxPages = ((CustomItems.getCustomItems().size() % itemsPerPage) > 0 ? 1 : 0) + CustomItems.getCustomItems().size() / itemsPerPage;
 
         api.sendActionMessage(player,
@@ -181,20 +179,33 @@ public class ItemEditor extends ExtendedGuiWindow {
                 }, true));
         api.sendPlayerMessage(player, "&8-------------------------------------------------");
 
-        for (int i = (currentPage - 1) * itemsPerPage; i < (currentPage - 1) * itemsPerPage + itemsPerPage; i++) {
-            if (i < CustomItems.getCustomItems().size()) {
-                CustomItem customItem = CustomItems.getCustomItems().get(i);
-                api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " - ", null), new ClickData(customItem.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, customItem.getId().split(":")[0] + " " + customItem.getId().split(":")[1]), new HoverEvent(customItem)));
-            } else {
-                api.sendPlayerMessage(player, "");
+        int i = (currentPage - 1) * itemsPerPage;
+        for (Map.Entry<NamespacedKey, CustomItem> entry : CustomItems.getCustomItems().entrySet()) {
+            NamespacedKey namespacedKey = entry.getKey();
+            CustomItem customItem = entry.getValue();
+            if (customItem != null) {
+                if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
+                    api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " -&7[&c!&7] &4" + namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
+                } else {
+                    api.sendActionMessage(player, new ClickData((i % 2 == 1 ? "§3" : "§7") + " - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
+                }
+                if (i < (currentPage - 1) * itemsPerPage + itemsPerPage) {
+                    i++;
+                } else {
+                    break;
+                }
             }
         }
-
-        if (!cache.getChatLists().getLastUsedItem().equals("")) {
+        if (cache.getChatLists().getLastUsedItem() != null) {
             api.sendPlayerMessage(player, "§ePreviously used:");
-            CustomItem customItem = CustomItems.getCustomItem(cache.getChatLists().getLastUsedItem());
+            NamespacedKey namespacedKey = cache.getChatLists().getLastUsedItem();
+            CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
             if (customItem != null) {
-                api.sendActionMessage(player, new ClickData("§b - ", null), new ClickData(customItem.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, customItem.getId().split(":")[0] + " " + customItem.getId().split(":")[1]), new HoverEvent(customItem)));
+                if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
+                    api.sendActionMessage(player, new ClickData("§b -&7[&c!&7] &4" + namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
+                } else {
+                    api.sendActionMessage(player, new ClickData("§b - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
+                }
             }
         }
         api.sendPlayerMessage(player, "&8-------------------------------------------------");

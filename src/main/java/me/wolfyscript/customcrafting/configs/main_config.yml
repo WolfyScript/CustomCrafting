@@ -22,6 +22,8 @@ creator:
 #This can be set to false if you have conflicting plugins that also use the alias /cc
 commands:
   cc: true
+  alias:
+    - "cc"
 
 databank:
   enabled: false
@@ -59,3 +61,8 @@ recipes:
   pretty_printing: true
   preferred_file_type: "json"
   disabled_recipes: []
+
+knowledgebook:
+  workbench_filter: true
+  reset_item: true
+  reset_recipe: true

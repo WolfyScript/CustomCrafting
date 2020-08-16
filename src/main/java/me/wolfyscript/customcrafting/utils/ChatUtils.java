@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.utils;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
@@ -22,7 +22,13 @@ import java.util.Locale;
 
 public class ChatUtils {
 
-    private static WolfyUtilities api = CustomCrafting.getApi();
+    private static final WolfyUtilities api = CustomCrafting.getApi();
+    private final CustomCrafting customCrafting;
+
+
+    public ChatUtils(CustomCrafting customCrafting) {
+        this.customCrafting = customCrafting;
+    }
 
     public static boolean checkPerm(CommandSender sender, String perm) {
         return checkPerm(sender, perm, true);
@@ -36,46 +42,52 @@ public class ChatUtils {
             if (sender instanceof Player) {
                 api.sendPlayerMessage((Player) sender, "$msg.denied_perm$", new String[]{"%PERM%", perm});
             } else {
-                sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().getActiveLanguage().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+                sender.sendMessage(api.getCONSOLE_PREFIX() + api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
             }
         }
         return false;
     }
 
-    public static void sendRecipeListExpanded(Player player) {
-        TestCache cache = (TestCache)api.getInventoryAPI().getGuiHandler(player).getCustomCache();
+    public void sendRecipeListExpanded(Player player) {
+        TestCache cache = (TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }
 
-        ArrayList<CustomRecipe> customRecipes = new ArrayList<>();
+        ArrayList<ICustomRecipe> customRecipes = new ArrayList<>();
         switch (cache.getSetting()) {
             case WORKBENCH:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getAdvancedCraftingRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getAdvancedCraftingRecipes());
                 break;
             case ELITE_WORKBENCH:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getEliteCraftingRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getEliteCraftingRecipes());
                 break;
             case FURNACE:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getFurnaceRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getFurnaceRecipes());
                 break;
             case ANVIL:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getAnvilRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getAnvilRecipes());
                 break;
             case STONECUTTER:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getStonecutterRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getStonecutterRecipes());
+                break;
+            case GRINDSTONE:
+                customRecipes.addAll(customCrafting.getRecipeHandler().getGrindstoneRecipes());
+                break;
+            case BREWING_STAND:
+                customRecipes.addAll(customCrafting.getRecipeHandler().getBrewingRecipes());
                 break;
             case SMOKER:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getSmokerRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getSmokerRecipes());
                 break;
             case BLAST_FURNACE:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getBlastRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getBlastRecipes());
                 break;
             case CAMPFIRE:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getCampfireRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getCampfireRecipes());
                 break;
             case CAULDRON:
-                customRecipes.addAll(CustomCrafting.getRecipeHandler().getCauldronRecipes());
+                customRecipes.addAll(customCrafting.getRecipeHandler().getCauldronRecipes());
         }
 
         int currentPage = cache.getChatLists().getCurrentPageRecipes();
@@ -99,9 +111,14 @@ public class ChatUtils {
         api.sendPlayerMessage(player, "&8-------------------------------------------------");
 
         for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
-            if(i < customRecipes.size()){
-                CustomRecipe recipe = customRecipes.get(i);
-                api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getId(), null, new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, recipe.getId().split(":")[0] + " " + recipe.getId().split(":")[1]), new HoverEvent(recipe.getResult())));
+            if(i < customRecipes.size()) {
+                ICustomRecipe recipe = customRecipes.get(i);
+                ClickEvent commandSuggest = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey());
+                if (recipe.getCustomResult() == null) {
+                    api.sendActionMessage(player, new ClickData(" - §7[§c!§7] §c", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§cFailed to load result item!")));
+                } else {
+                    api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getCustomResult().create())));
+                }
             }else{
                 api.sendPlayerMessage(player, "");
             }

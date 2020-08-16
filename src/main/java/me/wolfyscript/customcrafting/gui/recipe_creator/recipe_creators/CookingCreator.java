@@ -3,105 +3,42 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CookingContainerButton;
-import me.wolfyscript.customcrafting.recipes.types.CookingConfig;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
-import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
-import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SaveButton;
+import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import org.bukkit.Bukkit;
+import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 
-public class CookingCreator extends ExtendedGuiWindow {
+public class CookingCreator extends RecipeCreator {
 
-    public CookingCreator(InventoryAPI inventoryAPI) {
-        super("cooking", inventoryAPI, 45);
+    public CookingCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("cooking", inventoryAPI, 45, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = (TestCache)guiHandler.getCustomCache();
-            if (validToSave(cache)) {
-                openChat("recipe_creator","save.input", guiHandler, (guiHandler1, player1, s, args) -> {
-                    TestCache cache1 = (TestCache)guiHandler1.getCustomCache();
-                    CookingConfig cookingConfig = cache1.getCookingConfig();
-                    if (args.length > 1) {
-                        if (!cookingConfig.saveConfig(args[0], args[1], player1)) {
-                            return true;
-                        }
-                        //TODO: RESET COOKING CONFIG!
-                        try {
-                            CustomRecipe customRecipe = null;
-                            switch (cache1.getSetting()) {
-                                case SMOKER:
-                                    customRecipe = new CustomSmokerRecipe((SmokerConfig) cookingConfig);
-                                    break;
-                                case CAMPFIRE:
-                                    customRecipe = new CustomCampfireRecipe((CampfireConfig) cookingConfig);
-                                    break;
-                                case FURNACE:
-                                    customRecipe = new CustomFurnaceRecipe((FurnaceConfig) cookingConfig);
-                                    break;
-                                case BLAST_FURNACE:
-                                    customRecipe = new CustomBlastRecipe((BlastingConfig) cookingConfig);
-                            }
-                            if (customRecipe != null) {
-                                CustomRecipe finalCustomRecipe = customRecipe;
-                                Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> CustomCrafting.getRecipeHandler().injectRecipe(finalCustomRecipe), 1);
-                            } else {
-                                api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
-                            }
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
-                                cache.resetCookingConfig();
-                            }
-                        } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "error_loading", new String[]{"%REC%", cookingConfig.getId()});
-                            ex.printStackTrace();
-                            return false;
-                        }
-                        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"), 1);
-                        return false;
-                    }
-                    return false;
-                });
-            } else {
-                api.sendPlayerMessage(player, "recipe_creator", "save.empty");
-            }
-            return false;
-        })));
 
-        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getCookingConfig().setHidden(false);
-            return true;
-        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getCookingConfig().setHidden(true);
-            return true;
-        })));
+        registerButton(new SaveButton());
 
-        registerButton(new CookingContainerButton(0));
-        registerButton(new CookingContainerButton(1));
+        registerButton(new HiddenButton());
+
+        registerButton(new CookingContainerButton(0, customCrafting));
+        registerButton(new CookingContainerButton(1, customCrafting));
 
         registerButton(new ChatInputButton("xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%XP%", ((TestCache) guiHandler.getCustomCache()).getCookingConfig().getXP());
+            hashMap.put("%XP%", ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().getExp());
             return itemStack;
         }), (guiHandler, player, s, args) -> {
             float xp;
@@ -111,11 +48,11 @@ public class CookingCreator extends ExtendedGuiWindow {
                 api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            ((TestCache) guiHandler.getCustomCache()).getCookingConfig().setXP(xp);
+            ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().setExp(xp);
             return false;
         }));
         registerButton(new ChatInputButton("cooking_time", new ButtonState("cooking_time", Material.COAL, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%TIME%", ((TestCache) guiHandler.getCustomCache()).getCookingConfig().getCookingTime());
+            hashMap.put("%TIME%", ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().getCookingTime());
             return itemStack;
         }), (guiHandler, player, s, args) -> {
             int time;
@@ -125,7 +62,7 @@ public class CookingCreator extends ExtendedGuiWindow {
                 api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            ((TestCache) guiHandler.getCustomCache()).getCookingConfig().setCookingTime(time);
+            ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().setCookingTime(time);
             return false;
         }));
     }
@@ -135,7 +72,7 @@ public class CookingCreator extends ExtendedGuiWindow {
         if (event.verify(this)) {
             event.setButton(0, "back");
             TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
-            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), cache.getCookingConfig().isHidden());
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), cache.getCookingRecipe().isHidden());
 
             PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
 
@@ -152,14 +89,14 @@ public class CookingCreator extends ExtendedGuiWindow {
         }
     }
 
-    private boolean validToSave(TestCache cache) {
+    public boolean validToSave(TestCache cache) {
         switch (cache.getSetting()) {
             case BLAST_FURNACE:
             case SMOKER:
             case CAMPFIRE:
             case FURNACE:
-                CookingConfig furnace = cache.getCookingConfig();
-                if (furnace.getSource() != null && !furnace.getSource().isEmpty() && furnace.getResult() != null && !furnace.getResult().isEmpty())
+                CustomCookingRecipe furnace = cache.getCookingRecipe();
+                if (furnace.getSource() != null && !furnace.getSource().isEmpty() && furnace.getCustomResults() != null && !furnace.getCustomResults().isEmpty())
                     return true;
         }
         return false;

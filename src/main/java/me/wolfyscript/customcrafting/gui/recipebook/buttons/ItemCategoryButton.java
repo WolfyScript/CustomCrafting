@@ -1,50 +1,83 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.recipebook.Categories;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.MultipleChoiceButton;
-import me.wolfyscript.utilities.api.utils.ItemCategory;
-import org.bukkit.Material;
+import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.button.Button;
+import me.wolfyscript.utilities.api.inventory.button.ButtonType;
+import me.wolfyscript.utilities.api.language.LanguageAPI;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 
-public class ItemCategoryButton extends MultipleChoiceButton {
+import java.util.ArrayList;
+import java.util.HashMap;
 
-    public ItemCategoryButton() {
-        super("itemCategory", new ButtonState("recipe_book", "itemCategory.brewing", Material.GLASS_BOTTLE, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.BUILDING_BLOCKS : ItemCategory.SEARCH);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.building_blocks", Material.BRICKS, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.DECORATIONS : ItemCategory.BREWING);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.decorations", Material.LILAC, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.COMBAT : ItemCategory.BUILDING_BLOCKS);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.combat", Material.GOLDEN_SWORD, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.TOOLS : ItemCategory.DECORATIONS);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.tools", Material.IRON_AXE, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.REDSTONE : ItemCategory.COMBAT);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.redstone", Material.REDSTONE, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.FOOD : ItemCategory.TOOLS);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.food", Material.APPLE, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.TRANSPORTATION : ItemCategory.REDSTONE);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.transportation", Material.POWERED_RAIL, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.MISC : ItemCategory.FOOD);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.misc", Material.LAVA_BUCKET, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.SEARCH : ItemCategory.TRANSPORTATION);
-            return true;
-        }), new ButtonState("recipe_book", "itemCategory.search", Material.COMPASS, (guiHandler, player, inventory, i, e) -> {
-            ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook().setItemCategory(e.isLeftClick() ? ItemCategory.BREWING : ItemCategory.MISC);
-            return true;
-        }));
+public class ItemCategoryButton extends Button {
+
+    private final CustomCrafting customCrafting;
+    private final Categories categories;
+    private final HashMap<GuiHandler, Integer> categoryMap;
+
+    public ItemCategoryButton(CustomCrafting customCrafting) {
+        super("itemCategory", ButtonType.NORMAL);
+        this.customCrafting = customCrafting;
+        this.categories = customCrafting.getRecipeHandler().getCategories();
+        this.categoryMap = new HashMap<>();
     }
 
-    public void setState(GuiHandler guiHandler, ItemCategory itemCategory) {
-        setState(guiHandler, itemCategory.ordinal());
+    @Override
+    public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
+        Category category = categories.getSwitchCategory(categoryMap.getOrDefault(guiHandler, 0));
+        if (category != null) {
+            ItemStack itemStack = new ItemStack(category.getIcon());
+            ItemMeta itemMeta = itemStack.getItemMeta();
+
+            LanguageAPI languageAPI = WolfyUtilities.getAPI(customCrafting).getLanguageAPI();
+
+            itemMeta.setDisplayName(languageAPI.replaceColoredKeys(category.getName()));
+            itemMeta.setLore(languageAPI.replaceColoredKeys(category.getDescription()));
+
+            itemStack.setItemMeta(itemMeta);
+            inventory.setItem(slot, itemStack);
+        }
+    }
+
+    @Override
+    public void init(GuiWindow guiWindow) {
+
+    }
+
+    @Override
+    public void init(String s, WolfyUtilities wolfyUtilities) {
+
+    }
+
+    @Override
+    public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+        if (!categories.getSortedSwitchCategories().isEmpty()) {
+            int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
+            if (currentIndex < categories.getSortedSwitchCategories().size() - 1) {
+                categoryMap.put(guiHandler, currentIndex + 1);
+            } else {
+                categoryMap.put(guiHandler, 0);
+            }
+            KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
+            knowledgeBook.setRecipeItems(new ArrayList<>());
+        }
+        return true;
+    }
+
+    @Nullable
+    public Category getCategory(GuiHandler guiHandler) {
+        return categories.getSwitchCategory(categoryMap.getOrDefault(guiHandler, 0));
     }
 }

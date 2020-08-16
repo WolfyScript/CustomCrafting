@@ -2,38 +2,31 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeConfig;
-import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilConfig;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.BlastingConfig;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.campfire.CampfireConfig;
+import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.FurnaceConfig;
-import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneConfig;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smoker.SmokerConfig;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.custom_items.ItemConfig;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.api.utils.sql.SQLDataBase;
-import org.bukkit.plugin.Plugin;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonProcessingException;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,20 +34,20 @@ import java.sql.SQLException;
 
 public class DataBaseHandler {
 
-    private Plugin instance;
-    private WolfyUtilities api;
-    private ConfigAPI configAPI;
-    private LanguageAPI languageAPI;
-    private MainConfig mainConfig;
+    private final CustomCrafting customCrafting;
+    private final WolfyUtilities api;
+    private final ConfigAPI configAPI;
+    private final LanguageAPI languageAPI;
+    private final MainConfig mainConfig;
 
-    private SQLDataBase dataBase;
+    private final SQLDataBase dataBase;
 
-    public DataBaseHandler(WolfyUtilities api) {
-        this.api = api;
-        this.instance = api.getPlugin();
+    public DataBaseHandler(CustomCrafting customCrafting) {
+        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.customCrafting = customCrafting;
         this.configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
-        this.mainConfig = CustomCrafting.getConfigHandler().getConfig();
+        this.mainConfig = customCrafting.getConfigHandler().getConfig();
         this.dataBase = new SQLDataBase(api, mainConfig.getDatabankHost(), mainConfig.getDatabankDataBase(), mainConfig.getDatabankUsername(), mainConfig.getDataBankPassword(), mainConfig.getDatabankPort());
         this.dataBase.openConnectionOnMainThread();
         init();
@@ -97,12 +90,13 @@ public class DataBaseHandler {
         while (resultSet.next()) {
             String namespace = resultSet.getString("rNamespace");
             String key = resultSet.getString("rKey");
-            api.sendConsoleMessage("- " + namespace + ":" + key);
-            CustomRecipe recipe = getRecipe(namespace, key);
+            NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
+            api.sendConsoleMessage("- " + namespacedKey.toString());
+            ICustomRecipe recipe = getRecipe(namespacedKey);
             if (recipe != null) {
                 recipeHandler.registerRecipe(recipe);
             } else {
-                api.sendConsoleMessage("Error loading recipe \"" + namespace + ":" + key + "\". Couldn't find recipe in DataBase!");
+                api.sendConsoleMessage("Error loading recipe \"" + namespacedKey.toString() + "\". Couldn't find recipe in DataBase!");
             }
         }
     }
@@ -120,9 +114,10 @@ public class DataBaseHandler {
             String data = resultSet.getString("rData");
             if (namespace != null && key != null && data != null && !data.equals("{}")) {
                 api.sendConsoleMessage("- " + namespace + ":" + key);
-                ItemConfig itemConfig = new ItemConfig(data, configAPI, namespace, key);
-                if (itemConfig != null) {
-                    CustomItems.setCustomItem(itemConfig);
+                try {
+                    CustomItems.addCustomItem(new NamespacedKey(namespace, key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
                 }
             } else {
                 api.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacekey or data!");
@@ -150,9 +145,9 @@ public class DataBaseHandler {
         return null;
     }
 
-    public boolean hasRecipe(String namespace, String key) {
+    public boolean hasRecipe(NamespacedKey namespacedKey) {
         try {
-            ResultSet resultSet = getRecipeData(namespace, key);
+            ResultSet resultSet = getRecipeData(namespacedKey);
             return resultSet.isBeforeFirst();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -160,11 +155,11 @@ public class DataBaseHandler {
         return false;
     }
 
-    public ResultSet getRecipeData(String namespace, String key) {
+    public ResultSet getRecipeData(NamespacedKey namespacedKey) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("SELECT rType, rData FROM customcrafting_recipes WHERE rNamespace=? AND rKey=?");
-            pState.setString(1, namespace);
-            pState.setString(2, key);
+            pState.setString(1, namespacedKey.getNamespace());
+            pState.setString(2, namespacedKey.getKey());
             return pState.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -172,49 +167,50 @@ public class DataBaseHandler {
         return null;
     }
 
-    public CustomRecipe getRecipe(String namespace, String key) {
-        ResultSet resultSet = getRecipeData(namespace, key);
+    public ICustomRecipe getRecipe(NamespacedKey namespacedKey) {
+        ResultSet resultSet = getRecipeData(namespacedKey);
         try {
             while (resultSet.next()) {
                 String type = resultSet.getString("rType");
                 String data = resultSet.getString("rData");
                 try {
+                    JsonNode node = JacksonUtil.getObjectMapper().readTree(data);
                     switch (type) {
                         case "workbench":
-                            AdvancedCraftConfig config = new AdvancedCraftConfig(data, configAPI, namespace, key);
-                            if (config.isShapeless()) {
-                                return new ShapelessCraftRecipe(config);
+                            if (node.path("shapeless").asBoolean()) {
+                                return new ShapelessCraftRecipe(namespacedKey, node);
                             } else {
-                                return new ShapedCraftRecipe(config);
+                                return new ShapedCraftRecipe(namespacedKey, node);
                             }
                         case "elite_workbench":
-                            EliteCraftConfig eliteCraftConfig = new EliteCraftConfig(data, configAPI, namespace, key);
-                            if (eliteCraftConfig.isShapeless()) {
-                                return new ShapelessEliteCraftRecipe(eliteCraftConfig);
+                            if (node.path("shapeless").asBoolean()) {
+                                return new ShapelessEliteCraftRecipe(namespacedKey, node);
                             } else {
-                                return new ShapedEliteCraftRecipe(eliteCraftConfig);
+                                return new ShapedEliteCraftRecipe(namespacedKey, node);
                             }
                         case "furnace":
-                            return new CustomFurnaceRecipe(new FurnaceConfig(data, configAPI, namespace, key));
+                            return new CustomFurnaceRecipe(namespacedKey, node);
                         case "anvil":
-                            return new CustomAnvilRecipe(new AnvilConfig(data, configAPI, namespace, key));
+                            return new CustomAnvilRecipe(namespacedKey, node);
                         case "blast_furnace":
-                            return new CustomBlastRecipe(new BlastingConfig(data, configAPI, namespace, key));
+                            return new CustomBlastRecipe(namespacedKey, node);
                         case "smoker":
-                            return new CustomSmokerRecipe(new SmokerConfig(data, configAPI, namespace, key));
+                            return new CustomSmokerRecipe(namespacedKey, node);
                         case "campfire":
-                            return new CustomCampfireRecipe(new CampfireConfig(data, configAPI, namespace, key));
+                            return new CustomCampfireRecipe(namespacedKey, node);
                         case "stonecutter":
-                            return new CustomStonecutterRecipe(new StonecutterConfig(data, configAPI, namespace, key));
+                            return new CustomStonecutterRecipe(namespacedKey, node);
                         case "enchant":
                             break;
                         case "grindstone":
-                            return new GrindstoneRecipe(new GrindstoneConfig(data, configAPI, namespace, key));
+                            return new GrindstoneRecipe(namespacedKey, node);
                         case "cauldron":
-                            return new CauldronRecipe(new CauldronConfig(data, configAPI, namespace, key));
+                            return new CauldronRecipe(namespacedKey, node);
+                        case "brewing":
+                            return new BrewingRecipe(namespacedKey, node);
                     }
                 } catch (Exception ex) {
-                    ChatUtils.sendRecipeItemLoadingError(namespace, key, type, ex);
+                    ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), type, ex);
                 }
             }
         } catch (SQLException e) {
@@ -223,44 +219,44 @@ public class DataBaseHandler {
         return null;
     }
 
-    public void addRecipe(RecipeConfig data) {
+    public void addRecipe(ICustomRecipe data) {
         addRecipe(data, true);
     }
 
-    public void addRecipe(RecipeConfig data, boolean async) {
+    public void addRecipe(ICustomRecipe data, boolean async) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) values (?, ?, ?, ?)");
-            pState.setString(1, data.getNamespace());
-            pState.setString(2, data.getName());
-            pState.setString(3, data.getConfigType());
-            pState.setString(4, data.toString());
+            pState.setString(1, data.getNamespacedKey().getNamespace());
+            pState.setString(2, data.getNamespacedKey().getKey());
+            pState.setString(3, data.getRecipeType().getId());
+            pState.setString(4, JacksonUtil.getObjectMapper().writeValueAsString(data));
             if (async) {
                 dataBase.executeUpdate(pState);
             } else {
                 pState.executeUpdate();
             }
-        } catch (SQLException e) {
+        } catch (SQLException | JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateRecipe(RecipeConfig data) {
+    public void updateRecipe(ICustomRecipe data) {
         updateRecipe(data, true);
     }
 
-    public void updateRecipe(RecipeConfig data, boolean async) {
-        if (hasRecipe(data.getNamespace(), data.getName())) {
+    public void updateRecipe(ICustomRecipe data, boolean async) {
+        if (hasRecipe(data.getNamespacedKey())) {
             try {
                 PreparedStatement pState = dataBase.getPreparedStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");
-                pState.setString(1, data.toString());
-                pState.setString(2, data.getNamespace());
-                pState.setString(3, data.getName());
+                pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
+                pState.setString(2, data.getNamespacedKey().getNamespace());
+                pState.setString(3, data.getNamespacedKey().getKey());
                 if (async) {
                     dataBase.executeUpdate(pState);
                 } else {
                     pState.executeUpdate();
                 }
-            } catch (SQLException e) {
+            } catch (SQLException | JsonProcessingException e) {
                 e.printStackTrace();
             }
         } else {
@@ -279,10 +275,9 @@ public class DataBaseHandler {
         }
     }
 
-
-    public boolean hasItem(String namespace, String key) {
+    public boolean hasItem(NamespacedKey namespacedKey) {
         try {
-            ResultSet resultSet = getItem(namespace, key);
+            ResultSet resultSet = getItem(namespacedKey);
             return resultSet.isBeforeFirst();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -290,11 +285,11 @@ public class DataBaseHandler {
         return false;
     }
 
-    public ResultSet getItem(String namespace, String key) {
+    public ResultSet getItem(NamespacedKey namespacedKey) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("SELECT rData FROM customcrafting_items WHERE rNamespace=? AND rKey=?");
-            pState.setString(1, namespace);
-            pState.setString(2, key);
+            pState.setString(1, namespacedKey.getNamespace());
+            pState.setString(2, namespacedKey.getKey());
             return pState.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -302,43 +297,73 @@ public class DataBaseHandler {
         return null;
     }
 
-    public void addItem(ItemConfig data) {
+    public void addItem(NamespacedKey namespacedKey, CustomItem data) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("INSERT INTO customcrafting_items (rNamespace, rKey, rData) values (?, ?, ?)");
-            pState.setString(1, data.getNamespace());
-            pState.setString(2, data.getName());
-            pState.setString(3, data.toString());
+            pState.setString(1, namespacedKey.getNamespace());
+            pState.setString(2, namespacedKey.getKey());
+            pState.setString(3, JacksonUtil.getObjectMapper().writeValueAsString(data));
             dataBase.executeUpdate(pState);
-        } catch (SQLException e) {
+        } catch (SQLException | JsonProcessingException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateItem(ItemConfig data) {
-        if (hasItem(data.getNamespace(), data.getName())) {
+    public void updateItem(NamespacedKey namespacedKey, CustomItem data) {
+        if (hasItem(namespacedKey)) {
             try {
                 PreparedStatement pState = dataBase.getPreparedStatement("UPDATE customcrafting_items SET rData=? WHERE rNamespace=? AND rKey=?");
-                pState.setString(1, data.toString());
-                pState.setString(2, data.getNamespace());
-                pState.setString(3, data.getName());
+                pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
+                pState.setString(2, namespacedKey.getNamespace());
+                pState.setString(3, namespacedKey.getKey());
                 dataBase.executeUpdate(pState);
-            } catch (SQLException e) {
+            } catch (SQLException | JsonProcessingException e) {
                 e.printStackTrace();
             }
         } else {
-            addItem(data);
+            addItem(namespacedKey, data);
         }
     }
 
-    public void removeItem(String namespace, String key) {
+    public void removeItem(NamespacedKey namespacedKey) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("delete from customcrafting_items where rNamespace=? and rKey=?");
-            pState.setString(1, namespace);
-            pState.setString(2, key);
+            pState.setString(1, namespacedKey.getNamespace());
+            pState.setString(2, namespacedKey.getKey());
             dataBase.executeUpdate(pState);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Deprecated
+    public boolean hasRecipe(String namespace, String key) {
+        return hasRecipe(new NamespacedKey(namespace, key));
+    }
+
+    @Deprecated
+    public ResultSet getRecipeData(String namespace, String key) {
+        return getRecipeData(new NamespacedKey(namespace, key));
+    }
+
+    @Deprecated
+    public ICustomRecipe getRecipe(String namespace, String key) {
+        return getRecipe(new NamespacedKey(namespace, key));
+    }
+
+    @Deprecated
+    public boolean hasItem(String namespace, String key) {
+        return hasItem(new NamespacedKey(namespace, key));
+    }
+
+    @Deprecated
+    public ResultSet getItem(String namespace, String key) {
+        return getItem(new NamespacedKey(namespace, key));
+    }
+
+    @Deprecated
+    public void removeItem(String namespace, String key) {
+        removeItem(new NamespacedKey(namespace, key));
     }
 
 }

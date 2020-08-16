@@ -1,12 +1,12 @@
 package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.Button;
-import me.wolfyscript.utilities.api.utils.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -19,10 +19,13 @@ import java.util.HashMap;
 
 public class RecipeListContainerButton extends Button {
 
-    private HashMap<GuiHandler, Recipe> recipes = new HashMap<>();
+    private final CustomCrafting customCrafting;
+    private final HashMap<GuiHandler, Recipe> recipes = new HashMap<>();
+    private final HashMap<GuiHandler, ICustomRecipe> customRecipes = new HashMap<>();
 
-    public RecipeListContainerButton(int slot) {
+    public RecipeListContainerButton(int slot, CustomCrafting customCrafting) {
         super("recipe_list.container_" + slot, null);
+        this.customCrafting = customCrafting;
     }
 
     @Override
@@ -38,16 +41,16 @@ public class RecipeListContainerButton extends Button {
     @Override
     public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
         String id;
-        if (getRecipe(guiHandler) instanceof CustomRecipe) {
-            id = ((CustomRecipe) getRecipe(guiHandler)).getId();
+        if (getCustomRecipe(guiHandler) != null) {
+            id = (getCustomRecipe(guiHandler)).getNamespacedKey().toString();
         } else {
             id = ((Keyed) getRecipe(guiHandler)).getKey().toString();
         }
         if (!id.isEmpty() && id.contains(":")) {
-            if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
-                CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(id);
+            if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
+                customCrafting.getRecipeHandler().getDisabledRecipes().remove(id);
             } else {
-                CustomCrafting.getRecipeHandler().getDisabledRecipes().add(id);
+                customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                 for (Player player1 : Bukkit.getOnlinePlayers()) {
                     player1.undiscoverRecipe(new NamespacedKey(id.split(":")[0], id.split(":")[1]));
                 }
@@ -58,18 +61,18 @@ public class RecipeListContainerButton extends Button {
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        if (getRecipe(guiHandler) instanceof CustomRecipe) {
-            CustomRecipe recipe = (CustomRecipe) getRecipe(guiHandler);
+        if (getCustomRecipe(guiHandler) != null) {
+            ICustomRecipe recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult());
-                if (recipe.getResult().getType().equals(Material.AIR)) {
-                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getId());
+                ItemBuilder itemB = new ItemBuilder(recipe.getCustomResult().create());
+                if (recipe.getCustomResult().getItemStack().getType().equals(Material.AIR)) {
+                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
-                itemB.addLoreLine("§8" + recipe.getId());
-                if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getId())) {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
+                itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
+                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString())) {
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
                 }
                 inventory.setItem(slot, itemB.create());
             }
@@ -81,14 +84,22 @@ public class RecipeListContainerButton extends Button {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + ((Keyed) recipe).getKey().toString());
                 }
                 itemB.addLoreLine("§8" + ((Keyed) recipe).getKey().toString());
-                if (CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
+                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().getActiveLanguage().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
                 }
                 inventory.setItem(slot, itemB.create());
             }
         }
+    }
+
+    public ICustomRecipe getCustomRecipe(GuiHandler guiHandler) {
+        return customRecipes.getOrDefault(guiHandler, null);
+    }
+
+    public void setCustomRecipe(GuiHandler guiHandler, ICustomRecipe recipe) {
+        customRecipes.put(guiHandler, recipe);
     }
 
     public Recipe getRecipe(GuiHandler guiHandler) {

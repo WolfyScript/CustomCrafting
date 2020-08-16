@@ -19,6 +19,50 @@
       ]
     }
   },
+  "knowledgebook": {
+    "category_navigation": [
+      "&7[&aLeft Click&7] Next category",
+      "&7[&aRight Click&7] Previous category"
+    ],
+    "category": {
+      "main": {
+        "name": "&6Recipes"
+      },
+      "customcrafting": {
+        "name": "&6CustomCrafting"
+      },
+      "brewing": {
+        "name": "&6Brewing"
+      },
+      "building_blocks": {
+        "name": "&6Building Blocks"
+      },
+      "decorations": {
+        "name": "&6Decorations"
+      },
+      "combat": {
+        "name": "&6Combat"
+      },
+      "tools": {
+        "name": "&6Tools"
+      },
+      "redstone": {
+        "name": "&6Redstone"
+      },
+      "food": {
+        "name": "&6Food"
+      },
+      "transportation": {
+        "name": "&6Transportation"
+      },
+      "misc": {
+        "name": "&6Misc"
+      },
+      "search": {
+        "name": "&6Browse"
+      }
+    }
+  },
   "msg": {
     "auto_save": {
       "start": "   Auto save data   ",
@@ -82,7 +126,7 @@
     },
     "darkmode": {
       "enabled": "&aEnabled Dark Mode for the GUIs!",
-      "disabled": "&cDisabled Dar Mode for the GUIs!"
+      "disabled": "&cDisabled Dark Mode for the GUIs!"
     },
     "give": {
       "player_offline": "&cThe player &4%PLAYER% &cis not online!",
@@ -247,7 +291,7 @@
           "brewing": {
             "name": "&6Brewing Stand Recipe",
             "lore": [
-              "&8[&7Coming soon&8]"
+              ""
             ]
           },
           "item_editor": {
@@ -610,6 +654,32 @@
             "help": [
               "&7Applies the Item to the recipe"
             ]
+          },
+          "reference": {
+            "wolfyutilities": {
+              "name": "&l&6WolfyUtilities",
+              "lore": [
+                "&7This item was created with WolfyUtilities",
+                "&7and is linked to &e%item_key%&7!",
+                "&6To edit the item use CustomCrafting or the API!"
+              ]
+            },
+            "oraxen": {
+              "name": "&l&6Oraxen",
+              "lore": [
+                "&7This item was created with Oraxen",
+                "&7and is linked to &e%item_key%&7!",
+                "&6To edit the item use Oraxen!"
+              ]
+            },
+            "itemsadder": {
+              "name": "&l&6ItemsAdder",
+              "lore": [
+                "&7This item was created with ItemsAdder",
+                "&7and is linked to &e%item_key%&7!",
+                "&6To edit the item use ItemsAdder!"
+              ]
+            }
           },
           "meta_ignore": {
             "name": "&7Mode: &3%VAR%",
@@ -1109,7 +1179,7 @@
           },
           "custom_model_data": {
             "option": {
-              "name": "&6Custom Model Data &8[&71.14+&8]",
+              "name": "&6Custom Model Data",
               "lore": [
                 "&7Set the Custom Model Data",
                 "&7Used for custom Models and Textures!",
@@ -1187,7 +1257,7 @@
           },
           "custom_durability": {
             "option": {
-              "name": "&6Custom Durability && Damage &8[&71.14+&8]",
+              "name": "&6Custom Durability && Damage",
               "lore": [
                 "&7Set Custom Durability and damage to your item!",
                 "&7This will replace the vanilla Durability and Damage!"
@@ -1288,7 +1358,7 @@
           },
           "persistent_data": {
             "option": {
-              "name": "&6Persistent NBT Data &8[&71.14+&8]",
+              "name": "&6Persistent NBT Data ",
               "lore": [
                 "&7Store custom data in NBT, linked to an key."
               ]
@@ -1296,7 +1366,7 @@
           },
           "elite_workbench": {
             "option": {
-              "name": "&6Elite Workbench &8[&71.14+&8]",
+              "name": "&6Elite Workbench &8[&7Beta&8]",
               "lore": [
                 "&7Create and Configure your own unique Workbench",
                 "&7with up to 6x6 crafting grid",
@@ -1379,7 +1449,7 @@
           },
           "armor_slots": {
             "option": {
-              "name": "&6Custom Equipment &8[&71.14+&8]",
+              "name": "&6Custom Equipment",
               "lore": [
                 "&7Configure the armor slots this item can",
                 "&7can be equiped to.",
@@ -1453,7 +1523,7 @@
           },
           "particle_effects": {
             "option": {
-              "name": "&6Particle Effects &8[&7Beta &8|&7 1.14+&8]",
+              "name": "&6Particle Effects &8[&7Experimental]",
               "lore": [
                 "&7Configure particle effects that",
                 "&7are spawned when holding, equipping",
@@ -1660,6 +1730,43 @@
               "&8[&aLeft Click&8] &7set Time"
             ]
           },
+          "player_experience": {
+            "name": "&7- Player Experience - ",
+            "lore": [
+              "&7Experience:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&aRight Click&8] &7toggle Mode",
+              "&8[&aLeft Click&8] &7set Experience Level"
+            ]
+          },
+          "world_name": {
+            "name": "&7- World Name -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Values:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&aRight Click&8] &7toggle on/off",
+              "&8[&aLeft Click&8] &7Add World Name",
+              "&8[&aShift Left Click&8] &7remove last entry"
+            ]
+          },
+          "world_biome": {
+            "name": "&7- World Biome -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Biomes:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&aRight Click&8] &7toggle on/off",
+              "&8[&aLeft Click&8] &7Add Biome",
+              "&8[&aShift Left Click&8] &7remove last entry"
+            ]
+          },
           "weather": {
             "modes": {
               "storm": "&eRain/Snow",
@@ -1708,12 +1815,16 @@
         },
         "messages": {
           "world_time": "&eType the time in ticks! e.g. 1500",
+          "world_name": "&eType in the exact world name",
+          "world_biome": "&eType in the exact biome name",
+          "missing_world": "&cThis world does not exist!",
           "elite_workbench": "&eType in the folder and name of the CustomItem! Example: &6workbenches golden_workbench",
+          "player_experience": "&eType in the experience required!",
           "permission": "&eType in the permission string",
           "error": "&cThis item does not exist or is not loaded!",
           "no_name": "&cYou need to type in the item name!",
           "not_elite_workbench": "&cThis item is not an Elite Workbench!",
-          "already_existing": "&cYou already added this Item!"
+          "already_existing": "&cYou already added this item!"
         }
       },
       "workbench": {
@@ -2000,6 +2111,52 @@
           }
         }
       },
+      "brewing_stand": {
+        "gui_name": "&4&lCreator &7[&8Brewing Satnd&7]",
+        "messages": {
+          "potion_duration": "&eType in the amount of ticks the potions duration should change",
+          "potion_aplifier": "&eType in the amount of levels the potions amplifier should change"
+        },
+        "items": {
+          "brewing_stand": {
+            "name": "&4"
+          },
+          "brewTime": {
+            "name": "&6Brew Time",
+            "lore": [
+              "&7Brew Time: &e%time% ticks",
+              "",
+              "&eThe time in ticks the recipe takes to finish. &4Max &c400 ticks"
+            ],
+            "message": "&eType in the brew time in ticks. &4Max &c400"
+          },
+          "fuelCost": {
+            "name": "&6Fuel Cost",
+            "lore": [
+              "&7Cost: &e%cost%",
+              "",
+              "&eFuel that is required and consumed for the recipe"
+            ],
+            "message": "&eType in the fuel cost. e.g. 2"
+          },
+          "potion_duration": {
+            "name": "&7Potion Duration",
+            "lore": [
+              "&eDuration Change: &6%value%",
+              "&7[&aLeft Click&7] &eChange Value",
+              "&7[&cRight Click&7] &cReset Action"
+            ]
+          },
+          "potion_amplifier": {
+            "name": "&7Potion Amplifier",
+            "lore": [
+              "&eAmplifier Change: &6%value%",
+              "&7[&aLeft Click&7] &eChange Value",
+              "&7[&cRight Click&7] &cReset Action"
+            ]
+          }
+        }
+      },
       "variants": {
         "gui_name": "&8Variants",
         "gui_help": [
@@ -2012,75 +2169,32 @@
     },
     "recipe_book": {
       "global_items": {
-        "itemCategory": {
-          "brewing": {
-            "name": "&6Brewing",
+        "conditions": {
+          "world_time": {
+            "name": "&6&l» World Time «",
             "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
+              "&7This recipe can be crafted when the ",
+              "&7world time is %mode% %value%&7!"
             ]
           },
-          "building_blocks": {
-            "name": "&6Building Blocks",
+          "weather": {
+            "name": "&6&l» World Weather «",
             "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
+              "&7This recipe requires ",
+              "&6%value% &7to be crafted!"
             ]
           },
-          "decorations": {
-            "name": "&6Decorations",
+          "advanced_workbench": {
+            "name": "&6&l» Advanced Workbench «",
             "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
+              "&7This recipe can only be crafted "
             ]
           },
-          "combat": {
-            "name": "&6Combat",
+          "permission": {
+            "name": "&6&l» Permission «",
             "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "tools": {
-            "name": "&6Tools",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "redstone": {
-            "name": "&6Redstone",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "food": {
-            "name": "&6Food",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "transportation": {
-            "name": "&6Transportation",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "misc": {
-            "name": "&6Misc",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
-            ]
-          },
-          "search": {
-            "name": "&6Browse",
-            "lore": [
-              "&7[&aLeft Click&7] Next category",
-              "&7[&aRight Click&7] Previous category"
+              "&7Permission:&e %VALUE%",
+              "&7Mode:&e %MODE%"
             ]
           }
         },
@@ -2203,6 +2317,40 @@
               ]
             }
           }
+        },
+        "brewing": {
+          "icon": {
+            "name": "&7&lBrewing",
+            "lore": [
+              "&7Brewing Time: &e%time% ticks",
+              "&7Fuel cost: &e%cost%"
+            ]
+          },
+          "potion_duration": {
+            "name": "&7Potion Duration",
+            "lore": [
+              "&eThis recipe will increase the ",
+              "&eduration of potion effects ",
+              "&eby &6%value% ticks"
+            ]
+          },
+          "potion_amplifier": {
+            "name": "&7Potion Duration",
+            "lore": [
+              "&eThis recipe will increase the ",
+              "&eamplifier of potion effects ",
+              "&eby &6%value% levels"
+            ]
+          }
+        },
+        "grindstone": {
+          "name": "&7&lGrindstone"
+        },
+        "back_to_list": {
+          "name": "&7&lReturn",
+          "lore": [
+            "&7» &eReturn to Recipe List"
+          ]
         }
       },
       "main_menu": {
@@ -2251,6 +2399,9 @@
           },
           "cauldron": {
             "name": "&6Cauldron Recipes"
+          },
+          "brewing": {
+            "name": "&6Brewing Recipes"
           }
         }
       },

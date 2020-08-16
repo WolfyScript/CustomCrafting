@@ -3,12 +3,13 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronConfig;
+import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,40 +23,40 @@ import java.util.List;
 
 public class CauldronContainerButton extends ItemInputButton {
 
-    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getCauldronConfig().setResult(Collections.singletonList(items.getItem()));
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getCauldronRecipe().setResult(Collections.singletonList(items.getItem()));
 
-    public CauldronContainerButton(int inputSlot) {
+    public CauldronContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("cauldron.container_" + inputSlot, new ButtonState("", Material.AIR, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 TestCache cache = (TestCache) guiHandler.getCustomCache();
-                CauldronConfig cauldronConfig = cache.getCauldronConfig();
+                CauldronRecipe recipe = cache.getCauldronRecipe();
                 if (event.isRightClick() && event.isShiftClick()) {
-                    if (inputSlot == 0 && cauldronConfig.getIngredients() != null) {
+                    if (inputSlot == 0 && recipe.getIngredients() != null) {
                         cache.getVariantsData().setSlot(inputSlot);
-                        cache.getVariantsData().setVariants(cauldronConfig.getIngredients());
+                        cache.getVariantsData().setVariants(recipe.getIngredients());
                         guiHandler.changeToInv("variants");
-                    } else if (inputSlot == 1 && cauldronConfig.getResult() != null) {
+                    } else if (inputSlot == 1 && recipe.getCustomResults() != null) {
                         if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            cache.getItems().setItem(true, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
+                            cache.getItems().setItem(true, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
                             cache.setApplyItem(APPLY_ITEM);
                             guiHandler.changeToInv("none", "item_editor");
                         }
                     }
                     return true;
                 } else {
-                    Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> {
-                        CustomItem input = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
+                    Bukkit.getScheduler().runTask(customCrafting, () -> {
+                        CustomItem input = inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
                         if (inputSlot == 0) {
-                            List<CustomItem> inputs = cauldronConfig.getIngredients();
+                            List<CustomItem> inputs = recipe.getIngredients();
                             if (inputs.size() > 0) {
                                 inputs.set(0, input);
                             } else {
                                 inputs.add(input);
                             }
-                            cauldronConfig.setIngredients(inputs);
+                            recipe.setIngredients(inputs);
                         } else {
-                            cauldronConfig.setResult(Collections.singletonList(input));
+                            recipe.setResult(Collections.singletonList(input));
                         }
                     });
                 }
@@ -64,12 +65,9 @@ public class CauldronContainerButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
-                CauldronConfig cauldronConfig = ((TestCache) guiHandler.getCustomCache()).getCauldronConfig();
-                List<CustomItem> items = inputSlot == 0 ? cauldronConfig.getIngredients() : cauldronConfig.getResult();
-                if (items != null && !items.isEmpty()) {
-                    item = items.get(0).getRealItem();
-                }
-                return item;
+                CauldronRecipe recipe = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe();
+                List<CustomItem> items = inputSlot == 0 ? recipe.getIngredients() : recipe.getCustomResults();
+                return !InventoryUtils.isCustomItemsListEmpty(items) ? items.get(0).create() : new ItemStack(Material.AIR);
             }
         }));
     }

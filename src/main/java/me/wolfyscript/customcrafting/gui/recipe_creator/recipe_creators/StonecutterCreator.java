@@ -2,90 +2,43 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SaveButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.StonecutterContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.StonecutterConfig;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.event.EventHandler;
 
-import java.util.Locale;
+public class StonecutterCreator extends RecipeCreator {
 
-public class StonecutterCreator extends ExtendedGuiWindow {
-
-    public StonecutterCreator(InventoryAPI inventoryAPI) {
-        super("stonecutter", inventoryAPI, 45);
+    public StonecutterCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
+        super("stonecutter", inventoryAPI, 45, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", WolfyUtilities.getCustomHead("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton("save", new ButtonState("recipe_creator", "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
-            if (validToSave(cache)) {
-                openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
-                    TestCache cache1 = ((TestCache) guiHandler1.getCustomCache());
-                    StonecutterConfig stonecutterConfig = cache1.getStonecutterConfig();
-                    if (args.length > 1) {
-                        String namespace = args[0].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        String key = args[1].toLowerCase(Locale.ROOT).replace(" ", "_");
-                        if (!stonecutterConfig.saveConfig(namespace, key, player1)) {
-                            return true;
-                        }
-                        if (CustomCrafting.hasDataBaseHandler()) {
-                            CustomCrafting.getDataBaseHandler().updateRecipe(stonecutterConfig);
-                        } else {
-                            stonecutterConfig.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-                        }
-                        try {
-                            Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> {
-                                CustomCrafting.getRecipeHandler().injectRecipe(new CustomStonecutterRecipe(stonecutterConfig));
-                                api.sendPlayerMessage(player, "recipe_creator", "loading.success");
-                            }, 1);
-                            if (CustomCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
-                                cache.resetStonecutterConfig();
-                            }
-                        } catch (Exception ex) {
-                            api.sendPlayerMessage(player, "recipe_creator", "error.loading", new String[]{"%REC%", stonecutterConfig.getId()});
-                            ex.printStackTrace();
-                            return false;
-                        }
-                        Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> guiHandler.openCluster("none"));
-                    }
-                    return false;
-                });
-            } else {
-                api.sendPlayerMessage(player, "recipe_creator", "save.empty");
-            }
-            return false;
-        })));
+        registerButton(new SaveButton());
 
-        registerButton(new ToggleButton("hidden", new ButtonState("recipe_creator", "hidden.enabled", WolfyUtilities.getSkullViaURL("ce9d49dd09ecee2a4996965514d6d301bf12870c688acb5999b6658e1dfdff85"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getStonecutterConfig().setHidden(false);
-            return true;
-        }), new ButtonState("recipe_creator", "hidden.disabled", WolfyUtilities.getSkullViaURL("85e5bf255d5d7e521474318050ad304ab95b01a4af0bae15e5cd9c1993abcc98"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getStonecutterConfig().setHidden(true);
-            return true;
-        })));
+        registerButton(new HiddenButton());
 
-        registerButton(new StonecutterContainerButton(0));
-        registerButton(new StonecutterContainerButton(1));
+        registerButton(new StonecutterContainerButton(0, customCrafting));
+        registerButton(new StonecutterContainerButton(1, customCrafting));
     }
 
     @EventHandler
     public void onUpdate(GuiUpdateEvent event) {
         if (event.verify(this)) {
-            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), ((TestCache) event.getGuiHandler().getCustomCache()).getStonecutterConfig().isHidden());
+            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), ((TestCache) event.getGuiHandler().getCustomCache()).getStonecutterRecipe().isHidden());
             event.setButton(0, "back");
             event.setButton(4, "hidden");
             event.setButton(20, "stonecutter.container_0");
@@ -94,8 +47,9 @@ public class StonecutterCreator extends ExtendedGuiWindow {
         }
     }
 
-    private boolean validToSave(TestCache cache) {
-        StonecutterConfig stonecutter = cache.getStonecutterConfig();
-        return !stonecutter.getResult().get(0).getType().equals(Material.AIR) && !stonecutter.getSource().isEmpty();
+    @Override
+    public boolean validToSave(TestCache cache) {
+        CustomStonecutterRecipe recipe = cache.getStonecutterRecipe();
+        return !InventoryUtils.isCustomItemsListEmpty(recipe.getCustomResults()) && !InventoryUtils.isCustomItemsListEmpty(recipe.getSource());
     }
 }

@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.main_gui.RecipesList;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -15,10 +15,13 @@ import java.util.HashMap;
 
 public class RecipeListNamespaceButton extends ActionButton {
 
-    private HashMap<GuiHandler, String> namespaces = new HashMap<>();
+    private final CustomCrafting customCrafting;
+    private final HashMap<GuiHandler, String> namespaces = new HashMap<>();
 
-    public RecipeListNamespaceButton(int slot) {
+
+    public RecipeListNamespaceButton(int slot, CustomCrafting customCrafting) {
         super("recipe_list.namespace_" + slot, new ButtonState("namespace", Material.CHEST, null));
+        this.customCrafting = customCrafting;
     }
 
     @Override
@@ -34,32 +37,32 @@ public class RecipeListNamespaceButton extends ActionButton {
                 } else {
                     if (namespace.equalsIgnoreCase("minecraft")) {
                         if (event.isShiftClick() && event.isLeftClick()) {
-                            for (Recipe recipe : CustomCrafting.getRecipeHandler().getVanillaRecipes()) {
+                            for (Recipe recipe : customCrafting.getRecipeHandler().getVanillaRecipes()) {
                                 if (recipe instanceof Keyed) {
                                     String id = ((Keyed) recipe).getKey().toString();
-                                    if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
-                                        CustomCrafting.getRecipeHandler().getDisabledRecipes().add(id);
+                                    if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
+                                        customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                                     }
                                 }
                             }
                         } else if (event.isShiftClick() && event.isRightClick()) {
-                            for (Recipe recipe : CustomCrafting.getRecipeHandler().getVanillaRecipes()) {
+                            for (Recipe recipe : customCrafting.getRecipeHandler().getVanillaRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(((Keyed) recipe).getKey().toString());
+                                    customCrafting.getRecipeHandler().getDisabledRecipes().remove(((Keyed) recipe).getKey().toString());
                                 }
                             }
                         }
                     } else {
                         if (event.isShiftClick() && event.isLeftClick()) {
-                            for (CustomRecipe recipe : CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
-                                String id = recipe.getId();
-                                if (!CustomCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
-                                    CustomCrafting.getRecipeHandler().getDisabledRecipes().add(id);
+                            for (ICustomRecipe recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                                String id = recipe.getNamespacedKey().toString();
+                                if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
+                                    customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                                 }
                             }
                         } else if (event.isShiftClick() && event.isRightClick()) {
-                            for (CustomRecipe recipe : CustomCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
-                                CustomCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getId());
+                            for (ICustomRecipe recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                                customCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getNamespacedKey().toString());
                             }
                         }
                     }

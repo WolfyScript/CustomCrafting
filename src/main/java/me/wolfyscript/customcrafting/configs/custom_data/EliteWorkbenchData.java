@@ -1,10 +1,11 @@
 package me.wolfyscript.customcrafting.configs.custom_data;
 
 import me.wolfyscript.utilities.api.custom_items.custom_data.CustomData;
-import org.bukkit.util.NumberConversions;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.util.Objects;
 
 public class EliteWorkbenchData extends CustomData implements Cloneable {
 
@@ -68,23 +69,20 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     }
 
     @Override
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("enabled", enabled);
-        map.put("gridSize", gridSize);
-        map.put("advancedRecipes", advancedRecipes);
-        map.put("allowHoppers", allowHoppers);
-        map.put("keepItems", keepItems);
-
-        return map;
+    public void writeToJson(JsonGenerator gen) throws IOException {
+        gen.writeBooleanField("enabled", enabled);
+        gen.writeNumberField("gridSize", gridSize);
+        gen.writeBooleanField("advancedRecipes", advancedRecipes);
+        gen.writeBooleanField("allowHoppers", allowHoppers);
+        gen.writeBooleanField("keepItems", keepItems);
     }
 
     @Override
-    public EliteWorkbenchData fromMap(Map<String, Object> map) {
+    public CustomData readFromJson(JsonNode node) throws IOException {
         EliteWorkbenchData eliteWorkbenchData = new EliteWorkbenchData();
-        eliteWorkbenchData.setEnabled((Boolean) map.getOrDefault("enabled", false));
-        eliteWorkbenchData.setGridSize(NumberConversions.toInt(map.getOrDefault("gridSize", 3)));
-        eliteWorkbenchData.setAdvancedRecipes((Boolean) map.getOrDefault("advancedRecipes", false));
+        eliteWorkbenchData.setEnabled(node.get("enabled").asBoolean(false));
+        eliteWorkbenchData.setGridSize(node.get("gridSize").asInt(3));
+        eliteWorkbenchData.setAdvancedRecipes(node.get("advancedRecipes").asBoolean(false));
         return eliteWorkbenchData;
     }
 
@@ -95,5 +93,23 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
         eliteWorkbenchData.setEnabled(isEnabled());
         eliteWorkbenchData.setGridSize(getGridSize());
         return eliteWorkbenchData;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EliteWorkbenchData)) return false;
+        if (!super.equals(o)) return false;
+        EliteWorkbenchData that = (EliteWorkbenchData) o;
+        return advancedRecipes == that.advancedRecipes &&
+                enabled == that.enabled &&
+                allowHoppers == that.allowHoppers &&
+                keepItems == that.keepItems &&
+                gridSize == that.gridSize;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), advancedRecipes, enabled, allowHoppers, keepItems, gridSize);
     }
 }

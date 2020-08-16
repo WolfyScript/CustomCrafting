@@ -1,10 +1,13 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class WorldTimeCondition extends Condition {
 
@@ -17,7 +20,7 @@ public class WorldTimeCondition extends Condition {
     }
 
     @Override
-    public boolean check(CustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
         long currentTime = data.getBlock().getWorld().getTime();
         switch (option) {
             case IGNORE:
@@ -39,15 +42,13 @@ public class WorldTimeCondition extends Condition {
     }
 
     @Override
-    public JsonElement toJsonElement() {
-        JsonObject jsonObject = (JsonObject) super.toJsonElement();
-        jsonObject.addProperty("time", time);
-        return jsonObject;
+    public void readFromJson(JsonNode node) {
+        this.time = node.get("time").asInt();
     }
 
     @Override
-    public void fromJsonElement(JsonElement jsonElement) {
-        this.time = ((JsonObject) jsonElement).getAsJsonPrimitive("time").getAsInt();
+    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
+        gen.writeNumberField("time", time);
     }
 
     public void setTime(long time) {

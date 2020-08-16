@@ -5,6 +5,8 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItemBreakEvent;
 import me.wolfyscript.utilities.api.custom_items.CustomItemPlaceEvent;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -16,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class BlockListener implements Listener {
 
-    private WolfyUtilities api;
+    private final WolfyUtilities api;
 
     public BlockListener(WolfyUtilities api) {
         this.api = api;
@@ -27,7 +29,7 @@ public class BlockListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(CustomItemPlaceEvent event) {
-        if (event.getCustomItem().getId().equals("customcrafting:workbench")) {
+        if (event.getCustomItem().getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) event.getCustomItem().getApiReference()).getNamespacedKey().equals(NamespacedKey.getByString("customcrafting:workbench"))) {
             CustomCrafting.getWorkbenches().addWorkbench(event.getBlockPlaced().getLocation());
         }
     }

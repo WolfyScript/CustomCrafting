@@ -48,20 +48,20 @@ public class Cauldron implements Listener {
         this.cookingTime = cookingTime;
     }
 
-    @Override
-    public String toString() {
-        return recipe.getId() + ";" + passedTicks + ";" + cookingTime + ";" + done + ";" + dropItems;
-    }
-
-    public static Cauldron fromString(String data) {
+    public static Cauldron fromString(CustomCrafting customCrafting, String data) {
         if (data == null || data.isEmpty())
             return null;
         String[] args = data.split(";");
-        CauldronRecipe recipe = (CauldronRecipe) CustomCrafting.getRecipeHandler().getRecipe(args[0]);
+        CauldronRecipe recipe = (CauldronRecipe) customCrafting.getRecipeHandler().getRecipe(args[0]);
         if (recipe == null) {
             return null;
         }
         return new Cauldron(recipe, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Boolean.parseBoolean(args[3]), Boolean.parseBoolean(args[4]));
+    }
+
+    @Override
+    public String toString() {
+        return recipe.getNamespacedKey().toString() + ";" + passedTicks + ";" + cookingTime + ";" + done + ";" + dropItems;
     }
 
     public void increasePassedTicks() {

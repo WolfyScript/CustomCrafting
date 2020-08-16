@@ -1,92 +1,35 @@
 package me.wolfyscript.customcrafting.recipes.types.campfire;
 
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import org.bukkit.NamespacedKey;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.inventory.CampfireRecipe;
 import org.bukkit.inventory.RecipeChoice;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
-public class CustomCampfireRecipe extends CampfireRecipe implements CustomCookingRecipe<CampfireConfig> {
+public class CustomCampfireRecipe extends CustomCookingRecipe<CampfireRecipe> {
 
-    private boolean exactMeta, hidden;
-
-    private RecipePriority recipePriority;
-    private List<CustomItem> result;
-    private List<CustomItem> source;
-    private String id;
-    private CampfireConfig config;
-    private Conditions conditions;
-
-    public CustomCampfireRecipe(CampfireConfig config) {
-        super(new NamespacedKey(config.getNamespace(), config.getName()), config.getResult().get(0), new RecipeChoice.ExactChoice(new ArrayList<>(config.getSource())), config.getXP(), config.getCookingTime());
-        this.id = config.getId();
-        this.config = config;
-        this.result = config.getResult();
-        this.source = config.getSource();
-        this.recipePriority = config.getPriority();
-        this.exactMeta = config.isExactMeta();
-        this.conditions = config.getConditions();
-        this.hidden = config.isHidden();
-        setGroup(config.getGroup());
+    public CustomCampfireRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        super(namespacedKey, node);
     }
 
-    public List<CustomItem> getSource() {
-        return source;
+    public CustomCampfireRecipe() {
+        super();
+    }
+
+    public CustomCampfireRecipe(CustomCampfireRecipe customCampfireRecipe){
+        super(customCampfireRecipe);
     }
 
     @Override
-    public String getId() {
-        return id;
+    public CampfireRecipe getVanillaRecipe() {
+        return new CampfireRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(customItem -> customItem.create()).collect(Collectors.toList())), getExp(), getCookingTime());
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
-        return result;
-    }
-
-    @Override
-    public RecipePriority getPriority() {
-        return recipePriority;
-    }
-
-    @Override
-    public void load() {
-
-    }
-
-    @Override
-    public CustomCampfireRecipe save(ConfigAPI configAPI, String namespace, String key) {
-        return null;
-    }
-
-    @Override
-    public CustomCampfireRecipe save(CampfireConfig config) {
-        return null;
-    }
-
-    @Override
-    public CampfireConfig getConfig() {
-        return config;
-    }
-
-    @Override
-    public boolean isExactMeta() {
-        return exactMeta;
-    }
-
-    @Override
-    public Conditions getConditions() {
-        return conditions;
-    }
-
-    @Override
-    public boolean isHidden() {
-        return hidden;
+    public RecipeType getRecipeType() {
+        return RecipeType.CAMPFIRE;
     }
 }

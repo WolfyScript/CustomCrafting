@@ -4,11 +4,14 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 
 public class GrindstoneData {
 
-    private GrindstoneRecipe recipe;
-    private CustomItem inputTop, inputBottom;
+    private final GrindstoneRecipe recipe;
+    private final CustomItem inputTop;
+    private final CustomItem inputBottom;
+    private final boolean validItem;
 
-    public GrindstoneData(GrindstoneRecipe recipe, CustomItem inputTop, CustomItem inputBottom) {
+    public GrindstoneData(GrindstoneRecipe recipe, boolean validItem, CustomItem inputTop, CustomItem inputBottom) {
         this.recipe = recipe;
+        this.validItem = validItem;
         this.inputTop = inputTop;
         this.inputBottom = inputBottom;
     }
@@ -23,5 +26,9 @@ public class GrindstoneData {
 
     public GrindstoneRecipe getRecipe() {
         return recipe;
+    }
+
+    public boolean isValidItem() {
+        return validItem;
     }
 }

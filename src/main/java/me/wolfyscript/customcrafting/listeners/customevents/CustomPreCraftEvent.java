@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +10,7 @@ import java.util.List;
 public class CustomPreCraftEvent extends CustomCraftEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    private boolean isRepair;
+    private final boolean isRepair;
     private List<List<ItemStack>> ingredients;
 
     public CustomPreCraftEvent(boolean isRepair, CraftingRecipe craftingRecipe, Inventory inventory, List<List<ItemStack>> ingredients) {

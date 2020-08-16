@@ -1,65 +1,86 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiWindow;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
+public class CustomAnvilRecipe extends CustomRecipe {
 
-    private boolean exactMeta, hidden;
     private boolean blockRepair;
     private boolean blockRename;
     private boolean blockEnchant;
-    private RecipePriority priority;
 
     private Mode mode;
     private int repairCost;
     private boolean applyRepairCost;
     private RepairCostMode repairCostMode;
     private int durability;
-    private Conditions conditions;
 
     private HashMap<Integer, List<CustomItem>> ingredients;
+    private List<CustomItem> result;
 
-    private String id;
-    private AnvilConfig config;
-
-    public CustomAnvilRecipe(AnvilConfig config) {
-        this.config = config;
-        this.id = config.getId();
+    public CustomAnvilRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        super(namespacedKey, node);
         this.ingredients = new HashMap<>();
-        this.exactMeta = config.isExactMeta();
-        this.blockEnchant = config.isBlockEnchant();
-        this.blockRename = config.isBlockRename();
-        this.blockRepair = config.isBlockRepairing();
-        this.priority = config.getPriority();
-        this.repairCost = config.getRepairCost();
-        this.mode = config.getMode();
-        this.applyRepairCost = config.isApplyRepairCost();
-        this.repairCostMode = config.getRepairCostMode();
-        this.durability = 0;
-        ingredients.put(0, config.getInputLeft());
-        ingredients.put(1, config.getInputRight());
-        if (config.getMode().equals(Mode.DURABILITY)) {
-            this.durability = config.getDurability();
-        } else if (config.getMode().equals(Mode.RESULT)) {
-            ingredients.put(2, config.getResult());
+        this.blockEnchant = node.path("block_enchant").asBoolean(false);
+        this.blockRename = node.path("block_rename").asBoolean(false);
+        this.blockRepair = node.path("block_repair").asBoolean(false);
+        {
+            JsonNode repairNode = node.path("repair_cost");
+            this.repairCost = repairNode.path("amount").asInt(0);
+            this.applyRepairCost = repairNode.path("apply_to_result").asBoolean(true);
+            this.repairCostMode = RepairCostMode.valueOf(repairNode.path("mode").asText("NONE"));
         }
-        this.conditions = config.getConditions();
-        this.hidden = config.isHidden();
+        this.ingredients = new HashMap<>();
+        {
+            JsonNode modeNode = node.path("mode");
+            this.mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
+            this.durability = modeNode.path("durability").asInt(0);
+            {
+                List<CustomItem> results = new ArrayList<>();
+                JsonNode resultNode = modeNode.path("result");
+                if (resultNode.isObject()) {
+                    results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
+                    resultNode.path("variants").forEach(jsonNode -> results.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class))));
+                } else {
+                    resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+                }
+                this.result = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
+                this.ingredients.put(2, this.result);
+            }
+        }
+        readInput(0, node);
+        readInput(1, node);
+    }
+
+    public CustomAnvilRecipe(CustomAnvilRecipe recipe) {
+        super(recipe);
+        this.ingredients = recipe.ingredients;
+        this.mode = recipe.getMode();
+        this.durability = recipe.durability;
+        this.repairCost = recipe.repairCost;
+        this.applyRepairCost = recipe.applyRepairCost;
+        this.repairCostMode = recipe.repairCostMode;
+        this.blockEnchant = recipe.blockEnchant;
+        this.blockRename = recipe.blockRename;
+        this.blockRepair = recipe.blockRepair;
     }
 
     public CustomAnvilRecipe() {
-        this.config = null;
-        this.id = "";
-        this.exactMeta = true;
+        super();
         this.ingredients = new HashMap<>();
         this.ingredients.put(2, new ArrayList<>(Collections.singleton(new CustomItem(Material.AIR))));
         this.mode = Mode.RESULT;
@@ -70,48 +91,25 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
         this.blockEnchant = false;
         this.blockRename = false;
         this.blockRepair = false;
-        this.priority = RecipePriority.NORMAL;
-        this.conditions = new Conditions();
     }
 
-    public CustomAnvilRecipe save(ConfigAPI configAPI, String namespace, String key) {
-        AnvilConfig config;
-        if (CustomCrafting.hasDataBaseHandler()) {
-            config = new AnvilConfig("{}", configAPI, namespace, key);
-        } else {
-            config = new AnvilConfig(configAPI, namespace, key);
+    private void readInput(int slot, JsonNode node) {
+        List<CustomItem> results = new ArrayList<>();
+        node.path("input_"+(slot == 0 ? "left" : "right")).elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+        this.ingredients.put(slot, results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+    }
+
+    private void writeInput(int slot, JsonGenerator gen) throws IOException {
+        gen.writeArrayFieldStart("input_"+(slot == 0 ? "left" : "right"));
+        for (CustomItem customItem : this.ingredients.get(slot)) {
+            gen.writeObject(customItem.getApiReference());
         }
-        return save(config);
+        gen.writeEndArray();
     }
 
     @Override
-    public CustomAnvilRecipe save(AnvilConfig config) {
-        config.setBlockEnchant(isBlockEnchant());
-        config.setBlockRename(isBlockRename());
-        config.setBlockRepairing(isBlockRepair());
-        config.setExactMeta(isExactMeta());
-        config.setRepairCostMode(getRepairCostMode());
-        config.setRepairCost(getRepairCost());
-        config.setPriority(getPriority());
-        config.setMode(getMode());
-        config.setResult(getCustomResults());
-        config.setDurability(getDurability());
-        config.setInputLeft(getInputLeft());
-        config.setInputRight(getInputRight());
-        config.setConditions(getConditions());
-        if (CustomCrafting.hasDataBaseHandler()) {
-            CustomCrafting.getDataBaseHandler().updateRecipe(config);
-        } else {
-            config.reload(CustomCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-        }
-        this.config = config;
-        this.id = config.getId();
-        return this;
-    }
-
-    @Override
-    public String getId() {
-        return id;
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
     public int getDurability() {
@@ -120,39 +118,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return ingredients.getOrDefault(2, Collections.singletonList(new CustomItem(Material.STONE)));
-    }
-
-    @Override
-    public RecipePriority getPriority() {
-        return priority;
-    }
-
-    @Override
-    public void load() {
-    }
-
-    @Override
-    public AnvilConfig getConfig() {
-        return config;
-    }
-
-    @Override
-    public boolean isExactMeta() {
-        return exactMeta;
-    }
-
-    @Override
-    public Conditions getConditions() {
-        return conditions;
-    }
-
-    public void setExactMeta(boolean exactMeta) {
-        this.exactMeta = exactMeta;
-    }
-
-    public void setPriority(RecipePriority priority) {
-        this.priority = priority;
+        return result;
     }
 
     public Mode getMode() {
@@ -171,8 +137,9 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
         this.repairCost = repairCost;
     }
 
+    @Override
     public void setResult(List<CustomItem> result) {
-        ingredients.put(2, result);
+        this.result = result;
     }
 
     public void setDurability(int durability) {
@@ -252,21 +219,66 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
     }
 
     @Override
-    @Deprecated
-    public ItemStack getResult() {
-        return ingredients.getOrDefault(2, Collections.singletonList(new CustomItem(Material.AIR))).get(0);
+    public RecipeType getRecipeType() {
+        return RecipeType.ANVIL;
     }
 
     @Override
-    @Deprecated
-    public String getGroup() {
-        return "";
+    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
+        super.writeToJson(gen, serializerProvider);
+        gen.writeBooleanField("block_enchant", blockEnchant);
+        gen.writeBooleanField("block_rename", blockRename);
+        gen.writeBooleanField("block_repair", blockRepair);
+        {
+            gen.writeObjectFieldStart("repair_cost");
+            gen.writeNumberField("amount", repairCost);
+            gen.writeBooleanField("apply_to_result", applyRepairCost);
+            gen.writeStringField("mode", repairCostMode.toString());
+            gen.writeEndObject();
+        }
+        {
+            gen.writeObjectFieldStart("mode");
+            gen.writeNumberField("durability", durability);
+            gen.writeStringField("usedMode", mode.toString());
+            {
+                gen.writeArrayFieldStart("result");
+                for (CustomItem customItem : result) {
+                    gen.writeObject(customItem.getApiReference());
+                }
+                gen.writeEndArray();
+            }
+            gen.writeEndObject();
+        }
+        writeInput(0, gen);
+        writeInput(1, gen);
+    }
+
+    @Override
+    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+        event.setButton(0, "back");
+        event.setButton(10, "recipe_book", "ingredient.container_10");
+        event.setButton(13, "recipe_book", "ingredient.container_13");
+        event.setButton(19, "none", "glass_green");
+        event.setButton(22, "none", "glass_green");
+        event.setButton(28, "none", "glass_green");
+        event.setButton(29, "none", "glass_green");
+        event.setButton(30, "none", "glass_green");
+        event.setButton(32, "none", "glass_green");
+        event.setButton(33, "none", "glass_green");
+        if (getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+            event.setButton(31, "recipe_book", "anvil.result");
+        } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
+            event.setButton(31, "recipe_book", "anvil.durability");
+        } else {
+            event.setButton(31, "recipe_book", "anvil.none");
+        }
+        event.setButton(34, "recipe_book", "ingredient.container_34");
     }
 
     public enum Mode {
         DURABILITY(1), RESULT(2), NONE(0);
 
-        private int id;
+        private final int id;
 
         Mode(int id) {
             this.id = id;
@@ -288,7 +300,7 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
     public enum RepairCostMode {
         ADD(), MULTIPLY(), NONE();
 
-        private static List<RepairCostMode> modes = new ArrayList<>();
+        private static final List<RepairCostMode> modes = new ArrayList<>();
 
         public static List<RepairCostMode> getModes() {
             if (modes.isEmpty()) {
@@ -296,10 +308,5 @@ public class CustomAnvilRecipe implements CustomRecipe<AnvilConfig> {
             }
             return modes;
         }
-    }
-
-    @Override
-    public boolean isHidden() {
-        return hidden;
     }
 }

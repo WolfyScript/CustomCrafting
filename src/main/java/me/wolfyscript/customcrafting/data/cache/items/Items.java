@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.data.cache.items;
 
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
@@ -19,7 +21,7 @@ public class Items implements Serializable {
 
     private CustomItem item;
     private boolean recipeItem;
-    private String id;
+    private NamespacedKey namespacedKey;
     private int craftSlot, variantSlot;
     private boolean saved;
 
@@ -35,7 +37,7 @@ public class Items implements Serializable {
 
         this.item = new CustomItem(Material.AIR);
         this.recipeItem = false;
-        this.id = "";
+        this.namespacedKey = null;
         this.saved = false;
         this.craftSlot = -1;
         this.variantSlot = -1;
@@ -50,11 +52,11 @@ public class Items implements Serializable {
     public void setItem(boolean recipeItem, CustomItem customItem) {
         setItem(customItem);
         setRecipeItem(recipeItem);
-        if (customItem.getId().isEmpty()) {
-            setSaved(false);
-        } else {
-            setId(customItem.getId());
+        if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
+            setNamespacedKey(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey());
             setSaved(true);
+        } else {
+            setSaved(false);
         }
     }
 
@@ -79,12 +81,12 @@ public class Items implements Serializable {
         return recipeItem;
     }
 
-    public String getId() {
-        return id;
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setNamespacedKey(NamespacedKey namespacedKey) {
+        this.namespacedKey = namespacedKey;
     }
 
     public boolean isSaved() {
