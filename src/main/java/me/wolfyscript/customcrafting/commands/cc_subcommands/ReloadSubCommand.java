@@ -3,13 +3,19 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
+import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import me.wolfyscript.utilities.api.language.LanguageAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +31,33 @@ public class ReloadSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-                CustomCrafting.getApi().getInventoryAPI().reset();
-                CustomCrafting.getApi().getLanguageAPI().unregisterLanguages();
-                customCrafting.getConfigHandler().getConfig().save();
-                customCrafting.getRecipeHandler().onSave();
-                customCrafting.getConfigHandler().load();
-                InventoryHandler invHandler = new InventoryHandler(customCrafting);
-                invHandler.init();
-                CustomCrafting.getApi().sendPlayerMessage(p, "§aReloaded GUIs and languages");
+                api.sendPlayerMessage(p, "&eReloading GUIs and Recipes!");
+
+                if (WolfyUtilities.hasBuzzyBeesUpdate()) {
+                    InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
+                    LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
+                    invAPI.reset();
+                    langAPI.unregisterLanguages();
+                    customCrafting.getConfigHandler().getConfig().save();
+                    try {
+                        customCrafting.getConfigHandler().loadLang();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    new InventoryHandler(customCrafting).init();
+
+                    //Reload Recipes
+                    RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
+                    recipeHandler.getRecipes().forEach((namespacedKey, iCustomRecipe) -> {
+                        if (iCustomRecipe instanceof ICustomVanillaRecipe) {
+                            recipeHandler.unregisterVanillaRecipe(iCustomRecipe.getNamespacedKey());
+                            Bukkit.addRecipe(((ICustomVanillaRecipe<?>) iCustomRecipe).getVanillaRecipe());
+                        }
+                    });
+                    CustomCrafting.getApi().sendPlayerMessage(p, "§aReload Complete");
+                    return true;
+                }
+                api.sendPlayerMessage(p, "&cThis command is only available in 1.15+");
             }
         }
         return true;
