@@ -27,7 +27,7 @@ public class SaveSubCommand extends AbstractSubCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = CustomCrafting.getApi();
         if (sender instanceof Player) {
-            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle")) {
+            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
                 new TreeMap<>(CustomItems.getCustomItems()).forEach((namespacedKey, customItem) -> {
                     api.sendConsoleMessage("Saving item: " + namespacedKey.toString());
                     customCrafting.saveItem(namespacedKey, customItem);
