@@ -81,13 +81,13 @@ public class AnvilListener implements Listener {
                 result = new ItemBuilder(recipe.getCustomResult().create());
             } else {
                 result = new ItemBuilder(event.getResult());
-                if (result != null && result.create().hasItemMeta()) {
+                if (result.create().hasItemMeta()) {
                     if (recipe.isBlockEnchant()) {
                         if (result.create().hasItemMeta() && result.getItemMeta().hasEnchants()) {
                             for (Enchantment enchantment : result.create().getEnchantments().keySet()) {
                                 result.create().removeEnchantment(enchantment);
                             }
-                            for(Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()){
+                            for (Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()) {
                                 result.addUnsafeEnchantment(entry.getKey(), entry.getValue());
                             }
                         }
@@ -111,7 +111,7 @@ public class AnvilListener implements Listener {
                         }
                     }
                 }
-                if (result == null || result.create().getType().equals(Material.AIR)) {
+                if (result.create().getType().equals(Material.AIR)) {
                     result = new ItemBuilder(inputLeft.clone());
                 }
                 if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
@@ -128,7 +128,7 @@ public class AnvilListener implements Listener {
                     }
                 }
             }
-            int repairCost = recipe.getRepairCost();
+            int repairCost = Math.max(1, recipe.getRepairCost());
 
             ItemMeta inputMeta = inputLeft.getItemMeta();
             if (inputMeta instanceof Repairable) {
