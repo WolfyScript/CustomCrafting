@@ -40,7 +40,7 @@ public class GrindStoneListener implements Listener {
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
+    public void onTakeOutResult(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (event.getAction().equals(InventoryAction.NOTHING)) return;
         if (!event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE)) return;
@@ -56,7 +56,8 @@ public class GrindStoneListener implements Listener {
             //Custom Recipe
             final ItemStack itemTop = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
             final ItemStack itemBottom = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
-            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
                 GrindstoneData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
                 CustomItem inputTop = grindstoneData.getInputTop();
                 CustomItem inputBottom = grindstoneData.getInputBottom();
@@ -69,8 +70,26 @@ public class GrindStoneListener implements Listener {
                     inventory.setItem(1, itemBottom);
                 }
                 preCraftedRecipes.remove(player.getUniqueId());
-            }, 1);
-        } else if (event.getSlot() != 2) {
+                Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), 0, player, event.getView());
+                GrindstoneRecipe foundRecipe = checkResult.getValue().getRecipe();
+                if (foundRecipe == null) {
+                    return; //Returns and uses Vanilla recipe instead
+                }
+                preCraftedRecipes.put(player.getUniqueId(), checkResult.getValue());
+                inventory.setItem(2, checkResult.getKey().create());
+            });
+        }
+    }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() == null) return;
+        if (event.getAction().equals(InventoryAction.NOTHING)) return;
+        if (!event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE)) return;
+        Player player = (Player) event.getWhoClicked();
+        InventoryAction action = event.getAction();
+        Inventory inventory = event.getClickedInventory();
+        if (event.getSlot() != 2) {
             //Place in items and click empty result slot
             final ItemStack cursor = event.getCursor(); //And the item in the cursor
             final ItemStack currentItem = event.getCurrentItem(); //We want to get the item in the slot
