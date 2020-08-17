@@ -182,7 +182,7 @@ public class InventoryHandler {
             recipeBook.registerButton(new DummyButton("cooking.icon", new ButtonState("cooking.icon", Material.FURNACE, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 KnowledgeBook knowledgeBook = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
                 RecipeType recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
-                CookingRecipe cookingRecipe = ((CustomCookingRecipe<CookingRecipe>) knowledgeBook.getCurrentRecipe()).getVanillaRecipe();
+                CookingRecipe<?> cookingRecipe = ((CustomCookingRecipe<?>) knowledgeBook.getCurrentRecipe()).getVanillaRecipe();
                 itemStack.setType(Material.matchMaterial(recipeType.toString()));
                 hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
                 hashMap.put("%time%", cookingRecipe.getCookingTime());

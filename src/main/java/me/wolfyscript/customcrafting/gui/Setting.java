@@ -7,6 +7,7 @@ public enum Setting {
     MAIN_MENU,
     RECIPE_LIST,
     ITEMS,
+    RECIPE_CREATOR,
     WORKBENCH,
     ELITE_WORKBENCH,
     FURNACE,

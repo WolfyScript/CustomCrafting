@@ -14,6 +14,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNod
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmithingRecipe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,10 +33,16 @@ public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanilla
 
     public CustomSmithingRecipe() {
         super();
+        this.base = new ArrayList<>();
+        this.addition = new ArrayList<>();
+        this.result = new ArrayList<>();
     }
 
     public CustomSmithingRecipe(CustomSmithingRecipe customSmithingRecipe) {
         super(customSmithingRecipe);
+        this.result = customSmithingRecipe.getCustomResults();
+        this.base = customSmithingRecipe.getBase();
+        this.addition = customSmithingRecipe.getAddition();
     }
 
     @Override
@@ -53,6 +60,22 @@ public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanilla
     @Override
     public List<CustomItem> getCustomResults() {
         return base;
+    }
+
+    public List<CustomItem> getAddition() {
+        return addition;
+    }
+
+    public void setAddition(List<CustomItem> addition) {
+        this.addition = addition;
+    }
+
+    public List<CustomItem> getBase() {
+        return base;
+    }
+
+    public void setBase(List<CustomItem> base) {
+        this.base = base;
     }
 
     @Override

@@ -151,7 +151,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInputLeft() {
-        return ingredients.get(0);
+        return ingredients.getOrDefault(0, new ArrayList<>());
     }
 
     public void setInputRight(List<CustomItem> inputRight) {
@@ -159,7 +159,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInputRight() {
-        return ingredients.get(1);
+        return ingredients.getOrDefault(1, new ArrayList<>());
     }
 
     public void setInput(int slot, List<CustomItem> input) {
@@ -167,7 +167,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInput(int slot) {
-        return ingredients.get(slot);
+        return ingredients.getOrDefault(slot, new ArrayList<>());
     }
 
     public boolean hasInputLeft() {

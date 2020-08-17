@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
@@ -386,6 +387,10 @@ public class RecipeHandler {
         return customRecipe instanceof CraftingRecipe ? (CraftingRecipe) customRecipe : null;
     }
 
+    public List<ICustomRecipe> getRecipes(RecipeType type) {
+        return customRecipes.values().stream().filter(recipe -> recipe.getRecipeType().equals(type)).collect(Collectors.toList());
+    }
+
     public <T extends ICustomRecipe> List<T> getRecipes(Class<T> type) {
         return customRecipes.values().stream().filter(type::isInstance).map(recipe -> (T) recipe).collect(Collectors.toList());
     }
@@ -400,7 +405,7 @@ public class RecipeHandler {
     public <T extends ICustomRecipe> List<T> getAvailableRecipes(Class<T> type, Player player) {
         List<T> recipes = getRecipes(type);
         recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
-        if(player != null){
+        if (player != null) {
             recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         }
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
@@ -565,66 +570,40 @@ public class RecipeHandler {
 
     public boolean loadRecipeIntoCache(ICustomRecipe recipe, GuiHandler<?> guiHandler) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
-        switch (cache.getSetting()) {
+        if (!cache.getRecipeType().equals(recipe.getRecipeType())) {
+            return false;
+        }
+        switch (cache.getRecipeType()) {
             case WORKBENCH:
-                if (recipe instanceof CraftingRecipe) {
-                    cache.setCustomRecipe(CraftingRecipe.class, ((CraftingRecipe) recipe).isShapeless() ? new ShapelessCraftRecipe((CraftingRecipe) recipe) : new ShapedCraftRecipe((CraftingRecipe) recipe));
-                    return true;
-                }
-                return false;
+                cache.setCustomRecipe(((CraftingRecipe) recipe).isShapeless() ? new ShapelessCraftRecipe((CraftingRecipe) recipe) : new ShapedCraftRecipe((CraftingRecipe) recipe));
+                return true;
             case ELITE_WORKBENCH:
-                if (recipe instanceof EliteCraftingRecipe) {
-                    cache.setCustomRecipe(EliteCraftingRecipe.class, ((EliteCraftingRecipe) recipe).isShapeless() ? new ShapelessEliteCraftRecipe((EliteCraftingRecipe) recipe) : new ShapedEliteCraftRecipe((EliteCraftingRecipe) recipe));
-                    return true;
-                }
-                return false;
+                cache.setCustomRecipe(((EliteCraftingRecipe) recipe).isShapeless() ? new ShapelessEliteCraftRecipe((EliteCraftingRecipe) recipe) : new ShapedEliteCraftRecipe((EliteCraftingRecipe) recipe));
+                return true;
             case ANVIL:
-                if (recipe instanceof CustomAnvilRecipe) {
-                    cache.setCustomRecipe(new CustomAnvilRecipe((CustomAnvilRecipe) recipe));
-                    return true;
-                }
-                return false;
+                cache.setCustomRecipe(new CustomAnvilRecipe((CustomAnvilRecipe) recipe));
+                return true;
             case STONECUTTER:
-                if (recipe instanceof CustomStonecutterRecipe) {
-                    cache.setCustomRecipe(new CustomStonecutterRecipe((CustomStonecutterRecipe) recipe));
-                    return true;
-                }
-                return false;
+                cache.setCustomRecipe(new CustomStonecutterRecipe((CustomStonecutterRecipe) recipe));
+                return true;
             case CAMPFIRE:
-                if(recipe instanceof CustomCampfireRecipe){
-                    cache.setCustomRecipe(new CustomCampfireRecipe((CustomCampfireRecipe) recipe));
-                    return true;
-                }
-                break;
+                cache.setCustomRecipe(new CustomCampfireRecipe((CustomCampfireRecipe) recipe));
+                return true;
             case BLAST_FURNACE:
-                if(recipe instanceof CustomBlastRecipe){
-                    cache.setCustomRecipe(new CustomBlastRecipe((CustomBlastRecipe) recipe));
-                    return true;
-                }
-                break;
+                cache.setCustomRecipe(new CustomBlastRecipe((CustomBlastRecipe) recipe));
+                return true;
             case SMOKER:
-                if(recipe instanceof CustomSmokerRecipe){
-                    cache.setCustomRecipe(new CustomSmokerRecipe((CustomSmokerRecipe) recipe));
-                    return true;
-                }
-                break;
+                cache.setCustomRecipe(new CustomSmokerRecipe((CustomSmokerRecipe) recipe));
+                return true;
             case FURNACE:
-                if (recipe instanceof CustomFurnaceRecipe) {
-                    cache.setCustomRecipe(new CustomFurnaceRecipe((CustomFurnaceRecipe) recipe));
-                    return true;
-                }
-                return false;
+                cache.setCustomRecipe(new CustomFurnaceRecipe((CustomFurnaceRecipe) recipe));
+                return true;
             case CAULDRON:
-                if (recipe instanceof CauldronRecipe) {
-                    cache.setCustomRecipe(new CauldronRecipe((CauldronRecipe) recipe));
-                    return true;
-                }
-                return false;
-            case BREWING_STAND:
-                if (recipe instanceof BrewingRecipe) {
-                    cache.setCustomRecipe(new BrewingRecipe((BrewingRecipe) recipe));
-                    return true;
-                }
+                cache.setCustomRecipe(new CauldronRecipe((CauldronRecipe) recipe));
+                return true;
+            case BREWING:
+                cache.setCustomRecipe(new BrewingRecipe((BrewingRecipe) recipe));
+                return true;
         }
         return false;
     }

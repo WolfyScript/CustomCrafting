@@ -29,16 +29,16 @@ public class VariantMenu extends ExtendedGuiWindow {
         registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();
             int resultSlot = 9;
-            switch (cache.getSetting()) {
+            switch (cache.getRecipeType()) {
                 case ELITE_WORKBENCH:
                     resultSlot = 36;
                 case WORKBENCH:
                     if (cache.getVariantsData().getSlot() == resultSlot) {
                         List<CustomItem> items = cache.getVariantsData().getVariants();
                         items.removeIf(item -> item == null || item.getItemStack().getType().equals(Material.AIR));
-                        cache.getCraftRecipe().setResult(items);
+                        cache.getWorkbenchRecipe().setResult(items);
                     } else {
-                        cache.getCraftRecipe().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
+                        cache.getWorkbenchRecipe().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
                     }
                     break;
                 case ANVIL:

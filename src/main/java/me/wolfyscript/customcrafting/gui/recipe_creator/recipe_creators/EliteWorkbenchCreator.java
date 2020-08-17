@@ -38,10 +38,10 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         }
 
         registerButton(new ToggleButton("workbench.shapeless", false, new ButtonState("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(EliteCraftingRecipe.class, new ShapedEliteCraftRecipe(((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()));
+            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapedEliteCraftRecipe(((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()));
             return true;
         }), new ButtonState("recipe_creator", "workbench.shapeless.disabled", PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(EliteCraftingRecipe.class, new ShapelessEliteCraftRecipe(((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()));
+            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapelessEliteCraftRecipe(((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()));
             return true;
         })));
 

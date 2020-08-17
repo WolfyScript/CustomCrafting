@@ -90,16 +90,16 @@ public class RecipeEditor extends ExtendedGuiWindow {
         }
     }
 
-    private void changeToCreator(GuiHandler guiHandler) {
-        switch (((TestCache)guiHandler.getCustomCache()).getSetting()) {
+    private void changeToCreator(GuiHandler<?> guiHandler) {
+        switch (((TestCache) guiHandler.getCustomCache()).getRecipeType()) {
             case WORKBENCH:
             case ELITE_WORKBENCH:
             case STONECUTTER:
-            case BREWING_STAND:
+            case BREWING:
             case GRINDSTONE:
             case CAULDRON:
             case ANVIL:
-                guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getSetting().getId());
+                guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getId());
                 break;
             case FURNACE:
             case CAMPFIRE:

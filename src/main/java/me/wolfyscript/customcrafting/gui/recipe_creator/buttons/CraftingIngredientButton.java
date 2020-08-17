@@ -27,7 +27,7 @@ public class CraftingIngredientButton extends ItemInputButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 TestCache cache = (TestCache) guiHandler.getCustomCache();
-                CraftingRecipe workbench = cache.getCraftRecipe();
+                CraftingRecipe workbench = cache.getWorkbenchRecipe();
                 if (event.isRightClick() && event.isShiftClick()) {
                     List<CustomItem> variants = new ArrayList<>();
                     if ((!(workbench instanceof EliteCraftingRecipe) && recipeSlot == 9) || (workbench instanceof EliteCraftingRecipe && recipeSlot == 36)) {
@@ -56,7 +56,7 @@ public class CraftingIngredientButton extends ItemInputButton {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                CraftingRecipe workbench = ((TestCache) guiHandler.getCustomCache()).getCraftRecipe();
+                CraftingRecipe workbench = ((TestCache) guiHandler.getCustomCache()).getWorkbenchRecipe();
                 itemStack = new ItemStack(Material.AIR);
                 if ((!(workbench instanceof EliteCraftingRecipe) && recipeSlot == 9) || (workbench instanceof EliteCraftingRecipe && recipeSlot == 36)) {
                     if (workbench.getCustomResult() != null) {

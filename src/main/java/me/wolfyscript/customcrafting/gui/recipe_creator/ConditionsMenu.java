@@ -199,7 +199,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             values.add("conditions.world_name");
             values.add("conditions.world_biome");
             values.add("conditions.weather");
-            switch (cache.getSetting()) {
+            switch (cache.getRecipeType()) {
                 case WORKBENCH:
                     values.add("conditions.permission");
                     values.add("conditions.player_experience");
@@ -210,7 +210,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                     values.add("conditions.player_experience");
                     values.add("conditions.elite_workbench");
                     break;
-                case BREWING_STAND:
+                case BREWING:
                 case GRINDSTONE:
                     values.add("conditions.permission");
                     values.add("conditions.player_experience");

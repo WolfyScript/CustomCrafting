@@ -39,10 +39,10 @@ public class WorkbenchCreator extends RecipeCreator {
         registerButton(new HiddenButton());
 
         registerButton(new ToggleButton("workbench.shapeless", false, new ButtonState("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(CraftingRecipe.class, new ShapedCraftRecipe(((TestCache) guiHandler.getCustomCache()).getCraftingRecipe()));
+            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapedCraftRecipe(((TestCache) guiHandler.getCustomCache()).getCraftingRecipe()));
             return true;
         }), new ButtonState("recipe_creator", "workbench.shapeless.disabled", PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(CraftingRecipe.class, new ShapelessCraftRecipe(((TestCache) guiHandler.getCustomCache()).getCraftingRecipe()));
+            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapelessCraftRecipe(((TestCache) guiHandler.getCustomCache()).getCraftingRecipe()));
             return true;
         })));
 
