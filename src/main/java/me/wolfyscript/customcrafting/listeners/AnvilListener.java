@@ -157,12 +157,14 @@ public class AnvilListener implements Listener {
             */
             final int finalRepairCost = repairCost;
             ItemStack finalResult = result.create();
-
+            
             inventory.setRepairCost(finalRepairCost);
             event.setResult(finalResult);
+            player.updateInventory();
+
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 inventory.setRepairCost(finalRepairCost);
-                event.setResult(finalResult);
+                inventory.setItem(2, finalResult);
                 player.updateInventory();
             });
         }
@@ -177,9 +179,9 @@ public class AnvilListener implements Listener {
             if (event.getSlot() == 2) {
                 if (preCraftedRecipes.get(player.getUniqueId()) != null) {
                     //Custom Recipe
-                    AnvilData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
-                    CustomItem inputLeft = grindstoneData.getInputLeft();
-                    CustomItem inputRight = grindstoneData.getInputRight();
+                    AnvilData anvilData = preCraftedRecipes.get(player.getUniqueId());
+                    CustomItem inputLeft = anvilData.getInputLeft();
+                    CustomItem inputRight = anvilData.getInputRight();
 
                     final ItemStack itemLeft = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
                     final ItemStack itemRight = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
@@ -195,7 +197,6 @@ public class AnvilListener implements Listener {
                         }
                         preCraftedRecipes.remove(player.getUniqueId());
                     }, 1);
-                    return;
                 } else {
                     //Vanilla Recipe
                 }

@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
@@ -30,7 +30,7 @@ public class EliteWorkbenchConditionButton extends ActionButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 GuiWindow window = guiHandler.getCurrentInv();
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode

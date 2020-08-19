@@ -54,7 +54,6 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
 
     public CraftingRecipe(CraftingRecipe craftingRecipe){
         super(craftingRecipe);
-
         this.result = craftingRecipe.getCustomResults();
         this.ingredients = craftingRecipe.getIngredients();
     }
@@ -66,7 +65,7 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
 
     @Override
     public List<CustomItem> getIngredients(char key) {
-        return getIngredients().getOrDefault(key, new ArrayList<>());
+        return new ArrayList<>(getIngredients().getOrDefault(key, new ArrayList<>()));
     }
 
     @Override
@@ -138,7 +137,7 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return result;
+        return new ArrayList<>(result);
     }
 
     @Override

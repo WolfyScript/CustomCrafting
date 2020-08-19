@@ -69,7 +69,6 @@ public class CustomCrafting extends JavaPlugin {
     private boolean outdated = false;
     private boolean premiumPlus = false;
 
-    @Nullable
     public static CustomCrafting getInst() {
         return instance;
     }

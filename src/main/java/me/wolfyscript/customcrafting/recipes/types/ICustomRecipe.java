@@ -128,6 +128,8 @@ public interface ICustomRecipe {
         return delete(null);
     }
 
+    ICustomRecipe clone();
+
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 
     void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event);

@@ -70,7 +70,7 @@ public abstract class CustomCookingRecipe<T extends CookingRecipe<?>> extends Cu
     }
 
     public List<CustomItem> getSource() {
-        return this.source;
+        return new ArrayList<>(this.source);
     }
 
     public void setSource(List<CustomItem> source) {
@@ -87,7 +87,7 @@ public abstract class CustomCookingRecipe<T extends CookingRecipe<?>> extends Cu
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return this.result;
+        return new ArrayList<>(this.result);
     }
 
     @Override

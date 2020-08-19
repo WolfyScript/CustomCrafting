@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.smithing;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -59,11 +60,11 @@ public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanilla
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return base;
+        return new ArrayList<>(result);
     }
 
     public List<CustomItem> getAddition() {
-        return addition;
+        return new ArrayList<>(addition);
     }
 
     public void setAddition(List<CustomItem> addition) {
@@ -71,7 +72,7 @@ public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanilla
     }
 
     public List<CustomItem> getBase() {
-        return base;
+        return new ArrayList<>(base);
     }
 
     public void setBase(List<CustomItem> base) {
@@ -81,6 +82,11 @@ public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanilla
     @Override
     public void setResult(List<CustomItem> result) {
         this.result = result;
+    }
+
+    @Override
+    public ICustomRecipe clone() {
+        return new CustomSmithingRecipe(this);
     }
 
     @Override

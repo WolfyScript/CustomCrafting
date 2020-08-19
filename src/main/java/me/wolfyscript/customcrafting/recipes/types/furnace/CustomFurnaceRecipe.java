@@ -33,4 +33,9 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<FurnaceRecipe> {
     public RecipeType getRecipeType() {
         return RecipeType.FURNACE;
     }
+
+    @Override
+    public CustomFurnaceRecipe clone() {
+        return new CustomFurnaceRecipe(this);
+    }
 }

@@ -381,6 +381,10 @@ public class RecipeHandler {
         return getAvailableRecipes(ICustomRecipe.class, player).stream().filter(recipe -> recipe.getCustomResults().contains(result)).collect(Collectors.toList());
     }
 
+    public List<ICustomRecipe> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
+        return getAvailableRecipes(ICustomRecipe.class, player).stream().filter(recipe -> recipe.getCustomResults().stream().anyMatch(customItem -> customItem.create().isSimilar(result))).collect(Collectors.toList());
+    }
+
     //CRAFTING RECIPES
     public CraftingRecipe getAdvancedCraftingRecipe(String key) {
         ICustomRecipe customRecipe = getRecipe(key);
@@ -538,12 +542,12 @@ public class RecipeHandler {
         }
         ListIterator<List<ItemStack>> iterator = items.listIterator();
         while (iterator.hasNext()) {
-            if (!iterator.next().parallelStream().allMatch(Objects::isNull)) break;
+            if (!iterator.next().stream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
         iterator = items.listIterator(items.size());
         while (iterator.hasPrevious()) {
-            if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
+            if (!iterator.previous().stream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
         if (!items.isEmpty()) {
@@ -570,40 +574,9 @@ public class RecipeHandler {
 
     public boolean loadRecipeIntoCache(ICustomRecipe recipe, GuiHandler<?> guiHandler) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
-        if (!cache.getRecipeType().equals(recipe.getRecipeType())) {
-            return false;
-        }
-        switch (cache.getRecipeType()) {
-            case WORKBENCH:
-                cache.setCustomRecipe(((CraftingRecipe) recipe).isShapeless() ? new ShapelessCraftRecipe((CraftingRecipe) recipe) : new ShapedCraftRecipe((CraftingRecipe) recipe));
-                return true;
-            case ELITE_WORKBENCH:
-                cache.setCustomRecipe(((EliteCraftingRecipe) recipe).isShapeless() ? new ShapelessEliteCraftRecipe((EliteCraftingRecipe) recipe) : new ShapedEliteCraftRecipe((EliteCraftingRecipe) recipe));
-                return true;
-            case ANVIL:
-                cache.setCustomRecipe(new CustomAnvilRecipe((CustomAnvilRecipe) recipe));
-                return true;
-            case STONECUTTER:
-                cache.setCustomRecipe(new CustomStonecutterRecipe((CustomStonecutterRecipe) recipe));
-                return true;
-            case CAMPFIRE:
-                cache.setCustomRecipe(new CustomCampfireRecipe((CustomCampfireRecipe) recipe));
-                return true;
-            case BLAST_FURNACE:
-                cache.setCustomRecipe(new CustomBlastRecipe((CustomBlastRecipe) recipe));
-                return true;
-            case SMOKER:
-                cache.setCustomRecipe(new CustomSmokerRecipe((CustomSmokerRecipe) recipe));
-                return true;
-            case FURNACE:
-                cache.setCustomRecipe(new CustomFurnaceRecipe((CustomFurnaceRecipe) recipe));
-                return true;
-            case CAULDRON:
-                cache.setCustomRecipe(new CauldronRecipe((CauldronRecipe) recipe));
-                return true;
-            case BREWING:
-                cache.setCustomRecipe(new BrewingRecipe((BrewingRecipe) recipe));
-                return true;
+        if (cache.getRecipeType().equals(recipe.getRecipeType())) {
+            cache.setCustomRecipe(recipe.clone());
+            return true;
         }
         return false;
     }

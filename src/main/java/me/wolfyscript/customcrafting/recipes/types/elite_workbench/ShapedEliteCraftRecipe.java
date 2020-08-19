@@ -42,6 +42,16 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         super(eliteCraftingRecipe);
         this.shapeless = false;
         constructShape();
+        this.mirrorHorizontal = true;
+        this.mirrorVertical = false;
+        this.mirrorRotation = false;
+    }
+
+    public ShapedEliteCraftRecipe(ShapedEliteCraftRecipe eliteCraftingRecipe){
+        this((EliteCraftingRecipe)eliteCraftingRecipe);
+        this.mirrorHorizontal = eliteCraftingRecipe.mirrorHorizontal();
+        this.mirrorVertical = eliteCraftingRecipe.mirrorVertical();
+        this.mirrorRotation = eliteCraftingRecipe.mirrorRotation();
     }
 
     @Override
@@ -211,6 +221,11 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
             }
         }
         return null;
+    }
+
+    @Override
+    public ShapedEliteCraftRecipe clone() {
+        return new ShapedEliteCraftRecipe(this);
     }
 
     @Override

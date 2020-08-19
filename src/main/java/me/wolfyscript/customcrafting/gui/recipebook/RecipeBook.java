@@ -30,7 +30,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RecipeBook extends ExtendedGuiWindow {
 
@@ -144,8 +143,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                     recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
                     recipes.addAll(recipeHandler.getAvailableFurnaceRecipes());
 
-                    List<CustomItem> recipeItems = new ArrayList<>();
-                    recipes.stream().filter(customRecipe -> {
+                    List<CustomItem> recipeItems = recipes.stream().filter(customRecipe -> {
                         if (switchCategory != null) {
                             List<CustomItem> items = new ArrayList<>();
                             if (customRecipe instanceof CustomAnvilRecipe) {
@@ -170,15 +168,15 @@ public class RecipeBook extends ExtendedGuiWindow {
                         return true;
                     }).map(recipe -> {
                         if (recipe instanceof CustomAnvilRecipe) {
-                            if (((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                                return recipe.getCustomResults();
-                            } else if (((CustomAnvilRecipe) recipe).hasInputLeft()) {
-                                return ((CustomAnvilRecipe) recipe).getInputLeft();
-                            }
-                            return ((CustomAnvilRecipe) recipe).getInputRight();
+                            return ((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? recipe.getCustomResults() : ((CustomAnvilRecipe) recipe).hasInputLeft() ? ((CustomAnvilRecipe) recipe).getInputLeft() : ((CustomAnvilRecipe) recipe).getInputRight();
                         }
                         return recipe.getCustomResults();
-                    }).forEach(items -> recipeItems.addAll(items.stream().filter(item -> !recipeItems.contains(item)).collect(Collectors.toList())));
+                    }).reduce((list, list2) -> {
+                        List<CustomItem> result = new ArrayList<>();
+                        list.stream().filter(input -> result.stream().noneMatch(rItem -> rItem.create().isSimilar(input.create()))).forEach(result::add);
+                        list2.stream().filter(input -> result.stream().noneMatch(rItem -> rItem.create().isSimilar(input.create()))).forEach(result::add);
+                        return result;
+                    }).orElseGet(ArrayList::new);
                     knowledgeBook.setRecipeItems(recipeItems);
                 }
 

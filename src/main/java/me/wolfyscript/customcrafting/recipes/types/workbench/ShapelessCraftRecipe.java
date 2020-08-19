@@ -31,6 +31,10 @@ public class ShapelessCraftRecipe extends CraftingRecipe implements IShapelessCr
         this.shapeless = true;
     }
 
+    public ShapelessCraftRecipe(ShapelessCraftRecipe craftingRecipe){
+        this((CraftingRecipe) craftingRecipe);
+    }
+
     @Override
     public CraftingData check(List<List<ItemStack>> matrix) {
         List<Character> usedKeys = new ArrayList<>();
@@ -66,6 +70,11 @@ public class ShapelessCraftRecipe extends CraftingRecipe implements IShapelessCr
             }
         }
         return null;
+    }
+
+    @Override
+    public ShapelessCraftRecipe clone() {
+        return new ShapelessCraftRecipe(this);
     }
 
     @Override

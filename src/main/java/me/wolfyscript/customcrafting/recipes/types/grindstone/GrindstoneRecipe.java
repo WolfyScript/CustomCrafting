@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 public class GrindstoneRecipe extends CustomRecipe {
 
     private List<CustomItem> inputTop, inputBottom, result;
-    private float xp;
+    private int xp;
 
     public GrindstoneRecipe(NamespacedKey namespacedKey, JsonNode node){
         super(namespacedKey, node);
-        this.xp = node.path("exp").floatValue();
+        this.xp = node.path("exp").intValue();
         {
             List<CustomItem> input = new ArrayList<>();
             JsonNode resultNode = node.path("input_top");
@@ -80,7 +80,7 @@ public class GrindstoneRecipe extends CustomRecipe {
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return result;
+        return new ArrayList<>(result);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class GrindstoneRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInputTop() {
-        return inputTop;
+        return new ArrayList<>(inputTop);
     }
 
     public void setInputTop(List<CustomItem> inputTop) {
@@ -105,7 +105,7 @@ public class GrindstoneRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInputBottom() {
-        return inputBottom;
+        return new ArrayList<>(inputBottom);
     }
 
     public void setInputBottom(List<CustomItem> inputBottom) {
@@ -128,12 +128,17 @@ public class GrindstoneRecipe extends CustomRecipe {
         }
     }
 
-    public float getXp() {
+    public int getXp() {
         return xp;
     }
 
-    public void setXp(float xp) {
+    public void setXp(int xp) {
         this.xp = xp;
+    }
+
+    @Override
+    public GrindstoneRecipe clone() {
+        return new GrindstoneRecipe(this);
     }
 
     @Override

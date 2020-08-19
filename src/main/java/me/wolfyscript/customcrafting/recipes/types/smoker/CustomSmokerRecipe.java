@@ -30,6 +30,11 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<SmokingRecipe> {
     }
 
     @Override
+    public CustomSmokerRecipe clone() {
+        return new CustomSmokerRecipe(this);
+    }
+
+    @Override
     public SmokingRecipe getVanillaRecipe() {
         return new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())), getExp(), getCookingTime());
     }

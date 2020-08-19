@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
@@ -13,6 +12,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
-public class AnvilCreator extends ExtendedGuiWindow {
+public class AnvilCreator extends RecipeCreator {
 
     public AnvilCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
         super("anvil", inventoryAPI, 45, customCrafting);
@@ -113,16 +113,11 @@ public class AnvilCreator extends ExtendedGuiWindow {
         }), (guiHandler, player, s, args) -> {
             int repairCost;
             try {
-                repairCost = Integer.parseInt(args[0]);
+                repairCost = Math.max(1, Integer.parseInt(args[0]));
             } catch (NumberFormatException e) {
                 api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            /*
-            if(repairCost <= 0){
-                repairCost = 1;
-            }
-            */
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setRepairCost(repairCost);
             return false;
         }));
@@ -174,14 +169,12 @@ public class AnvilCreator extends ExtendedGuiWindow {
         }
     }
 
-    private boolean validToSave(TestCache cache) {
+    @Override
+    public boolean validToSave(TestCache cache) {
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
-        if (!anvilRecipe.getInputLeft().isEmpty() || !anvilRecipe.getInputRight().isEmpty()) {
-            if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                return anvilRecipe.getCustomResults() != null && !anvilRecipe.getCustomResults().isEmpty();
-            }
-            return true;
-        }
-        return false;
+        if (InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInputLeft()) && InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInputRight()))
+            return false;
+        System.out.println("Not empty!");
+        return !anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT) || anvilRecipe.getCustomResults() != null && !anvilRecipe.getCustomResults().isEmpty();
     }
 }

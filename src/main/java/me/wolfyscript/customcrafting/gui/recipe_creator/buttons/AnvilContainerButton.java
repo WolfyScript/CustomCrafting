@@ -17,7 +17,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,25 +28,25 @@ public class AnvilContainerButton extends ItemInputButton {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 TestCache cache = (TestCache) guiHandler.getCustomCache();
                 CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
+                List<CustomItem> items = inputSlot == 2 ? anvilRecipe.getCustomResults() : anvilRecipe.getInput(inputSlot);
                 if (event.isRightClick() && event.isShiftClick()) {
-                    List<CustomItem> variants = new ArrayList<>();
-                    if (anvilRecipe.getInput(inputSlot) != null) {
-                        variants = anvilRecipe.getInput(inputSlot);
-                    }
                     cache.getVariantsData().setSlot(inputSlot);
-                    cache.getVariantsData().setVariants(variants);
+                    cache.getVariantsData().setVariants(items);
                     guiHandler.changeToInv("variants");
                     return true;
                 } else {
                     Bukkit.getScheduler().runTask(customCrafting, () -> {
                         CustomItem input = !ItemUtils.isAirOrNull(inventory.getItem(slot)) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
-                        List<CustomItem> inputs = anvilRecipe.getInput(inputSlot);
-                        if (inputs.size() > 0) {
-                            inputs.set(0, input);
+                        if (items.size() > 0) {
+                            items.set(0, input);
                         } else {
-                            inputs.add(input);
+                            items.add(input);
                         }
-                        anvilRecipe.setInput(inputSlot, inputs);
+                        if(inputSlot == 2){
+                            anvilRecipe.setResult(items);
+                        }else{
+                            anvilRecipe.setInput(inputSlot, items);
+                        }
                     });
                 }
                 return false;
@@ -56,7 +55,8 @@ public class AnvilContainerButton extends ItemInputButton {
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack item, int i, boolean b) {
                 CustomAnvilRecipe anvilRecipe = ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe();
-                return InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInput(inputSlot)) ? new ItemStack(Material.AIR) : anvilRecipe.getInput(inputSlot).get(0).create();
+                List<CustomItem> items = inputSlot == 2 ? anvilRecipe.getCustomResults() : anvilRecipe.getInput(inputSlot);
+                return InventoryUtils.isCustomItemsListEmpty(items) ? new ItemStack(Material.AIR) : items.get(0).create();
             }
         }));
     }

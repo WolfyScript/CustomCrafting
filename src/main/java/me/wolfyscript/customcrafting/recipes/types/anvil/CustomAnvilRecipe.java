@@ -11,10 +11,12 @@ import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
-import org.bukkit.Material;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomAnvilRecipe extends CustomRecipe {
@@ -59,7 +61,6 @@ public class CustomAnvilRecipe extends CustomRecipe {
                     resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
                 }
                 this.result = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-                this.ingredients.put(2, this.result);
             }
         }
         readInput(0, node);
@@ -69,6 +70,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     public CustomAnvilRecipe(CustomAnvilRecipe recipe) {
         super(recipe);
         this.ingredients = recipe.ingredients;
+        this.result = recipe.result;
         this.mode = recipe.getMode();
         this.durability = recipe.durability;
         this.repairCost = recipe.repairCost;
@@ -82,7 +84,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     public CustomAnvilRecipe() {
         super();
         this.ingredients = new HashMap<>();
-        this.ingredients.put(2, new ArrayList<>(Collections.singleton(new CustomItem(Material.AIR))));
+        this.result = new ArrayList<>();
         this.mode = Mode.RESULT;
         this.durability = 0;
         this.repairCost = 1;
@@ -118,7 +120,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return result;
+        return new ArrayList<>(result);
     }
 
     public Mode getMode() {
@@ -151,7 +153,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInputLeft() {
-        return ingredients.getOrDefault(0, new ArrayList<>());
+        return getInput(0);
     }
 
     public void setInputRight(List<CustomItem> inputRight) {
@@ -159,7 +161,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInputRight() {
-        return ingredients.getOrDefault(1, new ArrayList<>());
+        return getInput(1);
     }
 
     public void setInput(int slot, List<CustomItem> input) {
@@ -167,7 +169,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getInput(int slot) {
-        return ingredients.getOrDefault(slot, new ArrayList<>());
+        return new ArrayList<>(ingredients.getOrDefault(slot, new ArrayList<>()));
     }
 
     public boolean hasInputLeft() {
@@ -221,6 +223,11 @@ public class CustomAnvilRecipe extends CustomRecipe {
     @Override
     public RecipeType getRecipeType() {
         return RecipeType.ANVIL;
+    }
+
+    @Override
+    public CustomAnvilRecipe clone() {
+        return new CustomAnvilRecipe(this);
     }
 
     @Override

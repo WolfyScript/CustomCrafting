@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldBiomeCondition;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
@@ -27,7 +27,7 @@ public class WorldBiomeConditionButton extends ActionButton {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 GuiWindow window = guiHandler.getCurrentInv();
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode

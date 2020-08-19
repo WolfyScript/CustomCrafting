@@ -148,6 +148,9 @@ public abstract class CustomRecipe implements ICustomRecipe {
     }
 
     @Override
+    abstract public ICustomRecipe clone();
+
+    @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         gen.writeStringField("group", group);
         gen.writeBooleanField("hidden", hidden);
