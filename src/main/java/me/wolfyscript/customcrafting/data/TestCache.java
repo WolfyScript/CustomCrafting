@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
@@ -30,7 +30,7 @@ public class TestCache extends CustomCache {
 
     private Setting setting;
     //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
-    private final HashMap<RecipeType, CustomRecipe> recipes = new HashMap<>();
+    private final HashMap<RecipeType, ICustomRecipe> recipes = new HashMap<>();
 
     private final CustomCrafting customCrafting;
     private String subSetting;
@@ -131,20 +131,20 @@ public class TestCache extends CustomCache {
         this.eliteWorkbench = eliteWorkbench;
     }
 
-    public <T extends CustomRecipe> void setCustomRecipe(T customRecipe) {
+    public void setCustomRecipe(ICustomRecipe customRecipe) {
         recipes.put(customRecipe.getRecipeType(), customRecipe);
     }
 
-    public CustomRecipe getCustomRecipe(RecipeType recipeType) {
+    public ICustomRecipe getCustomRecipe(RecipeType recipeType) {
         return recipes.get(recipeType);
     }
+
 
     /***************************************************************
      * Util methods to get specific kinds of Recipes that are cached into this class
      * Used for the GUI Recipe Creators!
      *
      ***************************************************************/
-
     public CustomCookingRecipe<?> getCookingRecipe() {
         if (recipeType.equals(RecipeType.CAMPFIRE) || recipeType.equals(RecipeType.SMOKER) || recipeType.equals(RecipeType.FURNACE) || recipeType.equals(RecipeType.BLAST_FURNACE)) {
             return (CustomCookingRecipe<?>) getCustomRecipe(recipeType);
@@ -191,12 +191,12 @@ public class TestCache extends CustomCache {
             case GRINDSTONE:
                 setCustomRecipe(new GrindstoneRecipe());
                 break;
-            case BREWING:
+            case BREWING_STAND:
                 setCustomRecipe(new BrewingRecipe());
         }
     }
 
-    public CustomRecipe getRecipe() {
+    public ICustomRecipe getRecipe() {
         return getCustomRecipe(getRecipeType());
     }
 
@@ -209,7 +209,6 @@ public class TestCache extends CustomCache {
      * Usage for the GUI Creator!
      *
      ***************************************************************/
-
     public CraftingRecipe getCraftingRecipe() {
         return (CraftingRecipe) getCustomRecipe(RecipeType.WORKBENCH);
     }
@@ -251,6 +250,6 @@ public class TestCache extends CustomCache {
     }
 
     public BrewingRecipe getBrewingRecipe() {
-        return (BrewingRecipe) getCustomRecipe(RecipeType.BREWING);
+        return (BrewingRecipe) getCustomRecipe(RecipeType.BREWING_STAND);
     }
 }

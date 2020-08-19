@@ -46,7 +46,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getSetting().name()});
+                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getRecipeType().name()});
                         return true;
                     }
                 }
@@ -95,7 +95,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
             case WORKBENCH:
             case ELITE_WORKBENCH:
             case STONECUTTER:
-            case BREWING:
+            case BREWING_STAND:
             case GRINDSTONE:
             case CAULDRON:
             case ANVIL:

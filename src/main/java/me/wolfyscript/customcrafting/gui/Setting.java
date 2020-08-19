@@ -7,19 +7,7 @@ public enum Setting {
     MAIN_MENU,
     RECIPE_LIST,
     ITEMS,
-    RECIPE_CREATOR,
-    WORKBENCH,
-    ELITE_WORKBENCH,
-    FURNACE,
-    ANVIL,
-    BLAST_FURNACE,
-    SMOKER,
-    CAMPFIRE,
-    STONECUTTER,
-    CAULDRON,
-    GRINDSTONE,
-    BREWING_STAND,
-    SMITHING_TABLE;
+    RECIPE_CREATOR;
 
     private final String id;
 

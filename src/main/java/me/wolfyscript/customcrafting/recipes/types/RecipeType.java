@@ -27,7 +27,7 @@ public enum RecipeType {
     STONECUTTER(CustomStonecutterRecipe.class),
     CAULDRON(CauldronRecipe.class),
     GRINDSTONE(GrindstoneRecipe.class),
-    BREWING(BrewingRecipe.class),
+    BREWING_STAND(BrewingRecipe.class),
     SMITHING(CustomSmithingRecipe.class);
 
     private final String id;

@@ -237,7 +237,7 @@ public class KnowledgeBook {
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, grindstoneRecipe.getInputBottom());
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, grindstoneRecipe.getCustomResults());
                 return;
-            case BREWING:
+            case BREWING_STAND:
                 BrewingRecipe brewingRecipe = (BrewingRecipe) recipe;
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, brewingRecipe.getCustomResults());
                 if (!brewingRecipe.getAllowedItems().isEmpty()) {
