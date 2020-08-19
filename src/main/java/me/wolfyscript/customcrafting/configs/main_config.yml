@@ -36,8 +36,7 @@ databank:
 
 workbench:
   enable: true
-  reset_item: true
-  reset_recipe: true
+  reset: true
   # Sound after successful crafting!
   craft_sound:
     enable: false
@@ -59,10 +58,7 @@ recipes:
   lockdown: false
   vanilla_knowledgebook: true
   pretty_printing: true
-  preferred_file_type: "json"
   disabled_recipes: []
 
 knowledgebook:
-  workbench_filter: true
-  reset_item: true
-  reset_recipe: true
+  reset: true
