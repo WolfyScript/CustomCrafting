@@ -13,6 +13,7 @@ import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -90,13 +91,13 @@ public class CookingCreator extends RecipeCreator {
     }
 
     public boolean validToSave(TestCache cache) {
-        switch (cache.getSetting()) {
+        switch (cache.getRecipeType()) {
             case BLAST_FURNACE:
             case SMOKER:
             case CAMPFIRE:
             case FURNACE:
-                CustomCookingRecipe furnace = cache.getCookingRecipe();
-                if (furnace.getSource() != null && !furnace.getSource().isEmpty() && furnace.getCustomResults() != null && !furnace.getCustomResults().isEmpty())
+                CustomCookingRecipe<?> furnace = cache.getCookingRecipe();
+                if (!InventoryUtils.isCustomItemsListEmpty(furnace.getSource()) && !InventoryUtils.isCustomItemsListEmpty(furnace.getCustomResults()))
                     return true;
         }
         return false;

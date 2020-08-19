@@ -54,41 +54,7 @@ public class ChatUtils {
             player.sendMessage(" ");
         }
 
-        ArrayList<ICustomRecipe> customRecipes = new ArrayList<>();
-        switch (cache.getSetting()) {
-            case WORKBENCH:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getAdvancedCraftingRecipes());
-                break;
-            case ELITE_WORKBENCH:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getEliteCraftingRecipes());
-                break;
-            case FURNACE:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getFurnaceRecipes());
-                break;
-            case ANVIL:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getAnvilRecipes());
-                break;
-            case STONECUTTER:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getStonecutterRecipes());
-                break;
-            case GRINDSTONE:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getGrindstoneRecipes());
-                break;
-            case BREWING_STAND:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getBrewingRecipes());
-                break;
-            case SMOKER:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getSmokerRecipes());
-                break;
-            case BLAST_FURNACE:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getBlastRecipes());
-                break;
-            case CAMPFIRE:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getCampfireRecipes());
-                break;
-            case CAULDRON:
-                customRecipes.addAll(customCrafting.getRecipeHandler().getCauldronRecipes());
-        }
+        List<ICustomRecipe> customRecipes = customCrafting.getRecipeHandler().getRecipes(cache.getRecipeType());
 
         int currentPage = cache.getChatLists().getCurrentPageRecipes();
         int maxPages = ((customRecipes.size() % 15) > 0 ? 1 : 0) + customRecipes.size() / 15;

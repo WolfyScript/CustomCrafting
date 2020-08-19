@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -17,12 +18,14 @@ import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FurnaceListener implements Listener {
 
@@ -144,44 +147,39 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onSmelt(FurnaceSmeltEvent event) {
-        List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult());
+        Furnace furnace = (Furnace) event.getBlock().getState();
+        FurnaceInventory inventory = furnace.getInventory();
+        ItemStack currentResultItem = furnace.getInventory().getResult();
+        List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult()).stream().filter(recipe -> recipe instanceof CookingRecipe && recipe.getResult().isSimilar(event.getResult())).collect(Collectors.toList());
         for (Recipe recipe : recipes) {
-            if (recipe.getResult().isSimilar(event.getResult())) {
-                Furnace furnace = (Furnace) event.getBlock().getState();
-                FurnaceInventory inventory = furnace.getInventory();
-                ItemStack currentResultItem = furnace.getInventory().getResult();
-
-                if (recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
-                    event.setCancelled(true);
-                    continue;
-                }
-                CustomCookingRecipe<? extends Recipe> customRecipe = (CustomCookingRecipe<? extends Recipe>) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
-                if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
-                    if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
-                        event.setCancelled(false);
-                        if (customRecipe.getCustomResults().size() > 1) {
-                            RandomCollection<CustomItem> items = new RandomCollection<>();
-                            for (CustomItem customItem : customRecipe.getCustomResults()) {
-                                items.add(customItem.getRarityPercentage(), customItem);
+            if (recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
+                event.setCancelled(true);
+                continue;
+            }
+            CustomCookingRecipe<?> customRecipe = (CustomCookingRecipe<?>) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+            if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
+                if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
+                    event.setCancelled(false);
+                    if (customRecipe.getCustomResults().size() > 1) {
+                        RandomCollection<CustomItem> items = new RandomCollection<>();
+                        customRecipe.getCustomResults().forEach(item -> items.add(item.getRarityPercentage(), item));
+                        if (!items.isEmpty()) {
+                            CustomItem item = items.next();
+                            if (currentResultItem == null) {
+                                event.setResult(item.create());
+                                break;
                             }
-                            if (!items.isEmpty()) {
-                                CustomItem item = items.next();
-                                if (currentResultItem == null) {
-                                    event.setResult(item.create());
-                                    break;
-                                }
-                                int nextAmount = currentResultItem.getAmount() + item.getAmount();
-                                if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize()) {
-                                    inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                                    inventory.getResult().setAmount(nextAmount);
-                                }
-                                event.setCancelled(true);
+                            int nextAmount = currentResultItem.getAmount() + item.getAmount();
+                            if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
+                                inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                                currentResultItem.setAmount(nextAmount);
                             }
+                            event.setCancelled(true);
                         }
-                        break;
-                    } else {
-                        event.setCancelled(true);
                     }
+                    break;
+                } else {
+                    event.setCancelled(true);
                 }
             }
         }

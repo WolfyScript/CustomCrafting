@@ -144,7 +144,7 @@ public class CauldronRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getIngredients() {
-        return ingredients;
+        return new ArrayList<>(ingredients);
     }
 
     public void setIngredients(List<CustomItem> ingredients) {
@@ -214,12 +214,17 @@ public class CauldronRecipe extends CustomRecipe {
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return this.result;
+        return new ArrayList<>(this.result);
     }
 
     @Override
     public void setResult(List<CustomItem> result) {
         this.result = result;
+    }
+
+    @Override
+    public CauldronRecipe clone() {
+        return new CauldronRecipe(this);
     }
 
     @Override

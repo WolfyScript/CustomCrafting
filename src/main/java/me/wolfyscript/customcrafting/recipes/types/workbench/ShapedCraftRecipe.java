@@ -40,6 +40,15 @@ public class ShapedCraftRecipe extends CraftingRecipe implements IShapedCrafting
         this.mirrorRotation = false;
     }
 
+    public ShapedCraftRecipe(ShapedCraftRecipe craftingRecipe) {
+        super(craftingRecipe);
+        this.shapeless = false;
+        constructShape();
+        this.mirrorHorizontal = craftingRecipe.mirrorHorizontal();
+        this.mirrorVertical = craftingRecipe.mirrorVertical();
+        this.mirrorRotation = craftingRecipe.mirrorRotation();
+    }
+
     public ShapedCraftRecipe(CraftingRecipe craftingRecipe) {
         super(craftingRecipe);
         this.shapeless = false;
@@ -156,6 +165,11 @@ public class ShapedCraftRecipe extends CraftingRecipe implements IShapedCrafting
             }
         }
         return null;
+    }
+
+    @Override
+    public ShapedCraftRecipe clone() {
+        return new ShapedCraftRecipe(this);
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class PlayerStatistics {
 
-    private UUID uuid;
+    private final UUID uuid;
 
     private HashMap<String, Object> CACHE = new HashMap<>();
 

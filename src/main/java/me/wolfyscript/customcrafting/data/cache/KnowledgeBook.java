@@ -20,7 +20,6 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.CookingRecipe;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -157,7 +156,7 @@ public class KnowledgeBook {
         this.recipeItems = recipeItems;
     }
 
-    public void applyRecipeToButtons(GuiHandler guiHandler, ICustomRecipe recipe) {
+    public void applyRecipeToButtons(GuiHandler<?> guiHandler, ICustomRecipe recipe) {
         GuiCluster cluster = WolfyUtilities.getAPI(customCrafting).getInventoryAPI().getGuiCluster("recipe_book");
         Player player = guiHandler.getPlayer();
         switch (recipe.getRecipeType()) {
@@ -168,8 +167,7 @@ public class KnowledgeBook {
                     int ingrSlot;
                     for (int i = 0; i < 9; i++) {
                         ingrSlot = 10 + i + (i / 3) * 6;
-                        List<CustomItem> variants = new ArrayList<>();
-                        craftingRecipe.getIngredients(i).forEach(item -> variants.add(item));
+                        List<CustomItem> variants = new ArrayList<>(craftingRecipe.getIngredients(i));
                         ((IngredientContainerButton) cluster.getButton("ingredient.container_" + ingrSlot)).setVariants(guiHandler, variants);
                     }
                 }
@@ -177,16 +175,14 @@ public class KnowledgeBook {
             case ELITE_WORKBENCH:
                 EliteCraftingRecipe eliteCraftingRecipe = (EliteCraftingRecipe) recipe;
                 if (!eliteCraftingRecipe.getIngredients().isEmpty()) {
-                    List<CustomItem> results = new ArrayList<>();
-                    eliteCraftingRecipe.getCustomResults().forEach(item -> results.add(item));
+                    List<CustomItem> results = new ArrayList<>(eliteCraftingRecipe.getCustomResults());
                     ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, results);
                     int gridSize = 6;
                     int startSlot = 0;
                     int invSlot;
                     for (int i = 0; i < gridSize * gridSize; i++) {
                         invSlot = startSlot + i + (i / gridSize) * 3;
-                        List<CustomItem> variants = new ArrayList<>();
-                        eliteCraftingRecipe.getIngredients(i).forEach(item -> variants.add(item));
+                        List<CustomItem> variants = new ArrayList<>(eliteCraftingRecipe.getIngredients(i));
                         IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot);
                         button.setVariants(guiHandler, variants);
                     }
@@ -196,16 +192,14 @@ public class KnowledgeBook {
             case CAMPFIRE:
             case BLAST_FURNACE:
             case SMOKER:
-                CustomCookingRecipe<CookingRecipe> furnaceRecipe = (CustomCookingRecipe) recipe;
-                if (furnaceRecipe != null) {
-                    ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, furnaceRecipe.getSource().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
-                    ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, furnaceRecipe.getCustomResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
-                }
+                CustomCookingRecipe<?> furnaceRecipe = (CustomCookingRecipe<?>) recipe;
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, furnaceRecipe.getSource().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, furnaceRecipe.getCustomResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
                 return;
             case ANVIL:
                 CustomAnvilRecipe customAnvilRecipe = (CustomAnvilRecipe) recipe;
-                List<CustomItem> inputLeft = customAnvilRecipe.getInputLeft().stream().collect(Collectors.toList());
-                List<CustomItem> inputRight = customAnvilRecipe.getInputRight().stream().collect(Collectors.toList());
+                List<CustomItem> inputLeft = new ArrayList<>(customAnvilRecipe.getInputLeft());
+                List<CustomItem> inputRight = new ArrayList<>(customAnvilRecipe.getInputRight());
 
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
@@ -243,7 +237,7 @@ public class KnowledgeBook {
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, grindstoneRecipe.getInputBottom());
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, grindstoneRecipe.getCustomResults());
                 return;
-            case BREWING:
+            case BREWING_STAND:
                 BrewingRecipe brewingRecipe = (BrewingRecipe) recipe;
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, brewingRecipe.getCustomResults());
                 if (!brewingRecipe.getAllowedItems().isEmpty()) {

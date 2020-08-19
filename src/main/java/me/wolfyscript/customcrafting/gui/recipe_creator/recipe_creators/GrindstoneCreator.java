@@ -45,9 +45,9 @@ public class GrindstoneCreator extends RecipeCreator {
             hashMap.put("%xp%", ((TestCache) guiHandler.getCustomCache()).getGrindstoneRecipe().getXp());
             return itemStack;
         }), (guiHandler, player, s, args) -> {
-            float xp;
+            int xp;
             try {
-                xp = Float.parseFloat(args[0]);
+                xp = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
                 api.sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;

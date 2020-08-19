@@ -46,7 +46,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getSetting().name()});
+                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getRecipeType().name()});
                         return true;
                     }
                 }
@@ -90,8 +90,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
         }
     }
 
-    private void changeToCreator(GuiHandler guiHandler) {
-        switch (((TestCache)guiHandler.getCustomCache()).getSetting()) {
+    private void changeToCreator(GuiHandler<?> guiHandler) {
+        switch (((TestCache) guiHandler.getCustomCache()).getRecipeType()) {
             case WORKBENCH:
             case ELITE_WORKBENCH:
             case STONECUTTER:
@@ -99,7 +99,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
             case GRINDSTONE:
             case CAULDRON:
             case ANVIL:
-                guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getSetting().getId());
+                guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getId());
                 break;
             case FURNACE:
             case CAMPFIRE:

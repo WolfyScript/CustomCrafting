@@ -40,28 +40,12 @@ public class MainConfig extends Config {
         set("creator.reset_after_save", reset);
     }
 
-    public boolean workbenchFilter() {
-        return getBoolean("knowledgebook.workbench_filter");
+    public boolean resetKnowledgeBook() {
+        return getBoolean("knowledgebook.reset");
     }
 
-    public void setWorkbenchFilter(boolean show) {
-        set("knowledgebook.workbench_filter", show);
-    }
-
-    public boolean resetKnowledgeBookItem() {
-        return getBoolean("knowledgebook.reset_item");
-    }
-
-    public void setResetKnowledgeBookItem(boolean reset) {
-        set("knowledgebook.reset_item", reset);
-    }
-
-    public boolean resetKnowledgeBookRecipe() {
-        return getBoolean("knowledgebook.reset_recipe");
-    }
-
-    public void setResetKnowledgeBookRecipe(boolean reset) {
-        set("knowledgebook.reset_recipe", reset);
+    public void setResetKnowledgeBook(boolean reset) {
+        set("knowledgebook.reset", reset);
     }
 
     public void setAdvancedWorkbenchEnabled(boolean enabled) {
@@ -72,20 +56,12 @@ public class MainConfig extends Config {
         return getBoolean("workbench.enable");
     }
 
-    public boolean resetAdvancedWorkbenchItem() {
-        return getBoolean("workbench.reset_item");
+    public boolean resetAdvancedWorkbench() {
+        return getBoolean("workbench.reset");
     }
 
-    public void setResetAdvancedWorkbenchItem(boolean reset) {
-        set("workbench.reset_item", reset);
-    }
-
-    public boolean resetAdvancedWorkbenchRecipe() {
-        return getBoolean("workbench.reset_recipe");
-    }
-
-    public void setResetAdvancedWorkbenchRecipe(boolean reset) {
-        set("workbench.reset_recipe", reset);
+    public void setResetAdvancedWorkbench(boolean reset) {
+        set("workbench.reset", reset);
     }
 
     public int getAutosaveInterval() {
@@ -110,9 +86,6 @@ public class MainConfig extends Config {
 
     public void setPrettyPrinting(boolean prettyPrinting) {
         set("recipes.pretty_printing", prettyPrinting);
-    }
-    public boolean displayContents() {
-        return getBoolean("workbench.contents.display_items");
     }
 
     public List<String> getCommandsSuccessCrafted() {

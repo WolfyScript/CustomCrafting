@@ -32,4 +32,9 @@ public class CustomBlastRecipe extends CustomCookingRecipe<BlastingRecipe> {
     public RecipeType getRecipeType() {
         return RecipeType.BLAST_FURNACE;
     }
+
+    @Override
+    public CustomBlastRecipe clone() {
+        return new CustomBlastRecipe(this);
+    }
 }

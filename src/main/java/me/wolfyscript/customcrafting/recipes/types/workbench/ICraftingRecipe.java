@@ -41,8 +41,6 @@ public interface ICraftingRecipe {
         return totalAmount;
     }
 
-    void load();
-
     void setResult(List<CustomItem> result);
 
     void setIngredients(Map<Character, List<CustomItem>> ingredients);

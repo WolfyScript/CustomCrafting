@@ -19,7 +19,7 @@ import java.util.List;
 
 public class RecipeBookContainerButton extends Button {
 
-    private final HashMap<GuiHandler, CustomItem> recipes = new HashMap<>();
+    private final HashMap<GuiHandler<?>, CustomItem> recipes = new HashMap<>();
     private final CustomCrafting customCrafting;
 
     public RecipeBookContainerButton(int slot, CustomCrafting customCrafting) {
@@ -42,7 +42,7 @@ public class RecipeBookContainerButton extends Button {
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         KnowledgeBook book = cache.getKnowledgeBook();
         CustomItem customItem = getRecipeItem(guiHandler);
-        List<ICustomRecipe> recipes = recipeHandler.getAvailableRecipes(customItem, player);
+        List<ICustomRecipe> recipes = recipeHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
         recipes.remove(book.getCurrentRecipe());
         if (!recipes.isEmpty()) {
             book.setSubFolder(1);
@@ -56,14 +56,14 @@ public class RecipeBookContainerButton extends Button {
 
     @Override
     public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
-        inventory.setItem(slot, getRecipeItem(guiHandler).create());
+        inventory.setItem(slot, getRecipeItem(guiHandler).create(1));
     }
 
-    public CustomItem getRecipeItem(GuiHandler guiHandler) {
+    public CustomItem getRecipeItem(GuiHandler<?> guiHandler) {
         return recipes.getOrDefault(guiHandler, null);
     }
 
-    public void setRecipeItem(GuiHandler guiHandler, CustomItem item) {
+    public void setRecipeItem(GuiHandler<?> guiHandler, CustomItem item) {
         recipes.put(guiHandler, item);
     }
 }

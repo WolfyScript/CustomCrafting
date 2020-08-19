@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public abstract class CustomCookingRecipe<T extends CookingRecipe> extends CustomRecipe implements ICustomVanillaRecipe<T> {
+public abstract class CustomCookingRecipe<T extends CookingRecipe<?>> extends CustomRecipe implements ICustomVanillaRecipe<T> {
 
     private List<CustomItem> result;
     private List<CustomItem> source;
@@ -61,7 +61,7 @@ public abstract class CustomCookingRecipe<T extends CookingRecipe> extends Custo
         this.cookingTime = 80;
     }
 
-    public CustomCookingRecipe(CustomCookingRecipe customCookingRecipe) {
+    public CustomCookingRecipe(CustomCookingRecipe<?> customCookingRecipe) {
         super(customCookingRecipe);
         this.result = customCookingRecipe.getCustomResults();
         this.source = customCookingRecipe.getSource();
@@ -70,7 +70,7 @@ public abstract class CustomCookingRecipe<T extends CookingRecipe> extends Custo
     }
 
     public List<CustomItem> getSource() {
-        return this.source;
+        return new ArrayList<>(this.source);
     }
 
     public void setSource(List<CustomItem> source) {
@@ -87,7 +87,7 @@ public abstract class CustomCookingRecipe<T extends CookingRecipe> extends Custo
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return this.result;
+        return new ArrayList<>(this.result);
     }
 
     @Override

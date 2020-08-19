@@ -83,12 +83,12 @@ public class BrewingRecipe extends CustomRecipe {
 
     @Override
     public RecipeType getRecipeType() {
-        return RecipeType.BREWING;
+        return RecipeType.BREWING_STAND;
     }
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return result;
+        return new ArrayList<>(result);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class BrewingRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getIngredients() {
-        return ingredients;
+        return new ArrayList<>(ingredients);
     }
 
     public void setIngredients(List<CustomItem> ingredients) {
@@ -121,7 +121,7 @@ public class BrewingRecipe extends CustomRecipe {
     }
 
     public List<CustomItem> getAllowedItems() {
-        return allowedItems;
+        return new ArrayList<>(allowedItems);
     }
 
     public void setAllowedItems(List<CustomItem> allowedItems) {
@@ -142,6 +142,11 @@ public class BrewingRecipe extends CustomRecipe {
 
     public void setDurationChange(int durationChange) {
         this.durationChange = durationChange;
+    }
+
+    @Override
+    public BrewingRecipe clone() {
+        return new BrewingRecipe(this);
     }
 
     @Override

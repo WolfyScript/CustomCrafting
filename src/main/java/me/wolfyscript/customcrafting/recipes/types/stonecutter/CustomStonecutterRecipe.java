@@ -59,7 +59,7 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
 
     @Override
     public List<CustomItem> getCustomResults() {
-        return result;
+        return new ArrayList<>(result);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
     }
 
     public List<CustomItem> getSource() {
-        return source;
+        return new ArrayList<>(source);
     }
 
     public void setSource(List<CustomItem> source) {
@@ -99,6 +99,11 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
     @Override
     public RecipeType getRecipeType() {
         return RecipeType.STONECUTTER;
+    }
+
+    @Override
+    public CustomStonecutterRecipe clone() {
+        return new CustomStonecutterRecipe(this);
     }
 
     @Override

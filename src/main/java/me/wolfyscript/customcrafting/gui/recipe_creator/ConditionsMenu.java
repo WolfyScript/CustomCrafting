@@ -11,7 +11,7 @@ import me.wolfyscript.customcrafting.recipes.conditions.ExperienceCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -69,7 +69,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 hashMap.put("%VALUE%", ((WorldTimeCondition) recipeConfig.getConditions().getByID("world_time")).getTime());
                 hashMap.put("%MODE%", recipeConfig.getConditions().getByID("world_time").getOption().getDisplayString(api));
                 return itemStack;
@@ -102,7 +102,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 hashMap.put("%VALUE%", ((ExperienceCondition) recipeConfig.getConditions().getByID("player_experience")).getExpLevel());
                 hashMap.put("%MODE%", recipeConfig.getConditions().getByID("player_experience").getOption().getDisplayString(api));
                 return itemStack;
@@ -112,7 +112,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
         registerButton(new ActionButton("conditions.weather", new ButtonState("weather", Material.WATER_BUCKET, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
@@ -127,7 +127,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 hashMap.put("%VALUE%", ((WeatherCondition) recipeConfig.getConditions().getByID("weather")).getWeather().getDisplay(api));
                 hashMap.put("%MODE%", recipeConfig.getConditions().getByID("weather").getOption().getDisplayString(api));
                 return itemStack;
@@ -160,7 +160,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
         registerButton(new ActionButton("conditions.permission", new ButtonState("permission", Material.REDSTONE, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
@@ -179,7 +179,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
 
             @Override
             public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                CustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
                 hashMap.put("%VALUE%", ((PermissionCondition) recipeConfig.getConditions().getByID("permission")).getPermission());
                 hashMap.put("%MODE%", recipeConfig.getConditions().getByID("permission").getOption().getDisplayString(api));
                 return itemStack;
@@ -199,7 +199,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             values.add("conditions.world_name");
             values.add("conditions.world_biome");
             values.add("conditions.weather");
-            switch (cache.getSetting()) {
+            switch (cache.getRecipeType()) {
                 case WORKBENCH:
                     values.add("conditions.permission");
                     values.add("conditions.player_experience");

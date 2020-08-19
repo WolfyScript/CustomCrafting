@@ -41,6 +41,10 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
         this.shapeless = true;
     }
 
+    public ShapelessEliteCraftRecipe(ShapelessEliteCraftRecipe eliteCraftingRecipe){
+        this((EliteCraftingRecipe) eliteCraftingRecipe);
+    }
+
     @Override
     public CraftingData check(List<List<ItemStack>> matrix) {
         List<Character> usedKeys = new ArrayList<>();
@@ -76,6 +80,11 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
             }
         }
         return null;
+    }
+
+    @Override
+    public ShapelessEliteCraftRecipe clone() {
+        return new ShapelessEliteCraftRecipe(this);
     }
 
     @Override

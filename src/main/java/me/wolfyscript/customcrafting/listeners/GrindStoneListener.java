@@ -11,6 +11,8 @@ import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,6 +71,12 @@ public class GrindStoneListener implements Listener {
                     inputBottom.consumeItem(itemBottom, 1, inventory);
                     inventory.setItem(1, itemBottom);
                 }
+
+                if(grindstoneData.getRecipe().getXp() > 0){
+                    ExperienceOrb orb = (ExperienceOrb) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
+                    orb.setExperience(grindstoneData.getRecipe().getXp());
+                }
+
                 preCraftedRecipes.remove(player.getUniqueId());
                 Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), 0, player, event.getView());
                 GrindstoneRecipe foundRecipe = checkResult.getValue().getRecipe();

@@ -32,4 +32,9 @@ public class CustomCampfireRecipe extends CustomCookingRecipe<CampfireRecipe> {
     public RecipeType getRecipeType() {
         return RecipeType.CAMPFIRE;
     }
+
+    @Override
+    public CustomCampfireRecipe clone() {
+        return new CustomCampfireRecipe(this);
+    }
 }

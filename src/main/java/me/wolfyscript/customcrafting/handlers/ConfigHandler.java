@@ -48,10 +48,10 @@ public class ConfigHandler {
         }
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
 
-        {
+        if (mainConfig.resetKnowledgeBook()) {
             //Creating the knowledgebook item and recipe
             NamespacedKey knowledgebookKey = new NamespacedKey("customcrafting", "knowledge_book");
-            CustomItem knowledgeBook = new CustomItem(Material.WRITTEN_BOOK);
+            CustomItem knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
             knowledgeBook.setDisplayName(WolfyUtilities.translateColorCodes("&6Knowledge Book"));
             knowledgeBook.addLoreLine(WolfyUtilities.translateColorCodes("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
@@ -66,7 +66,7 @@ public class ConfigHandler {
             knowledgeBookCraft.setNamespacedKey(knowledgebookKey);
             knowledgeBookCraft.save();
         }
-        {
+        if (mainConfig.resetAdvancedWorkbench()) {
             //Creating the advanced workbench item and recipe
             NamespacedKey workbenchkKey = new NamespacedKey("customcrafting", "workbench");
 
