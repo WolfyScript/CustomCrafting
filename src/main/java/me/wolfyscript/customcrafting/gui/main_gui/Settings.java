@@ -152,14 +152,6 @@ public class Settings extends ExtendedGuiWindow {
             customCrafting.getConfigHandler().getConfig().setResetCreatorAfterSave(false);
             return true;
         })));
-
-        registerButton(new ToggleButton("knowledgebook.workbench_filter_button", false, new ButtonState("knowledgebook.workbench_filter_button.disabled", PlayerHeadUtils.getViaURL("e551153a1519357b6241ab1ddcae831dff080079c0b2960797c702dd92266835"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            customCrafting.getConfigHandler().getConfig().setWorkbenchFilter(true);
-            return true;
-        }), new ButtonState("knowledgebook.workbench_filter_button.enabled", PlayerHeadUtils.getViaURL("c65cb185c641cbe74e70bce6e6a1ed90a180ec1a42034d5c4aed57af560fc83a"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            customCrafting.getConfigHandler().getConfig().setWorkbenchFilter(false);
-            return true;
-        })));
     }
 
     @EventHandler
@@ -179,7 +171,6 @@ public class Settings extends ExtendedGuiWindow {
             ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
             ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
             ((ToggleButton) event.getGuiWindow().getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
-            ((ToggleButton) event.getGuiWindow().getButton("knowledgebook.workbench_filter_button")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().workbenchFilter());
 
             event.setButton(0, "none", "back");
 
