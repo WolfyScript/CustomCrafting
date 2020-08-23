@@ -164,7 +164,8 @@ public class CustomCrafting extends JavaPlugin {
                         "       Nat R               gizmonster      Nick coburn\n" +
                         "       TheDutchRuben       Beng701         Eli2t\n" +
                         "       르 미                 Ananass Me      Thomas Texier\n" +
-                        "       Ethonion"
+                        "       Ethonion            Cameron R       Junye Zhou\n" +
+                        "       HittmanA            ANthony Helm    Gamer430"
         );
         System.out.println();
         System.out.println("------------------------------------------------------------------------");

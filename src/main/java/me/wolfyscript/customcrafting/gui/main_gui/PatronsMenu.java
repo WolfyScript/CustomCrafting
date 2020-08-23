@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.PatronButton;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
@@ -11,12 +11,11 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
-import org.bukkit.event.EventHandler;
 
 public class PatronsMenu extends ExtendedGuiWindow {
 
     public PatronsMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("patrons_menu", inventoryAPI, 45, customCrafting);
+        super("patrons_menu", inventoryAPI, 54, customCrafting);
     }
 
     @Override
@@ -40,6 +39,7 @@ public class PatronsMenu extends ExtendedGuiWindow {
         registerButton(new PatronButton("Nat R", "1Jack", "956faa3f-df9e-402b-bc13-39c03d4b4a5b"));
         registerButton(new PatronButton("gizmonster", "gizmonster", "e502d121-de9d-4f5d-b7e5-0da747c4e2e8"));
         registerButton(new PatronButton("Nick coburn"));
+        registerButton(new PatronButton("Arthur Neumann"));
         registerButton(new PatronButton("TheDutchRuben"));
         registerButton(new PatronButton("Beng701"));
         registerButton(new PatronButton("Eli2t"));
@@ -47,28 +47,35 @@ public class PatronsMenu extends ExtendedGuiWindow {
         registerButton(new PatronButton("Ananass Me"));
         registerButton(new PatronButton("Thomas Texier"));
         registerButton(new PatronButton("Ethonion"));
+        registerButton(new PatronButton("Cameron R"));
+        registerButton(new PatronButton("Junye Zhou"));
+        registerButton(new PatronButton("HittmanA"));
+        registerButton(new PatronButton("ANthony Helm"));
+        registerButton(new PatronButton("Gamer430"));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            event.setButton(0, "back");
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        event.setButton(0, "back");
 
-            event.setButton(10, "patron.apprehentice");
-            event.setButton(12, "patron.alex");
-            event.setButton(14, "patron.vincent_deniau");
-            event.setButton(16, "patron.nat_r");
-            event.setButton(18, "patron.gizmonster");
-            event.setButton(20, "patron.nick_coburn");
-            event.setButton(22, "patron.thedutchruben");
-            event.setButton(24, "patron.beng701");
-            event.setButton(26, "patron.eli2t");
-            event.setButton(28, "patron.르_미");
-            event.setButton(30, "patron.ananass_me");
-            event.setButton(32, "patron.thomas_texier");
-            event.setButton(34, "patron.ethonion");
-
-        }
+        event.setButton(10, "patron.apprehentice");
+        event.setButton(12, "patron.alex");
+        event.setButton(14, "patron.vincent_deniau");
+        event.setButton(16, "patron.nat_r");
+        event.setButton(18, "patron.gizmonster");
+        event.setButton(20, "patron.nick_coburn");
+        event.setButton(22, "patron.thedutchruben");
+        event.setButton(24, "patron.beng701");
+        event.setButton(26, "patron.eli2t");
+        event.setButton(28, "patron.르_미");
+        event.setButton(30, "patron.ananass_me");
+        event.setButton(32, "patron.thomas_texier");
+        event.setButton(34, "patron.ethonion");
+        event.setButton(36, "patron.cameron_r");
+        event.setButton(38, "patron.junye_zhou");
+        event.setButton(40, "patron.hittmana");
+        event.setButton(42, "patron.anthony_helm");
+        event.setButton(44, "patron.gamer430");
     }
 
 }
