@@ -5,13 +5,12 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.VariantContainerButton;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class VariantMenu extends ExtendedGuiWindow {
                 case CAMPFIRE:
                     if (cache.getVariantsData().getSlot() != 1) {
                         cache.getCookingRecipe().setSource(cache.getVariantsData().getVariants());
-                    }else{
+                    } else {
                         cache.getCookingRecipe().setResult(cache.getVariantsData().getVariants());
                     }
                     break;
@@ -76,13 +75,11 @@ public class VariantMenu extends ExtendedGuiWindow {
         })));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            event.setButton(0, "back");
-            for (int i = 0; i < 45; i++) {
-                event.setButton(9 + i, "variant_container_" + i);
-            }
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        event.setButton(0, "back");
+        for (int i = 0; i < 45; i++) {
+            event.setButton(9 + i, "variant_container_" + i);
         }
     }
 }

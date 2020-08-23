@@ -403,7 +403,7 @@ public class RecipeHandler {
         List<T> recipes = getRecipes(type);
         recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return recipes;
+        return new ArrayList<>(recipes);
     }
 
     public <T extends ICustomRecipe> List<T> getAvailableRecipes(Class<T> type, Player player) {
@@ -413,7 +413,7 @@ public class RecipeHandler {
             recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         }
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return recipes;
+        return new ArrayList<>(recipes);
     }
 
     public List<CraftingRecipe> getAdvancedCraftingRecipes() {

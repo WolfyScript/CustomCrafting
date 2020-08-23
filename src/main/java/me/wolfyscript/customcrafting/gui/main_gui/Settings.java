@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -16,7 +16,6 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -154,42 +153,40 @@ public class Settings extends ExtendedGuiWindow {
         })));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            availableLangs.clear();
-            File langFolder = new File(customCrafting.getDataFolder() + File.separator + "lang");
-            String[] filenames = langFolder.list((dir, name) -> name.endsWith(".json"));
-            if (filenames != null) {
-                availableLangs.addAll(Arrays.stream(filenames).map(s -> s.replace(".json", "")).distinct().collect(Collectors.toList()));
-            }
-            Player player = event.getPlayer();
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        availableLangs.clear();
+        File langFolder = new File(customCrafting.getDataFolder() + File.separator + "lang");
+        String[] filenames = langFolder.list((dir, name) -> name.endsWith(".json"));
+        if (filenames != null) {
+            availableLangs.addAll(Arrays.stream(filenames).map(s -> s.replace(".json", "")).distinct().collect(Collectors.toList()));
+        }
+        Player player = event.getPlayer();
 
-            ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isLockedDown());
-            ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
-            ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-            ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
-            ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
-            ((ToggleButton) event.getGuiWindow().getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
+        ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isLockedDown());
+        ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
+        ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
+        ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
+        ((ToggleButton) event.getGuiWindow().getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
 
-            event.setButton(0, "none", "back");
+        event.setButton(0, "none", "back");
 
-            if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
-                event.setButton(9, "lockdown");
-            }
-            if (ChatUtils.checkPerm(player, "customcrafting.cmd.darkmode")) {
-                event.setButton(10, "darkMode");
-            }
-            if (ChatUtils.checkPerm(player, "customcrafting.cmd.settings")) {
-                event.setButton(11, "pretty_printing");
-                event.setButton(12, "advanced_workbench");
-                event.setButton(13, "language");
-                event.setButton(14, "creator.reset_after_save");
-                event.setButton(15, "knowledgebook.workbench_filter_button");
-            }
-            if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
-                event.setButton(35, "debug");
-            }
+        if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
+            event.setButton(9, "lockdown");
+        }
+        if (ChatUtils.checkPerm(player, "customcrafting.cmd.darkmode")) {
+            event.setButton(10, "darkMode");
+        }
+        if (ChatUtils.checkPerm(player, "customcrafting.cmd.settings")) {
+            event.setButton(11, "pretty_printing");
+            event.setButton(12, "advanced_workbench");
+            event.setButton(13, "language");
+            event.setButton(14, "creator.reset_after_save");
+            event.setButton(15, "knowledgebook.workbench_filter_button");
+        }
+        if (ChatUtils.checkPerm(player, "customcrafting.cmd.debug")) {
+            event.setButton(35, "debug");
         }
     }
 }

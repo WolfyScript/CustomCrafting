@@ -8,7 +8,7 @@ import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
@@ -21,7 +21,6 @@ import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
@@ -133,21 +132,19 @@ public class ItemEditor extends ExtendedGuiWindow {
         })));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            event.setButton(0, "back");
-            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
-            if (cache.getItems().isRecipeItem()) {
-                event.setButton(20, "load_item");
-                event.setButton(22, "create_item");
-                event.setButton(24, "edit_item");
-            } else {
-                event.setButton(20, "create_item");
-                event.setButton(22, "edit_item");
-                event.setButton(24, "delete_item");
-                event.setButton(31, "load_item");
-            }
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        event.setButton(0, "back");
+        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        if (cache.getItems().isRecipeItem()) {
+            event.setButton(20, "load_item");
+            event.setButton(22, "create_item");
+            event.setButton(24, "edit_item");
+        } else {
+            event.setButton(20, "create_item");
+            event.setButton(22, "edit_item");
+            event.setButton(24, "delete_item");
+            event.setButton(31, "load_item");
         }
     }
 
