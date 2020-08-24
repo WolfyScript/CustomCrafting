@@ -5,7 +5,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 
-public class ExtendedGuiWindow extends GuiWindow {
+public abstract class ExtendedGuiWindow extends GuiWindow {
 
     protected CustomCrafting customCrafting;
     protected WolfyUtilities api = CustomCrafting.getApi();

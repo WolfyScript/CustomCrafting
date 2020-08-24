@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -43,7 +43,7 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe {
     }
 
     @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+    public void renderMenu(GuiWindow guiWindow, GuiUpdate event) {
         event.setButton(6, "back");
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         if (!getIngredients().isEmpty()) {

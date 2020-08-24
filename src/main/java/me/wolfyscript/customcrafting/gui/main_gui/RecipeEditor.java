@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
@@ -14,7 +14,6 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
@@ -80,32 +79,15 @@ public class RecipeEditor extends ExtendedGuiWindow {
         })));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            event.setButton(0, "back");
-            event.setButton(20, "create_recipe");
-            event.setButton(22, "edit_recipe");
-            event.setButton(24, "delete_recipe");
-        }
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        event.setButton(0, "back");
+        event.setButton(20, "create_recipe");
+        event.setButton(22, "edit_recipe");
+        event.setButton(24, "delete_recipe");
     }
 
     private void changeToCreator(GuiHandler<?> guiHandler) {
-        switch (((TestCache) guiHandler.getCustomCache()).getRecipeType()) {
-            case WORKBENCH:
-            case ELITE_WORKBENCH:
-            case STONECUTTER:
-            case BREWING_STAND:
-            case GRINDSTONE:
-            case CAULDRON:
-            case ANVIL:
-                guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getId());
-                break;
-            case FURNACE:
-            case CAMPFIRE:
-            case SMOKER:
-            case BLAST_FURNACE:
-                guiHandler.changeToInv("recipe_creator", "cooking");
-        }
+        guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getCreatorID());
     }
 }

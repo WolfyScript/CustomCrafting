@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.data.cache.ParticleCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.particle_creator.buttons.ParticleEffectButton;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
@@ -15,7 +15,6 @@ import me.wolfyscript.utilities.api.utils.Pair;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
 import me.wolfyscript.utilities.api.utils.particles.ParticleEffects;
-import org.bukkit.event.EventHandler;
 
 import java.util.Collection;
 import java.util.Map;
@@ -52,38 +51,36 @@ public class MainMenu extends ExtendedGuiWindow {
         }
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event){
-        if(event.verify(this)) {
-            GuiHandler<TestCache> guiHandler = event.getGuiHandler();
-            TestCache cache = guiHandler.getCustomCache();
-            ParticleCache particleCache = cache.getParticleCache();
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
+        TestCache cache = guiHandler.getCustomCache();
+        ParticleCache particleCache = cache.getParticleCache();
 
-            event.setButton(0, "back");
+        event.setButton(0, "back");
 
-            Map<NamespacedKey, ParticleEffect> effectsMap = ParticleEffects.getEffects();
-            Collection<ParticleEffect> effects = effectsMap.values();
+        Map<NamespacedKey, ParticleEffect> effectsMap = ParticleEffects.getEffects();
+        Collection<ParticleEffect> effects = effectsMap.values();
 
-            int maxPages = effects.size() / 54 + (effects.size() % 54 > 0 ? 1 : 0);
-            if (particleCache.getPage() >= maxPages) {
-                particleCache.setPage(0);
-            }
-            if (particleCache.getPage() != 0) {
-                event.setButton(2, "previous_page");
-            }
-            if (particleCache.getPage() + 1 < maxPages) {
-                event.setButton(6, "next_page");
-            }
+        int maxPages = effects.size() / 54 + (effects.size() % 54 > 0 ? 1 : 0);
+        if (particleCache.getPage() >= maxPages) {
+            particleCache.setPage(0);
+        }
+        if (particleCache.getPage() != 0) {
+            event.setButton(2, "previous_page");
+        }
+        if (particleCache.getPage() + 1 < maxPages) {
+            event.setButton(6, "next_page");
+        }
 
-            int i = 0;
-            for (Map.Entry<NamespacedKey, ParticleEffect> entry : effectsMap.entrySet()) {
-                int item = 9 + i;
-                if (item < 54) {
-                    ParticleEffectButton button = (ParticleEffectButton) getButton("particle_effect.slot" + item);
-                    button.setParticleEffect(guiHandler, new Pair<>(entry.getKey(), entry.getValue()));
-                    event.setButton(item, button);
-                    i++;
-                }
+        int i = 0;
+        for (Map.Entry<NamespacedKey, ParticleEffect> entry : effectsMap.entrySet()) {
+            int item = 9 + i;
+            if (item < 54) {
+                ParticleEffectButton button = (ParticleEffectButton) getButton("particle_effect.slot" + item);
+                button.setParticleEffect(guiHandler, new Pair<>(entry.getKey(), entry.getValue()));
+                event.setButton(item, button);
+                i++;
             }
         }
     }

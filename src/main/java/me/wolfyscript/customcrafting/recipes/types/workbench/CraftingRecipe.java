@@ -8,7 +8,7 @@ import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
@@ -156,7 +156,7 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
     }
 
     @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+    public void renderMenu(GuiWindow guiWindow, GuiUpdate event) {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(0, "back");
         if (!getIngredients().isEmpty()) {

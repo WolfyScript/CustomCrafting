@@ -18,7 +18,7 @@ import me.wolfyscript.utilities.api.custom_items.api_references.OraxenRef;
 import me.wolfyscript.utilities.api.custom_items.api_references.VanillaRef;
 import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
@@ -34,7 +34,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
@@ -826,278 +825,276 @@ public class ItemCreator extends ExtendedGuiWindow {
         }
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            GuiHandler guiHandler = event.getGuiHandler();
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
-            Items items = cache.getItems();
-            CustomItem customItem = items.getItem();
-            ItemStack item = customItem.create();
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        GuiHandler guiHandler = event.getGuiHandler();
+        TestCache cache = ((TestCache) guiHandler.getCustomCache());
+        Items items = cache.getItems();
+        CustomItem customItem = items.getItem();
+        ItemStack item = customItem.create();
 
-            event.setButton(0, "back");
-            event.setButton(13, "item_input");
+        event.setButton(0, "back");
+        event.setButton(13, "item_input");
 
-            PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
-            event.setButton(4, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-            event.setButton(12, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-            event.setButton(14, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-            event.setButton(22, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
+        event.setButton(4, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        event.setButton(12, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        event.setButton(14, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        event.setButton(22, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
 
-            if (items.isRecipeItem()) {
-                event.setButton(2, "apply_item");
+        if (items.isRecipeItem()) {
+            event.setButton(2, "apply_item");
+        }
+        event.setButton(3, "save_item");
+
+        List<String> options = new ArrayList<>();
+        if (customItem.getApiReference() instanceof VanillaRef) {
+            options.add("display_name.option");
+            options.add("localized_name.option");
+            options.add("lore.option");
+            options.add("enchantments.option");
+            options.add("flags.option");
+            options.add("attribute.option");
+            if (items.getItem() != null && !item.getType().equals(Material.AIR)) {
+                ((ToggleButton) event.getGuiWindow().getButton("unbreakable")).setState(event.getGuiHandler(), item.getItemMeta().isUnbreakable());
+                options.add("unbreakable");
             }
-            event.setButton(3, "save_item");
+            options.add("repair_cost.option");
+            if (items.getItem() != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
+                options.add("potion.option");
+            }
+            options.add("damage.option");
+            if (items.getItem() != null && item.getType().equals(Material.PLAYER_HEAD)) {
+                options.add("player_head.option");
+            }
+        } else {
+            if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
+                event.setButton(5, "reference.wolfyutilites");
+            } else if (customItem.getApiReference() instanceof OraxenRef) {
+                event.setButton(5, "reference.oraxen");
+            } else if (customItem.getApiReference() instanceof ItemsAdderRef) {
+                event.setButton(5, "reference.itemsadder");
+            }
+        }
+        options.add("fuel.option");
+        options.add("consume.option");
+        options.add("permission.option");
+        options.add("rarity.option");
 
-            List<String> options = new ArrayList<>();
-            if (customItem.getApiReference() instanceof VanillaRef) {
-                options.add("display_name.option");
-                options.add("localized_name.option");
-                options.add("lore.option");
-                options.add("enchantments.option");
-                options.add("flags.option");
-                options.add("attribute.option");
-                if (items.getItem() != null && !item.getType().equals(Material.AIR)) {
-                    ((ToggleButton) event.getGuiWindow().getButton("unbreakable")).setState(event.getGuiHandler(), item.getItemMeta().isUnbreakable());
-                    options.add("unbreakable");
-                }
-                options.add("repair_cost.option");
-                if (items.getItem() != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
-                    options.add("potion.option");
-                }
-                options.add("damage.option");
-                if (items.getItem() != null && item.getType().equals(Material.PLAYER_HEAD)) {
-                    options.add("player_head.option");
-                }
+        options.add("custom_durability.option");
+        options.add("custom_model_data.option");
+        //options.add("persistent_data.option");
+        options.add("armor_slots.option");
+        options.add("particle_effects.option");
+
+        if (item.getType().isBlock()) {
+            options.add("elite_workbench.option");
+        }
+        options.add("knowledge_book.option");
+
+        int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);
+        if (items.getPage() >= maxPages) {
+            items.setPage(maxPages - 1);
+        }
+        if (items.getPage() > 0) {
+            event.setButton(5, "page_previous");
+        }
+        if (items.getPage() + 1 < maxPages) {
+            event.setButton(5, "page_next");
+        }
+
+        int slot = 9;
+        int j = 14 * items.getPage();
+        for (int i = 0; i < 14; i++) {
+            if (i == 3) {
+                slot = 12;
+            } else if (i == 10) {
+                slot = 13;
+            }
+            if (j < options.size()) {
+                event.setButton(slot + i, options.get(j));
+                j++;
             } else {
-                if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-                    event.setButton(5, "reference.wolfyutilites");
-                } else if (customItem.getApiReference() instanceof OraxenRef) {
-                    event.setButton(5, "reference.oraxen");
-                } else if (customItem.getApiReference() instanceof ItemsAdderRef) {
-                    event.setButton(5, "reference.itemsadder");
-                }
+                event.setButton(slot + i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
             }
-            options.add("fuel.option");
-            options.add("consume.option");
-            options.add("permission.option");
-            options.add("rarity.option");
+        }
 
-            options.add("custom_durability.option");
-            options.add("custom_model_data.option");
-            //options.add("persistent_data.option");
-            options.add("armor_slots.option");
-            options.add("particle_effects.option");
+        if (!item.getType().equals(Material.AIR)) {
+            //DRAW Sections
+            switch (cache.getSubSetting()) {
+                case "display_name":
+                    event.setButton(39, "display_name.set");
+                    event.setButton(41, "display_name.remove");
+                    event.setButton(45, "meta_ignore.name");
+                    break;
+                case "enchantments":
+                    event.setButton(39, "enchantments.add");
+                    event.setButton(41, "enchantments.remove");
+                    event.setButton(45, "meta_ignore.enchant");
+                    break;
+                case "lore":
+                    event.setButton(39, "lore.add");
+                    event.setButton(41, "lore.remove");
+                    event.setButton(45, "meta_ignore.lore");
+                    break;
+                case "flags":
+                    ((ToggleButton) event.getGuiWindow().getButton("flags.attributes")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES));
+                    ((ToggleButton) event.getGuiWindow().getButton("flags.unbreakable")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE));
+                    ((ToggleButton) event.getGuiWindow().getButton("flags.destroys")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS));
+                    ((ToggleButton) event.getGuiWindow().getButton("flags.placed_on")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON));
+                    ((ToggleButton) event.getGuiWindow().getButton("flags.potion_effects")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS));
+                    ((ToggleButton) event.getGuiWindow().getButton("flags.enchants")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ENCHANTS));
+                    event.setButton(37, "flags.attributes");
+                    event.setButton(39, "flags.unbreakable");
+                    event.setButton(41, "flags.destroys");
+                    event.setButton(43, "flags.placed_on");
+                    event.setButton(47, "flags.potion_effects");
+                    event.setButton(51, "flags.enchants");
+                    event.setButton(45, "meta_ignore.flags");
+                    break;
+                case "attribute":
+                    event.setButton(36, "attribute.generic_max_health");
+                    event.setButton(37, "attribute.generic_follow_range");
+                    event.setButton(38, "attribute.generic_knockback_resistance");
+                    event.setButton(39, "attribute.generic_movement_speed");
+                    event.setButton(40, "attribute.generic_flying_speed");
+                    event.setButton(41, "attribute.generic_attack_damage");
+                    event.setButton(42, "attribute.generic_attack_speed");
+                    event.setButton(43, "attribute.generic_armor");
+                    event.setButton(44, "attribute.generic_armor_toughness");
+                    event.setButton(48, "attribute.generic_luck");
+                    event.setButton(49, "attribute.horse_jump_strength");
+                    event.setButton(50, "attribute.zombie_spawn_reinforcements");
+                    event.setButton(45, "meta_ignore.attributes_modifiers");
+                    break;
+                case "player_head":
+                    if (items.getItem() != null && item.getType().equals(Material.PLAYER_HEAD)) {
+                        event.setButton(38, "player_head.texture.input");
+                        event.setButton(39, "player_head.texture.apply");
+                        event.setButton(41, "player_head.owner");
+                        event.setButton(45, "meta_ignore.playerHead");
+                    }
+                    break;
+                case "potion":
+                    if (items.getItem() != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
+                        event.setButton(39, "potion.add");
+                        event.setButton(41, "potion.remove");
+                        event.setButton(45, "meta_ignore.potion");
+                    }
+                    break;
+                case "damage":
+                    event.setButton(39, "damage.set");
+                    event.setButton(41, "damage.reset");
+                    event.setButton(45, "meta_ignore.damage");
+                    break;
+                case "repair_cost":
+                    event.setButton(39, "repair_cost.set");
+                    event.setButton(41, "repair_cost.reset");
+                    event.setButton(45, "meta_ignore.repairCost");
+                    break;
+                case "fuel":
+                    event.setButton(39, "fuel.burn_time.set");
+                    event.setButton(41, "fuel.burn_time.reset");
+                    ((ToggleButton) event.getGuiWindow().getButton("fuel.furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.FURNACE));
+                    ((ToggleButton) event.getGuiWindow().getButton("fuel.blast_furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.BLAST_FURNACE));
+                    ((ToggleButton) event.getGuiWindow().getButton("fuel.smoker")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.SMOKER));
+                    event.setButton(47, "fuel.furnace");
+                    event.setButton(49, "fuel.blast_furnace");
+                    event.setButton(51, "fuel.smoker");
+                    break;
+                case "custom_model_data":
+                    event.setButton(39, "custom_model_data.set");
+                    event.setButton(41, "custom_model_data.reset");
+                    event.setButton(45, "meta_ignore.customModelData");
+                    break;
+                case "consume":
+                    ((ToggleButton) event.getGuiWindow().getButton("consume.consume_item")).setState(event.getGuiHandler(), customItem.isConsumed());
+                    event.setButton(31, "consume.consume_item");
+                    event.setButton(38, "consume.replacement");
+                    event.setButton(39, items.getItem().hasReplacement() ? "consume.replacement.enabled" : "consume.replacement.disabled");
+                    if (customItem.hasReplacement() || item.getMaxStackSize() > 1) {
+                        event.setButton(41, "consume.durability_cost.disabled");
+                    } else {
+                        event.setButton(41, "consume.durability_cost.enabled");
+                    }
+                    break;
+                case "custom_durability":
+                    event.setButton(38, "custom_durability.set_damage");
+                    event.setButton(40, "custom_durability.set_tag");
+                    event.setButton(42, "custom_durability.set_durability");
+                    event.setButton(49, "custom_durability.remove");
+                    event.setButton(45, "meta_ignore.custom_damage");
+                    event.setButton(53, "meta_ignore.custom_durability");
+                    break;
+                case "localized_name":
+                    event.setButton(39, "localized_name.set");
+                    event.setButton(41, "localized_name.remove");
+                    break;
+                case "permission":
+                    event.setButton(39, "permission.set");
+                    event.setButton(41, "permission.remove");
+                    break;
+                case "rarity":
+                    event.setButton(39, "rarity.set");
+                    event.setButton(41, "rarity.reset");
+                    break;
+                case "elite_workbench":
+                    if (item.getType().isBlock()) {
+                        ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).getGridSize() - 3);
+                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isEnabled());
+                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.advanced_recipes")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isAdvancedRecipes());
+                        event.setButton(37, "elite_workbench.particles");
+                        event.setButton(39, "elite_workbench.grid_size");
+                        event.setButton(41, "elite_workbench.toggle");
+                        event.setButton(43, "elite_workbench.advanced_recipes");
+                    }
+                    break;
+                case "knowledge_book":
+                    ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((KnowledgeBookData) customItem.getCustomData("knowledge_book")).isEnabled());
+                    event.setButton(40, "knowledge_book.toggle");
+                    break;
+                case "armor_slots":
+                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.head")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.HEAD));
+                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.chest")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.CHEST));
+                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.legs")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.LEGS));
+                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.feet")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.FEET));
+                    event.setButton(37, "armor_slots.head");
+                    event.setButton(39, "armor_slots.chest");
+                    event.setButton(41, "armor_slots.legs");
+                    event.setButton(43, "armor_slots.feet");
+                    break;
+                case "particle_effects":
+                    event.setButton(37, "particle_effects.head");
+                    event.setButton(38, "particle_effects.chest");
+                    event.setButton(39, "particle_effects.legs");
+                    event.setButton(40, "particle_effects.feet");
+                    event.setButton(41, "particle_effects.hand");
+                    event.setButton(42, "particle_effects.off_hand");
+                    event.setButton(43, "particle_effects.block");
 
-            if (item.getType().isBlock()) {
-                options.add("elite_workbench.option");
+                    event.setButton(46, "particle_effects.head.input");
+                    event.setButton(47, "particle_effects.chest.input");
+                    event.setButton(48, "particle_effects.legs.input");
+                    event.setButton(49, "particle_effects.feet.input");
+                    event.setButton(50, "particle_effects.hand.input");
+                    event.setButton(51, "particle_effects.off_hand.input");
+                    event.setButton(52, "particle_effects.block.input");
             }
-            options.add("knowledge_book.option");
-
-            int maxPages = options.size() / 14 + (options.size() % 14 > 0 ? 1 : 0);
-            if (items.getPage() >= maxPages) {
-                items.setPage(maxPages - 1);
-            }
-            if (items.getPage() > 0) {
-                event.setButton(5, "page_previous");
-            }
-            if (items.getPage() + 1 < maxPages) {
-                event.setButton(5, "page_next");
-            }
-
-            int slot = 9;
-            int j = 14 * items.getPage();
-            for (int i = 0; i < 14; i++) {
-                if (i == 3) {
-                    slot = 12;
-                } else if (i == 10) {
-                    slot = 13;
-                }
-                if (j < options.size()) {
-                    event.setButton(slot + i, options.get(j));
-                    j++;
-                } else {
-                    event.setButton(slot + i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-                }
-            }
-
-            if (!item.getType().equals(Material.AIR)) {
-                //DRAW Sections
-                switch (cache.getSubSetting()) {
-                    case "display_name":
-                        event.setButton(39, "display_name.set");
-                        event.setButton(41, "display_name.remove");
-                        event.setButton(45, "meta_ignore.name");
-                        break;
-                    case "enchantments":
-                        event.setButton(39, "enchantments.add");
-                        event.setButton(41, "enchantments.remove");
-                        event.setButton(45, "meta_ignore.enchant");
-                        break;
-                    case "lore":
-                        event.setButton(39, "lore.add");
-                        event.setButton(41, "lore.remove");
-                        event.setButton(45, "meta_ignore.lore");
-                        break;
-                    case "flags":
-                        ((ToggleButton) event.getGuiWindow().getButton("flags.attributes")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES));
-                        ((ToggleButton) event.getGuiWindow().getButton("flags.unbreakable")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE));
-                        ((ToggleButton) event.getGuiWindow().getButton("flags.destroys")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS));
-                        ((ToggleButton) event.getGuiWindow().getButton("flags.placed_on")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON));
-                        ((ToggleButton) event.getGuiWindow().getButton("flags.potion_effects")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS));
-                        ((ToggleButton) event.getGuiWindow().getButton("flags.enchants")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ENCHANTS));
-                        event.setButton(37, "flags.attributes");
-                        event.setButton(39, "flags.unbreakable");
-                        event.setButton(41, "flags.destroys");
-                        event.setButton(43, "flags.placed_on");
-                        event.setButton(47, "flags.potion_effects");
-                        event.setButton(51, "flags.enchants");
-                        event.setButton(45, "meta_ignore.flags");
-                        break;
-                    case "attribute":
-                        event.setButton(36, "attribute.generic_max_health");
-                        event.setButton(37, "attribute.generic_follow_range");
-                        event.setButton(38, "attribute.generic_knockback_resistance");
-                        event.setButton(39, "attribute.generic_movement_speed");
-                        event.setButton(40, "attribute.generic_flying_speed");
-                        event.setButton(41, "attribute.generic_attack_damage");
-                        event.setButton(42, "attribute.generic_attack_speed");
-                        event.setButton(43, "attribute.generic_armor");
-                        event.setButton(44, "attribute.generic_armor_toughness");
-                        event.setButton(48, "attribute.generic_luck");
-                        event.setButton(49, "attribute.horse_jump_strength");
-                        event.setButton(50, "attribute.zombie_spawn_reinforcements");
-                        event.setButton(45, "meta_ignore.attributes_modifiers");
-                        break;
-                    case "player_head":
-                        if (items.getItem() != null && item.getType().equals(Material.PLAYER_HEAD)) {
-                            event.setButton(38, "player_head.texture.input");
-                            event.setButton(39, "player_head.texture.apply");
-                            event.setButton(41, "player_head.owner");
-                            event.setButton(45, "meta_ignore.playerHead");
-                        }
-                        break;
-                    case "potion":
-                        if (items.getItem() != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
-                            event.setButton(39, "potion.add");
-                            event.setButton(41, "potion.remove");
-                            event.setButton(45, "meta_ignore.potion");
-                        }
-                        break;
-                    case "damage":
-                        event.setButton(39, "damage.set");
-                        event.setButton(41, "damage.reset");
-                        event.setButton(45, "meta_ignore.damage");
-                        break;
-                    case "repair_cost":
-                        event.setButton(39, "repair_cost.set");
-                        event.setButton(41, "repair_cost.reset");
-                        event.setButton(45, "meta_ignore.repairCost");
-                        break;
-                    case "fuel":
-                        event.setButton(39, "fuel.burn_time.set");
-                        event.setButton(41, "fuel.burn_time.reset");
-                        ((ToggleButton) event.getGuiWindow().getButton("fuel.furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.FURNACE));
-                        ((ToggleButton) event.getGuiWindow().getButton("fuel.blast_furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.BLAST_FURNACE));
-                        ((ToggleButton) event.getGuiWindow().getButton("fuel.smoker")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.SMOKER));
-                        event.setButton(47, "fuel.furnace");
-                        event.setButton(49, "fuel.blast_furnace");
-                        event.setButton(51, "fuel.smoker");
-                        break;
-                    case "custom_model_data":
-                        event.setButton(39, "custom_model_data.set");
-                        event.setButton(41, "custom_model_data.reset");
-                        event.setButton(45, "meta_ignore.customModelData");
-                        break;
-                    case "consume":
-                        ((ToggleButton) event.getGuiWindow().getButton("consume.consume_item")).setState(event.getGuiHandler(), customItem.isConsumed());
-                        event.setButton(31, "consume.consume_item");
-                        event.setButton(38, "consume.replacement");
-                        event.setButton(39, items.getItem().hasReplacement() ? "consume.replacement.enabled" : "consume.replacement.disabled");
-                        if (customItem.hasReplacement() || item.getMaxStackSize() > 1) {
-                            event.setButton(41, "consume.durability_cost.disabled");
-                        } else {
-                            event.setButton(41, "consume.durability_cost.enabled");
-                        }
-                        break;
-                    case "custom_durability":
-                        event.setButton(38, "custom_durability.set_damage");
-                        event.setButton(40, "custom_durability.set_tag");
-                        event.setButton(42, "custom_durability.set_durability");
-                        event.setButton(49, "custom_durability.remove");
-                        event.setButton(45, "meta_ignore.custom_damage");
-                        event.setButton(53, "meta_ignore.custom_durability");
-                        break;
-                    case "localized_name":
-                        event.setButton(39, "localized_name.set");
-                        event.setButton(41, "localized_name.remove");
-                        break;
-                    case "permission":
-                        event.setButton(39, "permission.set");
-                        event.setButton(41, "permission.remove");
-                        break;
-                    case "rarity":
-                        event.setButton(39, "rarity.set");
-                        event.setButton(41, "rarity.reset");
-                        break;
-                    case "elite_workbench":
-                        if (item.getType().isBlock()) {
-                            ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).getGridSize() - 3);
-                            ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isEnabled());
-                            ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.advanced_recipes")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isAdvancedRecipes());
-                            event.setButton(37, "elite_workbench.particles");
-                            event.setButton(39, "elite_workbench.grid_size");
-                            event.setButton(41, "elite_workbench.toggle");
-                            event.setButton(43, "elite_workbench.advanced_recipes");
-                        }
-                        break;
-                    case "knowledge_book":
-                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((KnowledgeBookData) customItem.getCustomData("knowledge_book")).isEnabled());
-                        event.setButton(40, "knowledge_book.toggle");
-                        break;
-                    case "armor_slots":
-                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.head")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.HEAD));
-                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.chest")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.CHEST));
-                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.legs")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.LEGS));
-                        ((ToggleButton) event.getGuiWindow().getButton("armor_slots.feet")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.FEET));
-                        event.setButton(37, "armor_slots.head");
-                        event.setButton(39, "armor_slots.chest");
-                        event.setButton(41, "armor_slots.legs");
-                        event.setButton(43, "armor_slots.feet");
-                        break;
-                    case "particle_effects":
-                        event.setButton(37, "particle_effects.head");
-                        event.setButton(38, "particle_effects.chest");
-                        event.setButton(39, "particle_effects.legs");
-                        event.setButton(40, "particle_effects.feet");
-                        event.setButton(41, "particle_effects.hand");
-                        event.setButton(42, "particle_effects.off_hand");
-                        event.setButton(43, "particle_effects.block");
-
-                        event.setButton(46, "particle_effects.head.input");
-                        event.setButton(47, "particle_effects.chest.input");
-                        event.setButton(48, "particle_effects.legs.input");
-                        event.setButton(49, "particle_effects.feet.input");
-                        event.setButton(50, "particle_effects.hand.input");
-                        event.setButton(51, "particle_effects.off_hand.input");
-                        event.setButton(52, "particle_effects.block.input");
-                }
-                if (cache.getSubSetting().startsWith("attribute.generic") || cache.getSubSetting().startsWith("attribute.horse") || cache.getSubSetting().startsWith("attribute.zombie")) {
-                    event.setButton(36, "attribute.slot_head");
-                    event.setButton(45, "attribute.slot_chest");
-                    event.setButton(37, "attribute.slot_legs");
-                    event.setButton(46, "attribute.slot_feet");
-                    event.setButton(38, "attribute.slot_hand");
-                    event.setButton(47, "attribute.slot_off_hand");
-                    event.setButton(42, "attribute.multiply_scalar_1");
-                    event.setButton(43, "attribute.add_scalar");
-                    event.setButton(44, "attribute.add_number");
-                    event.setButton(51, "attribute.set_amount");
-                    event.setButton(52, "attribute.set_name");
-                    event.setButton(53, "attribute.set_uuid");
-                    event.setButton(40, "attribute.save");
-                    event.setButton(49, "attribute.delete");
-                }
+            if (cache.getSubSetting().startsWith("attribute.generic") || cache.getSubSetting().startsWith("attribute.horse") || cache.getSubSetting().startsWith("attribute.zombie")) {
+                event.setButton(36, "attribute.slot_head");
+                event.setButton(45, "attribute.slot_chest");
+                event.setButton(37, "attribute.slot_legs");
+                event.setButton(46, "attribute.slot_feet");
+                event.setButton(38, "attribute.slot_hand");
+                event.setButton(47, "attribute.slot_off_hand");
+                event.setButton(42, "attribute.multiply_scalar_1");
+                event.setButton(43, "attribute.add_scalar");
+                event.setButton(44, "attribute.add_number");
+                event.setButton(51, "attribute.set_amount");
+                event.setButton(52, "attribute.set_name");
+                event.setButton(53, "attribute.set_uuid");
+                event.setButton(40, "attribute.save");
+                event.setButton(49, "attribute.delete");
             }
         }
     }

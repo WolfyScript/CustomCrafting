@@ -13,7 +13,7 @@ import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -21,7 +21,6 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -56,14 +55,12 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                         try {
                             long value = Long.parseLong(s);
                             ((WorldTimeCondition) conditions.getByID("world_time")).setTime(value);
-                            ((TestCache) guiHandler.getCustomCache()).getRecipe().setConditions(conditions);
                         } catch (NumberFormatException ex) {
                             api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
                         }
                         return false;
                     });
                 }
-                ((TestCache) guiHandler.getCustomCache()).getRecipe().setConditions(conditions);
                 return true;
             }
 
@@ -89,14 +86,12 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                         try {
                             int value = Integer.parseInt(s);
                             ((ExperienceCondition) conditions.getByID("player_experience")).setExpLevel(value);
-                            ((TestCache) guiHandler.getCustomCache()).getRecipe().setConditions(conditions);
                         } catch (NumberFormatException ex) {
                             api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
                         }
                         return false;
                     });
                 }
-                ((TestCache) guiHandler.getCustomCache()).getRecipe().setConditions(conditions);
                 return true;
             }
 
@@ -121,7 +116,6 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                     //Change Value
                     ((WeatherCondition) conditions.getByID("weather")).toggleWeather();
                 }
-                recipeConfig.setConditions(conditions);
                 return true;
             }
 
@@ -139,9 +133,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
                 if (event.getClick().isLeftClick()) {
                     //Change Mode
-                    Conditions conditions = ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions();
-                    conditions.getByID("advanced_workbench").toggleOption();
-                    ((TestCache) guiHandler.getCustomCache()).getRecipe().setConditions(conditions);
+                    ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions().getByID("advanced_workbench").toggleOption();
                 }
                 return true;
             }
@@ -160,17 +152,13 @@ public class ConditionsMenu extends ExtendedGuiWindow {
         registerButton(new ActionButton("conditions.permission", new ButtonState("permission", Material.REDSTONE, new ButtonActionRender() {
             @Override
             public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
-                Conditions conditions = recipeConfig.getConditions();
                 if (event.getClick().isRightClick()) {
                     //Change Mode
-                    conditions.getByID("permission").toggleOption();
-                    recipeConfig.setConditions(conditions);
+                    ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions().getByID("permission").toggleOption();
                 } else {
                     //SET Custom Permission String
                     openChat("permission", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        ((PermissionCondition) conditions.getByID("permission")).setPermission(s.trim());
-                        recipeConfig.setConditions(conditions);
+                        ((PermissionCondition) ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions().getByID("permission")).setPermission(s.trim());
                         return false;
                     });
                 }
@@ -185,40 +173,37 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                 return itemStack;
             }
         })));
-
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
-            event.setButton(0, "back");
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        event.setButton(0, "back");
 
-            List<String> values = new ArrayList<>();
-            values.add("conditions.world_time");
-            values.add("conditions.world_name");
-            values.add("conditions.world_biome");
-            values.add("conditions.weather");
-            switch (cache.getRecipeType()) {
-                case WORKBENCH:
-                    values.add("conditions.permission");
-                    values.add("conditions.player_experience");
-                    values.add("conditions.advanced_workbench");
-                    break;
-                case ELITE_WORKBENCH:
-                    values.add("conditions.permission");
-                    values.add("conditions.player_experience");
-                    values.add("conditions.elite_workbench");
-                    break;
-                case BREWING_STAND:
-                case GRINDSTONE:
-                    values.add("conditions.permission");
-                    values.add("conditions.player_experience");
-            }
-            int item = 9;
-            for (int i = 0; i < values.size() && item < 45; i++) {
-                event.setButton(item++, values.get(i));
-            }
+        List<String> values = new ArrayList<>();
+        values.add("conditions.world_time");
+        values.add("conditions.world_name");
+        values.add("conditions.world_biome");
+        values.add("conditions.weather");
+        switch (cache.getRecipeType()) {
+            case WORKBENCH:
+                values.add("conditions.permission");
+                values.add("conditions.player_experience");
+                values.add("conditions.advanced_workbench");
+                break;
+            case ELITE_WORKBENCH:
+                values.add("conditions.permission");
+                values.add("conditions.player_experience");
+                values.add("conditions.elite_workbench");
+                break;
+            case BREWING_STAND:
+            case GRINDSTONE:
+                values.add("conditions.permission");
+                values.add("conditions.player_experience");
+        }
+        int item = 9;
+        for (int i = 0; i < values.size() && item < 45; i++) {
+            event.setButton(item++, values.get(i));
         }
     }
 }

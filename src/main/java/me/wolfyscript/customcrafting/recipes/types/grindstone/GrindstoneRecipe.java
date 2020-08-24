@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
@@ -169,7 +169,7 @@ public class GrindstoneRecipe extends CustomRecipe {
     }
 
     @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event) {
+    public void renderMenu(GuiWindow guiWindow, GuiUpdate event) {
         event.setButton(0, "back");
         event.setButton(11, "recipe_book", "ingredient.container_11");
         event.setButton(12, "none", "glass_green");

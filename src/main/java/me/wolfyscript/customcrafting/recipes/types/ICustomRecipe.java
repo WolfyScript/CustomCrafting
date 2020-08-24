@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
@@ -132,7 +132,7 @@ public interface ICustomRecipe {
 
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 
-    void renderMenu(GuiWindow guiWindow, GuiUpdateEvent event);
+    void renderMenu(GuiWindow guiWindow, GuiUpdate event);
 
     class Serializer extends StdSerializer<ICustomRecipe> {
 
