@@ -8,6 +8,7 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,8 +46,10 @@ public class ResultSlotButton extends ItemInputButton {
                     return false;
                 }else{
                     if (eliteWorkbench.getResult() != null) {
-                        customCrafting.getRecipeUtils().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), event);
-                        customCrafting.getRecipeUtils().getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                        if (ItemUtils.isAirOrNull(event.getCursor()) || event.getCursor().isSimilar(eliteWorkbench.getResult())) {
+                            customCrafting.getRecipeUtils().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), event);
+                            customCrafting.getRecipeUtils().getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                        }
                     }
                 }
                 Bukkit.getScheduler().runTask(customCrafting, () -> {
