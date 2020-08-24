@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -19,9 +20,9 @@ import java.util.UUID;
 public class Workbenches {
 
     private final CustomCrafting customCrafting;
-    private WolfyUtilities api;
-    private int task;
-    private int particles;
+    private final WolfyUtilities api;
+    private final BukkitTask task;
+    private final BukkitTask particles;
 
     private HashMap<String, List<ItemStack>> workbenches = new HashMap<>();
     private List<String> furnaces = new ArrayList<>();
@@ -30,7 +31,7 @@ public class Workbenches {
         this.api = WolfyUtilities.getAPI(customCrafting);
         this.customCrafting = customCrafting;
         load();
-        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
+        task = Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> {
             if (customCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
                 api.sendConsoleMessage("[$msg.auto_save.start$]");
                 save();
@@ -40,7 +41,7 @@ public class Workbenches {
             }
         }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
 
-        particles = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
+        particles = Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> {
             for (String loc : workbenches.keySet()) {
                 Location location = stringToLocation(loc);
                 if (location != null) {
@@ -140,7 +141,7 @@ public class Workbenches {
     }
 
     public void endTask() {
-        Bukkit.getScheduler().cancelTask(task);
+        task.cancel();
     }
 
 }
