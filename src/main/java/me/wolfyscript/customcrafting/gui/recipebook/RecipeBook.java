@@ -20,7 +20,6 @@ import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.Pair;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RecipeBook extends ExtendedGuiWindow {
-
-    private final HashMap<Pair<Category, Category>, List<CustomItem>> cachedRecipeItems = new HashMap<>();
 
     public RecipeBook(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
         super("recipe_book", inventoryAPI, 54, customCrafting);
@@ -58,7 +55,9 @@ public class RecipeBook extends ExtendedGuiWindow {
                 if (book.getSubFolder() > 0) {
                     CustomItem item = book.getResearchItem();
                     book.setSubFolderRecipes(customCrafting.getRecipeHandler().getRecipes(item));
-                    book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
+                    if (book.getSubFolderRecipes().size() > 0) {
+                        book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
+                    }
                     return true;
                 } else {
                     book.setSubFolderRecipes(new ArrayList<>());
@@ -207,26 +206,28 @@ public class RecipeBook extends ExtendedGuiWindow {
                 knowledgeBook.setSubFolderPage(0);
             }
 
-            ICustomRecipe customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+            if (knowledgeBook.getSubFolderPage() < recipes.size()) {
+                ICustomRecipe customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
 
-            if (customRecipe instanceof EliteCraftingRecipe) {
-                if (knowledgeBook.getSubFolderPage() > 0) {
-                    event.setButton(51, "previous_recipe");
+                if (customRecipe instanceof EliteCraftingRecipe) {
+                    if (knowledgeBook.getSubFolderPage() > 0) {
+                        event.setButton(51, "previous_recipe");
+                    }
+                    event.setButton(52, "recipe_book", "back_to_list");
+                    if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
+                        event.setButton(53, "next_recipe");
+                    }
+                } else {
+                    if (knowledgeBook.getSubFolderPage() > 0) {
+                        event.setButton(48, "previous_recipe");
+                    }
+                    event.setButton(49, "recipe_book", "back_to_list");
+                    if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
+                        event.setButton(50, "next_recipe");
+                    }
                 }
-                event.setButton(52, "recipe_book", "back_to_list");
-                if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
-                    event.setButton(53, "next_recipe");
-                }
-            } else {
-                if (knowledgeBook.getSubFolderPage() > 0) {
-                    event.setButton(48, "previous_recipe");
-                }
-                event.setButton(49, "recipe_book", "back_to_list");
-                if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
-                    event.setButton(50, "next_recipe");
-                }
+                customRecipe.renderMenu(this, event);
             }
-            customRecipe.renderMenu(this, event);
         }
 
     }
