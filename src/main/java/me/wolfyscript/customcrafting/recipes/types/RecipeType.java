@@ -19,11 +19,11 @@ public enum RecipeType {
 
     WORKBENCH(CraftingRecipe.class),
     ELITE_WORKBENCH(EliteCraftingRecipe.class),
-    FURNACE(CustomFurnaceRecipe.class),
     ANVIL(CustomAnvilRecipe.class),
-    BLAST_FURNACE(CustomBlastRecipe.class),
-    SMOKER(CustomSmokerRecipe.class),
-    CAMPFIRE(CustomCampfireRecipe.class),
+    FURNACE(CustomFurnaceRecipe.class, "cooking"),
+    BLAST_FURNACE(CustomBlastRecipe.class, "cooking"),
+    SMOKER(CustomSmokerRecipe.class, "cooking"),
+    CAMPFIRE(CustomCampfireRecipe.class, "cooking"),
     STONECUTTER(CustomStonecutterRecipe.class),
     CAULDRON(CauldronRecipe.class),
     GRINDSTONE(GrindstoneRecipe.class),
@@ -31,15 +31,27 @@ public enum RecipeType {
     SMITHING(CustomSmithingRecipe.class);
 
     private final String id;
+    private final String creatorID;
     private final Class<? extends CustomRecipe> recipeClass;
 
     RecipeType(Class<? extends CustomRecipe> recipeClass) {
         this.id = this.toString().toLowerCase(Locale.ROOT);
+        this.creatorID = this.id;
+        this.recipeClass = recipeClass;
+    }
+
+    RecipeType(Class<? extends CustomRecipe> recipeClass, String creatorID) {
+        this.id = this.toString().toLowerCase(Locale.ROOT);
+        this.creatorID = creatorID;
         this.recipeClass = recipeClass;
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getCreatorID() {
+        return creatorID;
     }
 
     public Class<? extends CustomRecipe> getRecipeClass() {
