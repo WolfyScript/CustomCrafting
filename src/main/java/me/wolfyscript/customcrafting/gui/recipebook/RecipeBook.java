@@ -17,20 +17,34 @@ import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.button.Button;
 import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class RecipeBook extends ExtendedGuiWindow {
+
+    private BukkitTask tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        for (int i = 0; i < 54; i++) {
+            Button btn = getButton("ingredient.container_" + i);
+            if(btn instanceof IngredientContainerButton){
+                IngredientContainerButton cBtn = (IngredientContainerButton) btn;
+                cBtn.getTasks().forEach(runnable -> Bukkit.getScheduler().runTask(customCrafting, runnable));
+                cBtn.updateTasks();
+            }
+        }
+    }, 1, 20);
 
     public RecipeBook(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
         super("recipe_book", inventoryAPI, 54, customCrafting);

@@ -19,10 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class IngredientContainerButton extends Button {
 
@@ -30,7 +27,8 @@ public class IngredientContainerButton extends Button {
     private final HashMap<GuiHandler<?>, List<CustomItem>> variantsMap = new HashMap<>();
     private final HashMap<GuiHandler<?>, Integer> timings = new HashMap<>();
 
-    private final HashMap<GuiHandler<?>, BukkitTask> tasks = new HashMap<>();
+    private final HashMap<GuiHandler<?>, Runnable> tasks = new HashMap<>();
+    private final HashMap<GuiHandler<?>, Runnable> tasksQueue = new HashMap<>();
 
     public IngredientContainerButton(int slot, CustomCrafting customCrafting) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
@@ -55,7 +53,6 @@ public class IngredientContainerButton extends Button {
                 IngredientContainerButton button = (IngredientContainerButton) btn;
                 if (button.getVariantsMap(guiHandler) != null) {
                     if (button.getTask(guiHandler) != null) {
-                        button.getTask(guiHandler).cancel();
                         button.setTask(guiHandler, null);
                     }
                     button.setVariants(guiHandler, null);
@@ -79,7 +76,6 @@ public class IngredientContainerButton extends Button {
                     IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
                     if (button.getVariantsMap(guiHandler) != null) {
                         if (button.getTask(guiHandler) != null) {
-                            button.getTask(guiHandler).cancel();
                             button.setTask(guiHandler, null);
                         }
                         button.setVariants(guiHandler, null);
@@ -101,19 +97,15 @@ public class IngredientContainerButton extends Button {
         List<CustomItem> variants = getVariantsMap(guiHandler);
         inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(getTiming(guiHandler)).create());
         if (getTask(guiHandler) == null) {
-            setTask(guiHandler, Bukkit.getScheduler().runTaskTimerAsynchronously(guiHandler.getApi().getPlugin(), () -> {
+            setTask(guiHandler, () -> {
                 if (player != null && slot < inventory.getSize()) {
                     if (!variants.isEmpty()) {
                         int variant = getTiming(guiHandler);
-                        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(variant).create());
-                        if (++variant < variants.size()) {
-                            setTiming(guiHandler, variant);
-                        } else {
-                            setTiming(guiHandler, 0);
-                        }
+                        inventory.setItem(slot, variants.get(variant).create());
+                        setTiming(guiHandler, ++variant < variants.size() ? variant : 0);
                     }
                 }
-            }, 1, 20));
+            });
         }
     }
 
@@ -145,11 +137,19 @@ public class IngredientContainerButton extends Button {
         this.variantsMap.put(guiHandler, variants);
     }
 
-    public void setTask(GuiHandler guiHandler, BukkitTask task) {
-        tasks.put(guiHandler, task);
+    public void setTask(GuiHandler guiHandler, Runnable task) {
+        tasksQueue.put(guiHandler, task);
     }
 
-    public BukkitTask getTask(GuiHandler guiHandler) {
+    public Runnable getTask(GuiHandler guiHandler) {
         return tasks.get(guiHandler);
+    }
+
+    public Collection<Runnable> getTasks(){
+        return tasks.values();
+    }
+
+    public void updateTasks(){
+        tasks.putAll(tasksQueue);
     }
 }
