@@ -35,10 +35,10 @@ import java.util.List;
 
 public class RecipeBook extends ExtendedGuiWindow {
 
-    private BukkitTask tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+    private final BukkitTask tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
         for (int i = 0; i < 54; i++) {
             Button btn = getButton("ingredient.container_" + i);
-            if(btn instanceof IngredientContainerButton){
+            if (btn instanceof IngredientContainerButton) {
                 IngredientContainerButton cBtn = (IngredientContainerButton) btn;
                 cBtn.getTasks().forEach(runnable -> Bukkit.getScheduler().runTask(customCrafting, runnable));
                 cBtn.updateTasks();
@@ -60,8 +60,8 @@ public class RecipeBook extends ExtendedGuiWindow {
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
-            book.setRecipeItems(new ArrayList<>());
             if (book.getSubFolder() == 0) {
+                book.setRecipeItems(new ArrayList<>());
                 guiHandler.openPreviousInv();
             } else {
                 book.getResearchItems().remove(book.getSubFolder() - 1);
@@ -158,13 +158,14 @@ public class RecipeBook extends ExtendedGuiWindow {
                 recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
                 recipes.addAll(recipeHandler.getAvailableFurnaceRecipes());
 
-                List<CustomItem> recipeItems = recipes.stream().filter(customRecipe -> {
+                List<CustomItem> recipeItems = new ArrayList<>();
+                recipes.stream().filter(customRecipe -> {
                     if (switchCategory != null) {
                         List<CustomItem> items;
                         if (customRecipe instanceof CustomAnvilRecipe) {
                             items = ((CustomAnvilRecipe) customRecipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? customRecipe.getCustomResults() : ((CustomAnvilRecipe) customRecipe).hasInputLeft() ? ((CustomAnvilRecipe) customRecipe).getInputLeft() : ((CustomAnvilRecipe) customRecipe).getInputRight();
                         } else {
-                            items = new ArrayList<>(customRecipe.getCustomResults());
+                            items = customRecipe.getCustomResults();
                         }
                         if (category != null) {
                             if (!category.isValid(customRecipe) && items.stream().noneMatch(customItem -> category.isValid(customItem.getItemStack().getType()))) {
@@ -179,15 +180,9 @@ public class RecipeBook extends ExtendedGuiWindow {
                         return ((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? recipe.getCustomResults() : ((CustomAnvilRecipe) recipe).hasInputLeft() ? ((CustomAnvilRecipe) recipe).getInputLeft() : ((CustomAnvilRecipe) recipe).getInputRight();
                     }
                     return recipe.getCustomResults();
-                }).reduce((list, list2) -> {
-                    List<CustomItem> result = new ArrayList<>();
-                    list.stream().filter(input -> result.stream().noneMatch(rItem -> rItem.create().isSimilar(input.create()))).forEach(result::add);
-                    list2.stream().filter(input -> result.stream().noneMatch(rItem -> rItem.create().isSimilar(input.create()))).forEach(result::add);
-                    return result;
-                }).orElseGet(ArrayList::new);
+                }).forEach(customItems -> customItems.stream().filter(item -> recipeItems.stream().noneMatch(rItem -> rItem.create().isSimilar(item.create()))).forEach(recipeItems::add));
                 knowledgeBook.setRecipeItems(recipeItems);
             }
-
             List<CustomItem> recipeItems = knowledgeBook.getRecipeItems();
             int maxPages = recipeItems.size() / 45 + (recipeItems.size() % 45 > 0 ? 1 : 0);
             if (knowledgeBook.getPage() >= maxPages) {
@@ -222,7 +217,6 @@ public class RecipeBook extends ExtendedGuiWindow {
 
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
                 ICustomRecipe customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
-
                 if (customRecipe instanceof EliteCraftingRecipe) {
                     if (knowledgeBook.getSubFolderPage() > 0) {
                         event.setButton(51, "previous_recipe");
@@ -243,6 +237,5 @@ public class RecipeBook extends ExtendedGuiWindow {
                 customRecipe.renderMenu(this, event);
             }
         }
-
     }
 }

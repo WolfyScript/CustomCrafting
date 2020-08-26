@@ -20,6 +20,7 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class KnowledgeBook {
     private final Setting setting;
     private WorkbenchFilter workbenchFilter;
 
-    private int timerTask;
+    private BukkitTask timerTask;
     private HashMap<Integer, Integer> timerTimings;
 
     private List<ICustomRecipe> subFolderRecipes;
@@ -51,7 +52,7 @@ public class KnowledgeBook {
         this.setting = Setting.MAIN_MENU;
         this.researchItems = new ArrayList<>();
         this.recipeItems = new ArrayList<>();
-        this.timerTask = -1;
+        this.timerTask = null;
         this.timerTimings = new HashMap<>();
         this.subFolderRecipes = new ArrayList<>();
         workbenchFilter = WorkbenchFilter.ALL;
@@ -61,18 +62,17 @@ public class KnowledgeBook {
         return timerTimings;
     }
 
-    public void setTimerTask(int task) {
-        this.timerTask = task;
-    }
-
-    public int getTimerTask() {
+    public BukkitTask getTimerTask() {
         return timerTask;
     }
 
+    public void setTimerTask(BukkitTask task) {
+        this.timerTask = task;
+    }
+
     public void stopTimerTask() {
-        if (timerTask != -1) {
-            Bukkit.getScheduler().cancelTask(timerTask);
-            timerTask = -1;
+        if (timerTask != null) {
+            timerTask.cancel();
             timerTimings = new HashMap<>();
         }
     }

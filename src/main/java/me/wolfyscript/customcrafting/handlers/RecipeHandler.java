@@ -392,7 +392,7 @@ public class RecipeHandler {
     }
 
     public List<ICustomRecipe> getRecipes(RecipeType type) {
-        return customRecipes.values().stream().filter(recipe -> recipe.getRecipeType().equals(type)).collect(Collectors.toList());
+        return customRecipes.values().stream().filter(recipe -> type.equals(recipe.getRecipeType())).collect(Collectors.toList());
     }
 
     public <T extends ICustomRecipe> List<T> getRecipes(Class<T> type) {

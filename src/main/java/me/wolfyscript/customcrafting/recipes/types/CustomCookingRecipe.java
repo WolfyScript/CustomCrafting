@@ -138,9 +138,9 @@ public abstract class CustomCookingRecipe<T extends CookingRecipe<?>> extends Cu
         event.setButton(11, "recipe_book", "ingredient.container_11");
         event.setButton(24, "recipe_book", "ingredient.container_24");
 
-        if (book.getTimerTask() == -1) {
+        if (book.getTimerTask() == null) {
             AtomicInteger i = new AtomicInteger();
-            book.setTimerTask(Bukkit.getScheduler().scheduleSyncRepeatingTask(event.getWolfyUtilities().getPlugin(), () -> {
+            book.setTimerTask(Bukkit.getScheduler().runTaskTimerAsynchronously(event.getWolfyUtilities().getPlugin(), () -> {
                 if (i.get() == 0) {
                     event.setButton(23, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
                     event.setButton(22, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");

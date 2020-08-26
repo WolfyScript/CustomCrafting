@@ -152,7 +152,6 @@ public class InventoryHandler {
                 book.stopTimerTask();
                 IngredientContainerButton.resetButtons(guiHandler);
                 book.setResearchItems(new ArrayList<>());
-                book.setRecipeItems(new ArrayList<>());
                 book.setSubFolderRecipes(new ArrayList<>());
                 book.setSubFolder(0);
                 return true;

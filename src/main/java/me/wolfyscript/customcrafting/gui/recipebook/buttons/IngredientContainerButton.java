@@ -11,13 +11,11 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.Button;
 import me.wolfyscript.utilities.api.inventory.button.ButtonType;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -82,6 +80,7 @@ public class IngredientContainerButton extends Button {
                         button.setTiming(guiHandler, 0);
                     }
                 }
+                book.stopTimerTask();
                 book.setSubFolder(book.getSubFolder() + 1);
                 book.setSubFolderPage(0);
                 book.getResearchItems().add(customItem);
