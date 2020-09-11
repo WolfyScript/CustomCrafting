@@ -359,8 +359,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                         duration = Integer.parseInt(args[1]);
                         amplifier = Integer.parseInt(args[2]);
                         if (args.length == 5) {
-                            ambient = Boolean.valueOf(args[3].toLowerCase());
-                            particles = Boolean.valueOf(args[4].toLowerCase());
+                            ambient = Boolean.parseBoolean(args[3].toLowerCase());
+                            particles = Boolean.parseBoolean(args[4].toLowerCase());
                         }
                     } catch (NumberFormatException e) {
                         api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
