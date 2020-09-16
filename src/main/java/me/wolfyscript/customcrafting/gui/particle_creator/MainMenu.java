@@ -36,16 +36,16 @@ public class MainMenu extends ExtendedGuiWindow {
             }
             return true;
         })));
-        registerButton(new ActionButton("next_page", new ButtonState("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ParticleCache book = ((TestCache) guiHandler.getCustomCache()).getParticleCache();
             book.setPage(book.getPage() + 1);
             return true;
-        })));
-        registerButton(new ActionButton("previous_page", new ButtonState("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("previous_page",  PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ParticleCache book = ((TestCache) guiHandler.getCustomCache()).getParticleCache();
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
-        })));
+        }));
         for (int i = 0; i < 45; i++) {
             registerButton(new ParticleEffectButton(i));
         }

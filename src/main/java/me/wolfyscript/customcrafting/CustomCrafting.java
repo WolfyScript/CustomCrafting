@@ -165,7 +165,8 @@ public class CustomCrafting extends JavaPlugin {
                         "       TheDutchRuben       Beng701         Eli2t\n" +
                         "       르 미                 Ananass Me      Thomas Texier\n" +
                         "       Ethonion            Cameron R       Junye Zhou\n" +
-                        "       HittmanA            ANthony Helm    Gamer430"
+                        "       HittmanA            ANthony Helm    Gamer430" +
+                        "       John"
         );
         System.out.println();
         System.out.println("------------------------------------------------------------------------");
@@ -231,7 +232,7 @@ public class CustomCrafting extends JavaPlugin {
         recipeHandler.load();
         CustomItems.initiateMissingBlockEffects();
 
-        //Don't check for updates when it's a Premium+ version, because there isn't a way yet to do so!
+        //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
         if (!premiumPlus) {
             checkUpdate(null);
         }

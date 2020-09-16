@@ -27,11 +27,11 @@ public class RecipeEditor extends ExtendedGuiWindow {
             guiHandler.openPreviousInv();
             return true;
         })));
-        registerButton(new ActionButton("create_recipe", new ButtonState("create_recipe", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("create_recipe", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             changeToCreator(guiHandler);
             return true;
-        })));
-        registerButton(new ActionButton("edit_recipe", new ButtonState("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
             customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
@@ -53,8 +53,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
             });
             Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             return true;
-        })));
-        registerButton(new ActionButton("delete_recipe", new ButtonState("delete_recipe", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("delete_recipe", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
             customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
@@ -76,7 +76,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
             });
             Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             return true;
-        })));
+        }));
     }
 
     @Override

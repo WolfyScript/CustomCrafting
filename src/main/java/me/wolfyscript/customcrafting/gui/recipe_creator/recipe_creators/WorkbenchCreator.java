@@ -2,14 +2,15 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingIngredientButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
@@ -23,20 +24,15 @@ public class WorkbenchCreator extends RecipeCreator {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openCluster("none");
-            return true;
-        })));
+        super.onInit();
 
-        registerButton(new SaveButton());
+        registerButton(new ExactMetaButton());
+        registerButton(new PriorityButton());
 
         for (int i = 0; i < 10; i++) {
             registerButton(new CraftingIngredientButton(i, customCrafting));
         }
 
-        registerButton(new ExactMetaButton());
-        registerButton(new PriorityButton());
-        registerButton(new HiddenButton());
 
         registerButton(new ToggleButton("workbench.shapeless", false, new ButtonState("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapedCraftRecipe(((TestCache) guiHandler.getCustomCache()).getCraftingRecipe()));

@@ -4,28 +4,21 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CauldronContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.*;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
 
 public class CauldronCreator extends RecipeCreator {
 
@@ -35,48 +28,36 @@ public class CauldronCreator extends RecipeCreator {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openCluster("none");
-            return true;
-        })));
-        registerButton(new SaveButton());
+        super.onInit();
 
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
-        registerButton(new HiddenButton());
 
-        registerButton(new DummyButton("cauldron", new ButtonState("cauldron", Material.CAULDRON)));
+        registerButton(new DummyButton("cauldron", Material.CAULDRON));
 
         registerButton(new CauldronContainerButton(0, customCrafting));
         registerButton(new CauldronContainerButton(1, customCrafting));
-        registerButton(new ItemInputButton("handItem_container", new ButtonState("handItem_container", Material.AIR, new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-                if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
-                    Bukkit.getScheduler().runTask(customCrafting, () -> {
-                        if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                            TestCache cache = (TestCache) guiHandler.getCustomCache();
-                            cache.getItems().setItem(true, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
-                            cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronRecipe().setHandItem(items.getItem()));
-                            guiHandler.changeToInv("none", "item_editor");
-                        }
-                    });
-                    return true;
-                }
-                Bukkit.getScheduler().runTask(customCrafting, () -> ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().setHandItem(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
-                return false;
+        registerButton(new ItemInputButton("handItem_container", new ButtonState("handItem_container", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
+            if (event.getClick().equals(ClickType.SHIFT_RIGHT)) {
+                Bukkit.getScheduler().runTask(customCrafting, () -> {
+                    if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
+                        TestCache cache = (TestCache) guiHandler.getCustomCache();
+                        cache.getItems().setItem(true, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
+                        cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronRecipe().setHandItem(items.getItem()));
+                        guiHandler.changeToInv("none", "item_editor");
+                    }
+                });
+                return true;
             }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                CustomItem customItem = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getHandItem();
-                if (customItem != null) {
-                    return customItem.getItemStack();
-                }
-                return itemStack;
+            Bukkit.getScheduler().runTask(customCrafting, () -> ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().setHandItem(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
+            return false;
+        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
+            CustomItem customItem = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getHandItem();
+            if (customItem != null) {
+                return customItem.getItemStack();
             }
+            return itemStack;
         })));
-
 
         registerButton(new ToggleButton("dropItems", new ButtonState("dropItems.enabled", Material.DROPPER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().setDropItems(false);
@@ -146,58 +127,52 @@ public class CauldronCreator extends RecipeCreator {
         }));
 
         if (WolfyUtilities.hasMythicMobs()) {
-            registerButton(new ActionButton("mythicMob", new ButtonState("mythicMob", Material.WITHER_SKELETON_SKULL, new ButtonActionRender() {
-                @Override
-                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
-                    if (event.getClick().isLeftClick()) {
-                        openChat("mythicMob", guiHandler, (guiHandler1, player1, s, args) -> {
-                            if (args.length > 1) {
-                                CauldronRecipe recipe = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe();
-                                MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(args[0]);
-                                if (mythicMob != null) {
-                                    int level = 1;
+            registerButton(new ActionButton("mythicMob", new ButtonState("mythicMob", Material.WITHER_SKELETON_SKULL, (guiHandler, player, inventory, i, event) -> {
+                if (event.getClick().isLeftClick()) {
+                    openChat("mythicMob", guiHandler, (guiHandler1, player1, s, args) -> {
+                        if (args.length > 1) {
+                            CauldronRecipe recipe = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe();
+                            MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(args[0]);
+                            if (mythicMob != null) {
+                                int level = 1;
+                                try {
+                                    level = Integer.parseInt(args[1]);
+                                } catch (NumberFormatException e) {
+                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                                    return true;
+                                }
+                                double modX = recipe.getMythicMobMod().getX();
+                                double modY = recipe.getMythicMobMod().getY();
+                                double modZ = recipe.getMythicMobMod().getZ();
+                                if (args.length >= 5) {
                                     try {
-                                        level = Integer.parseInt(args[1]);
+                                        modX = Double.parseDouble(args[2]);
+                                        modY = Double.parseDouble(args[3]);
+                                        modZ = Double.parseDouble(args[4]);
                                     } catch (NumberFormatException e) {
                                         api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
                                         return true;
                                     }
-                                    double modX = recipe.getMythicMobMod().getX();
-                                    double modY = recipe.getMythicMobMod().getY();
-                                    double modZ = recipe.getMythicMobMod().getZ();
-                                    if (args.length >= 5) {
-                                        try {
-                                            modX = Double.parseDouble(args[2]);
-                                            modY = Double.parseDouble(args[3]);
-                                            modZ = Double.parseDouble(args[4]);
-                                        } catch (NumberFormatException e) {
-                                            api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
-                                            return true;
-                                        }
-                                    }
-                                    recipe.setMythicMob(args[0], level, modX, modY, modZ);
-                                    guiHandler.openCluster();
-                                    return false;
                                 }
+                                recipe.setMythicMob(args[0], level, modX, modY, modZ);
+                                guiHandler.openCluster();
+                                return false;
                             }
-                            guiHandler.openCluster();
-                            return true;
-                        });
-                    } else {
-                        ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().setMythicMob("<none>", 0, 0, 0.5, 0);
-                    }
-                    return true;
+                        }
+                        guiHandler.openCluster();
+                        return true;
+                    });
+                } else {
+                    ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().setMythicMob("<none>", 0, 0, 0.5, 0);
                 }
-
-                @Override
-                public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                    hashMap.put("%mob.name%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobName());
-                    hashMap.put("%mob.level%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobLevel());
-                    hashMap.put("%mob.modX%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobMod().getX());
-                    hashMap.put("%mob.modY%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobMod().getY());
-                    hashMap.put("%mob.modZ%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobMod().getZ());
-                    return itemStack;
-                }
+                return true;
+            }, (hashMap, guiHandler, player, itemStack, i, b) -> {
+                hashMap.put("%mob.name%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobName());
+                hashMap.put("%mob.level%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobLevel());
+                hashMap.put("%mob.modX%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobMod().getX());
+                hashMap.put("%mob.modY%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobMod().getY());
+                hashMap.put("%mob.modZ%", ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().getMythicMobMod().getZ());
+                return itemStack;
             })));
         }
     }

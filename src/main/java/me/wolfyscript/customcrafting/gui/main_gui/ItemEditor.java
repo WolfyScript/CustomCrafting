@@ -40,7 +40,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             }
             return true;
         })));
-        registerButton(new ActionButton("load_item", new ButtonState("load_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("load_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();
             cache.getChatLists().setCurrentPageItems(1);
             sendItemListExpanded(player);
@@ -80,12 +80,12 @@ public class ItemEditor extends ExtendedGuiWindow {
             });
             Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             return true;
-        })));
-        registerButton(new ActionButton("create_item", new ButtonState("create_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("create_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.changeToInv("item_creator", "main_menu");
             return true;
-        })));
-        registerButton(new ActionButton("edit_item", new ButtonState("edit_item", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("edit_item", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
             if (items.isRecipeItem()) {
                 if (items.isSaved()) {
@@ -115,8 +115,8 @@ public class ItemEditor extends ExtendedGuiWindow {
                 Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             }
             return true;
-        })));
-        registerButton(new ActionButton("delete_item", new ButtonState("delete_item", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("delete_item", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageItems(1);
             sendItemListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
@@ -129,7 +129,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             });
             Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             return true;
-        })));
+        }));
     }
 
     @Override

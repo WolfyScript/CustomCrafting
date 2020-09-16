@@ -64,8 +64,8 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
         for (int i = 0; i < 45; i++) {
             registerButton(new RecipeBookContainerButton(i, customCrafting));
         }
-        registerButton(new DummyButton("workbench.shapeless_on", new ButtonState("workbench.shapeless_on", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"))));
-        registerButton(new DummyButton("workbench.shapeless_off", new ButtonState("workbench.shapeless_off", PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"))));
+        registerButton(new DummyButton("workbench.shapeless_on", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813")));
+        registerButton(new DummyButton("workbench.shapeless_off", PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312")));
     }
 
     @Override

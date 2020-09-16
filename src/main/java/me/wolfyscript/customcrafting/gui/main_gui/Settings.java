@@ -4,10 +4,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
@@ -16,15 +14,11 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,54 +80,47 @@ public class Settings extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ActionButton("language", new ButtonState("language", Material.BOOKSHELF, new ButtonActionRender() {
-
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
-                int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
-                int nextIndex = index;
-                if (event.isLeftClick() && !event.isShiftClick()) {
-                    nextIndex = (index + 1 < availableLangs.size()) ? index + 1 : 0;
-                } else if (event.isRightClick() && !event.isShiftClick()) {
-                    nextIndex = index - 1 >= 0 ? index - 1 : availableLangs.size() - 1;
-                } else if (event.isShiftClick()) {
-                    if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
-                        api.sendPlayerMessage(player, "&eReloading Inventories and Languages!");
-                        InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
-                        LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
-                        invAPI.reset();
-                        langAPI.unregisterLanguages();
-                        customCrafting.getConfigHandler().getConfig().save();
-                        try {
-                            customCrafting.getConfigHandler().loadLang();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        new InventoryHandler(customCrafting).init();
-                        api.sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
-                        return true;
+        registerButton(new ActionButton("language", new ButtonState("language", Material.BOOKSHELF, (guiHandler, player, inventory, i, event) -> {
+            int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
+            int nextIndex = index;
+            if (event.isLeftClick() && !event.isShiftClick()) {
+                nextIndex = (index + 1 < availableLangs.size()) ? index + 1 : 0;
+            } else if (event.isRightClick() && !event.isShiftClick()) {
+                nextIndex = index - 1 >= 0 ? index - 1 : availableLangs.size() - 1;
+            } else if (event.isShiftClick()) {
+                if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
+                    api.sendPlayerMessage(player, "&eReloading Inventories and Languages!");
+                    InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
+                    LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
+                    invAPI.reset();
+                    langAPI.unregisterLanguages();
+                    customCrafting.getConfigHandler().getConfig().save();
+                    try {
+                        customCrafting.getConfigHandler().loadLang();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                    new InventoryHandler(customCrafting).init();
+                    api.sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
                     return true;
                 }
-                customCrafting.getConfigHandler().getConfig().setlanguage(availableLangs.get(nextIndex));
                 return true;
             }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean b) {
-                int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
-                List<String> displayLangs = new ArrayList<>();
-                displayLangs.addAll(availableLangs.subList(index, availableLangs.size()));
-                displayLangs.addAll(availableLangs.subList(0, index));
-                for (int i = 0; i < 5; i++) {
-                    if (i < displayLangs.size()) {
-                        hashMap.put("%lang" + i + "%", displayLangs.get(i));
-                    } else {
-                        hashMap.put("%lang" + i + "%", "");
-                    }
+            customCrafting.getConfigHandler().getConfig().setlanguage(availableLangs.get(nextIndex));
+            return true;
+        }, (hashMap, guiHandler, player, itemStack, slot, b) -> {
+            int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
+            List<String> displayLangs = new ArrayList<>();
+            displayLangs.addAll(availableLangs.subList(index, availableLangs.size()));
+            displayLangs.addAll(availableLangs.subList(0, index));
+            for (int i = 0; i < 5; i++) {
+                if (i < displayLangs.size()) {
+                    hashMap.put("%lang" + i + "%", displayLangs.get(i));
+                } else {
+                    hashMap.put("%lang" + i + "%", "");
                 }
-                return itemStack;
             }
+            return itemStack;
         })));
 
         registerButton(new ToggleButton("debug", false, new ButtonState("debug.disabled", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {

@@ -27,7 +27,7 @@ public class PatronButton extends DummyButton {
     private ItemStack head;
 
     public PatronButton(String name, String minecraftName, String uuid, @NotNull ItemStack head) {
-        super("patron." + name.replace(" ", "_").toLowerCase(Locale.ROOT), new ButtonState("", Material.PLAYER_HEAD, null));
+        super("patron." + name.replace(" ", "_").toLowerCase(Locale.ROOT), new ButtonState("", Material.PLAYER_HEAD));
         this.head = head;
         ItemMeta skullMeta = this.head.getItemMeta();
         skullMeta.setDisplayName("§6§l" + name);

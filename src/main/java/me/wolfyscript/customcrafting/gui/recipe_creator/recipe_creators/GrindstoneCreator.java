@@ -2,17 +2,17 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.GrindstoneContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 
@@ -24,22 +24,16 @@ public class GrindstoneCreator extends RecipeCreator {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openCluster("none");
-            return true;
-        })));
-
-        registerButton(new SaveButton());
+        super.onInit();
 
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
-        registerButton(new HiddenButton());
 
         registerButton(new GrindstoneContainerButton(0, customCrafting));
         registerButton(new GrindstoneContainerButton(1, customCrafting));
         registerButton(new GrindstoneContainerButton(2, customCrafting));
 
-        registerButton(new DummyButton("grindstone", new ButtonState("grindstone", Material.GRINDSTONE)));
+        registerButton(new DummyButton("grindstone", Material.GRINDSTONE));
 
         registerButton(new ChatInputButton("xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%xp%", ((TestCache) guiHandler.getCustomCache()).getGrindstoneRecipe().getXp());

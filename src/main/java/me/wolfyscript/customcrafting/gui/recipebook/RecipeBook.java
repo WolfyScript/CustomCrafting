@@ -14,23 +14,17 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.Button;
-import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class RecipeBook extends ExtendedGuiWindow {
@@ -80,50 +74,38 @@ public class RecipeBook extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ActionButton("next_recipe", new ButtonState("next_recipe", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                TestCache cache = (TestCache) guiHandler.getCustomCache();
-                KnowledgeBook book = cache.getKnowledgeBook();
-                book.stopTimerTask();
-                IngredientContainerButton.resetButtons(guiHandler);
-                int nextPage = book.getSubFolderPage() + 1;
-                if (nextPage < book.getSubFolderRecipes().size()) {
-                    book.setSubFolderPage(nextPage);
-                    book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(nextPage));
-                }
-                return true;
+        registerButton(new ActionButton("next_recipe", new ButtonState("next_recipe", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"),(guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            TestCache cache = (TestCache) guiHandler.getCustomCache();
+            KnowledgeBook book = cache.getKnowledgeBook();
+            book.stopTimerTask();
+            IngredientContainerButton.resetButtons(guiHandler);
+            int nextPage = book.getSubFolderPage() + 1;
+            if (nextPage < book.getSubFolderRecipes().size()) {
+                book.setSubFolderPage(nextPage);
+                book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(nextPage));
             }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> values, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-                values.put("%page%", book.getSubFolderPage() + 1);
-                values.put("%max_pages%", book.getSubFolderRecipes().size());
-                return itemStack;
-            }
+            return true;
+        },(values, guiHandler, player, itemStack, i, b) -> {
+            KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
+            values.put("%page%", book.getSubFolderPage() + 1);
+            values.put("%max_pages%", book.getSubFolderRecipes().size());
+            return itemStack;
         })));
-        registerButton(new ActionButton("previous_recipe", new ButtonState("previous_recipe", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                TestCache cache = (TestCache) guiHandler.getCustomCache();
-                KnowledgeBook book = cache.getKnowledgeBook();
-                book.stopTimerTask();
-                IngredientContainerButton.resetButtons(guiHandler);
-                if (book.getSubFolderPage() > 0) {
-                    book.setSubFolderPage(book.getSubFolderPage() - 1);
-                    book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(book.getSubFolderPage()));
-                }
-                return true;
+        registerButton(new ActionButton("previous_recipe", new ButtonState("previous_recipe", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            TestCache cache = (TestCache) guiHandler.getCustomCache();
+            KnowledgeBook book = cache.getKnowledgeBook();
+            book.stopTimerTask();
+            IngredientContainerButton.resetButtons(guiHandler);
+            if (book.getSubFolderPage() > 0) {
+                book.setSubFolderPage(book.getSubFolderPage() - 1);
+                book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(book.getSubFolderPage()));
             }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> values, GuiHandler guiHandler, Player player, ItemStack itemStack, int i, boolean b) {
-                KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
-                values.put("%page%", book.getSubFolderPage() + 1);
-                values.put("%max_pages%", book.getSubFolderRecipes().size());
-                return itemStack;
-            }
+            return true;
+        }, (values, guiHandler, player, itemStack, i, b) -> {
+            KnowledgeBook book = ((TestCache) guiHandler.getCustomCache()).getKnowledgeBook();
+            values.put("%page%", book.getSubFolderPage() + 1);
+            values.put("%max_pages%", book.getSubFolderRecipes().size());
+            return itemStack;
         })));
     }
 

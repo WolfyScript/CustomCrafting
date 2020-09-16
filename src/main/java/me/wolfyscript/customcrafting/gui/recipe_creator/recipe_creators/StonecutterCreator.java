@@ -2,17 +2,12 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SaveButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.StonecutterContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.event.EventHandler;
 
 public class StonecutterCreator extends RecipeCreator {
@@ -23,13 +18,7 @@ public class StonecutterCreator extends RecipeCreator {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openCluster("none");
-            return true;
-        })));
-        registerButton(new SaveButton());
-
-        registerButton(new HiddenButton());
+        super.onInit();
 
         registerButton(new StonecutterContainerButton(0, customCrafting));
         registerButton(new StonecutterContainerButton(1, customCrafting));

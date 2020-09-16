@@ -21,7 +21,6 @@ import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.*;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
@@ -33,17 +32,17 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 public class ItemCreator extends ExtendedGuiWindow {
 
@@ -63,25 +62,17 @@ public class ItemCreator extends ExtendedGuiWindow {
             }
             return true;
         })));
-        registerButton(new ItemInputButton("item_input", new ButtonState("", Material.AIR, new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent event) {
-                GuiWindow guiWindow = guiHandler.getCurrentInv();
-                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                    ItemStack item = inventory.getItem(i);
-                    CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
-                    ((TestCache) guiHandler.getCustomCache()).getItems().setItem(customItem);
-                    ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
-                }, 1);
-                return false;
-            }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                return ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemStack();
-            }
-        })));
-        registerButton(new ActionButton("save_item", new ButtonState("save_item", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ItemInputButton("item_input", new ButtonState("", Material.AIR, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            GuiWindow guiWindow = guiHandler.getCurrentInv();
+            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                ItemStack item = inventory.getItem(i);
+                CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
+                ((TestCache) guiHandler.getCustomCache()).getItems().setItem(customItem);
+                ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
+            }, 1);
+            return false;
+        }, (hashMap, guiHandler, player, itemStack, i, b) -> ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemStack())));
+        registerButton(new ActionButton("save_item", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
@@ -107,9 +98,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 });
             }
             return true;
-        })));
+        }));
 
-        registerButton(new ActionButton("apply_item", new ButtonState("apply_item", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("apply_item", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             TestCache cache = ((TestCache) guiHandler.getCustomCache());
             if (!cache.getItems().getItem().getItemStack().getType().equals(Material.AIR)) {
                 CustomItem customItem = cache.getItems().getItem();
@@ -121,51 +112,51 @@ public class ItemCreator extends ExtendedGuiWindow {
                 guiHandler.openCluster("recipe_creator");
             }
             return true;
-        })));
+        }));
 
-        registerButton(new ActionButton("page_next", new ButtonState("page_next", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("page_next", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getItems().setPage(((TestCache) guiHandler.getCustomCache()).getItems().getPage() + 1);
             return true;
-        })));
-        registerButton(new ActionButton("page_previous", new ButtonState("page_previous", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("page_previous", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             if (((TestCache) guiHandler.getCustomCache()).getItems().getPage() > 0) {
                 ((TestCache) guiHandler.getCustomCache()).getItems().setPage(((TestCache) guiHandler.getCustomCache()).getItems().getPage() - 1);
             }
             return true;
-        })));
+        }));
 
-        registerButton(new DummyButton("reference.wolfyutilites", new ButtonState("reference.wolfyutilities", Material.CRAFTING_TABLE, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        registerButton(new DummyButton("reference.wolfyutilites", Material.CRAFTING_TABLE, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%item_key%", ((WolfyUtilitiesRef) ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getApiReference()).getNamespacedKey().toString());
             return itemStack;
-        })));
-        registerButton(new DummyButton("reference.oraxen", new ButtonState("reference.oraxen", Material.DIAMOND, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        }));
+        registerButton(new DummyButton("reference.oraxen", Material.DIAMOND, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%item_key%", ((OraxenRef) ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getApiReference()).getItemID());
             return itemStack;
-        })));
-        registerButton(new DummyButton("reference.itemsadder", new ButtonState("reference.itemsadder", Material.GRASS_BLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        }));
+        registerButton(new DummyButton("reference.itemsadder", Material.GRASS_BLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%item_key%", ((ItemsAdderRef) ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getApiReference()).getItemName());
             return itemStack;
-        })));
+        }));
 
         //DISPLAY NAME SETTINGS
-        registerButton(new ActionButton("display_name.option", new ButtonState("display_name.option", Material.NAME_TAG, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("display_name.option", Material.NAME_TAG, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("display_name");
             return true;
-        })));
+        }));
         registerButton(new ChatInputButton("display_name.set", new ButtonState("display_name.set", Material.GREEN_CONCRETE), (guiHandler, player, s, strings) -> {
             ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setDisplayName(WolfyUtilities.translateColorCodes(s));
             return false;
         }));
-        registerButton(new ActionButton("display_name.remove", new ButtonState("display_name.remove", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("display_name.remove", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setDisplayName(null);
             return true;
-        })));
+        }));
 
         //ENCHANT SETTINGS
-        registerButton(new ActionButton("enchantments.option", new ButtonState("enchantments.option", Material.ENCHANTED_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("enchantments.option", Material.ENCHANTED_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("enchantments");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("enchantments.add", new ButtonState("enchantments.add", Material.ENCHANTED_BOOK), (guiHandler, player, s, args) -> {
                 if (args.length > 1) {
@@ -202,27 +193,27 @@ public class ItemCreator extends ExtendedGuiWindow {
         }
 
         //LORE SETTINGS
-        registerButton(new ActionButton("lore.option", new ButtonState("lore.option", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("lore.option", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("lore");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("lore.add", new ButtonState("lore.add", Material.WRITABLE_BOOK), (guiHandler, player, s, strings) -> {
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().addLoreLine(s.equals("&empty") ? "" : WolfyUtilities.translateColorCodes(s));
                 return false;
             }));
-            registerButton(new ActionButton("lore.remove", new ButtonState("lore.remove", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("lore.remove", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ChatUtils.sendLoreManager(player);
                 guiHandler.close();
                 return true;
-            })));
+            }));
         }
 
         //FLAGS SETTINGS
-        registerButton(new ActionButton("flags.option", new ButtonState("flags.option", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("flags.option", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("flags");
             return true;
-        })));
+        }));
         {
             registerButton(new ItemFlagsToggleButton("enchants", ItemFlag.HIDE_ENCHANTS, Material.ENCHANTING_TABLE));
             registerButton(new ItemFlagsToggleButton("attributes", ItemFlag.HIDE_ATTRIBUTES, Material.ENCHANTED_GOLDEN_APPLE));
@@ -233,10 +224,10 @@ public class ItemCreator extends ExtendedGuiWindow {
         }
 
         //attributes_modifiers SETTINGS
-        registerButton(new ActionButton("attribute.option", new ButtonState("attribute.option", Material.ENCHANTED_GOLDEN_APPLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("attribute.option", Material.ENCHANTED_GOLDEN_APPLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("attribute");
             return true;
-        })));
+        }));
         {
             registerButton(new AttributeCategoryButton("generic_max_health", Material.ENCHANTED_GOLDEN_APPLE));
             registerButton(new AttributeCategoryButton("generic_follow_range", Material.ENDER_EYE));
@@ -294,32 +285,32 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 return false;
             }));
-            registerButton(new ActionButton("attribute.save", new ButtonState("attribute.save", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("attribute.save", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
                 itemMeta.addAttributeModifier(Attribute.valueOf(((TestCache) guiHandler.getCustomCache()).getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), ((TestCache) guiHandler.getCustomCache()).getItems().getAttributeModifier());
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                 return true;
-            })));
-            registerButton(new ActionButton("attribute.delete", new ButtonState("attribute.delete", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            }));
+            registerButton(new ActionButton("attribute.delete", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ChatUtils.sendAttributeModifierManager(player);
                 guiHandler.close();
                 return true;
-            })));
+            }));
         }
 
         //PLAYER_HEAD SETTINGS
-        registerButton(new ActionButton("player_head.option", new ButtonState("player_head.option", Material.PLAYER_HEAD, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("player_head.option", Material.PLAYER_HEAD, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("player_head");
             return true;
-        })));
+        }));
         {
             registerButton(new ItemInputButton("player_head.texture.input", new ButtonState("", Material.AIR, (guiHandler, player, inventory, i, event) -> event.getCurrentItem().getType().equals(Material.PLAYER_HEAD))));
-            registerButton(new ActionButton("player_head.texture.apply", new ButtonState("player_head.texture.apply", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("player_head.texture.apply", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 if (inventory.getItem(38) != null && inventory.getItem(38).getType().equals(Material.PLAYER_HEAD)) {
                     ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setPlayerHeadValue(new ItemBuilder(inventory.getItem(38)).getPlayerHeadValue());
                 }
                 return true;
-            })));
+            }));
             registerButton(new ChatInputButton("player_head.owner", new ButtonState("player_head.owner", Material.NAME_TAG), (guiHandler, player, s, args) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
                 if (!(itemMeta instanceof SkullMeta)) {
@@ -337,10 +328,10 @@ public class ItemCreator extends ExtendedGuiWindow {
         }
 
         //POTION SETTINGS
-        registerButton(new ActionButton("potion.option", new ButtonState("potion.option", Material.POTION, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("potion.option", Material.POTION, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("potion");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("potion.add", new ButtonState("potion.add", Material.GREEN_CONCRETE), (guiHandler, player, s, args) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
@@ -410,10 +401,10 @@ public class ItemCreator extends ExtendedGuiWindow {
         })));
 
         //DAMAGE Settings
-        registerButton(new ActionButton("damage.option", new ButtonState("damage.option", Material.IRON_SWORD, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("damage.option", Material.IRON_SWORD, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("damage");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("damage.set", new ButtonState("damage.set", Material.GREEN_CONCRETE), (guiHandler, player, s, strings) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
@@ -431,21 +422,21 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 return false;
             }));
-            registerButton(new ActionButton("damage.reset", new ButtonState("damage.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("damage.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
                 if (itemMeta instanceof Damageable) {
                     ((Damageable) itemMeta).setDamage(0);
                 }
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                 return true;
-            })));
+            }));
         }
 
         //REPAIR_COST Settings
-        registerButton(new ActionButton("repair_cost.option", new ButtonState("repair_cost.option", Material.EXPERIENCE_BOTTLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("repair_cost.option", Material.EXPERIENCE_BOTTLE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("repair_cost");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("repair_cost.set", new ButtonState("repair_cost.set", Material.GREEN_CONCRETE), (guiHandler, player, s, strings) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
@@ -460,21 +451,21 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 return false;
             }));
-            registerButton(new ActionButton("repair_cost.reset", new ButtonState("repair_cost.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("repair_cost.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
                 if (itemMeta instanceof Repairable) {
                     ((Repairable) itemMeta).setRepairCost(0);
                 }
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                 return true;
-            })));
+            }));
         }
 
         //CUSTOM_MODEL_DATA Settings
-        registerButton(new ActionButton("custom_model_data.option", new ButtonState("custom_model_data.option", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("custom_model_data.option", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("custom_model_data");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("custom_model_data.set", new ButtonState("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
                 Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
@@ -496,19 +487,19 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 return false;
             }));
-            registerButton(new ActionButton("custom_model_data.reset", new ButtonState("custom_model_data.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("custom_model_data.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
                 itemMeta.setCustomModelData(null);
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                 return true;
-            })));
+            }));
         }
 
         //CONSUME SETTINGS
-        registerButton(new ActionButton("consume.option", new ButtonState("consume.option", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("consume.option", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("consume");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("consume.durability_cost.enabled", new ButtonState("consume.durability_cost.enabled", Material.DROPPER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
                 hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getDurabilityCost());
@@ -524,7 +515,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 return false;
             }));
-            registerButton(new DummyButton("consume.durability_cost.disabled", new ButtonState("consume.durability_cost.disabled", Material.DROPPER)));
+            registerButton(new DummyButton("consume.durability_cost.disabled", Material.DROPPER));
 
             registerButton(new ToggleButton("consume.consume_item", new ButtonState("consume.consume_item.enabled", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setConsumed(false);
@@ -534,36 +525,28 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return true;
             })));
 
-            registerButton(new DummyButton("consume.replacement.enabled", new ButtonState("consume.replacement.enabled", Material.GREEN_CONCRETE, null)));
-            registerButton(new DummyButton("consume.replacement.disabled", new ButtonState("consume.replacement.disabled", Material.RED_CONCRETE, null)));
+            registerButton(new DummyButton("consume.replacement.enabled", Material.GREEN_CONCRETE));
+            registerButton(new DummyButton("consume.replacement.disabled", Material.RED_CONCRETE));
 
-            registerButton(new ItemInputButton("consume.replacement", new ButtonState("", Material.AIR, new ButtonActionRender() {
-                @Override
-                public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent inventoryClickEvent) {
-                    TestCache cache = ((TestCache) guiHandler.getCustomCache());
-                    Bukkit.getScheduler().runTask(customCrafting, () -> {
-                        ItemStack replacement = inventory.getItem(slot);
-                        if (replacement != null) {
-                            cache.getItems().getItem().setReplacement(CustomItem.getReferenceByItemStack(replacement).getApiReference());
-                        } else {
-                            cache.getItems().getItem().setReplacement(null);
-                        }
-                    });
-                    return false;
-                }
-
-                @Override
-                public ItemStack render(HashMap<String, Object> values, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                    return ((TestCache) guiHandler.getCustomCache()).getItems().getItem().hasReplacement() ? new CustomItem(((TestCache) guiHandler.getCustomCache()).getItems().getItem().getReplacement()).create() : new ItemStack(Material.AIR);
-                }
-            })));
+            registerButton(new ItemInputButton("consume.replacement", new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, inventoryClickEvent) -> {
+                TestCache cache = ((TestCache) guiHandler.getCustomCache());
+                Bukkit.getScheduler().runTask(customCrafting, () -> {
+                    ItemStack replacement = inventory.getItem(slot);
+                    if (replacement != null) {
+                        cache.getItems().getItem().setReplacement(CustomItem.getReferenceByItemStack(replacement).getApiReference());
+                    } else {
+                        cache.getItems().getItem().setReplacement(null);
+                    }
+                });
+                return false;
+            }, (hashMap, guiHandler, player, itemStack, i, b) -> ((TestCache) guiHandler.getCustomCache()).getItems().getItem().hasReplacement() ? new CustomItem(((TestCache) guiHandler.getCustomCache()).getItems().getItem().getReplacement()).create() : new ItemStack(Material.AIR))));
         }
 
         //FUEL Settings
-        registerButton(new ActionButton("fuel.option", new ButtonState("fuel.option", Material.COAL, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("fuel.option", Material.COAL, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setSubSetting("fuel");
             return true;
-        })));
+        }));
         {
             registerButton(new ChatInputButton("fuel.burn_time.set", new ButtonState("fuel.burn_time.set", Material.GREEN_CONCRETE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
                 hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getBurnTime());
@@ -579,10 +562,10 @@ public class ItemCreator extends ExtendedGuiWindow {
                 }
                 return false;
             }));
-            registerButton(new ActionButton("fuel.burn_time.reset", new ButtonState("fuel.burn_time.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("fuel.burn_time.reset", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setBurnTime(0);
                 return true;
-            })));
+            }));
             registerButton(new ToggleButton("fuel.furnace", new ButtonState("fuel.furnace.enabled", Material.FURNACE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getAllowedBlocks().remove(Material.FURNACE);
                 return true;

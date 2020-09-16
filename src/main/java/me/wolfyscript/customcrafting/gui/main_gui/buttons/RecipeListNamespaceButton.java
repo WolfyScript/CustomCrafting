@@ -20,7 +20,7 @@ public class RecipeListNamespaceButton extends ActionButton {
 
 
     public RecipeListNamespaceButton(int slot, CustomCrafting customCrafting) {
-        super("recipe_list.namespace_" + slot, new ButtonState("namespace", Material.CHEST, null));
+        super("recipe_list.namespace_" + slot, new ButtonState("namespace", Material.CHEST));
         this.customCrafting = customCrafting;
     }
 

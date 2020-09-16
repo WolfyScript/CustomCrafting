@@ -52,30 +52,33 @@ public class PatronsMenu extends ExtendedGuiWindow {
         registerButton(new PatronButton("HittmanA"));
         registerButton(new PatronButton("ANthony Helm"));
         registerButton(new PatronButton("Gamer430"));
+        registerButton(new PatronButton("John"));
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
         event.setButton(0, "back");
 
-        event.setButton(10, "patron.apprehentice");
-        event.setButton(12, "patron.alex");
-        event.setButton(14, "patron.vincent_deniau");
-        event.setButton(16, "patron.nat_r");
-        event.setButton(18, "patron.gizmonster");
-        event.setButton(20, "patron.nick_coburn");
-        event.setButton(22, "patron.thedutchruben");
-        event.setButton(24, "patron.beng701");
-        event.setButton(26, "patron.eli2t");
-        event.setButton(28, "patron.르_미");
-        event.setButton(30, "patron.ananass_me");
-        event.setButton(32, "patron.thomas_texier");
-        event.setButton(34, "patron.ethonion");
-        event.setButton(36, "patron.cameron_r");
-        event.setButton(38, "patron.junye_zhou");
-        event.setButton(40, "patron.hittmana");
-        event.setButton(42, "patron.anthony_helm");
-        event.setButton(44, "patron.gamer430");
+        event.setButton(9, "patron.apprehentice");
+        event.setButton(11, "patron.alex");
+        event.setButton(13, "patron.vincent_deniau");
+        event.setButton(15, "patron.nat_r");
+        event.setButton(17, "patron.gizmonster");
+
+        event.setButton(18, "patron.nick_coburn");
+        event.setButton(20, "patron.thedutchruben");
+        event.setButton(22, "patron.beng701");
+        event.setButton(24, "patron.eli2t");
+        event.setButton(26, "patron.르_미");
+        event.setButton(28, "patron.ananass_me");
+        event.setButton(30, "patron.thomas_texier");
+        event.setButton(32, "patron.ethonion");
+        event.setButton(34, "patron.cameron_r");
+        event.setButton(36, "patron.junye_zhou");
+        event.setButton(38, "patron.hittmana");
+        event.setButton(40, "patron.anthony_helm");
+        event.setButton(42, "patron.gamer430");
+        event.setButton(44, "patron.john");
     }
 
 }

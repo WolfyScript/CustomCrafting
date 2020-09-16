@@ -11,7 +11,6 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
@@ -42,10 +41,10 @@ public class MainMenu extends ExtendedGuiWindow {
         registerButton(new RecipeTypeButton(RecipeType.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new RecipeTypeButton(RecipeType.CAULDRON, Material.CAULDRON));
         if (WolfyUtilities.hasNetherUpdate()) {
-            registerButton(new DummyButton("smithing", new ButtonState("smithing", Material.SMITHING_TABLE)));
+            registerButton(new DummyButton("smithing", Material.SMITHING_TABLE));
         }
 
-        registerButton(new ActionButton("item_editor", new ButtonState("item_editor", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("item_editor", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
@@ -53,16 +52,16 @@ public class MainMenu extends ExtendedGuiWindow {
             cache.getItems().setNamespacedKey(null);
             guiHandler.changeToInv("item_editor");
             return true;
-        })));
-        registerButton(new ActionButton("recipe_list", new ButtonState("recipe_list", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("recipe_list", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.changeToInv("recipe_list");
             ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.RECIPE_LIST);
             return true;
-        })));
-        registerButton(new ActionButton("settings", new ButtonState("settings", PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("settings", PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.changeToInv("settings");
             return true;
-        })));
+        }));
     }
 
     @Override

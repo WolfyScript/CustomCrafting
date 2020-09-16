@@ -2,26 +2,20 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.AnvilContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonActionRender;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
 
 public class AnvilCreator extends RecipeCreator {
 
@@ -31,53 +25,36 @@ public class AnvilCreator extends RecipeCreator {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openCluster("none");
-            return true;
-        })));
-        registerButton(new SaveButton());
+        super.onInit();
 
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
-        registerButton(new HiddenButton());
 
         registerButton(new AnvilContainerButton(0, customCrafting));
         registerButton(new AnvilContainerButton(1, customCrafting));
         registerButton(new AnvilContainerButton(2, customCrafting));
 
-        registerButton(new ActionButton("mode", new ButtonState("mode", Material.REDSTONE, new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                CustomAnvilRecipe.Mode mode = ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getMode();
-                int id = mode.getId();
-                if (id < 2) {
-                    id++;
-                } else {
-                    id = 0;
-                }
-                ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setMode(CustomAnvilRecipe.Mode.getById(id));
-                return true;
+        registerButton(new ActionButton("mode", new ButtonState("mode", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            CustomAnvilRecipe.Mode mode = ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getMode();
+            int id = mode.getId();
+            if (id < 2) {
+                id++;
+            } else {
+                id = 0;
             }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                hashMap.put("%MODE%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getMode().name());
-                return itemStack;
-            }
+            ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setMode(CustomAnvilRecipe.Mode.getById(id));
+            return true;
+        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
+            hashMap.put("%MODE%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getMode().name());
+            return itemStack;
         })));
-        registerButton(new ActionButton("repair_mode", new ButtonState("repair_mode", Material.GLOWSTONE_DUST, new ButtonActionRender() {
-            @Override
-            public boolean run(GuiHandler guiHandler, Player player, Inventory inventory, int i, InventoryClickEvent inventoryClickEvent) {
-                int index = CustomAnvilRecipe.RepairCostMode.getModes().indexOf(((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getRepairCostMode()) + 1;
-                ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setRepairCostMode(CustomAnvilRecipe.RepairCostMode.getModes().get(index >= CustomAnvilRecipe.RepairCostMode.getModes().size() ? 0 : index));
-                return true;
-            }
-
-            @Override
-            public ItemStack render(HashMap<String, Object> hashMap, GuiHandler guiHandler, Player player, ItemStack itemStack, int slot, boolean help) {
-                hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getRepairCostMode().name());
-                return itemStack;
-            }
+        registerButton(new ActionButton("repair_mode", new ButtonState("repair_mode", Material.GLOWSTONE_DUST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            int index = CustomAnvilRecipe.RepairCostMode.getModes().indexOf(((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getRepairCostMode()) + 1;
+            ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setRepairCostMode(CustomAnvilRecipe.RepairCostMode.getModes().get(index >= CustomAnvilRecipe.RepairCostMode.getModes().size() ? 0 : index));
+            return true;
+        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
+            hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getRepairCostMode().name());
+            return itemStack;
         })));
         registerButton(new ToggleButton("repair_apply", new ButtonState("repair_apply.true", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setApplyRepairCost(false);
