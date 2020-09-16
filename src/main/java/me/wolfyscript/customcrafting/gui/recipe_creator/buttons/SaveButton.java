@@ -43,18 +43,17 @@ public class SaveButton extends ActionButton {
                             } catch (Exception ex) {
                                 api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", recipe.getNamespacedKey().toString()});
                                 ex.printStackTrace();
-                                return false;
+                                return true;
                             }
                             Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openCluster("none"));
-                            return false;
                         }
-                        return false;
+                        return true;
                     });
                 } else {
                     api.sendPlayerMessage(player, "recipe_creator", "save.empty");
                 }
             }
-            return false;
+            return true;
         }));
     }
 }

@@ -219,6 +219,6 @@ public class CauldronCreator extends RecipeCreator {
     @Override
     public boolean validToSave(TestCache cache) {
         CauldronRecipe config = cache.getCauldronRecipe();
-        return !InventoryUtils.isCustomItemsListEmpty(config.getIngredients()) && !InventoryUtils.isCustomItemsListEmpty(config.getCustomResults()) && (!WolfyUtilities.hasMythicMobs() || !config.getMythicMobName().isEmpty());
+        return !InventoryUtils.isCustomItemsListEmpty(config.getIngredients()) && !InventoryUtils.isCustomItemsListEmpty(config.getCustomResults());
     }
 }
