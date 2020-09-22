@@ -19,13 +19,13 @@ public class CookingContainerButton extends ItemInputButton {
     public CookingContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("cooking.container_" + inputSlot, new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
             TestCache cache = ((TestCache) guiHandler.getCustomCache());
-            CustomCookingRecipe<?> cooking = cache.getCookingRecipe();
+            CustomCookingRecipe<?, ?> cooking = cache.getCookingRecipe();
             if (event.isRightClick() && event.isShiftClick()) {
                 List<CustomItem> variants;
                 if(inputSlot == 0){
                     variants = cooking.getSource();
                 }else{
-                    variants = cooking.getCustomResults();
+                    variants = cooking.getResults();
                 }
                 cache.getVariantsData().setSlot(inputSlot);
                 cache.getVariantsData().setVariants(variants);
@@ -43,11 +43,11 @@ public class CookingContainerButton extends ItemInputButton {
             }
             return false;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            CustomCookingRecipe<?> cooking = ((TestCache) guiHandler.getCustomCache()).getCookingRecipe();
+            CustomCookingRecipe<?, ?> cooking = ((TestCache) guiHandler.getCustomCache()).getCookingRecipe();
             if (inputSlot == 0) {
                 return !InventoryUtils.isCustomItemsListEmpty(cooking.getSource()) ? cooking.getSource().get(0).create() : new ItemStack(Material.AIR);
             } else if (inputSlot == 1) {
-                return !ItemUtils.isAirOrNull(cooking.getCustomResult()) ? cooking.getCustomResult().create() : new ItemStack(Material.AIR);
+                return !ItemUtils.isAirOrNull(cooking.getResult()) ? cooking.getResult().create() : new ItemStack(Material.AIR);
             }
             return itemStack;
         }));

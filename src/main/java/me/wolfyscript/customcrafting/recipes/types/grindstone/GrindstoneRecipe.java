@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GrindstoneRecipe extends CustomRecipe {
+public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
 
     private List<CustomItem> inputTop, inputBottom, result;
     private int xp;
@@ -67,19 +67,19 @@ public class GrindstoneRecipe extends CustomRecipe {
 
     public GrindstoneRecipe(GrindstoneRecipe grindstoneRecipe){
         super(grindstoneRecipe);
-        this.result = grindstoneRecipe.getCustomResults();
+        this.result = grindstoneRecipe.getResults();
         this.inputBottom = grindstoneRecipe.getInputBottom();
         this.inputTop = grindstoneRecipe.getInputTop();
         this.xp = grindstoneRecipe.getXp();
     }
 
     @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<GrindstoneRecipe> getRecipeType() {
         return RecipeType.GRINDSTONE;
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
+    public List<CustomItem> getResults() {
         return new ArrayList<>(result);
     }
 

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CauldronRecipe extends CustomRecipe {
+public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
 
     private int cookingTime;
     private int waterLevel;
@@ -89,7 +89,7 @@ public class CauldronRecipe extends CustomRecipe {
 
     public CauldronRecipe(CauldronRecipe cauldronRecipe) {
         super(cauldronRecipe);
-        this.result = cauldronRecipe.getCustomResults();
+        this.result = cauldronRecipe.getResults();
         this.ingredients = cauldronRecipe.getIngredients();
         this.dropItems = cauldronRecipe.dropItems();
         this.xp = cauldronRecipe.getXp();
@@ -208,12 +208,12 @@ public class CauldronRecipe extends CustomRecipe {
     }
 
     @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<CauldronRecipe> getRecipeType() {
         return RecipeType.CAULDRON;
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
+    public List<CustomItem> getResults() {
         return new ArrayList<>(this.result);
     }
 
@@ -241,7 +241,7 @@ public class CauldronRecipe extends CustomRecipe {
         gen.writeBooleanField("fire", needsFire);
         {
             gen.writeArrayFieldStart("result");
-            for (CustomItem customItem : getCustomResults()) {
+            for (CustomItem customItem : getResults()) {
                 gen.writeObject(customItem.getApiReference());
             }
             gen.writeEndArray();

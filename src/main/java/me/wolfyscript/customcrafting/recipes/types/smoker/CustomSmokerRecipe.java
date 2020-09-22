@@ -10,7 +10,7 @@ import org.bukkit.inventory.SmokingRecipe;
 
 import java.util.stream.Collectors;
 
-public class CustomSmokerRecipe extends CustomCookingRecipe<SmokingRecipe> {
+public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, SmokingRecipe> {
 
     public CustomSmokerRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -25,7 +25,7 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<SmokingRecipe> {
     }
 
     @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<CustomSmokerRecipe> getRecipeType() {
         return RecipeType.SMOKER;
     }
 
@@ -36,6 +36,7 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<SmokingRecipe> {
 
     @Override
     public SmokingRecipe getVanillaRecipe() {
-        return new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())), getExp(), getCookingTime());
+        RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
+        return new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().create(), choice, getExp(), getCookingTime());
     }
 }

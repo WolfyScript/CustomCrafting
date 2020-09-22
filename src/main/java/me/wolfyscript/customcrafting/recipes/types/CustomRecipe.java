@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class CustomRecipe implements ICustomRecipe {
+public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustomRecipe<C> {
 
     protected NamespacedKey namespacedKey;
     protected boolean exactMeta, hidden;
@@ -88,6 +88,11 @@ public abstract class CustomRecipe implements ICustomRecipe {
     }
 
     @Override
+    public boolean hasNamespacedKey() {
+        return namespacedKey != null;
+    }
+
+    @Override
     public NamespacedKey getNamespacedKey() {
         return namespacedKey;
     }
@@ -148,7 +153,7 @@ public abstract class CustomRecipe implements ICustomRecipe {
     }
 
     @Override
-    abstract public ICustomRecipe clone();
+    abstract public C clone();
 
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {

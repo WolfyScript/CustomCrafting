@@ -8,13 +8,12 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
-import org.bukkit.event.EventHandler;
 
 public class EliteWorkbenchCreator extends RecipeCreator {
 
@@ -64,48 +63,50 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         })));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            event.setButton(6, "back");
-            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
-            EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
+    @Override
+    public void onUpdateAsync(GuiUpdate update) {
+        update.setButton(6, "back");
+        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
 
-            ((ToggleButton) event.getGuiWindow().getButton("workbench.shapeless")).setState(event.getGuiHandler(), workbench.isShapeless());
-            ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), workbench.isExactMeta());
-            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), workbench.isHidden());
+        ((ToggleButton) update.getGuiWindow().getButton("workbench.shapeless")).setState(update.getGuiHandler(), workbench.isShapeless());
+        ((ToggleButton) update.getGuiWindow().getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
+        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
 
-            if(!workbench.isShapeless()){
-                ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(event.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorHorizontal());
-                ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorVertical")).setState(event.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorVertical());
-                ((ToggleButton) event.getGuiWindow().getButton("workbench.mirrorRotation")).setState(event.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorRotation());
+        if (!workbench.isShapeless()) {
+            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorHorizontal());
+            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorVertical")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorVertical());
+            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorRotation")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorRotation());
 
-                if (((ShapedEliteCraftRecipe) workbench).mirrorHorizontal() && ((ShapedEliteCraftRecipe) workbench).mirrorVertical()) {
-                    event.setButton(33, "workbench.mirrorRotation");
-                }
-                event.setButton(42, "workbench.mirrorHorizontal");
-                event.setButton(43, "workbench.mirrorVertical");
+            if (((ShapedEliteCraftRecipe) workbench).mirrorHorizontal() && ((ShapedEliteCraftRecipe) workbench).mirrorVertical()) {
+                update.setButton(33, "workbench.mirrorRotation");
             }
-
-            int slot;
-            for (int i = 0; i < 36; i++) {
-                slot = i + (i / 6) * 3;
-                event.setButton(slot, "crafting.container_" + i);
-            }
-            event.setButton(25, "crafting.container_36");
-            event.setButton(24, "workbench.shapeless");
-
-            event.setButton(35, "hidden");
-            event.setButton(44, "recipe_creator", "conditions");
-            event.setButton(51, "exact_meta");
-            event.setButton(52, "priority");
-            event.setButton(53, "save");
+            update.setButton(34, "workbench.mirrorHorizontal");
+            update.setButton(35, "workbench.mirrorVertical");
         }
+
+        int slot;
+        for (int i = 0; i < 36; i++) {
+            slot = i + (i / 6) * 3;
+            update.setButton(slot, "crafting.container_" + i);
+        }
+        update.setButton(25, "crafting.container_36");
+        update.setButton(24, "workbench.shapeless");
+
+        update.setButton(42, "hidden");
+        update.setButton(43, "recipe_creator", "conditions");
+        update.setButton(44, "exact_meta");
+        update.setButton(51, "priority");
+
+        if(workbench.hasNamespacedKey()){
+            update.setButton(52, "save");
+        }
+        update.setButton(53, "save_as");
     }
 
     @Override
     public boolean validToSave(TestCache cache) {
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
-        return workbench.getIngredients() != null && !InventoryUtils.isCustomItemsListEmpty(workbench.getCustomResults());
+        return workbench.getIngredients() != null && !InventoryUtils.isCustomItemsListEmpty(workbench.getResults());
     }
 }

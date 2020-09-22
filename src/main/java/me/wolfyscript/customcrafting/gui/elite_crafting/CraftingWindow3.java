@@ -31,8 +31,8 @@ public class CraftingWindow3 extends ExtendedGuiWindow {
         }
         registerButton(new ResultSlotButton(customCrafting));
 
-        registerButton(new DummyButton("texture_dark", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9013, null)));
-        registerButton(new DummyButton("texture_light", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9003, null)));
+        registerButton(new DummyButton("texture_dark", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9013)));
+        registerButton(new DummyButton("texture_light", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9003)));
     }
 
     @Override

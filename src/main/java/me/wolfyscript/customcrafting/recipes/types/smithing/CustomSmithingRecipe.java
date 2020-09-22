@@ -2,8 +2,6 @@ package me.wolfyscript.customcrafting.recipes.types.smithing;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
@@ -11,15 +9,16 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.SmithingRecipe;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanillaRecipe<SmithingRecipe> {
+public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
 
     private List<CustomItem> base;
     private List<CustomItem> addition;
@@ -41,25 +40,18 @@ public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanilla
 
     public CustomSmithingRecipe(CustomSmithingRecipe customSmithingRecipe) {
         super(customSmithingRecipe);
-        this.result = customSmithingRecipe.getCustomResults();
+        this.result = customSmithingRecipe.getResults();
         this.base = customSmithingRecipe.getBase();
         this.addition = customSmithingRecipe.getAddition();
     }
 
     @Override
-    public SmithingRecipe getVanillaRecipe() {
-        RecipeChoice.ExactChoice baseItems = new RecipeChoice.ExactChoice(base.stream().map(CustomItem::create).collect(Collectors.toList()));
-        RecipeChoice.ExactChoice additionItems = new RecipeChoice.ExactChoice(addition.stream().map(CustomItem::create).collect(Collectors.toList()));
-        return new SmithingRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()), getCustomResult().create(), baseItems, additionItems);
-    }
-
-    @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<CustomSmithingRecipe> getRecipeType() {
         return RecipeType.SMITHING;
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
+    public List<CustomItem> getResults() {
         return new ArrayList<>(result);
     }
 
@@ -85,12 +77,49 @@ public class CustomSmithingRecipe extends CustomRecipe implements ICustomVanilla
     }
 
     @Override
-    public ICustomRecipe clone() {
+    public CustomSmithingRecipe clone() {
         return new CustomSmithingRecipe(this);
     }
 
     @Override
     public void renderMenu(GuiWindow guiWindow, GuiUpdate event) {
+        event.setButton(0, "back");
+        event.setButton(10, "recipe_book", "ingredient.container_10");
+        event.setButton(13, "recipe_book", "ingredient.container_13");
+        event.setButton(19, "none", "glass_green");
+        event.setButton(22, "none", "glass_green");
+        event.setButton(28, "none", "glass_green");
+        event.setButton(29, "none", "glass_green");
+        event.setButton(30, "none", "glass_green");
+        event.setButton(32, "none", "glass_green");
+        event.setButton(33, "none", "glass_green");
 
+        event.setButton(34, "recipe_book", "ingredient.container_34");
+    }
+
+    @Override
+    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
+        super.writeToJson(gen, serializerProvider);
+        {
+            gen.writeArrayFieldStart("result");
+            for (CustomItem customItem : result) {
+                gen.writeObject(customItem.getApiReference());
+            }
+            gen.writeEndArray();
+        }
+        {
+            gen.writeArrayFieldStart("base");
+            for (CustomItem customItem : base) {
+                gen.writeObject(customItem.getApiReference());
+            }
+            gen.writeEndArray();
+        }
+        {
+            gen.writeArrayFieldStart("addition");
+            for (CustomItem customItem : addition) {
+                gen.writeObject(customItem.getApiReference());
+            }
+            gen.writeEndArray();
+        }
     }
 }

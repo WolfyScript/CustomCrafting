@@ -22,26 +22,38 @@ import java.io.IOException;
 import java.util.List;
 
 @JsonSerialize(using = ICustomRecipe.Serializer.class)
-public interface ICustomRecipe {
+public interface ICustomRecipe<C extends ICustomRecipe<?>> {
 
     WolfyUtilities getAPI();
+
+    boolean hasNamespacedKey();
 
     NamespacedKey getNamespacedKey();
 
     void setNamespacedKey(NamespacedKey namespacedKey);
 
-    RecipeType getRecipeType();
+    RecipeType<C> getRecipeType();
 
     String getGroup();
 
     void setGroup(String group);
 
-    @Nullable
+    @Deprecated
     default CustomItem getCustomResult() {
-        return getCustomResults().size() > 0 ? getCustomResults().get(0) : null;
+        return getResult();
     }
 
-    List<CustomItem> getCustomResults();
+    @Deprecated
+    default List<CustomItem> getCustomResults(){
+        return getResults();
+    }
+
+    @Nullable
+    default CustomItem getResult() {
+        return getResults().size() > 0 ? getResults().get(0) : null;
+    }
+
+    List<CustomItem> getResults();
 
     void setResult(List<CustomItem> result);
 
@@ -128,7 +140,7 @@ public interface ICustomRecipe {
         return delete(null);
     }
 
-    ICustomRecipe clone();
+    C clone();
 
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 

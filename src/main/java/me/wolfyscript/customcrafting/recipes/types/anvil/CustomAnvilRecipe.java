@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CustomAnvilRecipe extends CustomRecipe {
+public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     private boolean blockRepair;
     private boolean blockRename;
@@ -109,17 +109,12 @@ public class CustomAnvilRecipe extends CustomRecipe {
         gen.writeEndArray();
     }
 
-    @Override
-    public NamespacedKey getNamespacedKey() {
-        return namespacedKey;
-    }
-
     public int getDurability() {
         return durability;
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
+    public List<CustomItem> getResults() {
         return new ArrayList<>(result);
     }
 
@@ -221,7 +216,7 @@ public class CustomAnvilRecipe extends CustomRecipe {
     }
 
     @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<CustomAnvilRecipe> getRecipeType() {
         return RecipeType.ANVIL;
     }
 

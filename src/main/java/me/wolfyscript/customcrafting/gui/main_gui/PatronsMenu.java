@@ -24,7 +24,7 @@ public class PatronsMenu extends ExtendedGuiWindow {
             guiHandler.openPreviousInv();
             return true;
         })));
-        registerButton(new ActionButton("patreon", new ButtonState("patreon", PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("patreon", PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             api.openBook(player, false,
                     new ClickData[]{
                             new ClickData("&8[&cBecome a Patron&8]\n\n\n\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")),
@@ -32,7 +32,7 @@ public class PatronsMenu extends ExtendedGuiWindow {
                     }
             );
             return true;
-        })));
+        }));
         registerButton(new PatronButton("Apprehentice", "Foxtrot200", "db61eab0-7fb1-48db-986f-125e73787976"));
         registerButton(new PatronButton("Alex", "LeftAlex", "af1ef7e4-acc3-44a1-8323-8f50b92be2c9"));
         registerButton(new PatronButton("Vincent Deniau", "VinceTheWolf", "a307c2b3-463a-4db6-8a6a-07419909af72"));

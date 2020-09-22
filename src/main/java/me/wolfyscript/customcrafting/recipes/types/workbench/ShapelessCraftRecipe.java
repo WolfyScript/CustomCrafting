@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ShapelessCraftRecipe extends CraftingRecipe implements IShapelessCraftingRecipe {
+public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements IShapelessCraftingRecipe, ICustomRecipe<AdvancedCraftingRecipe> {
 
     public ShapelessCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -26,13 +27,13 @@ public class ShapelessCraftRecipe extends CraftingRecipe implements IShapelessCr
         this.shapeless = true;
     }
 
-    public ShapelessCraftRecipe(CraftingRecipe craftingRecipe){
+    public ShapelessCraftRecipe(AdvancedCraftingRecipe craftingRecipe){
         super(craftingRecipe);
         this.shapeless = true;
     }
 
     public ShapelessCraftRecipe(ShapelessCraftRecipe craftingRecipe){
-        this((CraftingRecipe) craftingRecipe);
+        this((AdvancedCraftingRecipe) craftingRecipe);
     }
 
     @Override

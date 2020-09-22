@@ -12,7 +12,6 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
@@ -41,7 +40,7 @@ public class MainMenu extends ExtendedGuiWindow {
         registerButton(new RecipeTypeButton(RecipeType.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new RecipeTypeButton(RecipeType.CAULDRON, Material.CAULDRON));
         if (WolfyUtilities.hasNetherUpdate()) {
-            registerButton(new DummyButton("smithing", Material.SMITHING_TABLE));
+            registerButton(new RecipeTypeButton(RecipeType.SMITHING, Material.SMITHING_TABLE));
         }
 
         registerButton(new ActionButton("item_editor", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {

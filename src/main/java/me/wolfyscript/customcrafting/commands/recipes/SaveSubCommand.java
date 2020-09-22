@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.commands.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
@@ -49,10 +50,8 @@ public class SaveSubCommand extends AbstractSubCommand {
     @Override
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
-        List<String> results = new ArrayList<>();
         List<String> recipes = customCrafting.getRecipeHandler().getVanillaRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> ((Keyed) recipe).getKey().toString()).collect(Collectors.toList());
-        recipes.addAll(customCrafting.getRecipeHandler().getAdvancedCraftingRecipes().stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
-        StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
-        return results;
+        recipes.addAll(customCrafting.getRecipeHandler().getRecipes(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
+        return StringUtil.copyPartialMatches(args[args.length - 1], recipes, new ArrayList<>());
     }
 }

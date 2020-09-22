@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

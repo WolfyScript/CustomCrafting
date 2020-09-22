@@ -28,7 +28,7 @@ public class CauldronContainerButton extends ItemInputButton {
                     cache.getVariantsData().setSlot(inputSlot);
                     cache.getVariantsData().setVariants(recipe.getIngredients());
                     guiHandler.changeToInv("variants");
-                } else if (inputSlot == 1 && recipe.getCustomResults() != null) {
+                } else if (inputSlot == 1 && recipe.getResults() != null) {
                     if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                         cache.getItems().setItem(true, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
                         cache.setApplyItem(APPLY_ITEM);
@@ -55,7 +55,7 @@ public class CauldronContainerButton extends ItemInputButton {
             return false;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
             CauldronRecipe recipe = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe();
-            List<CustomItem> items = inputSlot == 0 ? recipe.getIngredients() : recipe.getCustomResults();
+            List<CustomItem> items = inputSlot == 0 ? recipe.getIngredients() : recipe.getResults();
             return !InventoryUtils.isCustomItemsListEmpty(items) ? items.get(0).create() : new ItemStack(Material.AIR);
         }));
     }

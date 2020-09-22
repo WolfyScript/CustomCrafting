@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.AnvilContainerBu
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
@@ -14,7 +14,6 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 
 public class AnvilCreator extends RecipeCreator {
@@ -34,7 +33,7 @@ public class AnvilCreator extends RecipeCreator {
         registerButton(new AnvilContainerButton(1, customCrafting));
         registerButton(new AnvilContainerButton(2, customCrafting));
 
-        registerButton(new ActionButton("mode", new ButtonState("mode", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("mode", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             CustomAnvilRecipe.Mode mode = ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getMode();
             int id = mode.getId();
             if (id < 2) {
@@ -47,15 +46,15 @@ public class AnvilCreator extends RecipeCreator {
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%MODE%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getMode().name());
             return itemStack;
-        })));
-        registerButton(new ActionButton("repair_mode", new ButtonState("repair_mode", Material.GLOWSTONE_DUST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }));
+        registerButton(new ActionButton("repair_mode", Material.GLOWSTONE_DUST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             int index = CustomAnvilRecipe.RepairCostMode.getModes().indexOf(((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getRepairCostMode()) + 1;
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setRepairCostMode(CustomAnvilRecipe.RepairCostMode.getModes().get(index >= CustomAnvilRecipe.RepairCostMode.getModes().size() ? 0 : index));
             return true;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getRepairCostMode().name());
             return itemStack;
-        })));
+        }));
         registerButton(new ToggleButton("repair_apply", new ButtonState("repair_apply.true", Material.GREEN_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setApplyRepairCost(false);
             return true;
@@ -84,10 +83,10 @@ public class AnvilCreator extends RecipeCreator {
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setBlockEnchant(true);
             return true;
         })));
-        registerButton(new ChatInputButton("repair_cost", new ButtonState("repair_cost", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        registerButton(new ChatInputButton("repair_cost", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getRepairCost());
             return itemStack;
-        }), (guiHandler, player, s, args) -> {
+        }, (guiHandler, player, s, args) -> {
             int repairCost;
             try {
                 repairCost = Math.max(1, Integer.parseInt(args[0]));
@@ -98,10 +97,10 @@ public class AnvilCreator extends RecipeCreator {
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setRepairCost(repairCost);
             return false;
         }));
-        registerButton(new ChatInputButton("durability", new ButtonState("durability", Material.IRON_SWORD, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        registerButton(new ChatInputButton("durability", Material.IRON_SWORD, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%VAR%", ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().getDurability());
             return itemStack;
-        }), (guiHandler, player, s, args) -> {
+        }, (guiHandler, player, s, args) -> {
             int durability;
             try {
                 durability = Integer.parseInt(args[0]);
@@ -114,36 +113,38 @@ public class AnvilCreator extends RecipeCreator {
         }));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
-            event.setButton(0, "back");
-            CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
-            ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());
-            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), anvilRecipe.isHidden());
-            event.setButton(1, "hidden");
-            event.setButton(3, "recipe_creator", "conditions");
-            event.setButton(5, "priority");
-            event.setButton(7, "exact_meta");
-            event.setButton(19, "container_0");
-            event.setButton(21, "container_1");
-            if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                event.setButton(25, "container_2");
-            } else if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-                event.setButton(25, "durability");
-            } else {
-                event.setItem(25, new ItemStack(Material.BARRIER));
-            }
-            event.setButton(23, "mode");
-            event.setButton(36, "block_enchant");
-            event.setButton(37, "block_rename");
-            event.setButton(38, "block_repair");
-            event.setButton(40, "repair_apply");
-            event.setButton(41, "repair_cost");
-            event.setButton(42, "repair_mode");
-            event.setButton(44, "save");
+    @Override
+    public void onUpdateAsync(GuiUpdate event) {
+        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        event.setButton(0, "back");
+        CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
+        ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());
+        ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), anvilRecipe.isHidden());
+        event.setButton(1, "hidden");
+        event.setButton(3, "recipe_creator", "conditions");
+        event.setButton(5, "priority");
+        event.setButton(7, "exact_meta");
+        event.setButton(19, "container_0");
+        event.setButton(21, "container_1");
+        if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+            event.setButton(25, "container_2");
+        } else if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
+            event.setButton(25, "durability");
+        } else {
+            event.setItem(25, new ItemStack(Material.BARRIER));
         }
+        event.setButton(23, "mode");
+        event.setButton(36, "block_enchant");
+        event.setButton(37, "block_rename");
+        event.setButton(38, "block_repair");
+        event.setButton(40, "repair_apply");
+        event.setButton(41, "repair_cost");
+        event.setButton(42, "repair_mode");
+
+        if(anvilRecipe.hasNamespacedKey()){
+            event.setButton(43, "save");
+        }
+        event.setButton(44, "save_as");
     }
 
     @Override
@@ -151,7 +152,6 @@ public class AnvilCreator extends RecipeCreator {
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
         if (InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInputLeft()) && InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInputRight()))
             return false;
-        System.out.println("Not empty!");
-        return !anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT) || anvilRecipe.getCustomResults() != null && !anvilRecipe.getCustomResults().isEmpty();
+        return !anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT) || anvilRecipe.getResults() != null && !anvilRecipe.getResults().isEmpty();
     }
 }

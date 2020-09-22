@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
@@ -14,13 +14,15 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class AnvilContainerButton extends ItemInputButton {
+public class SmithingContainerButton extends ItemInputButton {
 
-    public AnvilContainerButton(int inputSlot, CustomCrafting customCrafting) {
+    public SmithingContainerButton(int inputSlot, CustomCrafting customCrafting) {
         super("container_" + inputSlot, new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
             TestCache cache = (TestCache) guiHandler.getCustomCache();
-            CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
-            List<CustomItem> items = inputSlot == 2 ? anvilRecipe.getResults() : anvilRecipe.getInput(inputSlot);
+            CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
+
+            List<CustomItem> items = inputSlot == 2 ? smithingRecipe.getResults() : inputSlot == 0 ? smithingRecipe.getBase() : smithingRecipe.getAddition();
+
             if (event.isRightClick() && event.isShiftClick()) {
                 cache.getVariantsData().setSlot(inputSlot);
                 cache.getVariantsData().setVariants(items);
@@ -35,16 +37,18 @@ public class AnvilContainerButton extends ItemInputButton {
                         items.add(input);
                     }
                     if(inputSlot == 2){
-                        anvilRecipe.setResult(items);
+                        smithingRecipe.setResult(items);
+                    }else if(inputSlot == 0){
+                        smithingRecipe.setBase(items);
                     }else{
-                        anvilRecipe.setInput(inputSlot, items);
+                        smithingRecipe.setAddition(items);
                     }
                 });
             }
             return false;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            CustomAnvilRecipe anvilRecipe = ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe();
-            List<CustomItem> items = inputSlot == 2 ? anvilRecipe.getResults() : anvilRecipe.getInput(inputSlot);
+            CustomSmithingRecipe smithingRecipe = ((TestCache) guiHandler.getCustomCache()).getSmithingRecipe();
+            List<CustomItem> items = inputSlot == 2 ? smithingRecipe.getResults() : inputSlot == 0 ? smithingRecipe.getBase() : smithingRecipe.getAddition();
             return InventoryUtils.isCustomItemsListEmpty(items) ? new ItemStack(Material.AIR) : items.get(0).create();
         }));
     }

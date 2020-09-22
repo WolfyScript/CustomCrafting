@@ -36,7 +36,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
             customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    ICustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
+                    ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
                     if (recipe == null) {
                         api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
                         return true;

@@ -3,8 +3,8 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
 import org.bukkit.Location;
 
 public class AdvancedWorkbenchCondition extends Condition {

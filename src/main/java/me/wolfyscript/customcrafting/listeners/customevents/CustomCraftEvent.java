@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -20,7 +20,7 @@ public class CustomCraftEvent extends Event implements Cancellable {
     public CustomCraftEvent(CraftingRecipe craftingRecipe, Inventory inventory) {
         this.craftingRecipe = craftingRecipe;
         this.inventory = inventory;
-        this.result = craftingRecipe.getCustomResults();
+        this.result = craftingRecipe.getResults();
         this.cancelled = false;
     }
 

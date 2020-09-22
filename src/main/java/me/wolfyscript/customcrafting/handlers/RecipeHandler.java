@@ -4,23 +4,20 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.customcrafting.recipes.types.*;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
+import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -55,7 +52,7 @@ public class RecipeHandler {
     private final Categories categories;
     private final List<Recipe> allRecipes = new ArrayList<>();
 
-    private final TreeMap<NamespacedKey, ICustomRecipe> customRecipes = new TreeMap<>();
+    private final TreeMap<NamespacedKey, ICustomRecipe<?>> customRecipes = new TreeMap<>();
 
     private final ArrayList<String> disabledRecipes = new ArrayList<>();
 
@@ -113,8 +110,9 @@ public class RecipeHandler {
                 loadConfig(dir.getName(), "campfire");
                 loadConfig(dir.getName(), "stonecutter");
                 loadConfig(dir.getName(), "grindstone");
-                loadConfig(dir.getName(), "brewing");
+                loadConfig(dir.getName(), "brewing_stand");
                 loadConfig(dir.getName(), "elite_workbench");
+                loadConfig(dir.getName(), "smithing");
             }
             api.sendConsoleMessage("");
             api.sendConsoleMessage("$msg.startup.recipes.particles$");
@@ -186,8 +184,11 @@ public class RecipeHandler {
                             case "grindstone":
                                 registerRecipe(new GrindstoneRecipe(namespacedKey, node));
                                 break;
-                            case "brewing":
+                            case "brewing_stand":
                                 registerRecipe(new BrewingRecipe(namespacedKey, node));
+                                break;
+                            case "smithing":
+                                registerRecipe(new CustomSmithingRecipe(namespacedKey, node));
                         }
                     } catch (Exception ex) {
                         ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
@@ -285,232 +286,199 @@ public class RecipeHandler {
     /*
         Get all the Recipes from this group
      */
-    public List<ICustomRecipe> getRecipeGroup(String group) {
-        List<ICustomRecipe> groupRecipes = new ArrayList<>();
-        for (NamespacedKey id : customRecipes.keySet()) {
-            if (customRecipes.get(id).getGroup().equals(group))
-                groupRecipes.add(customRecipes.get(id));
-        }
-        return groupRecipes;
+    public List<ICustomRecipe<?>> getRecipeGroup(String group) {
+        return customRecipes.values().stream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
     }
 
     public List<String> getNamespaces() {
         return customRecipes.keySet().stream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
     }
 
-    public List<ICustomRecipe> getRecipesByNamespace(String namespace) {
+    public List<ICustomRecipe<?>> getRecipesByNamespace(String namespace) {
         return customRecipes.entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
-    public List<CraftingRecipe> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {
-        List<CraftingRecipe> recipes = new ArrayList<>();
+    public List<CraftingRecipe<?>> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {
         AtomicInteger size = new AtomicInteger();
-
         items.forEach(itemStacks -> size.addAndGet((int) itemStacks.stream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count()));
 
-        List<CraftingRecipe> craftingRecipes = new ArrayList<>();
+        List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
         if (elite) {
-            craftingRecipes.addAll(getEliteCraftingRecipes());
+            craftingRecipes.addAll(getRecipes(RecipeType.ELITE_WORKBENCH));
         }
         if (advanced) {
-            craftingRecipes.addAll(getAdvancedCraftingRecipes());
+            craftingRecipes.addAll(getRecipes(RecipeType.WORKBENCH));
         }
-        craftingRecipes.stream().filter(customRecipe -> customRecipe.getIngredients().keySet().size() == size.get()).forEach(customRecipe -> {
-            if (customRecipe instanceof IShapedCraftingRecipe) {
-                IShapedCraftingRecipe recipe = ((IShapedCraftingRecipe) customRecipe);
-                boolean sizeCheck = items.size() > 0 && recipe.getShape().length > 0;
-                if (sizeCheck) {
-                    boolean sizeSimilarity = items.size() == recipe.getShape().length;
-                    boolean rowSize = items.get(0).size() == recipe.getShape()[0].length();
-
-                    if (sizeSimilarity && rowSize) {
-                        recipes.add(customRecipe);
+        return craftingRecipes.stream().filter(customRecipe -> {
+            if (customRecipe.getIngredients().keySet().size() == size.get()) {
+                if (customRecipe instanceof IShapedCraftingRecipe) {
+                    IShapedCraftingRecipe recipe = ((IShapedCraftingRecipe) customRecipe);
+                    boolean sizeCheck = items.size() > 0 && recipe.getShape().length > 0;
+                    if (sizeCheck) {
+                        boolean sizeSimilarity = items.size() == recipe.getShape().length;
+                        boolean rowSize = items.get(0).size() == recipe.getShape()[0].length();
+                        return sizeSimilarity && rowSize;
                     }
+                    return false;
                 }
-            } else {
-                recipes.add(customRecipe);
+                return true;
             }
-        });
-        return recipes;
+            return false;
+        }).collect(Collectors.toList());
     }
 
-    public ICustomRecipe getRecipe(NamespacedKey namespacedKey) {
+    public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
         return customRecipes.get(namespacedKey);
     }
 
     @Deprecated
-    public ICustomRecipe getRecipe(String key) {
+    public ICustomRecipe<?> getRecipe(String key) {
         return customRecipes.get(new NamespacedKey(key.split(":")[0], key.split(":")[1]));
     }
 
-    public List<ICustomRecipe> getRecipes(String type) {
-        List<ICustomRecipe> customRecipes = new ArrayList<>();
-        switch (type) {
-            case "workbench":
-                return new ArrayList<>(getAdvancedCraftingRecipes());
-            case "elite_workbench":
-                return new ArrayList<>(getEliteCraftingRecipes());
-            case "furnace":
-                return new ArrayList<>(getFurnaceRecipes());
-            case "anvil":
-                return new ArrayList<>(getAnvilRecipes());
-            case "blast_furnace":
-                return new ArrayList<>(getBlastRecipes());
-            case "smoker":
-                return new ArrayList<>(getSmokerRecipes());
-            case "campfire":
-                return new ArrayList<>(getCampfireRecipes());
-            case "stonecutter":
-                return new ArrayList<>(getStonecutterRecipes());
-            case "cauldron":
-                return new ArrayList<>(getCauldronRecipes());
-            case "grindstone":
-                return new ArrayList<>(getGrindstoneRecipes());
-            case "brewing":
-                return new ArrayList<>(getBrewingRecipes());
-
-        }
-        return customRecipes;
+    public List<ICustomRecipe<?>> getRecipes(String type) {
+        return new ArrayList<>(getRecipes(RecipeType.valueOf(type)));
     }
 
-    public List<ICustomRecipe> getRecipes(CustomItem result) {
-        return customRecipes.values().stream().filter(recipe -> recipe.getCustomResults().contains(result)).collect(Collectors.toList());
-    }
-
-    public List<ICustomRecipe> getAvailableRecipes(CustomItem result, Player player) {
-        return getAvailableRecipes(ICustomRecipe.class, player).stream().filter(recipe -> recipe.getCustomResults().contains(result)).collect(Collectors.toList());
-    }
-
-    public List<ICustomRecipe> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
-        return getAvailableRecipes(ICustomRecipe.class, player).stream().filter(recipe -> recipe.getCustomResults().stream().anyMatch(customItem -> customItem.create().isSimilar(result))).collect(Collectors.toList());
+    /**
+     * This method returns all the recipes that are cached.
+     *
+     * @param result
+     * @return Recipes without the indicated Type
+     */
+    public List<ICustomRecipe<?>> getRecipes(CustomItem result) {
+        return customRecipes.values().stream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
     }
 
     //CRAFTING RECIPES
-    public CraftingRecipe getAdvancedCraftingRecipe(String key) {
-        ICustomRecipe customRecipe = getRecipe(key);
-        return customRecipe instanceof CraftingRecipe ? (CraftingRecipe) customRecipe : null;
+
+    public AdvancedCraftingRecipe getAdvancedCraftingRecipe(String key) {
+        ICustomRecipe<?> customRecipe = getRecipe(key);
+        return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
+    }
+    public <T extends ICustomRecipe<?>> List<T> getRecipes(Class<T> type) {
+        return customRecipes.values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
 
-    public List<ICustomRecipe> getRecipes(RecipeType type) {
-        return customRecipes.values().stream().filter(recipe -> type.equals(recipe.getRecipeType())).collect(Collectors.toList());
+    public <T extends ICustomRecipe<?>> List<T> getRecipes(RecipeType<T> type) {
+        return getRecipes(type.getClazz());
     }
 
-    public <T extends ICustomRecipe> List<T> getRecipes(Class<T> type) {
-        return customRecipes.values().stream().filter(type::isInstance).map(recipe -> (T) recipe).collect(Collectors.toList());
+    public TreeMap<NamespacedKey, ICustomRecipe<?>> getRecipes() {
+        return customRecipes;
     }
 
-    public <T extends ICustomRecipe> List<T> getAvailableRecipes(Class<T> type) {
-        List<T> recipes = getRecipes(type);
-        recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return new ArrayList<>(recipes);
-    }
-
-    public <T extends ICustomRecipe> List<T> getAvailableRecipes(Class<T> type, Player player) {
-        List<T> recipes = getRecipes(type);
-        recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
-        if (player != null) {
-            recipes.removeIf(recipe -> !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
-        }
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return new ArrayList<>(recipes);
-    }
-
-    public List<CraftingRecipe> getAdvancedCraftingRecipes() {
-        return getRecipes(CraftingRecipe.class);
-    }
-
-    public List<EliteCraftingRecipe> getEliteCraftingRecipes() {
-        return getRecipes(EliteCraftingRecipe.class);
-    }
-
-    public List<CustomFurnaceRecipe> getFurnaceRecipes() {
-        return getRecipes(CustomFurnaceRecipe.class);
-    }
-
-    public List<CustomSmokerRecipe> getSmokerRecipes() {
-        return getRecipes(CustomSmokerRecipe.class);
-    }
-
-    public List<CustomBlastRecipe> getBlastRecipes() {
-        return getRecipes(CustomBlastRecipe.class);
-    }
-
-    public List<CustomCampfireRecipe> getCampfireRecipes() {
-        return getRecipes(CustomCampfireRecipe.class);
-    }
-
-    public List<CustomStonecutterRecipe> getStonecutterRecipes() {
-        return getRecipes(CustomStonecutterRecipe.class);
-    }
-
-    public List<CustomAnvilRecipe> getAnvilRecipes() {
-        return getRecipes(CustomAnvilRecipe.class);
-    }
-
-    public List<CauldronRecipe> getCauldronRecipes() {
-        return getRecipes(CauldronRecipe.class);
-    }
-
-    public List<GrindstoneRecipe> getGrindstoneRecipes() {
-        return getRecipes(GrindstoneRecipe.class);
-    }
-
-    public List<BrewingRecipe> getBrewingRecipes() {
-        return getRecipes(BrewingRecipe.class);
-    }
 
     /*
-    Get the available recipes only.
-    Disabled and hidden recipes are removed!
-    For the crafting recipes you also need permissions to view them.
+        Get the available recipes only.
+        Disabled and hidden recipes are removed!
+        For the crafting recipes you also need permissions to view them.
+         */
+
+
+    /**
+     * Get all the recipes that are available.
+     * Recipes that are hidden or disabled are not included.
+     *
+     * @return
      */
-    public List<CraftingRecipe> getAvailableAdvancedCraftingRecipes(Player player) {
-        return getAvailableRecipes(CraftingRecipe.class, player);
+    public List<ICustomRecipe<?>> getAvailableRecipes() {
+        List<ICustomRecipe<?>> recipes = new ArrayList<>(getRecipes().values());
+        recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
+        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
+        return recipes;
     }
 
-    public List<EliteCraftingRecipe> getAvailableEliteCraftingRecipes(Player player) {
-        return getAvailableRecipes(EliteCraftingRecipe.class, player);
+    /**
+     * Similar to {@link #getAvailableRecipes()} only includes the visible and enabled recipes, but also takes the player into account.
+     * Recipes that the player has no permission to view are not included.
+     *
+     * @param player
+     * @return
+     */
+    public List<ICustomRecipe<?>> getAvailableRecipes(Player player) {
+        List<ICustomRecipe<?>> recipes = getAvailableRecipes();
+        if (player != null) {
+            recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
+        }
+        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
+        return recipes;
     }
 
-    public List<CustomFurnaceRecipe> getAvailableFurnaceRecipes() {
-        return getAvailableRecipes(CustomFurnaceRecipe.class);
+    /**
+     * The same as {@link #getAvailableRecipes(Player)}, but only includes the recipes that contain the CustomItem in the result List.
+     *
+     * @param result
+     * @param player
+     * @return
+     */
+    public List<ICustomRecipe<?>> getAvailableRecipes(CustomItem result, Player player) {
+        return getAvailableRecipes(player).stream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
     }
 
-    public List<CustomSmokerRecipe> getAvailableSmokerRecipes() {
-        return getAvailableRecipes(CustomSmokerRecipe.class);
+    /**
+     * The same as {@link #getAvailableRecipes(Player)}, but only includes the recipes that contain the similar ItemStack in the result List.
+     *
+     * @param result
+     * @param player
+     * @return
+     */
+    public List<ICustomRecipe<?>> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
+        return getAvailableRecipes(player).stream().filter(recipe -> recipe.getResults().stream().anyMatch(customItem -> customItem.create().isSimilar(result))).collect(Collectors.toList());
     }
 
-    public List<CustomBlastRecipe> getAvailableBlastRecipes() {
-        return getAvailableRecipes(CustomBlastRecipe.class);
+    /**
+     *
+     *
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(Class<T> type) {
+        List<T> recipes = getRecipes(type);
+        recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
+        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
+        return new ArrayList<>(recipes);
     }
 
-    public List<CustomCampfireRecipe> getAvailableCampfireRecipes() {
-        return getAvailableRecipes(CustomCampfireRecipe.class);
+    /**
+     *
+     *
+     * @param type
+     * @param player
+     * @param <T>
+     * @return
+     */
+    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(Class<T> type, Player player) {
+        List<T> recipes = getAvailableRecipes(type);
+        if (player != null) {
+            recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
+        }
+        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
+        return recipes;
     }
 
-    public List<CustomStonecutterRecipe> getAvailableStonecutterRecipes() {
-        return getAvailableRecipes(CustomStonecutterRecipe.class);
+    /**
+     *
+     *
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type) {
+        return getAvailableRecipes(type.getClazz());
     }
 
-    public List<CustomAnvilRecipe> getAvailableAnvilRecipes(Player player) {
-        return getAvailableRecipes(CustomAnvilRecipe.class, player);
-    }
-
-    public List<CauldronRecipe> getAvailableCauldronRecipes() {
-        return getAvailableRecipes(CauldronRecipe.class);
-    }
-
-    public List<GrindstoneRecipe> getAvailableGrindstoneRecipes(Player player) {
-        return getAvailableRecipes(GrindstoneRecipe.class, player);
-    }
-
-    public List<BrewingRecipe> getAvailableBrewingRecipes(Player player) {
-        return getAvailableRecipes(BrewingRecipe.class, player);
-    }
-
-    public TreeMap<NamespacedKey, ICustomRecipe> getRecipes() {
-        return customRecipes;
+    /**
+     *
+     *
+     * @param type
+     * @param player
+     * @param <T>
+     * @return
+     */
+    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type, Player player) {
+        return getAvailableRecipes(type.getClazz(), player);
     }
 
     //DISABLED RECIPES AND GET ALL RECIPES
@@ -523,7 +491,7 @@ public class RecipeHandler {
             Iterator<Recipe> iterator = Bukkit.recipeIterator();
             while (iterator.hasNext()) {
                 Recipe recipe = iterator.next();
-                if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe) {
+                if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (WolfyUtilities.hasNetherUpdate() && recipe instanceof SmithingRecipe)) {
                     if (((Keyed) recipe).getKey().toString().startsWith("minecraft")) {
                         allRecipes.add(recipe);
                     }
@@ -572,10 +540,12 @@ public class RecipeHandler {
         return false;
     }
 
-    public boolean loadRecipeIntoCache(ICustomRecipe recipe, GuiHandler<?> guiHandler) {
+    public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<?> guiHandler) {
         TestCache cache = (TestCache) guiHandler.getCustomCache();
         if (cache.getRecipeType().equals(recipe.getRecipeType())) {
-            cache.setCustomRecipe(recipe.clone());
+            ICustomRecipe<?> recipeCopy = recipe.clone();
+            recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
+            cache.setCustomRecipe(recipeCopy);
             return true;
         }
         return false;

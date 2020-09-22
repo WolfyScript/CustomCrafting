@@ -11,39 +11,54 @@ import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
-public enum RecipeType {
+public class RecipeType<C extends ICustomRecipe<?>> {
 
-    WORKBENCH(CraftingRecipe.class),
-    ELITE_WORKBENCH(EliteCraftingRecipe.class),
-    ANVIL(CustomAnvilRecipe.class),
-    FURNACE(CustomFurnaceRecipe.class, "cooking"),
-    BLAST_FURNACE(CustomBlastRecipe.class, "cooking"),
-    SMOKER(CustomSmokerRecipe.class, "cooking"),
-    CAMPFIRE(CustomCampfireRecipe.class, "cooking"),
-    STONECUTTER(CustomStonecutterRecipe.class),
-    CAULDRON(CauldronRecipe.class),
-    GRINDSTONE(GrindstoneRecipe.class),
-    BREWING_STAND(BrewingRecipe.class),
-    SMITHING(CustomSmithingRecipe.class);
+    private static final Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
 
-    private final String id;
-    private final String creatorID;
-    private final Class<? extends CustomRecipe> recipeClass;
-
-    RecipeType(Class<? extends CustomRecipe> recipeClass) {
-        this.id = this.toString().toLowerCase(Locale.ROOT);
-        this.creatorID = this.id;
-        this.recipeClass = recipeClass;
+    public enum Type {
+        WORKBENCH, ELITE_WORKBENCH, ANVIL, FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE, STONECUTTER, CAULDRON, GRINDSTONE, BREWING_STAND, SMITHING
     }
 
-    RecipeType(Class<? extends CustomRecipe> recipeClass, String creatorID) {
-        this.id = this.toString().toLowerCase(Locale.ROOT);
+    /**
+     * Constants for recipe types. They contain the information which class the recipe is from and the creator id, etc.
+     */
+    public static final RecipeType<AdvancedCraftingRecipe> WORKBENCH = new RecipeType<>(Type.WORKBENCH, AdvancedCraftingRecipe.class);
+    public static final RecipeType<EliteCraftingRecipe> ELITE_WORKBENCH = new RecipeType<>(Type.ELITE_WORKBENCH, EliteCraftingRecipe.class);
+    public static final RecipeType<CustomAnvilRecipe> ANVIL = new RecipeType<>(Type.ANVIL, CustomAnvilRecipe.class);
+    public static final RecipeType<CustomFurnaceRecipe> FURNACE = new RecipeType<>(Type.FURNACE, CustomFurnaceRecipe.class, "cooking");
+    public static final RecipeType<CustomBlastRecipe> BLAST_FURNACE = new RecipeType<>(Type.BLAST_FURNACE, CustomBlastRecipe.class, "cooking");
+    public static final RecipeType<CustomSmokerRecipe> SMOKER = new RecipeType<>(Type.SMOKER, CustomSmokerRecipe.class, "cooking");
+    public static final RecipeType<CustomCampfireRecipe> CAMPFIRE = new RecipeType<>(Type.CAMPFIRE, CustomCampfireRecipe.class, "cooking");
+    public static final RecipeType<CustomStonecutterRecipe> STONECUTTER = new RecipeType<>(Type.STONECUTTER, CustomStonecutterRecipe.class);
+    public static final RecipeType<CauldronRecipe> CAULDRON = new RecipeType<>(Type.CAULDRON, CauldronRecipe.class);
+    public static final RecipeType<GrindstoneRecipe> GRINDSTONE = new RecipeType<>(Type.GRINDSTONE, GrindstoneRecipe.class);
+    public static final RecipeType<BrewingRecipe> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, BrewingRecipe.class);
+    public static final RecipeType<CustomSmithingRecipe> SMITHING = new RecipeType<>(Type.SMITHING, CustomSmithingRecipe.class);
+
+    /**
+     * This is the RecipeType object.
+     */
+    private final String id;
+    private final String creatorID;
+    private final Class<C> clazz;
+    private final RecipeType.Type type;
+
+    public RecipeType(RecipeType.Type type, Class<C> clazz){
+        this(type, clazz, type.toString().toLowerCase(Locale.ROOT));
+    }
+
+    public RecipeType(RecipeType.Type type, Class<C> clazz, String creatorID){
+        this.type = type;
+        this.clazz = clazz;
+        this.id = type.toString().toLowerCase(Locale.ROOT);
         this.creatorID = creatorID;
-        this.recipeClass = recipeClass;
+        values.add(this);
     }
 
     public String getId() {
@@ -54,7 +69,33 @@ public enum RecipeType {
         return creatorID;
     }
 
-    public Class<? extends CustomRecipe> getRecipeClass() {
-        return recipeClass;
+    public Class<C> getClazz() {
+        return clazz;
+    }
+
+    public RecipeType.Type getType() {
+        return type;
+    }
+
+    public String name(){
+        return getType().toString();
+    }
+
+    public static RecipeType<?> valueOf(String id){
+        return values.stream().filter(rType -> rType.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
+    }
+
+    public static RecipeType<?> valueOf(RecipeType.Type type){
+        return values.stream().filter(rType -> rType.getType().equals(type)).findFirst().orElse(null);
+    }
+
+    @Override
+    public String toString() {
+        return "RecipeType{" +
+                "id='" + id + '\'' +
+                ", creatorID='" + creatorID + '\'' +
+                ", clazz=" + clazz +
+                ", type=" + type +
+                '}';
     }
 }

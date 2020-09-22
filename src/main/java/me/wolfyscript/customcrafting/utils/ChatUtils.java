@@ -54,7 +54,7 @@ public class ChatUtils {
             player.sendMessage(" ");
         }
 
-        List<ICustomRecipe> customRecipes = customCrafting.getRecipeHandler().getRecipes(cache.getRecipeType());
+        List<? extends ICustomRecipe> customRecipes = customCrafting.getRecipeHandler().getRecipes(cache.getRecipeType());
 
         int currentPage = cache.getChatLists().getCurrentPageRecipes();
         int maxPages = ((customRecipes.size() % 15) > 0 ? 1 : 0) + customRecipes.size() / 15;
@@ -80,10 +80,10 @@ public class ChatUtils {
             if(i < customRecipes.size()) {
                 ICustomRecipe recipe = customRecipes.get(i);
                 ClickEvent commandSuggest = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey());
-                if (recipe.getCustomResult() == null) {
+                if (recipe.getResult() == null) {
                     api.sendActionMessage(player, new ClickData(" - §7[§c!§7] §c", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§cFailed to load result item!")));
                 } else {
-                    api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getCustomResult().create())));
+                    api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getResult().create())));
                 }
             }else{
                 api.sendPlayerMessage(player, "");

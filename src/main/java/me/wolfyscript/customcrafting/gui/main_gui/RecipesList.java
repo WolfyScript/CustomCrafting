@@ -92,7 +92,7 @@ public class RecipesList extends ExtendedGuiWindow {
                 if (namespace.equalsIgnoreCase("minecraft")) {
                     recipes.addAll(customCrafting.getRecipeHandler().getVanillaRecipes().stream().filter(recipe -> category.isValid(recipe.getResult().getType())).collect(Collectors.toList()));
                 } else {
-                    recipes.addAll(customCrafting.getRecipeHandler().getRecipesByNamespace(namespace).stream().filter(recipe -> category.isValid(recipe) || recipe.getCustomResults().stream().anyMatch(item -> category.isValid(item.getItemStack().getType()))).collect(Collectors.toList()));
+                    recipes.addAll(customCrafting.getRecipeHandler().getRecipesByNamespace(namespace).stream().filter(recipe -> category.isValid(recipe) || recipe.getResults().stream().anyMatch(item -> category.isValid(item.getItemStack().getType()))).collect(Collectors.toList()));
                 }
             }
             maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);

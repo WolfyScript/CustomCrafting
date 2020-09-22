@@ -18,4 +18,5 @@ public abstract class ExtendedGuiWindow extends GuiWindow {
     public CustomCrafting getCustomCrafting() {
         return customCrafting;
     }
+
 }

@@ -36,8 +36,8 @@ public class GrindstoneContainerButton extends ItemInputButton {
                         }
                         break;
                     case 2:
-                        if (!InventoryUtils.isCustomItemsListEmpty(grindstone.getCustomResults())) {
-                            variants = grindstone.getCustomResults();
+                        if (!InventoryUtils.isCustomItemsListEmpty(grindstone.getResults())) {
+                            variants = grindstone.getResults();
                         }
                 }
                 cache.getVariantsData().setSlot(inputSlot);
@@ -69,7 +69,7 @@ public class GrindstoneContainerButton extends ItemInputButton {
                 case 1:
                     return !InventoryUtils.isCustomItemsListEmpty(grindstone.getInputBottom()) ? grindstone.getInputBottom().get(0).create() : new ItemStack(Material.AIR);
                 case 2:
-                    return !InventoryUtils.isCustomItemsListEmpty(grindstone.getCustomResults()) ? grindstone.getCustomResult().create() : new ItemStack(Material.AIR);
+                    return !InventoryUtils.isCustomItemsListEmpty(grindstone.getResults()) ? grindstone.getResult().create() : new ItemStack(Material.AIR);
             }
             return itemStack == null ? new ItemStack(Material.AIR) : itemStack;
         }));

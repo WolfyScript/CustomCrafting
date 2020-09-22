@@ -12,10 +12,10 @@ import org.bukkit.event.Listener;
 public class Cauldron implements Listener {
 
     private CauldronRecipe recipe;
-    private int cookingTime;
+    private final int cookingTime;
     private int passedTicks;
     private boolean done;
-    private boolean dropItems;
+    private final boolean dropItems;
     private CustomItem result;
 
     public Cauldron(CauldronPreCookEvent event) {
@@ -23,7 +23,7 @@ public class Cauldron implements Listener {
 
         Player player = event.getPlayer();
         RandomCollection<CustomItem> items = new RandomCollection<>();
-        for (CustomItem customItem : recipe.getCustomResults()) {
+        for (CustomItem customItem : recipe.getResults()) {
             if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
                 items.add(customItem.getRarityPercentage(), customItem.clone());
             }

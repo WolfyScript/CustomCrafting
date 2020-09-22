@@ -30,6 +30,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -192,18 +193,23 @@ public class CustomCrafting extends JavaPlugin {
 
         InventoryHandler invHandler = new InventoryHandler(this);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+        PluginManager pM = Bukkit.getPluginManager();
+
+        pM.registerEvents(new PlayerListener(this), this);
 
         System.out.println("------------------------------------------------------------------------");
-        getServer().getPluginManager().registerEvents(new CraftListener(this), this);
-        getServer().getPluginManager().registerEvents(new BlockListener(api), this);
-        getServer().getPluginManager().registerEvents(new FurnaceListener(this), this);
-        getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
+        pM.registerEvents(new CraftListener(this), this);
+        pM.registerEvents(new BlockListener(api), this);
+        pM.registerEvents(new FurnaceListener(this), this);
+        pM.registerEvents(new AnvilListener(this), this);
         //getServer().getPluginManager().registerEvents(new EnchantListener(), this);
-        getServer().getPluginManager().registerEvents(new CauldronListener(this), this);
-        getServer().getPluginManager().registerEvents(new EliteWorkbenchListener(api), this);
-        getServer().getPluginManager().registerEvents(new GrindStoneListener(this), this);
-        getServer().getPluginManager().registerEvents(new BrewingStandListener(this), this);
+        pM.registerEvents(new CauldronListener(this), this);
+        pM.registerEvents(new EliteWorkbenchListener(api), this);
+        pM.registerEvents(new GrindStoneListener(this), this);
+        pM.registerEvents(new BrewingStandListener(this), this);
+        if(WolfyUtilities.hasNetherUpdate()){
+            pM.registerEvents(new SmithingListener(this), this);
+        }
 
         final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
         serverCommandMap.setAccessible(true);

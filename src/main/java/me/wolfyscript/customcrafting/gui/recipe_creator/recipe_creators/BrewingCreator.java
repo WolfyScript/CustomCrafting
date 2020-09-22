@@ -6,16 +6,14 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingContainer
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 
 public class BrewingCreator extends RecipeCreator {
 
@@ -30,11 +28,11 @@ public class BrewingCreator extends RecipeCreator {
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
 
-        registerButton(new DummyButton("brewing_stand", new ButtonState("brewing_stand", Material.BREWING_STAND)));
-        registerButton(new ChatInputButton("brewTime", new ButtonState("brewTime", Material.CLOCK, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new DummyButton("brewing_stand", Material.BREWING_STAND));
+        registerButton(new ChatInputButton("brewTime", Material.CLOCK, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%time%", ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().getBrewTime());
             return itemStack;
-        }), (guiHandler, player, s, args) -> {
+        }, (guiHandler, player, s, args) -> {
             int time;
             try {
                 time = Integer.parseInt(args[0]);
@@ -45,10 +43,10 @@ public class BrewingCreator extends RecipeCreator {
             ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().setBrewTime(time <= 400 ? time : 400);
             return false;
         }));
-        registerButton(new ChatInputButton("fuelCost", new ButtonState("fuelCost", Material.BLAZE_POWDER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton("fuelCost", Material.BLAZE_POWDER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%cost%", ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().getFuelCost());
             return itemStack;
-        }), (guiHandler, player, s, args) -> {
+        }, (guiHandler, player, s, args) -> {
             int cost;
             try {
                 cost = Integer.parseInt(args[0]);
@@ -62,7 +60,7 @@ public class BrewingCreator extends RecipeCreator {
         registerButton(new BrewingContainerButton(0, customCrafting));
         registerButton(new BrewingContainerButton(1, customCrafting));
 
-        registerButton(new ActionButton("potion_duration", new ButtonState("potion_duration", Material.CLOCK, (guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton("potion_duration", Material.CLOCK, (guiHandler, player, inventory, i, event) -> {
             TestCache cache = ((TestCache) guiHandler.getCustomCache());
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             if (event.getClick().isRightClick()) {
@@ -86,9 +84,9 @@ public class BrewingCreator extends RecipeCreator {
             TestCache cache = ((TestCache) guiHandler.getCustomCache());
             hashMap.put("%value%", cache.getBrewingRecipe().getDurationChange());
             return itemStack;
-        })));
+        }));
 
-        registerButton(new ActionButton("potion_amplifier", new ButtonState("potion_amplifier", Material.IRON_SWORD, (guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton("potion_amplifier", Material.IRON_SWORD, (guiHandler, player, inventory, i, event) -> {
             TestCache cache = ((TestCache) guiHandler.getCustomCache());
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             if (event.getClick().isRightClick()) {
@@ -112,35 +110,37 @@ public class BrewingCreator extends RecipeCreator {
             TestCache cache = ((TestCache) guiHandler.getCustomCache());
             hashMap.put("%value%", cache.getBrewingRecipe().getAmplifierChange());
             return itemStack;
-        })));
+        }));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            event.setButton(0, "back");
-            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
-            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
-            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), brewingRecipe.isHidden());
 
-            event.setButton(1, "hidden");
-            event.setButton(3, "recipe_creator", "conditions");
-            event.setButton(5, "priority");
-            event.setButton(7, "exact_meta");
+    @Override
+    public void onUpdateAsync(GuiUpdate update) {
+        update.setButton(0, "back");
+        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), brewingRecipe.isHidden());
 
-            event.setButton(11, "brewing.container_0");
+        update.setButton(1, "hidden");
+        update.setButton(3, "recipe_creator", "conditions");
+        update.setButton(5, "priority");
+        update.setButton(7, "exact_meta");
 
-            event.setButton(20, "brewing_stand");
-            event.setButton(19, "brewTime");
+        update.setButton(11, "brewing.container_0");
 
-            event.setButton(21, "fuelCost");
-            //event.setButton(29, "brewing.container_1");
+        update.setButton(20, "brewing_stand");
+        update.setButton(19, "brewTime");
 
-            event.setButton(23, "potion_duration");
-            event.setButton(25, "potion_amplifier");
+        update.setButton(21, "fuelCost");
+        //update.setButton(29, "brewing.container_1");
 
-            event.setButton(44, "save");
+        update.setButton(23, "potion_duration");
+        update.setButton(25, "potion_amplifier");
+
+        if(brewingRecipe.hasNamespacedKey()){
+            update.setButton(43, "save");
         }
+        update.setButton(44, "save_as");
     }
 
     @Override

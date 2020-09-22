@@ -156,13 +156,13 @@ public class FurnaceListener implements Listener {
                 event.setCancelled(true);
                 continue;
             }
-            CustomCookingRecipe<?> customRecipe = (CustomCookingRecipe<?>) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
             if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                 if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                     event.setCancelled(false);
-                    if (customRecipe.getCustomResults().size() > 1) {
+                    if (customRecipe.getResults().size() > 1) {
                         RandomCollection<CustomItem> items = new RandomCollection<>();
-                        customRecipe.getCustomResults().forEach(item -> items.add(item.getRarityPercentage(), item));
+                        customRecipe.getResults().forEach(item -> items.add(item.getRarityPercentage(), item));
                         if (!items.isEmpty()) {
                             CustomItem item = items.next();
                             if (currentResultItem == null) {
@@ -198,4 +198,6 @@ public class FurnaceListener implements Listener {
         }
         return false;
     }
+
+
 }

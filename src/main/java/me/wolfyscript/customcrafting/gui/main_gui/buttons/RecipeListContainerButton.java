@@ -64,8 +64,8 @@ public class RecipeListContainerButton extends Button {
         if (getCustomRecipe(guiHandler) != null) {
             ICustomRecipe recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getCustomResult().create());
-                if (recipe.getCustomResult().getItemStack().getType().equals(Material.AIR)) {
+                ItemBuilder itemB = new ItemBuilder(recipe.getResult().create());
+                if (recipe.getResult().getItemStack().getType().equals(Material.AIR)) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
                 itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());

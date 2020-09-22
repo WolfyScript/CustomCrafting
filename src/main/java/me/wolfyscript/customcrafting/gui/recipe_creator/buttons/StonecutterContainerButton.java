@@ -58,7 +58,7 @@ public class StonecutterContainerButton extends ItemInputButton {
             CustomStonecutterRecipe stonecutter = ((TestCache) guiHandler.getCustomCache()).getStonecutterRecipe();
             if (inputSlot == 1) {
                 //RESULT STUFF
-                return !ItemUtils.isAirOrNull(stonecutter.getCustomResult()) ? stonecutter.getCustomResult().create() : new ItemStack(Material.AIR);
+                return !ItemUtils.isAirOrNull(stonecutter.getResult()) ? stonecutter.getResult().create() : new ItemStack(Material.AIR);
             } else {
                 return !InventoryUtils.isCustomItemsListEmpty(stonecutter.getSource()) ? stonecutter.getSource().get(0).create() : new ItemStack(Material.AIR);
             }

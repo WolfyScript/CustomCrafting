@@ -148,7 +148,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
         values.add("conditions.world_name");
         values.add("conditions.world_biome");
         values.add("conditions.weather");
-        switch (cache.getRecipeType()) {
+        switch (cache.getRecipeType().getType()) {
             case WORKBENCH:
                 values.add("conditions.permission");
                 values.add("conditions.player_experience");

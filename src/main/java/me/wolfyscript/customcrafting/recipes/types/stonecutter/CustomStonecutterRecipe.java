@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVanillaRecipe<StonecuttingRecipe> {
+public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecipe> implements ICustomVanillaRecipe<StonecuttingRecipe> {
 
     private List<CustomItem> result;
     private List<CustomItem> source;
@@ -53,12 +53,12 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
 
     public CustomStonecutterRecipe(CustomStonecutterRecipe customStonecutterRecipe){
         super(customStonecutterRecipe);
-        this.result = customStonecutterRecipe.getCustomResults();
+        this.result = customStonecutterRecipe.getResults();
         this.source = customStonecutterRecipe.getSource();
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
+    public List<CustomItem> getResults() {
         return new ArrayList<>(result);
     }
 
@@ -97,7 +97,7 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
     }
 
     @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<CustomStonecutterRecipe> getRecipeType() {
         return RecipeType.STONECUTTER;
     }
 
@@ -127,6 +127,7 @@ public class CustomStonecutterRecipe extends CustomRecipe implements ICustomVani
 
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
-        return new StonecuttingRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())));
+        RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
+        return new StonecuttingRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()), getResult().create(), choice);
     }
 }

@@ -66,7 +66,7 @@ public class IngredientContainerButton extends Button {
         KnowledgeBook book = cache.getKnowledgeBook();
         if (getVariantsMap(guiHandler) != null && getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
-            List<ICustomRecipe> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
+            List<ICustomRecipe<?>> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
             recipes.remove(book.getCurrentRecipe());
             if (!recipes.isEmpty()) {
                 GuiCluster cluster = WolfyUtilities.getAPI(customCrafting).getInventoryAPI().getGuiCluster("recipe_book");

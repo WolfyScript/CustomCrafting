@@ -33,7 +33,7 @@ public class EditSubCommand extends AbstractSubCommand {
             Player player = (Player) sender;
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit")) {
                 if (args.length > 0) {
-                    ICustomRecipe customRecipe = customCrafting.getRecipeHandler().getRecipe(new me.wolfyscript.utilities.api.utils.NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
+                    ICustomRecipe<?> customRecipe = customCrafting.getRecipeHandler().getRecipe(new me.wolfyscript.utilities.api.utils.NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
                     if (customRecipe != null) {
                         ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
                         if (customCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, api.getInventoryAPI().getGuiHandler(player))) {

@@ -6,15 +6,13 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.GrindstoneContainerButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
 
 public class GrindstoneCreator extends RecipeCreator {
 
@@ -35,10 +33,10 @@ public class GrindstoneCreator extends RecipeCreator {
 
         registerButton(new DummyButton("grindstone", Material.GRINDSTONE));
 
-        registerButton(new ChatInputButton("xp", new ButtonState("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%xp%", ((TestCache) guiHandler.getCustomCache()).getGrindstoneRecipe().getXp());
             return itemStack;
-        }), (guiHandler, player, s, args) -> {
+        }, (guiHandler, player, s, args) -> {
             int xp;
             try {
                 xp = Integer.parseInt(args[0]);
@@ -51,35 +49,37 @@ public class GrindstoneCreator extends RecipeCreator {
         }));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            event.setButton(0, "back");
-            TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
-            GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
-            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), grindstoneRecipe.isHidden());
+    @Override
+    public void onUpdateAsync(GuiUpdate update) {
+        update.setButton(0, "back");
+        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
+        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
 
-            event.setButton(1, "hidden");
-            event.setButton(3, "recipe_creator", "conditions");
-            event.setButton(5, "priority");
-            event.setButton(7, "exact_meta");
+        update.setButton(1, "hidden");
+        update.setButton(3, "recipe_creator", "conditions");
+        update.setButton(5, "priority");
+        update.setButton(7, "exact_meta");
 
-            event.setButton(11, "grindstone.container_0");
-            event.setButton(20, "grindstone");
-            event.setButton(29, "grindstone.container_1");
+        update.setButton(11, "grindstone.container_0");
+        update.setButton(20, "grindstone");
+        update.setButton(29, "grindstone.container_1");
 
-            event.setButton(23, "xp");
-            event.setButton(25, "grindstone.container_2");
+        update.setButton(23, "xp");
+        update.setButton(25, "grindstone.container_2");
 
-            event.setButton(44, "save");
+        if(grindstoneRecipe.hasNamespacedKey()){
+            update.setButton(43, "save");
         }
+        update.setButton(44, "save_as");
+
     }
 
     @Override
     public boolean validToSave(TestCache cache) {
         GrindstoneRecipe recipe = cache.getGrindstoneRecipe();
         if (!recipe.getInputTop().isEmpty() || !recipe.getInputBottom().isEmpty()) {
-            return !InventoryUtils.isCustomItemsListEmpty(recipe.getCustomResults());
+            return !InventoryUtils.isCustomItemsListEmpty(recipe.getResults());
         }
         return false;
     }

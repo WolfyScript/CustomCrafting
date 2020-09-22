@@ -22,7 +22,8 @@ public abstract class RecipeCreator extends ExtendedGuiWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new SaveButton());
+        registerButton(new SaveButton(false));
+        registerButton(new SaveButton(true));
         registerButton(new HiddenButton());
     }
 

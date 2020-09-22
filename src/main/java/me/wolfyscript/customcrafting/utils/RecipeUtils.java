@@ -7,9 +7,9 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -44,9 +44,9 @@ public class RecipeUtils {
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
         if (!customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-            List<CraftingRecipe> recipesToCheck = recipeHandler.getSimilarRecipes(ingredients, elite, advanced).stream().filter(recipe -> (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString()))).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
+            List<CraftingRecipe<?>> recipesToCheck = recipeHandler.getSimilarRecipes(ingredients, elite, advanced).stream().filter(recipe -> (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString()))).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
             if (!recipesToCheck.isEmpty()) {
-                for (CraftingRecipe recipe : recipesToCheck) {
+                for (CraftingRecipe<?> recipe : recipesToCheck) {
                     CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(isRepair, recipe, inventory, ingredients);
                     if (checkRecipe(recipe, ingredients, player, recipeHandler, customPreCraftEvent)) {
                         RandomCollection<CustomItem> items = new RandomCollection<>();
@@ -70,7 +70,7 @@ public class RecipeUtils {
         return null;
     }
 
-    public boolean checkRecipe(CraftingRecipe recipe, List<List<ItemStack>> matrix, Player player, RecipeHandler recipeHandler, CustomPreCraftEvent customPreCraftEvent) {
+    public boolean checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, RecipeHandler recipeHandler, CustomPreCraftEvent customPreCraftEvent) {
         customPreCraftEvent.setCancelled(true);
         CraftingData craftingData = null;
         if (!recipeHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString())) {
@@ -100,7 +100,7 @@ public class RecipeUtils {
         Inventory inventory = event.getClickedInventory();
         if (resultItem != null && !resultItem.getType().equals(Material.AIR) && getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId()) && getPreCraftedRecipes().get(event.getWhoClicked().getUniqueId()) != null) {
             CraftingData craftingData = getPreCraftedRecipes().get(event.getWhoClicked().getUniqueId());
-            CraftingRecipe recipe = craftingData.getRecipe();
+            CraftingRecipe<?> recipe = craftingData.getRecipe();
             if (recipe != null) {
                 CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, inventory);
                 if (!customCraftEvent.isCancelled() && event.getCurrentItem() != null) {
@@ -124,7 +124,7 @@ public class RecipeUtils {
 
                     //CALCULATE AMOUNTS CRAFTABLE AND REMOVE THEM!
                     int amount = recipe.getAmountCraftable(ingredients, craftingData);
-                    List<CustomItem> results = recipe.getCustomResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
+                    List<CustomItem> results = recipe.getResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
                     if (results.size() < 2 && (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT))) {
                         api.sendDebugMessage("SHIFT-CLICK!");
                         if (resultItem.getAmount() > 0) {

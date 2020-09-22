@@ -1,11 +1,9 @@
-package me.wolfyscript.customcrafting.recipes.types.workbench;
+package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
@@ -21,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRecipe {
+public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends CustomRecipe<C> implements ICraftingRecipe, ICustomRecipe<C> {
 
     protected static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
@@ -52,9 +50,9 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
         this.ingredients = new HashMap<>();
     }
 
-    public CraftingRecipe(CraftingRecipe craftingRecipe){
+    public CraftingRecipe(CraftingRecipe<?> craftingRecipe){
         super(craftingRecipe);
-        this.result = craftingRecipe.getCustomResults();
+        this.result = craftingRecipe.getResults();
         this.ingredients = craftingRecipe.getIngredients();
     }
 
@@ -136,13 +134,8 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
+    public List<CustomItem> getResults() {
         return new ArrayList<>(result);
-    }
-
-    @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.WORKBENCH;
     }
 
     @Override
@@ -196,7 +189,7 @@ public abstract class CraftingRecipe extends CustomRecipe implements ICraftingRe
         gen.writeBooleanField("shapeless", shapeless);
         {
             gen.writeArrayFieldStart("result");
-            for (CustomItem customItem : getCustomResults()) {
+            for (CustomItem customItem : getResults()) {
                 gen.writeObject(customItem.getApiReference());
             }
             gen.writeEndArray();

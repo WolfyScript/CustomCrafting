@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BrewingRecipe extends CustomRecipe {
+public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
     private List<CustomItem> ingredients, allowedItems, result;
     private int fuelCost;
@@ -74,7 +74,7 @@ public class BrewingRecipe extends CustomRecipe {
         super(brewingRecipe);
         this.ingredients = brewingRecipe.getIngredients();
         this.allowedItems = brewingRecipe.getAllowedItems();
-        this.result = brewingRecipe.getCustomResults();
+        this.result = brewingRecipe.getResults();
         this.fuelCost = brewingRecipe.getFuelCost();
         this.brewTime = brewingRecipe.getBrewTime();
         this.durationChange = brewingRecipe.getDurationChange();
@@ -82,12 +82,12 @@ public class BrewingRecipe extends CustomRecipe {
     }
 
     @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<BrewingRecipe> getRecipeType() {
         return RecipeType.BREWING_STAND;
     }
 
     @Override
-    public List<CustomItem> getCustomResults() {
+    public List<CustomItem> getResults() {
         return new ArrayList<>(result);
     }
 
@@ -154,7 +154,7 @@ public class BrewingRecipe extends CustomRecipe {
         super.writeToJson(gen, serializerProvider);
         {
             gen.writeArrayFieldStart("result");
-            for (CustomItem customItem : getCustomResults()) {
+            for (CustomItem customItem : this.getResults()) {
                 gen.writeObject(customItem.getApiReference());
             }
             gen.writeEndArray();

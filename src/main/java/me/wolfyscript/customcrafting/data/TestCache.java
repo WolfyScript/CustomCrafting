@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
@@ -17,20 +18,22 @@ import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCrafting
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
+import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.cache.CustomCache;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public class TestCache extends CustomCache {
 
     private Setting setting;
     //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
-    private final HashMap<RecipeType, ICustomRecipe> recipes = new HashMap<>();
+    private final HashMap<RecipeType<?>, ICustomRecipe<?>> recipes = new HashMap<>();
 
     private final CustomCrafting customCrafting;
     private String subSetting;
@@ -42,7 +45,7 @@ public class TestCache extends CustomCache {
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
     private ApplyItem applyItem;
-    private RecipeType recipeType;
+    private RecipeType<?> recipeType;
 
     public TestCache() {
         this.customCrafting = CustomCrafting.getInst();
@@ -62,6 +65,7 @@ public class TestCache extends CustomCache {
         setCustomRecipe(new GrindstoneRecipe());
         setCustomRecipe(new CauldronRecipe());
         setCustomRecipe(new BrewingRecipe());
+        setCustomRecipe(new CustomSmithingRecipe());
     }
 
     public Setting getSetting() {
@@ -72,11 +76,11 @@ public class TestCache extends CustomCache {
         this.setting = setting;
     }
 
-    public RecipeType getRecipeType() {
+    public RecipeType<?> getRecipeType() {
         return recipeType;
     }
 
-    public void setRecipeType(RecipeType recipeType) {
+    public void setRecipeType(RecipeType<?> recipeType) {
         this.recipeType = recipeType;
     }
 
@@ -131,12 +135,16 @@ public class TestCache extends CustomCache {
         this.eliteWorkbench = eliteWorkbench;
     }
 
-    public void setCustomRecipe(ICustomRecipe customRecipe) {
+    public void setCustomRecipe(ICustomRecipe<?> customRecipe) {
         recipes.put(customRecipe.getRecipeType(), customRecipe);
     }
 
-    public ICustomRecipe getCustomRecipe(RecipeType recipeType) {
-        return recipes.get(recipeType);
+    public ICustomRecipe<?> getRecipe() {
+        return getRecipe(getRecipeType());
+    }
+
+    public <T extends ICustomRecipe<?>> T getRecipe(RecipeType<T> recipeType) {
+        return recipeType.getClazz().cast(recipes.get(recipeType));
     }
 
 
@@ -145,63 +153,41 @@ public class TestCache extends CustomCache {
      * Used for the GUI Recipe Creators!
      *
      ***************************************************************/
-    public CustomCookingRecipe<?> getCookingRecipe() {
+    public CustomCookingRecipe<?,?> getCookingRecipe() {
         if (recipeType.equals(RecipeType.CAMPFIRE) || recipeType.equals(RecipeType.SMOKER) || recipeType.equals(RecipeType.FURNACE) || recipeType.equals(RecipeType.BLAST_FURNACE)) {
-            return (CustomCookingRecipe<?>) getCustomRecipe(recipeType);
+            return (CustomCookingRecipe<?, ?>) getRecipe(recipeType);
         }
         return null;
     }
 
-    public void resetCookingRecipe() {
-        switch (getRecipeType()) {
-            case CAMPFIRE:
-                setCustomRecipe(new CustomCampfireRecipe());
-            case SMOKER:
-                setCustomRecipe(new CustomSmokerRecipe());
-            case FURNACE:
-                setCustomRecipe(new CustomFurnaceRecipe());
-            case BLAST_FURNACE:
-                setCustomRecipe(new CustomBlastRecipe());
-        }
-    }
-
     public void resetRecipe(){
-        switch (getRecipeType()) {
-            case CAMPFIRE:
-            case SMOKER:
-            case FURNACE:
-            case BLAST_FURNACE:
-                resetCookingRecipe();
-                break;
+        switch (getRecipeType().getType()) {
             case ELITE_WORKBENCH:
                 setCustomRecipe(new ShapedEliteCraftRecipe());
                 break;
             case WORKBENCH:
                 setCustomRecipe(new ShapedCraftRecipe());
                 break;
+            case CAMPFIRE:
+            case SMOKER:
+            case FURNACE:
+            case BLAST_FURNACE:
             case ANVIL:
-                setCustomRecipe(new CustomAnvilRecipe());
-                break;
             case STONECUTTER:
-                setCustomRecipe(new CustomStonecutterRecipe());
-                break;
             case CAULDRON:
-                setCustomRecipe(new CauldronRecipe());
-                break;
             case GRINDSTONE:
-                setCustomRecipe(new GrindstoneRecipe());
-                break;
             case BREWING_STAND:
-                setCustomRecipe(new BrewingRecipe());
+            case SMITHING:
+                try {
+                    setCustomRecipe(getRecipeType().getClazz().getDeclaredConstructor().newInstance());
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
         }
     }
 
-    public ICustomRecipe getRecipe() {
-        return getCustomRecipe(getRecipeType());
-    }
-
-    public CraftingRecipe getWorkbenchRecipe() {
-        return (CraftingRecipe) getCustomRecipe(getRecipeType());
+    public CraftingRecipe<?> getCraftingRecipe() {
+        return (CraftingRecipe<?>) getRecipe(getRecipeType());
     }
 
     /***************************************************************
@@ -209,47 +195,51 @@ public class TestCache extends CustomCache {
      * Usage for the GUI Creator!
      *
      ***************************************************************/
-    public CraftingRecipe getCraftingRecipe() {
-        return (CraftingRecipe) getCustomRecipe(RecipeType.WORKBENCH);
+    public AdvancedCraftingRecipe getAdvancedCraftingRecipe() {
+        return getRecipe(RecipeType.WORKBENCH);
     }
 
     public CustomAnvilRecipe getAnvilRecipe() {
-        return (CustomAnvilRecipe) getCustomRecipe(RecipeType.ANVIL);
+        return getRecipe(RecipeType.ANVIL);
     }
 
     public EliteCraftingRecipe getEliteCraftingRecipe() {
-        return (EliteCraftingRecipe) getCustomRecipe(RecipeType.ELITE_WORKBENCH);
+        return getRecipe(RecipeType.ELITE_WORKBENCH);
     }
 
     public CustomBlastRecipe getBlastRecipe() {
-        return (CustomBlastRecipe) getCustomRecipe(RecipeType.BLAST_FURNACE);
+        return getRecipe(RecipeType.BLAST_FURNACE);
     }
 
     public CustomCampfireRecipe getCampfireRecipe() {
-        return (CustomCampfireRecipe) getCustomRecipe(RecipeType.CAMPFIRE);
+        return getRecipe(RecipeType.CAMPFIRE);
     }
 
     public CauldronRecipe getCauldronRecipe() {
-        return (CauldronRecipe) getCustomRecipe(RecipeType.CAULDRON);
+        return getRecipe(RecipeType.CAULDRON);
     }
 
     public CustomSmokerRecipe getSmokerRecipe() {
-        return (CustomSmokerRecipe) getCustomRecipe(RecipeType.SMOKER);
+        return getRecipe(RecipeType.SMOKER);
     }
 
     public CustomStonecutterRecipe getStonecutterRecipe() {
-        return (CustomStonecutterRecipe) getCustomRecipe(RecipeType.STONECUTTER);
+        return getRecipe(RecipeType.STONECUTTER);
     }
 
     public CustomFurnaceRecipe getFurnaceRecipe() {
-        return (CustomFurnaceRecipe) getCustomRecipe(RecipeType.FURNACE);
+        return getRecipe(RecipeType.FURNACE);
     }
 
     public GrindstoneRecipe getGrindstoneRecipe() {
-        return (GrindstoneRecipe) getCustomRecipe(RecipeType.GRINDSTONE);
+        return getRecipe(RecipeType.GRINDSTONE);
     }
 
     public BrewingRecipe getBrewingRecipe() {
-        return (BrewingRecipe) getCustomRecipe(RecipeType.BREWING_STAND);
+        return getRecipe(RecipeType.BREWING_STAND);
+    }
+
+    public CustomSmithingRecipe getSmithingRecipe() {
+        return getRecipe(RecipeType.SMITHING);
     }
 }

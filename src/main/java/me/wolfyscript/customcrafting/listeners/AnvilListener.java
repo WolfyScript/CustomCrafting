@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilData;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -36,7 +37,7 @@ public class AnvilListener implements Listener {
     public void onCheck(PrepareAnvilEvent event) {
         Player player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
-        List<CustomAnvilRecipe> recipes = customCrafting.getRecipeHandler().getAvailableAnvilRecipes(player);
+        List<CustomAnvilRecipe> recipes = customCrafting.getRecipeHandler().getAvailableRecipes(RecipeType.ANVIL, player);
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         preCraftedRecipes.remove(player.getUniqueId());
         for (CustomAnvilRecipe recipe : recipes) {
@@ -78,7 +79,7 @@ public class AnvilListener implements Listener {
 
             //RECIPE RESULTS!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                result = new ItemBuilder(recipe.getCustomResult().create());
+                result = new ItemBuilder(recipe.getResult().create());
             } else {
                 result = new ItemBuilder(event.getResult());
                 if (result.create().hasItemMeta()) {

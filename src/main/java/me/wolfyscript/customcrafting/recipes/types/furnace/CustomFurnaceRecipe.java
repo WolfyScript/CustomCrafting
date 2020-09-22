@@ -10,7 +10,7 @@ import org.bukkit.inventory.RecipeChoice;
 
 import java.util.stream.Collectors;
 
-public class CustomFurnaceRecipe extends CustomCookingRecipe<FurnaceRecipe> {
+public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe, FurnaceRecipe> {
 
     public CustomFurnaceRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -26,11 +26,12 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<FurnaceRecipe> {
 
     @Override
     public FurnaceRecipe getVanillaRecipe() {
-        return new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getCustomResult().create(), new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())), getExp(), getCookingTime());
+        RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
+        return new FurnaceRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().create(), choice, getExp(), getCookingTime());
     }
 
     @Override
-    public RecipeType getRecipeType() {
+    public RecipeType<CustomFurnaceRecipe> getRecipeType() {
         return RecipeType.FURNACE;
     }
 

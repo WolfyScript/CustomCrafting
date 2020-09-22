@@ -42,7 +42,7 @@ public class RecipeBookContainerButton extends Button {
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         KnowledgeBook book = cache.getKnowledgeBook();
         CustomItem customItem = getRecipeItem(guiHandler);
-        List<ICustomRecipe> recipes = recipeHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
+        List<ICustomRecipe<?>> recipes = recipeHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
         recipes.remove(book.getCurrentRecipe());
         if (!recipes.isEmpty()) {
             book.setSubFolder(1);

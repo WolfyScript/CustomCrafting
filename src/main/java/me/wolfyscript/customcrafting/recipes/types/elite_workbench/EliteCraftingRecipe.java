@@ -4,8 +4,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class EliteCraftingRecipe extends CraftingRecipe {
+public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRecipe> {
 
     protected int requiredGridSize;
 
@@ -33,13 +33,13 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe {
         super(eliteCraftingRecipe);
     }
 
-    @Override
-    public RecipeType getRecipeType() {
-        return RecipeType.ELITE_WORKBENCH;
-    }
-
     public int getRequiredGridSize() {
         return requiredGridSize;
+    }
+
+    @Override
+    public RecipeType<EliteCraftingRecipe> getRecipeType() {
+        return RecipeType.ELITE_WORKBENCH;
     }
 
     @Override

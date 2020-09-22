@@ -4,11 +4,10 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.StonecutterContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
+import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import org.bukkit.event.EventHandler;
 
 public class StonecutterCreator extends RecipeCreator {
 
@@ -24,21 +23,23 @@ public class StonecutterCreator extends RecipeCreator {
         registerButton(new StonecutterContainerButton(1, customCrafting));
     }
 
-    @EventHandler
-    public void onUpdate(GuiUpdateEvent event) {
-        if (event.verify(this)) {
-            ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), ((TestCache) event.getGuiHandler().getCustomCache()).getStonecutterRecipe().isHidden());
-            event.setButton(0, "back");
-            event.setButton(4, "hidden");
-            event.setButton(20, "stonecutter.container_0");
-            event.setButton(24, "stonecutter.container_1");
-            event.setButton(44, "save");
+    @Override
+    public void onUpdateAsync(GuiUpdate update) {
+        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), ((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().isHidden());
+        update.setButton(0, "back");
+        update.setButton(4, "hidden");
+        update.setButton(20, "stonecutter.container_0");
+        update.setButton(24, "stonecutter.container_1");
+
+        if(((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().hasNamespacedKey()){
+            update.setButton(43, "save");
         }
+        update.setButton(44, "save_as");
     }
 
     @Override
     public boolean validToSave(TestCache cache) {
         CustomStonecutterRecipe recipe = cache.getStonecutterRecipe();
-        return !InventoryUtils.isCustomItemsListEmpty(recipe.getCustomResults()) && !InventoryUtils.isCustomItemsListEmpty(recipe.getSource());
+        return !InventoryUtils.isCustomItemsListEmpty(recipe.getResults()) && !InventoryUtils.isCustomItemsListEmpty(recipe.getSource());
     }
 }

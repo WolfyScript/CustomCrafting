@@ -68,22 +68,22 @@ public class ConfigHandler {
         }
         if (mainConfig.resetAdvancedWorkbench()) {
             //Creating the advanced workbench item and recipe
-            NamespacedKey workbenchkKey = new NamespacedKey("customcrafting", "workbench");
+            NamespacedKey workbenchKey = new NamespacedKey("customcrafting", "workbench");
 
             CustomItem advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
             advancedWorkbench.setDisplayName(WolfyUtilities.translateColorCodes("&6Advanced Workbench"));
             advancedWorkbench.addLoreLine(WolfyUtilities.translateColorCodes("&7Workbench for advanced crafting"));
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            customCrafting.saveItem(workbenchkKey, advancedWorkbench);
+            customCrafting.saveItem(workbenchKey, advancedWorkbench);
 
             ShapedCraftRecipe workbenchCraft = new ShapedCraftRecipe();
             workbenchCraft.setMirrorHorizontal(false);
             workbenchCraft.setIngredient('B', 0, new CustomItem(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('E', 0, new CustomItem(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredient('H', 0, new CustomItem(Material.GLOWSTONE_DUST));
-            workbenchCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(workbenchkKey)));
-            workbenchCraft.setNamespacedKey(workbenchkKey);
+            workbenchCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(workbenchKey)));
+            workbenchCraft.setNamespacedKey(workbenchKey);
             workbenchCraft.save();
         }
         this.recipeBookConfig = new RecipeBookConfig(customCrafting);

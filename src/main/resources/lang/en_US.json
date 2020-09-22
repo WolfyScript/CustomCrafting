@@ -295,7 +295,7 @@
             ]
           },
           "smithing": {
-            "name": "&6Smithing Recipe &8[&7Coming Soon&8]",
+            "name": "&6Smithing Recipe &8[&7Alpha&8]",
             "lore": [
               ""
             ]
@@ -1620,9 +1620,17 @@
       "global_items": {
         "save": {
           "name": "&3Save",
-          "help": [
-            "&7Save the recipe",
-            "&7Input: &3<namespace> <recipe_name>"
+          "lore": [
+            "&7Save the recipe with the current key."
+          ]
+        },
+        "save_as": {
+          "name": "&6Save As...",
+          "lore": [
+            "&7Save the recipe with a new key.",
+            "&7Key: &e<folder_name> <recipe_name>",
+            "&cThe names must be lowercase alphanumeric",
+            "&c(a-z 0-9 _ -)"
           ]
         },
         "priority": {
@@ -2163,7 +2171,7 @@
         }
       },
       "brewing_stand": {
-        "gui_name": "&4&lCreator &7[&8Brewing Satnd&7]",
+        "gui_name": "&4&lCreator &7[&8Brewing Stand&7]",
         "messages": {
           "potion_duration": "&eType in the amount of ticks the potions duration should change",
           "potion_aplifier": "&eType in the amount of levels the potions amplifier should change"
@@ -2206,6 +2214,12 @@
               "&7[&cRight Click&7] &cReset Action"
             ]
           }
+        }
+      },
+      "smithing": {
+        "gui_name": "&4&lCreator &7[&8Smithing Table&7]",
+        "items": {
+
         }
       },
       "variants": {

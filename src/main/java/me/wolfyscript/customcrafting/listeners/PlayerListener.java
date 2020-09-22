@@ -2,13 +2,11 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import net.md_5.bungee.api.chat.ClickEvent;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -33,9 +31,6 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         WolfyUtilities api = CustomCrafting.getApi();
 
-        for (CustomFurnaceRecipe customFurnaceRecipe : customCrafting.getRecipeHandler().getFurnaceRecipes()) {
-            player.undiscoverRecipe(new NamespacedKey(customFurnaceRecipe.getNamespacedKey().getNamespace(), customFurnaceRecipe.getNamespacedKey().getKey()));
-        }
         if (!CustomCrafting.hasPlayerCache(player)) {
             CustomCrafting.getApi().sendConsoleMessage("Initializing new cache for " + player.getDisplayName());
             CustomCrafting.renewPlayerStatistics(player);

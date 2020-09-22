@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -165,7 +166,7 @@ public class BrewingStandListener implements Listener {
                                 //Check if recipe is correct
                                 BrewingRecipe brewingRecipe = null;
                                 CustomItem item = null;
-                                for (BrewingRecipe recipe : customCrafting.getRecipeHandler().getAvailableBrewingRecipes(player)) {
+                                for (BrewingRecipe recipe : customCrafting.getRecipeHandler().getAvailableRecipes(RecipeType.BREWING_STAND, player)) {
                                     item = null;
                                     for (CustomItem customItem : recipe.getIngredients()) {
                                         if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {

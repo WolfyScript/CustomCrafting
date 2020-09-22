@@ -11,8 +11,8 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
@@ -127,27 +127,14 @@ public class RecipeBook extends ExtendedGuiWindow {
             event.setButton(4, "recipe_book", "itemCategory");
 
             if (knowledgeBook.getRecipeItems().isEmpty()) {
-                List<ICustomRecipe> recipes = new ArrayList<>();
-                recipes.addAll(recipeHandler.getAvailableAdvancedCraftingRecipes(player));
-                recipes.addAll(recipeHandler.getAvailableAnvilRecipes(player));
-                recipes.addAll(recipeHandler.getAvailableEliteCraftingRecipes(player));
-                recipes.addAll(recipeHandler.getAvailableStonecutterRecipes());
-                recipes.addAll(recipeHandler.getAvailableCauldronRecipes());
-                recipes.addAll(recipeHandler.getAvailableBlastRecipes());
-                recipes.addAll(recipeHandler.getAvailableSmokerRecipes());
-                recipes.addAll(recipeHandler.getAvailableCampfireRecipes());
-                recipes.addAll(recipeHandler.getAvailableGrindstoneRecipes(player));
-                recipes.addAll(recipeHandler.getAvailableBrewingRecipes(player));
-                recipes.addAll(recipeHandler.getAvailableFurnaceRecipes());
-
                 List<CustomItem> recipeItems = new ArrayList<>();
-                recipes.stream().filter(customRecipe -> {
+                recipeHandler.getAvailableRecipes(player).stream().filter(customRecipe -> {
                     if (switchCategory != null) {
                         List<CustomItem> items;
                         if (customRecipe instanceof CustomAnvilRecipe) {
-                            items = ((CustomAnvilRecipe) customRecipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? customRecipe.getCustomResults() : ((CustomAnvilRecipe) customRecipe).hasInputLeft() ? ((CustomAnvilRecipe) customRecipe).getInputLeft() : ((CustomAnvilRecipe) customRecipe).getInputRight();
+                            items = ((CustomAnvilRecipe) customRecipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? customRecipe.getResults() : ((CustomAnvilRecipe) customRecipe).hasInputLeft() ? ((CustomAnvilRecipe) customRecipe).getInputLeft() : ((CustomAnvilRecipe) customRecipe).getInputRight();
                         } else {
-                            items = customRecipe.getCustomResults();
+                            items = customRecipe.getResults();
                         }
                         if (category != null) {
                             if (!category.isValid(customRecipe) && items.stream().noneMatch(customItem -> category.isValid(customItem.getItemStack().getType()))) {
@@ -159,9 +146,9 @@ public class RecipeBook extends ExtendedGuiWindow {
                     return true;
                 }).map(recipe -> {
                     if (recipe instanceof CustomAnvilRecipe) {
-                        return ((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? recipe.getCustomResults() : ((CustomAnvilRecipe) recipe).hasInputLeft() ? ((CustomAnvilRecipe) recipe).getInputLeft() : ((CustomAnvilRecipe) recipe).getInputRight();
+                        return ((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? recipe.getResults() : ((CustomAnvilRecipe) recipe).hasInputLeft() ? ((CustomAnvilRecipe) recipe).getInputLeft() : ((CustomAnvilRecipe) recipe).getInputRight();
                     }
-                    return recipe.getCustomResults();
+                    return recipe.getResults();
                 }).forEach(customItems -> customItems.stream().filter(item -> recipeItems.stream().noneMatch(rItem -> rItem.create().isSimilar(item.create()))).forEach(recipeItems::add));
                 knowledgeBook.setRecipeItems(recipeItems);
             }
@@ -184,7 +171,7 @@ public class RecipeBook extends ExtendedGuiWindow {
                 item++;
             }
         } else {
-            List<ICustomRecipe> recipes = knowledgeBook.getSubFolderRecipes();
+            List<ICustomRecipe<?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
             }
@@ -198,8 +185,8 @@ public class RecipeBook extends ExtendedGuiWindow {
             }
 
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
-                ICustomRecipe customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
-                if (customRecipe instanceof EliteCraftingRecipe) {
+                ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+                if (customRecipe.getRecipeType().equals(RecipeType.ELITE_WORKBENCH)) {
                     if (knowledgeBook.getSubFolderPage() > 0) {
                         event.setButton(51, "previous_recipe");
                     }
