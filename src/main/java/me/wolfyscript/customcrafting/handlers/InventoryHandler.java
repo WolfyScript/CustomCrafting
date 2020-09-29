@@ -6,6 +6,8 @@ import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.elite_crafting.*;
 import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.*;
+import me.wolfyscript.customcrafting.gui.potion_creator.PotionCreator;
+import me.wolfyscript.customcrafting.gui.potion_creator.PotionEffectTypeSelection;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
@@ -215,12 +217,12 @@ public class InventoryHandler {
             }), api);
             recipeBook.registerButton(new DummyButton("brewing.potion_duration",  Material.CLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 BrewingRecipe cookingRecipe = (BrewingRecipe) (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
-                hashMap.put("%value%", cookingRecipe.getDurationChange());
+                hashMap.put("%value%", cookingRecipe.getGlobalOptions().getDurationChange());
                 return itemStack;
             }), api);
             recipeBook.registerButton(new DummyButton("brewing.potion_amplifier", Material.IRON_SWORD, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 BrewingRecipe cookingRecipe = (BrewingRecipe) (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
-                hashMap.put("%value%", cookingRecipe.getAmplifierChange());
+                hashMap.put("%value%", cookingRecipe.getGlobalOptions().getAmplifierChange());
                 return itemStack;
             }), api);
             for (int i = 0; i < 54; i++) {
@@ -278,6 +280,10 @@ public class InventoryHandler {
 
         GuiCluster particleCluster = invAPI.getOrRegisterGuiCluster("particle_creator");
         particleCluster.registerGuiWindow(new me.wolfyscript.customcrafting.gui.particle_creator.MainMenu(invAPI, customCrafting));
+
+        GuiCluster potionCreator = invAPI.getOrRegisterGuiCluster("potion_creator");
+        potionCreator.registerGuiWindow(new PotionCreator(invAPI, customCrafting));
+        potionCreator.registerGuiWindow(new PotionEffectTypeSelection(invAPI, customCrafting));
 
 
     }

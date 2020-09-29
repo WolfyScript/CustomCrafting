@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -78,15 +79,27 @@ public class CraftListener implements Listener {
             if (result != null) {
                 e.getInventory().setResult(result);
             } else {
-                api.sendDebugMessage("No valid recipe!");
+                //No valid custom recipes found
                 if (e.getRecipe() != null) {
                     if (e.getRecipe() instanceof Keyed) {
+                        //Vanilla Recipe is available.
                         api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
+                        //Check for custom recipe that overrides the vanilla recipe
                         ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
                         if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
                             //Recipe is disabled or it is a custom recipe!
                             e.getInventory().setResult(new ItemStack(Material.AIR));
                         } else {
+                            //Check for items that are not allowed in vanilla recipes.
+                            //If one is found, then cancel the recipe.
+                            for (ItemStack itemStack : matrix) {
+                                CustomItem customItem = CustomItem.getByItemStack(itemStack);
+                                if (customItem != null && customItem.isBlockVanillaRecipes()) {
+                                    e.getInventory().setResult(new ItemStack(Material.AIR));
+                                    return;
+                                }
+                            }
+                            //At this point the vanilla recipe is valid and can be crafted
                             api.sendDebugMessage("Use vanilla recipe output!");
                         }
                     }
@@ -94,9 +107,9 @@ public class CraftListener implements Listener {
             }
             //player.updateInventory();
         } catch (Exception ex) {
-            System.out.println("WHAT HAPPENED? Please report!");
+            System.out.println("-------- WHAT HAPPENED? Please report! --------");
             ex.printStackTrace();
-            System.out.println("WHAT HAPPENED? Please report!");
+            System.out.println("-------- WHAT HAPPENED? Please report! --------");
             recipeUtils.getPreCraftedRecipes().remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }

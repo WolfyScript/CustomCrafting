@@ -5,10 +5,12 @@ import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.RandomCollection;
 import me.wolfyscript.utilities.api.utils.Reflection;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BrewingStand;
@@ -23,7 +25,6 @@ import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -185,64 +186,70 @@ public class BrewingStandListener implements Listener {
 
                                     if (!activeBrewingStands.containsKey(location)) {
                                         if (brewingStand.getFuelLevel() > 0) {
-
                                             AtomicInteger tick = new AtomicInteger(400);
                                             int multiplier = -1 * (400 / brewingRecipe.getBrewTime());
 
                                             final CustomItem finalIngredient = item;
-                                            new BukkitRunnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (activeBrewingStands.containsKey(location)) {
-                                                        if (tick.get() > 0) {
-                                                            try {
-                                                                Object tileEntityObj = getTileEntity.invoke(brewingStand);
-                                                                if (tileEntityObj != null) {
-                                                                    brewTime.setInt(tileEntityObj, tick.getAndAdd(multiplier));
-                                                                } else {
-                                                                    activeBrewingStands.remove(location);
-                                                                    cancel();
-                                                                }
-                                                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                                                e.printStackTrace();
+
+                                            Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, task -> {
+                                                if (activeBrewingStands.containsKey(location)) {
+                                                    if (tick.get() > 0) {
+                                                        try {
+                                                            Object tileEntity = getTileEntity.invoke(brewingStand);
+                                                            if (tileEntity != null) {
+                                                                brewTime.setInt(tileEntityObj, tick.getAndAdd(multiplier));
+                                                            } else {
                                                                 activeBrewingStands.remove(location);
-                                                                cancel();
+                                                                task.cancel();
                                                             }
-                                                        } else {
-                                                            BrewingRecipe recipe = (BrewingRecipe) customCrafting.getRecipeHandler().getRecipe(activeBrewingStands.get(location));
-
-                                                            BrewerInventory brewerInventory = brewingStand.getInventory();
-                                                            final ItemBuilder input0 = new ItemBuilder(brewerInventory.getItem(0));
-                                                            final ItemBuilder input1 = new ItemBuilder(brewerInventory.getItem(1));
-                                                            final ItemBuilder input2 = new ItemBuilder(brewerInventory.getItem(2));
-
-                                                            finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());
-
-                                                            if (recipe.getDurationChange() != 0) {
-                                                                int i = recipe.getDurationChange();
-                                                                increasePotionDuration(input0, i);
-                                                                increasePotionDuration(input1, i);
-                                                                increasePotionDuration(input2, i);
-                                                            }
-                                                            if (recipe.getAmplifierChange() != 0) {
-                                                                int i = recipe.getAmplifierChange();
-                                                                increasePotionAmplifier(input0, i);
-                                                                increasePotionAmplifier(input1, i);
-                                                                increasePotionAmplifier(input2, i);
-                                                            }
-
-                                                            brewerInventory.setItem(0, input0.create());
-                                                            brewerInventory.setItem(1, input1.create());
-                                                            brewerInventory.setItem(2, input2.create());
-
+                                                        } catch (IllegalAccessException | InvocationTargetException e) {
+                                                            e.printStackTrace();
                                                             activeBrewingStands.remove(location);
-                                                            cancel();
+                                                            task.cancel();
                                                         }
                                                     } else {
-                                                        cancel();
+                                                        BrewingRecipe recipe = (BrewingRecipe) customCrafting.getRecipeHandler().getRecipe(activeBrewingStands.get(location));
+                                                        BrewerInventory brewerInventory = brewingStand.getInventory();
+                                                        finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());
+
+                                                        for (int i = 0; i < 3; i++) {
+                                                            ItemStack inputItem = brewerInventory.getItem(i);
+                                                            ItemBuilder input = new ItemBuilder(inputItem);
+                                                            if (!recipe.getGlobalOptions().getResult().isEmpty()) {
+                                                                //Result available. Replace the items with a random result from the list. (Percentages of items are used)
+                                                                if (recipe.getGlobalOptions().getResult().size() > 1) {
+                                                                    RandomCollection<CustomItem> items = new RandomCollection<>();
+                                                                    recipe.getGlobalOptions().getResult().forEach(customItem -> items.add(customItem.getRarityPercentage(), customItem));
+                                                                    if (!items.isEmpty()) {
+                                                                        if (!ItemUtils.isAirOrNull(inputItem))
+                                                                            brewerInventory.setItem(i, items.next().create());
+                                                                    }
+                                                                } else if (recipe.getResult() != null) {
+                                                                    if (!ItemUtils.isAirOrNull(inputItem))
+                                                                        brewerInventory.setItem(i, recipe.getResult().create());
+                                                                }
+                                                            } else {
+                                                                //No result available
+                                                                if (recipe.getGlobalOptions().isResetEffects()) {
+                                                                    resetPotionEffects(input);
+                                                                } else {
+                                                                    increasePotionDuration(input, recipe.getGlobalOptions().getDurationChange());
+                                                                    increasePotionAmplifier(input, recipe.getGlobalOptions().getAmplifierChange());
+                                                                }
+                                                                if (recipe.getGlobalOptions().getEffectColor() != null) {
+                                                                    setPotionRGB(input, recipe.getGlobalOptions().getEffectColor());
+                                                                }
+                                                                brewerInventory.setItem(i, input.create());
+                                                            }
+
+                                                        }
+                                                        activeBrewingStands.remove(location);
+                                                        task.cancel();
                                                     }
+                                                } else {
+                                                    task.cancel();
                                                 }
-                                            }.runTaskTimerAsynchronously(customCrafting, 2, 1);
+                                            }, 2, 1);
                                         }
                                         activeBrewingStands.put(location, brewingRecipe.getNamespacedKey());
                                     }
@@ -280,6 +287,22 @@ public class BrewingStandListener implements Listener {
                 potionMeta.removeCustomEffect(effect.getType());
                 potionMeta.addCustomEffect(new PotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier() + amplifierChange, effect.isAmbient(), effect.hasParticles(), effect.hasIcon()), true);
             }
+            itemBuilder.setItemMeta(potionMeta);
+        }
+    }
+
+    public void setPotionRGB(ItemBuilder itemBuilder, Color color) {
+        if (itemBuilder != null && itemBuilder.getItemMeta() instanceof PotionMeta) {
+            PotionMeta potionMeta = (PotionMeta) itemBuilder.getItemMeta();
+            potionMeta.setColor(color);
+            itemBuilder.setItemMeta(potionMeta);
+        }
+    }
+
+    public void resetPotionEffects(ItemBuilder itemBuilder) {
+        if (itemBuilder != null && itemBuilder.getItemMeta() instanceof PotionMeta) {
+            PotionMeta potionMeta = (PotionMeta) itemBuilder.getItemMeta();
+            potionMeta.clearCustomEffects();
             itemBuilder.setItemMeta(potionMeta);
         }
     }

@@ -24,11 +24,14 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
     private List<CustomItem> addition;
     private List<CustomItem> result;
 
+    private boolean preserveEnchants;
+
     public CustomSmithingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         base = Streams.stream(node.path("base").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         addition = Streams.stream(node.path("addition").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         result = Streams.stream(node.path("result").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        preserveEnchants = node.path("preserve_enchants").asBoolean(true);
     }
 
     public CustomSmithingRecipe() {
@@ -36,6 +39,7 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
         this.base = new ArrayList<>();
         this.addition = new ArrayList<>();
         this.result = new ArrayList<>();
+        this.preserveEnchants = true;
     }
 
     public CustomSmithingRecipe(CustomSmithingRecipe customSmithingRecipe) {
@@ -43,6 +47,7 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
         this.result = customSmithingRecipe.getResults();
         this.base = customSmithingRecipe.getBase();
         this.addition = customSmithingRecipe.getAddition();
+        this.preserveEnchants = customSmithingRecipe.isPreserveEnchants();
     }
 
     @Override
@@ -76,6 +81,14 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
         this.result = result;
     }
 
+    public boolean isPreserveEnchants() {
+        return preserveEnchants;
+    }
+
+    public void setPreserveEnchants(boolean preserveEnchants) {
+        this.preserveEnchants = preserveEnchants;
+    }
+
     @Override
     public CustomSmithingRecipe clone() {
         return new CustomSmithingRecipe(this);
@@ -100,6 +113,7 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
+        gen.writeBooleanField("preserve_enchants", preserveEnchants);
         {
             gen.writeArrayFieldStart("result");
             for (CustomItem customItem : result) {

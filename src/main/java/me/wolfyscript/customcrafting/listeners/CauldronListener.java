@@ -138,7 +138,6 @@ public class CauldronListener implements Listener {
                                     Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
                                     if (!cauldronPreCookEvent.isCancelled()) {
                                         cauldronEntryValue.add(new Cauldron(cauldronPreCookEvent));
-
                                         for (int i = 0; i < recipe.getIngredients().size() && i < validItems.size(); i++) {
                                             Item itemEntity = validItems.get(i);
                                             ItemStack itemStack = itemEntity.getItemStack();

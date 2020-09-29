@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.brewing;
 
+import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -15,70 +16,58 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.Seriali
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
-    private List<CustomItem> ingredients, allowedItems, result;
-    private int fuelCost;
-    private int brewTime;
-    private int durationChange;
-    private int amplifierChange;
+    private final BrewResultOptions globalOptions;
+    List<CustomItem> allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
+    private List<CustomItem> ingredients; //The top ingredient of the recipe. Always required.
+    private int fuelCost; //The fuel cost of recipe
+    private int brewTime; //The brew time in ticks
+    private Map<CustomItem, BrewResultOptions> resultOptions;
+
+    /**
+     * TODO: Link settings to CustomItems to further customize specific items.
+     */
 
     public BrewingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        {
-            List<CustomItem> ingredients = new ArrayList<>();
-            JsonNode resultNode = node.path("ingredients");
-            if (resultNode.isObject()) {
-                ingredients.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
-                resultNode.path("variants").forEach(jsonNode -> ingredients.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class))));
-            } else {
-                resultNode.elements().forEachRemaining(n -> ingredients.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
-            }
-            this.ingredients = ingredients.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-        }
-        if(result == null){
-            this.result = new ArrayList<>();
-        }
-        {
-            List<CustomItem> allowedItems = new ArrayList<>();
-            JsonNode resultNode = node.path("allowed_items");
-            if (resultNode.isObject()) {
-                allowedItems.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
-                resultNode.path("variants").forEach(jsonNode -> allowedItems.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class))));
-            } else {
-                resultNode.elements().forEachRemaining(n -> allowedItems.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
-            }
-            this.allowedItems = allowedItems.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-        }
-        this.fuelCost = node.path("fuel_cost").asInt();
-        this.brewTime = node.path("brew_time").asInt();
-        this.durationChange = node.path("duration_change").asInt();
-        this.amplifierChange = node.path("amplifier_change").asInt();
+        ingredients = Streams.stream(node.path("ingredients").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        this.fuelCost = node.path("fuel_cost").asInt(1);
+        this.brewTime = node.path("brew_time").asInt(80);
+
+        this.globalOptions = mapper.convertValue(node.path("globalOptions"), BrewResultOptions.class);
+
+        allowedItems = Streams.stream(node.path("allowed_items").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+
     }
 
     public BrewingRecipe() {
         super();
         this.ingredients = new ArrayList<>();
-        this.allowedItems = new ArrayList<>();
-        this.result = new ArrayList<>();
         this.fuelCost = 1;
         this.brewTime = 400;
-        this.durationChange = 1;
-        this.amplifierChange = 1;
+
+        this.globalOptions = new BrewResultOptions();
+        this.resultOptions = new HashMap<>();
+
+        this.allowedItems = new ArrayList<>();
     }
 
     public BrewingRecipe(BrewingRecipe brewingRecipe) {
         super(brewingRecipe);
         this.ingredients = brewingRecipe.getIngredients();
-        this.allowedItems = brewingRecipe.getAllowedItems();
-        this.result = brewingRecipe.getResults();
         this.fuelCost = brewingRecipe.getFuelCost();
         this.brewTime = brewingRecipe.getBrewTime();
-        this.durationChange = brewingRecipe.getDurationChange();
-        this.amplifierChange = brewingRecipe.getAmplifierChange();
+
+        this.globalOptions = brewingRecipe.getGlobalOptions();
+        this.resultOptions = brewingRecipe.getResultOptions();
+
+        this.allowedItems = brewingRecipe.getAllowedItems();
     }
 
     @Override
@@ -86,14 +75,21 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         return RecipeType.BREWING_STAND;
     }
 
+    /**
+     * This recipe has no result
+     *
+     * @return
+     */
+    @Deprecated
     @Override
     public List<CustomItem> getResults() {
-        return new ArrayList<>(result);
+        return new ArrayList<>();
     }
 
+    @Deprecated
     @Override
     public void setResult(List<CustomItem> result) {
-        this.result = result;
+        //No Result available!
     }
 
     public int getFuelCost() {
@@ -128,20 +124,12 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         this.allowedItems = allowedItems;
     }
 
-    public int getAmplifierChange() {
-        return amplifierChange;
+    public BrewResultOptions getGlobalOptions() {
+        return globalOptions;
     }
 
-    public void setAmplifierChange(int amplifierChange) {
-        this.amplifierChange = amplifierChange;
-    }
-
-    public int getDurationChange() {
-        return durationChange;
-    }
-
-    public void setDurationChange(int durationChange) {
-        this.durationChange = durationChange;
+    public Map<CustomItem, BrewResultOptions> getResultOptions() {
+        return resultOptions;
     }
 
     @Override
@@ -166,6 +154,10 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
             }
             gen.writeEndArray();
         }
+        gen.writeNumberField("fuel_cost", fuelCost);
+        gen.writeNumberField("brew_time", brewTime);
+
+
         {
             gen.writeArrayFieldStart("allowed_items");
             for (CustomItem customItem : getAllowedItems()) {
@@ -173,10 +165,6 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
             }
             gen.writeEndArray();
         }
-        gen.writeNumberField("fuel_cost", fuelCost);
-        gen.writeNumberField("brew_time", brewTime);
-        gen.writeNumberField("duration_change", durationChange);
-        gen.writeNumberField("amplifier_change", amplifierChange);
     }
 
     @Override
@@ -189,12 +177,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         if (!InventoryUtils.isCustomItemsListEmpty(this.getAllowedItems())) {
             event.setButton(29, "recipe_book", "ingredient.container_29");
         }
-        if (this.getDurationChange() > 0) {
-            event.setButton(23, "recipe_book", "brewing.potion_duration");
-        }
-        if (this.getAmplifierChange() > 0) {
-            event.setButton(25, "recipe_book", "brewing.potion_amplifier");
-        }
+
 
     }
 }

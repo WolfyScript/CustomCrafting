@@ -4,6 +4,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
+import me.wolfyscript.customcrafting.data.cache.potions.PotionEffectCache;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -25,6 +27,7 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRec
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.cache.CustomCache;
+import org.bukkit.potion.PotionEffect;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -38,13 +41,18 @@ public class TestCache extends CustomCache {
     private final CustomCrafting customCrafting;
     private String subSetting;
 
-    private Items items = new Items();
+    private final Items items = new Items();
+    private final PotionEffectCache potionEffectCache = new PotionEffectCache();
     private final KnowledgeBook knowledgeBook = new KnowledgeBook();
     private final VariantsData variantsData = new VariantsData();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
+    private final BrewingGUICache brewingGUICache = new BrewingGUICache();
+
     private ApplyItem applyItem;
+    private ApplyPotionEffect applyPotionEffect;
+
     private RecipeType<?> recipeType;
 
     public TestCache() {
@@ -108,8 +116,19 @@ public class TestCache extends CustomCache {
         return items;
     }
 
-    public void setItems(Items items) {
-        this.items = items;
+    public PotionEffectCache getPotionEffectCache() {
+        return potionEffectCache;
+    }
+
+    public void setApplyPotionEffect(ApplyPotionEffect applyPotionEffect) {
+        this.applyPotionEffect = applyPotionEffect;
+    }
+
+    public void applyPotionEffect(PotionEffect potionEffect) {
+        if (applyPotionEffect != null) {
+            applyPotionEffect.applyPotionEffect(getPotionEffectCache(), this, potionEffect);
+            applyPotionEffect = null;
+        }
     }
 
     public void setApplyItem(ApplyItem applyItem) {
@@ -135,6 +154,11 @@ public class TestCache extends CustomCache {
         this.eliteWorkbench = eliteWorkbench;
     }
 
+    public BrewingGUICache getBrewingGUICache() {
+        return brewingGUICache;
+    }
+
+    //Recipes
     public void setCustomRecipe(ICustomRecipe<?> customRecipe) {
         recipes.put(customRecipe.getRecipeType(), customRecipe);
     }

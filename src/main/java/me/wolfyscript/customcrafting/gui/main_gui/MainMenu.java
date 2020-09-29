@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemFlag;
 public class MainMenu extends ExtendedGuiWindow {
 
     public MainMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("main_menu", inventoryAPI, 45, customCrafting);
+        super("main_menu", inventoryAPI, 54, customCrafting);
     }
 
     @Override
@@ -65,13 +65,14 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(0, "settings");
         event.setButton(8, "none", "gui_help");
 
         event.setButton(4, "none", "patreon");
-        event.setButton(39, "none", "instagram");
-        event.setButton(40, "none", "youtube");
-        event.setButton(41, "none", "discord");
+        event.setButton(48, "none", "instagram");
+        event.setButton(49, "none", "youtube");
+        event.setButton(50, "none", "discord");
 
         event.setButton(10, "workbench");
         event.setButton(12, "furnace");
@@ -96,6 +97,10 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(32, "brewing");
             event.setButton(34, "elite_workbench");
         }
+        for (int i = 37; i < 44; i++) {
+            event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        }
+
         event.setButton(36, "item_editor");
         event.setButton(44, "recipe_list");
     }

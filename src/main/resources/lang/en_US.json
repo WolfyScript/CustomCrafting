@@ -1612,6 +1612,31 @@
                 "&7[&aShift Click&7] Remove Effect"
               ]
             }
+          },
+          "vanilla": {
+            "option": {
+              "name": "&6Vanilla Settings",
+              "lore": [
+                "&7Block Vanilla features,",
+                "&7e.g. block the use in vanilla recipes"
+              ]
+            },
+            "block_recipes": {
+              "enabled": {
+                "name": "&aBlocked",
+                "lore": [
+                  "&eItem is block in vanilla recipes",
+                  "&7[&aClick&7] Disable blocking"
+                ]
+              },
+              "disabled": {
+                "name": "&cDisabled",
+                "lore": [
+                  "&eItem can be used in vanilla recipes",
+                  "&7[&aClick&7] Enable blocking"
+                ]
+              }
+            }
           }
         }
       }
@@ -2198,7 +2223,17 @@
             ],
             "message": "&eType in the fuel cost. e.g. 2"
           },
-          "potion_duration": {
+          "allowed_items": {
+            "name": "&6Allowed Potions",
+            "lore": [
+              "&eConfigure exact Items that this recipe allows!",
+              "&eIf empty all potions are allowed and can further",
+              "&ebe customized on the right.",
+              "",
+              "&7« Shift + Right Click to set multiple items."
+            ]
+          },
+          "duration_change": {
             "name": "&7Potion Duration",
             "lore": [
               "&eDuration Change: &6%value%",
@@ -2206,12 +2241,45 @@
               "&7[&cRight Click&7] &cReset Action"
             ]
           },
-          "potion_amplifier": {
+          "amplifier_change": {
             "name": "&7Potion Amplifier",
             "lore": [
               "&eAmplifier Change: &6%value%",
               "&7[&aLeft Click&7] &eChange Value",
               "&7[&cRight Click&7] &cReset Action"
+            ]
+          },
+          "color_change": {
+            "name": "&6Color RGB change",
+            "lore": [
+              "&eThis option increases the RGB int value.",
+              "&eIf value <0 it's being subtracted.",
+              "&7[&aLeft Click&7] &eSet color change",
+              "&7[&aRight Click&7] &eReset color change"
+            ]
+          },
+          "reset_effects": {
+            "enabled": {
+              "name": "&cReset Potion Effects",
+              "lore": [
+                "&ePotion Effects are reset for each potion!",
+                "&7[&aClick&7] &7Keep potion effects"
+              ]
+            },
+            "disabled": {
+              "name": "&7Keep Potion Effects",
+              "lore": [
+                "&ePotion Effects are kept for each potion!",
+                "&7[&aClick&7] &7Reset potion effects"
+              ]
+            }
+          },
+          "effect_color": {
+            "name": "&6Effect RGB Color",
+            "lore": [
+              "&eThis option sets the specific color to potions.",
+              "&7[&aLeft Click&7] &eSet color (input: <red> <green> <blue>)",
+              "&7[&aRight Click&7] &eReset color"
             ]
           }
         }
@@ -2527,6 +2595,82 @@
                 "&7[&aRight Click&7] Select Effect"
               ]
             }
+          }
+        }
+      }
+    },
+    "potion_creator": {
+      "potion_creator": {
+        "gui_name": "&0&lPotion Creator",
+        "items": {
+          "potion_effect_type": {
+            "name": "&7Effect Type: %effect_type%",
+            "lore": [
+              "&eChoose the Type of this Potion Effect"
+            ]
+          },
+          "duration": {
+            "name": "&7Duration: %duration%",
+            "lore": [
+              "&eSet the duration of the Potion Effect",
+              "&ein ticks."
+            ]
+          },
+          "amplifier": {
+            "name": "&7Amplifier: %amplifier%",
+            "lore": [
+              "&eSet the amplifier of the Potion Effect"
+            ]
+          },
+          "ambient": {
+            "enabled": {
+              "name": "&7Ambient: &aenabled",
+              "lore": [
+                "&eProduces more translucent ambient particles"
+              ]
+            },
+            "disabled": {
+              "name": "&7Ambient: &cdisabled",
+              "lore": [
+                "&eProduces less ambient particles"
+              ]
+            }
+          },
+          "particles": {
+            "enabled": {
+              "name": "&7Particle: &aenabled",
+              "lore": [
+                "&eParticles are produced"
+              ]
+            },
+            "disabled": {
+              "name": "&7Particle: &cdisabled",
+              "lore": [
+                "&eNo Particles are produced"
+              ]
+            }
+          },
+          "icon": {
+            "enabled": {
+              "name": "&7Icon: &aenabled",
+              "lore": [
+                "&eIcon of Particle Effect is displayed"
+              ]
+            },
+            "disabled": {
+              "name": "&7Icon: &cdisabled",
+              "lore": [
+                "&eIcon of Particle Effect is hidden"
+              ]
+            }
+          }
+        }
+      },
+      "potion_effect_type_selection": {
+        "gui_name": "&0&lPotion Creator &7[&4Select Type&7]",
+        "items": {
+          "effect_type": {
+            "name": "%effect_type%"
           }
         }
       }
