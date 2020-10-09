@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingIngredie
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
@@ -66,18 +67,19 @@ public class WorkbenchCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
+        super.onUpdateAsync(update);
         update.setButton(0, "back");
-        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        TestCache cache = update.getGuiHandler(TestCache.class).getCustomCache();
         CraftingRecipe<?> craftingRecipe = cache.getAdvancedCraftingRecipe();
 
-        ((ToggleButton) update.getGuiWindow().getButton("workbench.shapeless")).setState(update.getGuiHandler(), craftingRecipe.isShapeless());
-        ((ToggleButton) update.getGuiWindow().getButton("exact_meta")).setState(update.getGuiHandler(), craftingRecipe.isExactMeta());
-        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), craftingRecipe.isHidden());
+        ((ToggleButton) getButton("workbench.shapeless")).setState(update.getGuiHandler(), craftingRecipe.isShapeless());
+        ((ToggleButton) getButton("exact_meta")).setState(update.getGuiHandler(), craftingRecipe.isExactMeta());
+        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), craftingRecipe.isHidden());
 
         if (!craftingRecipe.isShapeless()) {
-            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedCraftRecipe) craftingRecipe).mirrorHorizontal());
-            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorVertical")).setState(update.getGuiHandler(), ((ShapedCraftRecipe) craftingRecipe).mirrorVertical());
-            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorRotation")).setState(update.getGuiHandler(), ((ShapedCraftRecipe) craftingRecipe).mirrorRotation());
+            ((ToggleButton) getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedCraftRecipe) craftingRecipe).mirrorHorizontal());
+            ((ToggleButton) getButton("workbench.mirrorVertical")).setState(update.getGuiHandler(), ((ShapedCraftRecipe) craftingRecipe).mirrorVertical());
+            ((ToggleButton) getButton("workbench.mirrorRotation")).setState(update.getGuiHandler(), ((ShapedCraftRecipe) craftingRecipe).mirrorRotation());
 
             if (((ShapedCraftRecipe) craftingRecipe).mirrorHorizontal() && ((ShapedCraftRecipe) craftingRecipe).mirrorVertical()) {
                 update.setButton(37, "workbench.mirrorRotation");
@@ -107,7 +109,7 @@ public class WorkbenchCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(TestCache cache) {
-        CraftingRecipe workbench = cache.getAdvancedCraftingRecipe();
+        AdvancedCraftingRecipe workbench = cache.getAdvancedCraftingRecipe();
         return workbench.getIngredients() != null && !InventoryUtils.isCustomItemsListEmpty(workbench.getResults());
     }
 }

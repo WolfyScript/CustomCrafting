@@ -27,6 +27,7 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(8, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
 

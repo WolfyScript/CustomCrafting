@@ -178,13 +178,14 @@ public class CauldronCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
+        super.onUpdateAsync(update);
         update.setButton(0, "back");
-        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        TestCache cache = update.getGuiHandler(TestCache.class).getCustomCache();
         CauldronRecipe cauldronRecipe = cache.getCauldronRecipe();
-        ((ToggleButton) update.getGuiWindow().getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.needsFire());
-        ((ToggleButton) update.getGuiWindow().getButton("water")).setState(update.getGuiHandler(), cauldronRecipe.needsWater());
-        ((ToggleButton) update.getGuiWindow().getButton("dropItems")).setState(update.getGuiHandler(), cauldronRecipe.dropItems());
-        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), cauldronRecipe.isHidden());
+        ((ToggleButton) getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.needsFire());
+        ((ToggleButton) getButton("water")).setState(update.getGuiHandler(), cauldronRecipe.needsWater());
+        ((ToggleButton) getButton("dropItems")).setState(update.getGuiHandler(), cauldronRecipe.dropItems());
+        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), cauldronRecipe.isHidden());
 
         update.setButton(1, "hidden");
         update.setButton(3, "recipe_creator", "conditions");

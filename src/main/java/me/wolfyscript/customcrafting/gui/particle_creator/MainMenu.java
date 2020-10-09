@@ -53,7 +53,8 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
-        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
+        super.onUpdateAsync(event);
+        GuiHandler<TestCache> guiHandler = event.getGuiHandler(TestCache.class);
         TestCache cache = guiHandler.getCustomCache();
         ParticleCache particleCache = cache.getParticleCache();
 

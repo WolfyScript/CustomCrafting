@@ -67,6 +67,7 @@ public class RecipesList extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         GuiHandler guiHandler = event.getGuiHandler();
         Category category = ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
         int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
@@ -81,7 +82,7 @@ public class RecipesList extends ExtendedGuiWindow {
             maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
             int item = 0;
             for (int i = 45 * currentPage; item < 45 && i < namespaceList.size(); i++) {
-                RecipeListNamespaceButton button = (RecipeListNamespaceButton) event.getGuiWindow().getButton("recipe_list.namespace_" + item);
+                RecipeListNamespaceButton button = (RecipeListNamespaceButton) getButton("recipe_list.namespace_" + item);
                 button.setNamespace(guiHandler, namespaceList.get(i));
                 event.setButton(9 + item, button);
                 item++;
@@ -102,7 +103,7 @@ public class RecipesList extends ExtendedGuiWindow {
             int item = 0;
             for (int i = 45 * currentPage; item < 45 && i < recipes.size(); i++) {
                 Object recipe = recipes.get(i);
-                RecipeListContainerButton button = (RecipeListContainerButton) event.getGuiWindow().getButton("recipe_list.container_" + item);
+                RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
                 if (recipe instanceof Recipe) {
                     button.setRecipe(event.getGuiHandler(), (Recipe) recipe);
                 } else if (recipe instanceof ICustomRecipe) {

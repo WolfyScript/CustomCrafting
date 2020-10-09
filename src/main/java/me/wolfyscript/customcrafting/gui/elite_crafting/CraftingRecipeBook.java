@@ -71,8 +71,9 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         event.setButton(0, "back");
-        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
+        GuiHandler<TestCache> guiHandler = event.getGuiHandler(TestCache.class);
         Player player = event.getPlayer();
         TestCache cache = guiHandler.getCustomCache();
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);

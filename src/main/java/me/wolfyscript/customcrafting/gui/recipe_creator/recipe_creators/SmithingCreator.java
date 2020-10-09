@@ -31,11 +31,12 @@ public class SmithingCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
         event.setButton(0, "back");
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
-        ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
-        ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
+        ((ToggleButton) getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
+        ((ToggleButton) getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
         event.setButton(1, "hidden");
         event.setButton(3, "recipe_creator", "conditions");
         event.setButton(5, "priority");
@@ -44,7 +45,7 @@ public class SmithingCreator extends RecipeCreator {
         event.setButton(22, "container_1");
         event.setButton(25, "container_2");
 
-        if(smithingRecipe.hasNamespacedKey()){
+        if (smithingRecipe.hasNamespacedKey()) {
             event.setButton(43, "save");
         }
         event.setButton(44, "save_as");

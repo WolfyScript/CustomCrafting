@@ -65,18 +65,19 @@ public class EliteWorkbenchCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
+        super.onUpdateAsync(update);
         update.setButton(6, "back");
         TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
 
-        ((ToggleButton) update.getGuiWindow().getButton("workbench.shapeless")).setState(update.getGuiHandler(), workbench.isShapeless());
-        ((ToggleButton) update.getGuiWindow().getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
-        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
+        ((ToggleButton) getButton("workbench.shapeless")).setState(update.getGuiHandler(), workbench.isShapeless());
+        ((ToggleButton) getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
+        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
 
         if (!workbench.isShapeless()) {
-            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorHorizontal());
-            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorVertical")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorVertical());
-            ((ToggleButton) update.getGuiWindow().getButton("workbench.mirrorRotation")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorRotation());
+            ((ToggleButton) getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorHorizontal());
+            ((ToggleButton) getButton("workbench.mirrorVertical")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorVertical());
+            ((ToggleButton) getButton("workbench.mirrorRotation")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorRotation());
 
             if (((ShapedEliteCraftRecipe) workbench).mirrorHorizontal() && ((ShapedEliteCraftRecipe) workbench).mirrorVertical()) {
                 update.setButton(33, "workbench.mirrorRotation");

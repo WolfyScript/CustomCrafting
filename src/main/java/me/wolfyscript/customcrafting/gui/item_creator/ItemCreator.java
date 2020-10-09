@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -33,8 +34,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -313,60 +312,30 @@ public class ItemCreator extends ExtendedGuiWindow {
         //POTION SETTINGS
         registerButton(new OptionButton(Material.POTION, "potion"));
         {
-            registerButton(new ActionButton("potion_beta.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            registerButton(new ActionButton("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache, potionEffect) -> {
+                    Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
+                    ItemMeta itemMeta = items.getItem().getItemMeta();
+                    if (itemMeta instanceof PotionMeta) {
+                        ((PotionMeta) itemMeta).addCustomEffect(potionEffect, true);
+                    }
+                    items.getItem().setItemMeta(itemMeta);
+                });
                 guiHandler.changeToInv("potion_creator", "potion_creator");
                 return true;
             }));
-            registerButton(new ChatInputButton("potion.add", Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
-                ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
-                PotionEffectType type;
-                if (!(itemMeta instanceof PotionMeta)) {
-                    return true;
-                }
-                type = null;
-                int duration = 0;
-                int amplifier = 1;
-                boolean ambient = true;
-                boolean particles = true;
-                if (args.length >= 3) {
-                    try {
-                        type = PotionEffectType.getByName(args[0]);
-                        duration = Integer.parseInt(args[1]);
-                        amplifier = Integer.parseInt(args[2]);
-                        if (args.length == 5) {
-                            ambient = Boolean.parseBoolean(args[3].toLowerCase());
-                            particles = Boolean.parseBoolean(args[4].toLowerCase());
-                        }
-                    } catch (NumberFormatException e) {
-                        api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
-                        return true;
+            registerButton(new ActionButton("potion.remove", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                PotionEffects potionEffectCache = ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache();
+                potionEffectCache.setApplyPotionEffectType((cache, type) -> {
+                    Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
+                    ItemMeta itemMeta = items.getItem().getItemMeta();
+                    if (itemMeta instanceof PotionMeta) {
+                        ((PotionMeta) itemMeta).removeCustomEffect(type);
                     }
-                }
-                if (type != null) {
-                    PotionEffect potionEffect = new PotionEffect(type, duration, amplifier, ambient, particles);
-                    ((PotionMeta) itemMeta).addCustomEffect(potionEffect, true);
-
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.success", new String[]{"%TYPE%", type.getName()}, new String[]{"%DUR%", String.valueOf(duration)}, new String[]{"%AMP%", String.valueOf(amplifier)}, new String[]{"%AMB%", String.valueOf(ambient)}, new String[]{"%PAR%", String.valueOf(particles)});
-                    ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
-                    return false;
-
-                }
-                api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.wrong_args");
-                return true;
-            }));
-            registerButton(new ChatInputButton("potion.remove", Material.RED_CONCRETE, (guiHandler, player, s, args) -> {
-                ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
-                PotionEffectType type;
-                if (!(itemMeta instanceof PotionMeta)) {
-                    return true;
-                }
-                type = PotionEffectType.getByName(args[0]);
-                if (type != null) {
-                    ((PotionMeta) itemMeta).removeCustomEffect(type);
-                    ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
-                    return false;
-                }
-                api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.invalid_name", new String[]{"%NAME%", args[0]});
+                    items.getItem().setItemMeta(itemMeta);
+                });
+                potionEffectCache.setOpenedFrom("item_creator", "main_menu");
+                guiHandler.changeToInv("potion_creator", "potion_effect_type_selection");
                 return true;
             }));
         }
@@ -763,8 +732,9 @@ public class ItemCreator extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
-        GuiHandler guiHandler = event.getGuiHandler();
-        TestCache cache = ((TestCache) guiHandler.getCustomCache());
+        super.onUpdateAsync(event);
+        GuiHandler<TestCache> guiHandler = event.getGuiHandler(TestCache.class);
+        TestCache cache = guiHandler.getCustomCache();
         Items items = cache.getItems();
         CustomItem customItem = items.getItem();
         ItemStack item = customItem.create();
@@ -792,7 +762,7 @@ public class ItemCreator extends ExtendedGuiWindow {
             options.add("flags.option");
             options.add("attribute.option");
             if (items.getItem() != null && !item.getType().equals(Material.AIR)) {
-                ((ToggleButton) event.getGuiWindow().getButton("unbreakable")).setState(event.getGuiHandler(), item.getItemMeta().isUnbreakable());
+                ((ToggleButton) getButton("unbreakable")).setState(event.getGuiHandler(), item.getItemMeta().isUnbreakable());
                 options.add("unbreakable");
             }
             options.add("repair_cost.option");
@@ -877,12 +847,12 @@ public class ItemCreator extends ExtendedGuiWindow {
                     event.setButton(45, "meta_ignore.lore");
                     break;
                 case "flags":
-                    ((ToggleButton) event.getGuiWindow().getButton("flags.attributes")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES));
-                    ((ToggleButton) event.getGuiWindow().getButton("flags.unbreakable")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE));
-                    ((ToggleButton) event.getGuiWindow().getButton("flags.destroys")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS));
-                    ((ToggleButton) event.getGuiWindow().getButton("flags.placed_on")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON));
-                    ((ToggleButton) event.getGuiWindow().getButton("flags.potion_effects")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS));
-                    ((ToggleButton) event.getGuiWindow().getButton("flags.enchants")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ENCHANTS));
+                    ((ToggleButton) getButton("flags.attributes")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES));
+                    ((ToggleButton) getButton("flags.unbreakable")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE));
+                    ((ToggleButton) getButton("flags.destroys")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS));
+                    ((ToggleButton) getButton("flags.placed_on")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON));
+                    ((ToggleButton) getButton("flags.potion_effects")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS));
+                    ((ToggleButton) getButton("flags.enchants")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ENCHANTS));
                     event.setButton(37, "flags.attributes");
                     event.setButton(39, "flags.unbreakable");
                     event.setButton(41, "flags.destroys");
@@ -935,9 +905,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 case "fuel":
                     event.setButton(39, "fuel.burn_time.set");
                     event.setButton(41, "fuel.burn_time.reset");
-                    ((ToggleButton) event.getGuiWindow().getButton("fuel.furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.FURNACE));
-                    ((ToggleButton) event.getGuiWindow().getButton("fuel.blast_furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.BLAST_FURNACE));
-                    ((ToggleButton) event.getGuiWindow().getButton("fuel.smoker")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.SMOKER));
+                    ((ToggleButton) getButton("fuel.furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.FURNACE));
+                    ((ToggleButton) getButton("fuel.blast_furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.BLAST_FURNACE));
+                    ((ToggleButton) getButton("fuel.smoker")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.SMOKER));
                     event.setButton(47, "fuel.furnace");
                     event.setButton(49, "fuel.blast_furnace");
                     event.setButton(51, "fuel.smoker");
@@ -948,7 +918,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     event.setButton(45, "meta_ignore.customModelData");
                     break;
                 case "consume":
-                    ((ToggleButton) event.getGuiWindow().getButton("consume.consume_item")).setState(event.getGuiHandler(), customItem.isConsumed());
+                    ((ToggleButton) getButton("consume.consume_item")).setState(event.getGuiHandler(), customItem.isConsumed());
                     event.setButton(31, "consume.consume_item");
                     event.setButton(38, "consume.replacement");
                     event.setButton(39, items.getItem().hasReplacement() ? "consume.replacement.enabled" : "consume.replacement.disabled");
@@ -980,9 +950,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                     break;
                 case "elite_workbench":
                     if (item.getType().isBlock()) {
-                        ((MultipleChoiceButton) event.getGuiWindow().getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).getGridSize() - 3);
-                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isEnabled());
-                        ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.advanced_recipes")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isAdvancedRecipes());
+                        ((MultipleChoiceButton) getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).getGridSize() - 3);
+                        ((ToggleButton) getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isEnabled());
+                        ((ToggleButton) getButton("elite_workbench.advanced_recipes")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData("elite_workbench")).isAdvancedRecipes());
                         event.setButton(37, "elite_workbench.particles");
                         event.setButton(39, "elite_workbench.grid_size");
                         event.setButton(41, "elite_workbench.toggle");
@@ -990,14 +960,14 @@ public class ItemCreator extends ExtendedGuiWindow {
                     }
                     break;
                 case "knowledge_book":
-                    ((ToggleButton) event.getGuiWindow().getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((KnowledgeBookData) customItem.getCustomData("knowledge_book")).isEnabled());
+                    ((ToggleButton) getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((KnowledgeBookData) customItem.getCustomData("knowledge_book")).isEnabled());
                     event.setButton(40, "knowledge_book.toggle");
                     break;
                 case "armor_slots":
-                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.head")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.HEAD));
-                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.chest")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.CHEST));
-                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.legs")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.LEGS));
-                    ((ToggleButton) event.getGuiWindow().getButton("armor_slots.feet")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.FEET));
+                    ((ToggleButton) getButton("armor_slots.head")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.HEAD));
+                    ((ToggleButton) getButton("armor_slots.chest")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.CHEST));
+                    ((ToggleButton) getButton("armor_slots.legs")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.LEGS));
+                    ((ToggleButton) getButton("armor_slots.feet")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.FEET));
                     event.setButton(37, "armor_slots.head");
                     event.setButton(39, "armor_slots.chest");
                     event.setButton(41, "armor_slots.legs");
@@ -1021,7 +991,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     event.setButton(52, "particle_effects.block.input");
                     break;
                 case "vanilla":
-                    ((ToggleButton) event.getGuiWindow().getButton("vanilla.block_recipes")).setState(event.getGuiHandler(), customItem.isBlockVanillaRecipes());
+                    ((ToggleButton) getButton("vanilla.block_recipes")).setState(event.getGuiHandler(), customItem.isBlockVanillaRecipes());
                     event.setButton(38, "vanilla.block_recipes");
 
             }

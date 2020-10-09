@@ -115,11 +115,12 @@ public class AnvilCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
         event.setButton(0, "back");
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
-        ((ToggleButton) event.getGuiWindow().getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());
-        ((ToggleButton) event.getGuiWindow().getButton("hidden")).setState(event.getGuiHandler(), anvilRecipe.isHidden());
+        ((ToggleButton) getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());
+        ((ToggleButton) getButton("hidden")).setState(event.getGuiHandler(), anvilRecipe.isHidden());
         event.setButton(1, "hidden");
         event.setButton(3, "recipe_creator", "conditions");
         event.setButton(5, "priority");

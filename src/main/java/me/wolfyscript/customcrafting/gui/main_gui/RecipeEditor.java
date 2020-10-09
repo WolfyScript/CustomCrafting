@@ -81,6 +81,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         event.setButton(0, "back");
         event.setButton(20, "create_recipe");
         event.setButton(22, "edit_recipe");

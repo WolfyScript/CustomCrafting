@@ -51,10 +51,11 @@ public class GrindstoneCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
+        super.onUpdateAsync(update);
         update.setButton(0, "back");
         TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
         GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
-        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
+        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
 
         update.setButton(1, "hidden");
         update.setButton(3, "recipe_creator", "conditions");

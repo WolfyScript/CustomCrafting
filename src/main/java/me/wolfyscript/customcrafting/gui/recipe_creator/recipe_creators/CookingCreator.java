@@ -57,9 +57,10 @@ public class CookingCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
+        super.onUpdateAsync(update);
         update.setButton(0, "back");
         TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
-        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
+        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
 
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
 

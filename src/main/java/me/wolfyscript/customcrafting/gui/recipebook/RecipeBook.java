@@ -111,6 +111,7 @@ public class RecipeBook extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         Player player = event.getPlayer();
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);

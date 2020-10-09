@@ -9,15 +9,12 @@ import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiUpdateEvent;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends ExtendedGuiWindow {
@@ -65,6 +62,7 @@ public class MainMenu extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(0, "settings");
         event.setButton(8, "none", "gui_help");
@@ -103,32 +101,5 @@ public class MainMenu extends ExtendedGuiWindow {
 
         event.setButton(36, "item_editor");
         event.setButton(44, "recipe_list");
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onUpdateGuis(GuiUpdateEvent event) {
-        if (!event.getWolfyUtilities().equals(CustomCrafting.getApi())) return;
-        if (event.getGuiHandler().getCurrentInv() == null) return;
-        if (!event.getGuiHandler().getCurrentInv().equals(event.getGuiWindow())) return;
-
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
-        if (!event.getGuiWindow().getNamespace().startsWith("crafting_grid")) {
-            if (event.getGuiHandler().getCurrentInv().getSize() > 9) {
-                for (int i = 0; i < 9; i++) {
-                    event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-                }
-                for (int i = 9; i < event.getGuiHandler().getCurrentInv().getSize() - 9; i++) {
-                    event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
-                }
-                for (int i = event.getGuiHandler().getCurrentInv().getSize() - 9; i < event.getGuiHandler().getCurrentInv().getSize(); i++) {
-                    event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-                }
-                event.setButton(8, "none", "gui_help");
-            } else {
-                for (int i = 0; i < 9; i++) {
-                    event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
-                }
-            }
-        }
     }
 }

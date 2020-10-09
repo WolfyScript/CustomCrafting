@@ -142,6 +142,7 @@ public class Settings extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         availableLangs.clear();
         File langFolder = new File(customCrafting.getDataFolder() + File.separator + "lang");
         String[] filenames = langFolder.list((dir, name) -> name.endsWith(".json"));
@@ -150,12 +151,12 @@ public class Settings extends ExtendedGuiWindow {
         }
         Player player = event.getPlayer();
 
-        ((ToggleButton) event.getGuiWindow().getButton("lockdown")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isLockedDown());
-        ((ToggleButton) event.getGuiWindow().getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
-        ((ToggleButton) event.getGuiWindow().getButton("pretty_printing")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
-        ((ToggleButton) event.getGuiWindow().getButton("advanced_workbench")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
-        ((ToggleButton) event.getGuiWindow().getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
-        ((ToggleButton) event.getGuiWindow().getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
+        ((ToggleButton) getButton("lockdown")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isLockedDown());
+        ((ToggleButton) getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
+        ((ToggleButton) getButton("pretty_printing")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
+        ((ToggleButton) getButton("advanced_workbench")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
+        ((ToggleButton) getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
+        ((ToggleButton) getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
 
         event.setButton(0, "none", "back");
 

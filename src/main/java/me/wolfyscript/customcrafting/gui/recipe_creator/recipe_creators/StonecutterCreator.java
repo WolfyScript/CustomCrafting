@@ -25,13 +25,14 @@ public class StonecutterCreator extends RecipeCreator {
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
-        ((ToggleButton) update.getGuiWindow().getButton("hidden")).setState(update.getGuiHandler(), ((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().isHidden());
+        super.onUpdateAsync(update);
+        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), ((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().isHidden());
         update.setButton(0, "back");
         update.setButton(4, "hidden");
         update.setButton(20, "stonecutter.container_0");
         update.setButton(24, "stonecutter.container_1");
 
-        if(((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().hasNamespacedKey()){
+        if (((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().hasNamespacedKey()) {
             update.setButton(43, "save");
         }
         update.setButton(44, "save_as");

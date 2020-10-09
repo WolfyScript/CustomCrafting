@@ -134,6 +134,7 @@ public class ItemEditor extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         event.setButton(0, "back");
         TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
         if (cache.getItems().isRecipeItem()) {
