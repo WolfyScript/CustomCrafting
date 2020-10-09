@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends CustomRecipe<C> implements ICraftingRecipe, ICustomRecipe<C> {
+public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends CustomRecipe<C> implements ICraftingRecipe {
 
     protected static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 

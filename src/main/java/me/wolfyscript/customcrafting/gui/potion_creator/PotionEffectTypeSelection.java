@@ -1,6 +1,8 @@
 package me.wolfyscript.customcrafting.gui.potion_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.potion_creator.buttons.PotionEffectTypeSelectButton;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
@@ -19,7 +21,12 @@ public class PotionEffectTypeSelection extends ExtendedGuiWindow {
     @Override
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("potion_creator");
+            PotionEffects potionEffectCache = ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache();
+            if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
+                guiHandler.changeToInv(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow());
+            } else {
+                guiHandler.changeToInv(potionEffectCache.getOpenedFromWindow());
+            }
             return true;
         })));
 
@@ -30,6 +37,7 @@ public class PotionEffectTypeSelection extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
+        super.onUpdateAsync(update);
         update.setButton(0, "back");
         for (int i = 0; i < PotionEffectType.values().length; i++) {
             update.setButton(9 + i, "potion_effect_type_" + PotionEffectType.values()[i].getName().toLowerCase());

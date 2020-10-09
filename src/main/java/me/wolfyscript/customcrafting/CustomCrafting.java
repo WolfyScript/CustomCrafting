@@ -68,7 +68,7 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private boolean outdated = false;
-    private boolean premiumPlus = false;
+    private boolean patreon = false;
 
     public static CustomCrafting getInst() {
         return instance;
@@ -138,24 +138,20 @@ public class CustomCrafting extends JavaPlugin {
     public void onEnable() {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
+        patreon = !currentVersion.endsWith(".0");
+
         api = WolfyUtilities.getOrCreateAPI(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");
+        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, TestCache.class));
 
-        InventoryAPI<TestCache> inventoryAPI = new InventoryAPI<>(api.getPlugin(), api, TestCache.class);
-
-        api.setInventoryAPI(inventoryAPI);
-
-        if (!currentVersion.endsWith(".0")) {
-            premiumPlus = true;
-        }
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + instance.getDescription().getVersion() + " " + (premiumPlus ? "Patreon" : "Free"));
+        System.out.println("    v" + currentVersion + " " + (patreon ? "Patreon" : "Free"));
         System.out.println(" ");
 
-        if (premiumPlus) {
+        if (patreon) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         }
         System.out.println();
@@ -172,15 +168,6 @@ public class CustomCrafting extends JavaPlugin {
         System.out.println();
         System.out.println("------------------------------------------------------------------------");
 
-        File mainConfig = new File(getDataFolder(), "Main-Config.yml");
-
-        if (mainConfig.exists()) {
-            System.out.println("Found old CustomCrafting data! renaming folder...");
-            if (getDataFolder().renameTo(new File(getDataFolder().getParentFile(), "CustomCrafting_old"))) {
-                System.out.println("Renamed to CustomCrafting_old!");
-                System.out.println("Creating new folder");
-            }
-        }
         recipeUtils = new RecipeUtils(this);
         chatUtils = new ChatUtils(this);
         configHandler = new ConfigHandler(this);
@@ -230,19 +217,16 @@ public class CustomCrafting extends JavaPlugin {
             api.sendConsoleMessage("$msg.startup.placeholder$");
             new PlaceHolder(this).register();
         }
-        if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
-            api.sendConsoleMessage("$msg.startup.mythicmobs.detected$");
-            api.sendConsoleMessage("$msg.startup.mythicmobs.register$");
-        }
 
         recipeHandler.load();
         CustomItems.initiateMissingBlockEffects();
 
         //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
-        if (!premiumPlus) {
+        if (!patreon) {
             checkUpdate(null);
         }
 
+        //Load Metrics
         Metrics metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
@@ -341,8 +325,8 @@ public class CustomCrafting extends JavaPlugin {
         return outdated;
     }
 
-    public boolean isPremiumPlus() {
-        return premiumPlus;
+    public boolean isPatreon() {
+        return patreon;
     }
 
     public static boolean hasDataBaseHandler() {

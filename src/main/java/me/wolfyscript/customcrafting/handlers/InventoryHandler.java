@@ -11,6 +11,7 @@ import me.wolfyscript.customcrafting.gui.potion_creator.PotionEffectTypeSelectio
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
+import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.brewing.BrewingCreator;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
@@ -217,12 +218,12 @@ public class InventoryHandler {
             }), api);
             recipeBook.registerButton(new DummyButton("brewing.potion_duration",  Material.CLOCK, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 BrewingRecipe cookingRecipe = (BrewingRecipe) (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
-                hashMap.put("%value%", cookingRecipe.getGlobalOptions().getDurationChange());
+                hashMap.put("%value%", cookingRecipe.getDurationChange());
                 return itemStack;
             }), api);
             recipeBook.registerButton(new DummyButton("brewing.potion_amplifier", Material.IRON_SWORD, (hashMap, guiHandler, player, itemStack, i, b) -> {
                 BrewingRecipe cookingRecipe = (BrewingRecipe) (((TestCache) guiHandler.getCustomCache()).getKnowledgeBook()).getCurrentRecipe();
-                hashMap.put("%value%", cookingRecipe.getGlobalOptions().getAmplifierChange());
+                hashMap.put("%value%", cookingRecipe.getAmplifierChange());
                 return itemStack;
             }), api);
             for (int i = 0; i < 54; i++) {

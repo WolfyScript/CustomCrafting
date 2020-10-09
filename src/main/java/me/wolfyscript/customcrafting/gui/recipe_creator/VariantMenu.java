@@ -9,10 +9,12 @@ import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VariantMenu extends ExtendedGuiWindow {
 
@@ -60,13 +62,27 @@ public class VariantMenu extends ExtendedGuiWindow {
                         cache.getCookingRecipe().setResult(cache.getVariantsData().getVariants());
                     }
                     break;
-                case CAULDRON:
-                    List<CustomItem> variants = cache.getVariantsData().getVariants();
-                    variants.removeIf(item -> item == null || item.getItemStack().getType().equals(Material.AIR));
+                case CAULDRON: {
+                    List<CustomItem> variants = cache.getVariantsData().getVariants().stream().filter(item -> !ItemUtils.isAirOrNull(item)).collect(Collectors.toList());
                     if (cache.getVariantsData().getSlot() == 0) {
                         cache.getCauldronRecipe().setIngredients(variants);
                     } else {
                         cache.getCauldronRecipe().setResult(variants);
+                    }
+                }
+                break;
+                case BREWING_STAND:
+                    List<CustomItem> variants = cache.getVariantsData().getVariants().stream().filter(item -> !ItemUtils.isAirOrNull(item)).collect(Collectors.toList());
+                    switch (cache.getVariantsData().getSlot()) {
+                        case 0:
+                            cache.getBrewingRecipe().setIngredients(variants);
+                            break;
+                        case 1:
+                            cache.getBrewingRecipe().setAllowedItems(variants);
+                            break;
+                        case 2:
+                            cache.getBrewingRecipe().setResult(variants);
+                            break;
                     }
 
             }
@@ -77,6 +93,7 @@ public class VariantMenu extends ExtendedGuiWindow {
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
+        super.onUpdateAsync(event);
         event.setButton(0, "back");
         for (int i = 0; i < 45; i++) {
             event.setButton(9 + i, "variant_container_" + i);

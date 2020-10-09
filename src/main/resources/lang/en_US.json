@@ -289,7 +289,7 @@
             ]
           },
           "brewing_stand": {
-            "name": "&6Brewing Stand Recipe",
+            "name": "&6Brewing Stand Recipe &8[&7WIP&8]",
             "lore": [
               ""
             ]
@@ -889,18 +889,21 @@
             "add": {
               "name": "&aAdd Potion Effect",
               "lore": [
-                "&eAdd a Potion Effect",
-                "&eInput: &6<name> <duration> <level> [<ambient> <particles>]",
-                "&7[&aClick&7] Input Potion Effect"
-              ],
-              "message": "&eType in the Potion! &6<name> <duration> <level> [<ambient> <particles>]"
+                "&eCreate and add a Potion Effect",
+                "&eThis will open a GUI where you can",
+                "&eeasily create your effect.",
+                "",
+                "&7[&aClick&7] Open Potion Effect Creator"
+              ]
             },
             "remove": {
               "name": "&4Remove Potion Effect",
               "lore": [
-                "&eRemove a Potion Effect of the specific type",
-                "&eInput: &6<name>",
-                "&7[&aClick&7] Input potion name"
+                "&eRemove a Potion Effect of a specific type.",
+                "&eThis will open a GUI where you can click the",
+                "&eEffect Type you want to remove!",
+                "",
+                "&7[&aClick&7] Open Potion Effect Type Selector"
               ],
               "message": "&eType in the Potion name you want to remove!"
             }
@@ -2203,7 +2206,12 @@
         },
         "items": {
           "brewing_stand": {
-            "name": "&4"
+            "name": "&6Brewing Stand Ingredient",
+            "lore": [
+              "&ePut the ingredient into the one slot on the left!",
+              "&e««««",
+              "&7« Shift + Right Click to set multiple items."
+            ]
           },
           "brewTime": {
             "name": "&6Brew Time",
@@ -2226,11 +2234,14 @@
           "allowed_items": {
             "name": "&6Allowed Potions",
             "lore": [
-              "&eConfigure exact Items that this recipe allows!",
-              "&eIf empty all potions are allowed and can further",
-              "&ebe customized on the right.",
-              "",
-              "&7« Shift + Right Click to set multiple items."
+              "&ePut the Items that this recipe allows",
+              "&einto the one slot on the left!",
+              "&e««««",
+              "&7« Shift + Right Click to set multiple items.",
+              "&eThese items will checked against the 3 slots at",
+              "&ethe bottom of the Brewing Stand!",
+              "&eIf empty all items are allowed and can further",
+              "&ebe customized on the right."
             ]
           },
           "duration_change": {
@@ -2279,8 +2290,59 @@
             "lore": [
               "&eThis option sets the specific color to potions.",
               "&7[&aLeft Click&7] &eSet color (input: <red> <green> <blue>)",
-              "&7[&aRight Click&7] &eReset color"
+              "&7[&aRight Click&7] &cReset color"
             ]
+          },
+          "required_effects": {
+            "option": {
+              "name": "&6Required Effects",
+              "lore": [
+                "&eConfigure the effects that the potions need to contain!"
+              ]
+            }
+          },
+          "effect_removals": {
+            "option": {
+              "name": "&6Effect Removals",
+              "lore": [
+                "&eConfigure Effect Types to be removed from the Potions"
+              ]
+            }
+          },
+          "effect_additions": {
+            "option": {
+              "name": "&6Effect Additions",
+              "lore": [
+                "&eConfigure Effects that are added to the Potions"
+              ]
+            }
+          },
+          "effect_upgrades": {
+            "option": {
+              "name": "&6Effect Upgrades",
+              "lore": [
+                "&eConfigure the Effects that are upgraded.",
+                "&eSet the amount of levels and duration that are added."
+              ]
+            }
+          },
+          "result": {
+            "option": {
+              "name": "&6Result",
+              "lore": [
+                "&eConfigure Result Items that will ",
+                "&ereplace the potions!",
+                "&eThis option will override the other upgrade, ",
+                "&eadditions and removals options!"
+              ]
+            },
+            "info": {
+              "name": "&6Configure Results",
+              "lore": [
+                "&e« Configure your results that will replace the Potions!",
+                "&7« Shift + Right Click to set multiple items."
+              ]
+            }
           }
         }
       },
@@ -2601,38 +2663,59 @@
     },
     "potion_creator": {
       "potion_creator": {
-        "gui_name": "&0&lPotion Creator",
+        "gui_name": "&0&lPotion Effect Creator",
         "items": {
+          "apply": {
+            "name": "&aApply Potion Effect",
+            "lore": [
+              "&eApplies the Potion Effect to the",
+              "&ecorresponding destination.",
+              "&ee.g. CustomItem, BrewingRecipe"
+            ]
+          },
+          "cancel": {
+            "name": "&cCancel",
+            "lore": [
+              "&eCancels the creation of this Potion Effect.",
+              "&eIt won't be applied!"
+            ]
+          },
           "potion_effect_type": {
-            "name": "&7Effect Type: %effect_type%",
+            "name": "&7Effect Type: &3%effect_type%",
             "lore": [
               "&eChoose the Type of this Potion Effect"
             ]
           },
           "duration": {
-            "name": "&7Duration: %duration%",
+            "name": "&7Duration: &3%duration%",
             "lore": [
               "&eSet the duration of the Potion Effect",
-              "&ein ticks."
-            ]
+              "&ein ticks.",
+              "&7[&aClick&7] Input duration"
+            ],
+            "message": "&eType in the Duration number value in ticks! 20 ticks = 1 sec"
           },
           "amplifier": {
-            "name": "&7Amplifier: %amplifier%",
+            "name": "&7Amplifier: &3%amplifier%",
             "lore": [
-              "&eSet the amplifier of the Potion Effect"
-            ]
+              "&eSet the amplifier of the Potion Effect",
+              "&7[&aClick&7] Input amplifier"
+            ],
+            "message": "&eType in the Amplifier number value!"
           },
           "ambient": {
             "enabled": {
               "name": "&7Ambient: &aenabled",
               "lore": [
-                "&eProduces more translucent ambient particles"
+                "&eProduces more translucent ambient particles",
+                "&7[&aClick&7] Disable ambient particles"
               ]
             },
             "disabled": {
               "name": "&7Ambient: &cdisabled",
               "lore": [
-                "&eProduces less ambient particles"
+                "&eProduces less ambient particles",
+                "&7[&aClick&7] Enable ambient particles"
               ]
             }
           },
@@ -2640,13 +2723,15 @@
             "enabled": {
               "name": "&7Particle: &aenabled",
               "lore": [
-                "&eParticles are produced"
+                "&eParticles are produced",
+                "&7[&aClick&7] Disable particles"
               ]
             },
             "disabled": {
               "name": "&7Particle: &cdisabled",
               "lore": [
-                "&eNo Particles are produced"
+                "&eNo Particles are produced",
+                "&7[&aClick&7] Enable particles"
               ]
             }
           },
@@ -2654,20 +2739,22 @@
             "enabled": {
               "name": "&7Icon: &aenabled",
               "lore": [
-                "&eIcon of Particle Effect is displayed"
+                "&eIcon of Particle Effect is displayed",
+                "&7[&aClick&7] Disable the icon"
               ]
             },
             "disabled": {
               "name": "&7Icon: &cdisabled",
               "lore": [
-                "&eIcon of Particle Effect is hidden"
+                "&eIcon of Particle Effect is hidden",
+                "&7[&aClick&7] Enable the icon"
               ]
             }
           }
         }
       },
       "potion_effect_type_selection": {
-        "gui_name": "&0&lPotion Creator &7[&4Select Type&7]",
+        "gui_name": "&0&lPotion Effect Creator",
         "items": {
           "effect_type": {
             "name": "%effect_type%"
