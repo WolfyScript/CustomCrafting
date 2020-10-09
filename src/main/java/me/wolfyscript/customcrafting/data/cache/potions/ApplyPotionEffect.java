@@ -5,5 +5,5 @@ import org.bukkit.potion.PotionEffect;
 
 public interface ApplyPotionEffect {
 
-    void applyPotionEffect(PotionEffectCache potionEffectCache, TestCache cache, PotionEffect potionEffect);
+    void applyPotionEffect(PotionEffects potionEffectCache, TestCache cache, PotionEffect potionEffect);
 }
