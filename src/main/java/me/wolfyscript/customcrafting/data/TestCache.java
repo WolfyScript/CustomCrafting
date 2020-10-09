@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.cache.*;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
-import me.wolfyscript.customcrafting.data.cache.potions.PotionEffectCache;
+import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -42,7 +42,7 @@ public class TestCache extends CustomCache {
     private String subSetting;
 
     private final Items items = new Items();
-    private final PotionEffectCache potionEffectCache = new PotionEffectCache();
+    private final PotionEffects potionEffectCache = new PotionEffects();
     private final KnowledgeBook knowledgeBook = new KnowledgeBook();
     private final VariantsData variantsData = new VariantsData();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
@@ -116,7 +116,7 @@ public class TestCache extends CustomCache {
         return items;
     }
 
-    public PotionEffectCache getPotionEffectCache() {
+    public PotionEffects getPotionEffectCache() {
         return potionEffectCache;
     }
 
