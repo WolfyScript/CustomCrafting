@@ -47,11 +47,7 @@ public class WorldNameCondition extends Condition {
     @Override
     public void readFromJson(JsonNode node) {
         JsonNode array = node.get("names");
-        array.elements().forEachRemaining(element -> {
-            if(element.isValueNode()){
-                addWorldName(element.asText());
-            }
-        });
+        array.elements().forEachRemaining(element -> addWorldName(element.asText()));
     }
 
     public void addWorldName(String worldName) {

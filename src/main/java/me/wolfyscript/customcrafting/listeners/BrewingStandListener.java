@@ -8,9 +8,7 @@ import me.wolfyscript.utilities.api.utils.Pair;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
 import me.wolfyscript.utilities.api.utils.Reflection;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
-import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BrewingStand;
@@ -260,36 +258,48 @@ public class BrewingStandListener implements Listener {
                                                                     processedSlots.add(i);
                                                                     //Process the item in the slot
                                                                     PotionMeta potionMeta = (PotionMeta) inputItem.getItemMeta();
-                                                                    if (!recipe.getResults().isEmpty()) {
-                                                                        //Result available. Replace the items with a random result from the list. (Percentages of items are used)
-                                                                        if (recipe.getResults().size() > 1) {
-                                                                            RandomCollection<CustomItem> items = new RandomCollection<>();
-                                                                            recipe.getResults().forEach(customItem -> items.add(customItem.getRarityPercentage(), customItem));
-                                                                            if (!items.isEmpty()) {
+                                                                    if (potionMeta != null) {
+                                                                        if (!recipe.getResults().isEmpty()) {
+                                                                            //Result available. Replace the items with a random result from the list. (Percentages of items are used)
+                                                                            if (recipe.getResults().size() > 1) {
+                                                                                RandomCollection<CustomItem> items = new RandomCollection<>();
+                                                                                recipe.getResults().forEach(customItem -> items.add(customItem.getRarityPercentage(), customItem));
+                                                                                if (!items.isEmpty()) {
+                                                                                    if (!ItemUtils.isAirOrNull(inputItem))
+                                                                                        brewerInventory.setItem(i, items.next().create());
+                                                                                }
+                                                                            } else if (recipe.getResult() != null) {
                                                                                 if (!ItemUtils.isAirOrNull(inputItem))
-                                                                                    brewerInventory.setItem(i, items.next().create());
+                                                                                    brewerInventory.setItem(i, recipe.getResult().create());
                                                                             }
-                                                                        } else if (recipe.getResult() != null) {
-                                                                            if (!ItemUtils.isAirOrNull(inputItem))
-                                                                                brewerInventory.setItem(i, recipe.getResult().create());
-                                                                        }
-                                                                    } else {
-                                                                        //No result available
-                                                                        if (recipe.isResetEffects()) {
-                                                                            potionMeta.clearCustomEffects();
                                                                         } else {
-                                                                            for (PotionEffect effect : potionMeta.getCustomEffects()) {
-                                                                                int duration = effect.getDuration() + recipe.getDurationChange();
-                                                                                int amplifier = effect.getAmplifier() + recipe.getAmplifierChange();
-                                                                                PotionEffect potionEffect = new PotionEffect(effect.getType(), duration, amplifier, effect.isAmbient(), effect.hasParticles(), effect.hasIcon());
-                                                                                potionMeta.addCustomEffect(potionEffect, true);
+                                                                            //No result available
+                                                                            if (recipe.isResetEffects()) {
+                                                                                potionMeta.clearCustomEffects();
+                                                                            } else {
+                                                                                //remove the effects that are configured
+                                                                                recipe.getEffectRemovals().forEach(potionMeta::removeCustomEffect);
+                                                                                //Go through all the effects that are left
+                                                                                for (PotionEffect effect : potionMeta.getCustomEffects()) {
+                                                                                    //Add the global effect changes
+                                                                                    int duration = effect.getDuration() + recipe.getDurationChange();
+                                                                                    int amplifier = effect.getAmplifier() + recipe.getAmplifierChange();
+                                                                                    if (recipe.getEffectUpgrades().containsKey(effect.getType())) {
+                                                                                        //Add the effect specific upgrades
+                                                                                        Pair<Integer, Integer> values = recipe.getEffectUpgrades().get(effect.getType());
+                                                                                        amplifier = amplifier + values.getKey();
+                                                                                        duration = duration + values.getValue();
+                                                                                    }
+                                                                                    potionMeta.addCustomEffect(new PotionEffect(effect.getType(), duration, amplifier, effect.isAmbient(), effect.hasParticles(), effect.hasIcon()), true);
+                                                                                }
+                                                                                recipe.getEffectAdditions().forEach(potionMeta::addCustomEffect);
                                                                             }
+                                                                            if (recipe.getEffectColor() != null) {
+                                                                                potionMeta.setColor(recipe.getEffectColor());
+                                                                            }
+                                                                            inputItem.setItemMeta(potionMeta);
+                                                                            brewerInventory.setItem(i, inputItem);
                                                                         }
-                                                                        if (recipe.getEffectColor() != null) {
-                                                                            potionMeta.setColor(recipe.getEffectColor());
-                                                                        }
-                                                                        inputItem.setItemMeta(potionMeta);
-                                                                        brewerInventory.setItem(i, inputItem);
                                                                     }
                                                                 }
                                                             }
@@ -314,26 +324,6 @@ public class BrewingStandListener implements Listener {
                 }
             }, 2);
 
-        }
-    }
-
-    private boolean isBrewingStandEmpty(BrewerInventory inventory) {
-        return ItemUtils.isAirOrNull(inventory.getItem(0)) && ItemUtils.isAirOrNull(inventory.getItem(1)) && ItemUtils.isAirOrNull(inventory.getItem(2));
-    }
-
-    public void setPotionRGB(ItemBuilder itemBuilder, Color color) {
-        if (itemBuilder != null && itemBuilder.getItemMeta() instanceof PotionMeta) {
-            PotionMeta potionMeta = (PotionMeta) itemBuilder.getItemMeta();
-            potionMeta.setColor(color);
-            itemBuilder.setItemMeta(potionMeta);
-        }
-    }
-
-    public void resetPotionEffects(ItemBuilder itemBuilder) {
-        if (itemBuilder != null && itemBuilder.getItemMeta() instanceof PotionMeta) {
-            PotionMeta potionMeta = (PotionMeta) itemBuilder.getItemMeta();
-            potionMeta.clearCustomEffects();
-            itemBuilder.setItemMeta(potionMeta);
         }
     }
 

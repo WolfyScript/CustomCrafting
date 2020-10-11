@@ -1621,7 +1621,8 @@
               "name": "&6Vanilla Settings",
               "lore": [
                 "&7Block Vanilla features,",
-                "&7e.g. block the use in vanilla recipes"
+                "&7e.g. block the use in vanilla recipes",
+                "&cRequires saved Item"
               ]
             },
             "block_recipes": {
@@ -1637,6 +1638,22 @@
                 "lore": [
                   "&eItem can be used in vanilla recipes",
                   "&7[&aClick&7] Enable blocking"
+                ]
+              }
+            },
+            "block_placement": {
+              "enabled": {
+                "name": "&6Block Placement",
+                "lore": [
+                  "&ePlacement of this block is cancelled!",
+                  "&7[&aClick&7] Allow placement"
+                ]
+              },
+              "disabled": {
+                "name": "&6Block Placement",
+                "lore": [
+                  "&ePlacement of this block is allowed!",
+                  "&7[&aClick&7] Cancel placement"
                 ]
               }
             }
@@ -2201,8 +2218,8 @@
       "brewing_stand": {
         "gui_name": "&4&lCreator &7[&8Brewing Stand&7]",
         "messages": {
-          "potion_duration": "&eType in the amount of ticks the potions duration should change",
-          "potion_aplifier": "&eType in the amount of levels the potions amplifier should change"
+          "duration_change": "&eType in the amount of ticks the potions duration should change",
+          "amplifier_change": "&eType in the amount of levels the potions amplifier should change"
         },
         "items": {
           "brewing_stand": {
@@ -2212,24 +2229,6 @@
               "&e««««",
               "&7« Shift + Right Click to set multiple items."
             ]
-          },
-          "brewTime": {
-            "name": "&6Brew Time",
-            "lore": [
-              "&7Brew Time: &e%time% ticks",
-              "",
-              "&eThe time in ticks the recipe takes to finish. &4Max &c400 ticks"
-            ],
-            "message": "&eType in the brew time in ticks. &4Max &c400"
-          },
-          "fuelCost": {
-            "name": "&6Fuel Cost",
-            "lore": [
-              "&7Cost: &e%cost%",
-              "",
-              "&eFuel that is required and consumed for the recipe"
-            ],
-            "message": "&eType in the fuel cost. e.g. 2"
           },
           "allowed_items": {
             "name": "&6Allowed Potions",
@@ -2258,15 +2257,6 @@
               "&eAmplifier Change: &6%value%",
               "&7[&aLeft Click&7] &eChange Value",
               "&7[&cRight Click&7] &cReset Action"
-            ]
-          },
-          "color_change": {
-            "name": "&6Color RGB change",
-            "lore": [
-              "&eThis option increases the RGB int value.",
-              "&eIf value <0 it's being subtracted.",
-              "&7[&aLeft Click&7] &eSet color change",
-              "&7[&aRight Click&7] &eReset color change"
             ]
           },
           "reset_effects": {
@@ -2307,6 +2297,25 @@
               "lore": [
                 "&eConfigure Effect Types to be removed from the Potions"
               ]
+            },
+            "info": {
+              "name": "&6Effects",
+              "lore": [
+                "&eThe effects will be removed from the Potions!",
+                "&eAmplifier and duration are ignored!"
+              ]
+            },
+            "add_type": {
+              "name": "&6Add Effect Type",
+              "lore": [
+                "&eAdd a effect to the list",
+                "&eto be removed."
+              ]
+            },
+            "remove_type": {
+              "name": "&6Remove Effect Type",
+              "lore": [
+              ]
             }
           },
           "effect_additions": {
@@ -2314,6 +2323,41 @@
               "name": "&6Effect Additions",
               "lore": [
                 "&eConfigure Effects that are added to the Potions"
+              ]
+            },
+            "info": {
+              "name": "&6Potion Effects",
+              "lore": [
+                "&eThese effects are added to the Potions"
+              ]
+            },
+            "potion_effect": {
+              "name": "&6Potion Effect",
+              "lore": [
+                "&eThe current Potion Effect.",
+                "&eClick Apply to apply them to the list."
+              ]
+            },
+            "replace": {
+              "enabled": {
+                "name": "&6Replaced",
+                "lore": [
+                  "&eEffect will be replaced if the",
+                  "&ePotion already contains it."
+                ]
+              },
+              "disabled": {
+                "name": "&6Kept",
+                "lore": [
+                  "&eEffect will be not replaced if the",
+                  "&ePotion already contains it."
+                ]
+              }
+            },
+            "apply": {
+              "name": "&6Apply",
+              "lore": [
+                "&eApply effect to the list of effect additions!"
               ]
             }
           },
@@ -2323,6 +2367,12 @@
               "lore": [
                 "&eConfigure the Effects that are upgraded.",
                 "&eSet the amount of levels and duration that are added."
+              ]
+            },
+            "add_type": {
+              "name": "&6Potion Effect Type",
+              "lore": [
+                ""
               ]
             }
           },

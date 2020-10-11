@@ -2,9 +2,6 @@ package me.wolfyscript.customcrafting;
 
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
-import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
@@ -17,6 +14,7 @@ import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
+import me.wolfyscript.customcrafting.utils.WolfyUtilitiesData;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
@@ -74,82 +72,42 @@ public class CustomCrafting extends JavaPlugin {
         return instance;
     }
 
-    @Override
-    public void onLoad() {
-        CustomItem.registerCustomData(new EliteWorkbenchData());
-        CustomItem.registerCustomData(new KnowledgeBookData());
-        CustomItem.registerCustomData(new CauldronData());
-    }
-
     public static boolean hasPlayerCache(Player player) {
         return playerStatisticsList.stream().anyMatch(playerStatistics -> playerStatistics.getUuid().equals(player.getUniqueId()));
     }
 
-    private void savePlayerStatistics() {
-        HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
-        playerStatisticsList.forEach(playerStatistics -> caches.put(playerStatistics.getUuid(), playerStatistics.getStats()));
-        try {
-            FileOutputStream fos = new FileOutputStream(new File(getDataFolder() + File.separator + "playerstats.dat"));
-            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
-            oos.writeObject(caches);
-            oos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public void onLoad() {
+        getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
+        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
+            WolfyUtilitiesData.initCustomData();
         }
     }
 
-    private void loadPlayerStatistics() {
-        api.sendConsoleMessage("$msg.startup.playerstats$");
-        File file = new File(getDataFolder() + File.separator + "playerstats.dat");
-        if (file.exists()) {
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream(file);
-                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
-                try {
-                    Object object = ois.readObject();
-                    if (object instanceof HashMap) {
-                        ((HashMap<UUID, HashMap<String, Object>>) object).forEach((uuid, stat) -> playerStatisticsList.add(new PlayerStatistics(uuid, stat)));
-                    }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                ois.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void onDisable() {
-        getConfigHandler().getConfig().save();
-        workbenches.endTask();
-        workbenches.save();
-        cauldrons.endAutoSaveTask();
-        cauldrons.save();
-        getRecipeHandler().onSave();
-        savePlayerStatistics();
-    }
-
-    public ConfigHandler getConfigHandler() {
-        return configHandler;
-    }
-
+    @Override
     public void onEnable() {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
         patreon = !currentVersion.endsWith(".0");
-
-        api = WolfyUtilities.getOrCreateAPI(instance);
-        api.setCHAT_PREFIX("§7[§6CC§7] ");
-        api.setCONSOLE_PREFIX("§7[§3CC§7] ");
-        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, TestCache.class));
 
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
         System.out.println("    v" + currentVersion + " " + (patreon ? "Patreon" : "Free"));
         System.out.println(" ");
+
+        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
+            getLogger().severe("CustomCrafting requires WolfyUtilities to work! Make sure you download and install it besides CC! ");
+            getLogger().severe("Download link: https://www.spigotmc.org/resources/wolfyutilities.64124/");
+            System.out.println("------------------------------------------------------------------------");
+            setEnabled(false);
+            return;
+        }
+
+        api = WolfyUtilities.getOrCreateAPI(instance);
+        api.setCHAT_PREFIX("§7[§6CC§7] ");
+        api.setCONSOLE_PREFIX("§7[§3CC§7] ");
+        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, TestCache.class));
 
         if (patreon) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
@@ -194,7 +152,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new EliteWorkbenchListener(api), this);
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(this), this);
-        if(WolfyUtilities.hasNetherUpdate()){
+        if (WolfyUtilities.hasNetherUpdate()) {
             pM.registerEvents(new SmithingListener(this), this);
         }
 
@@ -242,6 +200,59 @@ public class CustomCrafting extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
 
         System.out.println("------------------------------------------------------------------------");
+    }
+
+    @Override
+    public void onDisable() {
+        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
+            getConfigHandler().getConfig().save();
+            workbenches.endTask();
+            workbenches.save();
+            cauldrons.endAutoSaveTask();
+            cauldrons.save();
+            getRecipeHandler().onSave();
+            savePlayerStatistics();
+        }
+    }
+
+    private void savePlayerStatistics() {
+        HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
+        playerStatisticsList.forEach(playerStatistics -> caches.put(playerStatistics.getUuid(), playerStatistics.getStats()));
+        try {
+            FileOutputStream fos = new FileOutputStream(new File(getDataFolder() + File.separator + "playerstats.dat"));
+            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
+            oos.writeObject(caches);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadPlayerStatistics() {
+        api.sendConsoleMessage("$msg.startup.playerstats$");
+        File file = new File(getDataFolder() + File.separator + "playerstats.dat");
+        if (file.exists()) {
+            FileInputStream fis;
+            try {
+                fis = new FileInputStream(file);
+                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
+                try {
+                    Object object = ois.readObject();
+                    if (object instanceof HashMap) {
+                        ((HashMap<UUID, HashMap<String, Object>>) object).forEach((uuid, stat) -> playerStatisticsList.add(new PlayerStatistics(uuid, stat)));
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                ois.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public ConfigHandler getConfigHandler() {
+        return configHandler;
     }
 
     public static WolfyUtilities getApi() {

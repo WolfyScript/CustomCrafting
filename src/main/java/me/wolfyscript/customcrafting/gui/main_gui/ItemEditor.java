@@ -1,8 +1,9 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -33,21 +34,18 @@ public class ItemEditor extends ExtendedGuiWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openPreviousInv();
-            if (!((TestCache) guiHandler.getCustomCache()).getSetting().equals(Setting.ITEMS)) {
+            if (!cache.getSetting().equals(Setting.ITEMS)) {
                 guiHandler.openCluster("recipe_creator");
             }
             return true;
         })));
-        registerButton(new ActionButton("load_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = (TestCache) guiHandler.getCustomCache();
+        registerButton(new ActionButton("load_item", Material.ITEM_FRAME, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, inventoryClickEvent) -> {
             cache.getChatLists().setCurrentPageItems(1);
             sendItemListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
-
                     NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
                     if (!CustomItems.hasCustomItem(namespacedKey)) {
                         sendMessage(player1, "error");
@@ -85,26 +83,24 @@ public class ItemEditor extends ExtendedGuiWindow {
             guiHandler.changeToInv("item_creator", "main_menu");
             return true;
         }));
-        registerButton(new ActionButton("edit_item", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
+        registerButton(new ActionButton("edit_item", Material.REDSTONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, inventoryClickEvent) -> {
             if (items.isRecipeItem()) {
                 if (items.isSaved()) {
                     items.setItem(CustomItems.getCustomItem(items.getNamespacedKey()));
                 }
                 guiHandler.changeToInv("item_creator", "main_menu");
             } else {
-                ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageItems(1);
+                cache.getChatLists().setCurrentPageItems(1);
                 sendItemListExpanded(player);
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
-                        Items items1 = ((TestCache) guiHandler.getCustomCache()).getItems();
                         NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
                         if (!CustomItems.hasCustomItem(namespacedKey)) {
                             sendMessage(player1, "error");
                             return true;
                         }
-                        ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(namespacedKey);
-                        items1.setItem(false, CustomItems.getCustomItem(namespacedKey));
+                        cache.getChatLists().setLastUsedItem(namespacedKey);
+                        items.setItem(false, CustomItems.getCustomItem(namespacedKey));
                         sendMessage(player1, "item_editable");
                         Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler1.changeToInv("item_creator", "main_menu"));
                         return false;
@@ -116,8 +112,8 @@ public class ItemEditor extends ExtendedGuiWindow {
             }
             return true;
         }));
-        registerButton(new ActionButton("delete_item", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageItems(1);
+        registerButton(new ActionButton("delete_item", Material.BARRIER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            cache.getChatLists().setCurrentPageItems(1);
             sendItemListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {

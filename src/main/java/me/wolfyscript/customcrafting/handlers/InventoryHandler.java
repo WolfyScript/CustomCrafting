@@ -11,7 +11,6 @@ import me.wolfyscript.customcrafting.gui.potion_creator.PotionEffectTypeSelectio
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
-import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.brewing.BrewingCreator;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;

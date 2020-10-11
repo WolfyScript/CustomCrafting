@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.potion_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
@@ -29,8 +30,8 @@ public class PotionCreator extends ExtendedGuiWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            if (((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().isRecipePotionEffect()) {
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            if (cache.getPotionEffectCache().isRecipePotionEffect()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
                 guiHandler.openCluster("item_creator");
@@ -38,8 +39,8 @@ public class PotionCreator extends ExtendedGuiWindow {
             return true;
         })));
 
-        registerButton(new ActionButton("cancel", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            if (((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().isRecipePotionEffect()) {
+        registerButton(new ActionButton("cancel", Material.BARRIER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            if (cache.getPotionEffectCache().isRecipePotionEffect()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
                 guiHandler.openCluster("item_creator");
@@ -47,9 +48,9 @@ public class PotionCreator extends ExtendedGuiWindow {
             return true;
         }));
 
-        registerButton(new ActionButton("apply", Material.LIME_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PotionEffects potionEffectCache = ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache();
-            potionEffectCache.applyPotionEffect(((TestCache) guiHandler.getCustomCache()));
+        registerButton(new ActionButton("apply", Material.LIME_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            PotionEffects potionEffectCache = cache.getPotionEffectCache();
+            potionEffectCache.applyPotionEffect(cache);
             if (potionEffectCache.isRecipePotionEffect()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
@@ -70,8 +71,8 @@ public class PotionCreator extends ExtendedGuiWindow {
             return itemStack;
         }));
 
-        registerButton(new ActionButton("potion_effect_type", new ButtonState("potion_effect_type", Material.BOOKSHELF, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PotionEffects potionEffectCache = ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache();
+        registerButton(new ActionButton("potion_effect_type", new ButtonState("potion_effect_type", Material.BOOKSHELF, (CacheButtonAction) (testCache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            PotionEffects potionEffectCache = testCache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache, potionEffect) -> potionEffectCache.setType(potionEffect));
             potionEffectCache.setOpenedFrom("potion_creator", "potion_creator");
             guiHandler.changeToInv("potion_effect_type_selection");
@@ -106,25 +107,25 @@ public class PotionCreator extends ExtendedGuiWindow {
             }
             return true;
         }));
-        registerButton(new ToggleButton("ambient", new ButtonState("ambient.enabled", Material.BLAZE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setAmbient(false);
+        registerButton(new ToggleButton("ambient", new ButtonState("ambient.enabled", Material.BLAZE_POWDER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            cache.getPotionEffectCache().setAmbient(false);
             return true;
-        }), new ButtonState("ambient.disabled", Material.BLAZE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setAmbient(true);
-            return true;
-        })));
-        registerButton(new ToggleButton("particles", new ButtonState("particles.enabled", Material.FIREWORK_ROCKET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setParticles(false);
-            return true;
-        }), new ButtonState("particles.disabled", Material.FIREWORK_ROCKET, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setParticles(true);
+        }), new ButtonState("ambient.disabled", Material.BLAZE_POWDER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            cache.getPotionEffectCache().setAmbient(true);
             return true;
         })));
-        registerButton(new ToggleButton("icon", new ButtonState("icon.enabled", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setIcon(false);
+        registerButton(new ToggleButton("particles", new ButtonState("particles.enabled", Material.FIREWORK_ROCKET, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            cache.getPotionEffectCache().setParticles(false);
             return true;
-        }), new ButtonState("icon.disabled", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setIcon(true);
+        }), new ButtonState("particles.disabled", Material.FIREWORK_ROCKET, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            cache.getPotionEffectCache().setParticles(true);
+            return true;
+        })));
+        registerButton(new ToggleButton("icon", new ButtonState("icon.enabled", Material.ITEM_FRAME, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            cache.getPotionEffectCache().setIcon(false);
+            return true;
+        }), new ButtonState("icon.disabled", Material.ITEM_FRAME, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            cache.getPotionEffectCache().setIcon(true);
             return true;
         })));
 

@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.utilities.api.custom_items.ParticleContent;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
@@ -14,11 +15,11 @@ import java.util.Locale;
 public class ParticleEffectSelectButton extends ActionButton {
 
     public ParticleEffectSelectButton(ParticleEffect.Action action) {
-        super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState("particle_effects.input", Material.BARRIER, (guiHandler, player, inventory, i, event) -> {
+        super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState("particle_effects.input", Material.BARRIER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (event.getClick().isShiftClick()) {
-                ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getParticleContent().remove(action);
+                items.getItem().getParticleContent().remove(action);
             } else {
-                ((TestCache) guiHandler.getCustomCache()).getParticleCache().setAction(action);
+                cache.getParticleCache().setAction(action);
                 guiHandler.openCluster("particle_creator");
             }
             return true;
