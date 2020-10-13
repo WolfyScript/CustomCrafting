@@ -321,6 +321,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     }
                     items.getItem().setItemMeta(itemMeta);
                 });
+                testCache.getPotionEffectCache().setRecipePotionEffect(true);
                 guiHandler.changeToInv("potion_creator", "potion_creator");
                 return true;
             }));
@@ -502,27 +503,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 items.getItem().setBurnTime(0);
                 return true;
             }));
-            registerButton(new ToggleButton("fuel.furnace", new ButtonState("fuel.furnace.enabled", Material.FURNACE, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-                items.getItem().getAllowedBlocks().remove(Material.FURNACE);
-                return true;
-            }), new ButtonState("fuel.furnace.disabled", Material.FURNACE, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-                items.getItem().getAllowedBlocks().add(Material.FURNACE);
-                return true;
-            })));
-            registerButton(new ToggleButton("fuel.blast_furnace", new ButtonState("fuel.blast_furnace.enabled", Material.BLAST_FURNACE, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-                items.getItem().getAllowedBlocks().remove(Material.BLAST_FURNACE);
-                return true;
-            }), new ButtonState("fuel.blast_furnace.disabled", Material.BLAST_FURNACE, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-                items.getItem().getAllowedBlocks().add(Material.BLAST_FURNACE);
-                return true;
-            })));
-            registerButton(new ToggleButton("fuel.smoker", new ButtonState("fuel.smoker.enabled", Material.SMOKER, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-                items.getItem().getAllowedBlocks().remove(Material.SMOKER);
-                return true;
-            }), new ButtonState("fuel.smoker.disabled", Material.SMOKER, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
-                items.getItem().getAllowedBlocks().add(Material.SMOKER);
-                return true;
-            })));
+            registerButton(new FurnaceFuelToggleButton("furnace", Material.FURNACE));
+            registerButton(new FurnaceFuelToggleButton("blast_furnace", Material.BLAST_FURNACE));
+            registerButton(new FurnaceFuelToggleButton("smoker", Material.SMOKER));
         }
 
         //CUSTOM_DURABILITY_COST Settings

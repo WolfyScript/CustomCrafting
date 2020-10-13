@@ -289,13 +289,13 @@
             ]
           },
           "brewing_stand": {
-            "name": "&6Brewing Stand Recipe &8[&7WIP&8]",
+            "name": "&6Brewing Stand Recipe",
             "lore": [
               ""
             ]
           },
           "smithing": {
-            "name": "&6Smithing Recipe &8[&7Alpha&8]",
+            "name": "&6Smithing Recipe",
             "lore": [
               ""
             ]
@@ -2285,7 +2285,7 @@
           },
           "required_effects": {
             "option": {
-              "name": "&6Required Effects",
+              "name": "&6Required Effects &7[&8Coming Soon&7]",
               "lore": [
                 "&eConfigure the effects that the potions need to contain!"
               ]
@@ -2359,6 +2359,12 @@
               "lore": [
                 "&eApply effect to the list of effect additions!"
               ]
+            },
+            "remove": {
+              "name": "&6Remove",
+              "lore": [
+                ""
+              ]
             }
           },
           "effect_upgrades": {
@@ -2369,10 +2375,60 @@
                 "&eSet the amount of levels and duration that are added."
               ]
             },
+            "info": {
+              "name": "&6Effect Upgrades",
+              "lore": [
+                "&eThese effects are added onto the Potions.",
+                "&eBelow is a more detailed List (with internal Potion names!):",
+                "%values%"
+              ]
+            },
+            "amplifier": {
+              "name": "&6Amplifier",
+              "lore": [
+                "&eValue: &7%value%",
+                "&eThis value will be added onto the",
+                "&eamplifier of the selected Potion Effect."
+              ],
+              "message": "&eType in the amplifier value."
+            },
+            "duration": {
+              "name": "&6Duration",
+              "lore": [
+                "&eValue: &7%value%",
+                "&eThis value will be added onto the",
+                "&eduration of the selected Potion Effect."
+              ],
+              "message": "&eType in the duration value."
+            },
             "add_type": {
               "name": "&6Potion Effect Type",
               "lore": [
-                ""
+                "&eThis Potion Effect Type is selected",
+                "&efor these updgrade settings.",
+                "&eThe settings will be added onto the",
+                "&ePotion Effects of the Potions.",
+                "&eThe example Potion Effect on this item",
+                "&erepresents the values. ",
+                "&e(Can't represent negative values!)"
+              ]
+            },
+            "apply": {
+              "name": "&6Apply Upgrade",
+              "lore": [
+                "&eApply the upgrade to the recipe!",
+                "&eThere can only be one upgrade per",
+                "&ePotion Effect Type!",
+                "&cIf the Effect Type already exist ",
+                "&cit will be overwritten!"
+              ]
+            },
+            "remove": {
+              "name": "&6Remove Upgrade",
+              "lore": [
+                "&eRemove a Upgrade from the recipe!",
+                "&eSelect the Potion Effect Type you",
+                "&ewant to remove"
               ]
             }
           },

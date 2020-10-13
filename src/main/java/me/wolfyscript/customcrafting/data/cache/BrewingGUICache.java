@@ -24,7 +24,7 @@ public class BrewingGUICache {
         this.replacePotionEffectAddition = false;
 
         this.upgradePotionEffectType = null;
-        this.upgradeValues = new Pair<>(-1, -1);
+        this.upgradeValues = new Pair<>(0, 0);
     }
 
     public int getPage() {

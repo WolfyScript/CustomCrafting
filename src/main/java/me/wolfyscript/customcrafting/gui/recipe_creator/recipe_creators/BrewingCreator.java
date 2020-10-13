@@ -18,6 +18,7 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.utils.Pair;
 import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -25,8 +26,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BrewingCreator extends RecipeCreator {
@@ -263,6 +267,21 @@ public class BrewingCreator extends RecipeCreator {
         }));
 
         registerButton(new BrewingOptionButton(Material.ENCHANTED_BOOK, "effect_upgrades"));
+        registerButton(new DummyButton("effect_upgrades.info", Material.LINGERING_POTION, (values, guiHandler, player, unused, i, b) -> {
+            ItemStack itemStack = new ItemStack(Material.LINGERING_POTION);
+            PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
+            List<String> upgrades = new ArrayList<>();
+            ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().getEffectUpgrades().forEach((effectType, pair) -> {
+                meta.addCustomEffect(new PotionEffect(effectType, pair.getValue(), pair.getKey()), true);
+                upgrades.add("§6" + effectType.getName() + " §7- §6a: §7" + pair.getKey() + "§6 d: §7" + pair.getValue());
+            });
+            ItemMeta unusedItemMeta = unused.getItemMeta();
+            meta.setDisplayName(unusedItemMeta.getDisplayName());
+            meta.setLore(unusedItemMeta.getLore());
+            itemStack.setItemMeta(meta);
+            values.put("%values%", upgrades);
+            return itemStack;
+        }));
         registerButton(new ActionButton("effect_upgrades.add_type", Material.POTION, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             BrewingGUICache guiCache = cache.getBrewingGUICache();
@@ -275,6 +294,21 @@ public class BrewingCreator extends RecipeCreator {
             potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
             guiHandler.changeToInv("potion_creator", "potion_effect_type_selection");
             return true;
+        }, (hashMap, guiHandler, player, unused, i, b) -> {
+            ItemStack itemStack = new ItemStack(Material.POTION);
+            PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
+            ItemMeta unusedItemMeta = unused.getItemMeta();
+            BrewingGUICache brewingGUICache = ((TestCache) guiHandler.getCustomCache()).getBrewingGUICache();
+            if (brewingGUICache.getUpgradePotionEffectType() != null) {
+                PotionEffectType type = brewingGUICache.getUpgradePotionEffectType();
+                int amplifier = brewingGUICache.getUpgradeValues().getKey();
+                int duration = brewingGUICache.getUpgradeValues().getValue();
+                meta.addCustomEffect(new PotionEffect(type, duration, amplifier), true);
+            }
+            meta.setDisplayName(unusedItemMeta.getDisplayName());
+            meta.setLore(unusedItemMeta.getLore());
+            itemStack.setItemMeta(meta);
+            return itemStack;
         }));
         registerButton(new ChatInputButton("effect_upgrades.amplifier", Material.BLAZE_POWDER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
             hashMap.put("%value%", ((TestCache) guiHandler.getCustomCache()).getBrewingGUICache().getUpgradeValues().getKey());
@@ -303,6 +337,25 @@ public class BrewingCreator extends RecipeCreator {
             }
             ((TestCache) guiHandler.getCustomCache()).getBrewingGUICache().getUpgradeValues().setValue(value);
             return false;
+        }));
+        registerButton(new ActionButton("effect_upgrades.apply", Material.BOOK, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+            BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
+            if (brewingGUICache.getUpgradePotionEffectType() != null) {
+                PotionEffectType potionEffectAddition = brewingGUICache.getUpgradePotionEffectType();
+                brewingRecipe.getEffectUpgrades().put(potionEffectAddition, brewingGUICache.getUpgradeValues());
+            }
+            brewingGUICache.setUpgradePotionEffectType(null);
+            brewingGUICache.setUpgradeValues(new Pair<>(0, 0));
+            return true;
+        }));
+        registerButton(new ActionButton("effect_upgrades.remove", Material.RED_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
+            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+            PotionEffects potionEffectCache = cache.getPotionEffectCache();
+            potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectUpgrades().remove(potionEffectType));
+            potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
+            guiHandler.changeToInv("potion_creator", "potion_effect_type_selection");
+            return true;
         }));
 
 
@@ -365,12 +418,16 @@ public class BrewingCreator extends RecipeCreator {
                 update.setButton(22, "effect_additions.info");
                 update.setButton(32, "effect_additions.potion_effect");
                 update.setButton(34, "effect_additions.replace");
-                update.setButton(42, "effect_additions.apply");
+                update.setButton(40, "effect_additions.apply");
+                update.setButton(41, "effect_additions.remove");
                 break;
             case "effect_upgrades":
+                update.setButton(22, "effect_upgrades.info");
                 update.setButton(33, "effect_upgrades.add_type");
                 update.setButton(34, "effect_upgrades.amplifier");
                 update.setButton(35, "effect_upgrades.duration");
+                update.setButton(40, "effect_upgrades.apply");
+                update.setButton(41, "effect_upgrades.remove");
 
 
         }
