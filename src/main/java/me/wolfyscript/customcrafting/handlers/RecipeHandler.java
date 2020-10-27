@@ -69,7 +69,7 @@ public class RecipeHandler {
         this.customCrafting = customCrafting;
         this.particlesList = new ArrayList<>();
         this.particleEffectsList = new ArrayList<>();
-        this.categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
+        this.categories = customCrafting.getConfigHandler().getRecipeBook().getCategories();
         this.objectMapper = JacksonUtil.getObjectMapper();
     }
 
@@ -79,8 +79,6 @@ public class RecipeHandler {
         } else {
             loadConfigs();
         }
-        //TEST Recipes. Used when no creator is available!
-        //System.out.println("Test Recipe: ");
     }
 
     private void loadConfigs() {

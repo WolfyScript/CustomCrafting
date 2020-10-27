@@ -50,6 +50,16 @@ public class Categories {
         switchCategories.put(key, category);
     }
 
+    public void removeSwitchCategory(String key) {
+        sortedSwitchCategories.remove(key);
+        switchCategories.remove(key);
+    }
+
+    public void removeMainCategory(String key) {
+        sortedMainCategories.remove(key);
+        mainCategories.remove(key);
+    }
+
     public Category getSwitchCategory(String key) {
         return switchCategories.get(key);
     }
@@ -100,6 +110,11 @@ public class Categories {
             {
                 gen.writeObjectFieldStart("main");
                 {
+                    gen.writeArrayFieldStart("sort");
+                    for (String sortedMainCategory : categories.getSortedMainCategories()) {
+                        gen.writeString(sortedMainCategory);
+                    }
+                    gen.writeEndArray();
                     gen.writeArrayFieldStart("options");
                     for (Map.Entry<String, Category> entry : categories.mainCategories.entrySet()) {
                         gen.writeStartObject();
@@ -113,6 +128,11 @@ public class Categories {
 
                 gen.writeObjectFieldStart("switch");
                 {
+                    gen.writeArrayFieldStart("sort");
+                    for (String sortedSwitchCategory : categories.getSortedSwitchCategories()) {
+                        gen.writeString(sortedSwitchCategory);
+                    }
+                    gen.writeEndArray();
                     gen.writeArrayFieldStart("options");
                     for (Map.Entry<String, Category> entry : categories.switchCategories.entrySet()) {
                         gen.writeStartObject();

@@ -227,6 +227,14 @@
               "&ewithout stopping the server!"
             ]
           },
+          "recipe_book_editor": {
+            "name": "&6Recipe Book &8[&7Beta&8]",
+            "lore": [
+              "&eConfigure the Recipe Book.",
+              "&eCreate Categories and set up which",
+              "&eRecipes are displayed, add Materials, etc."
+            ]
+          },
           "workbench": {
             "name": "&6Workbench Recipe",
             "help": [
@@ -1968,7 +1976,7 @@
         }
       },
       "stonecutter": {
-        "gui_name": "&4&lRecipe Creator &8[&7Stonecutter&8]",
+        "gui_name": "&4&lRecipe Creator &7[&8Stonecutter&7]",
         "gui_help": [
           "&7Tip:",
           "&eShift &7+ &eRight click &7on Result or Ingredients will ",
@@ -1978,7 +1986,7 @@
         }
       },
       "cooking": {
-        "gui_name": "&4Recipe Creator&8[&7Cooking/Smelting&8]",
+        "gui_name": "&4Recipe Creator&7[&8Cooking/Smelting&7]",
         "gui_help": [
           "&7Tip:",
           "&eShift &7+ &eRight click &7on Result or Ingredients will ",
@@ -2008,7 +2016,7 @@
         }
       },
       "anvil": {
-        "gui_name": "&4&lRecipe Creator &8[&7Anvil&8]",
+        "gui_name": "&4&lRecipe Creator &7[&8Anvil&7]",
         "gui_help": [
           "&7Tip:",
           "&eShift &7+ &eRight click &7on Result or Ingredients will ",
@@ -2090,7 +2098,7 @@
         }
       },
       "cauldron": {
-        "gui_name": "&4&lRecipe Creator &8[&7Cauldron&8]",
+        "gui_name": "&4&lRecipe Creator &7[&8Cauldron&7]",
         "messages": {
           "mythicMob": "&eType in the mob you want to add.\n&e<&6mob_name&e> <&6level&e> [<&6x&e> <&6y&e> <&6z&e>]"
         },
@@ -2655,7 +2663,7 @@
         }
       },
       "main_menu": {
-        "gui_name": "&8&lRecipe knowledge Book",
+        "gui_name": "&8&lRecipe Book",
         "items": {
           "elite_workbench": {
             "name": "&6Elite Workbench Recipes"
@@ -2719,6 +2727,114 @@
             "name": "&7&l« Previous",
             "lore": [
               "&ePage &7%page%&e/&7%max_pages%"
+            ]
+          }
+        }
+      }
+    },
+    "recipe_book_editor": {
+      "global_items": {
+        "save": {
+          "name": "&3Save",
+          "lore": [
+            "&7Save the Category with the current ID."
+          ]
+        },
+        "save_as": {
+          "name": "&6Save As...",
+          "lore": [
+            "&7Save the Category with a new ID.",
+            "&7ID: &e<category_id>",
+            "&cThe ID must be lowercase alphanumeric!",
+            "&c(a-z 0-9 _ -)"
+          ]
+        }
+      },
+      "global_messages": {
+        "save": {
+          "input": "&eType in the id of the Category. Must be alphanumeric lowercase! [a-z0-9/._-]",
+          "error": "&cCheck the Category for missing icon!",
+          "success": "&aCategory was saved successfully!"
+        }
+      },
+      "editor_main": {
+        "gui_name": "&8&lRecipe Book &7[&8Editor&7]",
+        "items": {
+          "switch_categories": {
+            "name": "&6Switch Categories",
+            "lore": [
+              "&eThese Categories act like a switch.",
+              "&eThey are present on top of each ",
+              "&eMain Category and you can switch",
+              "&ebetween them via a click."
+            ]
+          },
+          "main_categories": {
+            "name": "&6Main Categories",
+            "lore": [
+              "&eThese Categories are displayed on the",
+              "&eMain Menu of the Recipe Book.",
+              "&eIf there is only one Main Category available",
+              "&ethe Gui will directly open the one Category",
+              "&ewithout showing the Main Menu!"
+            ]
+          }
+        }
+      },
+      "categories": {
+        "gui_name": "&8&lRecipe Book &7[&8Edit Categories&7]",
+        "items": {
+          "category": {
+            "name": "%name%",
+            "lore": [
+              "%description%",
+              "&7--------------------",
+              "&7[&aLeft Click&7] &eEdit Category",
+              "&7[&cShift + Right Click&7] &cDelete Category"
+            ]
+          },
+          "previous": {
+            "name": "&7Previous Page"
+          },
+          "next": {
+            "name": "&7Next Page"
+          },
+          "add_category": {
+            "name": "&6Add Category",
+            "lore": [
+              "&eConfigure a new Category for",
+              "&ethe Recipe Book"
+            ]
+          }
+        }
+      },
+      "category": {
+        "gui_name": "&8&lRecipe Book &7[&8Edit Category&7]",
+        "items": {
+          "name": {
+            "name": "&6Name: &r%name%",
+            "lore": [
+            ],
+            "message": "&eType in the Name. You can use && for formatting codes."
+          },
+          "description": {
+            "add": {
+              "name": "&6Add Description Line",
+              "lore": [
+                "&eDescription: ",
+                "%description%"
+              ],
+              "message": "&eType in the Description. You can use && for formatting codes."
+            },
+            "remove": {
+              "name": "&6Remove Description"
+            }
+          },
+          "recipes": {
+            "name": "&6Configure Recipes",
+            "lore": [
+              "&eConfigured Recipes:",
+              "%recipes%"
             ]
           }
         }

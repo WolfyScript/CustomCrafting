@@ -49,10 +49,14 @@ public class CraftListener implements Listener {
         ItemStack resultItem = inventory.getResult();
 
         if (event.getSlot() == 0) {
-            if (resultItem == null || (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem))) {
+            if (resultItem == null) {
+                event.setCancelled(true);
+                return;
+            } else if (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem) && !event.isShiftClick()) {
                 event.setCancelled(true);
                 return;
             }
+
             if (recipeUtils.getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId())) {
                 inventory.setResult(new ItemStack(Material.AIR));
                 ItemStack[] matrix = inventory.getMatrix().clone();
@@ -114,5 +118,4 @@ public class CraftListener implements Listener {
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }
-
 }

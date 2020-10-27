@@ -6,6 +6,8 @@ import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
+import me.wolfyscript.customcrafting.data.patreon.Patreon;
+import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
@@ -54,8 +56,9 @@ public class CustomCrafting extends JavaPlugin {
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
     private static RecipeHandler recipeHandler;
-    private RecipeUtils recipeUtils;
     private static DataBaseHandler dataBaseHandler = null;
+    private RecipeUtils recipeUtils;
+    private Patreon patreonObj;
 
     //Utils
     private ChatUtils chatUtils;
@@ -99,10 +102,11 @@ public class CustomCrafting extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
             getLogger().severe("CustomCrafting requires WolfyUtilities to work! Make sure you download and install it besides CC! ");
             getLogger().severe("Download link: https://www.spigotmc.org/resources/wolfyutilities.64124/");
-            System.out.println("------------------------------------------------------------------------");
+            System.out.println("--------------------------------------------------------------------------------------------------------");
             setEnabled(false);
             return;
         }
+
 
         api = WolfyUtilities.getOrCreateAPI(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
@@ -112,24 +116,33 @@ public class CustomCrafting extends JavaPlugin {
         if (patreon) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         }
+
+        patreonObj = new Patreon();
+
         System.out.println();
         System.out.println("Special thanks to my Patreons for supporting this project: ");
-        System.out.println(
-                "       Apprehentice        Alex            Vincent Deniau\n" +
-                        "       Nat R               gizmonster      Nick coburn\n" +
-                        "       TheDutchRuben       Beng701         Eli2t\n" +
-                        "       르 미                 Ananass Me      Thomas Texier\n" +
-                        "       Ethonion            Cameron R       Junye Zhou\n" +
-                        "       HittmanA            ANthony Helm    Gamer430" +
-                        "       John"
-        );
+        List<Patron> patronList = patreonObj.getPatronList();
+        int lengthColumn = 20;
+        for (int i = 0; i < patronList.size(); i += 2) {
+            StringBuilder sB = new StringBuilder();
+            String name = patronList.get(i).getName();
+            sB.append(name);
+            for (int j = 0; j < lengthColumn - name.length(); j++) {
+                sB.append(" ");
+            }
+            System.out.println("    " + sB.append(patronList.get(i + 1).getName()).toString());
+        }
         System.out.println();
         System.out.println("------------------------------------------------------------------------");
 
         recipeUtils = new RecipeUtils(this);
         chatUtils = new ChatUtils(this);
         configHandler = new ConfigHandler(this);
-        configHandler.load();
+        try {
+            configHandler.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         recipeHandler = new RecipeHandler(this);
 
         if (configHandler.getConfig().isDatabankEnabled()) {
@@ -205,7 +218,11 @@ public class CustomCrafting extends JavaPlugin {
     @Override
     public void onDisable() {
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
-            getConfigHandler().getConfig().save();
+            try {
+                configHandler.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             workbenches.endTask();
             workbenches.save();
             cauldrons.endAutoSaveTask();
@@ -279,11 +296,14 @@ public class CustomCrafting extends JavaPlugin {
         return cauldrons;
     }
 
+    public Patreon getPatreonObj() {
+        return patreonObj;
+    }
+
     public void checkUpdate(@Nullable Player player) {
         Thread updater = new Thread(() -> {
             try {
-                HttpURLConnection con = (HttpURLConnection) new URL(
-                        "https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
+                HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
 
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String version = bufferedReader.readLine();

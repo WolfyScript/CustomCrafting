@@ -1,0 +1,2472 @@
+{
+  "author": "WolfyScript",
+  "version": "5.0.0",
+  "info": [
+    "YouTube:",
+    "   https://www.youtube.com/channel/UCTlqRLm4PxZuAI4nVN4X74g"
+  ],
+  "crafting": {
+    "workbench": {
+      "name": "&6高级工作台",
+      "lore": [
+        "&7用于高级合成的工作台"
+      ]
+    },
+    "knowledgebook": {
+      "name": "&6知识之书",
+      "lore": [
+        "&7包含一些有趣的配方..."
+      ]
+    }
+  },
+  "knowledgebook": {
+    "category_navigation": [
+      "&7[&a左键点击&7] 下一个",
+      "&7[&a右键点击&7] 上一个"
+    ],
+    "category": {
+      "main": {
+        "name": "&6配方"
+      },
+      "customcrafting": {
+        "name": "&6CustomCrafting"
+      },
+      "brewing": {
+        "name": "&6酿造"
+      },
+      "building_blocks": {
+        "name": "&6建筑方块"
+      },
+      "decorations": {
+        "name": "&6装饰方块"
+      },
+      "combat": {
+        "name": "&6战斗"
+      },
+      "tools": {
+        "name": "&6工具"
+      },
+      "redstone": {
+        "name": "&6红石"
+      },
+      "food": {
+        "name": "&6食物"
+      },
+      "transportation": {
+        "name": "&6交通运输"
+      },
+      "misc": {
+        "name": "&6杂项"
+      },
+      "search": {
+        "name": "&6搜索"
+      }
+    }
+  },
+  "msg": {
+    "auto_save": {
+      "start": "自动保存数据",
+      "complete": "自动保存完成"
+    },
+    "startup": {
+      "outdated": "您的版本已过时!有新版本可用! 下载地址: https://www.spigotmc.org/resources/55883/",
+      "update_check_fail": "无法检查spigot的更新",
+      "playerstats": "加载玩家统计信息",
+      "inventories": "启动库存GUI",
+      "placeholder": "注册变量",
+      "mythicmobs": {
+        "detected": "在服务器上检测到MythiMobs...",
+        "register": "注册MythiMobs支持的功能"
+      },
+      "recipes": {
+        "title": "________[加载 配方/物品]________",
+        "items": "---------[物品]---------",
+        "recipes": "--------[配方]--------",
+        "particles": "-------[粒子]-------",
+        "duplicate": "忽略重复配方%namespace%:%key%的配置文件%key%.%file_type%!",
+        "incompatible": "不支持的文件类型!忽略%namespace%:%key%的配置文件%key%.%file_type%! "
+      }
+    },
+    "denied_perm": "&c您没有所需的权限&4%PERM%&c!",
+    "player": {
+      "outdated": {
+        "msg": "&c过期版本!新版本可用!",
+        "msg2": "&a立刻下载!",
+        "link": " &7[&3点击&7]"
+      },
+      "error": {
+        "loading": {
+          "msg": "&c插件已禁用!",
+          "msg1": "请使用正确的核心!",
+          "msg2": "&71.13.x请使用最新的核心!",
+          "msg3": "&7更多信息",
+          "msg4": "   &7[&6Spigot&7]",
+          "msg5": "   &7[&3Paper&7]",
+          "msg6": "&c如果这个解决方案不起作用，并且您在启动时收到错误消息，请在Discord或者SpigotMC上联系我!"
+        }
+      }
+    }
+  },
+  "commands": {
+    "help": [
+      "",
+      "            &b主命令: &e/cc",
+      "",
+      "              &3/cc &6<标签>",
+      "  &6help      &7-  &3显示命令列表",
+      "  &6clear     &7-  &3重置玩家缓存",
+      "  &6info      &7-  &3显示插件信息",
+      "  &6studio    &7-  &3打开GUI编辑器",
+      "  &6give      &7-  &3给予玩家自定义物品"
+    ],
+    "info": "&3输入 &6/cc help &3获取帮助!",
+    "lockdown": {
+      "enabled": "&7[&c&l锁定&7] &a已启用! &c配方已锁定!",
+      "disabled": "&7[&c&l锁定&7] &c已禁用! &c配方未锁定!"
+    },
+    "darkmode": {
+      "enabled": "&a启动深色模式!",
+      "disabled": "&c关闭深色模式!"
+    },
+    "give": {
+      "player_offline": "&&c玩家&4%PLAYER%&c不在线!",
+      "invalid_amount": "&c无效的数量!不是有效数字",
+      "success": "&a给予&e%PLAYER%&a一个&e%ITEM%",
+      "success_amount": "&a给予&e%PLAYER%&a%AMOUNT%个&e%ITEM%",
+      "no_inv_space": "&c背包已经满了!",
+      "invalid_item": "&c物品&4%ITEM%&c不存在!"
+    },
+    "recipes": {
+      "toggle": {
+        "enabled": "",
+        "disabled": ""
+      },
+      "edit": {
+        "invalid": ""
+      },
+      "delete": {
+        "invalid": ""
+      }
+    }
+  },
+  "inventories": {
+    "none": {
+      "global_items": {
+        "background": {
+          "name": "&4"
+        },
+        "back": {
+          "name": "&5返回",
+          "help": []
+        },
+        "close": {
+          "name": "&4关闭",
+          "help": []
+        },
+        "gui_help_on": {
+          "name": "&3&l帮助",
+          "lore": [
+            "%wolfyutilities.help%",
+            "<empty>",
+            "&7[&a已启用&7] &e单击以关闭按钮说明."
+          ],
+          "help": []
+        },
+        "gui_help_off": {
+          "name": "&3&l帮助",
+          "lore": [
+            "%wolfyutilities.help%",
+            "<empty>",
+            "&7[&c已禁用&7] &e单击以打开按钮说明."
+          ],
+          "help": []
+        },
+        "patreon": {
+          "name": "&6赞助名单",
+          "lore": [
+            "&e赞助我来获得最新的插件",
+            "&e和参与调查,帮助改进插件",
+            "&7[&a点击&7]查看赞助名单"
+          ]
+        },
+        "instagram": {
+          "name": "&5&lInstagram",
+          "lore": [
+            "&e查看作者的Instgram"
+          ]
+        },
+        "youtube": {
+          "name": "&c&lYouTube",
+          "lore": [
+            "&e查看作者的YouTube"
+          ]
+        },
+        "discord": {
+          "name": "&9&lDiscord",
+          "lore": [
+            "&e加入作者的discord!"
+          ]
+        }
+      },
+      "main_menu": {
+        "gui_name": "&3&lCustomCrafting &7[&8%plugin.version%&7]",
+        "gui_help": [
+          "&7设置:",
+          "&7- 单击要创建的配方类型",
+          "&7- 创建物品在左下角",
+          "&7- 配方列表在右下角",
+          "&7- 设置在左上角"
+        ],
+        "items": {
+          "settings": {
+            "name": "&7&l设置",
+            "lore": [
+              "&e修改插件的设置",
+              "&e浅/深色模式",
+              "&e配置文件保存格式",
+              "&e启用/禁用高级工作台",
+              "&e切换/重载语言",
+              "&e切换配方生成器保存"
+            ]
+          },
+          "workbench": {
+            "name": "&6工作台配方",
+            "help": [
+              ""
+            ]
+          },
+          "elite_workbench": {
+            "name": "&6精英工作台 &8[&7测试&8]",
+            "help": [
+              ""
+            ]
+          },
+          "anvil": {
+            "name": "&6铁砧配方",
+            "help": [
+              ""
+            ]
+          },
+          "furnace": {
+            "name": "&6熔炉配方",
+            "help": [
+              ""
+            ]
+          },
+          "blast_furnace": {
+            "name": "&6高炉配方",
+            "help": [
+              ""
+            ]
+          },
+          "smoker": {
+            "name": "&6烟熏炉配方",
+            "help": [
+              ""
+            ]
+          },
+          "campfire": {
+            "name": "&6营火配方",
+            "help": [
+              ""
+            ]
+          },
+          "cauldron": {
+            "name": "&6炼药锅配方",
+            "help": [
+              "&7创建炼药锅配方以在炼药锅内酿造/烹饪!"
+            ]
+          },
+          "stonecutter": {
+            "name": "&6切石机配方",
+            "help": [
+              ""
+            ]
+          },
+          "grindstone": {
+            "name": "&6砂轮配方",
+            "help": [
+              ""
+            ]
+          },
+          "brewing_stand": {
+            "name": "&6酿造台配方",
+            "lore": [
+              ""
+            ]
+          },
+          "smithing": {
+            "name": "&6锻造台配方 &8[&7即将推出&8]",
+            "lore": [
+              ""
+            ]
+          },
+          "item_editor": {
+            "name": "&6物品生成器",
+            "lore": [
+              "&7创建&8/&7修改自定义项目",
+              "&7可定制耐久/熔炉燃料/定制互动方块"
+            ]
+          },
+          "recipe_list": {
+            "name": "&6配方列表",
+            "lore": [
+              "&7所有配方列表",
+              "&8(&7包括原版配方&8)",
+              "&7切换任何配方的启用/禁用"
+            ]
+          }
+        }
+      },
+      "patrons_menu": {
+        "gui_name": "&6赞助名单",
+        "gui_help": [
+          "&7特别感谢我的赞助者支持这个项目的发展."
+        ],
+        "items": {
+          "patreon": {
+            "name": "",
+            "lore": [
+              "&e赞助以获得最新的插件和参与插件的开发."
+            ]
+          }
+        }
+      },
+      "item_editor": {
+        "gui_name": "&0&l物品编辑器",
+        "items": {
+          "load_item": {
+            "name": "&6加载物品",
+            "help": [
+              "&7从已保存的物品中选择物品编辑"
+            ]
+          },
+          "create_item": {
+            "name": "&6创建",
+            "help": [
+              "&7创建一个新的自定义物品"
+            ]
+          },
+          "edit_item": {
+            "name": "&7编辑",
+            "help": [
+              "&7从背包中选择物品编辑"
+            ]
+          },
+          "delete_item": {
+            "name": "&4删除",
+            "help": [
+              "&7删除已保存的物品"
+            ]
+          }
+        },
+        "messages": {
+          "input": "&e输入文件夹和项目名称!&6如: example item",
+          "error": "&c此配方不存在或未加载!",
+          "item_applied": "&a配方成功应用!",
+          "item_editable": "&a现在可以编辑此配方!",
+          "no_name": "&c您需要输入配方名称!"
+        }
+      },
+      "recipe_editor": {
+        "gui_name": "&4&l配方编辑器",
+        "items": {
+          "create_recipe": {
+            "name": "&6创建配方",
+            "help": [
+              "&7创建一个新的配方"
+            ]
+          },
+          "edit_recipe": {
+            "name": "&7修改配方",
+            "help": [
+              "&7从已保存的配方中选择一个来编辑"
+            ]
+          },
+          "delete_recipe": {
+            "name": "&4删除配方",
+            "help": [
+              "&7删除一个已保存的配方"
+            ]
+          }
+        },
+        "messages": {
+          "not_existing": "&c配方&6%recipe%&c不存在!",
+          "input": "&e输入文件夹和配方的名称!",
+          "invalid_recipe": "&c此配方类型不是%recipe_type%!",
+          "delete": {
+            "confirm": "&e你确定要删除配方&6%recipe%? (删除时会有一定延迟,等待一会儿即可)",
+            "confirmed": "&7[&a确定&7]  ",
+            "declined": "&7[&c取消&7]"
+          }
+        }
+      },
+      "recipe_list": {
+        "gui_name": "&8&l配方列表",
+        "gui_help": [
+          "&7启用/禁用配方.",
+          "&7如果一个配方被禁用",
+          "&7任何人都无法制作它!",
+          "&7即使是有权限的玩家也不行"
+        ],
+        "items": {
+          "lores": {
+            "disabled": "&7&l[&c&l禁用&7&l]",
+            "enabled": "&7&l[&a&l启用&7&l]"
+          },
+          "namespace": {
+            "name": "&7%namespace%",
+            "lore": [
+              "&7[&a点击&7] 命名",
+              "&7[&aShift+左键&7] 禁用所有配方",
+              "&7[&aShift+右键&7] 启用所有配方"
+            ]
+          },
+          "previous_page": {
+            "name": "&2上一页",
+            "help": []
+          },
+          "next_page": {
+            "name": "&2下一页",
+            "help": []
+          }
+        }
+      },
+      "settings": {
+        "gui_name": "&8设置",
+        "gui_help": [
+          "&7修改 main-config 中的配置内容",
+          "&7",
+          "&7修改时请注意是否锁定配方!"
+        ],
+        "items": {
+          "lockdown": {
+            "enabled": {
+              "name": "&4&l锁定!",
+              "lore": [
+                "&7[&3已锁定&7]",
+                "&4配方已被锁定!"
+              ]
+            },
+            "disabled": {
+              "name": "&4未锁定",
+              "lore": [
+                "&7[&8未锁定&7]",
+                "&7配方未被锁定!"
+              ]
+            }
+          },
+          "darkMode": {
+            "enabled": {
+              "name": "&7深色模式",
+              "lore": [
+                "&7当前为深色模式",
+                "&7[&a点击&7]切换浅色模式"
+              ]
+            },
+            "disabled": {
+              "name": "&7浅色模式",
+              "lore": [
+                "&7当前为浅色模式",
+                "&7[&a点击&7]切换深色模式"
+              ]
+            }
+          },
+          "pretty_printing": {
+            "enabled": {
+              "name": "&6默认的多行配置文件",
+              "lore": [
+                "&7配置被保存为默认的多行的Json格式",
+                "&7[&a点击&7]切换单行配置文件"
+              ]
+            },
+            "disabled": {
+              "name": "&6单行配置文件",
+              "lore": [
+                "&7配置被保存为单行的Json格式!(没有换行)",
+                "&7[&a点击&7]切换多行配置文件"
+              ]
+            }
+          },
+          "advanced_workbench": {
+            "enabled": {
+              "name": "&a高级工作台",
+              "lore": [
+                "&7高级工作台已&a启用!",
+                "&7[&a点击&7] 禁用高级工作台"
+              ]
+            },
+            "disabled": {
+              "name": "&c高级工作台",
+              "lore": [
+                "&7高级工作台已&c禁用!",
+                "&7[&a点击&7] 启用高级工作台"
+              ]
+            }
+          },
+          "language": {
+            "name": "&6语言",
+            "lore": [
+              "&e» &l%lang0%",
+              "&7%lang1%",
+              "&7%lang2%",
+              "&7%lang3%",
+              "&7%lang4%",
+              "&7[&a左键点击&7]下一语言",
+              "&7[&a右键点击&7]上一语言",
+              "&7[&aShift+点击&7]重载语言文件和GUI"
+            ]
+          },
+          "debug": {
+            "enabled": {
+              "name": "&aDebug模式",
+              "lore": [
+                "&7Debug模式已&a启动!",
+                "&7从现在开始你会收到很多信息!",
+                "&7[&a点击&7]关闭Debug模式"
+              ]
+            },
+            "disabled": {
+              "name": "&cDebug",
+              "lore": [
+                "&7Debug模式已&c关闭!",
+                "&7[&a点击&7]启动Debug模式"
+              ]
+            }
+          },
+          "creator": {
+            "reset_after_save": {
+              "enabled": {
+                "name": "&a重置&6配方生成器",
+                "lore": [
+                  "&7在配方保存后重置配方生成器的各项设置.",
+                  "&7[&a点击&7]切换为保留配方生成器"
+                ]
+              },
+              "disabled": {
+                "name": "&c保留&6配方生成器",
+                "lore": [
+                  "&7在配方保存后保留配方生成器的各项设置",
+                  "&7[&a点击&7]切换为重置配方生成器"
+                ]
+              }
+            }
+          },
+          "knowledgebook": {
+            "workbench_filter_button": {
+              "enabled": {
+                "name": "&a显示&6工作台选择按钮",
+                "lore": [
+                  "&7已显示知识之书中的工作台选择按钮",
+                  "&7[&a点击&7]隐藏工作台选择按钮"
+                ]
+              },
+              "disabled": {
+                "name": "&c隐藏&6工作台选择按钮",
+                "lore": [
+                  "&7已隐藏知识之书中的工作台选择按钮",
+                  "&7[&a点击&7]显示工作台选择按钮"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "item_creator": {
+      "main_menu": {
+        "gui_name": "&0&l物品编辑器",
+        "gui_help": [
+          "&7将要编辑的物品放在中间",
+          "&e某些功能仅可在编辑保存的物品时使用!"
+        ],
+        "messages": {
+          "save": {
+            "input": {
+              "line1": "&e输入物品和文件夹名称!",
+              "line2": "&6例如: weapons ultimate_sword"
+            },
+            "success": "&a配置保存到:"
+          },
+          "enchant": {
+            "invalid_lvl": "&c级别无效!不是有效数字!",
+            "invalid_enchant": "&c无效的附魔!&4%ENCHANT%&c不存在!",
+            "no_lvl": "&c没有等级!"
+          },
+          "potion": {
+            "error_number": "&c分析数字时出错! &4<name> <duration> <level> [<ambient> <particles>]",
+            "wrong_args": "&c参数错误或名称无效! &4<name> <duration> <level> [<ambient> <particles>]",
+            "success": "&a增加药水效果&6%TYPE%,%DUR%,%AMP%,%AMB%,%PAR%",
+            "invalid_name": "&c无效的名称!&4%NAME%&c不存在!"
+          },
+          "attribute": {
+            "amount": {
+              "error": "&c解析编号时出错!不是有效编号!"
+            },
+            "uuid": {
+              "error": {
+                "line1": "&c无效的UUID: &4%UUID%",
+                "line2": "&c输入一个有效的UUID!"
+              }
+            }
+          },
+          "damage": {
+            "invalid_type": "&c当前物品不支持损坏程度!",
+            "value_success": "&a设置当前物品的损坏程度为&6%VALUE%&a!",
+            "invalid_value": "&4%VALUE%&c不是有效数字!"
+          },
+          "repair": {
+            "invalid_type": "&c当前物品不支持维修价格!",
+            "value_success": "&a将维修价格设置为&6%VALUE%&a!",
+            "invalid_value": "&4%VALUE%&c不是有效数字!"
+          },
+          "fuel": {
+            "value_success": "&a设置损坏时间为&6%VALUE%Ticks&a!",
+            "invalid_value": "&4%VALUE%&c不是有效数字!"
+          },
+          "custom_model_data": {
+            "disabled": "&l&c禁用",
+            "success": "&a将模型数据设置为&6%VALUE%&a!",
+            "invalid_value": "&4%VALUE%&c不是有效数字!"
+          },
+          "consume": {
+            "valid": "&a设置耐久费用为&e%VALUE%",
+            "invalid": "&c这不是有效数字!请输入有效数字,如&e1&7或&e-1"
+          }
+        },
+        "items": {
+          "invalid_type": {
+            "name": "&c无效的物品",
+            "lore": [
+              "&7此物品与设置不兼容"
+            ]
+          },
+          "invalid_version": {
+            "name": "&c不支持的Minecraft版本",
+            "lore": [
+              "&7此功能需要最低1.14的Minecraft版本!"
+            ]
+          },
+          "page_next": {
+            "name": "&7下一页",
+            "lore": [
+              ""
+            ]
+          },
+          "page_previous": {
+            "name": "&7上一页",
+            "lore": [
+              ""
+            ]
+          },
+          "save_item": {
+            "name": "&a保存物品",
+            "help": [
+              "&7将物品保存为文件: &3<folder> <file_name>"
+            ]
+          },
+          "apply_item": {
+            "name": "&a将此物品用于配方",
+            "help": [
+              "&7将此物品用于配方"
+            ]
+          },
+          "reference": {
+            "wolfyutilities": {
+              "name": "&l&6WolfyUtilities",
+              "lore": [
+                "&7此项是用WolfyUtilities创建的",
+                "&7并链接到&e%item_key%&7!",
+                "&6使用自定义或API编辑项目!"
+              ]
+            },
+            "oraxen": {
+              "name": "&l&6Oraxen",
+              "lore": [
+                "&7此项是用Oraxen创建的",
+                "&7并链接到&e%item_key%&7!",
+                "&6要编辑项目，请使用Oraxen!"
+              ]
+            },
+            "itemsadder": {
+              "name": "&l&6ItemsAdder",
+              "lore": [
+                "&7此项目是使用ItemsAdder创建的",
+                "&7并链接到&e%item_key%&7!",
+                "&6要编辑项目，请使用ItemsAdder!"
+              ]
+            }
+          },
+          "meta_ignore": {
+            "name": "&7模式: &3%VAR%",
+            "lore": [
+              "&e更改此元数据的检查方式!",
+              "&7忽略特定的元数据，例如DisplayName",
+              "&7数值元也可以配置为只允许更高或更低的值"
+            ],
+            "help": [
+              "&7----------------------------------------",
+              "&3EXACT &7-元数据必须完全相同!",
+              "&3IGNORE &7-忽略且不需要元数据!",
+              "&7对于数字项目:",
+              "&3HIGHER &7-该值可以高于设置值!",
+              "&3LOWER &7-该值可以低于设置值!"
+            ]
+          },
+          "display_name": {
+            "option": {
+              "name": "&6更改名称",
+              "lore": [
+                "&7编辑名称"
+              ]
+            },
+            "set": {
+              "name": "&6设置名称",
+              "lore": [
+                "&7更改名称"
+              ],
+              "message": "&e输入名称!使用 &6&& &e给文字上色!"
+            },
+            "remove": {
+              "name": "&3移除名称",
+              "lore": [
+                "&7移除并初始化名称"
+              ]
+            }
+          },
+          "enchantments": {
+            "option": {
+              "name": "&6附魔",
+              "lore": [
+                "&7修改附魔"
+              ]
+            },
+            "add": {
+              "name": "&6添加附魔",
+              "help": [],
+              "message": "&e输入附魔与等级!如: &6unbreaking 5"
+            },
+            "remove": {
+              "name": "&4移除附魔",
+              "help": [],
+              "message": "&e输入附魔名称!如: &6unbreaking"
+            }
+          },
+          "lore": {
+            "option": {
+              "name": "&6修改Lore",
+              "lore": [
+                "&7添加或移除Lore"
+              ]
+            },
+            "add": {
+              "name": "&6添加Lore",
+              "help": [],
+              "message": "&e输入要添加的Lore!使用 &6&& &e给文字上色!"
+            },
+            "remove": {
+              "name": "&4移除Lore",
+              "help": [],
+              "message": "&e输入你要移除的Lore的行号(第几行)!"
+            }
+          },
+          "flags": {
+            "option": {
+              "name": "&6设置Flags",
+              "lore": [
+                "&7切换物品Flags显示",
+                "&7可以隐藏一些信息"
+              ]
+            },
+            "enchants": {
+              "enabled": {
+                "name": "&a启用隐藏附魔Flags"
+              },
+              "disabled": {
+                "name": "&c禁用隐藏附魔Flags"
+              }
+            },
+            "attributes": {
+              "enabled": {
+                "name": "&a启用隐藏Attributes Flags"
+              },
+              "disabled": {
+                "name": "&c禁用隐藏Attributes Flags"
+              }
+            },
+            "unbreakable": {
+              "enabled": {
+                "name": "&a启用隐藏禁用损坏Flags"
+              },
+              "disabled": {
+                "name": "&c禁用隐藏禁用损坏Flags"
+              }
+            },
+            "destroys": {
+              "enabled": {
+                "name": "&a启用隐藏耐久度Flags"
+              },
+              "disabled": {
+                "name": "&c禁用隐藏耐久度Flags"
+              }
+            },
+            "placed_on": {
+              "enabled": {
+                "name": "&a启用隐藏Placed On Flags"
+              },
+              "disabled": {
+                "name": "&c禁用隐藏Placed On Flags"
+              }
+            },
+            "potion_effects": {
+              "enabled": {
+                "name": "&a启用隐藏药水效果Flags"
+              },
+              "disabled": {
+                "name": "&c禁用隐藏药水效果Flags"
+              }
+            }
+          },
+          "player_head": {
+            "option": {
+              "name": "&6头颅设置",
+              "lore": [
+                "&7向头颅添加皮肤"
+              ]
+            },
+            "texture": {
+              "apply": {
+                "name": "&6应用皮肤",
+                "lore": [
+                  "&e为头颅添加皮肤",
+                  "&7«« &e使用添加完皮肤的头颅!",
+                  "&7[&a点击&7] Apply texture"
+                ]
+              }
+            },
+            "owner": {
+              "name": "&6设置头颅的玩家ID",
+              "lore": [
+                "&e设置头颅的玩家ID",
+                "&7[&a点击&7]输入玩家的UUID或name"
+              ],
+              "message": "&e输入玩家名字!"
+            }
+          },
+          "unbreakable": {
+            "enabled": {
+              "name": "&a不可损坏",
+              "lore": [
+                "&a不可损坏&f已启用",
+                "&7[&a点击&7]禁用不可损坏"
+              ]
+            },
+            "disabled": {
+              "name": "&c可损坏",
+              "lore": [
+                "&c不可损坏&f已禁用",
+                "&7[&a点击&7]启用不可损坏"
+              ]
+            }
+          },
+          "potion": {
+            "option": {
+              "name": "&6药水效果",
+              "lore": [
+                "&7设置药水效果"
+              ]
+            },
+            "add": {
+              "name": "&a添加药水效果",
+              "lore": [
+                "&e添加药水效果",
+                "&e输入: &6<name> <duration> <level> [<ambient> <particles>]",
+                "&7[&a点击&7]输入药水效果"
+              ],
+              "message": "&e输入药水效果! &6<name> <duration> <level> [<ambient> <particles>]"
+            },
+            "remove": {
+              "name": "&4移除药水效果",
+              "lore": [
+                "&e移除指定的药水效果",
+                "&e输入: &6<name>",
+                "&7[&a点击&7]输入要移除的药水效果名字"
+              ],
+              "message": "&e输入要移除的药水效果名字!"
+            }
+          },
+          "attribute": {
+            "option": {
+              "name": "&6设置Attributes",
+              "lore": [
+                "&7添加或移除Attributes"
+              ]
+            },
+            "generic_max_health": {
+              "name": "&6最大生命值",
+              "lore": [
+                "&7[&a点击&7]设置最大生命值"
+              ]
+            },
+            "generic_follow_range": {
+              "name": "&6跟随范围",
+              "lore": [
+                "&7[&a点击&7]设置跟随范围"
+              ]
+            },
+            "generic_knockback_resistance": {
+              "name": "&6击退抗性",
+              "lore": [
+                "&7[&a点击&7]设置击退抗性r"
+              ]
+            },
+            "generic_movement_speed": {
+              "name": "&6移动速度",
+              "lore": [
+                "&7[&a点击&7]设置移动速度"
+              ]
+            },
+            "generic_flying_speed": {
+              "name": "&6飞行速度",
+              "lore": [
+                "&7[&a点击&7]设置飞行速度"
+              ]
+            },
+            "generic_attack_damage": {
+              "name": "&6攻击伤害",
+              "lore": [
+                "&7[&a点击&7]设置攻击伤害"
+              ]
+            },
+            "generic_attack_speed": {
+              "name": "&6攻击速度",
+              "lore": [
+                "&7[&a点击&7]设置攻击速度"
+              ]
+            },
+            "generic_armor": {
+              "name": "&6盔甲",
+              "lore": [
+                "&7[&a点击&7]设置盔甲"
+              ]
+            },
+            "generic_armor_toughness": {
+              "name": "&6盔甲韧性",
+              "lore": [
+                "&7[&a点击&7]设置盔甲韧性"
+              ]
+            },
+            "generic_luck": {
+              "name": "&6幸运",
+              "lore": []
+            },
+            "horse_jump_strength": {
+              "name": "&6马的跳跃高度",
+              "lore": []
+            },
+            "zombie_spawn_reinforcements": {
+              "name": "&6僵尸增援",
+              "lore": []
+            },
+            "add_number": {
+              "name": "%C%添加所有属性",
+              "lore": [
+                "&e将所有属性添加到属性的当前值."
+              ]
+            },
+            "add_scalar": {
+              "name": "%C%Multiply number",
+              "lore": [
+                "&e将属性的当前值乘以(1+x)",
+                "&e其中x是修改器数值的总和"
+              ]
+            },
+            "multiply_scalar_1": {
+              "name": "%C%Multiply scalar",
+              "lore": [
+                "&e最复杂的选择！启用帮助(右上角)了解更多信息!",
+                "&e对于每个修改器，将属性的当前值乘以(1+x)",
+                "&e其中x是修改器数值的总和."
+              ],
+              "help": [
+                "&7---------------------------------------------------",
+                "&e如果操作1或2(乘标量)只有一个修饰符",
+                "&e则函数与操作1(乘法)相同.",
+                "&e但是，对于多个修饰符",
+                "&e它将倍增修饰符而不是添加它们.",
+                "&e例如，使用{Amount:2,Operation:2}以及",
+                "&e{Amount:4,Operation:2}以3为基数得到45(3*(1+2)*(1+4)=45",
+                "&6参见Minecraft Wiki: &3https://minecraft.gamepedia.com/Attribute#Operations"
+              ]
+            },
+            "slot_hand": {
+              "name": "&6主手",
+              "lore": [
+                "&7[&a点击&7]启用/禁用"
+              ]
+            },
+            "slot_off_hand": {
+              "name": "&6副手",
+              "lore": [
+                "&7[&a点击&7]启用/禁用"
+              ]
+            },
+            "slot_feet": {
+              "name": "&6靴子",
+              "lore": [
+                "&7[&a点击&7]启用/禁用"
+              ]
+            },
+            "slot_legs": {
+              "name": "&6护腿",
+              "lore": [
+                "&7[&a点击&7]启用/禁用"
+              ]
+            },
+            "slot_chest": {
+              "name": "&6胸甲",
+              "lore": [
+                "&7[&a点击&7]启用/禁用"
+              ]
+            },
+            "slot_head": {
+              "name": "&6头盔",
+              "lore": [
+                "&7[&a点击&7]启用/禁用"
+              ]
+            },
+            "save": {
+              "name": "&a添加Attribute",
+              "lore": [
+                "&e对具有设置选项和值的物品应用 Attribute",
+                "&7[&a点击&7]添加Attribute"
+              ]
+            },
+            "delete": {
+              "name": "&c移除Attribute",
+              "lore": [
+                "&e为物品移除Attribute",
+                "&7[&a点击&7]打开GUI"
+              ]
+            },
+            "set_amount": {
+              "name": "&7设置数值: &e%NUMBER%",
+              "lore": [
+                "&e设置数值",
+                "",
+                "&7[&a点击&7]输入数值"
+              ],
+              "message": "&e输入数值!如: e&6 0.4"
+            },
+            "set_name": {
+              "name": "&7设置名字: &e%NAME%",
+              "lore": [
+                "&e设置名字",
+                "&7[&a点击&7]输入名字"
+              ],
+              "message": "&e输入名字!"
+            },
+            "set_uuid": {
+              "name": "&7UUID: &e%UUID%",
+              "lore": [
+                "&e设置UUID",
+                "&c必须是UUID!",
+                "&7[&a点击&7]输入UUID"
+              ],
+              "message": "&e设置UUID!必须是UUID!"
+            }
+          },
+          "damage": {
+            "option": {
+              "name": "&6设置物品的损坏程度",
+              "lore": [
+                "&7设置物品的损坏程度"
+              ]
+            },
+            "set": {
+              "name": "&6设置损坏程度",
+              "lore": [
+                "&e设置损坏程度数值!",
+                "&7[&a点击&7]输入损坏程度"
+              ],
+              "message": "&e输入损坏程度!"
+            },
+            "reset": {
+              "name": "&c重置损坏程度",
+              "help": [
+                "&e重置损坏程度为0",
+                "&7[&a点击&7]重置损坏程度"
+              ]
+            }
+          },
+          "repair_cost": {
+            "option": {
+              "name": "&6修理费用",
+              "lore": [
+                "&7设置此物品的修理费用!"
+              ]
+            },
+            "set": {
+              "name": "&6设置修理费用",
+              "message": "&e输入修理费用的数值"
+            },
+            "reset": {
+              "name": "&c重置修理费用",
+              "lore": [
+                "&7重置修理费用为0"
+              ]
+            }
+          },
+          "fuel": {
+            "option": {
+              "name": "&6可做燃料",
+              "lore": [
+                "&7允许在熔炉中用作燃料.",
+                "&c需要保存的物品"
+              ]
+            },
+            "burn_time": {
+              "set": {
+                "name": "&a燃烧时间: &7%VAR% Ticks",
+                "lore": [
+                  "&7[&a点击&7]设置燃烧时间(Tick)"
+                ],
+                "help": [
+                  "&7以Tick为单位设置燃烧时间!",
+                  "&720Ticks = 1秒",
+                  "&c设置为0禁用此选项",
+                  "&c仅为燃料设置!"
+                ],
+                "message": "&e以Tick为单位设置燃烧时间!"
+              },
+              "reset": {
+                "name": "&c重置燃烧时间",
+                "lore": [
+                  "&7此物品将不能作为燃料!"
+                ]
+              }
+            },
+            "furnace": {
+              "enabled": {
+                "name": "&a熔炉",
+                "lore": [
+                  "&7可以用作熔炉的燃料"
+                ]
+              },
+              "disabled": {
+                "name": "&c熔炉",
+                "lore": [
+                  "&7不能用作熔炉的燃料"
+                ]
+              }
+            },
+            "blast_furnace": {
+              "enabled": {
+                "name": "&a高炉",
+                "lore": [
+                  "&7可以用作高炉的燃料"
+                ]
+              },
+              "disabled": {
+                "name": "&c高炉",
+                "lore": [
+                  "&7不能用作高炉的燃料"
+                ]
+              }
+            },
+            "smoker": {
+              "enabled": {
+                "name": "&a烟熏炉",
+                "lore": [
+                  "&7可以用作烟熏炉的燃料"
+                ]
+              },
+              "disabled": {
+                "name": "&c烟熏炉",
+                "lore": [
+                  "&7不能用作烟熏炉的燃料"
+                ]
+              }
+            }
+          },
+          "custom_model_data": {
+            "option": {
+              "name": "&6自定义模型数据",
+              "lore": [
+                "&7设置自定义模型数据",
+                "&7使用自定义模型数据和纹理!",
+                "&7最低兼容Minecraft1.14"
+              ]
+            },
+            "set": {
+              "name": "&7模型数据: &7%VAR%",
+              "help": [
+                "&7为物品设置自定义模型数据!"
+              ],
+              "message": "&e输入自定义模型数据!"
+            },
+            "reset": {
+              "name": "&c移除自定义模型数据",
+              "help": [
+                "&7为物品移除自定义模型数据!"
+              ]
+            }
+          },
+          "consume": {
+            "option": {
+              "name": "&6失去耐久值或被替换",
+              "lore": [
+                "&7制作一个物品,作为材料在",
+                "&7合成后会消耗耐久值或被替换",
+                "&c需要保存的物品"
+              ]
+            },
+            "durability_cost": {
+              "enabled": {
+                "name": "&7耐久度消耗: &3%VAR%",
+                "lore": [
+                  "&7>0: &3耐久度降低!",
+                  "&7=0: &3全移除耐久度!",
+                  "&7<0: &3耐久度增加!"
+                ],
+                "message": "&e输入数值决定使用物品时的耐久值更改"
+              },
+              "disabled": {
+                "name": "&7耐久度消耗: &4&l禁用",
+                "lore": [
+                  "&c使用此物品将不会消耗耐久度!"
+                ]
+              }
+            },
+            "consume_item": {
+              "enabled": {
+                "name": "&a消耗",
+                "lore": [
+                  "&7I使用此物品将会被消耗!"
+                ]
+              },
+              "disabled": {
+                "name": "&c无消耗",
+                "lore": [
+                  "&7使用此物品不会被消耗!"
+                ]
+              }
+            },
+            "replacement": {
+              "enabled": {
+                "name": "&a启用替换!",
+                "lore": [
+                  "&7耐久消耗已禁用!"
+                ]
+              },
+              "disabled": {
+                "name": "&c禁用替换!"
+              }
+            }
+          },
+          "custom_durability": {
+            "option": {
+              "name": "&6定制耐久度和损坏程度",
+              "lore": [
+                "&7为您的物品设置自定义耐久度和损坏程度!",
+                "&7这将取代原版的耐久度和损坏程度!"
+              ]
+            },
+            "remove": {
+              "name": "&c移除损坏程度",
+              "lore": [
+                "&e删除此物品的自定义耐久度.",
+                "&7[&a点击&7]删除此物品的自定义耐久度"
+              ]
+            },
+            "set_durability": {
+              "name": "&7设置耐久度: &3%VAR%",
+              "lore": [
+                "&e设置耐久度.",
+                "&7[&a点击&7]输入耐久度"
+              ],
+              "message": "&e输入耐久度.&c最大值: 2,147,483,647"
+            },
+            "set_damage": {
+              "name": "&7设置损坏程度: &3%VAR%",
+              "lore": [
+                "&e设置损坏程度.",
+                "&7[&a点击&7]输入损坏程度"
+              ],
+              "message": "&e输入损坏程度.&c最大值: 2,147,483,647"
+            },
+            "set_tag": {
+              "name": "&7Set Tag: &3%VAR%",
+              "lore": [
+                "&e设置显示耐久度和损坏程度的标签",
+                "&7&n替换: ",
+                "&6%dur% &7-> &e可用的耐久度",
+                "&6%max_dur% &7-> &e最大耐久度",
+                "&7[&a点击&7]输入显示耐久度和损坏程度的标签"
+              ],
+              "message": "&e设置显示耐久度和损坏程度的标签! %dur%"
+            }
+          },
+          "localized_name": {
+            "option": {
+              "name": "&6本地化名称",
+              "lore": [
+                "&7将本地化名称设置为",
+                "&7使用资源包等的翻译."
+              ]
+            },
+            "set": {
+              "name": "&7设置本地化名称: &f%VAR%",
+              "message": "&e输入设置本地化名称"
+            },
+            "remove": {
+              "name": "&c移除本地化名称"
+            }
+          },
+          "permission": {
+            "option": {
+              "name": "&6权限",
+              "lore": [
+                "&7设置获取此物品所需的权限",
+                "&7用于工作台和手工制作",
+                "&c需要保存的物品"
+              ]
+            },
+            "set": {
+              "name": "&7设置权限: &3%VAR%",
+              "message": "&e输入获取此物品所需的权限"
+            },
+            "remove": {
+              "name": "&7移除获取此物品所需的权限"
+            }
+          },
+          "rarity": {
+            "option": {
+              "name": "&6稀有度&8[&7测试&8]",
+              "lore": [
+                "&7为物品设置稀有度.",
+                "&7用于工作台和手工制作",
+                "&c需要保存的物品"
+              ]
+            },
+            "set": {
+              "name": "&7设置稀有度: &3%VAR%",
+              "lore": [
+                "&7输入稀有度的值,&c需<=1",
+                "&71.0 -> 100%,0.04 -> 4%"
+              ],
+              "message": "&e输入稀有度的值,&c需<=1!"
+            },
+            "reset": {
+              "name": "&7重置稀有度",
+              "lore": [
+                "&7重置稀有度为1.0(100%)"
+              ]
+            }
+          },
+          "persistent_data": {
+            "option": {
+              "name": "&6设置NBT",
+              "lore": [
+                "&7在NBT中存储自定义数据，链接到键."
+              ]
+            }
+          },
+          "elite_workbench": {
+            "option": {
+              "name": "&6精英工作台&8[&7测试&8]",
+              "lore": [
+                "&7创建和配置精英工作台",
+                "&7最大支持6X6的合成空间",
+                "&c支持保存物品"
+              ]
+            },
+            "grid_size": {
+              "size_3": {
+                "name": "&7合成空间大小: &73&8x&73",
+                "lore": [
+                  "&7原版的3X3工作台",
+                  "&7[&a点击&7]切换成4X4的工作台"
+                ]
+              },
+              "size_4": {
+                "name": "&7合成空间大小: &e4&8x&e4",
+                "lore": [
+                  "&e更大的空间,合成高级物品",
+                  "&7[&a点击&7]切换成5X5的工作台"
+                ]
+              },
+              "size_5": {
+                "name": "&7合成空间大小: &65&8x&65",
+                "lore": [
+                  "&e更大的合成空间,创建更高级的合成配方",
+                  "&7[&a点击&7]切换成6X6的工作台"
+                ]
+              },
+              "size_6": {
+                "name": "&7合成空间大小: &46&8x&46",
+                "lore": [
+                  "&e拥有非常大的合成空间来创建非常复杂的配方.",
+                  "&c这些合成空间需要很多的资源,如果在短时间内使用过多,可能会导致延迟!",
+                  "&7[&a点击&7]切换成3X3的工作台"
+                ]
+              }
+            },
+            "toggle": {
+              "enabled": {
+                "name": "&a启用精英工作台",
+                "lore": [
+                  "&e精英工作台已启用.",
+                  "&7[&a点击&7]禁用精英工作台"
+                ]
+              },
+              "disabled": {
+                "name": "&c禁用精英工作台",
+                "lore": [
+                  "&e精英工作台已禁用.",
+                  "&7[&a点击&7]启用精英工作台"
+                ]
+              }
+            },
+            "advanced_recipes": {
+              "enabled": {
+                "name": "&a通用的配方",
+                "lore": [
+                  "&7普通工作台和精英工作台通用的配方(高级工作台不可用).",
+                  "&7[&a点击&7]切换为精英工作台专用"
+                ]
+              },
+              "disabled": {
+                "name": "&7高级工作台专用",
+                "lore": [
+                  "&e高级工作台专用!",
+                  "&7[&a点击&7]切换为通用的配方"
+                ]
+              }
+            },
+            "particles": {
+              "name": "&6粒子效果",
+              "lore": [
+                "&e设置工作台的粒子效果.",
+                "&7[&a点击&7]转到粒子效果设置"
+              ]
+            }
+          },
+          "knowledge_book": {
+            "option": {
+              "name": "&6知识之书",
+              "lore": [
+                "&7显示在知识之书中",
+                "&c需要保存的物品"
+              ]
+            },
+            "toggle": {
+              "enabled": {
+                "name": "&a已启用",
+                "lore": [
+                  "&e知识之书已启用",
+                  "&7[&a点击&7]禁用知识之书"
+                ]
+              },
+              "disabled": {
+                "name": "&c已禁用",
+                "lore": [
+                  "&e知识之书已禁用",
+                  "&7[&a点击&7]启用知识之书"
+                ]
+              }
+            }
+          },
+          "armor_slots": {
+            "option": {
+              "name": "&6定制装备",
+              "lore": [
+                "&7配置可以装备的装备栏",
+                "&c需要保存的物品"
+              ]
+            },
+            "head": {
+              "enabled": {
+                "name": "&a头盔",
+                "lore": [
+                  "&7能作为头盔装备.",
+                  "&7[&a点击&7]切换为不能作为头盔装备"
+                ]
+              },
+              "disabled": {
+                "name": "&c头盔",
+                "lore": [
+                  "&7不能作为头盔装备.",
+                  "&7[&a点击&7]切换为能作为头盔装备"
+                ]
+              }
+            },
+            "chest": {
+              "enabled": {
+                "name": "&a胸甲",
+                "lore": [
+                  "&7能作为胸甲装备.",
+                  "&7[&a点击&7]切换为不能作为胸甲装备"
+                ]
+              },
+              "disabled": {
+                "name": "&c胸甲",
+                "lore": [
+                  "&7不能作为胸甲装备.",
+                  "&7[&a点击&7]切换为能作为胸甲装备"
+                ]
+              }
+            },
+            "legs": {
+              "enabled": {
+                "name": "&a护腿",
+                "lore": [
+                  "&7能作为护腿装备.",
+                  "&7[&a点击&7]切换为不能作为护腿装备"
+                ]
+              },
+              "disabled": {
+                "name": "&c护腿",
+                "lore": [
+                  "&7不能作为护腿装备.",
+                  "&7[&a点击&7]切换为能作为护腿装备"
+                ]
+              }
+            },
+            "feet": {
+              "enabled": {
+                "name": "&a靴子",
+                "lore": [
+                  "&7能作为靴子装备.",
+                  "&7[&a点击&7]切换为不能作为靴子装备"
+                ]
+              },
+              "disabled": {
+                "name": "&c靴子",
+                "lore": [
+                  "&7不能作为靴子装备.",
+                  "&7[&a点击&7]切换为能作为靴子装备"
+                ]
+              }
+            }
+          },
+          "particle_effects": {
+            "option": {
+              "name": "&6特殊粒子效果&8[&7实验]",
+              "lore": [
+                "&7配置在持有、装备",
+                "&7或放置此物品时生成的粒子效果",
+                "&c需要保存的物品"
+              ]
+            },
+            "head": {
+              "name": "&6头盔"
+            },
+            "chest": {
+              "name": "&6胸甲"
+            },
+            "legs": {
+              "name": "&6护腿"
+            },
+            "feet": {
+              "name": "&6靴子"
+            },
+            "hand": {
+              "name": "&6主手"
+            },
+            "off_hand": {
+              "name": "&6副手"
+            },
+            "block": {
+              "name": "&6持有"
+            },
+            "input": {
+              "name": "%effect_name%",
+              "lore": [
+                "%effect_description%",
+                "",
+                "&7[&a点击&7]编辑效果",
+                "&7[&aShift+点击&7]移除效果"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "recipe_creator": {
+      "global_items": {
+        "save": {
+          "name": "&3保存",
+          "help": [
+            "&7保存配方到: &3<namespace> <recipe_name>"
+          ]
+        },
+        "priority": {
+          "name": "&3优先级:&7 %PRI%",
+          "help": [
+            "&7设置此配方的优先级!",
+            "&7优先级: ",
+            "&9LOWEST&7: 最低优先级",
+            "&bLOW&7: 低优先级",
+            "&3NORMAL&7: 正常优先级",
+            "&cHIGH&7: 高优先级",
+            "&4HIGHEST&7: 最高优先级"
+          ]
+        },
+        "conditions": {
+          "name": "&3条件",
+          "lore": [
+            "&e设置条件以进一步自定义配方.",
+            "&e例如世界时间、天气等.",
+            "&7[&a点击&7]设置条件"
+          ]
+        },
+        "hidden": {
+          "enabled": {
+            "name": "&6隐藏配方",
+            "lore": [
+              "&e配方将在知识之书中隐藏!",
+              "&7[&a点击&7]切换在知识之书中显示"
+            ]
+          },
+          "disabled": {
+            "name": "&6显示配方",
+            "lore": [
+              "&e配方将在知识之书显示!",
+              "&7[&a点击&7]切换在知识之书中隐藏"
+            ]
+          }
+        },
+        "exact_meta": {
+          "enabled": {
+            "name": "&a匹配元数据",
+            "help": [],
+            "lore": [
+              "&7物品必须完全相同!",
+              "&7包括耐久度等!"
+            ]
+          },
+          "disabled": {
+            "name": "&3忽略元数据",
+            "help": [],
+            "lore": [
+              "&7不带元数据的物品将只检查其类型",
+              "&7带元数据的物品仍需精准匹配!"
+            ]
+          }
+        },
+        "workbench": {
+          "shapeless": {
+            "enabled": {
+              "name": "&3无序配方",
+              "help": [
+                "&7无序配方!",
+                "&7只要材料相同就可以合成!"
+              ]
+            },
+            "disabled": {
+              "name": "&3有序配方",
+              "help": [
+                "&7有序配方!",
+                "&7材料相同的同时还要求摆放位置相同!"
+              ]
+            }
+          },
+          "mirrorHorizontal": {
+            "enabled": {
+              "name": "&a水平镜像",
+              "lore": [
+                "&e配方现在可以水平镜像",
+                "&7[&a点击&7]关闭水平镜像"
+              ]
+            },
+            "disabled": {
+              "name": "&c水平镜像",
+              "lore": [
+                "&e配方现在不可以水平镜像!",
+                "&7[&a点击&7]开启水平镜像"
+              ]
+            }
+          },
+          "mirrorVertical": {
+            "enabled": {
+              "name": "&a垂直镜像",
+              "lore": [
+                "&e配方现在可以垂直镜像",
+                "&7[&a点击&7]关闭垂直镜像"
+              ]
+            },
+            "disabled": {
+              "name": "&c垂直镜像",
+              "lore": [
+                "&e配方现在不可以垂直镜像!",
+                "&7[&a点击&7]开启垂直镜像"
+              ]
+            }
+          },
+          "mirrorRotation": {
+            "disabled": {
+              "name": "&c旋转配方",
+              "lore": [
+                "&e配方现在不可以旋转.",
+                "&7[&a点击&7]关闭旋转配方"
+              ]
+            },
+            "enabled": {
+              "name": "&a旋转配方",
+              "lore": [
+                "&e配方现在可以旋转.",
+                "&7[&a点击&7]开启旋转配方"
+              ]
+            }
+          }
+        }
+      },
+      "global_messages": {
+        "override": "&3输入配方的文件夹和名称!",
+        "valid_number": "&c输入有效数字!",
+        "save": {
+          "input": "&3输入文件夹和名称!&6如: folder recipe_name",
+          "empty": "&c无法保存空配方!检查结果和来源/成分",
+          "success": "&a配方成功保存到:"
+        },
+        "loading": {
+          "error": "&c加载配方&4%REC%&c时出错",
+          "success": "&a加载并注入配方成功!",
+          "warning": "&c最好在完成后重新启动服务器，以防止配方无法正常工作!"
+        }
+      },
+      "conditions": {
+        "gui_name": "条件",
+        "mode_names": {
+          "exact": "&e精确值",
+          "ignore": "&c禁用",
+          "higher": "&e>",
+          "lower": "&e<",
+          "higher_lower": "&e高还是低",
+          "higher_exact": "&e>=",
+          "lower_exact": "&e<="
+        },
+        "items": {
+          "world_time": {
+            "name": "&7- 世界时间 - ",
+            "lore": [
+              "&7时间:&e %VALUE%",
+              "&7模式:&e %MODE%",
+              "&8[&a右键点击&8]&7切换模式",
+              "&8[&a左键点击&8]&7设置时间"
+            ]
+          },
+          "player_experience": {
+            "name": "&7- 玩家经验 - ",
+            "lore": [
+              "&7经验:&e %VALUE%",
+              "&7模式:&e %MODE%",
+              "&8[&a右键点击&8]&7切换模式",
+              "&8[&a左键点击&8]&7设置经验等级"
+            ]
+          },
+          "world_name": {
+            "name": "&7- 世界名字 -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Values:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&a右键点击&8]&7切换开关",
+              "&8[&a左键点击&8]&7添加世界名字",
+              "&8[&aShift+左键点击&8]&7删除最后一个条目"
+            ]
+          },
+          "world_biome": {
+            "name": "&7- 世界群系 -",
+            "lore": [
+              "&7模式:&e %MODE%",
+              "&7群系:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&a右键点击&8] &7切换开关",
+              "&8[&a左键点击&8] &7添加群系",
+              "&8[&aShift+左键点击&8] &7删除最后一个条目"
+            ]
+          },
+          "weather": {
+            "modes": {
+              "storm": "&e雨/雪",
+              "thunder": "&e雷暴",
+              "storm_thunder": "&e雨/雪 &7+ &e雷暴",
+              "none": "&e晴"
+            },
+            "name": "&7- 世界天气 -",
+            "lore": [
+              "&7天气:&e %VALUE%",
+              "&7模式:&e %MODE%",
+              "&8[&a右键点击&8]&7切换模式",
+              "&8[&a左键点击&8]&7切换天气"
+            ]
+          },
+          "advanced_workbench": {
+            "name": "&7- 高级工作台 -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&8[&a左键点击&8] &7切换开关"
+            ]
+          },
+          "elite_workbench": {
+            "name": "&7- 精英工作台 -",
+            "lore": [
+              "&7Mode:&e %MODE%",
+              "&7Values:",
+              "&7 - &e%var0%",
+              "&7 - &e%var1%",
+              "&7 - &e%var2%",
+              "&7 - &e%var3%",
+              "&8[&a右键点击&8] &7切换开关",
+              "&8[&a左键点击&8] &7configure Elite Workbenches",
+              "&8[&aShift+左键点击&8] &7remove last entry"
+            ]
+          },
+          "permission": {
+            "name": "&7- Permission - ",
+            "lore": [
+              "&7Permission:&e %VALUE%",
+              "&7Mode:&e %MODE%",
+              "&8[&a右键点击&8] &7切换模式",
+              "&8[&a左键点击&8] &7编辑权限"
+            ]
+          }
+        },
+        "messages": {
+          "world_time": "&e以tick为单位输入时间!如: 1500",
+          "world_name": "&e输入世界名字",
+          "world_biome": "&e输入群系名字",
+          "missing_world": "&c该世界不存在!",
+          "elite_workbench": "&e输入CustomItem的文件夹和名称!如: &6workbenches golden_workbench",
+          "player_experience": "&e输入所需的经验!",
+          "permission": "&e输入所需的权限",
+          "error": "&c物品不存在或未载入!",
+          "no_name": "&c请先输入我名字!",
+          "not_elite_workbench": "&c此物品不是精英工作台!",
+          "already_existing": "&c物品已存在!"
+        }
+      },
+      "workbench": {
+        "gui_name": "&4&l创建配方 &7[&8工作台&7]",
+        "gui_help": [
+          "&7提示:",
+          "&7在原料或成品上&eShift&7+&e右键点击",
+          "&7将会允许你编辑"
+        ],
+        "items": {
+          "adv_workbench": {
+            "enabled": {
+              "name": "&3高级工作台",
+              "help": [
+                "&7只能在高级工作台合成"
+              ]
+            },
+            "disabled": {
+              "name": "&4所有工作台",
+              "help": [
+                "&7能在所有工作台合成"
+              ]
+            }
+          }
+        }
+      },
+      "elite_workbench": {
+        "gui_name": "&4创建配方 &7[&8精英工作台&7]",
+        "gui_help": [
+          "&7提示:",
+          "&7在原料或成品上&eShift&7+&e右键点击",
+          "&7将会允许你编辑"
+        ],
+        "items": {
+        }
+      },
+      "stonecutter": {
+        "gui_name": "&4创建配方 &8[&7切石机&8]",
+        "gui_help": [
+          "&7提示:",
+          "&7在原料或成品上&eShift&7+&e右键点击",
+          "&7将会允许你编辑"
+        ],
+        "items": {
+        }
+      },
+      "cooking": {
+        "gui_name": "&4创建配方 &8[&7熔炉&8]",
+        "gui_help": [
+          "&7提示:",
+          "&7在原料或成品上&eShift&7+&e右键点击",
+          "&7将会允许你编辑"
+        ],
+        "items": {
+          "xp": {
+            "name": "&3经验",
+            "help": [],
+            "lore": [
+              "&6%XP%经验"
+            ],
+            "message": "&3输入经验数量.如: 0.5"
+          },
+          "cooking_time": {
+            "name": "&6烹饪时间",
+            "help": [
+              "&7输入物品的烹饪时长",
+              "&3提示: 20ticks = 1秒"
+            ],
+            "lore": [
+              "&6%TIME% ticks"
+            ],
+            "message": "&3输入物品的烹饪时长.如: 20"
+          }
+        }
+      },
+      "anvil": {
+        "gui_name": "&4创建配方 &8[&7铁砧&8]",
+        "gui_help": [
+          "&7提示:",
+          "&7在原料或成品上&eShift&7+&e右键点击",
+          "&7将会允许你编辑"
+        ],
+        "items": {
+          "mode": {
+            "name": "&7模式:&6 %MODE%",
+            "help": [
+              ""
+            ]
+          },
+          "repair_cost": {
+            "name": "&7修理费用:&6 %VAR%",
+            "lore": [
+              "&e这个配方的修理费用.",
+              "&c必须>0!",
+              "&7[&a点击&7]输入这个配方的修理费用"
+            ],
+            "message": "&3输入这个配方的修理费用,必须>0!"
+          },
+          "block_repair": {
+            "true": {
+              "name": "&a禁用修复"
+            },
+            "false": {
+              "name": "&c允许修复"
+            }
+          },
+          "block_rename": {
+            "true": {
+              "name": "&a禁用重命名"
+            },
+            "false": {
+              "name": "&c允许重命名"
+            }
+          },
+          "block_enchant": {
+            "true": {
+              "name": "&a禁用附魔"
+            },
+            "false": {
+              "name": "&c允许附魔"
+            }
+          },
+          "durability": {
+            "name": "&7耐久度:&6 %VAR%",
+            "lore": [
+              ""
+            ],
+            "message": "&3输入耐久度.&6>0 增加&7,<0 减少"
+          },
+          "repair_apply": {
+            "true": {
+              "name": "&a修理应用于结果",
+              "lore": [
+                "&7将修理费用应用于修理后的元数据!"
+              ]
+            },
+            "false": {
+              "name": "&c修理不应用于结果!",
+              "lore": [
+                "&7修理后的元数据保持不变!"
+              ]
+            }
+          },
+          "repair_mode": {
+            "name": "&7维修费用模式: &3%VAR%",
+            "lore": [
+              "&e输入维修费用模式",
+              "&3NONE &7- 完全不受影响",
+              "&3ADD &7- 添加到配方修复成本中!",
+              "&3MULTIPLY &7- 乘以配方修复成本",
+              "&7[&a点击&7]切换模式"
+            ]
+          }
+        }
+      },
+      "cauldron": {
+        "gui_name": "&4&l创建配方 &8[&7炼药锅&8]",
+        "messages": {
+          "mythicMob": "&e输入你想加入的怪物.\n&e<&6mob_name&e> <&6level&e> [<&6x&e> <&6y&e> <&6z&e>]"
+        },
+        "items": {
+          "cauldron": {
+            "name": "&c"
+          },
+          "dropItems": {
+            "enabled": {
+              "name": "&6直接掉落",
+              "lore": [
+                "&e完成后物品会在炼药锅里掉落.",
+                "",
+                "&7[&a点击&7]切换点击获取"
+              ]
+            },
+            "disabled": {
+              "name": "&6点击获取",
+              "lore": [
+                "&e完成后物品会留在炼药锅里.",
+                "&e右键点击获取.",
+                "&e« 设置玩家右键单击时所需的物品!",
+                "     &e空白以要求空手!",
+                "&7[&a点击&7]切换直接掉落"
+              ]
+            }
+          },
+          "fire": {
+            "enabled": {
+              "name": "&6需要火焰",
+              "lore": [
+                "&e这个配方需要点燃营火"
+              ]
+            },
+            "disabled": {
+              "name": "&6无需火焰",
+              "lore": [
+                "&e这个配方只有在炼药锅下的",
+                "&e营火没有点燃的情况下才有效"
+              ]
+            }
+          },
+          "water": {
+            "disabled": {
+              "name": "&3不需要水!",
+              "lore": [
+                "&e炼药锅空的时候配方才会起作用!"
+              ]
+            },
+            "enabled": {
+              "name": "&3需要水!",
+              "lore": [
+                "&e炼药锅有水的时候配方才会起作用!",
+                "&e水位需要是0!"
+              ]
+            }
+          },
+          "xp": {
+            "name": "&6经验",
+            "lore": [
+              "&7经验: &e%xp%",
+              "",
+              "&e配方完成后你获得的经验值."
+            ],
+            "message": "&3输入配方完成后你获得的经验值.如: 0.5"
+          },
+          "cookingTime": {
+            "name": "&6烹饪时间",
+            "lore": [
+              "&7时间: &e%time% ticks(1秒20tick)",
+              "",
+              "&e完成配方需要的ticks!"
+            ],
+            "message": "&e输入完成配方需要的ticks(1秒20tick).如: 20"
+          },
+          "waterLevel": {
+            "name": "&3水位",
+            "lore": [
+              "&7要求: &e%level%",
+              "",
+              "&e输入此配方最少需要的水位",
+              "&e配方完成时会消耗水!"
+            ],
+            "message": "&e输入此配方最少需要的水位,配方完成时会消耗水! &c最大值: &43"
+          },
+          "mythicMob": {
+            "name": "&6MythicMob",
+            "lore": [
+              "&7-Mob Settings-",
+              "&7名字: &e%mob.name%",
+              "&7等级: &e%mob.level%",
+              "&7出生位置(relative): ",
+              "   &7x: &e%mob.modX%",
+              "   &7y: &e%mob.modY%",
+              "   &7z: &e%mob.modZ%",
+              ""
+            ],
+            "message": "&e输入MythicMob的信息! <mob_name> [<level> <relative_x> <relative_y> <relative_z>]"
+          }
+        }
+      },
+      "grindstone": {
+        "gui_name": "&4&l创建配方 &7[&8砂轮&7]",
+        "gui_help": [
+          "&7提示:",
+          "&7在原料或成品上&eShift&7+&e右键点击",
+          "&7将会允许你编辑"
+        ],
+        "items": {
+          "grindstone": {
+            "name": "&c"
+          },
+          "xp": {
+            "name": "&6经验",
+            "lore": [
+              "&7经验: &e%xp%",
+              "",
+              "&e配方完成后你获得的经验值"
+            ],
+            "message": "&e输入配方完成后你获得的经验值.如: 0.5"
+          }
+        }
+      },
+      "brewing_stand": {
+        "gui_name": "&4&l创建配方 &7[&8酿造台&7]",
+        "messages": {
+          "potion_duration": "&e输入药水效果持续的ticks",
+          "potion_aplifier": "&e输入药水效果等级"
+        },
+        "items": {
+          "brewing_stand": {
+            "name": "&4"
+          },
+          "brewTime": {
+            "name": "&6酿造时间",
+            "lore": [
+              "&7酿造时间: &e%time% ticks",
+              "",
+              "&e完成配方需要的ticks. &4最大值:&c400 ticks"
+            ],
+            "message": "&e输入完成配方需要的ticks. &4最大值:&c400"
+          },
+          "fuelCost": {
+            "name": "&6燃料消耗",
+            "lore": [
+              "&7消耗: &e%cost%",
+              "",
+              "&e配方所需消耗的燃料"
+            ],
+            "message": "&e输入配方所需消耗的燃料.如: 2"
+          },
+          "potion_duration": {
+            "name": "&7药水效果持续时间",
+            "lore": [
+              "&e药水效果持续时间: &6%value%",
+              "&7[&a左键点击&7] &e更改药水效果持续时间",
+              "&7[&c右键点击&7] &c重置药水效果持续时间"
+            ]
+          },
+          "potion_amplifier": {
+            "name": "&7药水效果等级",
+            "lore": [
+              "&e药水效果等级: &6%value%",
+              "&7[&a左键点击&7] &e增强药水效果等级",
+              "&7[&c右键点击&7] &c重置药水效果等级"
+            ]
+          }
+        }
+      },
+      "variants": {
+        "gui_name": "&8变体",
+        "gui_help": [
+          "&7设置所选插槽的特殊酿造材料.",
+          "&7把你想要的东西放进去.",
+          "&7提示:",
+          "&eShift&7+&e右键点击&7会打开物品编辑器"
+        ]
+      }
+    },
+    "recipe_book": {
+      "global_items": {
+        "conditions": {
+          "world_time": {
+            "name": "&6&l» 世界时间 «",
+            "lore": [
+              "&7此配方只有在&6%mode% %value%&7时才可以制作!"
+            ]
+          },
+          "weather": {
+            "name": "&6&l» 世界天气 «",
+            "lore": [
+              "&7此配方只有在&6%value%&7时才可以制作!"
+            ]
+          },
+          "advanced_workbench": {
+            "name": "&6&l» 高级工作台 «",
+            "lore": [
+              "&7此配方只能由高级工作台制作 "
+            ]
+          },
+          "permission": {
+            "name": "&6&l» 权限 «",
+            "lore": [
+              "&7权限:&e %VALUE%",
+              "&7模式:&e %MODE%"
+            ]
+          }
+        },
+        "previous_page": {
+          "name": "&2上一页",
+          "help": []
+        },
+        "next_page": {
+          "name": "&2下一页",
+          "help": []
+        },
+        "lores": {
+          "click": "&7[&a点击&7] 查看配方"
+        },
+        "stonecutter": {
+          "name": "&7切石机"
+        },
+        "anvil": {
+          "durability": {
+            "name": "&7耐久度",
+            "lore": [
+              "&e物品耐久性受到影响的几率: &6%var%"
+            ]
+          },
+          "result": {
+            "name": "&7结果",
+            "lore": [
+              "&e配方输出设定的结果.",
+              ""
+            ]
+          }
+        },
+        "workbench": {
+          "filter_button": {
+            "all": {
+              "name": "&7配方过滤器:&3所有",
+              "lore": [
+                "&7展示所有配方"
+              ]
+            },
+            "normal": {
+              "name": "&7配方过滤器:&3普通",
+              "lore": [
+                "&7只展示普通配方"
+              ]
+            },
+            "advanced": {
+              "name": "&7配方过滤器:&3高级",
+              "lore": [
+                "&7只展示高级配方"
+              ]
+            }
+          },
+          "adv_workbench_on": {
+            "name": "&3高级工作台",
+            "help": [
+              "&7只能由高级工作台制作",
+              ""
+            ]
+          },
+          "adv_workbench_off": {
+            "name": "&4所有工作台",
+            "help": [
+              "&7能在所有工作台上制作"
+            ]
+          },
+          "shapeless_off": {
+            "name": "&3有序合成",
+            "help": [
+              "&7有序合成!"
+            ]
+          },
+          "shapeless_on": {
+            "name": "&3无序合成",
+            "help": [
+              "&7无序合成!"
+            ]
+          }
+        },
+        "cooking": {
+          "icon": {
+            "name": "&7&l%type%",
+            "lore": [
+              "&7烹饪时长: &e%time% ticks",
+              "&7经验: &e%xp%"
+            ]
+          }
+        },
+        "cauldron": {
+          "water": {
+            "enabled": {
+              "name": "&7炼药锅",
+              "lore": [
+                "&e需要至少&6%lvl%&e的水位!"
+              ]
+            },
+            "disabled": {
+              "name": "&7炼药锅",
+              "lore": [
+                "&e不需要水!"
+              ]
+            }
+          },
+          "fire": {
+            "enabled": {
+              "name": "&6营火",
+              "lore": [
+                "&e需要火焰!",
+                "&e确保你的炼药锅下面",
+                "&e有一个点燃的营火!"
+              ]
+            },
+            "disabled": {
+              "name": "&6营火",
+              "lore": [
+                "&e无需营火!"
+              ]
+            }
+          }
+        },
+        "brewing": {
+          "icon": {
+            "name": "&7&l酿造",
+            "lore": [
+              "&7酿造时长: &e%time% ticks",
+              "&7酿造花费: &e%cost%"
+            ]
+          },
+          "potion_duration": {
+            "name": "&7药水效果持续时间",
+            "lore": [
+              "&e药水效果将会持续&6%value% ticks"
+            ]
+          },
+          "potion_amplifier": {
+            "name": "&7药水效果等级提升",
+            "lore": [
+              "&e此配方将提升&6%value%&e级的药水效果"
+            ]
+          }
+        },
+        "grindstone": {
+          "name": "&7&l砂轮"
+        },
+        "back_to_list": {
+          "name": "&7&l返回",
+          "lore": [
+            "&7» &e返回配方列表"
+          ]
+        }
+      },
+      "main_menu": {
+        "gui_name": "&8&l知识之书配方",
+        "items": {
+          "elite_workbench": {
+            "name": "&6精英工作台配方"
+          },
+          "workbench": {
+            "name": "&6工作台配方",
+            "help": []
+          },
+          "furnace": {
+            "name": "&6熔炉配方",
+            "help": []
+          },
+          "anvil": {
+            "name": "&6铁砧配方",
+            "help": []
+          },
+          "blast_furnace": {
+            "name": "&6高炉配方",
+            "help": []
+          },
+          "smoker": {
+            "name": "&6烟熏炉配方",
+            "help": []
+          },
+          "campfire": {
+            "name": "&6营火配方",
+            "help": []
+          },
+          "stonecutter": {
+            "name": "&6切石机配方",
+            "help": []
+          },
+          "cauldron": {
+            "name": "&6炼药锅配方"
+          },
+          "brewing": {
+            "name": "&6酿造台配方"
+          }
+        }
+      },
+      "recipe_book": {
+        "gui_name": "&8&l知识之书",
+        "items": {
+          "next_recipe": {
+            "name": "&7&l» 下一个",
+            "lore": [
+              "&ePage &7%page%&e/&7%max_pages%"
+            ]
+          },
+          "previous_recipe": {
+            "name": "&7&l« 上一个",
+            "lore": [
+              "&ePage &7%page%&e/&7%max_pages%"
+            ]
+          }
+        }
+      }
+    },
+    "crafting": {
+      "global_items": {
+        "knowledge_book": {
+          "name": "&e知识之书",
+          "lore": [
+          ]
+        }
+      },
+      "crafting_grid3": {
+        "gui_name": "&8&l精英工作台",
+        "items": {
+        }
+      },
+      "crafting_grid4": {
+        "gui_name": "&8&l精英工作台"
+      },
+      "crafting_grid5": {
+        "gui_name": "&8&l精英工作台"
+      },
+      "crafting_grid6": {
+        "gui_name": "&8&l精英工作台"
+      },
+      "recipe_book": {
+        "gui_name": "&8&l知识之书配方"
+      }
+    },
+    "particle_creator": {
+      "main_menu": {
+        "gui_name": "&7粒子生成器",
+        "items": {
+          "particle_effect": {
+            "select": {
+              "name": "%effect_name%",
+              "lore": [
+                "%effect_description%",
+                "",
+                "&7[&a右键点击&7] 选择效果"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

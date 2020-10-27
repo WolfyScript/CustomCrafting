@@ -68,10 +68,6 @@ public class Cauldron implements Listener {
         this.passedTicks++;
     }
 
-    public void decreasePassedTicks() {
-        this.passedTicks++;
-    }
-
     public void decreasePassedTicks(int amount) {
         if (this.passedTicks >= amount) {
             this.passedTicks -= amount;

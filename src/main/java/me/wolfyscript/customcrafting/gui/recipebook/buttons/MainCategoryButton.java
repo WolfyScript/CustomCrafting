@@ -23,6 +23,7 @@ public class MainCategoryButton extends Button {
 
     private final CustomCrafting customCrafting;
     private final Categories categories;
+
     private final Category category;
 
     public MainCategoryButton(String categoryId, CustomCrafting customCrafting) {

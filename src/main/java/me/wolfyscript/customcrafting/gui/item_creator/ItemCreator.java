@@ -23,6 +23,7 @@ import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.*;
+import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
@@ -32,6 +33,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -62,10 +64,24 @@ public class ItemCreator extends ExtendedGuiWindow {
         })));
         registerButton(new ItemInputButton("item_input", new ButtonState("", Material.AIR, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
             GuiWindow guiWindow = guiHandler.getCurrentInv();
+            Items items = cache.getItems();
             Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                //-------------TODO: Experimental
+                //*
+                if (event.getAction().name().startsWith("PICKUP") || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR) || event.getAction().equals(InventoryAction.CLONE_STACK)) {
+                    ItemStack cursor = event.getView().getCursor();
+                    if (!ItemUtils.isAirOrNull(cursor) && items.isSaved()) {
+                        CustomItem customItem = CustomItems.getCustomItem(items.getNamespacedKey());
+                        if (!ItemUtils.isAirOrNull(customItem)) {
+                            event.getView().setCursor(customItem.create(cursor.getAmount()));
+                        }
+                    }
+                }
+                //*/
+                //---------------------------------------
                 ItemStack item = inventory.getItem(i);
                 CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
-                cache.getItems().setItem(customItem);
+                items.setItem(customItem);
                 ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
             }, 1);
             return false;
@@ -84,6 +100,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                                 return true;
                             }
                             customCrafting.saveItem(namespacedKey, items.getItem());
+                            items.setSaved(true);
+                            items.setNamespacedKey(namespacedKey);
                             sendMessage(player, "save.success");
                             api.sendPlayerMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
                             Bukkit.getScheduler().runTask(api.getPlugin(), (Runnable) guiHandler::openCluster);

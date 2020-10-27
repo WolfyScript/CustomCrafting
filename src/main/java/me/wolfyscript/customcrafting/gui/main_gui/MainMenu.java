@@ -58,6 +58,10 @@ public class MainMenu extends ExtendedGuiWindow {
             guiHandler.changeToInv("settings");
             return true;
         }));
+        registerButton(new ActionButton("recipe_book_editor", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            guiHandler.openCluster("recipe_book_editor");
+            return true;
+        }));
     }
 
     @Override
@@ -101,5 +105,6 @@ public class MainMenu extends ExtendedGuiWindow {
 
         event.setButton(36, "item_editor");
         event.setButton(44, "recipe_list");
+        event.setButton(45, "recipe_book_editor");
     }
 }

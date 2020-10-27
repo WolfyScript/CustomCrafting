@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache.items;
 
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
@@ -52,8 +51,8 @@ public class Items implements Serializable {
     public void setItem(boolean recipeItem, CustomItem customItem) {
         setItem(customItem);
         setRecipeItem(recipeItem);
-        if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-            setNamespacedKey(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey());
+        if (customItem.hasNamespacedKey()) {
+            setNamespacedKey(customItem.getNamespacedKey());
             setSaved(true);
         } else {
             setSaved(false);

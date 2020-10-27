@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.main_gui.buttons.PatronButton;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -11,6 +11,8 @@ import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+
+import java.util.List;
 
 public class PatronsMenu extends ExtendedGuiWindow {
 
@@ -33,63 +35,19 @@ public class PatronsMenu extends ExtendedGuiWindow {
             );
             return true;
         }));
-        registerButton(new PatronButton("Apprehentice", "Foxtrot200", "db61eab0-7fb1-48db-986f-125e73787976"));
-        registerButton(new PatronButton("Nat R", "1Jack", "956faa3f-df9e-402b-bc13-39c03d4b4a5b"));
-        registerButton(new PatronButton("Alex", "LeftAlex", "af1ef7e4-acc3-44a1-8323-8f50b92be2c9"));
-        registerButton(new PatronButton("Vincent Deniau", "VinceTheWolf", "a307c2b3-463a-4db6-8a6a-07419909af72"));
-        registerButton(new PatronButton("gizmonster", "gizmonster", "e502d121-de9d-4f5d-b7e5-0da747c4e2e8"));
-
-        registerButton(new PatronButton("Arthur Neumann"));
-        registerButton(new PatronButton("TheDutchRuben"));
-        registerButton(new PatronButton("Junye Zhou"));
-        registerButton(new PatronButton("Eli2t"));
-        registerButton(new PatronButton("Beng701"));
-
-        registerButton(new PatronButton("Ananass Me", "Honakura", "a599af6e-7f60-4050-9854-92026e29d4d1"));
-        registerButton(new PatronButton("CypherPhyre"));
-        registerButton(new PatronButton("Thomas Texier"));
-        registerButton(new PatronButton("르 미"));
-        registerButton(new PatronButton("John"));
-
-        registerButton(new PatronButton("Cameron R"));
-        registerButton(new PatronButton("HittmanA"));
-        registerButton(new PatronButton("Fluk Rocker"));
-        registerButton(new PatronButton("Nick coburn"));
-        registerButton(new PatronButton("Ethonion"));
-
-        registerButton(new PatronButton("Gamer430"));
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
+        List<Patron> patronList = customCrafting.getPatreonObj().getPatronList();
 
-        event.setButton(9, "patron.apprehentice");
-        event.setButton(11, "patron.nat_r");
-        event.setButton(13, "patron.alex");
-        event.setButton(15, "patron.vincent_deniau");
-        event.setButton(17, "patron.gizmonster");
-
-        event.setButton(18, "patron.arthur_neumann");
-        event.setButton(20, "patron.thedutchruben");
-        event.setButton(22, "patron.junye_zhou");
-        event.setButton(24, "patron.eli2t");
-        event.setButton(26, "patron.beng701");
-
-        event.setButton(27, "patron.ananass_me");
-        event.setButton(29, "patron.cypherphyre");
-        event.setButton(30, "patron.thomas_texier");
-        event.setButton(31, "patron.르_미");
-        event.setButton(32, "patron.john");
-        event.setButton(33, "patron.cameron_r");
-        event.setButton(35, "patron.hittmana");
-
-        event.setButton(37, "patron.fluk_rocker");
-        event.setButton(39, "patron.nick_coburn");
-        event.setButton(41, "patron.ethonion");
-        event.setButton(43, "patron.gamer430");
-
+        int j = 9;
+        for (int i = 0; i < patronList.size() && j < getSize(); i++) {
+            event.setItem(j, patronList.get(i).getHead());
+            j += 2;
+        }
     }
 
 }

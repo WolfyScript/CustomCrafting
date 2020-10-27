@@ -31,6 +31,15 @@ public class Category {
         this.materials = new ArrayList<>();
     }
 
+    public Category(Category category) {
+        this.name = category.name;
+        this.icon = category.getIcon();
+        this.description = new ArrayList<>(category.getDescription());
+        this.recipes = new ArrayList<>(category.getRecipes());
+        this.itemCategories = new ArrayList<>(category.getItemCategories());
+        this.materials = new ArrayList<>(category.getMaterials());
+    }
+
     @JsonGetter
     public Material getIcon() {
         return icon;
@@ -164,4 +173,6 @@ public class Category {
         category.setRecipes(recipes);
         return category;
     }
+
+
 }

@@ -48,48 +48,35 @@ public class ChatUtils {
         return false;
     }
 
-    public void sendRecipeListExpanded(Player player) {
-        TestCache cache = (TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
-        for (int i = 0; i < 20; i++) {
-            player.sendMessage(" ");
+    public static void sendCategoryDescription(Player player) {
+        List<String> description = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeBookEditor().getCategory().getDescription();
+        for (int i = 0; i < 15; i++) {
+            player.sendMessage("");
         }
-
-        List<? extends ICustomRecipe> customRecipes = customCrafting.getRecipeHandler().getRecipes(cache.getRecipeType());
-
-        int currentPage = cache.getChatLists().getCurrentPageRecipes();
-        int maxPages = ((customRecipes.size() % 15) > 0 ? 1 : 0) + customRecipes.size() / 15;
-
-        api.sendActionMessage(player, new ClickData("[&3« Back&7]", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(wolfyUtilities.getPlugin(), () -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()), true),
-                new ClickData("                   &7&lRecipes         ", null),
-                new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
-                    if (currentPage > 1) {
-                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
-                        sendRecipeListExpanded(p);
-                    }
-                }),
-                new ClickData(" &e" + currentPage + "§7/§6" + maxPages + "", null),
-                new ClickData(" &7[&e&l»&7]", (wolfyUtilities, p) -> {
-                    if (currentPage < maxPages) {
-                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
-                        sendRecipeListExpanded(p);
-                    }
-                }));
-        api.sendPlayerMessage(player, "&8-------------------------------------------------");
-
-        for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
-            if(i < customRecipes.size()) {
-                ICustomRecipe recipe = customRecipes.get(i);
-                ClickEvent commandSuggest = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey());
-                if (recipe.getResult() == null) {
-                    api.sendActionMessage(player, new ClickData(" - §7[§c!§7] §c", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§cFailed to load result item!")));
-                } else {
-                    api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getResult().create())));
-                }
-            }else{
-                api.sendPlayerMessage(player, "");
+        api.sendPlayerMessage(player, "------------------[&cEdit Description&7]-----------------");
+        api.sendPlayerMessage(player, "");
+        if (!description.isEmpty()) {
+            int i = 0;
+            for (String line : description) {
+                int finalI = i;
+                api.sendActionMessage(player, new ClickData("§7[§4-§7] ", (wolfyUtilities, player1) -> {
+                    description.remove(finalI);
+                    sendCategoryDescription(player1);
+                }, true), new ClickData("" + line, null));
+                i++;
             }
+        } else {
+            api.sendPlayerMessage(player, "&l&cNo Description set yet!");
         }
-        api.sendPlayerMessage(player, "&8-------------------------------------------------");
+        api.sendPlayerMessage(player, "");
+        api.sendPlayerMessage(player, "-------------------------------------------------");
+        api.sendActionMessage(player, new ClickData("                    §7[§3Back to Recipe Book Editor§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
+
+
+    }
+
+    public void sendRecipeListExpanded(Player player) {
+        sendRecipeList(player, customCrafting.getRecipeHandler().getRecipes(((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeType()));
         api.sendPlayerMessage(player, "none", "recipe_editor", "input");
     }
 
@@ -182,5 +169,46 @@ public class ChatUtils {
             ex.getCause().printStackTrace();
         }
         api.sendConsoleMessage("------------------[StackTrace]-------------------");
+    }
+
+    public void sendRecipeList(Player player, List<? extends ICustomRecipe<?>> customRecipes) {
+        TestCache cache = (TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
+        for (int i = 0; i < 20; i++) {
+            player.sendMessage(" ");
+        }
+        int currentPage = cache.getChatLists().getCurrentPageRecipes();
+        int maxPages = ((customRecipes.size() % 15) > 0 ? 1 : 0) + customRecipes.size() / 15;
+
+        api.sendActionMessage(player, new ClickData("[&3« Back&7]", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(wolfyUtilities.getPlugin(), () -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()), true),
+                new ClickData("                   &7&lRecipes         ", null),
+                new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
+                    if (currentPage > 1) {
+                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
+                        sendRecipeListExpanded(p);
+                    }
+                }),
+                new ClickData(" &e" + currentPage + "§7/§6" + maxPages + "", null),
+                new ClickData(" &7[&e&l»&7]", (wolfyUtilities, p) -> {
+                    if (currentPage < maxPages) {
+                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
+                        sendRecipeListExpanded(p);
+                    }
+                }));
+        api.sendPlayerMessage(player, "&8-------------------------------------------------");
+
+        for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
+            if (i < customRecipes.size()) {
+                ICustomRecipe<?> recipe = customRecipes.get(i);
+                ClickEvent commandSuggest = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey());
+                if (recipe.getResult() == null) {
+                    api.sendActionMessage(player, new ClickData(" - §7[§c!§7] §c", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§cFailed to load result item!")));
+                } else {
+                    api.sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getResult().create())));
+                }
+            } else {
+                api.sendPlayerMessage(player, "");
+            }
+        }
+        api.sendPlayerMessage(player, "&8-------------------------------------------------");
     }
 }

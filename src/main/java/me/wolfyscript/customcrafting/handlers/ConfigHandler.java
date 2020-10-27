@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -13,6 +13,7 @@ import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRe
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -28,7 +29,7 @@ public class ConfigHandler {
     private final ConfigAPI configAPI;
     private final LanguageAPI languageAPI;
     private MainConfig mainConfig;
-    private RecipeBookConfig recipeBookConfig;
+    private RecipeBook recipeBook;
 
     public ConfigHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.getAPI(customCrafting);
@@ -37,7 +38,7 @@ public class ConfigHandler {
         this.languageAPI = api.getLanguageAPI();
     }
 
-    public void load() {
+    public void load() throws IOException {
         this.mainConfig = new MainConfig(configAPI, customCrafting);
         mainConfig.loadDefaults();
         configAPI.registerConfig(mainConfig);
@@ -86,13 +87,17 @@ public class ConfigHandler {
             workbenchCraft.setNamespacedKey(workbenchKey);
             workbenchCraft.save();
         }
-        this.recipeBookConfig = new RecipeBookConfig(customCrafting);
+
+        //Loading RecipeBook
+        customCrafting.saveResource("recipe_book.json", false);
+        this.recipeBook = JacksonUtil.getObjectMapper().readValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), RecipeBook.class);
     }
 
     public void loadLang() throws IOException {
         String chosenLang = customCrafting.getConfigHandler().getConfig().getString("language");
         customCrafting.saveResource("lang/en_US.json", true);
         customCrafting.saveResource("lang/de_DE.json", true);
+        customCrafting.saveResource("lang/zh_CN.json", true);
 
         Language fallBackLanguage = new Language(customCrafting, "en_US");
         languageAPI.registerLanguage(fallBackLanguage);
@@ -107,11 +112,16 @@ public class ConfigHandler {
         }
     }
 
+    public void save() throws IOException {
+        JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), recipeBook);
+        getConfig().save();
+    }
+
     public MainConfig getConfig() {
         return mainConfig;
     }
 
-    public RecipeBookConfig getRecipeBookConfig() {
-        return recipeBookConfig;
+    public RecipeBook getRecipeBook() {
+        return recipeBook;
     }
 }

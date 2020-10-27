@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Cauldrons {
 
@@ -34,6 +35,9 @@ public class Cauldrons {
 
     //Hashmap of all the locations of the valid cauldrons. The Key is the Location. The Value is the current active recipe, which is going to be saved on server shutdown.
     private HashMap<Location, List<Cauldron>> cauldrons = new HashMap<>();
+
+    private final HashMap<Location, List<Cauldron>> queuedAddCauldrons = new HashMap<>();
+    private final List<Location> queuedRemoveCauldrons = new ArrayList<>();
 
     public Cauldrons(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -48,92 +52,97 @@ public class Cauldrons {
                 save();
             }
         }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> {
-            for (Location loc : cauldrons.keySet()) {
-                if (loc != null) {
-                    World world = loc.getWorld();
-                    if (world != null) {
-                        if (loc.getBlock().getType().equals(Material.CAULDRON)) {
-                            Levelled data = (Levelled) loc.getBlock().getBlockData();
-                            int level = data.getLevel();
-                            if (isCustomCauldronLit(loc.getBlock())) {
-                                if (level > 0) {
-                                    Bukkit.getScheduler().runTask(api.getPlugin(), () -> world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001));
-                                }
-                            }
-                        }
-                    }
-                }
+
+        AtomicInteger particleTicker = new AtomicInteger(0);
+
+        Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> {
+            int particleTick = particleTicker.incrementAndGet();
+            final boolean spawnParticles = particleTick >= 4;
+            if (spawnParticles) {
+                particleTicker.set(0);
+                queuedRemoveCauldrons.forEach(l -> cauldrons.remove(l));
+                queuedRemoveCauldrons.clear();
+                cauldrons.putAll(queuedAddCauldrons);
+                queuedAddCauldrons.clear();
             }
-        }, 10, 4);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(api.getPlugin(), () -> cauldrons.entrySet().stream().filter(locationListEntry -> locationListEntry.getKey() != null && locationListEntry.getKey().getWorld() != null).filter(locationListEntry -> !locationListEntry.getValue().isEmpty()).forEach(locationListEntry -> {
-            if (isBeingSaved) return;
-            Location loc = locationListEntry.getKey().clone();
-            World world = loc.getWorld();
-            Levelled levelled = (Levelled) loc.getBlock().getBlockData();
-            int level = levelled.getLevel();
-            Iterator<Cauldron> cauldronItr = locationListEntry.getValue().iterator();
-            while (cauldronItr.hasNext()) {
-                Cauldron cauldron = cauldronItr.next();
-                CauldronRecipe recipe = cauldron.getRecipe();
-                if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || isCustomCauldronLit(loc.getBlock()))) {
-                    if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {
-                        //Execute CauldronRecipeDoneEvent
-                        cauldron.setDone(true);
-                        CauldronCookEvent event = new CauldronCookEvent(cauldron);
-                        Future<Boolean> checkCauldron = Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
-                            Bukkit.getPluginManager().callEvent(event);
-                            if (event.isCancelled()) {
-                                cauldron.setDone(false);
-                                cauldron.setPassedTicks(0);
-                            } else {
-                                if (event.getRecipe().getWaterLevel() > 0) {
-                                    int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
-                                    levelled.setLevel(Math.max(newLevel, 0));
-                                    loc.getBlock().setBlockData(levelled);
-                                }
-                                if (WolfyUtilities.hasMythicMobs()) {
-                                    if (!cauldron.getRecipe().getMythicMobName().equals("<none>")) {
-                                        MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(cauldron.getRecipe().getMythicMobName());
-                                        if (mythicMob != null) {
-                                            Location location = loc.clone().add(cauldron.getRecipe().getMythicMobMod());
-                                            mythicMob.spawn(BukkitAdapter.adapt(location), cauldron.getRecipe().getMythicMobLevel());
+            cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null && entry.getKey().getWorld() != null && entry.getKey().getWorld().isChunkLoaded(entry.getKey().getBlockX() >> 4, entry.getKey().getBlockZ() >> 4) && !isBeingSaved && entry.getKey().getBlock().getType().equals(Material.CAULDRON)).forEach(entry -> {
+                final Location loc = entry.getKey();
+                final World world = loc.getWorld();
+                final Block block = loc.getBlock();
+                final Levelled levelled = (Levelled) block.getBlockData();
+                final boolean isLit = isCustomCauldronLit(block);
+                int level = levelled.getLevel();
+                if (spawnParticles && isLit && level > 0) {
+                    world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
+                }
+                if (entry.getValue().isEmpty()) return;
+                Iterator<Cauldron> cauldronItr = entry.getValue().iterator();
+                while (cauldronItr.hasNext()) {
+                    Cauldron cauldron = cauldronItr.next();
+                    CauldronRecipe recipe = cauldron.getRecipe();
+                    if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || isLit)) {
+                        Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
+                            if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {
+                                //Execute CauldronRecipeDoneEvent
+                                cauldron.setDone(true);
+                                CauldronCookEvent event = new CauldronCookEvent(cauldron);
+                                Future<Boolean> checkCauldron = Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
+                                    Bukkit.getPluginManager().callEvent(event);
+                                    if (event.isCancelled()) {
+                                        cauldron.setDone(false);
+                                        cauldron.setPassedTicks(0);
+                                    } else {
+                                        if (event.getRecipe().getWaterLevel() > 0) {
+                                            int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
+                                            levelled.setLevel(Math.max(newLevel, 0));
+                                            loc.getBlock().setBlockData(levelled);
+                                        }
+                                        if (WolfyUtilities.hasMythicMobs()) {
+                                            if (!cauldron.getRecipe().getMythicMobName().equals("<none>")) {
+                                                MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(cauldron.getRecipe().getMythicMobName());
+                                                if (mythicMob != null) {
+                                                    Location location = loc.clone().add(cauldron.getRecipe().getMythicMobMod());
+                                                    mythicMob.spawn(BukkitAdapter.adapt(location), cauldron.getRecipe().getMythicMobLevel());
+                                                }
+                                            }
+                                        }
+                                        if (event.dropItems()) {
+                                            world.dropItemNaturally(loc.clone().add(0.0, 0.5, 0.0), event.getResult().create());
+                                            return true;
                                         }
                                     }
+                                    return false;
+                                });
+                                while (!checkCauldron.isDone()) {
+                                    //Wait for task to be done!
                                 }
-                                if (event.dropItems()) {
-                                    world.dropItemNaturally(loc.clone().add(0.0, 0.5, 0.0), event.getResult().create());
-                                    return true;
+                                try {
+                                    if (checkCauldron.get()) {
+                                        cauldronItr.remove();
+                                    }
+                                } catch (InterruptedException | ExecutionException e) {
+                                    e.printStackTrace();
                                 }
+                            } else {
+                                Bukkit.getScheduler().runTask(customCrafting, () -> {
+                                    world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
+                                    world.spawnParticle(Particle.REDSTONE, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
+                                });
+                                cauldron.increasePassedTicks();
                             }
-                            return false;
                         });
-                        while (!checkCauldron.isDone()) {
-                            //Wait for task to be done!
-                        }
-                        try {
-                            if (checkCauldron.get()) {
-                                cauldronItr.remove();
-                            }
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                        }
                     } else {
-                        world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
-                        world.spawnParticle(Particle.REDSTONE, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
-                        cauldron.increasePassedTicks();
-                    }
-                } else {
-                    cauldron.decreasePassedTicks(2);
-                    if (cauldron.getPassedTicks() <= 0) {
-                        for (CustomItem customItem : cauldron.getRecipe().getIngredients()) {
-                            Bukkit.getScheduler().runTask(customCrafting, () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
+                        cauldron.decreasePassedTicks(2);
+                        if (cauldron.getPassedTicks() <= 0) {
+                            for (CustomItem customItem : cauldron.getRecipe().getIngredients()) {
+                                Bukkit.getScheduler().runTask(customCrafting, () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
+                            }
+                            cauldronItr.remove();
                         }
-                        cauldronItr.remove();
                     }
                 }
-            }
-        }), 20, 1);
+            });
+        }, 20, 1);
     }
 
     public boolean isCustomCauldronLit(Block block) {
@@ -145,18 +154,12 @@ public class Cauldrons {
 
     public void addCauldron(Location location) {
         if (!cauldrons.containsKey(location)) {
-            cauldrons.put(location, new ArrayList<>());
+            queuedAddCauldrons.put(location, new ArrayList<>());
         }
     }
 
     public void removeCauldron(Location location) {
-        cauldrons.remove(location);
-    }
-
-    public void removeCauldron(Location location, Cauldron cauldron) {
-        List<Cauldron> values = cauldrons.get(location);
-        values.remove(cauldron);
-        cauldrons.put(location, values);
+        queuedRemoveCauldrons.add(location);
     }
 
     public HashMap<Location, List<Cauldron>> getCauldrons() {
@@ -183,14 +186,14 @@ public class Cauldrons {
 
     private Location stringToLocation(String loc) {
         String[] args = loc.split(";");
-        try{
+        try {
             UUID uuid = UUID.fromString(args[0]);
             World world = Bukkit.getWorld(uuid);
-            if(world != null){
+            if (world != null) {
                 return new Location(world, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
             }
-        }catch (IllegalArgumentException e){
-            api.sendConsoleWarning("Couldn't find world "+args[0]);
+        } catch (IllegalArgumentException e) {
+            api.sendConsoleWarning("Couldn't find world " + args[0]);
         }
         return null;
     }
@@ -211,7 +214,7 @@ public class Cauldrons {
                 }
                 if (entry.getKey() != null) {
                     String loc = locationToString(entry.getKey());
-                    if(loc != null){
+                    if (loc != null) {
                         saveMap.put(loc, values);
                     }
                 }
@@ -244,7 +247,7 @@ public class Cauldrons {
                             }
                         }
                         Location location = stringToLocation(entry.getKey());
-                        if(location != null){
+                        if (location != null) {
                             this.cauldrons.put(location, value);
                         }
                     }

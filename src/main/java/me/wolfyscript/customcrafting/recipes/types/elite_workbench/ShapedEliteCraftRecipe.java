@@ -133,7 +133,7 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
             this.shapeRotated[i] = new StringBuilder(this.shapeRotated[i]).reverse().toString();
         }
 
-        int size = this.shape.length > this.shape[0].length() ? this.shape.length : this.shape[0].length();
+        int size = Math.max(this.shape.length, this.shape[0].length());
         if(size <= 3){
             requiredGridSize = 3;
         }else if(size <= 4){

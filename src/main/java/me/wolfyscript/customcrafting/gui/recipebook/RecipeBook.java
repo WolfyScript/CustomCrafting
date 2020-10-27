@@ -124,7 +124,9 @@ public class RecipeBook extends ExtendedGuiWindow {
             event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
         }
         if (knowledgeBook.getSubFolder() == 0) {
-            event.setButton(0, "back");
+            if (recipeHandler.getCategories().getSortedMainCategories().size() > 1) {
+                event.setButton(0, "back");
+            }
             event.setButton(4, "recipe_book", "itemCategory");
 
             if (knowledgeBook.getRecipeItems().isEmpty()) {

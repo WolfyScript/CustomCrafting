@@ -140,8 +140,8 @@ public class RecipeUtils {
                             Random rd = new Random();
                             for (int i = 0; i < possible; i++) {
                                 event.getView().getBottomInventory().addItem(resultItem);
-                                if (!customCraftEvent.getResult().isEmpty()) {
-                                    resultItem = customCraftEvent.getResult().get(rd.nextInt(customCraftEvent.getResult().size())).create();
+                                if (!results.isEmpty()) {
+                                    resultItem = results.get(rd.nextInt(customCraftEvent.getResult().size())).create();
                                 } else {
                                     resultItem = new ItemStack(Material.AIR);
                                 }

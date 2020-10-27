@@ -41,6 +41,8 @@ public class TestCache extends CustomCache {
     private final CustomCrafting customCrafting;
     private String subSetting;
 
+    private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
+
     private final Items items = new Items();
     private final PotionEffects potionEffectCache = new PotionEffects();
     private final KnowledgeBook knowledgeBook = new KnowledgeBook();
@@ -156,6 +158,10 @@ public class TestCache extends CustomCache {
 
     public BrewingGUICache getBrewingGUICache() {
         return brewingGUICache;
+    }
+
+    public RecipeBookEditor getRecipeBookEditor() {
+        return recipeBookEditor;
     }
 
     //Recipes

@@ -42,7 +42,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
         this.blockRepair = node.path("block_repair").asBoolean(false);
         {
             JsonNode repairNode = node.path("repair_cost");
-            this.repairCost = repairNode.path("amount").asInt(0);
+            this.repairCost = repairNode.path("amount").asInt(1);
             this.applyRepairCost = repairNode.path("apply_to_result").asBoolean(true);
             this.repairCostMode = RepairCostMode.valueOf(repairNode.path("mode").asText("NONE"));
         }

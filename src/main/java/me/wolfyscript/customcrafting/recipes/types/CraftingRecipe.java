@@ -38,7 +38,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
                 String key = entry.getKey();
                 List<CustomItem> data = new ArrayList<>();
                 entry.getValue().elements().forEachRemaining(item -> data.add(new CustomItem(mapper.convertValue(item, APIReference.class))));
-                ingredients.put(key.charAt(0), data.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+                ingredients.put(key.charAt(0), data.stream().filter(item -> !ItemUtils.isAirOrNull(item)).collect(Collectors.toList()));
             });
             this.ingredients = ingredients;
         }

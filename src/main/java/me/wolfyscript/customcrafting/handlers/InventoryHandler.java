@@ -14,6 +14,9 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
+import me.wolfyscript.customcrafting.gui.recipebook_editor.EditCategories;
+import me.wolfyscript.customcrafting.gui.recipebook_editor.EditCategory;
+import me.wolfyscript.customcrafting.gui.recipebook_editor.EditorMain;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
@@ -285,7 +288,10 @@ public class InventoryHandler {
         potionCreator.registerGuiWindow(new PotionCreator(invAPI, customCrafting));
         potionCreator.registerGuiWindow(new PotionEffectTypeSelection(invAPI, customCrafting));
 
-
+        GuiCluster recipeBookEditor = invAPI.getOrRegisterGuiCluster("recipe_book_editor");
+        recipeBookEditor.registerGuiWindow(new EditorMain(invAPI, customCrafting));
+        recipeBookEditor.registerGuiWindow(new EditCategories(invAPI, customCrafting));
+        recipeBookEditor.registerGuiWindow(new EditCategory(invAPI, customCrafting));
     }
 
 
