@@ -1,10 +1,13 @@
 package me.wolfyscript.customcrafting.recipes.types.brewing;
 
 import com.google.common.collect.Streams;
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -321,6 +324,14 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
             }
         }
         gen.writeEndArray();
+    }
+
+    @Override
+    public void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster) {
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getResults());
+        if (!getAllowedItems().isEmpty()) {
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, getAllowedItems());
+        }
     }
 
     @Override

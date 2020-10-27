@@ -2,10 +2,14 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -146,6 +150,23 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     @Override
     public void setShapeless(boolean shapeless) {
         this.shapeless = shapeless;
+    }
+
+    @Override
+    public void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster) {
+        int startSlot = 10;
+        int gridSize = 3;
+        if (this instanceof EliteCraftingRecipe) {
+            gridSize = 6;
+            startSlot = 0;
+        }
+        if (!getIngredients().isEmpty()) {
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, getResults());
+            for (int i = 0; i < gridSize * gridSize; i++) {
+                List<CustomItem> variants = getIngredients(i);
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + (startSlot + i + (i / gridSize) * (9 - gridSize)))).setVariants(guiHandler, variants);
+            }
+        }
     }
 
     @Override

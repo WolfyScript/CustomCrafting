@@ -1,11 +1,14 @@
 package me.wolfyscript.customcrafting.recipes.types.cauldron;
 
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -19,6 +22,7 @@ import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -260,6 +264,21 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
         gen.writeNumberField("modY", mythicMobMod.getY());
         gen.writeNumberField("modZ", mythicMobMod.getZ());
         gen.writeEndObject();
+    }
+
+    @Override
+    public void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster) {
+        List<CustomItem> ingredients = getIngredients();
+        int invSlot;
+        for (int i = 0; i < 6; i++) {
+            invSlot = 10 + i + (i / 3) * 6;
+            if (i < ingredients.size()) {
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(ingredients.get(i)));
+            } else {
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+            }
+        }
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, Collections.singletonList(getResult()));
     }
 
     @Override

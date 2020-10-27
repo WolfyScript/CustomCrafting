@@ -5,6 +5,8 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -136,7 +138,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
         return false;
     }
 
-    default boolean delete(){
+    default boolean delete() {
         return delete(null);
     }
 
@@ -145,6 +147,8 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 
     void renderMenu(GuiWindow guiWindow, GuiUpdate event);
+
+    void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster);
 
     class Serializer extends StdSerializer<ICustomRecipe> {
 

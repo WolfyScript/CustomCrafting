@@ -1,9 +1,12 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.utils.NamespacedKey;
@@ -11,12 +14,10 @@ import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import org.bukkit.Material;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
@@ -253,6 +254,21 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
         }
         writeInput(0, gen);
         writeInput(1, gen);
+    }
+
+    @Override
+    public void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster) {
+        List<CustomItem> inputLeft = getInputLeft();
+        List<CustomItem> inputRight = getInputRight();
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
+        List<CustomItem> variants = Collections.singletonList(new CustomItem(Material.AIR));
+        if (getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+            variants = Collections.singletonList(getResult());
+        } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
+            variants = inputLeft;
+        }
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, variants);
     }
 
     @Override
