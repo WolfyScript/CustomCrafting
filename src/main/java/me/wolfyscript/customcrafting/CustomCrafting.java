@@ -189,8 +189,13 @@ public class CustomCrafting extends JavaPlugin {
             new PlaceHolder(this).register();
         }
 
-        recipeHandler.load();
-        CustomItems.initiateMissingBlockEffects();
+        //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
+        if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
+            loadRecipesAndItems();
+        } else {
+            getLogger().info("Detected ItemsAdder! CustomItems and Recipes will be loaded after ItemsAdder is successfully loaded!");
+            pM.registerEvents(new ItemsAdderListener(this), this);
+        }
 
         //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
         if (!patreon) {
@@ -230,6 +235,11 @@ public class CustomCrafting extends JavaPlugin {
             getRecipeHandler().onSave();
             savePlayerStatistics();
         }
+    }
+
+    public void loadRecipesAndItems() {
+        recipeHandler.load();
+        CustomItems.initiateMissingBlockEffects();
     }
 
     private void savePlayerStatistics() {
