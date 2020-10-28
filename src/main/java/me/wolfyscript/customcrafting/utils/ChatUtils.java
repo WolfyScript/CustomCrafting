@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
@@ -46,6 +47,20 @@ public class ChatUtils {
             }
         }
         return false;
+    }
+
+    public static NamespacedKey getNamespacedKey(Player player, String s, String[] args) {
+        NamespacedKey namespacedKey = null;
+        try {
+            if (s.length() > 1) {
+                namespacedKey = new NamespacedKey(args[0], args[1]);
+            } else if (s.contains(":")) {
+                namespacedKey = NamespacedKey.getByString(s);
+            }
+        } catch (IllegalArgumentException e) {
+            api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.sendPlayerMessage(player, s1));
+        }
+        return namespacedKey;
     }
 
     public static void sendCategoryDescription(Player player) {

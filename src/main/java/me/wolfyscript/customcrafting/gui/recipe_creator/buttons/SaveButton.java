@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.RecipeCreator;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
@@ -24,17 +25,17 @@ public class SaveButton extends ActionButton {
                 WolfyUtilities api = recipeCreator.getAPI();
                 CustomCrafting customCrafting = recipeCreator.getCustomCrafting();
                 if (recipeCreator.validToSave(cache)) {
-                    if(saveAs){
+                    if (saveAs) {
                         recipeCreator.openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
-                            if (args.length > 1) {
+                            NamespacedKey namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
+                            if (namespacedKey != null) {
                                 ICustomRecipe<?> recipe = cache.getRecipe();
-                                NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
                                 recipe.setNamespacedKey(namespacedKey);
                                 return saveRecipe(cache, recipe, player1, api, guiHandler, customCrafting);
                             }
                             return true;
                         });
-                    }else{
+                    } else {
                         return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, customCrafting);
                     }
                 } else {

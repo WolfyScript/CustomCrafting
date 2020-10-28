@@ -107,7 +107,6 @@ public class CustomCrafting extends JavaPlugin {
             return;
         }
 
-
         api = WolfyUtilities.getOrCreateAPI(instance);
         api.setCHAT_PREFIX("§7[§6CC§7] ");
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");

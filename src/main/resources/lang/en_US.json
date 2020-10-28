@@ -74,10 +74,6 @@
       "playerstats": "Loading Player Stats",
       "inventories": "Initiating Inventory GUIs",
       "placeholder": "Registering PlaceHolder",
-      "mythicmobs": {
-        "detected": "Detected MythicMobs on server...",
-        "register": "Registered MythicMobs supported features"
-      },
       "recipes": {
         "title": "________[Loading Recipes/Items]________",
         "items": "---------[Items]---------",
@@ -94,6 +90,11 @@
         "msg2": "&aDownload it now!",
         "link": " &7[&3Click Here&7]"
       },
+      "invalid_namespacedkey": [
+        "&cThe namespace and key must be lowercase and must only",
+        "&ccontain the following characters [a-z 0-9 _ -]!",
+        "&ePlease retype the namespace and key!"
+      ],
       "error": {
         "loading": {
           "msg": "&cPlugin Disabled! The Plugin won't work!",
@@ -597,8 +598,8 @@
         "messages": {
           "save": {
             "input": {
-              "line1": "&eType in the name of the folder and item!",
-              "line2": "&6e.g. weapons ultimate_sword"
+              "line1": "&eType in the namespace (folder name) and key (recipe name)!",
+              "line2": "&ee.g.: weapons ultimate_sword"
             },
             "success": "&aConfig saved to:"
           },
@@ -678,9 +679,11 @@
           },
           "save_item": {
             "name": "&aSave Item",
-            "help": [
-              "&7Save the item to File",
-              "&7input: &3<folder> <file_name>"
+            "lore": [
+              "&7Save the item with a new namespaced key.",
+              "&7Input: &e<namespace> <key>",
+              "&cThe names must be lowercase alphanumeric",
+              "&cand must only contain [a-z 0-9 _ -]"
             ]
           },
           "apply_item": {
@@ -1674,16 +1677,16 @@
         "save": {
           "name": "&3Save",
           "lore": [
-            "&7Save the recipe with the current key."
+            "&7Save the recipe with the existing namespaced key!"
           ]
         },
         "save_as": {
           "name": "&6Save As...",
           "lore": [
-            "&7Save the recipe with a new key.",
-            "&7Key: &e<folder_name> <recipe_name>",
+            "&7Save the recipe with a new namespaced key!",
+            "&7Input: &e<namespace> <key>",
             "&cThe names must be lowercase alphanumeric",
-            "&c(a-z 0-9 _ -)"
+            "&cand must only contain [a-z 0-9 _ -]"
           ]
         },
         "priority": {
@@ -1811,8 +1814,8 @@
         "override": "&3type the namespace and key from the recipe!",
         "valid_number": "&cType in a valid number!",
         "save": {
-          "input": "&3Type in the name of the folder and item! &6folder recipe_name",
-          "empty": "&cCannot save a empty recipe! Check the Result and the Source/ingredients",
+          "input": "&eType in the namespace (folder name) and key (recipe name)!",
+          "empty": "&cCannot save a empty recipe! Check the Result and the source/ingredients",
           "success": "&aRecipe successfully saved to:"
         },
         "loading": {
