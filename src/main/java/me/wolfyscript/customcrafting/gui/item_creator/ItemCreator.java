@@ -140,7 +140,7 @@ public class ItemCreator extends ExtendedGuiWindow {
             return true;
         }));
 
-        registerButton(new DummyButton("reference.wolfyutilites", Material.CRAFTING_TABLE, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        registerButton(new DummyButton("reference.wolfyutilities", Material.CRAFTING_TABLE, (hashMap, guiHandler, player, itemStack, i, b) -> {
             hashMap.put("%item_key%", ((WolfyUtilitiesRef) ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getApiReference()).getNamespacedKey().toString());
             return itemStack;
         }));

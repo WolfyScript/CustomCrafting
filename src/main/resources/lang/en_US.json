@@ -1637,7 +1637,7 @@
               "enabled": {
                 "name": "&aBlocked",
                 "lore": [
-                  "&eItem is block in vanilla recipes",
+                  "&eItem is blocked in vanilla recipes",
                   "&7[&aClick&7] Disable blocking"
                 ]
               },
