@@ -2,20 +2,22 @@ package me.wolfyscript.customcrafting.data;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Workbenches {
 
@@ -40,25 +42,11 @@ public class Workbenches {
                 save();
             }
         }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
-
-        particles = Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> {
-            for (String loc : workbenches.keySet()) {
-                Location location = stringToLocation(loc);
-                if (location != null) {
-                    World world = location.getWorld();
-                    if (world != null) {
-                        world.spawnParticle(Particle.ENCHANTMENT_TABLE, location.clone().add(0.5, 1.3, 0.5), 4, 0, 0, 0, 0.5);
-                    }
-                }
-            }
-        }, 10, 2);
-
+        particles = Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> workbenches.keySet().stream().map(this::stringToLocation).filter(l -> l != null && l.getWorld() != null && l.getWorld().isChunkLoaded(l.getBlockX() >> 4, l.getBlockZ() >> 4)).forEach(l -> l.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, l.clone().add(0.5, 1.3, 0.5), 4, 0, 0, 0, 0.5)), 10, 2);
     }
 
     public void addWorkbench(Location location) {
-        if (!workbenches.containsKey(locationToString(location))) {
-            workbenches.put(locationToString(location), new ArrayList<>());
-        }
+        workbenches.putIfAbsent(locationToString(location), new ArrayList<>());
     }
 
     public void removeWorkbench(Location location) {
@@ -68,16 +56,7 @@ public class Workbenches {
     @Deprecated
     public void setContents(Location location, ItemStack[] matrix) {
         if (workbenches.containsKey(locationToString(location))) {
-            List<ItemStack> items = new ArrayList<>();
-            for (ItemStack itemStack : matrix) {
-                if (itemStack == null) {
-                    ItemStack newItem = new ItemStack(Material.AIR);
-                    items.add(newItem);
-                } else {
-                    items.add(new ItemStack(itemStack));
-                }
-            }
-            workbenches.put(locationToString(location), items);
+            workbenches.put(locationToString(location), Arrays.stream(matrix).map(itemStack -> itemStack == null ? new ItemStack(Material.AIR) : new ItemStack(itemStack)).collect(Collectors.toList()));
         }
     }
 
@@ -97,8 +76,10 @@ public class Workbenches {
         return location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
     }
 
+    @Nullable
     private Location stringToLocation(String loc) {
         String[] args = loc.split(";");
+        if (args.length < 4) return null;
         return new Location(Bukkit.getWorld(UUID.fromString(args[0])), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
     }
 
@@ -141,6 +122,7 @@ public class Workbenches {
     }
 
     public void endTask() {
+        particles.cancel();
         task.cancel();
     }
 
