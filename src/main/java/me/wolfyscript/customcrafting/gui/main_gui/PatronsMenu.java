@@ -41,7 +41,7 @@ public class PatronsMenu extends ExtendedGuiWindow {
     public void onUpdateAsync(GuiUpdate event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
-        List<Patron> patronList = customCrafting.getPatreonObj().getPatronList();
+        List<Patron> patronList = customCrafting.getPatreon().getPatronList();
 
         int j = 9;
         for (int i = 0; i < patronList.size() && j < getSize(); i++) {

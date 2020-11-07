@@ -23,7 +23,6 @@ import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.*;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
@@ -33,7 +32,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -67,7 +65,7 @@ public class ItemCreator extends ExtendedGuiWindow {
             Items items = cache.getItems();
             Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
                 //-------------TODO: Experimental
-                //*
+                /*
                 if (event.getAction().name().startsWith("PICKUP") || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR) || event.getAction().equals(InventoryAction.CLONE_STACK)) {
                     ItemStack cursor = event.getView().getCursor();
                     if (!ItemUtils.isAirOrNull(cursor) && items.isSaved()) {

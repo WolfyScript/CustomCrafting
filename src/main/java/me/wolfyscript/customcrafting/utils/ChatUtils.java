@@ -77,7 +77,7 @@ public class ChatUtils {
                 api.sendActionMessage(player, new ClickData("§7[§4-§7] ", (wolfyUtilities, player1) -> {
                     description.remove(finalI);
                     sendCategoryDescription(player1);
-                }, true), new ClickData("" + line, null));
+                }, true), new ClickData(line, null));
                 i++;
             }
         } else {
@@ -86,8 +86,6 @@ public class ChatUtils {
         api.sendPlayerMessage(player, "");
         api.sendPlayerMessage(player, "-------------------------------------------------");
         api.sendActionMessage(player, new ClickData("                    §7[§3Back to Recipe Book Editor§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
-
-
     }
 
     public void sendRecipeListExpanded(Player player) {
@@ -114,7 +112,7 @@ public class ChatUtils {
                     itemMeta.setLore(lore);
                     ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                     sendLoreManager(player1);
-                }, true), new ClickData("" + line, null));
+                }, true), new ClickData(line, null));
                 i++;
             }
         } else {

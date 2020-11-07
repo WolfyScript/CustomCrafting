@@ -58,7 +58,7 @@ public class CustomCrafting extends JavaPlugin {
     private static RecipeHandler recipeHandler;
     private static DataBaseHandler dataBaseHandler = null;
     private RecipeUtils recipeUtils;
-    private Patreon patreonObj;
+    private Patreon patreon;
 
     //Utils
     private ChatUtils chatUtils;
@@ -69,7 +69,6 @@ public class CustomCrafting extends JavaPlugin {
     private static String currentVersion;
 
     private boolean outdated = false;
-    private boolean patreon = false;
 
     public static CustomCrafting getInst() {
         return instance;
@@ -91,12 +90,12 @@ public class CustomCrafting extends JavaPlugin {
     public void onEnable() {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
-        patreon = !currentVersion.endsWith(".0");
+        patreon = new Patreon(this);
 
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + currentVersion + " " + (patreon ? "Patreon" : "Free"));
+        System.out.println("    v" + currentVersion + " " + (patreon.isPatreon() ? "Patreon" : "Free"));
         System.out.println(" ");
 
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
@@ -112,15 +111,15 @@ public class CustomCrafting extends JavaPlugin {
         api.setCONSOLE_PREFIX("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, TestCache.class));
 
-        if (patreon) {
+        if (patreon.isPatreon()) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         }
 
-        patreonObj = new Patreon();
+        patreon.initialize();
 
         System.out.println();
         System.out.println("Special thanks to my Patreons for supporting this project: ");
-        List<Patron> patronList = patreonObj.getPatronList();
+        List<Patron> patronList = patreon.getPatronList();
         int lengthColumn = 20;
         for (int i = 0; i < patronList.size(); i += 2) {
             StringBuilder sB = new StringBuilder();
@@ -197,7 +196,7 @@ public class CustomCrafting extends JavaPlugin {
         }
 
         //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
-        if (!patreon) {
+        if (!patreon.isPatreon()) {
             checkUpdate(null);
         }
 
@@ -305,12 +304,12 @@ public class CustomCrafting extends JavaPlugin {
         return cauldrons;
     }
 
-    public Patreon getPatreonObj() {
-        return patreonObj;
+    public Patreon getPatreon() {
+        return patreon;
     }
 
     public void checkUpdate(@Nullable Player player) {
-        Thread updater = new Thread(() -> {
+        new Thread(() -> {
             try {
                 HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
 
@@ -339,8 +338,7 @@ public class CustomCrafting extends JavaPlugin {
             } catch (Exception ex) {
                 api.sendConsoleWarning("$msg.startup.update_check_fail$");
             }
-        });
-        updater.start();
+        }).start();
     }
 
     public static void renewPlayerStatistics(Player player) {
@@ -363,10 +361,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public boolean isOutdated() {
         return outdated;
-    }
-
-    public boolean isPatreon() {
-        return patreon;
     }
 
     public static boolean hasDataBaseHandler() {

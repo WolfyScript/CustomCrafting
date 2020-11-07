@@ -38,8 +38,8 @@ public class ReloadSubCommand extends AbstractSubCommand {
                     LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
                     invAPI.reset();
                     langAPI.unregisterLanguages();
-                    customCrafting.getConfigHandler().getConfig().save();
                     try {
+                        customCrafting.getConfigHandler().save();
                         customCrafting.getConfigHandler().loadLang();
                     } catch (IOException e) {
                         e.printStackTrace();

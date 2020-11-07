@@ -44,26 +44,24 @@ public class RecipeUtils {
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
         if (!customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-            List<CraftingRecipe<?>> recipesToCheck = recipeHandler.getSimilarRecipes(ingredients, elite, advanced).stream().filter(recipe -> (recipe != null && !recipeHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString()))).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
-            if (!recipesToCheck.isEmpty()) {
-                for (CraftingRecipe<?> recipe : recipesToCheck) {
-                    CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(isRepair, recipe, inventory, ingredients);
-                    if (checkRecipe(recipe, ingredients, player, recipeHandler, customPreCraftEvent)) {
-                        RandomCollection<CustomItem> items = new RandomCollection<>();
-                        customPreCraftEvent.getResult().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).forEach(customItem -> items.add(customItem.getRarityPercentage(), customItem.clone()));
-                        HashMap<NamespacedKey, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
-                        CustomItem result = new CustomItem(Material.AIR);
-                        if (precraftedItem.get(recipe.getNamespacedKey()) == null) {
-                            if (!items.isEmpty()) {
-                                result = items.next();
-                                precraftedItem.put(recipe.getNamespacedKey(), result);
-                                precraftedItems.put(player.getUniqueId(), precraftedItem);
-                            }
-                        } else {
-                            result = precraftedItem.get(recipe.getNamespacedKey());
+            for (CraftingRecipe<?> recipe : recipeHandler.getSimilarRecipes(ingredients, elite, advanced).stream().filter(r -> r != null && !recipeHandler.getDisabledRecipes().contains(r.getNamespacedKey().toString())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList())) {
+                CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(isRepair, recipe, inventory, ingredients);
+                if (checkRecipe(recipe, ingredients, player, recipeHandler, customPreCraftEvent)) {
+                    RandomCollection<CustomItem> items = new RandomCollection<>();
+                    customPreCraftEvent.getResult().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).forEach(customItem -> items.add(customItem.getRarityPercentage(), customItem.clone()));
+                    HashMap<NamespacedKey, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
+                    CustomItem result = new CustomItem(Material.AIR);
+
+                    if (precraftedItem.get(recipe.getNamespacedKey()) == null) {
+                        if (!items.isEmpty()) {
+                            result = items.next();
+                            precraftedItem.put(recipe.getNamespacedKey(), result);
+                            precraftedItems.put(player.getUniqueId(), precraftedItem);
                         }
-                        return result.create();
+                    } else {
+                        result = precraftedItem.get(recipe.getNamespacedKey());
                     }
+                    return result.create();
                 }
             }
         }
@@ -109,9 +107,7 @@ public class RecipeUtils {
                     {//---------COMMANDS AND STATISTICS-------------
                         PlayerStatistics cache = CustomCrafting.getPlayerStatistics(player);
                         if (config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()) {
-                            for (String command : config.getCommandsSuccessCrafted()) {
-                                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getNamespacedKey().toString()));
-                            }
+                            config.getCommandsSuccessCrafted().forEach(c -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), c.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getNamespacedKey().toString())));
                         }
                         cache.addRecipeCrafts(customCraftEvent.getRecipe().getNamespacedKey().toString());
                         cache.addAmountCrafted(1);
@@ -128,10 +124,7 @@ public class RecipeUtils {
                     if (results.size() < 2 && (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT))) {
                         api.sendDebugMessage("SHIFT-CLICK!");
                         if (resultItem.getAmount() > 0) {
-                            int possible = InventoryUtils.getInventorySpace(event.getView().getBottomInventory(), resultItem) / resultItem.getAmount();
-                            if (possible > amount) {
-                                possible = amount;
-                            }
+                            int possible = Math.min(InventoryUtils.getInventorySpace(event.getView().getBottomInventory(), resultItem) / resultItem.getAmount(), amount);
                             if (possible > 0) {
                                 api.sendDebugMessage(" possible: " + possible);
                                 recipe.removeMatrix(ingredients, inventory, possible, craftingData);
@@ -140,11 +133,7 @@ public class RecipeUtils {
                             Random rd = new Random();
                             for (int i = 0; i < possible; i++) {
                                 event.getView().getBottomInventory().addItem(resultItem);
-                                if (!results.isEmpty()) {
-                                    resultItem = results.get(rd.nextInt(customCraftEvent.getResult().size())).create();
-                                } else {
-                                    resultItem = new ItemStack(Material.AIR);
-                                }
+                                resultItem = !results.isEmpty() ? results.get(rd.nextInt(customCraftEvent.getResult().size())).create() : new ItemStack(Material.AIR);
                             }
                         }
                     } else if (event.getClick().equals(ClickType.LEFT) || event.getClick().equals(ClickType.RIGHT)) {

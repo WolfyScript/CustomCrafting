@@ -49,7 +49,6 @@ public class DataBaseHandler {
         this.languageAPI = api.getLanguageAPI();
         this.mainConfig = customCrafting.getConfigHandler().getConfig();
         this.dataBase = new SQLDataBase(api, mainConfig.getDatabankHost(), mainConfig.getDatabankDataBase(), mainConfig.getDatabankUsername(), mainConfig.getDataBankPassword(), mainConfig.getDatabankPort());
-        this.dataBase.openConnectionOnMainThread();
         init();
     }
 

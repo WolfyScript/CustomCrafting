@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
-import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
@@ -15,8 +14,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class PlayerListener implements Listener {
 
@@ -39,10 +36,8 @@ public class PlayerListener implements Listener {
             if (customCrafting.isOutdated()) {
                 api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
                 api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
-            } else {
-                if (!customCrafting.isPatreon()) {
-                    customCrafting.checkUpdate(player);
-                }
+            } else if (!customCrafting.getPatreon().isPatreon()) {
+                customCrafting.checkUpdate(player);
             }
         }
     }
@@ -60,24 +55,6 @@ public class PlayerListener implements Listener {
                     event.setUseInteractedBlock(Event.Result.DENY);
                     event.getPlayer().closeInventory();
                     CustomCrafting.getApi().getInventoryAPI().openCluster(p, "recipe_book");
-                }
-            }else if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
-                //Old knowledge book method.
-                List<String> lore = itemStack.getItemMeta().getLore();
-                for (String line : lore) {
-                    String unhidden = WolfyUtilities.unhideString(line);
-                    if (unhidden.equals("cc_knowledgebook")) {
-                        event.setUseItemInHand(Event.Result.DENY);
-                        event.setCancelled(true);
-                        if (event.hasBlock()) {
-                            if (event.getClickedBlock().getType().isInteractable()) {
-                                return;
-                            }
-                        }
-                        if (ChatUtils.checkPerm(event.getPlayer(), "customcrafting.item.knowledge_book")) {
-                            CustomCrafting.getApi().getInventoryAPI().openCluster(p, "recipe_book");
-                        }
-                    }
                 }
             }
         }

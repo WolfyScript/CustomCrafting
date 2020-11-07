@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,7 +53,7 @@ public class Cauldron implements Listener {
         if (data == null || data.isEmpty())
             return null;
         String[] args = data.split(";");
-        CauldronRecipe recipe = (CauldronRecipe) customCrafting.getRecipeHandler().getRecipe(args[0]);
+        CauldronRecipe recipe = (CauldronRecipe) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.getByString(args[0]));
         if (recipe == null) {
             return null;
         }

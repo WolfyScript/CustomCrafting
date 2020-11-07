@@ -37,7 +37,7 @@ public class CommandRecipe extends IndexCommand {
         if (args.length == 0 && sender instanceof Player) {
             WolfyUtilities api = CustomCrafting.getApi();
             Player p = (Player) sender;
-            InventoryAPI invAPI = api.getInventoryAPI();
+            InventoryAPI<?> invAPI = api.getInventoryAPI();
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.recipes")) {
                 Categories categories = customCrafting.getRecipeHandler().getCategories();
                 if (categories.getSortedMainCategories().size() > 1) {

@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class Cauldrons {
 
@@ -159,7 +160,9 @@ public class Cauldrons {
     }
 
     public void removeCauldron(Location location) {
-        queuedRemoveCauldrons.add(location);
+        if (!queuedRemoveCauldrons.contains(location)) {
+            queuedRemoveCauldrons.add(location);
+        }
     }
 
     public HashMap<Location, List<Cauldron>> getCauldrons() {
@@ -167,16 +170,7 @@ public class Cauldrons {
     }
 
     public boolean isCauldron(Location location) {
-        if (cauldrons.containsKey(location)) {
-            return cauldrons.containsKey(location);
-        } else {
-            for (Location location1 : cauldrons.keySet()) {
-                if (location1.equals(location)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return cauldrons.containsKey(location) || cauldrons.keySet().stream().anyMatch(location1 -> location1.equals(location));
     }
 
     private String locationToString(Location location) {
@@ -205,20 +199,12 @@ public class Cauldrons {
             FileOutputStream fos = new FileOutputStream(new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"));
             BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
             HashMap<String, List<String>> saveMap = new HashMap<>();
-            for (Map.Entry<Location, List<Cauldron>> entry : cauldrons.entrySet()) {
-                List<String> values = new ArrayList<>();
-                for (Cauldron cauldron : entry.getValue()) {
-                    if (cauldron != null) {
-                        values.add(cauldron.toString());
-                    }
+            cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {
+                String loc = locationToString(entry.getKey());
+                if (loc != null) {
+                    saveMap.put(loc, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().filter(Objects::nonNull).map(Cauldron::toString).collect(Collectors.toList()));
                 }
-                if (entry.getKey() != null) {
-                    String loc = locationToString(entry.getKey());
-                    if (loc != null) {
-                        saveMap.put(loc, values);
-                    }
-                }
-            }
+            });
             oos.writeObject(saveMap);
             oos.close();
             this.isBeingSaved = false;
@@ -240,15 +226,9 @@ public class Cauldrons {
                     this.cauldrons = new HashMap<>();
                     HashMap<String, List<String>> loadMap = (HashMap<String, List<String>>) object;
                     for (Map.Entry<String, List<String>> entry : loadMap.entrySet()) {
-                        List<Cauldron> value = new ArrayList<>();
-                        if (entry.getValue() != null) {
-                            for (String data : entry.getValue()) {
-                                value.add(Cauldron.fromString(customCrafting, data));
-                            }
-                        }
                         Location location = stringToLocation(entry.getKey());
                         if (location != null) {
-                            this.cauldrons.put(location, value);
+                            this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(s -> Cauldron.fromString(customCrafting, s)).collect(Collectors.toList()));
                         }
                     }
                 } catch (ClassNotFoundException e) {
