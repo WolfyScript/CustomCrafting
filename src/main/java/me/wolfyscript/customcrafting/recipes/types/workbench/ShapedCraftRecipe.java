@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe, ICustomRecipe<AdvancedCraftingRecipe> {
+public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe {
 
     private String[] shape, shapeMirrorHorizontal, shapeMirrorVertical, shapeRotated;
     private boolean mirrorHorizontal, mirrorVertical, mirrorRotation;
