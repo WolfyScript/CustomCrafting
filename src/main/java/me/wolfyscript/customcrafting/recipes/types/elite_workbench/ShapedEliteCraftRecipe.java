@@ -33,25 +33,30 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
 
-    public ShapedEliteCraftRecipe(){
+    public ShapedEliteCraftRecipe() {
         super();
         this.shapeless = false;
+        this.mirrorHorizontal = true;
+        this.mirrorVertical = false;
+        this.mirrorRotation = false;
     }
 
-    public ShapedEliteCraftRecipe(EliteCraftingRecipe eliteCraftingRecipe){
+    public ShapedEliteCraftRecipe(ShapedEliteCraftRecipe eliteCraftingRecipe) {
+        super(eliteCraftingRecipe);
+        this.shapeless = false;
+        constructShape();
+        this.mirrorHorizontal = eliteCraftingRecipe.mirrorHorizontal();
+        this.mirrorVertical = eliteCraftingRecipe.mirrorVertical();
+        this.mirrorRotation = eliteCraftingRecipe.mirrorRotation();
+    }
+
+    public ShapedEliteCraftRecipe(EliteCraftingRecipe eliteCraftingRecipe) {
         super(eliteCraftingRecipe);
         this.shapeless = false;
         constructShape();
         this.mirrorHorizontal = true;
         this.mirrorVertical = false;
         this.mirrorRotation = false;
-    }
-
-    public ShapedEliteCraftRecipe(ShapedEliteCraftRecipe eliteCraftingRecipe){
-        this((EliteCraftingRecipe)eliteCraftingRecipe);
-        this.mirrorHorizontal = eliteCraftingRecipe.mirrorHorizontal();
-        this.mirrorVertical = eliteCraftingRecipe.mirrorVertical();
-        this.mirrorRotation = eliteCraftingRecipe.mirrorRotation();
     }
 
     @Override
@@ -133,15 +138,19 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
             this.shapeRotated[i] = new StringBuilder(this.shapeRotated[i]).reverse().toString();
         }
 
-        int size = Math.max(this.shape.length, this.shape[0].length());
-        if(size <= 3){
+        if (this.shape.length == 0) {
             requiredGridSize = 3;
-        }else if(size <= 4){
-            requiredGridSize = 4;
-        }else if(size <= 5){
-            requiredGridSize = 5;
-        }else if(size <= 6){
-            requiredGridSize = 6;
+        } else {
+            int size = Math.max(this.shape.length, this.shape[0].length());
+            if (size <= 3) {
+                requiredGridSize = 3;
+            } else if (size <= 4) {
+                requiredGridSize = 4;
+            } else if (size <= 5) {
+                requiredGridSize = 5;
+            } else if (size <= 6) {
+                requiredGridSize = 6;
+            }
         }
     }
 
