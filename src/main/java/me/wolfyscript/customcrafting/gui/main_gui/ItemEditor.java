@@ -41,6 +41,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             }
             return true;
         })));
+
         registerButton(new ActionButton("load_item", Material.ITEM_FRAME, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, inventoryClickEvent) -> {
             cache.getChatLists().setCurrentPageItems(1);
             sendItemListExpanded(player);

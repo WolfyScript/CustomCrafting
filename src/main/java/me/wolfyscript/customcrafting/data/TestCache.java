@@ -43,6 +43,7 @@ public class TestCache extends CustomCache {
 
     private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
 
+
     private final Items items = new Items();
     private final PotionEffects potionEffectCache = new PotionEffects();
     private final KnowledgeBook knowledgeBook = new KnowledgeBook();

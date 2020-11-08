@@ -325,6 +325,14 @@
               "&8(&7including minecraft recipes&8)",
               "&7Toggle any Recipe on/off"
             ]
+          },
+          "item_list": {
+            "name": "&6Item List",
+            "lore": [
+              "&eGet or edit custom items just by one click.",
+              "",
+              "&7[&aClick&7]&e Open Item List"
+            ]
           }
         }
       },
@@ -584,6 +592,28 @@
                 ]
               }
             }
+          }
+        }
+      },
+      "item_list": {
+        "gui_name": "&0&lItem List",
+        "items": {
+          "next_page": {
+            "name": "&6Next Page"
+          },
+          "previous_page": {
+            "name": "&6Previous Page"
+          },
+          "custom_item": {
+            "lore": [
+              "",
+              "&7[&aRight Click&7]&e Edit Item using the ItemCreator",
+              "&7[&aLeft Click&7]&e Give a single Item",
+              "&7[&aShift-Left Click&7]&e Give Full Stack of Item"
+            ]
+          },
+          "custom_item_error": {
+            "name": "&cError Loading Item!"
           }
         }
       }

@@ -91,6 +91,7 @@ public class InventoryHandler {
         {
             mainCluster.registerGuiWindow(new MainMenu(invAPI, customCrafting));
             mainCluster.registerGuiWindow(new ItemEditor(invAPI, customCrafting));
+            mainCluster.registerGuiWindow(new CustomItemList(invAPI, customCrafting));
             mainCluster.registerGuiWindow(new RecipeEditor(invAPI, customCrafting));
             mainCluster.registerGuiWindow(new RecipesList(invAPI, customCrafting));
             mainCluster.registerGuiWindow(new Settings(invAPI, customCrafting));

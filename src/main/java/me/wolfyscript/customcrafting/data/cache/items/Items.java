@@ -14,6 +14,8 @@ public class Items implements Serializable {
 
     private static final long serialVersionUID = 420L;
 
+    private int listPage;
+
     private int page;
 
     private ItemStack playerHeadSetting;
@@ -31,6 +33,7 @@ public class Items implements Serializable {
     private String attributeName;
 
     public Items() {
+        this.listPage = 0;
         this.page = 0;
         this.playerHeadSetting = new ItemStack(Material.AIR);
 
@@ -179,5 +182,13 @@ public class Items implements Serializable {
 
     public void setVariantSlot(int variantSlot) {
         this.variantSlot = variantSlot;
+    }
+
+    public int getListPage() {
+        return listPage;
+    }
+
+    public void setListPage(int listPage) {
+        this.listPage = listPage;
     }
 }

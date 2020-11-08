@@ -100,7 +100,6 @@ public class GiveSubCommand extends AbstractSubCommand {
                     api.sendConsoleMessage("$commands.give.invalid_item$", args[1]);
                 }
             }
-
         }
         return true;
     }
