@@ -115,11 +115,9 @@ public class RecipeUtils {
                     int amount = recipe.getAmountCraftable(ingredients, craftingData);
                     List<CustomItem> results = recipe.getResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
                     if (results.size() < 2 && (event.getClick().equals(ClickType.SHIFT_RIGHT) || event.getClick().equals(ClickType.SHIFT_LEFT))) {
-                        //api.sendDebugMessage("SHIFT-CLICK!");
                         if (resultItem.getAmount() > 0) {
                             int possible = Math.min(InventoryUtils.getInventorySpace(event.getView().getBottomInventory(), resultItem) / resultItem.getAmount(), amount);
                             if (possible > 0) {
-                                //api.sendDebugMessage(" possible: " + possible);
                                 recipe.removeMatrix(ingredients, inventory, possible, craftingData);
                             }
                             event.setCurrentItem(new ItemStack(Material.AIR));
@@ -130,14 +128,13 @@ public class RecipeUtils {
                             }
                         }
                     } else if (event.getClick().equals(ClickType.LEFT) || event.getClick().equals(ClickType.RIGHT)) {
-                        //api.sendDebugMessage("ONE-CLICK!");
                         ItemStack cursor = event.getView().getCursor();
-                        if (ItemUtils.isAirOrNull(cursor) || cursor.getAmount() < cursor.getMaxStackSize()) {
+                        if (ItemUtils.isAirOrNull(cursor) || cursor.getAmount() + resultItem.getAmount() < cursor.getMaxStackSize()) {
                             HashMap<NamespacedKey, CustomItem> precraftedItem = getPrecraftedItems().getOrDefault(player.getUniqueId(), new HashMap<>());
                             recipe.removeMatrix(ingredients, inventory, 1, craftingData);
                             if (resultItem.isSimilar(player.getItemOnCursor()) || player.getItemOnCursor().isSimilar(resultItem)) {
-                                event.getView().getCursor().setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
-                            } else if (event.getView().getCursor() == null || event.getView().getCursor().getType().equals(Material.AIR)) {
+                                cursor.setAmount(event.getView().getCursor().getAmount() + resultItem.getAmount());
+                            } else if (ItemUtils.isAirOrNull(cursor)) {
                                 event.getView().setCursor(resultItem);
                             }
                             precraftedItem.put(recipe.getNamespacedKey(), null);
