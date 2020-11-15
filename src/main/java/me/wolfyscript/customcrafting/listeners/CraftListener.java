@@ -20,6 +20,8 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class CraftListener implements Listener {
 
     private final CustomCrafting customCrafting;
@@ -49,10 +51,7 @@ public class CraftListener implements Listener {
         ItemStack resultItem = inventory.getResult();
 
         if (event.getSlot() == 0) {
-            if (resultItem == null) {
-                event.setCancelled(true);
-                return;
-            } else if (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem) && !event.isShiftClick()) {
+            if (resultItem == null || (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem) && !event.isShiftClick())) {
                 event.setCancelled(true);
                 return;
             }
@@ -82,33 +81,26 @@ public class CraftListener implements Listener {
             ItemStack result = recipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (result != null) {
                 e.getInventory().setResult(result);
-            } else {
-                //No valid custom recipes found
-                if (e.getRecipe() != null) {
-                    if (e.getRecipe() instanceof Keyed) {
-                        //Vanilla Recipe is available.
-                        api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
-                        //Check for custom recipe that overrides the vanilla recipe
-                        ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
-                        if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
-                            //Recipe is disabled or it is a custom recipe!
-                            e.getInventory().setResult(new ItemStack(Material.AIR));
-                        } else {
-                            //Check for items that are not allowed in vanilla recipes.
-                            //If one is found, then cancel the recipe.
-                            for (ItemStack itemStack : matrix) {
-                                CustomItem customItem = CustomItem.getByItemStack(itemStack);
-                                if (customItem != null && customItem.isBlockVanillaRecipes()) {
-                                    e.getInventory().setResult(new ItemStack(Material.AIR));
-                                    return;
-                                }
-                            }
-                            //At this point the vanilla recipe is valid and can be crafted
-                            api.sendDebugMessage("Use vanilla recipe output!");
-                        }
-                    }
-                }
+                return;
             }
+            //No valid custom recipes found
+            if (!(e.getRecipe() instanceof Keyed)) return;
+            //Vanilla Recipe is available.
+            //api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
+            //Check for custom recipe that overrides the vanilla recipe
+            ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
+            if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
+                //Recipe is disabled or it is a custom recipe!
+                e.getInventory().setResult(new ItemStack(Material.AIR));
+                return;
+            }
+            //Check for items that are not allowed in vanilla recipes.
+            //If one is found, then cancel the recipe.
+            if (Arrays.stream(matrix).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+                e.getInventory().setResult(new ItemStack(Material.AIR));
+            }
+            //At this point the vanilla recipe is valid and can be crafted
+            //api.sendDebugMessage("Use vanilla recipe output!");
             //player.updateInventory();
         } catch (Exception ex) {
             System.out.println("-------- WHAT HAPPENED? Please report! --------");

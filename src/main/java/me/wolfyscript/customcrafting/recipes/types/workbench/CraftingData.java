@@ -14,7 +14,6 @@ public class CraftingData {
     public CraftingData(CraftingRecipe recipe, HashMap<Vec2d, CustomItem> foundItems) {
         this.recipe = recipe;
         this.foundItems = foundItems;
-
     }
 
     public CraftingRecipe getRecipe() {

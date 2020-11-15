@@ -26,12 +26,12 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
         this.shapeless = true;
     }
 
-    public ShapelessCraftRecipe(AdvancedCraftingRecipe craftingRecipe){
+    public ShapelessCraftRecipe(AdvancedCraftingRecipe craftingRecipe) {
         super(craftingRecipe);
         this.shapeless = true;
     }
 
-    public ShapelessCraftRecipe(ShapelessCraftRecipe craftingRecipe){
+    public ShapelessCraftRecipe(ShapelessCraftRecipe craftingRecipe) {
         this((AdvancedCraftingRecipe) craftingRecipe);
     }
 
@@ -41,29 +41,21 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
         HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
-                ItemStack itemStack = matrix.get(i).get(j);
-                if (itemStack == null) {
-                    continue;
-                }
-                CustomItem item = checkIngredient(usedKeys, itemStack);
+                CustomItem item = checkIngredient(usedKeys, matrix.get(i).get(j));
                 if (item != null) {
                     foundItems.put(new Vec2d(j, i), item);
                 }
             }
         }
-        if (usedKeys.containsAll(getIngredients().keySet())) {
-            return new CraftingData(this, foundItems);
-        }
-        return null;
+        return usedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems) : null;
     }
 
     public CustomItem checkIngredient(List<Character> usedKeys, ItemStack item) {
+        if (item == null) return null;
         for (Character key : getIngredients().keySet()) {
-            if (!usedKeys.contains(key)) {
-                for (CustomItem ingredient : getIngredients().get(key)) {
-                    if (!ingredient.isSimilar(item, isExactMeta())) {
-                        continue;
-                    }
+            if (usedKeys.contains(key)) continue;
+            for (CustomItem ingredient : getIngredients().get(key)) {
+                if (ingredient.isSimilar(item, isExactMeta())) {
                     usedKeys.add(key);
                     return ingredient.clone();
                 }

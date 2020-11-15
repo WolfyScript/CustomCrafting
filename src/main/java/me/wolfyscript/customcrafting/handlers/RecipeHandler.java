@@ -45,6 +45,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RecipeHandler {
 
@@ -296,33 +297,23 @@ public class RecipeHandler {
         return customRecipes.entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
-    public List<CraftingRecipe<?>> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {
+    public Stream<CraftingRecipe<?>> getSimilarRecipesStream(List<List<ItemStack>> items, boolean elite, boolean advanced) {
         AtomicInteger size = new AtomicInteger();
-        items.forEach(itemStacks -> size.addAndGet((int) itemStacks.stream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count()));
-
+        items.forEach(stacks -> size.addAndGet((int) stacks.stream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count()));
         List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
-        if (elite) {
-            craftingRecipes.addAll(getRecipes(RecipeType.ELITE_WORKBENCH));
-        }
-        if (advanced) {
-            craftingRecipes.addAll(getRecipes(RecipeType.WORKBENCH));
-        }
-        return craftingRecipes.stream().filter(customRecipe -> {
-            if (customRecipe.getIngredients().keySet().size() == size.get()) {
-                if (customRecipe instanceof IShapedCraftingRecipe) {
-                    IShapedCraftingRecipe recipe = ((IShapedCraftingRecipe) customRecipe);
-                    boolean sizeCheck = items.size() > 0 && recipe.getShape().length > 0;
-                    if (sizeCheck) {
-                        boolean sizeSimilarity = items.size() == recipe.getShape().length;
-                        boolean rowSize = items.get(0).size() == recipe.getShape()[0].length();
-                        return sizeSimilarity && rowSize;
-                    }
-                    return false;
-                }
-                return true;
+        if (elite) craftingRecipes.addAll(getRecipes(RecipeType.ELITE_WORKBENCH));
+        if (advanced) craftingRecipes.addAll(getRecipes(RecipeType.WORKBENCH));
+        return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size.get()).filter(customRecipe -> {
+            if (customRecipe instanceof IShapedCraftingRecipe) {
+                IShapedCraftingRecipe recipe = ((IShapedCraftingRecipe) customRecipe);
+                return items.size() > 0 && recipe.getShape().length > 0 && items.size() == recipe.getShape().length && items.get(0).size() == recipe.getShape()[0].length();
             }
-            return false;
-        }).collect(Collectors.toList());
+            return true;
+        });
+    }
+
+    public List<CraftingRecipe<?>> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {
+        return getSimilarRecipesStream(items, elite, advanced).collect(Collectors.toList());
     }
 
     public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
@@ -354,6 +345,7 @@ public class RecipeHandler {
         ICustomRecipe<?> customRecipe = getRecipe(key);
         return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
     }
+
     public <T extends ICustomRecipe<?>> List<T> getRecipes(Class<T> type) {
         return customRecipes.values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
@@ -426,8 +418,6 @@ public class RecipeHandler {
     }
 
     /**
-     *
-     *
      * @param type
      * @param <T>
      * @return
@@ -440,8 +430,6 @@ public class RecipeHandler {
     }
 
     /**
-     *
-     *
      * @param type
      * @param player
      * @param <T>
@@ -457,8 +445,6 @@ public class RecipeHandler {
     }
 
     /**
-     *
-     *
      * @param type
      * @param <T>
      * @return
@@ -468,8 +454,6 @@ public class RecipeHandler {
     }
 
     /**
-     *
-     *
      * @param type
      * @param player
      * @param <T>

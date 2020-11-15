@@ -140,31 +140,23 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         if (getIngredients() == null || getIngredients().isEmpty()) {
             return null;
         }
-        for (int i = 0; i < matrix.size(); i++) {
-            for (int j = 0; j < matrix.get(i).size(); j++) {
-                if ((matrix.get(i).get(j) != null && i < shape.length && j < shape[i].length() && shape[i].charAt(j) != ' ')) {
-                    CustomItem item = checkIngredient(matrix.get(i).get(j), getIngredients().get(shape[i].charAt(j)));
+        for (int c = 0; c < matrix.size(); c++) {
+            for (int r = 0; r < matrix.get(c).size(); r++) {
+                if ((matrix.get(c).get(r) != null && c < shape.length && r < shape[c].length() && shape[c].charAt(r) != ' ')) {
+                    CustomItem item = checkIngredient(matrix.get(c).get(r), getIngredients().get(shape[c].charAt(r)));
                     if (item == null) return null;
-                    foundItems.put(new Vec2d(j, i), item);
-                    containedKeys.add(shape[i].charAt(j));
-                } else if (!(matrix.get(i).get(j) == null && (i >= shape.length || j >= shape[i].length() || shape[i].charAt(j) == ' '))) {
+                    foundItems.put(new Vec2d(r, c), item);
+                    containedKeys.add(shape[c].charAt(r));
+                } else if (!(matrix.get(c).get(r) == null && (c >= shape.length || r >= shape[c].length() || shape[c].charAt(r) == ' '))) {
                     return null;
                 }
             }
         }
-        if (containedKeys.containsAll(getIngredients().keySet())) {
-            return new CraftingData(this, foundItems);
-        }
-        return null;
+        return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems) : null;
     }
 
     private CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
-        for (CustomItem ingredient : ingredients) {
-            if (ingredient.isSimilar(input, isExactMeta())) {
-                return ingredient.clone();
-            }
-        }
-        return null;
+        return ingredients.stream().filter(customItem -> customItem.isSimilar(input, isExactMeta())).findFirst().orElse(null);
     }
 
     @Override
