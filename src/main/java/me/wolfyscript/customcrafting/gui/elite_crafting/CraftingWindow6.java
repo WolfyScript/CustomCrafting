@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.ResultSlotButton;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
@@ -13,10 +12,10 @@ import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class CraftingWindow6 extends ExtendedGuiWindow {
+public class CraftingWindow6 extends CraftingWindow {
 
     public CraftingWindow6(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("crafting_grid6", inventoryAPI, 54, customCrafting);
+        super("crafting_grid6", 54, inventoryAPI, customCrafting);
     }
 
     @Override
@@ -30,7 +29,9 @@ public class CraftingWindow6 extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateSync(GuiUpdate event) {
+        super.onUpdateSync(event);
+
         TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
         EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
         if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
