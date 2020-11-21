@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
@@ -17,12 +16,10 @@ import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
 import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
@@ -41,76 +38,8 @@ public class ItemEditor extends ExtendedGuiWindow {
             }
             return true;
         })));
-
-        registerButton(new ActionButton("load_item", Material.ITEM_FRAME, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            cache.getChatLists().setCurrentPageItems(1);
-            sendItemListExpanded(player);
-            guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
-                if (args.length > 1) {
-                    NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
-                    if (!CustomItems.hasCustomItem(namespacedKey)) {
-                        sendMessage(player1, "error");
-                        return true;
-                    }
-                    CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
-                    ((TestCache) guiHandler1.getCustomCache()).getChatLists().setLastUsedItem(namespacedKey);
-
-                    if (items.isRecipeItem()) {
-                        cache.applyItem(customItem);
-                        sendMessage(player1, "item_applied");
-                        if (!cache.getSetting().equals(Setting.ITEMS)) {
-                            guiHandler.openCluster("recipe_creator");
-                        } else {
-                            guiHandler.openPreviousInv();
-                        }
-                        return false;
-                    }
-                    ItemStack itemStack = customItem.create();
-                    if (InventoryUtils.hasInventorySpace(player1, itemStack)) {
-                        player1.getInventory().addItem(itemStack);
-                        api.sendPlayerMessage(player1, "$commands.give.success$", new String[]{"%PLAYER%", player1.getDisplayName()}, new String[]{"%ITEM%", namespacedKey.toString()});
-                    } else {
-                        api.sendPlayerMessage(player1, "$commands.give.no_inv_space$");
-                    }
-                    return false;
-                }
-                sendMessage(player1, "no_name");
-                return true;
-            });
-            Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
-            return true;
-        }));
         registerButton(new ActionButton("create_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.changeToInv("item_creator", "main_menu");
-            return true;
-        }));
-        registerButton(new ActionButton("edit_item", Material.REDSTONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            if (items.isRecipeItem()) {
-                if (items.isSaved()) {
-                    items.setItem(CustomItems.getCustomItem(items.getNamespacedKey()));
-                }
-                guiHandler.changeToInv("item_creator", "main_menu");
-            } else {
-                cache.getChatLists().setCurrentPageItems(1);
-                sendItemListExpanded(player);
-                guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
-                    if (args.length > 1) {
-                        NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
-                        if (!CustomItems.hasCustomItem(namespacedKey)) {
-                            sendMessage(player1, "error");
-                            return true;
-                        }
-                        cache.getChatLists().setLastUsedItem(namespacedKey);
-                        items.setItem(false, CustomItems.getCustomItem(namespacedKey));
-                        sendMessage(player1, "item_editable");
-                        Bukkit.getScheduler().runTask(api.getPlugin(), () -> guiHandler1.changeToInv("item_creator", "main_menu"));
-                        return false;
-                    }
-                    sendMessage(player1, "no_name");
-                    return true;
-                });
-                Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
-            }
             return true;
         }));
         registerButton(new ActionButton("delete_item", Material.BARRIER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -135,14 +64,12 @@ public class ItemEditor extends ExtendedGuiWindow {
         event.setButton(0, "back");
         TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
         if (cache.getItems().isRecipeItem()) {
-            event.setButton(20, "load_item");
-            event.setButton(22, "create_item");
-            event.setButton(24, "edit_item");
+            event.setButton(21, "none", "item_list");
+            event.setButton(23, "create_item");
         } else {
             event.setButton(20, "create_item");
-            event.setButton(22, "edit_item");
+            event.setButton(22, "none", "item_list");
             event.setButton(24, "delete_item");
-            event.setButton(31, "load_item");
         }
     }
 

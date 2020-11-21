@@ -210,6 +210,22 @@
             "&eNeed support? Found a bug? Have an suggestion or idea?",
             "&eJoin the discord and join the awesome community!"
           ]
+        },
+        "recipe_list": {
+          "name": "&6Recipe List",
+          "lore": [
+            "&7List of all recipes ",
+            "&8(&7including minecraft recipes&8)",
+            "&7Toggle any Recipe on/off"
+          ]
+        },
+        "item_list": {
+          "name": "&6Item List",
+          "lore": [
+            "&eGet or edit custom items just by one click.",
+            "",
+            "&7[&aClick&7]&e Open Item List"
+          ]
         }
       },
       "main_menu": {
@@ -316,22 +332,6 @@
               "&7with special features e.g.",
               "&7Custom Durability&8, Furnace Fuel&8, ",
               "&7Custom Equipment and more."
-            ]
-          },
-          "recipe_list": {
-            "name": "&6Recipe List",
-            "lore": [
-              "&7List of all recipes ",
-              "&8(&7including minecraft recipes&8)",
-              "&7Toggle any Recipe on/off"
-            ]
-          },
-          "item_list": {
-            "name": "&6Item List",
-            "lore": [
-              "&eGet or edit custom items just by one click.",
-              "",
-              "&7[&aClick&7]&e Open Item List"
             ]
           }
         }

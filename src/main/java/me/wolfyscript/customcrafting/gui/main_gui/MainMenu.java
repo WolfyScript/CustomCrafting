@@ -49,15 +49,6 @@ public class MainMenu extends ExtendedGuiWindow {
             guiHandler.changeToInv("item_editor");
             return true;
         }));
-        registerButton(new ActionButton("recipe_list", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("recipe_list");
-            ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.RECIPE_LIST);
-            return true;
-        }));
-        registerButton(new ActionButton("item_list", Material.BOOKSHELF, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("item_list");
-            return true;
-        }));
 
         registerButton(new ActionButton("settings", PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.changeToInv("settings");
@@ -109,8 +100,8 @@ public class MainMenu extends ExtendedGuiWindow {
         }
 
         event.setButton(36, "item_editor");
-        event.setButton(44, "recipe_list");
-        event.setButton(45, "item_list");
+        event.setButton(44, "none", "recipe_list");
+        event.setButton(45, "none", "item_list");
         event.setButton(53, "recipe_book_editor");
     }
 }

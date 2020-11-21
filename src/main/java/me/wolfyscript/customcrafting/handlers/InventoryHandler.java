@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.elite_crafting.*;
 import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.*;
@@ -112,6 +113,15 @@ public class InventoryHandler {
             })), invAPI.getWolfyUtilities());
             mainCluster.registerButton(new ActionButton("discord", new ButtonState("main_menu", "discord", PlayerHeadUtils.getViaURL("4d42337be0bdca2128097f1c5bb1109e5c633c17926af5fb6fc20000011aeb53"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
                 api.sendActionMessage(player, new ClickData("&7[&3Click here to join Discord&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/qGhDTSr")));
+                return true;
+            })), invAPI.getWolfyUtilities());
+            mainCluster.registerButton(new ActionButton("recipe_list", new ButtonState("main_menu", "recipe_list", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                guiHandler.changeToInv("recipe_list");
+                ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.RECIPE_LIST);
+                return true;
+            })), invAPI.getWolfyUtilities());
+            mainCluster.registerButton(new ActionButton("item_list", new ButtonState("main_menu", "item_list", Material.BOOKSHELF, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+                guiHandler.changeToInv("item_list");
                 return true;
             })), invAPI.getWolfyUtilities());
         }
