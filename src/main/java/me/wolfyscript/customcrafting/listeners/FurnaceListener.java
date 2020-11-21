@@ -9,6 +9,7 @@ import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.api.utils.RandomCollection;
 import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
 import org.bukkit.Bukkit;
@@ -18,10 +19,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.CookingRecipe;
-import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -150,13 +148,25 @@ public class FurnaceListener implements Listener {
         Furnace furnace = (Furnace) event.getBlock().getState();
         FurnaceInventory inventory = furnace.getInventory();
         ItemStack currentResultItem = furnace.getInventory().getResult();
-        List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult()).stream().filter(recipe -> recipe instanceof CookingRecipe && recipe.getResult().isSimilar(event.getResult())).collect(Collectors.toList());
+        final Class<?> type;
+        switch (furnace.getType()) {
+            case BLAST_FURNACE:
+                type = BlastingRecipe.class;
+                break;
+            case SMOKER:
+                type = SmokingRecipe.class;
+                break;
+            default:
+                type = FurnaceRecipe.class;
+        }
+        List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult()).stream().filter(recipe -> type.isInstance(recipe) && recipe.getResult().isSimilar(event.getResult())).collect(Collectors.toList());
         for (Recipe recipe : recipes) {
-            if (recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
+            if (!(recipe instanceof Keyed)) continue;
+            if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
                 event.setCancelled(true);
                 continue;
             }
-            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) customCrafting.getRecipeHandler().getRecipe(((Keyed) recipe).getKey().toString());
+            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.getByString(((Keyed) recipe).getKey().toString()));
             if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                 if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                     event.setCancelled(false);
