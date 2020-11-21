@@ -60,11 +60,13 @@ public class ItemCreator extends ExtendedGuiWindow {
             }
             return true;
         })));
-        registerButton(new ItemInputButton("item_input", new ButtonState("", Material.AIR, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
-            GuiWindow guiWindow = guiHandler.getCurrentInv();
-            Items items = cache.getItems();
-            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                //-------------TODO: Experimental
+        registerButton(new ItemInputButton("item_input", new ButtonState("", Material.AIR, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> false,
+                (guiHandler, player, inventory, item, i, b) -> {
+                    TestCache cache = (TestCache) guiHandler.getCustomCache();
+                    GuiWindow guiWindow = guiHandler.getCurrentInv();
+                    Items items = cache.getItems();
+
+                    //-------------TODO: Experimental
                 /*
                 if (event.getAction().name().startsWith("PICKUP") || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR) || event.getAction().equals(InventoryAction.CLONE_STACK)) {
                     ItemStack cursor = event.getView().getCursor();
@@ -76,14 +78,11 @@ public class ItemCreator extends ExtendedGuiWindow {
                     }
                 }
                 //*/
-                //---------------------------------------
-                ItemStack item = inventory.getItem(i);
-                CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
-                items.setItem(customItem);
-                ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
-            }, 1);
-            return false;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemStack())));
+                    //---------------------------------------
+                    CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
+                    items.setItem(customItem);
+                    ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
+                }, (hashMap, guiHandler, player, itemStack, i, b) -> ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemStack())));
         registerButton(new ActionButton("save_item", Material.WRITABLE_BOOK, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
             Items items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {

@@ -432,7 +432,8 @@
         "items": {
           "lores": {
             "disabled": "&7&l[&c&lDISABLED&7&l]",
-            "enabled": "&7&l[&a&lENABLED&7&l]"
+            "enabled": "&7&l[&a&lENABLED&7&l]",
+            "edit": "&7[&aShift-Click&7] &eEdit Recipe"
           },
           "namespace": {
             "name": "&7%namespace%",

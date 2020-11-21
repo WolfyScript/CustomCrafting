@@ -104,10 +104,10 @@ public class RecipesList extends ExtendedGuiWindow {
             for (int i = 45 * currentPage; item < 45 && i < recipes.size(); i++) {
                 Object recipe = recipes.get(i);
                 RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
-                if (recipe instanceof Recipe) {
+                if (recipe instanceof ICustomRecipe) {
+                    button.setCustomRecipe(event.getGuiHandler(), (ICustomRecipe<?>) recipe);
+                } else if (recipe instanceof Recipe) {
                     button.setRecipe(event.getGuiHandler(), (Recipe) recipe);
-                } else if (recipe instanceof ICustomRecipe) {
-                    button.setCustomRecipe(event.getGuiHandler(), (ICustomRecipe) recipe);
                 }
                 event.setButton(9 + item, button);
                 item++;
