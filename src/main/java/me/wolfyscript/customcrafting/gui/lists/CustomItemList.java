@@ -1,11 +1,11 @@
-package me.wolfyscript.customcrafting.gui.main_gui;
+package me.wolfyscript.customcrafting.gui.lists;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.main_gui.buttons.CustomItemSelectButton;
+import me.wolfyscript.customcrafting.gui.lists.buttons.CustomItemSelectButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.ItemNamespaceButton;
 import me.wolfyscript.utilities.api.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.custom_items.CustomItems;

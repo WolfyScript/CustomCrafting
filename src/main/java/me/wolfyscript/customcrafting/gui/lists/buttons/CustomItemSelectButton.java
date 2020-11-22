@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.main_gui.buttons;
+package me.wolfyscript.customcrafting.gui.lists.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
@@ -24,28 +24,18 @@ public class CustomItemSelectButton extends ActionButton {
                 return true;
             }
             WolfyUtilities api = CustomCrafting.getApi();
-
             CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
             if (event.isRightClick()) {
-                if (items.isRecipeItem()) {
-                    if (items.isSaved()) {
-                        items.setItem(customItem);
-                    }
-                } else {
-                    items.setItem(false, customItem);
-                    api.getInventoryAPI().getGuiWindow("none", "item_editor").sendMessage(player, "item_editable");
-                }
+                items.setItem(items.isRecipeItem(), customItem);
+                api.getInventoryAPI().getGuiWindow("none", "item_editor").sendMessage(player, "item_editable");
                 guiHandler.changeToInv("item_creator", "main_menu");
             } else if (event.isLeftClick()) {
-                if (items.isRecipeItem()) {
+                if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                     cache.applyItem(customItem);
+                    items.setRecipeItem(false);
                     api.getInventoryAPI().getGuiWindow("none", "item_editor").sendMessage(player, "item_applied");
-                    if (!cache.getSetting().equals(Setting.ITEMS)) {
-                        guiHandler.openCluster("recipe_creator");
-                    } else {
-                        guiHandler.openPreviousInv();
-                    }
-                    return false;
+                    guiHandler.openPreviousInv();
+                    guiHandler.openCluster("recipe_creator");
                 } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
                     ItemStack itemStack = customItem.create();
                     int amount = event.isShiftClick() ? itemStack.getMaxStackSize() : 1;

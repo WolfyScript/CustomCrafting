@@ -65,7 +65,7 @@ public class SaveButton extends ActionButton {
             ex.printStackTrace();
             return true;
         }
-        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openCluster("none"));
+        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openPreviousInv("none", 2));
         return true;
     }
 }

@@ -33,7 +33,7 @@ public class ItemEditor extends ExtendedGuiWindow {
     public void onInit() {
         registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
             guiHandler.openPreviousInv();
-            if (!cache.getSetting().equals(Setting.ITEMS)) {
+            if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                 guiHandler.openCluster("recipe_creator");
             }
             return true;

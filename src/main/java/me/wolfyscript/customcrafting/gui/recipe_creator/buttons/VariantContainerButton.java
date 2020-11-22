@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class VariantContainerButton extends ItemInputButton {
 
-    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getVariantsData().putVariant(items.getVariantSlot(), customItem);
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getVariantsData().putVariant(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
 
     public VariantContainerButton(int variantSlot, CustomCrafting customCrafting) {
         super("variant_container_" + variantSlot, new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {

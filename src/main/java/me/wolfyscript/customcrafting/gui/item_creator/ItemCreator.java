@@ -65,19 +65,18 @@ public class ItemCreator extends ExtendedGuiWindow {
                     TestCache cache = (TestCache) guiHandler.getCustomCache();
                     GuiWindow guiWindow = guiHandler.getCurrentInv();
                     Items items = cache.getItems();
-
                     //-------------TODO: Experimental
-                /*
-                if (event.getAction().name().startsWith("PICKUP") || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR) || event.getAction().equals(InventoryAction.CLONE_STACK)) {
-                    ItemStack cursor = event.getView().getCursor();
-                    if (!ItemUtils.isAirOrNull(cursor) && items.isSaved()) {
-                        CustomItem customItem = CustomItems.getCustomItem(items.getNamespacedKey());
-                        if (!ItemUtils.isAirOrNull(customItem)) {
-                            event.getView().setCursor(customItem.create(cursor.getAmount()));
+                    /*
+                    if (event.getAction().name().startsWith("PICKUP") || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR) || event.getAction().equals(InventoryAction.CLONE_STACK)) {
+                        ItemStack cursor = event.getView().getCursor();
+                        if (!ItemUtils.isAirOrNull(cursor) && items.isSaved()) {
+                            CustomItem customItem = CustomItems.getCustomItem(items.getNamespacedKey());
+                            if (!ItemUtils.isAirOrNull(customItem)) {
+                                event.getView().setCursor(customItem.create(cursor.getAmount()));
+                            }
                         }
                     }
-                }
-                //*/
+                    //*/
                     //---------------------------------------
                     CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
                     items.setItem(customItem);

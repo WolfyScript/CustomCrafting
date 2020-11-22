@@ -1,9 +1,10 @@
-package me.wolfyscript.customcrafting.gui.main_gui;
+package me.wolfyscript.customcrafting.gui.lists;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListContainerButton;
+import me.wolfyscript.customcrafting.gui.lists.buttons.RecipeListContainerButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListNamespaceButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -22,8 +23,8 @@ import java.util.stream.Collectors;
 
 public class RecipesList extends ExtendedGuiWindow {
 
-    private final HashMap<GuiHandler, Integer> pages = new HashMap<>();
-    private final HashMap<GuiHandler, String> namespaces = new HashMap<>();
+    private final HashMap<GuiHandler<?>, Integer> pages = new HashMap<>();
+    private final HashMap<GuiHandler<?>, String> namespaces = new HashMap<>();
     private static int maxPages = 0;
 
     public RecipesList(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
@@ -32,7 +33,7 @@ public class RecipesList extends ExtendedGuiWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, slot, inventoryClickEvent) -> {
             pages.put(guiHandler, 0);
             for (int i = 0; i < 45; i++) {
                 RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + i);
@@ -68,7 +69,7 @@ public class RecipesList extends ExtendedGuiWindow {
     @Override
     public void onUpdateAsync(GuiUpdate event) {
         super.onUpdateAsync(event);
-        GuiHandler guiHandler = event.getGuiHandler();
+        GuiHandler<?> guiHandler = event.getGuiHandler();
         Category category = ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
         int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
         event.setButton(0, "back");
@@ -125,11 +126,11 @@ public class RecipesList extends ExtendedGuiWindow {
         return maxPages;
     }
 
-    public void setPage(GuiHandler guiHandler, int page) {
+    public void setPage(GuiHandler<?> guiHandler, int page) {
         this.pages.put(guiHandler, page);
     }
 
-    public HashMap<GuiHandler, String> getRecipeNamespaces() {
+    public HashMap<GuiHandler<?>, String> getRecipeNamespaces() {
         return namespaces;
     }
 }

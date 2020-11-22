@@ -35,6 +35,7 @@ import java.util.HashMap;
 public class TestCache extends CustomCache {
 
     private Setting setting;
+
     //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
     private final HashMap<RecipeType<?>, ICustomRecipe<?>> recipes = new HashMap<>();
 
@@ -42,7 +43,6 @@ public class TestCache extends CustomCache {
     private String subSetting;
 
     private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
-
 
     private final Items items = new Items();
     private final PotionEffects potionEffectCache = new PotionEffects();

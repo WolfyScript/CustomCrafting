@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.gui.main_gui.RecipesList;
+import me.wolfyscript.customcrafting.gui.lists.RecipesList;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;

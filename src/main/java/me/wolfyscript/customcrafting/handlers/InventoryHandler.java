@@ -6,6 +6,8 @@ import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.elite_crafting.*;
 import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
+import me.wolfyscript.customcrafting.gui.lists.CustomItemList;
+import me.wolfyscript.customcrafting.gui.lists.RecipesList;
 import me.wolfyscript.customcrafting.gui.main_gui.*;
 import me.wolfyscript.customcrafting.gui.potion_creator.PotionCreator;
 import me.wolfyscript.customcrafting.gui.potion_creator.PotionEffectTypeSelection;
@@ -116,8 +118,8 @@ public class InventoryHandler {
                 return true;
             })), invAPI.getWolfyUtilities());
             mainCluster.registerButton(new ActionButton("recipe_list", new ButtonState("main_menu", "recipe_list", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-                guiHandler.changeToInv("recipe_list");
                 ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.RECIPE_LIST);
+                guiHandler.changeToInv("recipe_list");
                 return true;
             })), invAPI.getWolfyUtilities());
             mainCluster.registerButton(new ActionButton("item_list", new ButtonState("main_menu", "item_list", Material.BOOKSHELF, (guiHandler, player, inventory, i, inventoryClickEvent) -> {

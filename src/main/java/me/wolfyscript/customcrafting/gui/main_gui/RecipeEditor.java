@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiUpdate;
@@ -83,12 +84,12 @@ public class RecipeEditor extends ExtendedGuiWindow {
     public void onUpdateAsync(GuiUpdate event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
-        event.setButton(20, "create_recipe");
-        event.setButton(22, "edit_recipe");
-        event.setButton(24, "delete_recipe");
+        event.setButton(21, "create_recipe");
+        event.setButton(23, "none", "recipe_list");
     }
 
     private void changeToCreator(GuiHandler<?> guiHandler) {
+        ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.RECIPE_CREATOR);
         guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getCreatorID());
     }
 }

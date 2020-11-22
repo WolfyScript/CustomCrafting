@@ -1,14 +1,17 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SaveButton;
 import me.wolfyscript.utilities.api.inventory.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import org.bukkit.Bukkit;
 
 public abstract class RecipeCreator extends ExtendedGuiWindow {
 
@@ -18,8 +21,9 @@ public abstract class RecipeCreator extends ExtendedGuiWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openCluster("none");
+        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, slot, inventoryClickEvent) -> {
+            cache.setSetting(Setting.MAIN_MENU);
+            Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openPreviousInv("none"));
             return true;
         })));
         registerButton(new SaveButton(false));

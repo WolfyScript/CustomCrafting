@@ -6,7 +6,7 @@
 
     <groupId>io.github.wolfyscript</groupId>
     <artifactId>customcrafting</artifactId>
-    <version>1.6.4.3</version>
+    <version>1.6.4.4</version>
 
     <properties>
         <!-- Generic properties -->
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.wolfyscript</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.6.2.17</version>
+            <version>1.6.2.19</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

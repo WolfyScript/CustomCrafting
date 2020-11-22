@@ -1,12 +1,14 @@
-package me.wolfyscript.customcrafting.gui.main_gui.buttons;
+package me.wolfyscript.customcrafting.gui.lists.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.button.Button;
+import me.wolfyscript.utilities.api.utils.chat.ClickData;
 import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -48,11 +50,20 @@ public class RecipeListContainerButton extends Button {
 
         if (event.isShiftClick() && getCustomRecipe(guiHandler) != null) {
             ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
-            cache.setRecipeType(recipe.getRecipeType());
-            if (customCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler)) {
-                Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getCreatorID()), 1);
+            if (event.isLeftClick()) {
+                cache.setSetting(Setting.RECIPE_CREATOR);
+                cache.setRecipeType(recipe.getRecipeType());
+                if (customCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler)) {
+                    Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getCreatorID()), 1);
+                } else {
+                    api.sendPlayerMessage(player, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getRecipeType().name()});
+                }
             } else {
-                api.sendPlayerMessage(player, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getRecipeType().name()});
+                api.sendPlayerMessage(player, "none", "recipe_editor", "delete.confirm", new String[]{"%recipe%", recipe.getNamespacedKey().toString()});
+                api.sendActionMessage(player, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player1) -> {
+                    guiHandler.openCluster();
+                    Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> recipe.delete(player1));
+                }), new ClickData("$inventories.none.recipe_editor.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler.openCluster()));
             }
         } else {
             if (!id.isEmpty() && id.contains(":")) {
@@ -86,6 +97,7 @@ public class RecipeListContainerButton extends Button {
                 }
                 itemB.addLoreLine("");
                 itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.edit$")));
+                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.delete$")));
                 inventory.setItem(slot, itemB.create());
             }
         } else {
