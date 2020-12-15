@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class ChatLists {
 

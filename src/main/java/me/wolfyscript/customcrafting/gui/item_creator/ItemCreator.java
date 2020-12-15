@@ -12,20 +12,21 @@ import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.custom_items.MetaSettings;
-import me.wolfyscript.utilities.api.custom_items.api_references.*;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.*;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
-import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.custom_items.MetaSettings;
+import me.wolfyscript.utilities.api.inventory.custom_items.api_references.*;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.*;
+import me.wolfyscript.utilities.api.particles.ParticleEffect;
+import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.chat.ChatColor;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -46,8 +47,8 @@ public class ItemCreator extends ExtendedGuiWindow {
 
     private static final MetaSettings dummyMetaSettings = new MetaSettings();
 
-    public ItemCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("main_menu", inventoryAPI, 54, customCrafting);
+    public ItemCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "main_menu", 54, customCrafting);
     }
 
     @Override
@@ -60,12 +61,12 @@ public class ItemCreator extends ExtendedGuiWindow {
             }
             return true;
         })));
-        registerButton(new ItemInputButton("item_input", new ButtonState("", Material.AIR, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> false,
-                (guiHandler, player, inventory, item, i, b) -> {
-                    TestCache cache = (TestCache) guiHandler.getCustomCache();
-                    GuiWindow guiWindow = guiHandler.getCurrentInv();
-                    Items items = cache.getItems();
-                    //-------------TODO: Experimental
+        registerButton(new ItemInputButton("item_input", new ButtonState("", Material.AIR, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
+            GuiWindow guiWindow = guiHandler.getCurrentInv();
+            Items items = cache.getItems();
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                ItemStack item = inventory.getItem(i);
+                //-------------TODO: Experimental
                     /*
                     if (event.getAction().name().startsWith("PICKUP") || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR) || event.getAction().equals(InventoryAction.CLONE_STACK)) {
                         ItemStack cursor = event.getView().getCursor();
@@ -77,28 +78,30 @@ public class ItemCreator extends ExtendedGuiWindow {
                         }
                     }
                     //*/
-                    //---------------------------------------
-                    CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
-                    items.setItem(customItem);
-                    ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
-                }, (hashMap, guiHandler, player, itemStack, i, b) -> ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemStack())));
+                //---------------------------------------
+                CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
+                items.setItem(customItem);
+                ((ToggleButton) guiWindow.getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
+            });
+            return false;
+        }, (hashMap, guiHandler, player, itemStack, i, b) -> ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemStack())));
         registerButton(new ActionButton("save_item", Material.WRITABLE_BOOK, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
             Items items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
-                    me.wolfyscript.utilities.api.utils.NamespacedKey namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
+                    me.wolfyscript.utilities.util.NamespacedKey namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
                     if (namespacedKey != null) {
                         CustomItem customItem = items.getItem();
                         if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
-                            api.sendPlayerMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
+                            api.getChat().sendPlayerMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
                             return true;
                         }
                         customCrafting.saveItem(namespacedKey, items.getItem());
                         items.setSaved(true);
                         items.setNamespacedKey(namespacedKey);
                         sendMessage(player, "save.success");
-                        api.sendPlayerMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
+                        api.getChat().sendPlayerMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
                         return false;
                     }
                     return true;
@@ -151,7 +154,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         //DISPLAY NAME SETTINGS
         registerButton(new OptionButton(Material.NAME_TAG, "display_name"));
         registerButton(new ChatInputButton("display_name.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
-            ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setDisplayName(WolfyUtilities.translateColorCodes(s));
+            ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setDisplayName(ChatColor.convert(s));
             return false;
         }));
         registerButton(new ActionButton("display_name.remove", Material.RED_CONCRETE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -175,7 +178,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     if (enchantment != null) {
                         ((TestCache) guiHandler.getCustomCache()).getItems().getItem().addUnsafeEnchantment(enchantment, level);
                     } else {
-                        api.sendPlayerMessage(player, "none", "item_creator", "enchant.invalid_enchant", new String[]{"%ENCHANT%", args[0]});
+                        api.getChat().sendPlayerMessage(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
                         return true;
                     }
                 } else {
@@ -189,7 +192,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 if (enchantment != null) {
                     ((TestCache) guiHandler.getCustomCache()).getItems().getItem().removeEnchantment(enchantment);
                 } else {
-                    api.sendPlayerMessage(player, "none", "item_creator", "enchant.invalid_enchant", new String[]{"%ENCHANT%", args[0]});
+                    api.getChat().sendPlayerMessage(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
                     return true;
                 }
                 return false;
@@ -200,7 +203,7 @@ public class ItemCreator extends ExtendedGuiWindow {
         registerButton(new OptionButton(Material.WRITABLE_BOOK, "lore"));
         {
             registerButton(new ChatInputButton("lore.add", Material.WRITABLE_BOOK, (guiHandler, player, s, strings) -> {
-                ((TestCache) guiHandler.getCustomCache()).getItems().getItem().addLoreLine(s.equals("&empty") ? "" : WolfyUtilities.translateColorCodes(s));
+                ((TestCache) guiHandler.getCustomCache()).getItems().getItem().addLoreLine(s.equals("&empty") ? "" : ChatColor.convert(s));
                 return false;
             }));
             registerButton(new ActionButton("lore.remove", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -254,7 +257,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 try {
                     ((TestCache) guiHandler.getCustomCache()).getItems().setAttribAmount(Double.parseDouble(args[0]));
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "attribute.amount.error");
+                    api.getChat().sendPlayerMessage(player, "item_creator", "main_menu", "attribute.amount.error");
                     return true;
                 }
                 return false;
@@ -274,8 +277,8 @@ public class ItemCreator extends ExtendedGuiWindow {
                     UUID uuid = UUID.fromString(strings[0]);
                     ((TestCache) guiHandler.getCustomCache()).getItems().setAttributeUUID(uuid.toString());
                 } catch (IllegalArgumentException ex) {
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "attribute.uuid.error.line1", new String[]{"%UUID%", strings[0]});
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "attribute.uuid.error.line2");
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "attribute.uuid.error.line1", new Pair<>("%UUID%", strings[0]));
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "attribute.uuid.error.line2");
                     return true;
                 }
                 return false;
@@ -331,7 +334,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     items.getItem().setItemMeta(itemMeta);
                 });
                 testCache.getPotionEffectCache().setRecipePotionEffect(true);
-                guiHandler.changeToInv("potion_creator", "potion_creator");
+                guiHandler.changeToInv(new me.wolfyscript.utilities.util.NamespacedKey("potion_creator", "potion_creator"));
                 return true;
             }));
             registerButton(new ActionButton("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
@@ -344,7 +347,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                     items.getItem().setItemMeta(itemMeta);
                 });
                 potionEffectCache.setOpenedFrom("item_creator", "main_menu");
-                guiHandler.changeToInv("potion_creator", "potion_effect_type_selection");
+                guiHandler.changeToInv(new me.wolfyscript.utilities.util.NamespacedKey("potion_creator", "potion_effect_type_selection"));
                 return true;
             }));
         }
@@ -374,9 +377,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(s);
                     ((Damageable) itemMeta).setDamage(value);
                     ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "damage.value_success", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "damage.invalid_value", new String[]{"%VALUE%", s});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "damage.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -400,9 +403,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(s);
                     ((Repairable) itemMeta).setRepairCost(value);
                     ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "repair_cost.value_success", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "repair_cost.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "repair_cost.invalid_value", new String[]{"%VALUE%", s});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "repair_cost.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -433,9 +436,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                     int value = Integer.parseInt(s);
                     itemMeta.setCustomModelData(value);
                     ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "custom_model_data.success", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "custom_model_data.invalid_value", new String[]{"%VALUE%", s});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -458,9 +461,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 try {
                     int value = Integer.parseInt(s);
                     ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setDurabilityCost(value);
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "consume.valid", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "consume.valid", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "consume.invalid", new String[]{"%VALUE%", s});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "consume.invalid", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -501,9 +504,9 @@ public class ItemCreator extends ExtendedGuiWindow {
                 try {
                     int value = Integer.parseInt(s);
                     ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setBurnTime(value);
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "fuel.value_success", new String[]{"%VALUE%", String.valueOf(value)});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "fuel.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.sendPlayerMessage(player, "item_creator", "main_menu", "fuel.invalid_value", new String[]{"%VALUE%", s});
+                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "fuel.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -572,7 +575,7 @@ public class ItemCreator extends ExtendedGuiWindow {
                 return itemStack;
             }, (guiHandler, player, s, strings) -> {
                 ItemMeta itemMeta = ((TestCache) guiHandler.getCustomCache()).getItems().getItem().getItemMeta();
-                itemMeta.setLocalizedName(WolfyUtilities.translateColorCodes(s));
+                itemMeta.setLocalizedName(ChatColor.convert(s));
                 ((TestCache) guiHandler.getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                 return false;
             }));
@@ -728,9 +731,9 @@ public class ItemCreator extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateAsync(GuiUpdate<TestCache> event) {
         super.onUpdateAsync(event);
-        GuiHandler<TestCache> guiHandler = event.getGuiHandler(TestCache.class);
+        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
         TestCache cache = guiHandler.getCustomCache();
         Items items = cache.getItems();
         CustomItem customItem = items.getItem();

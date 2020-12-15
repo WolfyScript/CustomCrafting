@@ -8,19 +8,19 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.api_references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class ConfigHandler {
 
@@ -32,7 +32,7 @@ public class ConfigHandler {
     private RecipeBook recipeBook;
 
     public ConfigHandler(CustomCrafting customCrafting) {
-        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.api = WolfyUtilities.get(customCrafting);
         this.customCrafting = customCrafting;
         this.configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
@@ -53,8 +53,8 @@ public class ConfigHandler {
             //Creating the knowledgebook item and recipe
             NamespacedKey knowledgebookKey = new NamespacedKey("customcrafting", "knowledge_book");
             CustomItem knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
-            knowledgeBook.setDisplayName(WolfyUtilities.translateColorCodes("&6Knowledge Book"));
-            knowledgeBook.addLoreLine(WolfyUtilities.translateColorCodes("&7Contains some interesting recipes..."));
+            knowledgeBook.setDisplayName(me.wolfyscript.utilities.util.chat.ChatColor.convert("&6Knowledge Book"));
+            knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             ((KnowledgeBookData) knowledgeBook.getCustomData("knowledge_book")).setEnabled(true);
@@ -72,8 +72,8 @@ public class ConfigHandler {
             NamespacedKey workbenchKey = new NamespacedKey("customcrafting", "workbench");
 
             CustomItem advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
-            advancedWorkbench.setDisplayName(WolfyUtilities.translateColorCodes("&6Advanced Workbench"));
-            advancedWorkbench.addLoreLine(WolfyUtilities.translateColorCodes("&7Workbench for advanced crafting"));
+            advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Workbench");
+            advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Workbench for advanced crafting"));
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             customCrafting.saveItem(workbenchKey, advancedWorkbench);
@@ -101,14 +101,14 @@ public class ConfigHandler {
 
         Language fallBackLanguage = new Language(customCrafting, "en_US");
         languageAPI.registerLanguage(fallBackLanguage);
-        System.out.println("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + fallBackLanguage.getAuthors().stream().collect(Collectors.joining()));
+        System.out.println("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
 
         File file = new File(customCrafting.getDataFolder(), "lang/" + chosenLang + ".json");
         if (file.exists()) {
             Language language = new Language(customCrafting, chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);
-            System.out.println("Loaded active language \"" + chosenLang + "\" v" + language.getVersion() + " translated by " + language.getAuthors().stream().collect(Collectors.joining()));
+            System.out.println("Loaded active language \"" + chosenLang + "\" v" + language.getVersion() + " translated by " + String.join(", ", language.getAuthors()));
         }
     }
 

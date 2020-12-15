@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache.items;
 
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;

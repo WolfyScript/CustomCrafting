@@ -7,10 +7,11 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,14 +40,14 @@ public class SaveButton extends ActionButton {
                         return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, customCrafting);
                     }
                 } else {
-                    api.sendPlayerMessage(player, "recipe_creator", "save.empty");
+                    api.getChat().sendPlayerMessage(player, "recipe_creator", "save.empty");
                 }
             }
             return true;
         }));
     }
 
-    private static boolean saveRecipe(TestCache cache, ICustomRecipe<?> recipe, Player player, WolfyUtilities api, GuiHandler<?> guiHandler, CustomCrafting customCrafting) {
+    private static boolean saveRecipe(TestCache cache, ICustomRecipe<?> recipe, Player player, WolfyUtilities api, GuiHandler<TestCache> guiHandler, CustomCrafting customCrafting) {
         if (!recipe.save(player)) {
             return true;
         }
@@ -56,12 +57,12 @@ public class SaveButton extends ActionButton {
                     ((IShapedCraftingRecipe) recipe).constructShape();
                 }
                 customCrafting.getRecipeHandler().injectRecipe(recipe);
-                api.sendPlayerMessage(player, "recipe_creator", "loading.success");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "loading.success");
 
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) cache.resetRecipe();
             });
         } catch (Exception ex) {
-            api.sendPlayerMessage(player, "recipe_creator", "loading.error", new String[]{"%REC%", recipe.getNamespacedKey().toString()});
+            api.getChat().sendPlayerMessage(player, guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "loading.error", new Pair<>("%REC%", recipe.getNamespacedKey().toString()));
             ex.printStackTrace();
             return true;
         }

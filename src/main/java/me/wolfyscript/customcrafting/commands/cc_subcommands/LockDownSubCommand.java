@@ -29,15 +29,15 @@ public class LockDownSubCommand extends AbstractSubCommand {
 
             if(sender instanceof Player){
                 if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                    api.sendPlayerMessage(p, "$commands.lockdown.enabled$");
+                    api.getChat().sendPlayerMessage(p, "$commands.lockdown.enabled$");
                 } else {
-                    api.sendPlayerMessage(p, "$commands.lockdown.disabled$");
+                    api.getChat().sendPlayerMessage(p, "$commands.lockdown.disabled$");
                 }
             }else{
                 if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                    api.sendConsoleMessage("$commands.lockdown.enabled$");
+                    api.getChat().sendConsoleMessage("$commands.lockdown.enabled$");
                 } else {
-                    api.sendConsoleMessage("$commands.lockdown.disabled$");
+                    api.getChat().sendConsoleMessage("$commands.lockdown.disabled$");
                 }
             }
         }

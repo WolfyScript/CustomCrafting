@@ -18,15 +18,16 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
-import me.wolfyscript.utilities.api.utils.sql.SQLDataBase;
+import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +37,7 @@ public class DataBaseHandler {
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities api;
+    private final Chat chat;
     private final ConfigAPI configAPI;
     private final LanguageAPI languageAPI;
     private final MainConfig mainConfig;
@@ -43,7 +45,8 @@ public class DataBaseHandler {
     private final SQLDataBase dataBase;
 
     public DataBaseHandler(CustomCrafting customCrafting) {
-        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.api = WolfyUtilities.get(customCrafting);
+        this.chat = api.getChat();
         this.customCrafting = customCrafting;
         this.configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
@@ -81,7 +84,7 @@ public class DataBaseHandler {
     }
 
     public void loadRecipes(RecipeHandler recipeHandler) throws SQLException {
-        api.sendConsoleMessage("$msg.startup.recipes.recipes$");
+        chat.sendConsoleMessage("$msg.startup.recipes.recipes$");
         ResultSet resultSet = getRecipes();
         if (resultSet == null) {
             return;
@@ -90,19 +93,19 @@ public class DataBaseHandler {
             String namespace = resultSet.getString("rNamespace");
             String key = resultSet.getString("rKey");
             NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
-            api.sendConsoleMessage("- " + namespacedKey.toString());
+            chat.sendConsoleMessage("- " + namespacedKey.toString());
             ICustomRecipe recipe = getRecipe(namespacedKey);
             if (recipe != null) {
                 recipeHandler.registerRecipe(recipe);
             } else {
-                api.sendConsoleMessage("Error loading recipe \"" + namespacedKey.toString() + "\". Couldn't find recipe in DataBase!");
+                chat.sendConsoleMessage("Error loading recipe \"" + namespacedKey.toString() + "\". Couldn't find recipe in DataBase!");
             }
         }
     }
 
     public void loadItems() throws SQLException {
-        api.sendConsoleMessage("");
-        api.sendConsoleMessage("$msg.startup.recipes.items$");
+        chat.sendConsoleMessage("");
+        chat.sendConsoleMessage("$msg.startup.recipes.items$");
         ResultSet resultSet = getItems();
         if (resultSet == null) {
             return;
@@ -112,14 +115,14 @@ public class DataBaseHandler {
             String key = resultSet.getString("rKey");
             String data = resultSet.getString("rData");
             if (namespace != null && key != null && data != null && !data.equals("{}")) {
-                api.sendConsoleMessage("- " + namespace + ":" + key);
+                chat.sendConsoleMessage("- " + namespace + ":" + key);
                 try {
                     CustomItems.addCustomItem(new NamespacedKey(namespace, key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             } else {
-                api.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacekey or data!");
+                chat.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacekey or data!");
             }
         }
     }

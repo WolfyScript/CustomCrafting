@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.attribute.AttributeModifier;
 
 import java.util.Locale;

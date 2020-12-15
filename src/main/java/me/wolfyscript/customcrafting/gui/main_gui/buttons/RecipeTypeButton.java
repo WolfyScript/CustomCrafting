@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

@@ -4,13 +4,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.VariantContainerButton;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 import java.util.List;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 public class VariantMenu extends ExtendedGuiWindow {
 
-    public VariantMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("variants", inventoryAPI, 54, customCrafting);
+    public VariantMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "variants", 54, customCrafting);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class VariantMenu extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateAsync(GuiUpdate<TestCache> event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
         for (int i = 0; i < 45; i++) {

@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.grindstone;
 
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 public class GrindstoneData {
 

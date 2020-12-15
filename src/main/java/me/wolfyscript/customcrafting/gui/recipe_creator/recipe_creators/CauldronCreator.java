@@ -9,20 +9,22 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.*;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.*;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 
 public class CauldronCreator extends RecipeCreator {
 
-    public CauldronCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("cauldron", inventoryAPI, 45, customCrafting);
+    public CauldronCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "cauldron", 45, customCrafting);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class CauldronCreator extends RecipeCreator {
                         TestCache cache = (TestCache) guiHandler.getCustomCache();
                         cache.getItems().setItem(true, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
                         cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronRecipe().setHandItem(items.getItem()));
-                        guiHandler.changeToInv("none", "item_editor");
+                        guiHandler.changeToInv(new NamespacedKey("none", "item_editor"));
                     }
                 });
                 return true;
@@ -87,7 +89,7 @@ public class CauldronCreator extends RecipeCreator {
             try {
                 xp = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().setXp(xp);
@@ -101,7 +103,7 @@ public class CauldronCreator extends RecipeCreator {
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe().setCookingTime(time);
@@ -115,7 +117,7 @@ public class CauldronCreator extends RecipeCreator {
             try {
                 waterLvl = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             if (waterLvl > 3) {
@@ -128,7 +130,7 @@ public class CauldronCreator extends RecipeCreator {
         if (WolfyUtilities.hasMythicMobs()) {
             registerButton(new ActionButton("mythicMob", Material.WITHER_SKELETON_SKULL, (guiHandler, player, inventory, i, event) -> {
                 if (event.getClick().isLeftClick()) {
-                    openChat("mythicMob", guiHandler, (guiHandler1, player1, s, args) -> {
+                    openChat("mythicMob", (GuiHandler<TestCache>) guiHandler, (guiHandler1, player1, s, args) -> {
                         if (args.length > 1) {
                             CauldronRecipe recipe = ((TestCache) guiHandler.getCustomCache()).getCauldronRecipe();
                             MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(args[0]);
@@ -137,7 +139,7 @@ public class CauldronCreator extends RecipeCreator {
                                 try {
                                     level = Integer.parseInt(args[1]);
                                 } catch (NumberFormatException e) {
-                                    api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                                    api.getChat().sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
                                     return true;
                                 }
                                 double modX = recipe.getMythicMobMod().getX();
@@ -149,7 +151,7 @@ public class CauldronCreator extends RecipeCreator {
                                         modY = Double.parseDouble(args[3]);
                                         modZ = Double.parseDouble(args[4]);
                                     } catch (NumberFormatException e) {
-                                        api.sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                                        api.getChat().sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
                                         return true;
                                     }
                                 }
@@ -177,10 +179,10 @@ public class CauldronCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
-        TestCache cache = update.getGuiHandler(TestCache.class).getCustomCache();
+        TestCache cache = update.getGuiHandler().getCustomCache();
         CauldronRecipe cauldronRecipe = cache.getCauldronRecipe();
         ((ToggleButton) getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.needsFire());
         ((ToggleButton) getButton("water")).setState(update.getGuiHandler(), cauldronRecipe.needsWater());

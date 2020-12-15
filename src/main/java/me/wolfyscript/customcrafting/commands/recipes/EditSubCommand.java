@@ -7,7 +7,8 @@ import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,14 +34,14 @@ public class EditSubCommand extends AbstractSubCommand {
             Player player = (Player) sender;
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit")) {
                 if (args.length > 0) {
-                    ICustomRecipe<?> customRecipe = customCrafting.getRecipeHandler().getRecipe(new me.wolfyscript.utilities.api.utils.NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
+                    ICustomRecipe<?> customRecipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
                     if (customRecipe != null) {
                         ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
                         if (customCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, api.getInventoryAPI().getGuiHandler(player))) {
-                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, "none", "recipe_creator"), 1);
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("none", "recipe_creator")), 1);
                         }
                     } else {
-                        api.sendPlayerMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new String[]{"%RECIPE%", args[0] + ":" + args[1]});
+                        api.getChat().sendPlayerMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
                     }
                 }
             }

@@ -25,8 +25,8 @@ import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.cache.CustomCache;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.potion.PotionEffect;
 
 import java.lang.reflect.InvocationTargetException;

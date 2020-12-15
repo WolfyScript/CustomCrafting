@@ -2,8 +2,9 @@ package me.wolfyscript.customcrafting.gui.potion_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -26,7 +27,7 @@ public class PotionEffectTypeSelectButton extends ActionButton {
                 potionEffectCache.getApplyPotionEffectType().applyPotionEffect((TestCache) guiHandler.getCustomCache(), effectType);
             }
             if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
-                guiHandler.changeToInv(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow());
+                guiHandler.changeToInv(new NamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
             } else {
                 guiHandler.changeToInv(potionEffectCache.getOpenedFromWindow());
             }

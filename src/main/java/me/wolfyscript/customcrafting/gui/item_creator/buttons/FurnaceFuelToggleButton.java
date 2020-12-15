@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import org.bukkit.Material;
 
 public class FurnaceFuelToggleButton extends ToggleButton {

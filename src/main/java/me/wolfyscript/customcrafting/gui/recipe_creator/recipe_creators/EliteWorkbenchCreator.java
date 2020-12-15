@@ -8,17 +8,17 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 public class EliteWorkbenchCreator extends RecipeCreator {
 
-    public EliteWorkbenchCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("elite_workbench", inventoryAPI, 54, customCrafting);
+    public EliteWorkbenchCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "elite_workbench", 54, customCrafting);
     }
 
     @Override
@@ -64,10 +64,10 @@ public class EliteWorkbenchCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
         update.setButton(6, "back");
-        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        TestCache cache = update.getGuiHandler().getCustomCache();
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
 
         ((ToggleButton) getButton("workbench.shapeless")).setState(update.getGuiHandler(), workbench.isShapeless());

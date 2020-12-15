@@ -24,9 +24,9 @@ public class DarkModeSubCommand extends AbstractSubCommand {
             Player p = (Player) sender;
             CustomCrafting.getPlayerStatistics(p).setDarkMode(!CustomCrafting.getPlayerStatistics(p).getDarkMode());
             if (CustomCrafting.getPlayerStatistics(p).getDarkMode()) {
-                api.sendPlayerMessage(p, "$commands.darkmode.enabled$");
+                api.getChat().sendPlayerMessage(p, "$commands.darkmode.enabled$");
             } else {
-                api.sendPlayerMessage(p, "$commands.darkmode.disabled$");
+                api.getChat().sendPlayerMessage(p, "$commands.darkmode.disabled$");
             }
         }
         return true;

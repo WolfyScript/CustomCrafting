@@ -8,7 +8,6 @@ import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -86,7 +85,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                         if (recipe instanceof CraftingRecipe) {
                             if (p.isOnline()) {
                                 Player player = Bukkit.getPlayer(p.getUniqueId());
-                                return String.valueOf(WolfyUtilities.hasPermission(player, "customcrafting.craft." + recipeID));
+                                return String.valueOf(CustomCrafting.getApi().getPermissions().hasPermission(player, "customcrafting.craft." + recipeID));
                             }
                         }
                 }
@@ -104,7 +103,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                     case "available":
                         if (p.isOnline()) {
                             Player player = Bukkit.getPlayer(p.getUniqueId());
-                            return String.valueOf(customCrafting.getRecipeHandler().getRecipes().keySet().stream().filter(namespacedKey -> WolfyUtilities.hasPermission(player, "customcrafting.craft." + namespacedKey.getNamespace() + "." + namespacedKey.getKey())).count());
+                            return String.valueOf(customCrafting.getRecipeHandler().getRecipes().keySet().stream().filter(namespacedKey -> CustomCrafting.getApi().getPermissions().hasPermission(player, "customcrafting.craft." + namespacedKey.getNamespace() + "." + namespacedKey.getKey())).count());
                         }
                         break;
                 }

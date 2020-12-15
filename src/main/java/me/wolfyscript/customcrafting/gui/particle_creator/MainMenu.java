@@ -5,24 +5,24 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.ParticleCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.particle_creator.buttons.ParticleEffectButton;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.Pair;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffects;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.particles.ParticleEffect;
+import me.wolfyscript.utilities.api.particles.ParticleEffects;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 import java.util.Collection;
 import java.util.Map;
 
 public class MainMenu extends ExtendedGuiWindow {
 
-    public MainMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("main_menu", inventoryAPI, 54, customCrafting);
+    public MainMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "main_menu", 54, customCrafting);
     }
 
     @Override
@@ -52,9 +52,9 @@ public class MainMenu extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateAsync(GuiUpdate<TestCache> event) {
         super.onUpdateAsync(event);
-        GuiHandler<TestCache> guiHandler = event.getGuiHandler(TestCache.class);
+        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
         TestCache cache = guiHandler.getCustomCache();
         ParticleCache particleCache = cache.getParticleCache();
 

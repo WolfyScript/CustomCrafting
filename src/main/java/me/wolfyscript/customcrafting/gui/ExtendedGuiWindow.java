@@ -2,18 +2,19 @@ package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 
-public abstract class ExtendedGuiWindow extends GuiWindow {
+public abstract class ExtendedGuiWindow extends GuiWindow<TestCache> {
 
     protected CustomCrafting customCrafting;
     protected WolfyUtilities api = CustomCrafting.getApi();
 
-    public ExtendedGuiWindow(String namespace, InventoryAPI inventoryAPI, int size, CustomCrafting customCrafting) {
-        super(namespace, inventoryAPI, size);
+    public ExtendedGuiWindow(GuiCluster<TestCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
+        super(guiCluster, namespace, size);
         this.customCrafting = customCrafting;
     }
 
@@ -22,7 +23,7 @@ public abstract class ExtendedGuiWindow extends GuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
         if (getSize() > 9) {
             for (int i = 0; i < 9; i++) {

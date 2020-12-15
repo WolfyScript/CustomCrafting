@@ -4,10 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +33,7 @@ public class CauldronContainerButton extends ItemInputButton {
                     if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                         cache.getItems().setItem(true, inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
                         cache.setApplyItem(APPLY_ITEM);
-                        guiHandler.changeToInv("none", "item_editor");
+                        guiHandler.changeToInv(new NamespacedKey("none", "item_editor"));
                     }
                 }
                 return true;

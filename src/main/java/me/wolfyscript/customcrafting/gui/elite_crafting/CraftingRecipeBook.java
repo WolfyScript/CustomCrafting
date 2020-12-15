@@ -16,14 +16,14 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
 
 public class CraftingRecipeBook extends ExtendedGuiWindow {
 
-    public CraftingRecipeBook(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("recipe_book", inventoryAPI, 54, customCrafting);
+    public CraftingRecipeBook(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "recipe_book", 54, customCrafting);
     }
 
     @Override
@@ -70,10 +70,10 @@ public class CraftingRecipeBook extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateAsync(GuiUpdate<TestCache> event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
-        GuiHandler<TestCache> guiHandler = event.getGuiHandler(TestCache.class);
+        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
         Player player = event.getPlayer();
         TestCache cache = guiHandler.getCustomCache();
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);

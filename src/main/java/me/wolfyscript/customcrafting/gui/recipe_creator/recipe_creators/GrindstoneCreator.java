@@ -6,18 +6,18 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.GrindstoneContainerButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Material;
 
 public class GrindstoneCreator extends RecipeCreator {
 
-    public GrindstoneCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("grindstone", inventoryAPI, 45, customCrafting);
+    public GrindstoneCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "grindstone", 45, customCrafting);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class GrindstoneCreator extends RecipeCreator {
             try {
                 xp = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             ((TestCache) guiHandler.getCustomCache()).getGrindstoneRecipe().setXp(xp);
@@ -50,10 +50,10 @@ public class GrindstoneCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
-        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        TestCache cache = update.getGuiHandler().getCustomCache();
         GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
 

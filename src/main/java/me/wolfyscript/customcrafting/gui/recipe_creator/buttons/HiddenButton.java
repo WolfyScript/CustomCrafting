@@ -1,9 +1,9 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 public class HiddenButton extends ToggleButton {
 

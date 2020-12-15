@@ -7,7 +7,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -42,13 +42,13 @@ public class Cauldrons {
 
     public Cauldrons(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.api = WolfyUtilities.get(customCrafting);
         load();
         autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
             if (customCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
-                api.sendConsoleMessage("[$msg.auto_save.start$]");
+                api.getChat().sendConsoleMessage("[$msg.auto_save.start$]");
                 save();
-                api.sendConsoleMessage("[$msg.auto_save.complete$]");
+                api.getChat().sendConsoleMessage("[$msg.auto_save.complete$]");
             } else {
                 save();
             }
@@ -187,16 +187,16 @@ public class Cauldrons {
                 return new Location(world, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
             }
         } catch (IllegalArgumentException e) {
-            api.sendConsoleWarning("Couldn't find world " + args[0]);
+            api.getChat().sendConsoleWarning("Couldn't find world " + args[0]);
         }
         return null;
     }
 
     public void save() {
         try {
-            api.sendConsoleMessage("Saving Cauldrons");
+            api.getChat().sendConsoleMessage("Saving Cauldrons");
             this.isBeingSaved = true;
-            FileOutputStream fos = new FileOutputStream(new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"));
+            FileOutputStream fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
             BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
             HashMap<String, List<String>> saveMap = new HashMap<>();
             cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {
@@ -214,7 +214,7 @@ public class Cauldrons {
     }
 
     public void load() {
-        api.sendConsoleMessage("Loading Cauldrons");
+        api.getChat().sendConsoleMessage("Loading Cauldrons");
         File file = new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
         if (file.exists()) {
             FileInputStream fis;
@@ -236,7 +236,7 @@ public class Cauldrons {
                 }
                 ois.close();
             } catch (IOException e) {
-                api.sendConsoleWarning("Couldn't load cauldrons. No data found");
+                api.getChat().sendConsoleWarning("Couldn't load cauldrons. No data found");
             }
         }
     }

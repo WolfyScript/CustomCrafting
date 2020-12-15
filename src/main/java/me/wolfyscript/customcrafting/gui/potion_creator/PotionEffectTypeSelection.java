@@ -5,17 +5,18 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.potion_creator.buttons.PotionEffectTypeSelectButton;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionEffectTypeSelection extends ExtendedGuiWindow {
 
-    public PotionEffectTypeSelection(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("potion_effect_type_selection", inventoryAPI, 54, customCrafting);
+    public PotionEffectTypeSelection(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "potion_effect_type_selection", 54, customCrafting);
     }
 
     @Override
@@ -23,7 +24,7 @@ public class PotionEffectTypeSelection extends ExtendedGuiWindow {
         registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             PotionEffects potionEffectCache = ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache();
             if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
-                guiHandler.changeToInv(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow());
+                guiHandler.changeToInv(new NamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
             } else {
                 guiHandler.changeToInv(potionEffectCache.getOpenedFromWindow());
             }
@@ -36,7 +37,7 @@ public class PotionEffectTypeSelection extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
         for (int i = 0; i < PotionEffectType.values().length; i++) {

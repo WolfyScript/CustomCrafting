@@ -3,10 +3,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,11 +14,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrewingContainerButton extends ItemInputButton {
+public class BrewingContainerButton extends ItemInputButton<TestCache> {
 
     public BrewingContainerButton(int recipeSlot, CustomCrafting customCrafting) {
-        super("brewing.container_" + recipeSlot, new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
-            TestCache cache = (TestCache) guiHandler.getCustomCache();
+        super("brewing.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
+            TestCache cache = guiHandler.getCustomCache();
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             if (event.isRightClick() && event.isShiftClick()) {
                 List<CustomItem> variants = new ArrayList<>();
@@ -78,7 +78,7 @@ public class BrewingContainerButton extends ItemInputButton {
             }
             return false;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            BrewingRecipe brewingRecipe = ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe();
+            BrewingRecipe brewingRecipe = guiHandler.getCustomCache().getBrewingRecipe();
             switch (recipeSlot) {
                 case 0:
                     return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getIngredients()) ? brewingRecipe.getIngredients().get(0).create() : new ItemStack(Material.AIR);

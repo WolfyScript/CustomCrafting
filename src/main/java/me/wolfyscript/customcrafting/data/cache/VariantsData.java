@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.Material;
 
 import java.util.ArrayList;

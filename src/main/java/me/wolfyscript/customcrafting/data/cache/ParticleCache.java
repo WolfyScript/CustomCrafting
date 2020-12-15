@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
+import me.wolfyscript.utilities.api.particles.ParticleEffect;
 
 public class ParticleCache {
 

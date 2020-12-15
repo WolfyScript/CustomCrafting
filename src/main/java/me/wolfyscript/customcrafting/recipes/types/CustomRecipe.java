@@ -1,21 +1,22 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
-import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
-import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.api_references.APIReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustomRecipe<C> {
@@ -45,7 +46,16 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
 
         //Sets the result of the recipe if one exists in the config
         if (node.has("result")) {
-            Streams.stream(node.path("result").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(i -> !ItemUtils.isAirOrNull(i)).collect(Collectors.toList());
+            List<CustomItem> results = new ArrayList<>();
+            JsonNode resultNode = node.path("result");
+            if (resultNode.isObject()) {
+                results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
+                resultNode.path("variants").forEach(jsonNode -> results.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class))));
+            } else {
+                resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+            }
+            setResult(results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+            //setResult(Streams.stream(node.path("result").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(i -> !ItemUtils.isAirOrNull(i)).collect(Collectors.toList()));
         }
     }
 

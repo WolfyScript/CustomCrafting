@@ -3,8 +3,8 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.chat.ClickData;
+import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -29,13 +29,13 @@ public class PlayerListener implements Listener {
         WolfyUtilities api = CustomCrafting.getApi();
 
         if (!CustomCrafting.hasPlayerCache(player)) {
-            CustomCrafting.getApi().sendConsoleMessage("Initializing new cache for " + player.getDisplayName());
+            CustomCrafting.getApi().getChat().sendConsoleMessage("Initializing new cache for " + player.getDisplayName());
             CustomCrafting.renewPlayerStatistics(player);
         }
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (customCrafting.isOutdated()) {
-                api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
-                api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+                api.getChat().sendPlayerMessage(player, "$msg.player.outdated.msg$");
+                api.getChat().sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
             } else if (!customCrafting.getPatreon().isPatreon()) {
                 customCrafting.checkUpdate(player);
             }

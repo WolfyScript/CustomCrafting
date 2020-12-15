@@ -6,9 +6,9 @@ import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -21,7 +21,7 @@ public class SaveCategoryButton extends ActionButton {
             TestCache cache = ((TestCache) guiHandler.getCustomCache());
             RecipeBookEditor recipeBookEditor = cache.getRecipeBookEditor();
             RecipeBook recipeBook = customCrafting.getConfigHandler().getRecipeBook();
-            GuiWindow guiWindow = guiHandler.getCurrentInv();
+            GuiWindow<?> guiWindow = guiHandler.getCurrentInv();
             WolfyUtilities api = guiHandler.getCurrentInv().getAPI();
 
             if (saveAs) {
@@ -32,7 +32,7 @@ public class SaveCategoryButton extends ActionButton {
                                 guiHandler1.openPreviousInv();
                                 return true;
                             }
-                            api.sendPlayerMessage(player1, "recipe_book_editor", "save.error");
+                            api.getChat().sendPlayerMessage(player1, "recipe_book_editor", "save.error");
                             return false;
                         }
                     }
@@ -43,7 +43,7 @@ public class SaveCategoryButton extends ActionButton {
                 if (saveRecipe(recipeBookEditor, recipeBook, api, player)) {
                     guiHandler.openPreviousInv();
                 } else {
-                    api.sendPlayerMessage(player, "recipe_book_editor", "save.error");
+                    api.getChat().sendPlayerMessage(player, "recipe_book_editor", "save.error");
                 }
             }
             return true;
@@ -63,7 +63,7 @@ public class SaveCategoryButton extends ActionButton {
         }
         recipeBookEditor.setCategory(null);
         recipeBookEditor.setCategoryID("");
-        api.sendPlayerMessage(player, "recipe_book_editor", "save.success");
+        api.getChat().sendPlayerMessage(player, "recipe_book_editor", "save.success");
         return true;
     }
 }

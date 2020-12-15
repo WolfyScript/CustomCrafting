@@ -4,15 +4,15 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.StonecutterContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 
 public class StonecutterCreator extends RecipeCreator {
 
-    public StonecutterCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("stonecutter", inventoryAPI, 45, customCrafting);
+    public StonecutterCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "stonecutter", 45, customCrafting);
     }
 
     @Override
@@ -24,15 +24,15 @@ public class StonecutterCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
-        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), ((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().isHidden());
+        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getStonecutterRecipe().isHidden());
         update.setButton(0, "back");
         update.setButton(4, "hidden");
         update.setButton(20, "stonecutter.container_0");
         update.setButton(24, "stonecutter.container_1");
 
-        if (((TestCache) update.getGuiHandler().getCustomCache()).getStonecutterRecipe().hasNamespacedKey()) {
+        if (update.getGuiHandler().getCustomCache().getStonecutterRecipe().hasNamespacedKey()) {
             update.setButton(43, "save");
         }
         update.setButton(44, "save_as");

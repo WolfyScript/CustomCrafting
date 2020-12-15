@@ -2,13 +2,13 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.RecipeUtil;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
@@ -191,14 +191,14 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
                 row++;
             }
         }
-        this.shape = WolfyUtilities.formatShape(shape).toArray(new String[0]);
+        this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
         this.shapeMirrorVertical = new String[]{"   ", "   ", "   "};
         int j = 0;
         for (int i = shape.length - 1; i > 0; i--) {
             this.shapeMirrorVertical[j] = shape[i];
             j++;
         }
-        this.shapeMirrorVertical = WolfyUtilities.formatShape(this.shapeMirrorVertical).toArray(new String[0]);
+        this.shapeMirrorVertical = RecipeUtil.formatShape(this.shapeMirrorVertical).toArray(new String[0]);
         this.shapeMirrorHorizontal = this.shape.clone();
         for (int i = 0; i < this.shapeMirrorHorizontal.length; i++) {
             this.shapeMirrorHorizontal[i] = new StringBuilder(this.shapeMirrorHorizontal[i]).reverse().toString();

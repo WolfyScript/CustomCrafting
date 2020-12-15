@@ -2,8 +2,8 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 
 public abstract class AdvancedCraftingRecipe extends CraftingRecipe<AdvancedCraftingRecipe> {
 

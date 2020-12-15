@@ -5,21 +5,22 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.chat.ClickData;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 public class RecipeEditor extends ExtendedGuiWindow {
 
-    public RecipeEditor(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("recipe_editor", inventoryAPI, 45, customCrafting);
+    public RecipeEditor(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "recipe_editor", 45, customCrafting);
     }
 
     @Override
@@ -39,14 +40,14 @@ public class RecipeEditor extends ExtendedGuiWindow {
                 if (args.length > 1) {
                     ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
                     if (recipe == null) {
-                        api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
+                        api.getChat().sendPlayerMessage(player, getNamespacedKey(), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                         return true;
                     }
                     if (customCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler1)) {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.sendPlayerMessage(player1, "none", "recipe_editor", "invalid_recipe", new String[]{"%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getRecipeType().name()});
+                        api.getChat().sendPlayerMessage(player1, getNamespacedKey(), "invalid_recipe", new Pair<>("%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getRecipeType().name()));
                         return true;
                     }
                 }
@@ -60,13 +61,13 @@ public class RecipeEditor extends ExtendedGuiWindow {
             customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
-                    ICustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
+                    ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
                     if (recipe == null) {
-                        api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
+                        api.getChat().sendPlayerMessage(player, getNamespacedKey(), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                         return true;
                     }
-                    api.sendPlayerMessage(player1, "none", "recipe_editor", "delete.confirm", new String[]{"%recipe%", recipe.getNamespacedKey().toString()});
-                    api.sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> {
+                    api.getChat().sendPlayerMessage(player1, getNamespacedKey(), "delete.confirm", new Pair<>("%recipe%", recipe.getNamespacedKey().toString()));
+                    api.getChat().sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> {
                         guiHandler1.openCluster();
                         Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> recipe.delete(player2));
                     }), new ClickData("$inventories.none.recipe_editor.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler1.openCluster()));
@@ -90,6 +91,6 @@ public class RecipeEditor extends ExtendedGuiWindow {
 
     private void changeToCreator(GuiHandler<?> guiHandler) {
         ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.RECIPE_CREATOR);
-        guiHandler.changeToInv("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getCreatorID());
+        guiHandler.changeToInv(new NamespacedKey("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getCreatorID()));
     }
 }

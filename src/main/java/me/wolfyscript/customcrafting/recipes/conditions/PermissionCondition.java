@@ -1,10 +1,10 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class PermissionCondition extends Condition {
             return true;
         }
         String permissionString = permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey());
-        return WolfyUtilities.hasPermission(player, permissionString);
+        return CustomCrafting.getApi().getPermissions().hasPermission(player, permissionString);
     }
 
     @Override

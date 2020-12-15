@@ -3,10 +3,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,11 +14,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrindstoneContainerButton extends ItemInputButton {
+public class GrindstoneContainerButton extends ItemInputButton<TestCache> {
 
     public GrindstoneContainerButton(int inputSlot, CustomCrafting customCrafting) {
-        super("grindstone.container_" + inputSlot, new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
+        super("grindstone.container_" + inputSlot, new ButtonState<>("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
+            TestCache cache = guiHandler.getCustomCache();
             GrindstoneRecipe grindstone = cache.getGrindstoneRecipe();
 
             if (event.isRightClick() && event.isShiftClick()) {
@@ -61,7 +61,7 @@ public class GrindstoneContainerButton extends ItemInputButton {
             }
             return false;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
+            TestCache cache = guiHandler.getCustomCache();
             GrindstoneRecipe grindstone = cache.getGrindstoneRecipe();
             switch (inputSlot) {
                 case 0:

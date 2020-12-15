@@ -12,7 +12,7 @@ public class CauldronPreCookEvent extends Event implements Cancellable {
     private boolean cancelled;
     private int cookingTime;
     private boolean dropItems;
-    private Player player;
+    private final Player player;
     private CauldronRecipe recipe;
 
     public CauldronPreCookEvent(CauldronRecipe recipe, Player player) {

@@ -5,7 +5,8 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public class KnowledgeSubCommand extends AbstractSubCommand {
                 if (categories.getSortedMainCategories().size() > 1) {
                     invAPI.openCluster(p, "recipe_book");
                 } else {
-                    invAPI.openGui(p, "recipe_book", "recipe_book");
+                    invAPI.openGui(p, new NamespacedKey("recipe_book", "recipe_book"));
                 }
             }
         }

@@ -5,16 +5,16 @@ import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 
-public class CategoryButton extends ActionButton {
+public class CategoryButton extends ActionButton<TestCache> {
 
     public CategoryButton(String categoryID, CustomCrafting customCrafting) {
-        super("category_" + categoryID, new ButtonState("category", Material.CHEST, (guiHandler, player, inventory, slot, event) -> {
+        super("category_" + categoryID, new ButtonState<>("category", Material.CHEST, (guiHandler, player, inventory, slot, event) -> {
             if (!categoryID.isEmpty()) {
-                RecipeBookEditor recipeBookEditor = ((TestCache) guiHandler.getCustomCache()).getRecipeBookEditor();
+                RecipeBookEditor recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
                 RecipeBook recipeBook = customCrafting.getConfigHandler().getRecipeBook();
                 if (event.isRightClick() && event.isShiftClick()) {
                     //Delete Category
@@ -36,7 +36,7 @@ public class CategoryButton extends ActionButton {
             }
             return true;
         }, (values, guiHandler, player, itemStack, i, b) -> {
-            RecipeBookEditor recipeBookEditor = ((TestCache) guiHandler.getCustomCache()).getRecipeBookEditor();
+            RecipeBookEditor recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
             RecipeBook recipeBook = customCrafting.getConfigHandler().getRecipeBook();
             Category category = recipeBookEditor.isSwitchCategories() ? recipeBook.getCategories().getSwitchCategory(categoryID) : recipeBook.getCategories().getMainCategory(categoryID);
             itemStack.setType(category.getIcon());

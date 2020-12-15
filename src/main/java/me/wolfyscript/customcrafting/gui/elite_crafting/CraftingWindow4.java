@@ -5,17 +5,17 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.ResultSlotButton;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftingWindow4 extends CraftingWindow {
 
-    public CraftingWindow4(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("crafting_grid4", 36, inventoryAPI, customCrafting);
+    public CraftingWindow4(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "crafting_grid4", 36, customCrafting);
     }
 
     @Override

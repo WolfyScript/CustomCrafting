@@ -2,22 +2,23 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
-import me.wolfyscript.utilities.api.inventory.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -153,7 +154,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster) {
+    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
         int startSlot = 10;
         int gridSize = 3;
         if (this instanceof EliteCraftingRecipe) {
@@ -170,7 +171,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdate event) {
+    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(0, "back");
         if (!getIngredients().isEmpty()) {

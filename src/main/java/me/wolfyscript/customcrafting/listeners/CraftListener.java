@@ -6,8 +6,8 @@ import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -31,7 +31,7 @@ public class CraftListener implements Listener {
     public CraftListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.recipeUtils = customCrafting.getRecipeUtils();
-        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.api = WolfyUtilities.get(customCrafting);
     }
 
     @EventHandler

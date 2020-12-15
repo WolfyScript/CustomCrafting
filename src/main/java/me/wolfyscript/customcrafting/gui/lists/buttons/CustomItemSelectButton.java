@@ -5,14 +5,16 @@ import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
-import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.chat.ChatColor;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,13 +29,13 @@ public class CustomItemSelectButton extends ActionButton {
             CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
             if (event.isRightClick()) {
                 items.setItem(items.isRecipeItem(), customItem);
-                api.getInventoryAPI().getGuiWindow("none", "item_editor").sendMessage(player, "item_editable");
-                guiHandler.changeToInv("item_creator", "main_menu");
+                api.getInventoryAPI().getGuiWindow(new NamespacedKey("none", "item_editor")).sendMessage(player, "item_editable");
+                guiHandler.changeToInv(new NamespacedKey("item_creator", "main_menu"));
             } else if (event.isLeftClick()) {
                 if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                     cache.applyItem(customItem);
                     items.setRecipeItem(false);
-                    api.getInventoryAPI().getGuiWindow("none", "item_editor").sendMessage(player, "item_applied");
+                    api.getInventoryAPI().getGuiWindow(new NamespacedKey("none", "item_editor")).sendMessage(player, "item_applied");
                     guiHandler.openPreviousInv();
                     guiHandler.openCluster("recipe_creator");
                 } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
@@ -46,9 +48,9 @@ public class CustomItemSelectButton extends ActionButton {
                         player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
                     }
                     if (event.isShiftClick()) {
-                        api.sendPlayerMessage(player, "$commands.give.success_amount$", new String[]{"%PLAYER%", player.getDisplayName()}, new String[]{"%ITEM%", namespacedKey.toString()}, new String[]{"%AMOUNT%", String.valueOf(amount)});
+                        api.getChat().sendPlayerMessage(player, "$commands.give.success_amount$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()), new Pair<>("%AMOUNT%", String.valueOf(amount)));
                     } else {
-                        api.sendPlayerMessage(player, "$commands.give.success$", new String[]{"%PLAYER%", player.getDisplayName()}, new String[]{"%ITEM%", namespacedKey.toString()});
+                        api.getChat().sendPlayerMessage(player, "$commands.give.success$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()));
                     }
                 }
             }
@@ -59,7 +61,7 @@ public class CustomItemSelectButton extends ActionButton {
                 ItemBuilder itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");
                 itemB.addLoreLine("§8" + namespacedKey.toString());
-                CustomCrafting.getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(WolfyUtilities.translateColorCodes(s)));
+                CustomCrafting.getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(ChatColor.convert(s)));
                 return itemB.create();
             }
             ItemBuilder itemB = new ItemBuilder(itemStack);

@@ -5,28 +5,30 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.button.Button;
-import me.wolfyscript.utilities.api.inventory.button.ButtonType;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.gui.button.Button;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.util.*;
 
-public class IngredientContainerButton extends Button {
+public class IngredientContainerButton extends Button<TestCache> {
 
     private final CustomCrafting customCrafting;
-    private final HashMap<GuiHandler<?>, List<CustomItem>> variantsMap = new HashMap<>();
-    private final HashMap<GuiHandler<?>, Integer> timings = new HashMap<>();
+    private final HashMap<GuiHandler<TestCache>, List<CustomItem>> variantsMap = new HashMap<>();
+    private final HashMap<GuiHandler<TestCache>, Integer> timings = new HashMap<>();
 
-    private final HashMap<GuiHandler<?>, Runnable> tasks = new HashMap<>();
-    private final HashMap<GuiHandler<?>, Runnable> tasksQueue = new HashMap<>();
+    private final HashMap<GuiHandler<TestCache>, Runnable> tasks = new HashMap<>();
+    private final HashMap<GuiHandler<TestCache>, Runnable> tasksQueue = new HashMap<>();
 
     public IngredientContainerButton(int slot, CustomCrafting customCrafting) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
@@ -43,8 +45,8 @@ public class IngredientContainerButton extends Button {
         //NOT NEEDED
     }
 
-    public static void resetButtons(GuiHandler<?> guiHandler) {
-        GuiCluster cluster = guiHandler.getApi().getInventoryAPI().getGuiCluster("recipe_book");
+    public static void resetButtons(GuiHandler<TestCache> guiHandler) {
+        GuiCluster<TestCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 54; i++) {
             Button btn = cluster.getButton("ingredient.container_" + i);
             if (btn != null) {
@@ -61,15 +63,25 @@ public class IngredientContainerButton extends Button {
     }
 
     @Override
-    public boolean execute(GuiHandler guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
-        TestCache cache = (TestCache) guiHandler.getCustomCache();
+    public void postExecute(GuiHandler<TestCache> guiHandler, Player player, Inventory inventory, ItemStack itemStack, int i, InventoryInteractEvent inventoryInteractEvent) throws IOException {
+
+    }
+
+    @Override
+    public void prepareRender(GuiHandler<TestCache> guiHandler, Player player, Inventory inventory, ItemStack itemStack, int i, boolean b) {
+
+    }
+
+    @Override
+    public boolean execute(GuiHandler<TestCache> guiHandler, Player player, Inventory inventory, int slot, InventoryClickEvent event) {
+        TestCache cache = guiHandler.getCustomCache();
         KnowledgeBook book = cache.getKnowledgeBook();
         if (getVariantsMap(guiHandler) != null && getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             List<ICustomRecipe<?>> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
             recipes.remove(book.getCurrentRecipe());
             if (!recipes.isEmpty()) {
-                GuiCluster cluster = WolfyUtilities.getAPI(customCrafting).getInventoryAPI().getGuiCluster("recipe_book");
+                GuiCluster<TestCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
                 for (int i = 0; i < 54; i++) {
                     IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
                     if (button.getVariantsMap(guiHandler) != null) {
@@ -92,7 +104,7 @@ public class IngredientContainerButton extends Button {
     }
 
     @Override
-    public void render(GuiHandler guiHandler, Player player, Inventory inventory, int slot, boolean help) {
+    public void render(GuiHandler<TestCache> guiHandler, Player player, Inventory inventory, int slot, boolean help) {
         List<CustomItem> variants = getVariantsMap(guiHandler);
         inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(getTiming(guiHandler)).create());
         if (getTask(guiHandler) == null) {
@@ -108,19 +120,19 @@ public class IngredientContainerButton extends Button {
         }
     }
 
-    public void setTiming(GuiHandler guiHandler, int timing) {
+    public void setTiming(GuiHandler<TestCache> guiHandler, int timing) {
         timings.put(guiHandler, timing);
     }
 
-    public int getTiming(GuiHandler guiHandler) {
+    public int getTiming(GuiHandler<TestCache> guiHandler) {
         return timings.getOrDefault(guiHandler, 0);
     }
 
-    public List<CustomItem> getVariantsMap(GuiHandler guiHandler) {
+    public List<CustomItem> getVariantsMap(GuiHandler<TestCache> guiHandler) {
         return variantsMap.getOrDefault(guiHandler, new ArrayList<>());
     }
 
-    public void setVariants(GuiHandler guiHandler, List<CustomItem> variants) {
+    public void setVariants(GuiHandler<TestCache> guiHandler, List<CustomItem> variants) {
         if (variants != null) {
             Iterator<CustomItem> iterator = variants.iterator();
             while (iterator.hasNext()) {
@@ -136,11 +148,11 @@ public class IngredientContainerButton extends Button {
         this.variantsMap.put(guiHandler, variants);
     }
 
-    public void setTask(GuiHandler guiHandler, Runnable task) {
+    public void setTask(GuiHandler<TestCache> guiHandler, Runnable task) {
         tasksQueue.put(guiHandler, task);
     }
 
-    public Runnable getTask(GuiHandler guiHandler) {
+    public Runnable getTask(GuiHandler<TestCache> guiHandler) {
         return tasks.get(guiHandler);
     }
 

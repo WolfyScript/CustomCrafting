@@ -3,19 +3,19 @@ package me.wolfyscript.customcrafting.gui.particle_creator.buttons;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.ParticleCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.Pair;
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.particles.ParticleEffect;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Material;
 
 import java.util.HashMap;
 
 public class ParticleEffectButton extends ActionButton {
 
-    private HashMap<GuiHandler, Pair<NamespacedKey, ParticleEffect>> particleEffects = new HashMap<>();
+    private final HashMap<GuiHandler, Pair<NamespacedKey, ParticleEffect>> particleEffects = new HashMap<>();
 
     public ParticleEffectButton(int slot) {
         super("particle_effect.slot" + slot, new ButtonState("particle_effect.select", Material.BARRIER));

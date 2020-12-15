@@ -8,8 +8,8 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +38,7 @@ public class CauldronListener implements Listener {
 
     public CauldronListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.api = WolfyUtilities.get(customCrafting);
     }
 
     @EventHandler

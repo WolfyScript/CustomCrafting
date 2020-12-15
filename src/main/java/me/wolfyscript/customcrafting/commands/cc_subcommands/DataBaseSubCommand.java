@@ -34,10 +34,10 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                     switch (args[0]) {
                         case "export":
                             if (CustomCrafting.hasDataBaseHandler()) {
-                                api.sendPlayerMessage(p, "Exporting json configs to Database.");
+                                api.getChat().sendPlayerMessage(p, "Exporting json configs to Database.");
                                 new Thread(() -> customCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler())).run();
                             } else {
-                                api.sendPlayerMessage(p, "&4No Database found!");
+                                api.getChat().sendPlayerMessage(p, "&4No Database found!");
                             }
                             break;
                     }

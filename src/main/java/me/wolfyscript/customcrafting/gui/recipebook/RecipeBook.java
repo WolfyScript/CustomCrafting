@@ -13,13 +13,13 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.Button;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.Button;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -40,8 +40,8 @@ public class RecipeBook extends ExtendedGuiWindow {
         }
     }, 1, 20);
 
-    public RecipeBook(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("recipe_book", inventoryAPI, 54, customCrafting);
+    public RecipeBook(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "recipe_book", 54, customCrafting);
     }
 
     @Override

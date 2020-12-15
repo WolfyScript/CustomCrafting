@@ -5,19 +5,19 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldNameCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-public class WorldNameConditionButton extends ActionButton {
+public class WorldNameConditionButton extends ActionButton<TestCache> {
 
     public WorldNameConditionButton() {
-        super("conditions.world_name", new ButtonState("world_name", Material.GRASS_BLOCK, (guiHandler, player, inventory, i, event) -> {
-            GuiWindow window = guiHandler.getCurrentInv();
-            ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+        super("conditions.world_name", new ButtonState<>("world_name", Material.GRASS_BLOCK, (guiHandler, player, inventory, i, event) -> {
+            GuiWindow<TestCache> window = guiHandler.getCurrentInv();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             Conditions conditions = recipeConfig.getConditions();
             if (event.getClick().isRightClick()) {
                 //Change Mode
@@ -25,7 +25,7 @@ public class WorldNameConditionButton extends ActionButton {
                 recipeConfig.setConditions(conditions);
             } else if (!event.isShiftClick()) {
                 //CONFIGURE ELITE WORKBENCHES
-                guiHandler.getCurrentInv().openChat("world_name", guiHandler, (guiHandler1, player1, s, args) -> {
+                window.openChat("world_name", guiHandler, (guiHandler1, player1, s, args) -> {
                     if (!s.isEmpty()) {
                         World world = Bukkit.getWorld(s);
                         if (world == null) {
@@ -52,7 +52,7 @@ public class WorldNameConditionButton extends ActionButton {
             }
             return true;
         }, (hashMap, guiHandler, player, itemStack, slot, b) -> {
-            WorldNameCondition condition = (WorldNameCondition) ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions().getByID("world_name");
+            WorldNameCondition condition = (WorldNameCondition) guiHandler.getCustomCache().getRecipe().getConditions().getByID("world_name");
             hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getWorldNames().size()) {

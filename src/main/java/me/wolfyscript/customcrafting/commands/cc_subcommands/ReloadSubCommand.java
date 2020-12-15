@@ -7,7 +7,7 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-                api.sendPlayerMessage(p, "&eReloading GUIs and Recipes!");
+                api.getChat().sendPlayerMessage(p, "&eReloading GUIs and Recipes!");
 
                 if (WolfyUtilities.hasBuzzyBeesUpdate()) {
                     InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
@@ -54,10 +54,10 @@ public class ReloadSubCommand extends AbstractSubCommand {
                             Bukkit.addRecipe(((ICustomVanillaRecipe<?>) iCustomRecipe).getVanillaRecipe());
                         }
                     });
-                    CustomCrafting.getApi().sendPlayerMessage(p, "§aReload Complete");
+                    CustomCrafting.getApi().getChat().sendPlayerMessage(p, "§aReload Complete");
                     return true;
                 }
-                api.sendPlayerMessage(p, "&cThis command is only available in 1.15+");
+                api.getChat().sendPlayerMessage(p, "&cThis command is only available in 1.15+");
             }
         }
         return true;

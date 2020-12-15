@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.data.patreon;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

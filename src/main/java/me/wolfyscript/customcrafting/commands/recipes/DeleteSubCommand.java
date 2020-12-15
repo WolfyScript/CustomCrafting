@@ -5,9 +5,10 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.chat.ClickData;
-import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
+import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.chat.ClickEvent;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,12 +33,12 @@ public class DeleteSubCommand extends AbstractSubCommand {
             Player player = (Player) sender;
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.delete")) {
                 if (args.length > 0) {
-                    ICustomRecipe customRecipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
+                    ICustomRecipe<?> customRecipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
                     if (customRecipe != null) {
-                        api.sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new String[]{"%RECIPE%", customRecipe.getNamespacedKey().toString()});
-                        api.sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player))), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> api.sendPlayerMessage(player1, "§cCancelled"), new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete ")));
+                        api.getChat().sendPlayerMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new Pair<>("%RECIPE%", customRecipe.getNamespacedKey().toString()));
+                        api.getChat().sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player))), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> api.getChat().sendPlayerMessage(player1, "§cCancelled"), new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete ")));
                     } else {
-                        api.sendPlayerMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new String[]{"%RECIPE%", args[0] + ":" + args[1]});
+                        api.getChat().sendPlayerMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
                     }
                 }
             }

@@ -5,15 +5,15 @@ import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -24,8 +24,8 @@ import java.util.Locale;
 
 public class PotionCreator extends ExtendedGuiWindow {
 
-    public PotionCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("potion_creator", inventoryAPI, 54, customCrafting);
+    public PotionCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "potion_creator", 54, customCrafting);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class PotionCreator extends ExtendedGuiWindow {
                 ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setDuration(Integer.parseInt(args[0]));
                 return false;
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
+                api.getChat().sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
             }
             return true;
         }));
@@ -103,7 +103,7 @@ public class PotionCreator extends ExtendedGuiWindow {
                 ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache().setAmplifier(Integer.parseInt(args[0]));
                 return false;
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
+                api.getChat().sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
             }
             return true;
         }));
@@ -132,9 +132,9 @@ public class PotionCreator extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
-        GuiHandler<TestCache> guiHandler = update.getGuiHandler(TestCache.class);
+        GuiHandler<TestCache> guiHandler = update.getGuiHandler();
         PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
         update.setButton(0, "back");
         update.setButton(11, "apply");

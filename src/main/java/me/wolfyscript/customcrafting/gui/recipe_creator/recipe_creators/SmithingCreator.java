@@ -6,15 +6,15 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SmithingContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 
 public class SmithingCreator extends RecipeCreator {
 
-    public SmithingCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("smithing", inventoryAPI, 45, customCrafting);
+    public SmithingCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "smithing", 45, customCrafting);
     }
 
     @Override
@@ -30,9 +30,9 @@ public class SmithingCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateAsync(GuiUpdate<TestCache> event) {
         super.onUpdateAsync(event);
-        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        TestCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, "back");
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
         ((ToggleButton) getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());

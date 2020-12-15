@@ -7,17 +7,17 @@ import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
-import me.wolfyscript.utilities.api.inventory.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -124,16 +124,16 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
     }
 
     @Override
-    public void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster) {
+    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
         Player player = guiHandler.getPlayer();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getSource().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
         ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
     }
 
     @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdate event) {
+    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
-        KnowledgeBook book = ((TestCache) event.getGuiHandler().getCustomCache()).getKnowledgeBook();
+        KnowledgeBook book = event.getGuiHandler().getCustomCache().getKnowledgeBook();
         event.setButton(0, "back");
         List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
         int startSlot = 9 / (conditions.size() + 1);

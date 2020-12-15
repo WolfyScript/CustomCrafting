@@ -3,8 +3,8 @@ package me.wolfyscript.customcrafting.gui.elite_crafting.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

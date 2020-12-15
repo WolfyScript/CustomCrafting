@@ -5,18 +5,18 @@ import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.custom_items.api_references.WolfyUtilitiesRef;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.chat.ClickData;
-import me.wolfyscript.utilities.api.utils.chat.ClickEvent;
-import me.wolfyscript.utilities.api.utils.chat.HoverEvent;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.chat.ClickEvent;
+import me.wolfyscript.utilities.api.chat.HoverEvent;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,8 +25,8 @@ import java.util.Map;
 
 public class ItemEditor extends ExtendedGuiWindow {
 
-    public ItemEditor(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("item_editor", inventoryAPI, 45, customCrafting);
+    public ItemEditor(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "item_editor", 45, customCrafting);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ItemEditor extends ExtendedGuiWindow {
             return true;
         })));
         registerButton(new ActionButton("create_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("item_creator", "main_menu");
+            guiHandler.changeToInv(new NamespacedKey("item_creator", "main_menu"));
             return true;
         }));
         registerButton(new ActionButton("delete_item", Material.BARRIER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -83,7 +83,7 @@ public class ItemEditor extends ExtendedGuiWindow {
         int itemsPerPage = cache.getChatLists().getLastUsedItem() != null ? 16 : 14;
         int maxPages = ((CustomItems.getCustomItems().size() % itemsPerPage) > 0 ? 1 : 0) + CustomItems.getCustomItems().size() / itemsPerPage;
 
-        api.sendActionMessage(player,
+        api.getChat().sendActionMessage(player,
                 new ClickData("[&3« Back&7]", null, new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cc")),
                 new ClickData("                   &7&lItems            ", null),
                 new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
@@ -99,7 +99,7 @@ public class ItemEditor extends ExtendedGuiWindow {
                     }
                     sendItemListExpanded(p);
                 }, true));
-        api.sendPlayerMessage(player, "&8-------------------------------------------------");
+        api.getChat().sendPlayerMessage(player, "&8-------------------------------------------------");
 
         int i = (currentPage - 1) * itemsPerPage;
         for (Map.Entry<NamespacedKey, CustomItem> entry : CustomItems.getCustomItems().entrySet()) {
@@ -107,9 +107,9 @@ public class ItemEditor extends ExtendedGuiWindow {
             CustomItem customItem = entry.getValue();
             if (customItem != null) {
                 if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
-                    api.sendActionMessage(player, new ClickData("§7" + " -&7[&c!&7] &4" + namespacedKey.toString(), null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
+                    api.getChat().sendActionMessage(player, new ClickData("§7" + " -&7[&c!&7] &4" + namespacedKey.toString(), null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
                 } else {
-                    api.sendActionMessage(player, new ClickData("§7" + " - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
+                    api.getChat().sendActionMessage(player, new ClickData("§7" + " - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
                 }
                 if (i < (currentPage - 1) * itemsPerPage + itemsPerPage) {
                     i++;
@@ -119,18 +119,18 @@ public class ItemEditor extends ExtendedGuiWindow {
             }
         }
         if (cache.getChatLists().getLastUsedItem() != null) {
-            api.sendPlayerMessage(player, "§ePreviously used:");
+            api.getChat().sendPlayerMessage(player, "§ePreviously used:");
             NamespacedKey namespacedKey = cache.getChatLists().getLastUsedItem();
             CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
             if (customItem != null) {
                 if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
-                    api.sendActionMessage(player, new ClickData("§b -&7[&c!&7] &4" + namespacedKey.toString(), null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
+                    api.getChat().sendActionMessage(player, new ClickData("§b -&7[&c!&7] &4" + namespacedKey.toString(), null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));
                 } else {
-                    api.sendActionMessage(player, new ClickData("§b - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
+                    api.getChat().sendActionMessage(player, new ClickData("§b - ", null), new ClickData(namespacedKey.toString(), null, new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, namespacedKey.getNamespace() + " " + namespacedKey.getKey()), new HoverEvent(customItem.create())));
                 }
             }
         }
-        api.sendPlayerMessage(player, "&8-------------------------------------------------");
+        api.getChat().sendPlayerMessage(player, "&8-------------------------------------------------");
         sendMessage(player, "input");
     }
 }

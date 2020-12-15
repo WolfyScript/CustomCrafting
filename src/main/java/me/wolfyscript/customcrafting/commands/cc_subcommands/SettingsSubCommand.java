@@ -31,7 +31,7 @@ public class SettingsSubCommand extends AbstractSubCommand {
                         case "pretty_printing":
                             if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")) {
                                 customCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.valueOf(args[1].toLowerCase(Locale.ROOT)));
-                                api.sendPlayerMessage(p, "&aSet &epretty printing &ato &e" + args[1].toLowerCase(Locale.ROOT));
+                                api.getChat().sendPlayerMessage(p, "&aSet &epretty printing &ato &e" + args[1].toLowerCase(Locale.ROOT));
                             }
                             break;
                     }

@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import org.bukkit.Keyed;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,11 +30,11 @@ public class SaveSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
                 new TreeMap<>(CustomItems.getCustomItems()).forEach((namespacedKey, customItem) -> {
-                    api.sendConsoleMessage("Saving item: " + namespacedKey.toString());
+                    api.getChat().sendConsoleMessage("Saving item: " + namespacedKey.toString());
                     customCrafting.saveItem(namespacedKey, customItem);
                 });
                 customCrafting.getRecipeHandler().getRecipes().values().forEach(recipe -> {
-                    api.sendConsoleMessage("Saving recipe: " + recipe.getNamespacedKey().toString());
+                    api.getChat().sendConsoleMessage("Saving recipe: " + recipe.getNamespacedKey().toString());
                     recipe.save();
                 });
                 sender.sendMessage("§eAll recipes are resaved! See the console log for errors.");

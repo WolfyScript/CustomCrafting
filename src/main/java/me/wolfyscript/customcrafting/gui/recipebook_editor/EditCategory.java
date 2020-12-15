@@ -8,17 +8,18 @@ import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.buttons.SaveCategoryButton;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.chat.ChatColor;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -28,8 +29,8 @@ import java.util.stream.Collectors;
 
 public class EditCategory extends ExtendedGuiWindow {
 
-    public EditCategory(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("category", inventoryAPI, 54, customCrafting);
+    public EditCategory(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "category", 54, customCrafting);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class EditCategory extends ExtendedGuiWindow {
             values.put("%description%", ((TestCache) guiHandler.getCustomCache()).getRecipeBookEditor().getCategory().getDescription());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
-            ((TestCache) guiHandler.getCustomCache()).getRecipeBookEditor().getCategory().getDescription().add(s.equals("&empty") ? "" : WolfyUtilities.translateColorCodes(s));
+            ((TestCache) guiHandler.getCustomCache()).getRecipeBookEditor().getCategory().getDescription().add(s.equals("&empty") ? "" : ChatColor.convert(s));
             return false;
         }));
         registerButton(new ActionButton("description.remove", Material.WRITTEN_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
@@ -90,7 +91,7 @@ public class EditCategory extends ExtendedGuiWindow {
                     ICustomRecipe recipe = customCrafting.getRecipeHandler().getRecipe(namespacedKey);
 
                     if (recipe == null) {
-                        api.sendPlayerMessage(player, "none", "recipe_editor", "not_existing", new String[]{"%recipe%", args[0] + ":" + args[1]});
+                        api.getChat().sendPlayerMessage(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                         return true;
                     }
                     if (remove) {
@@ -111,9 +112,9 @@ public class EditCategory extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
-        GuiHandler<TestCache> guiHandler = update.getGuiHandler(TestCache.class);
+        GuiHandler<TestCache> guiHandler = update.getGuiHandler();
         TestCache cache = guiHandler.getCustomCache();
         RecipeBookEditor recipeBookEditor = cache.getRecipeBookEditor();
         update.setButton(0, "back");

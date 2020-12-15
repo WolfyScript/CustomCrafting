@@ -1,12 +1,11 @@
 package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.utilities.api.custom_items.Meta;
-import me.wolfyscript.utilities.api.custom_items.MetaSettings;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.custom_items.Meta;
+import me.wolfyscript.utilities.api.inventory.custom_items.MetaSettings;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class MetaIgnoreButton extends ActionButton {
 
-    private String meta;
+    private final String meta;
 
     public MetaIgnoreButton(String meta) {
         super("meta_ignore." + meta, new ButtonState("meta_ignore", Material.CYAN_CONCRETE, (hashMap, guiHandler, player, itemStack, i, b) -> {

@@ -3,11 +3,11 @@ package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.utilities.api.custom_items.ParticleContent;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffect;
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffects;
+import me.wolfyscript.utilities.api.inventory.custom_items.ParticleContent;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.particles.ParticleEffect;
+import me.wolfyscript.utilities.api.particles.ParticleEffects;
 import org.bukkit.Material;
 
 import java.util.Locale;

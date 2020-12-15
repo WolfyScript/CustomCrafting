@@ -4,11 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ItemInputButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class StonecutterContainerButton extends ItemInputButton {
+public class StonecutterContainerButton extends ItemInputButton<TestCache> {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getStonecutterRecipe().setResult(Collections.singletonList(items.getItem()));
 
     public StonecutterContainerButton(int inputSlot, CustomCrafting customCrafting) {
-        super("stonecutter.container_" + inputSlot, new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
-            TestCache cache = (TestCache) guiHandler.getCustomCache();
+        super("stonecutter.container_" + inputSlot, new ButtonState<>("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
+            TestCache cache = guiHandler.getCustomCache();
             CustomStonecutterRecipe stonecutter = cache.getStonecutterRecipe();
             if (inputSlot == 1) {
                 //RESULT STUFF
@@ -55,7 +55,7 @@ public class StonecutterContainerButton extends ItemInputButton {
             }
             return false;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            CustomStonecutterRecipe stonecutter = ((TestCache) guiHandler.getCustomCache()).getStonecutterRecipe();
+            CustomStonecutterRecipe stonecutter = guiHandler.getCustomCache().getStonecutterRecipe();
             if (inputSlot == 1) {
                 //RESULT STUFF
                 return !ItemUtils.isAirOrNull(stonecutter.getResult()) ? stonecutter.getResult().create() : new ItemStack(Material.AIR);

@@ -25,7 +25,7 @@ public class DebugSubCommand extends AbstractSubCommand {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.debug")) {
                 customCrafting.getConfigHandler().getConfig().set("debug", !api.hasDebuggingMode());
-                api.sendPlayerMessage(p, "Set Debug to: " + api.hasDebuggingMode());
+                api.getChat().sendPlayerMessage(p, "Set Debug to: " + api.hasDebuggingMode());
             }
         }
         return true;

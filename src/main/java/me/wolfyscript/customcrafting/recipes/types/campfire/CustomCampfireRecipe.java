@@ -2,9 +2,9 @@ package me.wolfyscript.customcrafting.recipes.types.campfire;
 
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.CampfireRecipe;
 import org.bukkit.inventory.RecipeChoice;
 

@@ -7,22 +7,22 @@ import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.lists.buttons.CustomItemSelectButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.ItemNamespaceButton;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.Button;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.Button;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 import java.util.List;
 
 public class CustomItemList extends ExtendedGuiWindow {
 
-    public CustomItemList(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("item_list", inventoryAPI, 54, customCrafting);
+    public CustomItemList(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "item_list", 54, customCrafting);
     }
 
     @Override

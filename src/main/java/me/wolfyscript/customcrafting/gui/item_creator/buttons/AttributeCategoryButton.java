@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 
 public class AttributeCategoryButton extends ActionButton {

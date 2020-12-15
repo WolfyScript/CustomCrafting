@@ -1,17 +1,19 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.api.utils.chat.ClickData;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -26,8 +28,8 @@ public class Settings extends ExtendedGuiWindow {
 
     static List<String> availableLangs = new ArrayList<>();
 
-    public Settings(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("settings", inventoryAPI, 45, customCrafting);
+    public Settings(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "settings", 45, customCrafting);
     }
 
     @Override
@@ -35,9 +37,8 @@ public class Settings extends ExtendedGuiWindow {
         registerButton(new ToggleButton("lockdown", new ButtonState("lockdown.disabled", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
                 guiHandler.close();
-                api.sendPlayerMessage(player, "&cAre you sure you want to enable LockDown mode?");
-                api.sendPlayerMessage(player, "&c&lThis will disable all the custom recipes!");
-                api.sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
+                api.getChat().sendPlayerMessage(player, "&cAre you sure you want to enable LockDown mode?", "&c&lThis will disable all the custom recipes!");
+                api.getChat().sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
                     customCrafting.getConfigHandler().getConfig().setLockDown(true);
                     wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster();
                 }, true), new ClickData("&7 -- ", null), new ClickData("&7[&cNO&7]", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
@@ -46,9 +47,8 @@ public class Settings extends ExtendedGuiWindow {
         }), new ButtonState("lockdown.enabled", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
                 guiHandler.close();
-                api.sendPlayerMessage(player, "&cAre you sure you want to disable LockDown mode?");
-                api.sendPlayerMessage(player, "&c&lThis will enable all the custom recipes!");
-                api.sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
+                api.getChat().sendPlayerMessage(player, "&cAre you sure you want to disable LockDown mode?", "&c&lThis will enable all the custom recipes!");
+                api.getChat().sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
                     customCrafting.getConfigHandler().getConfig().setLockDown(false);
                     wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster();
                 }, true), new ClickData("&7 -- ", null), new ClickData("&7[&cNO&7]", (wolfyUtilities, player1) -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
@@ -89,7 +89,7 @@ public class Settings extends ExtendedGuiWindow {
                 nextIndex = index - 1 >= 0 ? index - 1 : availableLangs.size() - 1;
             } else if (event.isShiftClick()) {
                 if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
-                    api.sendPlayerMessage(player, "&eReloading Inventories and Languages!");
+                    api.getChat().sendPlayerMessage(player, "&eReloading Inventories and Languages!");
                     InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
                     LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
                     invAPI.reset();
@@ -101,7 +101,7 @@ public class Settings extends ExtendedGuiWindow {
                         e.printStackTrace();
                     }
                     new InventoryHandler(customCrafting).init();
-                    api.sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
+                    api.getChat().sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
                     return true;
                 }
                 return true;

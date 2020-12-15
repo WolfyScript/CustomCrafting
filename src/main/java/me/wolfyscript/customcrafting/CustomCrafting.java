@@ -2,6 +2,9 @@ package me.wolfyscript.customcrafting;
 
 import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
+import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
@@ -16,15 +19,15 @@ import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
-import me.wolfyscript.customcrafting.utils.WolfyUtilitiesData;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.Reflection;
-import me.wolfyscript.utilities.api.utils.chat.ClickData;
-import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.api.chat.Chat;
+import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Reflection;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -82,7 +85,10 @@ public class CustomCrafting extends JavaPlugin {
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
-            WolfyUtilitiesData.initCustomData();
+            System.out.println("Class: " + CustomItem.class);
+            CustomItem.registerCustomData(new EliteWorkbenchData());
+            CustomItem.registerCustomData(new KnowledgeBookData());
+            CustomItem.registerCustomData(new CauldronData());
         }
     }
 
@@ -106,9 +112,11 @@ public class CustomCrafting extends JavaPlugin {
             return;
         }
 
-        api = WolfyUtilities.getOrCreateAPI(instance);
-        api.setCHAT_PREFIX("§7[§6CC§7] ");
-        api.setCONSOLE_PREFIX("§7[§3CC§7] ");
+        api = WolfyUtilities.get(instance);
+        Chat chat = api.getChat();
+        chat.setIN_GAME_PREFIX("§7[§6CC§7] ");
+        chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
+
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, TestCache.class));
 
         if (patreon.isPatreon()) {
@@ -162,7 +170,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new CauldronListener(this), this);
         pM.registerEvents(new EliteWorkbenchListener(api), this);
         pM.registerEvents(new GrindStoneListener(this), this);
-        pM.registerEvents(new BrewingStandListener(this), this);
+        pM.registerEvents(new BrewingStandListener(api, this), this);
         if (WolfyUtilities.hasNetherUpdate()) {
             pM.registerEvents(new SmithingListener(this), this);
         }
@@ -183,7 +191,7 @@ public class CustomCrafting extends JavaPlugin {
 
         cauldrons = new Cauldrons(this);
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            api.sendConsoleMessage("$msg.startup.placeholder$");
+            chat.sendConsoleMessage("$msg.startup.placeholder$");
             new PlaceHolder(this).register();
         }
 
@@ -254,7 +262,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     private void loadPlayerStatistics() {
-        api.sendConsoleMessage("$msg.startup.playerstats$");
+        api.getChat().sendConsoleMessage("$msg.startup.playerstats$");
         File file = new File(getDataFolder() + File.separator + "playerstats.dat");
         if (file.exists()) {
             FileInputStream fis;
@@ -309,6 +317,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public void checkUpdate(@Nullable Player player) {
+        Chat chat = api.getChat();
         new Thread(() -> {
             try {
                 HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
@@ -327,16 +336,16 @@ public class CustomCrafting extends JavaPlugin {
                         return;
                     } else if (v1 > v2) {
                         outdated = true;
-                        api.sendConsoleWarning("$msg.startup.outdated$");
+                        chat.sendConsoleWarning("$msg.startup.outdated$");
                         if (player != null) {
-                            api.sendPlayerMessage(player, "$msg.player.outdated.msg$");
-                            api.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.utils.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+                            chat.sendPlayerMessage(player, "$msg.player.outdated.msg$");
+                            chat.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
                         }
                         return;
                     }
                 }
             } catch (Exception ex) {
-                api.sendConsoleWarning("$msg.startup.update_check_fail$");
+                chat.sendConsoleWarning("$msg.startup.update_check_fail$");
             }
         }).start();
     }
@@ -371,7 +380,7 @@ public class CustomCrafting extends JavaPlugin {
         return dataBaseHandler;
     }
 
-    public void saveItem(me.wolfyscript.utilities.api.utils.NamespacedKey namespacedKey, CustomItem customItem) {
+    public void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {
         if (CustomCrafting.hasDataBaseHandler()) {
             CustomCrafting.getDataBaseHandler().updateItem(namespacedKey, customItem);
         } else {
@@ -393,7 +402,7 @@ public class CustomCrafting extends JavaPlugin {
 
     public boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
         if (!CustomItems.hasCustomItem(namespacedKey)) {
-            if (player != null) getApi().sendPlayerMessage(player, "error");
+            if (player != null) getApi().getChat().sendPlayerMessage(player, "error");
             return false;
         }
         CustomItems.removeCustomItem(namespacedKey);
@@ -404,12 +413,12 @@ public class CustomCrafting extends JavaPlugin {
         } else {
             File file = new File(getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/items", namespacedKey.getKey() + ".json");
             if (file.delete()) {
-                if (player != null) getApi().sendPlayerMessage(player, "&aCustomItem deleted!");
+                if (player != null) getApi().getChat().sendPlayerMessage(player, "&aCustomItem deleted!");
                 return true;
             } else {
                 file.deleteOnExit();
                 if (player != null)
-                    getApi().sendPlayerMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
+                    getApi().getChat().sendPlayerMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
             }
         }
         return false;

@@ -7,16 +7,16 @@ import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SaveButton;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 
 public abstract class RecipeCreator extends ExtendedGuiWindow {
 
-    public RecipeCreator(String namespace, InventoryAPI inventoryAPI, int size, CustomCrafting customCrafting) {
-        super(namespace, inventoryAPI, size, customCrafting);
+    public RecipeCreator(GuiCluster<TestCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
+        super(guiCluster, namespace, size, customCrafting);
     }
 
     @Override

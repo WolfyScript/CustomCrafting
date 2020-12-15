@@ -8,19 +8,19 @@ import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
-import me.wolfyscript.utilities.api.utils.inventory.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends ExtendedGuiWindow {
 
-    public MainMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("main_menu", inventoryAPI, 54, customCrafting);
+    public MainMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "main_menu", 54, customCrafting);
     }
 
     @Override

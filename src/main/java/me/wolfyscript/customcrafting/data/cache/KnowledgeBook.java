@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -139,8 +139,8 @@ public class KnowledgeBook {
         this.recipeItems = recipeItems;
     }
 
-    public void applyRecipeToButtons(GuiHandler<?> guiHandler, ICustomRecipe<?> recipe) {
-        recipe.prepareMenu(guiHandler, WolfyUtilities.getAPI(customCrafting).getInventoryAPI().getGuiCluster("recipe_book"));
+    public void applyRecipeToButtons(GuiHandler<TestCache> guiHandler, ICustomRecipe<?> recipe) {
+        recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
     }
 
     public enum WorkbenchFilter {

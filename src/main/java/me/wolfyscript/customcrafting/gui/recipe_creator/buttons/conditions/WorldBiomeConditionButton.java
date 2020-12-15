@@ -5,20 +5,20 @@ import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldBiomeCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 
 import java.util.Locale;
 
-public class WorldBiomeConditionButton extends ActionButton {
+public class WorldBiomeConditionButton extends ActionButton<TestCache> {
 
     public WorldBiomeConditionButton() {
-        super("conditions.world_biome", new ButtonState("world_biome", Material.SAND, (guiHandler, player, inventory, slot, event) -> {
-            GuiWindow window = guiHandler.getCurrentInv();
-            ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+        super("conditions.world_biome", new ButtonState<>("world_biome", Material.SAND, (guiHandler, player, inventory, slot, event) -> {
+            GuiWindow<TestCache> window = guiHandler.getCurrentInv();
+            ICustomRecipe recipeConfig = guiHandler.getCustomCache().getRecipe();
             Conditions conditions = recipeConfig.getConditions();
             if (event.getClick().isRightClick()) {
                 //Change Mode
@@ -53,7 +53,7 @@ public class WorldBiomeConditionButton extends ActionButton {
             }
             return true;
         }, (hashMap, guiHandler, player, itemStack, slot, b) -> {
-            WorldBiomeCondition condition = (WorldBiomeCondition) ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions().getByID("world_biome");
+            WorldBiomeCondition condition = (WorldBiomeCondition) guiHandler.getCustomCache().getRecipe().getConditions().getByID("world_biome");
             hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getBiomes().size()) {

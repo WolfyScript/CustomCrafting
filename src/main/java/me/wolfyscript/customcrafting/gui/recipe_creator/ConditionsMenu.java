@@ -12,11 +12,12 @@ import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
@@ -24,8 +25,8 @@ import java.util.List;
 
 public class ConditionsMenu extends ExtendedGuiWindow {
 
-    public ConditionsMenu(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("conditions", inventoryAPI, 45, customCrafting);
+    public ConditionsMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "conditions", 45, customCrafting);
     }
 
     @Override
@@ -42,19 +43,19 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                 conditions.getByID("world_time").toggleOption();
             } else {
                 //Change Value
-                openChat("world_time", guiHandler, (guiHandler1, player1, s, strings) -> {
+                openChat("world_time", (GuiHandler<TestCache>) guiHandler, (guiHandler1, player1, s, strings) -> {
                     try {
                         long value = Long.parseLong(s);
                         ((WorldTimeCondition) conditions.getByID("world_time")).setTime(value);
                     } catch (NumberFormatException ex) {
-                        api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
                     }
                     return false;
                 });
             }
             return true;
         }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            ICustomRecipe recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
+            ICustomRecipe<?> recipeConfig = ((TestCache) guiHandler.getCustomCache()).getRecipe();
             hashMap.put("%VALUE%", ((WorldTimeCondition) recipeConfig.getConditions().getByID("world_time")).getTime());
             hashMap.put("%MODE%", recipeConfig.getConditions().getByID("world_time").getOption().getDisplayString(api));
             return itemStack;
@@ -67,12 +68,12 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                 conditions.getByID("player_experience").toggleOption();
             } else {
                 //Change Value
-                openChat("player_experience", guiHandler, (guiHandler1, player1, s, strings) -> {
+                openChat("player_experience", (GuiHandler<TestCache>) guiHandler, (guiHandler1, player1, s, strings) -> {
                     try {
                         int value = Integer.parseInt(s);
                         ((ExperienceCondition) conditions.getByID("player_experience")).setExpLevel(value);
                     } catch (NumberFormatException ex) {
-                        api.sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
                     }
                     return false;
                 });
@@ -124,7 +125,7 @@ public class ConditionsMenu extends ExtendedGuiWindow {
                 ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions().getByID("permission").toggleOption();
             } else {
                 //SET Custom Permission String
-                openChat("permission", guiHandler, (guiHandler1, player1, s, strings) -> {
+                openChat("permission", (GuiHandler<TestCache>) guiHandler, (guiHandler1, player1, s, strings) -> {
                     ((PermissionCondition) ((TestCache) guiHandler.getCustomCache()).getRecipe().getConditions().getByID("permission")).setPermission(s.trim());
                     return false;
                 });
@@ -139,9 +140,9 @@ public class ConditionsMenu extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateAsync(GuiUpdate<TestCache> event) {
         super.onUpdateAsync(event);
-        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        TestCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, "back");
 
         List<String> values = new ArrayList<>();

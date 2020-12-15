@@ -1,11 +1,11 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.ItemCategory;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 

@@ -6,20 +6,20 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.AnvilContainerBu
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class AnvilCreator extends RecipeCreator {
 
-    public AnvilCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("anvil", inventoryAPI, 45, customCrafting);
+    public AnvilCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "anvil", 45, customCrafting);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class AnvilCreator extends RecipeCreator {
             try {
                 repairCost = Math.max(1, Integer.parseInt(args[0]));
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setRepairCost(repairCost);
@@ -105,7 +105,7 @@ public class AnvilCreator extends RecipeCreator {
             try {
                 durability = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             ((TestCache) guiHandler.getCustomCache()).getAnvilRecipe().setDurability(durability);
@@ -114,9 +114,9 @@ public class AnvilCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateAsync(GuiUpdate<TestCache> event) {
         super.onUpdateAsync(event);
-        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        TestCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, "back");
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
         ((ToggleButton) getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());

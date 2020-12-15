@@ -1,20 +1,21 @@
 package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.api_references.APIReference;
-import me.wolfyscript.utilities.api.inventory.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.api_references.APIReference;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
@@ -111,13 +112,13 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     }
 
     @Override
-    public void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster) {
+    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_20")).setVariants(guiHandler, getSource());
         ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, Collections.singletonList(getResult()));
     }
 
     @Override
-    public void renderMenu(GuiWindow guiWindow, GuiUpdate event) {
+    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
         event.setButton(0, "back");
         //TODO STONECUTTER
         event.setButton(20, "recipe_book", "ingredient.container_20");

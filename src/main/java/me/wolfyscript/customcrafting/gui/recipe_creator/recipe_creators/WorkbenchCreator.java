@@ -9,17 +9,17 @@ import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 public class WorkbenchCreator extends RecipeCreator {
 
-    public WorkbenchCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("workbench", inventoryAPI, 45, customCrafting);
+    public WorkbenchCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "workbench", 45, customCrafting);
     }
 
     @Override
@@ -32,7 +32,6 @@ public class WorkbenchCreator extends RecipeCreator {
         for (int i = 0; i < 10; i++) {
             registerButton(new CraftingIngredientButton(i, customCrafting));
         }
-
 
         registerButton(new ToggleButton("workbench.shapeless", false, new ButtonState("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
             ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapedCraftRecipe(((TestCache) guiHandler.getCustomCache()).getAdvancedCraftingRecipe()));
@@ -66,10 +65,10 @@ public class WorkbenchCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
-        TestCache cache = update.getGuiHandler(TestCache.class).getCustomCache();
+        TestCache cache = update.getGuiHandler().getCustomCache();
         CraftingRecipe<?> craftingRecipe = cache.getAdvancedCraftingRecipe();
 
         ((ToggleButton) getButton("workbench.shapeless")).setState(update.getGuiHandler(), craftingRecipe.isShapeless());

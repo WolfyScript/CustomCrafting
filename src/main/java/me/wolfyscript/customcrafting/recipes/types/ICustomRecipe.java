@@ -1,20 +1,21 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.GuiWindow;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -96,13 +97,13 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
                 return false;
             }
             if (player != null) {
-                getAPI().sendPlayerMessage(player, "recipe_creator", "save.success");
-                getAPI().sendPlayerMessage(player, "§6" + "recipes/" + getNamespacedKey().getNamespace() + "/" + getRecipeType().getId() + "/" + getNamespacedKey().getKey());
+                getAPI().getChat().sendPlayerMessage(player, "recipe_creator", "save.success");
+                getAPI().getChat().sendPlayerMessage(player, "§6" + "recipes/" + getNamespacedKey().getNamespace() + "/" + getRecipeType().getId() + "/" + getNamespacedKey().getKey());
             }
             return true;
         }
         if (player != null) {
-            getAPI().sendPlayerMessage(player, "&c" + "Missing NamespacedKey!");
+            getAPI().getChat().sendPlayerMessage(player, "&c" + "Missing NamespacedKey!");
         }
         return false;
     }
@@ -122,18 +123,18 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
                 File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId(), getNamespacedKey().getKey() + ".json");
                 System.gc();
                 if (file.delete()) {
-                    if (player != null) getAPI().sendPlayerMessage(player, "&aRecipe deleted!");
+                    if (player != null) getAPI().getChat().sendPlayerMessage(player, "&aRecipe deleted!");
                     return true;
                 } else {
                     file.deleteOnExit();
                     if (player != null)
-                        getAPI().sendPlayerMessage(player, "&cCouldn't delete recipe on runtime! File is being deleted on restart!");
+                        getAPI().getChat().sendPlayerMessage(player, "&cCouldn't delete recipe on runtime! File is being deleted on restart!");
                 }
             }
             return false;
         }
         if (player != null) {
-            getAPI().sendPlayerMessage(player, "&c" + "Missing NamespacedKey!");
+            getAPI().getChat().sendPlayerMessage(player, "&c" + "Missing NamespacedKey!");
         }
         return false;
     }
@@ -146,9 +147,9 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
 
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 
-    void renderMenu(GuiWindow guiWindow, GuiUpdate event);
+    void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event);
 
-    void prepareMenu(GuiHandler<?> guiHandler, GuiCluster cluster);
+    void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster);
 
     class Serializer extends StdSerializer<ICustomRecipe> {
 

@@ -24,16 +24,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.wolfyscript</groupId>
+            <groupId>com.wolfyscript.wolfyutilities</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.6.2.19</version>
+            <version>1.6.3.0</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.plotsquared</groupId>
-                    <artifactId>PlotSquared-Bukkit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -57,6 +51,12 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.10.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lumine.xikage</groupId>
+            <artifactId>mythicmobs</artifactId>
+            <version>4.10.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

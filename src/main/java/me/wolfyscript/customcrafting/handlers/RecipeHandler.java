@@ -22,17 +22,18 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.ItemUtils;
-import me.wolfyscript.utilities.api.utils.json.jackson.JacksonUtil;
-import me.wolfyscript.utilities.api.utils.particles.ParticleEffects;
-import me.wolfyscript.utilities.api.utils.particles.Particles;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.particles.ParticleEffects;
+import me.wolfyscript.utilities.api.particles.Particles;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
@@ -62,10 +63,12 @@ public class RecipeHandler {
 
     private final ConfigAPI configAPI;
     private final WolfyUtilities api;
+    private final Chat chat;
     private final ObjectMapper objectMapper;
 
     public RecipeHandler(CustomCrafting customCrafting) {
-        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.api = WolfyUtilities.get(customCrafting);
+        this.chat = api.getChat();
         this.configAPI = api.getConfigAPI();
         this.customCrafting = customCrafting;
         this.particlesList = new ArrayList<>();
@@ -86,20 +89,20 @@ public class RecipeHandler {
         if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
             disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes());
         }
-        api.sendConsoleMessage("$msg.startup.recipes.title$");
+        chat.sendConsoleMessage("$msg.startup.recipes.title$");
         File recipesFolder = new File(customCrafting.getDataFolder() + File.separator + "recipes");
         File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
         if (dirs != null) {
-            api.sendConsoleMessage("");
-            api.sendConsoleMessage("$msg.startup.recipes.items$");
+            chat.sendConsoleMessage("");
+            chat.sendConsoleMessage("$msg.startup.recipes.items$");
             for (File dir : dirs) {
-                api.sendConsoleMessage("- " + dir.getName());
+                chat.sendConsoleMessage("- " + dir.getName());
                 loadConfig(dir.getName(), "items");
             }
-            api.sendConsoleMessage("");
-            api.sendConsoleMessage("$msg.startup.recipes.recipes$");
+            chat.sendConsoleMessage("");
+            chat.sendConsoleMessage("$msg.startup.recipes.recipes$");
             for (File dir : dirs) {
-                api.sendConsoleMessage("- " + dir.getName());
+                chat.sendConsoleMessage("- " + dir.getName());
                 loadConfig(dir.getName(), "workbench");
                 loadConfig(dir.getName(), "furnace");
                 loadConfig(dir.getName(), "anvil");
@@ -113,10 +116,10 @@ public class RecipeHandler {
                 loadConfig(dir.getName(), "elite_workbench");
                 loadConfig(dir.getName(), "smithing");
             }
-            api.sendConsoleMessage("");
-            api.sendConsoleMessage("$msg.startup.recipes.particles$");
+            chat.sendConsoleMessage("");
+            chat.sendConsoleMessage("$msg.startup.recipes.particles$");
             for (File dir : dirs) {
-                api.sendConsoleMessage("- " + dir.getName());
+                chat.sendConsoleMessage("- " + dir.getName());
                 loadConfig(dir.getName(), "particles");
             }
         }
@@ -138,7 +141,7 @@ public class RecipeHandler {
                                 CustomItems.addCustomItem(namespacedKey, objectMapper.convertValue(node, CustomItem.class));
                                 break;
                             case "particles":
-                                Particles particles = new Particles(customCrafting, subfolder, File.separator + "recipes");
+                                Particles particles = new Particles(api, subfolder, File.separator + "recipes");
                                 particles.load();
                                 particlesList.add(particles);
                                 ParticleEffects particleEffects = new ParticleEffects(customCrafting, subfolder, File.separator + "recipes");
@@ -193,7 +196,7 @@ public class RecipeHandler {
                         ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
                     }
                 } else {
-                    api.sendConsoleMessage("$msg.startup.recipes.incompatible$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
+                    api.getChat().sendConsoleMessage("$msg.startup.recipes.incompatible$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
                 }
             }
             return true;
@@ -218,7 +221,7 @@ public class RecipeHandler {
     private void loadDataBase() {
         DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
         try {
-            api.sendConsoleMessage("$msg.startup.recipes.title$");
+            chat.sendConsoleMessage("$msg.startup.recipes.title$");
             dataBaseHandler.loadItems();
             dataBaseHandler.loadRecipes(this);
         } catch (SQLException e) {
@@ -227,34 +230,34 @@ public class RecipeHandler {
     }
 
     public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
-        api.sendConsoleMessage("Exporting configs to database...");
+        chat.sendConsoleMessage("Exporting configs to database...");
         getRecipes().values().forEach(dataBaseHandler::updateRecipe);
-        api.sendConsoleMessage("Exported configs to database successfully.");
+        chat.sendConsoleMessage("Exported configs to database successfully.");
     }
 
     public void registerRecipe(ICustomRecipe recipe) {
         if (recipe instanceof ICustomVanillaRecipe) {
-            api.sendDebugMessage("  - add to Bukkit");
+            chat.sendDebugMessage("  - add to Bukkit");
             Bukkit.addRecipe(((ICustomVanillaRecipe<?>) recipe).getVanillaRecipe());
         }
-        api.sendDebugMessage("  - cache custom recipe");
+        chat.sendDebugMessage("  - cache custom recipe");
         customRecipes.put(recipe.getNamespacedKey(), recipe);
     }
 
     public void injectRecipe(ICustomRecipe recipe) {
-        api.sendDebugMessage("[Inject Recipe]");
-        api.sendDebugMessage("  - unregister old recipe");
+        chat.sendDebugMessage("[Inject Recipe]");
+        chat.sendDebugMessage("  - unregister old recipe");
         unregisterRecipe(recipe);
         registerRecipe(recipe);
-        api.sendDebugMessage("[- - Done - -]");
+        chat.sendDebugMessage("[- - Done - -]");
     }
 
     public void unregisterVanillaRecipe(NamespacedKey namespacedKey) {
         if (WolfyUtilities.hasBuzzyBeesUpdate()) {
-            api.sendDebugMessage("      -> using new API method");
+            chat.sendDebugMessage("      -> using new API method");
             Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
         } else {
-            api.sendDebugMessage("      -> using old method");
+            chat.sendDebugMessage("      -> using old method");
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
             boolean inject = false;
             while (recipeIterator.hasNext()) {

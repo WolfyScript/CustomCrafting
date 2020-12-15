@@ -4,10 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.utils.NamespacedKey;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 if (args.length >= 2) {
                     Player target = Bukkit.getPlayer(args[0]);
                     if (target == null) {
-                        api.sendPlayerMessage(p, "$commands.give.player_offline$", new String[]{"%PLAYER%", args[0]});
+                        api.getChat().sendPlayerMessage(p, "$commands.give.player_offline$", new Pair<>("%PLAYER%", args[0]));
                         return true;
                     }
                     NamespacedKey namespacekey = NamespacedKey.getByString(args[1]);
@@ -46,7 +47,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                         try {
                             amount = Integer.parseInt(args[2]);
                         } catch (NumberFormatException ex) {
-                            api.sendPlayerMessage(p, "$commands.give.invalid_amount$");
+                            api.getChat().sendPlayerMessage(p, "$commands.give.invalid_amount$");
                         }
                     }
                     CustomItem customItem = CustomItems.getCustomItem(namespacekey);
@@ -58,12 +59,12 @@ public class GiveSubCommand extends AbstractSubCommand {
                             target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
                         }
                         if (amount > 1) {
-                            api.sendPlayerMessage(p, "$commands.give.success_amount$", new String[]{"%PLAYER%", args[0]}, new String[]{"%ITEM%", args[1]}, new String[]{"%AMOUNT%", args[2]});
+                            api.getChat().sendPlayerMessage(p, "$commands.give.success_amount$", new Pair<>("%PLAYER%", args[0]), new Pair<>("%ITEM%", args[1]), new Pair<>("%AMOUNT%", args[2]));
                         } else {
-                            api.sendPlayerMessage(p, "$commands.give.success$", new String[]{"%PLAYER%", args[0]}, new String[]{"%ITEM%", args[1]});
+                            api.getChat().sendPlayerMessage(p, "$commands.give.success$", new Pair<>("%PLAYER%", args[0]), new Pair<>("%ITEM%", args[1]));
                         }
                     } else {
-                        api.sendPlayerMessage(p, "$commands.give.invalid_item$", new String[]{"%ITEM%", args[1]});
+                        api.getChat().sendPlayerMessage(p, "$commands.give.invalid_item$", new Pair<>("%ITEM%", args[1]));
                     }
                 }
             }
@@ -71,7 +72,7 @@ public class GiveSubCommand extends AbstractSubCommand {
             if (args.length >= 2) {
                 Player target = Bukkit.getPlayer(args[0]);
                 if (target == null) {
-                    api.sendConsoleMessage("$commands.give.player_offline$", args[0]);
+                    api.getChat().sendConsoleMessage("$commands.give.player_offline$", args[0]);
                     return true;
                 }
                 NamespacedKey namespacekey = NamespacedKey.getByString(args[1]);
@@ -80,7 +81,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                     try {
                         amount = Integer.parseInt(args[2]);
                     } catch (NumberFormatException ex) {
-                        api.sendConsoleMessage("$commands.give.invalid_amount$");
+                        api.getChat().sendConsoleMessage("$commands.give.invalid_amount$");
                     }
                 }
                 CustomItem customItem = CustomItems.getCustomItem(namespacekey);
@@ -89,15 +90,15 @@ public class GiveSubCommand extends AbstractSubCommand {
                         ItemStack itemStack = customItem.create(amount);
                         target.getInventory().addItem(itemStack);
                         if (amount > 1) {
-                            api.sendConsoleMessage("$commands.give.success_amount$", args[2], args[1], args[0]);
+                            api.getChat().sendConsoleMessage("$commands.give.success_amount$", args[2], args[1], args[0]);
                         } else {
-                            api.sendConsoleMessage("$commands.give.success$", args[1], args[0]);
+                            api.getChat().sendConsoleMessage("$commands.give.success$", args[1], args[0]);
                         }
                     } else {
-                        api.sendConsoleMessage("$commands.give.no_inv_space$");
+                        api.getChat().sendConsoleMessage("$commands.give.no_inv_space$");
                     }
                 } else {
-                    api.sendConsoleMessage("$commands.give.invalid_item$", args[1]);
+                    api.getChat().sendConsoleMessage("$commands.give.invalid_item$", args[1]);
                 }
             }
         }

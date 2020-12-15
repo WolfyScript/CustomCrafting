@@ -4,9 +4,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.events.GuiCloseEvent;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.events.GuiCloseEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class CraftingWindow extends ExtendedGuiWindow {
 
-    public CraftingWindow(String namespace, int size, InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super(namespace, inventoryAPI, size, customCrafting);
+    public CraftingWindow(GuiCluster<TestCache> cluster, String namespace, int size, CustomCrafting customCrafting) {
+        super(cluster, namespace, size, customCrafting);
         setForceSyncUpdate(true);
     }
 

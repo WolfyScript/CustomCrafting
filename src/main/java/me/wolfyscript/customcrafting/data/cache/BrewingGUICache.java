@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.utilities.api.utils.Pair;
+import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 

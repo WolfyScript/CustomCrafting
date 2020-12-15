@@ -4,18 +4,18 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CacheButtonAction;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
-import me.wolfyscript.utilities.api.inventory.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.utils.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 public class EditorMain extends ExtendedGuiWindow {
 
-    public EditorMain(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("editor_main", inventoryAPI, 54, customCrafting);
+    public EditorMain(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "editor_main", 54, customCrafting);
     }
 
     @Override
@@ -37,9 +37,9 @@ public class EditorMain extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<TestCache> update) {
         super.onUpdateAsync(update);
-        GuiHandler<TestCache> guiHandler = update.getGuiHandler(TestCache.class);
+        GuiHandler<TestCache> guiHandler = update.getGuiHandler();
         TestCache cache = guiHandler.getCustomCache();
         update.setButton(0, "back");
         update.setButton(20, "main_categories");

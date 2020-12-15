@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 

@@ -30,14 +30,14 @@ public class Workbenches {
     private List<String> furnaces = new ArrayList<>();
 
     public Workbenches(CustomCrafting customCrafting) {
-        this.api = WolfyUtilities.getAPI(customCrafting);
+        this.api = WolfyUtilities.get(customCrafting);
         this.customCrafting = customCrafting;
         load();
         task = Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> {
             if (customCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
-                api.sendConsoleMessage("[$msg.auto_save.start$]");
+                api.getChat().sendConsoleMessage("[$msg.auto_save.start$]");
                 save();
-                api.sendConsoleMessage("[$msg.auto_save.complete$]");
+                api.getChat().sendConsoleMessage("[$msg.auto_save.complete$]");
             } else {
                 save();
             }

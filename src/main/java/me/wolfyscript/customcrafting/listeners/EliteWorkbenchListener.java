@@ -3,8 +3,9 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.custom_items.CustomItems;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class EliteWorkbenchListener implements Listener {
 
-    private WolfyUtilities api;
+    private final WolfyUtilities api;
 
     public EliteWorkbenchListener(WolfyUtilities api) {
         this.api = api;
@@ -33,7 +34,7 @@ public class EliteWorkbenchListener implements Listener {
                         event.setUseInteractedBlock(Event.Result.DENY);
                         event.getPlayer().closeInventory();
                         ((TestCache) api.getInventoryAPI().getGuiHandler(event.getPlayer()).getCustomCache()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
-                        api.getInventoryAPI().getGuiHandler(event.getPlayer()).changeToInv("crafting", "crafting_grid" + eliteWorkbench.getGridSize());
+                        api.getInventoryAPI().getGuiHandler(event.getPlayer()).changeToInv(new NamespacedKey("crafting", "crafting_grid" + eliteWorkbench.getGridSize()));
                     }
                 }
             }

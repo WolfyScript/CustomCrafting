@@ -5,17 +5,17 @@ import me.wolfyscript.customcrafting.data.PlayerStatistics;
 import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CookingContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.utilities.api.inventory.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.InventoryAPI;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.utils.inventory.InventoryUtils;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Material;
 
 public class CookingCreator extends RecipeCreator {
 
-    public CookingCreator(InventoryAPI inventoryAPI, CustomCrafting customCrafting) {
-        super("cooking", inventoryAPI, 45, customCrafting);
+    public CookingCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "cooking", 45, customCrafting);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CookingCreator extends RecipeCreator {
             try {
                 xp = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().setExp(xp);
@@ -47,7 +47,7 @@ public class CookingCreator extends RecipeCreator {
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
             ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().setCookingTime(time);
