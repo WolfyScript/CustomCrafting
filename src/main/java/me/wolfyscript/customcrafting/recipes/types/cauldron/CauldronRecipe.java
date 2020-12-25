@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.cauldron;
 
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -268,7 +268,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
     }
 
     @Override
-    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         List<CustomItem> ingredients = getIngredients();
         int invSlot;
         for (int i = 0; i < 6; i++) {
@@ -283,25 +283,25 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(0, "back");
         int invSlot;
         for (int i = 0; i < 6; i++) {
             invSlot = 10 + i + (i / 3) * 6;
-            event.setButton(invSlot, "recipe_book", "ingredient.container_" + invSlot);
+            event.setButton(invSlot, new NamespacedKey("recipe_book", "ingredient.container_" + invSlot));
         }
         List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
         for (Condition condition : conditions) {
             if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
-                event.setButton(36 + startSlot + slot, "recipe_book", "conditions." + condition.getId());
+                event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
                 slot += 2;
             }
         }
-        event.setButton(23, "recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled");
-        event.setButton(32, "recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled");
-        event.setButton(25, "recipe_book", "ingredient.container_25");
+        event.setButton(23, new NamespacedKey("recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled"));
+        event.setButton(32, new NamespacedKey("recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
+        event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_25"));
     }
 
     public void setMythicMob(String name, int level, double modX, double modY, double modZ) {

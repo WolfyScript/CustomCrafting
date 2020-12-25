@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.grindstone;
 
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
@@ -173,23 +173,24 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
     }
 
     @Override
-    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getInputTop());
         ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, getInputBottom());
         ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResults());
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(0, "back");
-        event.setButton(11, "recipe_book", "ingredient.container_11");
-        event.setButton(12, "none", "glass_green");
-        event.setButton(21, "none", "glass_green");
-        event.setButton(22, "recipe_book", "grindstone");
-        event.setButton(23, "none", "glass_green");
-        event.setButton(24, "recipe_book", "ingredient.container_24");
-        event.setButton(29, "recipe_book", "ingredient.container_29");
-        event.setButton(30, "none", "glass_green");
+        NamespacedKey glass = new NamespacedKey("none", "glass_green");
+        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
+        event.setButton(12, glass);
+        event.setButton(21, glass);
+        event.setButton(22, new NamespacedKey("recipe_book", "grindstone"));
+        event.setButton(23, glass);
+        event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
+        event.setButton(29, new NamespacedKey("recipe_book", "ingredient.container_29"));
+        event.setButton(30, glass);
 
         ItemStack whiteGlass = event.getInventory().getItem(53);
         ItemMeta itemMeta = whiteGlass.getItemMeta();

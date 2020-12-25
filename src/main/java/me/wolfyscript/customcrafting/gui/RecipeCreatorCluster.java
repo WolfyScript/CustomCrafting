@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
@@ -11,7 +11,7 @@ import org.bukkit.Material;
 
 public class RecipeCreatorCluster extends CCCluster {
 
-    public RecipeCreatorCluster(InventoryAPI<TestCache> inventoryAPI, CustomCrafting customCrafting) {
+    public RecipeCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, "recipe_creator", customCrafting);
     }
 
@@ -29,8 +29,8 @@ public class RecipeCreatorCluster extends CCCluster {
         registerGuiWindow(new ConditionsMenu(this, customCrafting));
         registerGuiWindow(new VariantMenu(this, customCrafting));
 
-        registerButton(new ActionButton<>("conditions", Material.CYAN_CONCRETE_POWDER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("conditions");
+        registerButton(new ActionButton<>("conditions", Material.CYAN_CONCRETE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openWindow("conditions");
             return true;
         }));
     }

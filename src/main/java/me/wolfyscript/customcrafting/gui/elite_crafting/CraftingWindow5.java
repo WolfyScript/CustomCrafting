@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.ResultSlotButton;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class CraftingWindow5 extends CraftingWindow {
 
-    public CraftingWindow5(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public CraftingWindow5(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "crafting_grid5", 45, customCrafting);
     }
 
@@ -24,15 +24,17 @@ public class CraftingWindow5 extends CraftingWindow {
             registerButton(new CraftingSlotButton(i, customCrafting));
         }
         registerButton(new ResultSlotButton(customCrafting));
-        registerButton(new DummyButton("texture_light", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9005)));
-        registerButton(new DummyButton("texture_dark", new ButtonState("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9015)));
+        //registerButton(new DummyButton<>("texture_light", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9005)));
+        //registerButton(new DummyButton<>("texture_dark", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9015)));
+        registerButton(new DummyButton<>("texture_dark", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>("texture_light", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE)));
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate event) {
+    public void onUpdateSync(GuiUpdate<CCCache> event) {
         super.onUpdateSync(event);
 
-        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        CCCache cache = event.getGuiHandler().getCustomCache();
         EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
         if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
             eliteWorkbench.setCurrentGridSize(5);

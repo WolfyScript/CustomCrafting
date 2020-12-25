@@ -32,7 +32,7 @@ import org.bukkit.potion.PotionEffect;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-public class TestCache extends CustomCache {
+public class CCCache extends CustomCache {
 
     private Setting setting;
 
@@ -58,7 +58,7 @@ public class TestCache extends CustomCache {
 
     private RecipeType<?> recipeType;
 
-    public TestCache() {
+    public CCCache() {
         this.customCrafting = CustomCrafting.getInst();
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";

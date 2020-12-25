@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -9,19 +9,19 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GrindstoneContainerButton extends ItemInputButton<TestCache> {
+public class GrindstoneContainerButton extends ItemInputButton<CCCache> {
 
     public GrindstoneContainerButton(int inputSlot, CustomCrafting customCrafting) {
-        super("grindstone.container_" + inputSlot, new ButtonState<>("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
-            TestCache cache = guiHandler.getCustomCache();
+        super("grindstone.container_" + inputSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             GrindstoneRecipe grindstone = cache.getGrindstoneRecipe();
 
-            if (event.isRightClick() && event.isShiftClick()) {
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 List<CustomItem> variants = new ArrayList<>();
 
                 switch (inputSlot) {
@@ -42,7 +42,7 @@ public class GrindstoneContainerButton extends ItemInputButton<TestCache> {
                 }
                 cache.getVariantsData().setSlot(inputSlot);
                 cache.getVariantsData().setVariants(variants);
-                guiHandler.changeToInv("variants");
+                guiHandler.openWindow("variants");
                 return true;
             } else {
                 Bukkit.getScheduler().runTask(customCrafting, () -> {
@@ -60,8 +60,7 @@ public class GrindstoneContainerButton extends ItemInputButton<TestCache> {
                 });
             }
             return false;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            TestCache cache = guiHandler.getCustomCache();
+        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             GrindstoneRecipe grindstone = cache.getGrindstoneRecipe();
             switch (inputSlot) {
                 case 0:

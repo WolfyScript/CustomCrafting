@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -154,7 +154,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         int startSlot = 10;
         int gridSize = 3;
         if (this instanceof EliteCraftingRecipe) {
@@ -171,16 +171,17 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(0, "back");
         if (!getIngredients().isEmpty()) {
             if (getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
+                NamespacedKey glass = new NamespacedKey("none", "glass_purple");
                 for (int i = 1; i < 9; i++) {
-                    event.setButton(i, "none", "glass_purple");
+                    event.setButton(i, glass);
                 }
                 for (int i = 36; i < 45; i++) {
-                    event.setButton(i, "none", "glass_purple");
+                    event.setButton(i, glass);
                 }
             }
             if (getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT)) {
@@ -191,17 +192,17 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
             int slot = 0;
             for (Condition condition : conditions) {
                 if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
-                    event.setButton(36 + startSlot + slot, "recipe_book", "conditions." + condition.getId());
+                    event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
                     slot += 2;
                 }
             }
-            event.setButton(23, "recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+            event.setButton(23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             int invSlot;
             for (int i = 0; i < 9; i++) {
                 invSlot = 10 + i + (i / 3) * 6;
-                event.setButton(invSlot, "recipe_book", "ingredient.container_" + invSlot);
+                event.setButton(invSlot, new NamespacedKey("recipe_book", "ingredient.container_" + invSlot));
             }
-            event.setButton(25, "recipe_book", "ingredient.container_25");
+            event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_25"));
         }
     }
 

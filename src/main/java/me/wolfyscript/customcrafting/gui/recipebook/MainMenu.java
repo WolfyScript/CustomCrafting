@@ -2,17 +2,17 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.MainCategoryButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
-public class MainMenu extends ExtendedGuiWindow {
+public class MainMenu extends CCWindow {
 
-    public MainMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 18, customCrafting);
     }
 
@@ -27,7 +27,12 @@ public class MainMenu extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(8, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");

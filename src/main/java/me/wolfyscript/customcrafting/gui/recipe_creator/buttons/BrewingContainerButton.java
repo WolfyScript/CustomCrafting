@@ -1,26 +1,26 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
-import org.bukkit.Bukkit;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrewingContainerButton extends ItemInputButton<TestCache> {
+public class BrewingContainerButton extends ItemInputButton<CCCache> {
 
     public BrewingContainerButton(int recipeSlot, CustomCrafting customCrafting) {
-        super("brewing.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
-            TestCache cache = guiHandler.getCustomCache();
+        super("brewing.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
-            if (event.isRightClick() && event.isShiftClick()) {
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 List<CustomItem> variants = new ArrayList<>();
                 switch (recipeSlot) {
                     case 0:
@@ -36,48 +36,50 @@ public class BrewingContainerButton extends ItemInputButton<TestCache> {
                 if (variants == null) variants = new ArrayList<>();
                 cache.getVariantsData().setSlot(recipeSlot);
                 cache.getVariantsData().setVariants(variants);
-                guiHandler.changeToInv("variants");
+                guiHandler.openWindow("variants");
                 return true;
-            } else {
-                Bukkit.getScheduler().runTask(customCrafting, () -> {
-                    CustomItem customItem = new CustomItem(Material.AIR);
-                    if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
-                        customItem = CustomItem.getReferenceByItemStack(inventory.getItem(slot));
-                    }
-                    List<CustomItem> inputs;
-                    switch (recipeSlot) {
-                        case 0:
-                            inputs = brewingRecipe.getIngredients();
-                            if (inputs.size() > 0) {
-                                inputs.set(0, customItem);
-                            } else {
-                                inputs.add(customItem);
-                            }
-                            brewingRecipe.setIngredients(inputs);
-                            break;
-                        case 1:
-                            inputs = brewingRecipe.getAllowedItems();
-                            if (inputs.size() > 0) {
-                                inputs.set(0, customItem);
-                            } else {
-                                inputs.add(customItem);
-                            }
-                            brewingRecipe.setAllowedItems(inputs);
-                            break;
-                        case 2:
-                            inputs = brewingRecipe.getResults();
-                            if (inputs.size() > 0) {
-                                inputs.set(0, customItem);
-                            } else {
-                                inputs.add(customItem);
-                            }
-                            brewingRecipe.setResult(inputs);
-                            break;
-                    }
-                });
             }
             return false;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
+        },(cache, guiHandler, player, guiInventory, itemStack, i, event) -> {
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
+                return;
+            }
+            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+            CustomItem customItem = new CustomItem(Material.AIR);
+            if (!ItemUtils.isAirOrNull(itemStack)) {
+                customItem = CustomItem.getReferenceByItemStack(itemStack);
+            }
+            List<CustomItem> inputs;
+            switch (recipeSlot) {
+                case 0:
+                    inputs = brewingRecipe.getIngredients();
+                    if (inputs.size() > 0) {
+                        inputs.set(0, customItem);
+                    } else {
+                        inputs.add(customItem);
+                    }
+                    brewingRecipe.setIngredients(inputs);
+                    break;
+                case 1:
+                    inputs = brewingRecipe.getAllowedItems();
+                    if (inputs.size() > 0) {
+                        inputs.set(0, customItem);
+                    } else {
+                        inputs.add(customItem);
+                    }
+                    brewingRecipe.setAllowedItems(inputs);
+                    break;
+                case 2:
+                    inputs = brewingRecipe.getResults();
+                    if (inputs.size() > 0) {
+                        inputs.set(0, customItem);
+                    } else {
+                        inputs.add(customItem);
+                    }
+                    brewingRecipe.setResult(inputs);
+                    break;
+            }
+        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             BrewingRecipe brewingRecipe = guiHandler.getCustomCache().getBrewingRecipe();
             switch (recipeSlot) {
                 case 0:

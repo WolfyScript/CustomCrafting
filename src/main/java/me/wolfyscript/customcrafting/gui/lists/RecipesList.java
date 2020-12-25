@@ -2,9 +2,8 @@ package me.wolfyscript.customcrafting.gui.lists;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
-import me.wolfyscript.customcrafting.data.CacheButtonAction;
-import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.lists.buttons.RecipeListContainerButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListNamespaceButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
@@ -23,19 +22,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class RecipesList extends ExtendedGuiWindow {
+public class RecipesList extends CCWindow {
 
-    private final HashMap<GuiHandler<TestCache>, Integer> pages = new HashMap<>();
-    private final HashMap<GuiHandler<TestCache>, String> namespaces = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, Integer> pages = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, String> namespaces = new HashMap<>();
     private static int maxPages = 0;
 
-    public RecipesList(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public RecipesList(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "recipe_list", 54, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, slot, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
             pages.put(guiHandler, 0);
             for (int i = 0; i < 45; i++) {
                 RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + i);
@@ -43,19 +42,19 @@ public class RecipesList extends ExtendedGuiWindow {
                 button.setRecipe(guiHandler, null);
             }
             if (namespaces.getOrDefault(guiHandler, "").isEmpty()) {
-                guiHandler.openPreviousInv();
+                guiHandler.openPreviousWindow();
                 return true;
             }
             namespaces.put(guiHandler, "");
             return true;
         })));
-        registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
             if (pages.getOrDefault(guiHandler, 0) + 1 < getMaxPages()) {
                 pages.put(guiHandler, pages.getOrDefault(guiHandler, 0) + 1);
             }
             return true;
         }));
-        registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
             if (pages.getOrDefault(guiHandler, 0) > 0) {
                 pages.put(guiHandler, pages.getOrDefault(guiHandler, 0) - 1);
             }
@@ -69,10 +68,15 @@ public class RecipesList extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
-        Category category = ((ItemCategoryButton) event.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
+        GuiHandler<CCCache> guiHandler = event.getGuiHandler();
+        Category category = ((ItemCategoryButton) guiHandler.getInvAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
         int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
         event.setButton(0, "back");
         event.setButton(4, "recipe_book", "itemCategory");
@@ -128,11 +132,11 @@ public class RecipesList extends ExtendedGuiWindow {
         return maxPages;
     }
 
-    public void setPage(GuiHandler<TestCache> guiHandler, int page) {
+    public void setPage(GuiHandler<CCCache> guiHandler, int page) {
         this.pages.put(guiHandler, page);
     }
 
-    public HashMap<GuiHandler<TestCache>, String> getRecipeNamespaces() {
+    public HashMap<GuiHandler<CCCache>, String> getRecipeNamespaces() {
         return namespaces;
     }
 }

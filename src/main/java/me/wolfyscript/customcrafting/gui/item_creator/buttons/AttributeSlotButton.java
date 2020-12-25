@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
@@ -11,15 +11,15 @@ import org.bukkit.inventory.ItemFlag;
 
 import java.util.Locale;
 
-public class AttributeSlotButton extends ActionButton {
+public class AttributeSlotButton extends ActionButton<CCCache> {
 
-    public AttributeSlotButton(EquipmentSlot slot, Material material) {
-        super("attribute.slot_"+slot.toString().toLowerCase(Locale.ROOT), material, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            Items items = ((TestCache) guiHandler.getCustomCache()).getItems();
-            items.setAttributeSlot(items.getAttributeSlot() == null ? slot : (items.getAttributeSlot().equals(slot) ? null : slot));
+    public AttributeSlotButton(EquipmentSlot equipmentSlot, Material material) {
+        super("attribute.slot_"+equipmentSlot.toString().toLowerCase(Locale.ROOT), material, (cache, guiHandler, player, inventory, slot, event) -> {
+            Items items = guiHandler.getCustomCache().getItems();
+            items.setAttributeSlot(items.getAttributeSlot() == null ? equipmentSlot : (items.getAttributeSlot().equals(equipmentSlot) ? null : equipmentSlot));
             return true;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            if (((TestCache) guiHandler.getCustomCache()).getItems().isAttributeSlot(slot)) {
+        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+            if (guiHandler.getCustomCache().getItems().isAttributeSlot(equipmentSlot)) {
                 return new ItemBuilder(itemStack).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create();
             }
             return itemStack;

@@ -1,8 +1,12 @@
 package me.wolfyscript.customcrafting.configs.custom_data;
 
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.custom_data.CustomData;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -11,8 +15,8 @@ public class KnowledgeBookData extends CustomData implements Cloneable {
 
     private boolean enabled;
 
-    public KnowledgeBookData() {
-        super("knowledge_book");
+    protected KnowledgeBookData(NamespacedKey namespacedKey) {
+        super(namespacedKey);
         this.enabled = false;
     }
 
@@ -25,27 +29,13 @@ public class KnowledgeBookData extends CustomData implements Cloneable {
     }
 
     @Override
-    public CustomData getDefaultCopy() {
-        return new KnowledgeBookData();
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen) throws IOException {
+    public void writeToJson(CustomItem customItem, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         gen.writeBooleanField("enabled", enabled);
     }
 
     @Override
-    public CustomData readFromJson(JsonNode node) throws IOException {
-        KnowledgeBookData knowledgeBookData = new KnowledgeBookData();
-        knowledgeBookData.setEnabled(node.get("enabled").asBoolean(false));
-        return knowledgeBookData;
-    }
-
-    @Override
-    public KnowledgeBookData clone() {
-        KnowledgeBookData knowledgeBookData = new KnowledgeBookData();
-        knowledgeBookData.setEnabled(isEnabled());
-        return knowledgeBookData;
+    protected void readFromJson(JsonNode node, DeserializationContext deserializationContext) throws IOException {
+        setEnabled(node.get("enabled").asBoolean(false));
     }
 
     @Override
@@ -60,5 +50,13 @@ public class KnowledgeBookData extends CustomData implements Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), enabled);
+    }
+
+    public static class Provider extends CustomData.Provider<KnowledgeBookData> {
+
+        public Provider() {
+            super(new NamespacedKey("customcrafting", "knowledge_book"), KnowledgeBookData.class);
+        }
+
     }
 }

@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
@@ -44,11 +44,11 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRe
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(6, "back");
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         if (!getIngredients().isEmpty()) {
-            event.setButton(24, "recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off");
+            event.setButton(24, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             if (getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT)) {
 
             }
@@ -57,7 +57,7 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRe
             int slot = 0;
             for (Condition condition : conditions) {
                 if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
-                    event.setButton(36 + startSlot + slot, "recipe_book", "conditions." + condition.getId());
+                    event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
                     slot += 2;
                 }
             }
@@ -66,9 +66,9 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRe
             int invSlot;
             for (int i = 0; i < gridSize * gridSize; i++) {
                 invSlot = startSlot + i + (i / gridSize) * 3;
-                event.setButton(invSlot, "recipe_book", "ingredient.container_" + invSlot);
+                event.setButton(invSlot, new NamespacedKey("recipe_book", "ingredient.container_" + invSlot));
             }
-            event.setButton(25, "recipe_book", "ingredient.container_25");
+            event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_25"));
         }
     }
 

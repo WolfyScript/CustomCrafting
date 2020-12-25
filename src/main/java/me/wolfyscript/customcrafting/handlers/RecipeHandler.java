@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.*;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
@@ -144,7 +144,7 @@ public class RecipeHandler {
                                 Particles particles = new Particles(api, subfolder, File.separator + "recipes");
                                 particles.load();
                                 particlesList.add(particles);
-                                ParticleEffects particleEffects = new ParticleEffects(customCrafting, subfolder, File.separator + "recipes");
+                                ParticleEffects particleEffects = new ParticleEffects(api, subfolder, File.separator + "recipes");
                                 particleEffects.load();
                                 particleEffectsList.add(particleEffects);
                                 break;
@@ -526,7 +526,7 @@ public class RecipeHandler {
     }
 
     public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<?> guiHandler) {
-        TestCache cache = (TestCache) guiHandler.getCustomCache();
+        CCCache cache = (CCCache) guiHandler.getCustomCache();
         if (cache.getRecipeType().equals(recipe.getRecipeType())) {
             ICustomRecipe<?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());

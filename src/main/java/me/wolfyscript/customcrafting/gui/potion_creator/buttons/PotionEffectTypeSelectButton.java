@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.gui.potion_creator.buttons;
 
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -16,23 +16,23 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Locale;
 import java.util.Random;
 
-public class PotionEffectTypeSelectButton extends ActionButton {
+public class PotionEffectTypeSelectButton extends ActionButton<CCCache> {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
     public PotionEffectTypeSelectButton(PotionEffectType effectType) {
-        super("potion_effect_type_" + effectType.getName().toLowerCase(), new ButtonState("effect_type", Material.POTION, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PotionEffects potionEffectCache = ((TestCache) guiHandler.getCustomCache()).getPotionEffectCache();
+        super("potion_effect_type_" + effectType.getName().toLowerCase(), new ButtonState<>("effect_type", Material.POTION, (cache, guiHandler, player, inventory, slot, event) -> {
+            PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
             if (potionEffectCache.getApplyPotionEffectType() != null) {
-                potionEffectCache.getApplyPotionEffectType().applyPotionEffect((TestCache) guiHandler.getCustomCache(), effectType);
+                potionEffectCache.getApplyPotionEffectType().applyPotionEffect(guiHandler.getCustomCache(), effectType);
             }
             if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
-                guiHandler.changeToInv(new NamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
+                guiHandler.openWindow(new NamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));
             } else {
-                guiHandler.changeToInv(potionEffectCache.getOpenedFromWindow());
+                guiHandler.openWindow(potionEffectCache.getOpenedFromWindow());
             }
             return true;
-        }, (replacements, guiHandler, player, itemStack, i, b) -> getPotionEffectTypeItem(effectType)));
+        }, (replacements, cache, guiHandler, player, inventory, itemStack, i, b) -> getPotionEffectTypeItem(effectType)));
     }
 
     private static ItemStack getPotionEffectTypeItem(PotionEffectType type) {

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types.smithing;
 
 import com.google.common.collect.Streams;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
@@ -99,20 +99,20 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
     }
 
     @Override
-    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, getBase());
         ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, getAddition());
         ((IngredientContainerButton) cluster.getButton("ingredient.container_23")).setVariants(guiHandler, getResults());
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(0, "back");
 
-        event.setButton(19, "recipe_book", "ingredient.container_10");
-        event.setButton(21, "recipe_book", "ingredient.container_13");
-        event.setButton(23, "recipe_book", "smithing");
-        event.setButton(25, "recipe_book", "ingredient.container_23");
+        event.setButton(19, new NamespacedKey("recipe_book", "ingredient.container_10"));
+        event.setButton(21, new NamespacedKey("recipe_book", "ingredient.container_13"));
+        event.setButton(23, new NamespacedKey("recipe_book", "smithing"));
+        event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_23"));
     }
 
     @Override

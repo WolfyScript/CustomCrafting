@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.elite_crafting.*;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class EliteCraftingCluster extends CCCluster {
 
-    public EliteCraftingCluster(InventoryAPI<TestCache> inventoryAPI, CustomCrafting customCrafting) {
+    public EliteCraftingCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, "crafting", customCrafting);
     }
 
@@ -27,14 +27,13 @@ public class EliteCraftingCluster extends CCCluster {
         registerGuiWindow(new CraftingWindow6(this, customCrafting));
         registerGuiWindow(new CraftingRecipeBook(this, customCrafting));
         setEntry(new NamespacedKey("crafting", "crafting_3"));
-        registerButton(new ActionButton("knowledge_book", new ButtonState("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
+        registerButton(new ActionButton<>("knowledge_book", new ButtonState<>("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
             knowledgeBook.setRecipeItems(new ArrayList<>());
             knowledgeBook.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
             knowledgeBook.setRecipeItems(new ArrayList<>());
-            guiHandler.changeToInv("recipe_book");
+            guiHandler.openWindow("recipe_book");
             return true;
         })));
     }

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -26,7 +26,6 @@ public class ChatUtils {
 
     private static final WolfyUtilities api = CustomCrafting.getApi();
     private final CustomCrafting customCrafting;
-
 
     public ChatUtils(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -65,7 +64,7 @@ public class ChatUtils {
     }
 
     public static void sendCategoryDescription(Player player) {
-        List<String> description = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeBookEditor().getCategory().getDescription();
+        List<String> description = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeBookEditor().getCategory().getDescription();
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
@@ -90,7 +89,7 @@ public class ChatUtils {
     }
 
     public static void sendLoreManager(Player player) {
-        ItemMeta itemMeta = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().getItemMeta();
+        ItemMeta itemMeta = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().getItemMeta();
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
@@ -106,7 +105,7 @@ public class ChatUtils {
                 api.getChat().sendActionMessage(player, new ClickData("§7[§4-§7] ", (wolfyUtilities, player1) -> {
                     lore.remove(finalI);
                     itemMeta.setLore(lore);
-                    ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
+                    ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().setItemMeta(itemMeta);
                     sendLoreManager(player1);
                 }, true), new ClickData(line, null));
                 i++;
@@ -120,7 +119,7 @@ public class ChatUtils {
     }
 
     public static void sendAttributeModifierManager(Player player) {
-        TestCache cache = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
+        CCCache cache = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
         Items items = cache.getItems();
         ItemMeta itemMeta = items.getItem().getItemMeta();
         for (int i = 0; i < 15; i++) {
@@ -136,7 +135,7 @@ public class ChatUtils {
                 for (AttributeModifier modifier : modifiers) {
                     api.getChat().sendActionMessage(player,
                             new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
-                                TestCache cache1 = (TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
+                                CCCache cache1 = (CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
                                 itemMeta.removeAttributeModifier(Attribute.valueOf(cache1.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)), modifier);
                                 cache1.getItems().getItem().setItemMeta(itemMeta);
                                 sendAttributeModifierManager(player1);
@@ -180,12 +179,12 @@ public class ChatUtils {
     }
 
     public void sendRecipeListExpanded(Player player) {
-        sendRecipeList(player, customCrafting.getRecipeHandler().getRecipes(((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeType()));
+        sendRecipeList(player, customCrafting.getRecipeHandler().getRecipes(((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeType()));
         api.getChat().sendPlayerMessage(player, "none", "recipe_editor", "input");
     }
 
     public void sendRecipeList(Player player, List<? extends ICustomRecipe<?>> customRecipes) {
-        TestCache cache = (TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
+        CCCache cache = (CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }

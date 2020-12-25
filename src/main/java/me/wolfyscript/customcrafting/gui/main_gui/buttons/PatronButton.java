@@ -3,10 +3,11 @@ package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
-public class PatronButton extends DummyButton<TestCache> {
+public class PatronButton extends DummyButton<CCCache> {
 
     private ItemStack head;
 
@@ -72,7 +73,7 @@ public class PatronButton extends DummyButton<TestCache> {
     }
 
     @Override
-    public void render(GuiHandler<TestCache> guiHandler, Player player, Inventory inventory, int slot, boolean help) {
+    public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         inventory.setItem(slot, head);
     }
 

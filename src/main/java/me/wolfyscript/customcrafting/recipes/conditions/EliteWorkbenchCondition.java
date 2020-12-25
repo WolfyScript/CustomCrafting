@@ -10,6 +10,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.custom_items.api_references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class EliteWorkbenchCondition extends Condition {
 
-    private final List<String> eliteWorkbenches;
+    private final List<NamespacedKey> eliteWorkbenches;
 
     public EliteWorkbenchCondition() {
         super("elite_workbench");
@@ -29,7 +30,7 @@ public class EliteWorkbenchCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
@@ -38,8 +39,8 @@ public class EliteWorkbenchCondition extends Condition {
                 Location location = data.getBlock().getLocation();
                 CustomItem customItem = CustomItems.getStoredBlockItem(location);
                 if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-                    if (eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().toString())) {
-                        EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData("elite_workbench");
+                    if (eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey())) {
+                        EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData(new NamespacedKey("customcrafting","elite_workbench"));
                         return eliteWorkbenchData.isEnabled();
                     }
                 }
@@ -52,8 +53,8 @@ public class EliteWorkbenchCondition extends Condition {
     @Override
     public void writeJson(@NotNull JsonGenerator gen) throws IOException {
         gen.writeArrayFieldStart("elite_workbenches");
-        for (String s : eliteWorkbenches) {
-            gen.writeString(s);
+        for (NamespacedKey s : eliteWorkbenches) {
+            gen.writeString(s.toString());
         }
         gen.writeEndArray();
     }
@@ -63,18 +64,18 @@ public class EliteWorkbenchCondition extends Condition {
         JsonNode array = node.get("elite_workbenches");
         array.elements().forEachRemaining(element -> {
             if(element.isValueNode()){
-                addEliteWorkbenches(element.asText());
+                addEliteWorkbenches(NamespacedKey.getByString(element.asText()));
             }
         });
     }
 
-    public void addEliteWorkbenches(String eliteWorkbenches) {
+    public void addEliteWorkbenches(NamespacedKey eliteWorkbenches) {
         if (!this.eliteWorkbenches.contains(eliteWorkbenches)) {
             this.eliteWorkbenches.add(eliteWorkbenches);
         }
     }
 
-    public List<String> getEliteWorkbenches() {
+    public List<NamespacedKey> getEliteWorkbenches() {
         return eliteWorkbenches;
     }
 
@@ -82,8 +83,8 @@ public class EliteWorkbenchCondition extends Condition {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder(option.toString());
         stringBuilder.append(";");
-        for (String eliteWorkbench : eliteWorkbenches) {
-            stringBuilder.append(eliteWorkbench).append(",");
+        for (NamespacedKey eliteWorkbench : eliteWorkbenches) {
+            stringBuilder.append(eliteWorkbench.toString()).append(",");
         }
         return stringBuilder.toString();
     }

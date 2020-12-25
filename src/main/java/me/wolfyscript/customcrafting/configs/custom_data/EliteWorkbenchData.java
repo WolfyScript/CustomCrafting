@@ -1,8 +1,12 @@
 package me.wolfyscript.customcrafting.configs.custom_data;
 
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.custom_data.CustomData;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -15,13 +19,14 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     private boolean keepItems;
     private int gridSize;
 
-    public EliteWorkbenchData() {
-        super("elite_workbench");
+    protected EliteWorkbenchData(NamespacedKey namespacedKey) {
+        super(namespacedKey);
         this.enabled = false;
         this.gridSize = 3;
         this.allowHoppers = false;
         this.keepItems = false;
     }
+
 
     public boolean isEnabled() {
         return enabled;
@@ -64,12 +69,7 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     }
 
     @Override
-    public CustomData getDefaultCopy() {
-        return new EliteWorkbenchData();
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen) throws IOException {
+    public void writeToJson(CustomItem customItem, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         gen.writeBooleanField("enabled", enabled);
         gen.writeNumberField("gridSize", gridSize);
         gen.writeBooleanField("advancedRecipes", advancedRecipes);
@@ -78,21 +78,10 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     }
 
     @Override
-    public CustomData readFromJson(JsonNode node) throws IOException {
-        EliteWorkbenchData eliteWorkbenchData = new EliteWorkbenchData();
-        eliteWorkbenchData.setEnabled(node.get("enabled").asBoolean(false));
-        eliteWorkbenchData.setGridSize(node.get("gridSize").asInt(3));
-        eliteWorkbenchData.setAdvancedRecipes(node.get("advancedRecipes").asBoolean(false));
-        return eliteWorkbenchData;
-    }
-
-    @Override
-    public EliteWorkbenchData clone() {
-        EliteWorkbenchData eliteWorkbenchData = new EliteWorkbenchData();
-        eliteWorkbenchData.setAdvancedRecipes(isAdvancedRecipes());
-        eliteWorkbenchData.setEnabled(isEnabled());
-        eliteWorkbenchData.setGridSize(getGridSize());
-        return eliteWorkbenchData;
+    protected void readFromJson(JsonNode node, DeserializationContext deserializationContext) throws IOException {
+        setEnabled(node.get("enabled").asBoolean(false));
+        setGridSize(node.get("gridSize").asInt(3));
+        setAdvancedRecipes(node.get("advancedRecipes").asBoolean(false));
     }
 
     @Override
@@ -111,5 +100,23 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), advancedRecipes, enabled, allowHoppers, keepItems, gridSize);
+    }
+
+    @Override
+    public EliteWorkbenchData clone() {
+        try {
+            return (EliteWorkbenchData) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static class Provider extends CustomData.Provider<EliteWorkbenchData> {
+
+        public Provider() {
+            super(new NamespacedKey("customcrafting", "elite_workbench"), EliteWorkbenchData.class);
+        }
+
     }
 }

@@ -1,9 +1,9 @@
 package me.wolfyscript.customcrafting.gui.particle_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.ParticleCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.particle_creator.buttons.ParticleEffectButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -19,30 +19,30 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import java.util.Collection;
 import java.util.Map;
 
-public class MainMenu extends ExtendedGuiWindow {
+public class MainMenu extends CCWindow {
 
-    public MainMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            if (((TestCache) guiHandler.getCustomCache()).getParticleCache().getAction() != null) {
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
+            if (guiHandler.getCustomCache().getParticleCache().getAction() != null) {
                 guiHandler.openCluster("item_creator");
-                ((TestCache) guiHandler.getCustomCache()).getParticleCache().setAction(null);
+                guiHandler.getCustomCache().getParticleCache().setAction(null);
             } else {
                 guiHandler.openCluster("none");
             }
             return true;
         })));
-        registerButton(new ActionButton("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ParticleCache book = ((TestCache) guiHandler.getCustomCache()).getParticleCache();
+        registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ParticleCache book = guiHandler.getCustomCache().getParticleCache();
             book.setPage(book.getPage() + 1);
             return true;
         }));
-        registerButton(new ActionButton("previous_page",  PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ParticleCache book = ((TestCache) guiHandler.getCustomCache()).getParticleCache();
+        registerButton(new ActionButton<>("previous_page",  PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ParticleCache book = guiHandler.getCustomCache().getParticleCache();
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
         }));
@@ -52,10 +52,15 @@ public class MainMenu extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        GuiHandler<TestCache> guiHandler = event.getGuiHandler();
-        TestCache cache = guiHandler.getCustomCache();
+        GuiHandler<CCCache> guiHandler = event.getGuiHandler();
+        CCCache cache = guiHandler.getCustomCache();
         ParticleCache particleCache = cache.getParticleCache();
 
         event.setButton(0, "back");

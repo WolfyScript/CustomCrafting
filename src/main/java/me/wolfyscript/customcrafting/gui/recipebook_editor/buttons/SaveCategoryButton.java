@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -12,24 +12,23 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class SaveCategoryButton extends ActionButton {
+import java.io.IOException;
 
-    private final CustomCrafting customCrafting;
+public class SaveCategoryButton extends ActionButton<CCCache> {
 
     public SaveCategoryButton(boolean saveAs, CustomCrafting customCrafting) {
-        super(saveAs ? "save_as" : "save", new ButtonState("recipe_book_editor", saveAs ? "save_as" : "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
+        super(saveAs ? "save_as" : "save", new ButtonState<>("recipe_book_editor", saveAs ? "save_as" : "save", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             RecipeBookEditor recipeBookEditor = cache.getRecipeBookEditor();
             RecipeBook recipeBook = customCrafting.getConfigHandler().getRecipeBook();
-            GuiWindow<?> guiWindow = guiHandler.getCurrentInv();
-            WolfyUtilities api = guiHandler.getCurrentInv().getAPI();
+            GuiWindow<CCCache> guiWindow = inventory.getWindow();
+            WolfyUtilities api = guiHandler.getApi();
 
             if (saveAs) {
-                guiWindow.openChat("recipe_book_editor", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                guiWindow.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_book_editor"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     if (s != null && !s.isEmpty()) {
                         if (recipeBookEditor.setCategoryID(s)) {
                             if (saveRecipe(recipeBookEditor, recipeBook, api, player1)) {
-                                guiHandler1.openPreviousInv();
+                                guiHandler1.openPreviousWindow();
                                 return true;
                             }
                             api.getChat().sendPlayerMessage(player1, "recipe_book_editor", "save.error");
@@ -41,14 +40,13 @@ public class SaveCategoryButton extends ActionButton {
                 return true;
             } else if (recipeBookEditor.hasCategoryID()) {
                 if (saveRecipe(recipeBookEditor, recipeBook, api, player)) {
-                    guiHandler.openPreviousInv();
+                    guiHandler.openPreviousWindow();
                 } else {
                     api.getChat().sendPlayerMessage(player, "recipe_book_editor", "save.error");
                 }
             }
             return true;
         }));
-        this.customCrafting = customCrafting;
     }
 
     private static boolean saveRecipe(RecipeBookEditor recipeBookEditor, RecipeBook recipeBook, WolfyUtilities api, Player player) {
@@ -63,7 +61,13 @@ public class SaveCategoryButton extends ActionButton {
         }
         recipeBookEditor.setCategory(null);
         recipeBookEditor.setCategoryID("");
-        api.getChat().sendPlayerMessage(player, "recipe_book_editor", "save.success");
-        return true;
+        try {
+            recipeBook.save();
+            api.getChat().sendPlayerMessage(player, "recipe_book_editor", "save.success");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

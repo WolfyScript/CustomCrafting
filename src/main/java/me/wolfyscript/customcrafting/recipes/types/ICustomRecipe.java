@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -147,9 +147,9 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
 
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 
-    void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event);
+    void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event);
 
-    void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster);
+    void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster);
 
     class Serializer extends StdSerializer<ICustomRecipe> {
 

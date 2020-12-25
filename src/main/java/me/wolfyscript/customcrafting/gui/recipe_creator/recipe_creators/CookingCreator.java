@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CookingContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -14,7 +14,7 @@ import org.bukkit.Material;
 
 public class CookingCreator extends RecipeCreator {
 
-    public CookingCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public CookingCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "cooking", 45, customCrafting);
     }
 
@@ -25,8 +25,8 @@ public class CookingCreator extends RecipeCreator {
         registerButton(new CookingContainerButton(0, customCrafting));
         registerButton(new CookingContainerButton(1, customCrafting));
 
-        registerButton(new ChatInputButton("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%XP%", ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().getExp());
+        registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+            hashMap.put("%XP%", guiHandler.getCustomCache().getCookingRecipe().getExp());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
             float xp;
@@ -36,11 +36,11 @@ public class CookingCreator extends RecipeCreator {
                 api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().setExp(xp);
+            guiHandler.getCustomCache().getCookingRecipe().setExp(xp);
             return false;
         }));
-        registerButton(new ChatInputButton("cooking_time", Material.COAL, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%TIME%", ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().getCookingTime());
+        registerButton(new ChatInputButton<>("cooking_time", Material.COAL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+            hashMap.put("%TIME%", guiHandler.getCustomCache().getCookingRecipe().getCookingTime());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
             int time;
@@ -50,16 +50,21 @@ public class CookingCreator extends RecipeCreator {
                 api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            ((TestCache) guiHandler.getCustomCache()).getCookingRecipe().setCookingTime(time);
+            guiHandler.getCustomCache().getCookingRecipe().setCookingTime(time);
             return false;
         }));
+    }
+
+    @Override
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
-        TestCache cache = (TestCache) update.getGuiHandler().getCustomCache();
+        CCCache cache = (CCCache) update.getGuiHandler().getCustomCache();
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
 
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
@@ -80,7 +85,7 @@ public class CookingCreator extends RecipeCreator {
         update.setButton(44, "save_as");
     }
 
-    public boolean validToSave(TestCache cache) {
+    public boolean validToSave(CCCache cache) {
         switch (cache.getRecipeType().getType()) {
             case BLAST_FURNACE:
             case SMOKER:

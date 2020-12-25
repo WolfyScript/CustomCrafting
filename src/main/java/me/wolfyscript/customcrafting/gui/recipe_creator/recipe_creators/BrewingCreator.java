@@ -1,9 +1,8 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CacheButtonAction;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingContainerButton;
@@ -23,6 +22,7 @@ import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -36,7 +36,7 @@ import java.util.Map;
 
 public class BrewingCreator extends RecipeCreator {
 
-    public BrewingCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public BrewingCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "brewing_stand", 54, customCrafting);
     }
 
@@ -48,136 +48,109 @@ public class BrewingCreator extends RecipeCreator {
         registerButton(new PriorityButton());
 
         registerButton(new DummyButton<>("brewing_stand", Material.BREWING_STAND));
-        /*
-        registerButton(new ChatInputButton("brewTime", Material.CLOCK, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%time%", ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().getBrewTime());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
-            int time;
-            try {
-                time = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
-                return true;
-            }
-            ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().setBrewTime(Math.min(time, 400));
-            return false;
-        }));
-        registerButton(new ChatInputButton("fuelCost", Material.BLAZE_POWDER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%cost%", ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().getFuelCost());
-            return itemStack;
-        }, (guiHandler, player, s, args) -> {
-            int cost;
-            try {
-                cost = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                api.sendPlayerMessage(player, "recipe_creator", "valid_number");
-                return true;
-            }
-            ((TestCache) guiHandler.getCustomCache()).getBrewingRecipe().setFuelCost(cost);
-            return false;
-        }));
-         */
         registerButton(new BrewingContainerButton(0, customCrafting));
         registerButton(new BrewingContainerButton(1, customCrafting));
 
         registerButton(new DummyButton<>("allowed_items", Material.POTION));
 
         //Initialize simple option buttons
-        registerButton(new ActionButton<>("duration_change", Material.LINGERING_POTION, (guiHandler, player, inventory, i, event) -> {
-            TestCache cache = guiHandler.getCustomCache();
+        registerButton(new ActionButton<>("duration_change", Material.LINGERING_POTION, (cache, guiHandler, player, guiInventory, i, event) ->  {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
-            if (event.getClick().isRightClick()) {
-                //Change Mode
-                brewingRecipe.setDurationChange(0);
-                return true;
-            }
-            //Change Value
-            openChat("duration_change", guiHandler, (guiHandler1, player1, s, strings) -> {
-                try {
-                    int value = Integer.parseInt(s);
-                    brewingRecipe.setDurationChange(value);
-                } catch (NumberFormatException ex) {
-                    api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+            if(event instanceof InventoryClickEvent){
+                if (((InventoryClickEvent) event).getClick().isRightClick()) {
+                    //Change Mode
+                    brewingRecipe.setDurationChange(0);
+                    return true;
                 }
-                return false;
-            });
-            return true;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            hashMap.put("%value%", guiHandler.getCustomCache().getBrewingRecipe().getDurationChange());
-            return itemStack;
-        }));
-        registerButton(new ActionButton<>("amplifier_change", Material.IRON_SWORD, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
-            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
-            if (event.getClick().isRightClick()) {
-                //Change Mode
-                brewingRecipe.setDurationChange(0);
-                return true;
-            }
-            //Change Value
-            openChat("amplifier_change", guiHandler, (guiHandler1, player1, s, strings) -> {
-                try {
-                    int value = Integer.parseInt(s);
-                    brewingRecipe.setAmplifierChange(value);
-                } catch (NumberFormatException ex) {
-                    api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
-                }
-                return false;
-            });
-            return true;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            TestCache cache = guiHandler.getCustomCache();
-            hashMap.put("%value%", cache.getBrewingRecipe().getAmplifierChange());
-            return itemStack;
-        }));
-
-        registerButton(new ToggleButton<>("reset_effects", new ButtonState<>("reset_effects.enabled", Material.BARRIER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
-            cache.getBrewingRecipe().setResetEffects(false);
-            return true;
-        }), new ButtonState<>("reset_effects.disabled", Material.BARRIER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
-            cache.getBrewingRecipe().setResetEffects(true);
-            return true;
-        })));
-        registerButton(new ActionButton<>("effect_color", Material.RED_DYE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
-            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
-            if (event.getClick().isRightClick()) {
-                //Change Mode
-                brewingRecipe.setEffectColor(null);
-                return true;
-            }
-            //Change Value
-            openChat("effect_color", guiHandler, (guiHandler1, player1, s, args) -> {
-                if (args.length > 2) {
+                //Change Value
+                openChat("duration_change", guiHandler, (guiHandler1, player1, s, strings) -> {
                     try {
-                        int red = Integer.parseInt(args[0]);
-                        int green = Integer.parseInt(args[1]);
-                        int blue = Integer.parseInt(args[2]);
-                        brewingRecipe.setEffectColor(Color.fromRGB(red, green, blue));
+                        int value = Integer.parseInt(s);
+                        brewingRecipe.setDurationChange(value);
                     } catch (NumberFormatException ex) {
                         api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
                     }
-                }
-                return false;
-            });
+                    return false;
+                });
+            }
             return true;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            TestCache cache = guiHandler.getCustomCache();
+        }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+            hashMap.put("%value%", guiHandler.getCustomCache().getBrewingRecipe().getDurationChange());
+            return itemStack;
+        }));
+        registerButton(new ActionButton<>("amplifier_change", Material.IRON_SWORD, (cache, guiHandler, player, inventory, i, event) -> {
+            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+            if(event instanceof InventoryClickEvent){
+                if (((InventoryClickEvent) event).getClick().isRightClick()) {
+                    //Change Mode
+                    brewingRecipe.setDurationChange(0);
+                    return true;
+                }
+                //Change Value
+                openChat("amplifier_change", guiHandler, (guiHandler1, player1, s, strings) -> {
+                    try {
+                        int value = Integer.parseInt(s);
+                        brewingRecipe.setAmplifierChange(value);
+                    } catch (NumberFormatException ex) {
+                        api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                    }
+                    return false;
+                });
+            }
+            return true;
+        }, (values, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+            values.put("%value%", cache.getBrewingRecipe().getAmplifierChange());
+            return itemStack;
+        }));
+
+        registerButton(new ToggleButton<>("reset_effects", new ButtonState<>("reset_effects.enabled", Material.BARRIER, (cache, guiHandler, player, inventory, i, event) -> {
+            cache.getBrewingRecipe().setResetEffects(false);
+            return true;
+        }), new ButtonState<>("reset_effects.disabled", Material.BARRIER, (cache, guiHandler, player, inventory, i, event) -> {
+            cache.getBrewingRecipe().setResetEffects(true);
+            return true;
+        })));
+        registerButton(new ActionButton<>("effect_color", Material.RED_DYE, (cache, guiHandler, player, inventory, i, event) -> {
+            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+            if(event instanceof InventoryClickEvent){
+                if (((InventoryClickEvent) event).getClick().isRightClick()) {
+                    //Change Mode
+                    brewingRecipe.setEffectColor(null);
+                    return true;
+                }
+                //Change Value
+                openChat("effect_color", guiHandler, (guiHandler1, player1, s, args) -> {
+                    if (args.length > 2) {
+                        try {
+                            int red = Integer.parseInt(args[0]);
+                            int green = Integer.parseInt(args[1]);
+                            int blue = Integer.parseInt(args[2]);
+                            brewingRecipe.setEffectColor(Color.fromRGB(red, green, blue));
+                        } catch (NumberFormatException ex) {
+                            api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        }
+                    }
+                    return false;
+                });
+            }
+            return true;
+        }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
             hashMap.put("%value%", cache.getBrewingRecipe().getEffectColor());
             return itemStack;
         }));
 
         registerButton(new BrewingOptionButton(Material.BARRIER, "effect_removals"));
-        registerButton(new DummyButton<>("effect_removals.info", Material.POTION, (hashMap, guiHandler, player, unused, i, b) -> {
+        registerButton(new DummyButton<>("effect_removals.info", Material.POTION, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {
             ItemStack itemStack = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
-            guiHandler.getCustomCache().getBrewingRecipe().getEffectRemovals().forEach(potionEffectType -> meta.addCustomEffect(new PotionEffect(potionEffectType, 0, 0), true));
+            cache.getBrewingRecipe().getEffectRemovals().forEach(potionEffectType -> meta.addCustomEffect(new PotionEffect(potionEffectType, 0, 0), true));
             ItemMeta unusedItemMeta = unused.getItemMeta();
             meta.setDisplayName(unusedItemMeta.getDisplayName());
             meta.setLore(unusedItemMeta.getLore());
             itemStack.setItemMeta(meta);
             return itemStack;
         }));
-        registerButton(new ActionButton<>("effect_removals.add_type", Material.GREEN_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>("effect_removals.add_type", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> {
@@ -186,15 +159,15 @@ public class BrewingCreator extends RecipeCreator {
                 }
             });
             potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.changeToInv(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
             return true;
         }));
-        registerButton(new ActionButton<>("effect_removals.remove_type", Material.RED_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>("effect_removals.remove_type", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectRemovals().remove(potionEffectType));
             potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.changeToInv(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
             return true;
         }));
 
@@ -203,7 +176,7 @@ public class BrewingCreator extends RecipeCreator {
         registerButton(new BrewingContainerButton(2, customCrafting));
 
         registerButton(new BrewingOptionButton(Material.ANVIL, "effect_additions"));
-        registerButton(new DummyButton<>("effect_additions.info", Material.LINGERING_POTION, (hashMap, guiHandler, player, unused, i, b) -> {
+        registerButton(new DummyButton<>("effect_additions.info", Material.LINGERING_POTION, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {
             ItemStack itemStack = new ItemStack(Material.LINGERING_POTION);
             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
             guiHandler.getCustomCache().getBrewingRecipe().getEffectAdditions().forEach((potionEffect, aBoolean) -> meta.addCustomEffect(potionEffect, true));
@@ -213,13 +186,13 @@ public class BrewingCreator extends RecipeCreator {
             itemStack.setItemMeta(meta);
             return itemStack;
         }));
-        registerButton(new ActionButton<>("effect_additions.potion_effect", Material.POTION, (CacheButtonAction) (testCache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            PotionEffects potionEffectCache = testCache.getPotionEffectCache();
+        registerButton(new ActionButton<>("effect_additions.potion_effect", Material.POTION, (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+            PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> cache1.getBrewingGUICache().setPotionEffectAddition(potionEffect));
             potionEffectCache.setRecipePotionEffect(true);
-            guiHandler.changeToInv(new NamespacedKey("potion_creator", "potion_creator"));
+            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_creator"));
             return true;
-        }, (hashMap, guiHandler, player, unused, i, b) -> {
+        }, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {
             ItemStack itemStack = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
             ItemMeta unusedItemMeta = unused.getItemMeta();
@@ -232,14 +205,14 @@ public class BrewingCreator extends RecipeCreator {
             itemStack.setItemMeta(meta);
             return itemStack;
         }));
-        registerButton(new ToggleButton<>("effect_additions.replace", new ButtonState<>("effect_additions.replace.enabled", Material.GREEN_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ToggleButton<>("effect_additions.replace", new ButtonState<>("effect_additions.replace.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getBrewingGUICache().setReplacePotionEffectAddition(false);
             return true;
-        }), new ButtonState<>("effect_additions.replace.disabled", Material.RED_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        }), new ButtonState<>("effect_additions.replace.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getBrewingGUICache().setReplacePotionEffectAddition(true);
             return true;
         })));
-        registerButton(new ActionButton<>("effect_additions.apply", Material.BOOK, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("effect_additions.apply", Material.BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
             if (brewingGUICache.getPotionEffectAddition() != null) {
@@ -257,17 +230,17 @@ public class BrewingCreator extends RecipeCreator {
             brewingGUICache.setReplacePotionEffectAddition(false);
             return true;
         }));
-        registerButton(new ActionButton<>("effect_additions.remove", Material.RED_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>("effect_additions.remove", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectAdditions().remove(potionEffectType));
             potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.changeToInv(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
             return true;
         }));
 
         registerButton(new BrewingOptionButton(Material.ENCHANTED_BOOK, "effect_upgrades"));
-        registerButton(new DummyButton<>("effect_upgrades.info", Material.LINGERING_POTION, (values, guiHandler, player, unused, i, b) -> {
+        registerButton(new DummyButton<>("effect_upgrades.info", Material.LINGERING_POTION, (values, cache, guiHandler, player, inventory, unused, i, b) -> {
             ItemStack itemStack = new ItemStack(Material.LINGERING_POTION);
             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
             List<String> upgrades = new ArrayList<>();
@@ -282,7 +255,7 @@ public class BrewingCreator extends RecipeCreator {
             values.put("%values%", upgrades);
             return itemStack;
         }));
-        registerButton(new ActionButton<>("effect_upgrades.add_type", Material.POTION, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>("effect_upgrades.add_type", Material.POTION, (cache, guiHandler, player, inventory, i, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             BrewingGUICache guiCache = cache.getBrewingGUICache();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
@@ -292,9 +265,9 @@ public class BrewingCreator extends RecipeCreator {
                 }
             });
             potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.changeToInv(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
             return true;
-        }, (hashMap, guiHandler, player, unused, i, b) -> {
+        }, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {
             ItemStack itemStack = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) itemStack.getItemMeta();
             ItemMeta unusedItemMeta = unused.getItemMeta();
@@ -310,7 +283,7 @@ public class BrewingCreator extends RecipeCreator {
             itemStack.setItemMeta(meta);
             return itemStack;
         }));
-        registerButton(new ChatInputButton<>("effect_upgrades.amplifier", Material.BLAZE_POWDER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton<>("effect_upgrades.amplifier", Material.BLAZE_POWDER, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%value%", guiHandler.getCustomCache().getBrewingGUICache().getUpgradeValues().getKey());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -324,7 +297,7 @@ public class BrewingCreator extends RecipeCreator {
             guiHandler.getCustomCache().getBrewingGUICache().getUpgradeValues().setKey(value);
             return false;
         }));
-        registerButton(new ChatInputButton<>("effect_upgrades.duration", Material.BLAZE_POWDER, (hashMap, guiHandler, player, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton<>("effect_upgrades.duration", Material.BLAZE_POWDER, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%value%", guiHandler.getCustomCache().getBrewingGUICache().getUpgradeValues().getValue());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -338,7 +311,7 @@ public class BrewingCreator extends RecipeCreator {
             guiHandler.getCustomCache().getBrewingGUICache().getUpgradeValues().setValue(value);
             return false;
         }));
-        registerButton(new ActionButton<>("effect_upgrades.apply", Material.BOOK, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("effect_upgrades.apply", Material.BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
             if (brewingGUICache.getUpgradePotionEffectType() != null) {
@@ -349,12 +322,12 @@ public class BrewingCreator extends RecipeCreator {
             brewingGUICache.setUpgradeValues(new Pair<>(0, 0));
             return true;
         }));
-        registerButton(new ActionButton<>("effect_upgrades.remove", Material.RED_CONCRETE, (CacheButtonAction) (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>("effect_upgrades.remove", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectUpgrades().remove(potionEffectType));
             potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.changeToInv(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
             return true;
         }));
 
@@ -363,20 +336,25 @@ public class BrewingCreator extends RecipeCreator {
 
     }
 
+    @Override
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> update) {
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
         update.setButton(0, "back");
-        TestCache cache = update.getGuiHandler().getCustomCache();
+        CCCache cache = update.getGuiHandler().getCustomCache();
         BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
         BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
 
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), brewingRecipe.isHidden());
 
         update.setButton(1, "hidden");
-        update.setButton(3, "recipe_creator", "conditions");
+        update.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
         update.setButton(5, "priority");
         update.setButton(7, "exact_meta");
 
@@ -391,11 +369,11 @@ public class BrewingCreator extends RecipeCreator {
         update.setButton(20, "amplifier_change");
         update.setButton(29, "effect_color");
         update.setButton(38, "reset_effects");
-
-        update.setButton(12, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        update.setButton(21, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        update.setButton(30, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        update.setButton(39, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        NamespacedKey gray = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        update.setButton(12, gray);
+        update.setButton(21, gray);
+        update.setButton(30, gray);
+        update.setButton(39, gray);
 
 
         update.setButton(13, "effect_removals.option");
@@ -444,7 +422,7 @@ public class BrewingCreator extends RecipeCreator {
     }
 
     @Override
-    public boolean validToSave(TestCache cache) {
+    public boolean validToSave(CCCache cache) {
         return !InventoryUtils.isCustomItemsListEmpty(cache.getBrewingRecipe().getIngredients());
     }
 }

@@ -1,9 +1,9 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
@@ -15,19 +15,19 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 import java.util.List;
 
-public class PatronsMenu extends ExtendedGuiWindow {
+public class PatronsMenu extends CCWindow {
 
-    public PatronsMenu(GuiCluster<TestCache> guiCluster, CustomCrafting customCrafting) {
+    public PatronsMenu(GuiCluster<CCCache> guiCluster, CustomCrafting customCrafting) {
         super(guiCluster, "patrons_menu", 54, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openPreviousInv();
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openPreviousWindow();
             return true;
         })));
-        registerButton(new ActionButton("patreon", PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("patreon", PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (cache, guiHandler, player, inventory, slot, event) -> {
             api.getBookUtil().openBook(player, false,
                     new ClickData[]{
                             new ClickData("&8[&cBecome a Patron&8]\n\n\n\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")),
@@ -39,7 +39,12 @@ public class PatronsMenu extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
         List<Patron> patronList = customCrafting.getPatreon().getPatronList();

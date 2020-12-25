@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -139,7 +139,7 @@ public class KnowledgeBook {
         this.recipeItems = recipeItems;
     }
 
-    public void applyRecipeToButtons(GuiHandler<TestCache> guiHandler, ICustomRecipe<?> recipe) {
+    public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
         recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
     }
 

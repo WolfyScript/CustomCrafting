@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.VariantContainerButton;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -16,9 +16,9 @@ import org.bukkit.Material;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VariantMenu extends ExtendedGuiWindow {
+public class VariantMenu extends CCWindow {
 
-    public VariantMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public VariantMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "variants", 54, customCrafting);
     }
 
@@ -27,8 +27,7 @@ public class VariantMenu extends ExtendedGuiWindow {
         for (int i = 0; i < 45; i++) {
             registerButton(new VariantContainerButton(i, customCrafting));
         }
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = (TestCache) guiHandler.getCustomCache();
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
             int resultSlot = 9;
             switch (cache.getRecipeType().getType()) {
                 case ELITE_WORKBENCH:
@@ -86,13 +85,18 @@ public class VariantMenu extends ExtendedGuiWindow {
                     }
 
             }
-            guiHandler.openPreviousInv();
+            guiHandler.openPreviousWindow();
             return true;
         })));
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
         for (int i = 0; i < 45; i++) {

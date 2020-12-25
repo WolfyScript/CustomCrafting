@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
@@ -112,22 +112,23 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     }
 
     @Override
-    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_20")).setVariants(guiHandler, getSource());
         ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, Collections.singletonList(getResult()));
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(0, "back");
         //TODO STONECUTTER
-        event.setButton(20, "recipe_book", "ingredient.container_20");
-        event.setButton(24, "recipe_book", "ingredient.container_24");
-        event.setButton(29, "none", "glass_green");
-        event.setButton(30, "none", "glass_green");
-        event.setButton(31, "recipe_book", "stonecutter");
-        event.setButton(32, "none", "glass_green");
-        event.setButton(33, "none", "glass_green");
+        NamespacedKey glass = new NamespacedKey("none", "glass_green");
+        event.setButton(20, new NamespacedKey("recipe_book", "ingredient.container_20"));
+        event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
+        event.setButton(29, glass);
+        event.setButton(30, glass);
+        event.setButton(31, new NamespacedKey("recipe_book", "stonecutter"));
+        event.setButton(32, glass);
+        event.setButton(33, glass);
 
         ItemStack whiteGlass = event.getInventory().getItem(53);
         ItemMeta itemMeta = whiteGlass.getItemMeta();

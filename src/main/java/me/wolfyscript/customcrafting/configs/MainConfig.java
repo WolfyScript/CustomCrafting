@@ -1,15 +1,15 @@
 package me.wolfyscript.customcrafting.configs;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.utilities.api.config.Config;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
+import me.wolfyscript.utilities.api.config.YamlConfiguration;
 
 import java.util.List;
 
-public class MainConfig extends Config {
+public class MainConfig extends YamlConfiguration {
 
     public MainConfig(ConfigAPI configAPI, CustomCrafting customCrafting) {
-        super(configAPI, customCrafting.getDataFolder().getPath(), "main_config", "me/wolfyscript/customcrafting/configs", "main_config", "yml", false);
+        super(configAPI, customCrafting.getDataFolder().getPath(), "config", "me/wolfyscript/customcrafting/configs", "config", false);
     }
 
     @Override

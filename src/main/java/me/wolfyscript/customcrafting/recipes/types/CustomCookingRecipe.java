@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
@@ -124,14 +124,14 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
     }
 
     @Override
-    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         Player player = guiHandler.getPlayer();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getSource().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
         ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         KnowledgeBook book = event.getGuiHandler().getCustomCache().getKnowledgeBook();
         event.setButton(0, "back");
@@ -140,22 +140,23 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         int slot = 0;
         for (Condition condition : conditions) {
             if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
-                event.setButton(36 + startSlot + slot, "recipe_book", "conditions." + condition.getId());
+                event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
                 slot += 2;
             }
         }
-        event.setButton(13, "recipe_book", "cooking.icon");
-        event.setButton(20, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        event.setButton(11, "recipe_book", "ingredient.container_11");
-        event.setButton(24, "recipe_book", "ingredient.container_24");
+        event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
+        event.setButton(20, new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white"));
+        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
+        event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
 
         if (book.getTimerTask() == null) {
             AtomicInteger i = new AtomicInteger();
-            book.setTimerTask(Bukkit.getScheduler().runTaskTimerAsynchronously(event.getWolfyUtilities().getPlugin(), () -> {
+            book.setTimerTask(Bukkit.getScheduler().runTaskTimerAsynchronously(event.getGuiHandler().getApi().getPlugin(), () -> {
                 if (i.get() == 0) {
-                    event.setButton(23, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
-                    event.setButton(22, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
-                    event.setButton(21, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                    NamespacedKey glass = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                    event.setButton(23, glass);
+                    event.setButton(22, glass);
+                    event.setButton(21, glass);
                 } else if (i.get() == 1) {
                     event.setItem(21, new ItemStack(Material.YELLOW_CONCRETE));
                 } else if (i.get() == 2) {

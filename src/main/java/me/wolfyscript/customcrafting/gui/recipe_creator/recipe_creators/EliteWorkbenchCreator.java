@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingIngredientButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
@@ -17,7 +17,7 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 public class EliteWorkbenchCreator extends RecipeCreator {
 
-    public EliteWorkbenchCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public EliteWorkbenchCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "elite_workbench", 54, customCrafting);
     }
 
@@ -32,52 +32,57 @@ public class EliteWorkbenchCreator extends RecipeCreator {
             registerButton(new CraftingIngredientButton(i, customCrafting));
         }
 
-        registerButton(new ToggleButton("workbench.shapeless", false, new ButtonState("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapedEliteCraftRecipe(((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()));
+        registerButton(new ToggleButton<>("workbench.shapeless", false, new ButtonState<>("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
+            cache.setCustomRecipe(new ShapedEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
             return true;
-        }), new ButtonState("recipe_creator", "workbench.shapeless.disabled", PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).setCustomRecipe(new ShapelessEliteCraftRecipe(((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()));
+        }), new ButtonState<>("recipe_creator", "workbench.shapeless.disabled", PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (cache, guiHandler, player, inventory, slot, event) -> {
+            cache.setCustomRecipe(new ShapelessEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
             return true;
         })));
 
-        registerButton(new ToggleButton("workbench.mirrorHorizontal", false, new ButtonState("recipe_creator", "workbench.mirrorHorizontal.enabled", PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((ShapedEliteCraftRecipe) ((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()).setMirrorHorizontal(false);
+        registerButton(new ToggleButton<>("workbench.mirrorHorizontal", false, new ButtonState<>("recipe_creator", "workbench.mirrorHorizontal.enabled", PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ((ShapedEliteCraftRecipe) cache.getEliteCraftingRecipe()).setMirrorHorizontal(false);
             return true;
-        }), new ButtonState("recipe_creator", "workbench.mirrorHorizontal.disabled", PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((ShapedEliteCraftRecipe) ((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()).setMirrorHorizontal(true);
-            return true;
-        })));
-        registerButton(new ToggleButton("workbench.mirrorVertical", false, new ButtonState("recipe_creator", "workbench.mirrorVertical.enabled", PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((ShapedEliteCraftRecipe) ((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()).setMirrorVertical(false);
-            return true;
-        }), new ButtonState("recipe_creator", "workbench.mirrorVertical.disabled", PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((ShapedEliteCraftRecipe) ((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()).setMirrorVertical(true);
+        }), new ButtonState<>("recipe_creator", "workbench.mirrorHorizontal.disabled", PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ((ShapedEliteCraftRecipe) cache.getEliteCraftingRecipe()).setMirrorHorizontal(true);
             return true;
         })));
-        registerButton(new ToggleButton("workbench.mirrorRotation", false, new ButtonState("recipe_creator", "workbench.mirrorRotation.enabled", PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((ShapedEliteCraftRecipe) ((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()).setMirrorRotation(false);
+        registerButton(new ToggleButton<>("workbench.mirrorVertical", false, new ButtonState<>("recipe_creator", "workbench.mirrorVertical.enabled", PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ((ShapedEliteCraftRecipe) cache.getEliteCraftingRecipe()).setMirrorVertical(false);
             return true;
-        }), new ButtonState("recipe_creator", "workbench.mirrorRotation.disabled", PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((ShapedEliteCraftRecipe) ((TestCache) guiHandler.getCustomCache()).getEliteCraftingRecipe()).setMirrorRotation(true);
+        }), new ButtonState<>("recipe_creator", "workbench.mirrorVertical.disabled", PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ((ShapedEliteCraftRecipe) cache.getEliteCraftingRecipe()).setMirrorVertical(true);
+            return true;
+        })));
+        registerButton(new ToggleButton<>("workbench.mirrorRotation", false, new ButtonState<>("recipe_creator", "workbench.mirrorRotation.enabled", PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ((ShapedEliteCraftRecipe) cache.getEliteCraftingRecipe()).setMirrorRotation(false);
+            return true;
+        }), new ButtonState<>("recipe_creator", "workbench.mirrorRotation.disabled", PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (cache, guiHandler, player, inventory, slot, event) -> {
+            ((ShapedEliteCraftRecipe) cache.getEliteCraftingRecipe()).setMirrorRotation(true);
             return true;
         })));
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> update) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(6, "back");
-        TestCache cache = update.getGuiHandler().getCustomCache();
+        CCCache cache = update.getGuiHandler().getCustomCache();
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
 
-        ((ToggleButton) getButton("workbench.shapeless")).setState(update.getGuiHandler(), workbench.isShapeless());
-        ((ToggleButton) getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
-        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
+        ((ToggleButton<CCCache>) getButton("workbench.shapeless")).setState(update.getGuiHandler(), workbench.isShapeless());
+        ((ToggleButton<CCCache>) getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
+        ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
 
         if (!workbench.isShapeless()) {
-            ((ToggleButton) getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorHorizontal());
-            ((ToggleButton) getButton("workbench.mirrorVertical")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorVertical());
-            ((ToggleButton) getButton("workbench.mirrorRotation")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorRotation());
+            ((ToggleButton<CCCache>) getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorHorizontal());
+            ((ToggleButton<CCCache>) getButton("workbench.mirrorVertical")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorVertical());
+            ((ToggleButton<CCCache>) getButton("workbench.mirrorRotation")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorRotation());
 
             if (((ShapedEliteCraftRecipe) workbench).mirrorHorizontal() && ((ShapedEliteCraftRecipe) workbench).mirrorVertical()) {
                 update.setButton(33, "workbench.mirrorRotation");
@@ -106,7 +111,7 @@ public class EliteWorkbenchCreator extends RecipeCreator {
     }
 
     @Override
-    public boolean validToSave(TestCache cache) {
+    public boolean validToSave(CCCache cache) {
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
         return workbench.getIngredients() != null && !InventoryUtils.isCustomItemsListEmpty(workbench.getResults());
     }

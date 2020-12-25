@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -17,24 +17,24 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
-public class RecipeEditor extends ExtendedGuiWindow {
+public class RecipeEditor extends CCWindow {
 
-    public RecipeEditor(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public RecipeEditor(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "recipe_editor", 45, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openPreviousInv();
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openPreviousWindow();
             return true;
         })));
-        registerButton(new ActionButton("create_recipe", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("create_recipe", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
             changeToCreator(guiHandler);
             return true;
         }));
-        registerButton(new ActionButton("edit_recipe", Material.REDSTONE, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
+        registerButton(new ActionButton<>("edit_recipe", Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
@@ -47,7 +47,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.getChat().sendPlayerMessage(player1, getNamespacedKey(), "invalid_recipe", new Pair<>("%recipe_type%", ((TestCache) guiHandler.getCustomCache()).getRecipeType().name()));
+                        api.getChat().sendPlayerMessage(player1, getNamespacedKey(), "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
                         return true;
                     }
                 }
@@ -56,8 +56,8 @@ public class RecipeEditor extends ExtendedGuiWindow {
             Bukkit.getScheduler().runTask(customCrafting, guiHandler::close);
             return true;
         }));
-        registerButton(new ActionButton("delete_recipe", Material.BARRIER, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ((TestCache) guiHandler.getCustomCache()).getChatLists().setCurrentPageRecipes(1);
+        registerButton(new ActionButton<>("delete_recipe", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             customCrafting.getChatUtils().sendRecipeListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                 if (args.length > 1) {
@@ -71,7 +71,7 @@ public class RecipeEditor extends ExtendedGuiWindow {
                         guiHandler1.openCluster();
                         Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> recipe.delete(player2));
                     }), new ClickData("$inventories.none.recipe_editor.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler1.openCluster()));
-                    guiHandler1.cancelChatEvent();
+                    guiHandler1.cancelChatInputAction();
                     return true;
                 }
                 return false;
@@ -82,15 +82,20 @@ public class RecipeEditor extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
         event.setButton(21, "create_recipe");
         event.setButton(23, "none", "recipe_list");
     }
 
-    private void changeToCreator(GuiHandler<?> guiHandler) {
-        ((TestCache) guiHandler.getCustomCache()).setSetting(Setting.RECIPE_CREATOR);
-        guiHandler.changeToInv(new NamespacedKey("recipe_creator", ((TestCache) guiHandler.getCustomCache()).getRecipeType().getCreatorID()));
+    private void changeToCreator(GuiHandler<CCCache> guiHandler) {
+        guiHandler.getCustomCache().setSetting(Setting.RECIPE_CREATOR);
+        guiHandler.openWindow(new NamespacedKey("recipe_creator", guiHandler.getCustomCache().getRecipeType().getCreatorID()));
     }
 }

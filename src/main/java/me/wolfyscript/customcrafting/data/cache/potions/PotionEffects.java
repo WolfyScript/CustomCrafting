@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache.potions;
 
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -96,7 +96,7 @@ public class PotionEffects {
         this.applyPotionEffect = applyPotionEffect;
     }
 
-    public void applyPotionEffect(TestCache cache) {
+    public void applyPotionEffect(CCCache cache) {
         if (getType() != null) {
             PotionEffect potionEffect = new PotionEffect(getType(), getDuration(), getAmplifier(), isAmbient(), isParticles(), isIcon());
             if (applyPotionEffect != null) {

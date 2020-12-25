@@ -2,8 +2,10 @@ package me.wolfyscript.customcrafting.commands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.cc_subcommands.*;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,14 +42,15 @@ public class CommandCC extends IndexCommand {
                 return true;
             }
         } else if (sender instanceof Player) {
-            openGUI((Player) sender, api.getInventoryAPI());
+            openGUI((Player) sender, api.getInventoryAPI(CCCache.class));
         }
         return true;
     }
 
-    public void openGUI(Player p, InventoryAPI<?> invAPI) {
+    public void openGUI(Player p, InventoryAPI<CCCache> invAPI) {
         if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio", true)) {
-            if (!invAPI.getGuiHandler(p).getCurrentGuiCluster().isEmpty() && !invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("recipe_book") && !invAPI.getGuiHandler(p).getCurrentGuiCluster().equals("crafting")) {
+            GuiCluster<CCCache> cluster = invAPI.getGuiHandler(p).getCluster();
+            if (cluster != null && !cluster.getId().equals("recipe_book") && !cluster.getId().equals("crafting")) {
                 invAPI.getGuiHandler(p).openCluster();
             } else {
                 invAPI.openCluster(p, "none");

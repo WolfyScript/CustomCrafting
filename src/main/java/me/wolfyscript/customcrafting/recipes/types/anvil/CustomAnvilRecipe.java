@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.anvil;
 
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
@@ -258,7 +258,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     }
 
     @Override
-    public void prepareMenu(GuiHandler<TestCache> guiHandler, GuiCluster<TestCache> cluster) {
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         List<CustomItem> inputLeft = getInputLeft();
         List<CustomItem> inputRight = getInputRight();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
@@ -273,25 +273,26 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     }
 
     @Override
-    public void renderMenu(GuiWindow<TestCache> guiWindow, GuiUpdate<TestCache> event) {
+    public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(0, "back");
-        event.setButton(10, "recipe_book", "ingredient.container_10");
-        event.setButton(13, "recipe_book", "ingredient.container_13");
-        event.setButton(19, "none", "glass_green");
-        event.setButton(22, "none", "glass_green");
-        event.setButton(28, "none", "glass_green");
-        event.setButton(29, "none", "glass_green");
-        event.setButton(30, "none", "glass_green");
-        event.setButton(32, "none", "glass_green");
-        event.setButton(33, "none", "glass_green");
+        event.setButton(10, new NamespacedKey("recipe_book", "ingredient.container_10"));
+        event.setButton(13, new NamespacedKey("recipe_book", "ingredient.container_13"));
+        NamespacedKey glass = new NamespacedKey("none", "glass_green");
+        event.setButton(19, glass);
+        event.setButton(22, glass);
+        event.setButton(28, glass);
+        event.setButton(29, glass);
+        event.setButton(30, glass);
+        event.setButton(32, glass);
+        event.setButton(33, glass);
         if (getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-            event.setButton(31, "recipe_book", "anvil.result");
+            event.setButton(31, new NamespacedKey("recipe_book", "anvil.result"));
         } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-            event.setButton(31, "recipe_book", "anvil.durability");
+            event.setButton(31, new NamespacedKey("recipe_book", "anvil.durability"));
         } else {
-            event.setButton(31, "recipe_book", "anvil.none");
+            event.setButton(31, new NamespacedKey("recipe_book", "anvil.none"));
         }
-        event.setButton(34, "recipe_book", "ingredient.container_34");
+        event.setButton(34, new NamespacedKey("recipe_book", "ingredient.container_34"));
     }
 
     public enum Mode {

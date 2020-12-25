@@ -8,7 +8,6 @@ public enum RecipePriority {
     HIGH(1),
     HIGHEST(2);
 
-
     int order;
 
     RecipePriority(int order) {

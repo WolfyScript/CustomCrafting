@@ -5,8 +5,8 @@ import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.customcrafting.data.Workbenches;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
@@ -85,10 +85,10 @@ public class CustomCrafting extends JavaPlugin {
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
-            System.out.println("Class: " + CustomItem.class);
-            CustomItem.registerCustomData(new EliteWorkbenchData());
-            CustomItem.registerCustomData(new KnowledgeBookData());
-            CustomItem.registerCustomData(new CauldronData());
+            getLogger().info("Registering custom data.");
+            CustomItem.registerCustomData(new EliteWorkbenchData.Provider());
+            CustomItem.registerCustomData(new KnowledgeBookData.Provider());
+            CustomItem.registerCustomData(new CauldronData.Provider());
         }
     }
 
@@ -117,7 +117,7 @@ public class CustomCrafting extends JavaPlugin {
         chat.setIN_GAME_PREFIX("§7[§6CC§7] ");
         chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
 
-        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, TestCache.class));
+        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
 
         if (patreon.isPatreon()) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");

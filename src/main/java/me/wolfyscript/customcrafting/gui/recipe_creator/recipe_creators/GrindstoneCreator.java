@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.GrindstoneContainerButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
@@ -16,7 +16,7 @@ import org.bukkit.Material;
 
 public class GrindstoneCreator extends RecipeCreator {
 
-    public GrindstoneCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public GrindstoneCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "grindstone", 45, customCrafting);
     }
 
@@ -31,10 +31,10 @@ public class GrindstoneCreator extends RecipeCreator {
         registerButton(new GrindstoneContainerButton(1, customCrafting));
         registerButton(new GrindstoneContainerButton(2, customCrafting));
 
-        registerButton(new DummyButton("grindstone", Material.GRINDSTONE));
+        registerButton(new DummyButton<>("grindstone", Material.GRINDSTONE));
 
-        registerButton(new ChatInputButton("xp", Material.EXPERIENCE_BOTTLE, (hashMap, guiHandler, player, itemStack, slot, help) -> {
-            hashMap.put("%xp%", ((TestCache) guiHandler.getCustomCache()).getGrindstoneRecipe().getXp());
+        registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+            hashMap.put("%xp%", guiHandler.getCustomCache().getGrindstoneRecipe().getXp());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
             int xp;
@@ -44,16 +44,21 @@ public class GrindstoneCreator extends RecipeCreator {
                 api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
                 return true;
             }
-            ((TestCache) guiHandler.getCustomCache()).getGrindstoneRecipe().setXp(xp);
+            guiHandler.getCustomCache().getGrindstoneRecipe().setXp(xp);
             return false;
         }));
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> update) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
-        TestCache cache = update.getGuiHandler().getCustomCache();
+        CCCache cache = update.getGuiHandler().getCustomCache();
         GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
 
@@ -77,7 +82,7 @@ public class GrindstoneCreator extends RecipeCreator {
     }
 
     @Override
-    public boolean validToSave(TestCache cache) {
+    public boolean validToSave(CCCache cache) {
         GrindstoneRecipe recipe = cache.getGrindstoneRecipe();
         if (!recipe.getInputTop().isEmpty() || !recipe.getInputBottom().isEmpty()) {
             return !InventoryUtils.isCustomItemsListEmpty(recipe.getResults());

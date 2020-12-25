@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.RecipeCreator;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
@@ -16,18 +16,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class SaveButton extends ActionButton {
+public class SaveButton extends ActionButton<CCCache> {
 
     public SaveButton(boolean saveAs) {
-        super(saveAs ? "save_as" : "save", new ButtonState("recipe_creator", saveAs ? "save_as" : "save", Material.WRITABLE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
-            if (guiHandler.getCurrentInv() instanceof RecipeCreator) {
-                RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getCurrentInv();
-                WolfyUtilities api = recipeCreator.getAPI();
+        super(saveAs ? "save_as" : "save", new ButtonState<>("recipe_creator", saveAs ? "save_as" : "save", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+            if (guiHandler.getWindow() instanceof RecipeCreator) {
+                RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getWindow();
+                WolfyUtilities api = guiHandler.getApi();
                 CustomCrafting customCrafting = recipeCreator.getCustomCrafting();
                 if (recipeCreator.validToSave(cache)) {
                     if (saveAs) {
-                        recipeCreator.openChat("recipe_creator", "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                        recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                             NamespacedKey namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
                             if (namespacedKey != null) {
                                 ICustomRecipe<?> recipe = cache.getRecipe();
@@ -47,7 +46,7 @@ public class SaveButton extends ActionButton {
         }));
     }
 
-    private static boolean saveRecipe(TestCache cache, ICustomRecipe<?> recipe, Player player, WolfyUtilities api, GuiHandler<TestCache> guiHandler, CustomCrafting customCrafting) {
+    private static boolean saveRecipe(CCCache cache, ICustomRecipe<?> recipe, Player player, WolfyUtilities api, GuiHandler<CCCache> guiHandler, CustomCrafting customCrafting) {
         if (!recipe.save(player)) {
             return true;
         }
@@ -66,7 +65,7 @@ public class SaveButton extends ActionButton {
             ex.printStackTrace();
             return true;
         }
-        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openPreviousInv("none", 2));
+        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openPreviousWindow("none", 2));
         return true;
     }
 }

@@ -39,9 +39,17 @@ public class ConfigHandler {
     }
 
     public void load() throws IOException {
+        //Load core config!
+        //Makes sure that if a config with the old name already exists, it's renamed to the new config name.
+        File oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");
+        if(oldConfigFile.exists()){
+            oldConfigFile.renameTo(new File(customCrafting.getDataFolder().getPath(), "config.yml"));
+        }
         this.mainConfig = new MainConfig(configAPI, customCrafting);
         mainConfig.loadDefaults();
         configAPI.registerConfig(mainConfig);
+        //
+
         try {
             loadLang();
         } catch (IOException e) {
@@ -57,7 +65,7 @@ public class ConfigHandler {
             knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            ((KnowledgeBookData) knowledgeBook.getCustomData("knowledge_book")).setEnabled(true);
+            ((KnowledgeBookData) knowledgeBook.getCustomData(new NamespacedKey("customcrafting","knowledge_book"))).setEnabled(true);
             customCrafting.saveItem(knowledgebookKey, knowledgeBook);
 
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
@@ -90,7 +98,7 @@ public class ConfigHandler {
 
         //Loading RecipeBook
         customCrafting.saveResource("recipe_book.json", false);
-        this.recipeBook = JacksonUtil.getObjectMapper().readValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), RecipeBook.class);
+        this.recipeBook = new RecipeBook(customCrafting);
     }
 
     public void loadLang() throws IOException {

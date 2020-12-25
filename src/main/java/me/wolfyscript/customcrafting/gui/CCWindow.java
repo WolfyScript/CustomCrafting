@@ -1,19 +1,20 @@
 package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.util.NamespacedKey;
 
-public abstract class ExtendedGuiWindow extends GuiWindow<TestCache> {
+public abstract class CCWindow extends GuiWindow<CCCache> {
 
     protected CustomCrafting customCrafting;
     protected WolfyUtilities api = CustomCrafting.getApi();
 
-    public ExtendedGuiWindow(GuiCluster<TestCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
+    public CCWindow(GuiCluster<CCCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
         super(guiCluster, namespace, size);
         this.customCrafting = customCrafting;
     }
@@ -23,22 +24,24 @@ public abstract class ExtendedGuiWindow extends GuiWindow<TestCache> {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> update) {
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
+        NamespacedKey white = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        NamespacedKey gray = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
         if (getSize() > 9) {
             for (int i = 0; i < 9; i++) {
-                update.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+                update.setButton(i, white);
             }
             for (int i = 9; i < getSize() - 9; i++) {
-                update.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                update.setButton(i, gray);
             }
             for (int i = getSize() - 9; i < getSize(); i++) {
-                update.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+                update.setButton(i, white);
             }
-            update.setButton(8, "none", "gui_help");
+            update.setButton(8, new NamespacedKey("none", "gui_help"));
         } else {
             for (int i = 0; i < 9; i++) {
-                update.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                update.setButton(i, gray);
             }
         }
     }

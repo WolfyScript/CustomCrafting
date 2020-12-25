@@ -1,17 +1,23 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.api.config.JsonConfig;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeBook {
+import java.io.File;
 
-    private Categories categories;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class RecipeBook extends JsonConfig<Categories> {
+
+    public RecipeBook(CustomCrafting customCrafting) {
+        super(new File(customCrafting.getDataFolder(), "recipe_book.json"), Categories.class);
+    }
 
     public Categories getCategories() {
-        return categories;
+        return value;
     }
 
     public void setCategories(Categories categories) {
-        this.categories = categories;
+        this.value = categories;
     }
 }

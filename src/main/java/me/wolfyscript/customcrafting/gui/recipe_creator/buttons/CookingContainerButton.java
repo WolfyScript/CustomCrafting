@@ -1,26 +1,25 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class CookingContainerButton extends ItemInputButton {
+public class CookingContainerButton extends ItemInputButton<CCCache> {
 
     public CookingContainerButton(int inputSlot, CustomCrafting customCrafting) {
-        super("cooking.container_" + inputSlot, new ButtonState("", Material.AIR, (guiHandler, player, inventory, slot, event) -> {
-            TestCache cache = ((TestCache) guiHandler.getCustomCache());
+        super("cooking.container_" + inputSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomCookingRecipe<?, ?> cooking = cache.getCookingRecipe();
-            if (event.isRightClick() && event.isShiftClick()) {
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 List<CustomItem> variants;
                 if(inputSlot == 0){
                     variants = cooking.getSource();
@@ -29,21 +28,24 @@ public class CookingContainerButton extends ItemInputButton {
                 }
                 cache.getVariantsData().setSlot(inputSlot);
                 cache.getVariantsData().setVariants(variants);
-                guiHandler.changeToInv("variants");
+                guiHandler.openWindow("variants");
                 return true;
-            } else {
-                Bukkit.getScheduler().runTask(customCrafting, () -> {
-                    CustomItem customItem = !ItemUtils.isAirOrNull(inventory.getItem(slot)) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR);
-                    if(inputSlot == 0){
-                        cooking.setSource(0, customItem);
-                    }else{
-                        cooking.setResult(0, customItem);
-                    }
-                });
             }
             return false;
-        }, (hashMap, guiHandler, player, itemStack, i, b) -> {
-            CustomCookingRecipe<?, ?> cooking = ((TestCache) guiHandler.getCustomCache()).getCookingRecipe();
+        }, (cache, guiHandler, player, guiInventory, itemStack, i, event) -> {
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
+                return;
+            }
+            CustomCookingRecipe<?, ?> cooking = cache.getCookingRecipe();
+            CustomItem customItem = !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR);
+            if(inputSlot == 0){
+                cooking.setSource(0, customItem);
+            }else{
+                cooking.setResult(0, customItem);
+            }
+
+        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+            CustomCookingRecipe<?, ?> cooking = guiHandler.getCustomCache().getCookingRecipe();
             if (inputSlot == 0) {
                 return !InventoryUtils.isCustomItemsListEmpty(cooking.getSource()) ? cooking.getSource().get(0).create() : new ItemStack(Material.AIR);
             } else if (inputSlot == 1) {

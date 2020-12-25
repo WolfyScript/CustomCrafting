@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SmithingContainerButton;
@@ -13,7 +13,7 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 
 public class SmithingCreator extends RecipeCreator {
 
-    public SmithingCreator(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public SmithingCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "smithing", 45, customCrafting);
     }
 
@@ -30,9 +30,14 @@ public class SmithingCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        TestCache cache = event.getGuiHandler().getCustomCache();
+        CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, "back");
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
         ((ToggleButton) getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
@@ -52,7 +57,7 @@ public class SmithingCreator extends RecipeCreator {
     }
 
     @Override
-    public boolean validToSave(TestCache cache) {
+    public boolean validToSave(CCCache cache) {
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
         return !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getBase()) && !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getAddition()) && !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getResults());
     }

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.*;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -10,11 +10,11 @@ public class InventoryHandler {
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities api;
-    private final InventoryAPI<TestCache> invAPI;
+    private final InventoryAPI<CCCache> invAPI;
 
     public InventoryHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
-        this.invAPI = this.api.getInventoryAPI(TestCache.class);
+        this.invAPI = this.api.getInventoryAPI(CCCache.class);
         this.customCrafting = customCrafting;
     }
 

@@ -3,10 +3,9 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
-import me.wolfyscript.customcrafting.data.CacheButtonAction;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.buttons.CategoryButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -17,40 +16,45 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 import java.util.List;
 
-public class EditCategories extends ExtendedGuiWindow {
+public class EditCategories extends CCWindow {
 
-    public EditCategories(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public EditCategories(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "categories", 54, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openPreviousInv();
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openPreviousWindow();
             return true;
         })));
-        registerButton(new ActionButton("previous", new ButtonState("previous", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("previous", new ButtonState<>("previous", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
 
             return true;
         })));
-        registerButton(new ActionButton("next", new ButtonState("next", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("next", new ButtonState<>("next", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
 
             return true;
         })));
-        registerButton(new ActionButton("add_category", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("add_category", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeBookEditor().setCategory(new Category());
             cache.getRecipeBookEditor().setCategoryID("");
-            guiHandler.changeToInv("category");
+            guiHandler.openWindow("category");
             return true;
         }));
 
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<TestCache> update) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        GuiHandler<TestCache> guiHandler = update.getGuiHandler();
-        TestCache cache = guiHandler.getCustomCache();
+        GuiHandler<CCCache> guiHandler = update.getGuiHandler();
+        CCCache cache = guiHandler.getCustomCache();
         RecipeBookEditor recipeBookEditor = cache.getRecipeBookEditor();
         RecipeBook recipeBook = customCrafting.getConfigHandler().getRecipeBook();
         update.setButton(0, "back");

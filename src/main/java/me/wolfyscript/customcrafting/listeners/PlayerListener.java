@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -49,7 +50,7 @@ public class PlayerListener implements Listener {
             ItemStack itemStack = event.getItem();
             CustomItem customItem = CustomItem.getByItemStack(itemStack);
             if (customItem != null) {
-                KnowledgeBookData knowledgeBook = (KnowledgeBookData) customItem.getCustomData("knowledge_book");
+                KnowledgeBookData knowledgeBook = (KnowledgeBookData) customItem.getCustomData(new NamespacedKey("customcrafting", "knowledge_book"));
                 if (knowledgeBook.isEnabled()) {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);

@@ -1,9 +1,9 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
@@ -11,15 +11,16 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
-public class MainMenu extends ExtendedGuiWindow {
+public class MainMenu extends CCWindow {
 
-    public MainMenu(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
     }
 
@@ -40,37 +41,41 @@ public class MainMenu extends ExtendedGuiWindow {
             registerButton(new RecipeTypeButton(RecipeType.SMITHING, Material.SMITHING_TABLE));
         }
 
-        registerButton(new ActionButton("item_editor", Material.CHEST, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            TestCache cache = (TestCache) guiHandler.getCustomCache();
+        registerButton(new ActionButton<>("item_editor", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
             cache.getItems().setNamespacedKey(null);
-            guiHandler.changeToInv("item_editor");
+            guiHandler.openWindow("item_editor");
             return true;
         }));
 
-        registerButton(new ActionButton("settings", PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv("settings");
+        registerButton(new ActionButton<>("settings", PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openWindow("settings");
             return true;
         }));
-        registerButton(new ActionButton("recipe_book_editor", Material.KNOWLEDGE_BOOK, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("recipe_book_editor", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openCluster("recipe_book_editor");
             return true;
         }));
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
         event.setButton(0, "settings");
-        event.setButton(8, "none", "gui_help");
+        event.setButton(8, new NamespacedKey("none", "gui_help"));
 
-        event.setButton(4, "none", "patreon");
-        event.setButton(48, "none", "instagram");
-        event.setButton(49, "none", "youtube");
-        event.setButton(50, "none", "discord");
+        event.setButton(4, new NamespacedKey("none", "patreon"));
+        event.setButton(48, new NamespacedKey("none", "instagram"));
+        event.setButton(49, new NamespacedKey("none", "youtube"));
+        event.setButton(50, new NamespacedKey("none", "discord"));
 
         event.setButton(10, "workbench");
         event.setButton(12, "furnace");
@@ -96,12 +101,12 @@ public class MainMenu extends ExtendedGuiWindow {
             event.setButton(34, "elite_workbench");
         }
         for (int i = 37; i < 44; i++) {
-            event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+            event.setButton(i, new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white"));
         }
 
         event.setButton(36, "item_editor");
-        event.setButton(44, "none", "recipe_list");
-        event.setButton(45, "none", "item_list");
+        event.setButton(44, new NamespacedKey("none", "recipe_list"));
+        event.setButton(45, new NamespacedKey("none", "item_list"));
         event.setButton(53, "recipe_book_editor");
     }
 }

@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.commands.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -36,7 +36,7 @@ public class EditSubCommand extends AbstractSubCommand {
                 if (args.length > 0) {
                     ICustomRecipe<?> customRecipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
                     if (customRecipe != null) {
-                        ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
+                        ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
                         if (customCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, api.getInventoryAPI().getGuiHandler(player))) {
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("none", "recipe_creator")), 1);
                         }

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.lists.RecipesList;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -10,14 +10,15 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Recipe;
 
 import java.util.HashMap;
 
-public class RecipeListNamespaceButton extends ActionButton<TestCache> {
+public class RecipeListNamespaceButton extends ActionButton<CCCache> {
 
     private final CustomCrafting customCrafting;
-    private final HashMap<GuiHandler<TestCache>, String> namespaces = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, String> namespaces = new HashMap<>();
 
 
     public RecipeListNamespaceButton(int slot, CustomCrafting customCrafting) {
@@ -26,18 +27,19 @@ public class RecipeListNamespaceButton extends ActionButton<TestCache> {
     }
 
     @Override
-    public void init(GuiWindow<TestCache> guiWindow) {
-        getState().setAction((guiHandler, player, inventory, i, event) -> {
+    public void init(GuiWindow<CCCache> guiWindow) {
+        getState().setAction((cache, guiHandler, player, inventory, slot, event) -> {
             String namespace = getNamespace(guiHandler);
-            if (!namespace.isEmpty()) {
-                if (!event.isShiftClick()) {
+            if (!namespace.isEmpty() && event instanceof InventoryClickEvent) {
+                InventoryClickEvent clickEvent = (InventoryClickEvent) event;
+                if (!clickEvent.isShiftClick()) {
                     if (guiWindow instanceof RecipesList) {
                         ((RecipesList) guiWindow).getRecipeNamespaces().put(guiHandler, namespace);
                         ((RecipesList) guiWindow).setPage(guiHandler, 0);
                     }
                 } else {
                     if (namespace.equalsIgnoreCase("minecraft")) {
-                        if (event.isShiftClick() && event.isLeftClick()) {
+                        if (clickEvent.isShiftClick() && clickEvent.isLeftClick()) {
                             for (Recipe recipe : customCrafting.getRecipeHandler().getVanillaRecipes()) {
                                 if (recipe instanceof Keyed) {
                                     String id = ((Keyed) recipe).getKey().toString();
@@ -46,7 +48,7 @@ public class RecipeListNamespaceButton extends ActionButton<TestCache> {
                                     }
                                 }
                             }
-                        } else if (event.isShiftClick() && event.isRightClick()) {
+                        } else if (clickEvent.isShiftClick() && clickEvent.isRightClick()) {
                             for (Recipe recipe : customCrafting.getRecipeHandler().getVanillaRecipes()) {
                                 if (recipe instanceof Keyed) {
                                     customCrafting.getRecipeHandler().getDisabledRecipes().remove(((Keyed) recipe).getKey().toString());
@@ -54,14 +56,14 @@ public class RecipeListNamespaceButton extends ActionButton<TestCache> {
                             }
                         }
                     } else {
-                        if (event.isShiftClick() && event.isLeftClick()) {
+                        if (clickEvent.isShiftClick() && clickEvent.isLeftClick()) {
                             for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
                                 String id = recipe.getNamespacedKey().toString();
                                 if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
                                     customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
                                 }
                             }
-                        } else if (event.isShiftClick() && event.isRightClick()) {
+                        } else if (clickEvent.isShiftClick() && clickEvent.isRightClick()) {
                             for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
                                 customCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getNamespacedKey().toString());
                             }
@@ -71,18 +73,18 @@ public class RecipeListNamespaceButton extends ActionButton<TestCache> {
             }
             return true;
         });
-        getState().setRenderAction((hashMap, guiHandler, player, itemStack, i, b) -> {
+        getState().setRenderAction((hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%namespace%", getNamespace(guiHandler));
             return itemStack;
         });
         super.init(guiWindow);
     }
 
-    public String getNamespace(GuiHandler<TestCache> guiHandler) {
+    public String getNamespace(GuiHandler<CCCache> guiHandler) {
         return namespaces.getOrDefault(guiHandler, "");
     }
 
-    public void setNamespace(GuiHandler<TestCache> guiHandler, String namespace) {
+    public void setNamespace(GuiHandler<CCCache> guiHandler, String namespace) {
         namespaces.put(guiHandler, namespace);
     }
 }

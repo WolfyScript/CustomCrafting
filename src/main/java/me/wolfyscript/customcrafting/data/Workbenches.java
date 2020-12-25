@@ -41,7 +41,7 @@ public class Workbenches {
             } else {
                 save();
             }
-        }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
+        }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
         particles = Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> workbenches.keySet().stream().map(this::stringToLocation).filter(l -> l != null && l.getWorld() != null && l.getWorld().isChunkLoaded(l.getBlockX() >> 4, l.getBlockZ() >> 4)).forEach(l -> l.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, l.clone().add(0.5, 1.3, 0.5), 4, 0, 0, 0, 0.5)), 10, 2);
     }
 

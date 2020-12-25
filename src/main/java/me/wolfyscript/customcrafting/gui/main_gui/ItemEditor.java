@@ -1,9 +1,8 @@
 package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.data.CacheButtonAction;
-import me.wolfyscript.customcrafting.data.TestCache;
-import me.wolfyscript.customcrafting.gui.ExtendedGuiWindow;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
@@ -23,26 +22,26 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class ItemEditor extends ExtendedGuiWindow {
+public class ItemEditor extends CCWindow {
 
-    public ItemEditor(GuiCluster<TestCache> cluster, CustomCrafting customCrafting) {
+    public ItemEditor(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "item_editor", 45, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton("back", new ButtonState("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.openPreviousInv();
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openPreviousWindow();
             if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                 guiHandler.openCluster("recipe_creator");
             }
             return true;
         })));
-        registerButton(new ActionButton("create_item", Material.ITEM_FRAME, (guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            guiHandler.changeToInv(new NamespacedKey("item_creator", "main_menu"));
+        registerButton(new ActionButton<>("create_item", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openWindow(new NamespacedKey("item_creator", "main_menu"));
             return true;
         }));
-        registerButton(new ActionButton("delete_item", Material.BARRIER, (CacheButtonAction) (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
+        registerButton(new ActionButton<>("delete_item", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getChatLists().setCurrentPageItems(1);
             sendItemListExpanded(player);
             guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
@@ -59,22 +58,27 @@ public class ItemEditor extends ExtendedGuiWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate event) {
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+
+    }
+
+    @Override
+    public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         event.setButton(0, "back");
-        TestCache cache = (TestCache) event.getGuiHandler().getCustomCache();
+        CCCache cache = event.getGuiHandler().getCustomCache();
         if (cache.getItems().isRecipeItem()) {
-            event.setButton(21, "none", "item_list");
+            event.setButton(21, new NamespacedKey("none", "item_list"));
             event.setButton(23, "create_item");
         } else {
             event.setButton(20, "create_item");
-            event.setButton(22, "none", "item_list");
+            event.setButton(22, new NamespacedKey("none", "item_list"));
             event.setButton(24, "delete_item");
         }
     }
 
     private void sendItemListExpanded(Player player) {
-        TestCache cache = ((TestCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
+        CCCache cache = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
         for (int i = 0; i < 20; i++) {
             player.sendMessage(" ");
         }

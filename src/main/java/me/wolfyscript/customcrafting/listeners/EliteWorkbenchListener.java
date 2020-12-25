@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.data.TestCache;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
@@ -28,13 +28,13 @@ public class EliteWorkbenchListener implements Listener {
             if (CustomItems.isBlockStored(block.getLocation())) {
                 CustomItem customItem = CustomItems.getStoredBlockItem(block.getLocation());
                 if (customItem != null) {
-                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData("elite_workbench");
+                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(new NamespacedKey("customcrafting","elite_workbench"));
                     if (eliteWorkbench.isEnabled()) {
                         event.setUseItemInHand(Event.Result.DENY);
                         event.setUseInteractedBlock(Event.Result.DENY);
                         event.getPlayer().closeInventory();
-                        ((TestCache) api.getInventoryAPI().getGuiHandler(event.getPlayer()).getCustomCache()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
-                        api.getInventoryAPI().getGuiHandler(event.getPlayer()).changeToInv(new NamespacedKey("crafting", "crafting_grid" + eliteWorkbench.getGridSize()));
+                        ((CCCache) api.getInventoryAPI().getGuiHandler(event.getPlayer()).getCustomCache()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
+                        api.getInventoryAPI().getGuiHandler(event.getPlayer()).openWindow(new NamespacedKey("crafting", "crafting_grid" + eliteWorkbench.getGridSize()));
                     }
                 }
             }
