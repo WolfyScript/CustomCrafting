@@ -78,7 +78,7 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     }
 
     @Override
-    protected void readFromJson(JsonNode node, DeserializationContext deserializationContext) throws IOException {
+    protected void readFromJson(CustomItem customItem, JsonNode node, DeserializationContext deserializationContext) throws IOException {
         setEnabled(node.get("enabled").asBoolean(false));
         setGridSize(node.get("gridSize").asInt(3));
         setAdvancedRecipes(node.get("advancedRecipes").asBoolean(false));

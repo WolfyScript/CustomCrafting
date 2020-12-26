@@ -5,7 +5,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonG
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemCategory;
+import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
@@ -21,13 +21,13 @@ public class Category {
 
     private List<NamespacedKey> recipes;
     private List<Material> materials;
-    private List<ItemCategory> itemCategories;
+    private List<CreativeModeTab> creativeModeTabs;
 
     public Category() {
         this.name = "";
         this.description = new ArrayList<>();
         this.recipes = new ArrayList<>();
-        this.itemCategories = new ArrayList<>();
+        this.creativeModeTabs = new ArrayList<>();
         this.materials = new ArrayList<>();
     }
 
@@ -36,7 +36,7 @@ public class Category {
         this.icon = category.getIcon();
         this.description = new ArrayList<>(category.getDescription());
         this.recipes = new ArrayList<>(category.getRecipes());
-        this.itemCategories = new ArrayList<>(category.getItemCategories());
+        this.creativeModeTabs = new ArrayList<>(category.getCreativeModeTabs());
         this.materials = new ArrayList<>(category.getMaterials());
     }
 
@@ -81,22 +81,67 @@ public class Category {
         this.materials = materials;
     }
 
-    public List<ItemCategory> getItemCategories() {
-        return itemCategories;
+    public static Category readFromJson(JsonNode node){
+        Category category = new Category();
+        String displayName = node.get("name").asText();
+        Material icon = Material.matchMaterial(node.get("icon").asText());
+        List<String> description = new ArrayList<>();
+        if (node.has("description")) {
+            node.get("description").forEach(jsonElement -> description.add(jsonElement.asText()));
+        }
+        List<NamespacedKey> recipes = new ArrayList<>();
+        if (node.has("recipes")) {
+            node.get("recipes").forEach(jsonElement -> {
+                String[] recipe = jsonElement.asText().split(":");
+                recipes.add(new NamespacedKey(recipe[0], recipe[1]));
+            });
+        }
+        List<Material> materials = new ArrayList<>();
+        if (node.has("materials")) {
+            node.get("materials").forEach(jsonElement -> {
+                Material material = Material.matchMaterial(jsonElement.asText());
+                if (material != null) {
+                    materials.add(material);
+                }
+            });
+        }
+        List<CreativeModeTab> itemCategories = new ArrayList<>();
+        if (node.has("itemCategories")) {
+            node.get("itemCategories").forEach(jsonElement -> {
+                String materialNmn = jsonElement.asText();
+                try {
+                    CreativeModeTab itemCategory = CreativeModeTab.valueOf(materialNmn);
+                    itemCategories.add(itemCategory);
+                } catch (IllegalArgumentException ex) {
+                    Bukkit.getLogger().warning("Failed to load ItemCategory for Category: must be BREWING, BUILDING_BLOCKS, DECORATIONS, COMBAT, TOOLS, REDSTONE,  FOOD, TRANSPORTATION, MISC, SEARCH! Got " + materialNmn);
+                }
+            });
+        }
+        category.setIcon(icon);
+        category.setName(displayName);
+        category.setDescription(description);
+        category.setCreativeModeTabs(itemCategories);
+        category.setMaterials(materials);
+        category.setRecipes(recipes);
+        return category;
     }
 
-    public void setItemCategories(List<ItemCategory> itemCategories) {
-        this.itemCategories = itemCategories;
+    public List<CreativeModeTab> getCreativeModeTabs() {
+        return creativeModeTabs;
     }
 
-    public boolean isValid(ICustomRecipe recipe) {
+    public void setCreativeModeTabs(List<CreativeModeTab> itemCategories) {
+        this.creativeModeTabs = itemCategories;
+    }
+
+    public boolean isValid(ICustomRecipe<?> recipe) {
         if (recipes.isEmpty()) return false;
         return recipes.contains(recipe.getNamespacedKey());
     }
 
     public boolean isValid(Material material) {
-        if (itemCategories.stream().anyMatch(itemCategory -> {
-            if (itemCategory.equals(ItemCategory.SEARCH)) return true;
+        if (creativeModeTabs.stream().anyMatch(itemCategory -> {
+            if (itemCategory.equals(CreativeModeTab.SEARCH)) return true;
             return itemCategory.isValid(material);
         })) {
             return true;
@@ -123,55 +168,10 @@ public class Category {
         }
         gen.writeEndArray();
         gen.writeArrayFieldStart("itemCategories");
-        for (ItemCategory category : getItemCategories()) {
-            gen.writeString(category.toString());
+        for (CreativeModeTab creativeModeTab : getCreativeModeTabs()) {
+            gen.writeString(creativeModeTab.toString());
         }
         gen.writeEndArray();
-    }
-
-    public static Category readFromJson(JsonNode node){
-        Category category = new Category();
-        String displayName = node.get("name").asText();
-        Material icon = Material.matchMaterial(node.get("icon").asText());
-        List<String> description = new ArrayList<>();
-        if (node.has("description")) {
-            node.get("description").forEach(jsonElement -> description.add(jsonElement.asText()));
-        }
-        List<NamespacedKey> recipes = new ArrayList<>();
-        if (node.has("recipes")) {
-            node.get("recipes").forEach(jsonElement -> {
-                String[] recipe = jsonElement.asText().split(":");
-                recipes.add(new NamespacedKey(recipe[0], recipe[1]));
-            });
-        }
-        List<Material> materials = new ArrayList<>();
-        if (node.has("materials")) {
-            node.get("materials").forEach(jsonElement -> {
-                Material material = Material.matchMaterial(jsonElement.asText());
-                if (material != null) {
-                    materials.add(material);
-                }
-            });
-        }
-        List<ItemCategory> itemCategories = new ArrayList<>();
-        if (node.has("itemCategories")) {
-            node.get("itemCategories").forEach(jsonElement -> {
-                String materialNmn = jsonElement.asText();
-                try {
-                    ItemCategory itemCategory = ItemCategory.valueOf(materialNmn);
-                    itemCategories.add(itemCategory);
-                } catch (IllegalArgumentException ex) {
-                    Bukkit.getLogger().warning("Failed to load ItemCategory for Category: must be BREWING, BUILDING_BLOCKS, DECORATIONS, COMBAT, TOOLS, REDSTONE,  FOOD, TRANSPORTATION, MISC, SEARCH! Got " + materialNmn);
-                }
-            });
-        }
-        category.setIcon(icon);
-        category.setName(displayName);
-        category.setDescription(description);
-        category.setItemCategories(itemCategories);
-        category.setMaterials(materials);
-        category.setRecipes(recipes);
-        return category;
     }
 
 

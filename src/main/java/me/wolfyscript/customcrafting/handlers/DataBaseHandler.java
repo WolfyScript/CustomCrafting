@@ -94,7 +94,7 @@ public class DataBaseHandler {
             String key = resultSet.getString("rKey");
             NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
             chat.sendConsoleMessage("- " + namespacedKey.toString());
-            ICustomRecipe recipe = getRecipe(namespacedKey);
+            ICustomRecipe<?> recipe = getRecipe(namespacedKey);
             if (recipe != null) {
                 recipeHandler.registerRecipe(recipe);
             } else {
@@ -169,7 +169,7 @@ public class DataBaseHandler {
         return null;
     }
 
-    public ICustomRecipe getRecipe(NamespacedKey namespacedKey) {
+    public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
         ResultSet resultSet = getRecipeData(namespacedKey);
         try {
             while (resultSet.next()) {
@@ -221,11 +221,11 @@ public class DataBaseHandler {
         return null;
     }
 
-    public void addRecipe(ICustomRecipe data) {
+    public void addRecipe(ICustomRecipe<?> data) {
         addRecipe(data, true);
     }
 
-    public void addRecipe(ICustomRecipe data, boolean async) {
+    public void addRecipe(ICustomRecipe<?> data, boolean async) {
         try {
             PreparedStatement pState = dataBase.getPreparedStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) values (?, ?, ?, ?)");
             pState.setString(1, data.getNamespacedKey().getNamespace());
@@ -242,11 +242,11 @@ public class DataBaseHandler {
         }
     }
 
-    public void updateRecipe(ICustomRecipe data) {
+    public void updateRecipe(ICustomRecipe<?> data) {
         updateRecipe(data, true);
     }
 
-    public void updateRecipe(ICustomRecipe data, boolean async) {
+    public void updateRecipe(ICustomRecipe<?> data, boolean async) {
         if (hasRecipe(data.getNamespacedKey())) {
             try {
                 PreparedStatement pState = dataBase.getPreparedStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");
@@ -349,7 +349,7 @@ public class DataBaseHandler {
     }
 
     @Deprecated
-    public ICustomRecipe getRecipe(String namespace, String key) {
+    public ICustomRecipe<?> getRecipe(String namespace, String key) {
         return getRecipe(new NamespacedKey(namespace, key));
     }
 

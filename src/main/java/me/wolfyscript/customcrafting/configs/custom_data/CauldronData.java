@@ -34,7 +34,7 @@ public class CauldronData extends CustomData implements Cloneable {
     }
 
     @Override
-    protected void readFromJson(JsonNode node, DeserializationContext deserializationContext) throws IOException {
+    protected void readFromJson(CustomItem customItem, JsonNode node, DeserializationContext deserializationContext) throws IOException {
         setEnabled(node.get("enabled").asBoolean(false));
     }
 
