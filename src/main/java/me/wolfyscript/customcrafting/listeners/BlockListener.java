@@ -2,9 +2,9 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItemBreakEvent;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItemPlaceEvent;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.events.CustomItemBreakEvent;
+import me.wolfyscript.utilities.util.events.CustomItemPlaceEvent;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;

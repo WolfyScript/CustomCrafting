@@ -8,9 +8,9 @@ import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastReci
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -45,7 +45,7 @@ public class FurnaceListener implements Listener {
                 }
                 ItemStack input = event.getCursor();
                 if (input != null) {
-                    for (CustomItem customItem : CustomItems.getCustomItems().values()) {
+                    for (CustomItem customItem : Registry.CUSTOM_ITEMS.values()) {
                         if (customItem.getBurnTime() > 0) {
                             if (customItem.isSimilar(input)) {
                                 if (customItem.getAllowedBlocks().contains(material)) {
@@ -129,7 +129,7 @@ public class FurnaceListener implements Listener {
     @EventHandler
     public void onBurn(FurnaceBurnEvent event) {
         ItemStack input = event.getFuel();
-        for (CustomItem customItem : CustomItems.getCustomItems().values()) {
+        for (CustomItem customItem : Registry.CUSTOM_ITEMS.values()) {
             if (customItem.getBurnTime() > 0) {
                 if (customItem.isSimilar(input)) {
                     if (customItem.getAllowedBlocks().contains(event.getBlock().getType())) {

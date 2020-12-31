@@ -5,7 +5,6 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -24,7 +23,6 @@ public class Workbenches {
     private final CustomCrafting customCrafting;
     private final WolfyUtilities api;
     private final BukkitTask task;
-    private final BukkitTask particles;
 
     private HashMap<String, List<ItemStack>> workbenches = new HashMap<>();
     private List<String> furnaces = new ArrayList<>();
@@ -42,7 +40,6 @@ public class Workbenches {
                 save();
             }
         }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
-        particles = Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> workbenches.keySet().stream().map(this::stringToLocation).filter(l -> l != null && l.getWorld() != null && l.getWorld().isChunkLoaded(l.getBlockX() >> 4, l.getBlockZ() >> 4)).forEach(l -> l.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, l.clone().add(0.5, 1.3, 0.5), 4, 0, 0, 0, 0.5)), 10, 2);
     }
 
     public void addWorkbench(Location location) {
@@ -122,7 +119,6 @@ public class Workbenches {
     }
 
     public void endTask() {
-        particles.cancel();
         task.cancel();
     }
 

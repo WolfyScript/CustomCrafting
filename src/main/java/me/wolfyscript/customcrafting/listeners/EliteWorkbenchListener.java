@@ -4,8 +4,8 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -25,10 +25,10 @@ public class EliteWorkbenchListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (!event.useInteractedBlock().equals(Event.Result.DENY) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !event.getPlayer().isSneaking()) {
             Block block = event.getClickedBlock();
-            if (CustomItems.isBlockStored(block.getLocation())) {
-                CustomItem customItem = CustomItems.getStoredBlockItem(block.getLocation());
+            if (WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
+                CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(block.getLocation());
                 if (customItem != null) {
-                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(new NamespacedKey("customcrafting","elite_workbench"));
+                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(new NamespacedKey("customcrafting", "elite_workbench"));
                     if (eliteWorkbench.isEnabled()) {
                         event.setUseItemInHand(Event.Result.DENY);
                         event.setUseInteractedBlock(Event.Result.DENY);

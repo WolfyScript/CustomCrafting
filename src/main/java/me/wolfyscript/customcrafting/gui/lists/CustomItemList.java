@@ -8,13 +8,13 @@ import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.lists.buttons.CustomItemSelectButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.ItemNamespaceButton;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class CustomItemList extends CCWindow {
         })));
         registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             int page = cache.getItems().getListPage();
-            int maxPages = CustomItems.getCustomItems().size() / 45 + CustomItems.getCustomItems().size() % 45 > 0 ? 1 : 0;
+            int maxPages = Registry.CUSTOM_ITEMS.keySet().size() / 45 + Registry.CUSTOM_ITEMS.keySet().size() % 45 > 0 ? 1 : 0;
             if (page < maxPages) {
                 items.setListPage(++page);
             }
@@ -65,14 +65,14 @@ public class CustomItemList extends CCWindow {
         Items items = cache.getItems();
 
         int page = items.getListPage();
-        int maxPages = CustomItems.getCustomItems().size() / 45;
+        int maxPages = Registry.CUSTOM_ITEMS.keySet().size() / 45;
         if (page > maxPages) {
             items.setListPage(maxPages);
         }
 
         String namespace = items.getListNamespace();
         if (namespace == null) {
-            List<String> namespaceList = CustomItems.getNamespaces();
+            List<String> namespaceList = Registry.CUSTOM_ITEMS.getNamespaces();
             maxPages = namespaceList.size() / 45;
             for (int i = 45 * page, item = 0; item < 45 && i < namespaceList.size(); i++, item++) {
                 Button<CCCache> btn = new ItemNamespaceButton(namespaceList.get(i));
@@ -80,7 +80,7 @@ public class CustomItemList extends CCWindow {
                 update.setButton(9 + item, btn);
             }
         } else {
-            List<CustomItem> customItems = CustomItems.getCustomItems(namespace);
+            List<CustomItem> customItems = Registry.CUSTOM_ITEMS.get(namespace);
             for (int i = items.getListPage() * 45, s = 9; i < customItems.size() && s < 45; i++, s++) {
                 NamespacedKey namespacedKey = customItems.get(i).getNamespacedKey();
                 String id = "item_" + namespacedKey.toString().replace(":", "__");

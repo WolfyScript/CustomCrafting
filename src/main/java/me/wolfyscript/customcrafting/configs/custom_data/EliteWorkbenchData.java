@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.configs.custom_data;
 
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.custom_data.CustomData;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;

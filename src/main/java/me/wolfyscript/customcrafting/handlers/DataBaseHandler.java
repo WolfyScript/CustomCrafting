@@ -21,12 +21,12 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.sql.PreparedStatement;
@@ -117,7 +117,7 @@ public class DataBaseHandler {
             if (namespace != null && key != null && data != null && !data.equals("{}")) {
                 chat.sendConsoleMessage("- " + namespace + ":" + key);
                 try {
-                    CustomItems.addCustomItem(new NamespacedKey(namespace, key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                    Registry.CUSTOM_ITEMS.register(new NamespacedKey(namespace, key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }

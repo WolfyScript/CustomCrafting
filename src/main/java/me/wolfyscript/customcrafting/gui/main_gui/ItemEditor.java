@@ -8,13 +8,13 @@ import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.inventory.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -85,7 +85,7 @@ public class ItemEditor extends CCWindow {
 
         int currentPage = cache.getChatLists().getCurrentPageItems();
         int itemsPerPage = cache.getChatLists().getLastUsedItem() != null ? 16 : 14;
-        int maxPages = ((CustomItems.getCustomItems().size() % itemsPerPage) > 0 ? 1 : 0) + CustomItems.getCustomItems().size() / itemsPerPage;
+        int maxPages = ((Registry.CUSTOM_ITEMS.keySet().size() % itemsPerPage) > 0 ? 1 : 0) + Registry.CUSTOM_ITEMS.keySet().size() / itemsPerPage;
 
         api.getChat().sendActionMessage(player,
                 new ClickData("[&3« Back&7]", null, new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cc")),
@@ -106,7 +106,7 @@ public class ItemEditor extends CCWindow {
         api.getChat().sendPlayerMessage(player, "&8-------------------------------------------------");
 
         int i = (currentPage - 1) * itemsPerPage;
-        for (Map.Entry<NamespacedKey, CustomItem> entry : CustomItems.getCustomItems().entrySet()) {
+        for (Map.Entry<NamespacedKey, CustomItem> entry : Registry.CUSTOM_ITEMS.entrySet()) {
             NamespacedKey namespacedKey = entry.getKey();
             CustomItem customItem = entry.getValue();
             if (customItem != null) {
@@ -125,7 +125,7 @@ public class ItemEditor extends CCWindow {
         if (cache.getChatLists().getLastUsedItem() != null) {
             api.getChat().sendPlayerMessage(player, "§ePreviously used:");
             NamespacedKey namespacedKey = cache.getChatLists().getLastUsedItem();
-            CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
+            CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if (customItem != null) {
                 if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
                     api.getChat().sendActionMessage(player, new ClickData("§b -&7[&c!&7] &4" + namespacedKey.toString(), null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "&cThis Item is corrupted! Delete and recreate it! Do not load it into the GUI!")));

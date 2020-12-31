@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.NMSUtil;
-import me.wolfyscript.utilities.api.nms.block.INMSBrewingStand;
+import me.wolfyscript.utilities.api.nms.block.NMSBrewingStand;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -150,7 +150,7 @@ public class BrewingStandListener implements Listener {
                 BrewingStand brewingStand = inventory.getHolder();
                 if (brewingStand != null) {
 
-                    INMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
+                    NMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
 
                     if (nmsBrewingStand != null) {
                         int fuelLevel = nmsBrewingStand.getFuelLevel();
@@ -210,7 +210,7 @@ public class BrewingStandListener implements Listener {
                                         if (activeBrewingStands.containsKey(location)) {
                                             if (tick.get() > 0) {
                                                 Bukkit.getScheduler().runTask(customCrafting, () -> {
-                                                    INMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
+                                                    NMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
                                                     if (nmsBrewingStand != null) {
                                                         nmsBrewingStand.setBrewingTime(tick.addAndGet(multiplier));
                                                     } else {

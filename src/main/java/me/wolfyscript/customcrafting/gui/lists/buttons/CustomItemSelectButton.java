@@ -7,11 +7,11 @@ import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -24,11 +24,11 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
 
     public CustomItemSelectButton(NamespacedKey namespacedKey) {
         super("item_" + namespacedKey.toString().replace(":", "__"), new ButtonState<>("custom_item_error", Material.STONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            if (!CustomItems.hasCustomItem(namespacedKey) || ItemUtils.isAirOrNull(CustomItems.getCustomItem(namespacedKey))) {
+            if (!Registry.CUSTOM_ITEMS.has(namespacedKey) || ItemUtils.isAirOrNull(Registry.CUSTOM_ITEMS.get(namespacedKey))) {
                 return true;
             }
             WolfyUtilities api = CustomCrafting.getApi();
-            CustomItem customItem = CustomItems.getCustomItem(namespacedKey);
+            CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if(event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).isRightClick()) {
                     items.setItem(items.isRecipeItem(), customItem);
@@ -60,7 +60,7 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomItem customItem = CustomItems.getCustomItems().get(namespacedKey);
+            CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if (!ItemUtils.isAirOrNull(customItem)) {
                 ItemBuilder itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");

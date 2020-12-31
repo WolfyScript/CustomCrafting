@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
+import me.wolfyscript.utilities.util.Registry;
 import org.bukkit.Keyed;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class SaveSubCommand extends AbstractSubCommand {
@@ -29,9 +28,9 @@ public class SaveSubCommand extends AbstractSubCommand {
         WolfyUtilities api = CustomCrafting.getApi();
         if (sender instanceof Player) {
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
-                new TreeMap<>(CustomItems.getCustomItems()).forEach((namespacedKey, customItem) -> {
-                    api.getChat().sendConsoleMessage("Saving item: " + namespacedKey.toString());
-                    customCrafting.saveItem(namespacedKey, customItem);
+                Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> {
+                    api.getChat().sendConsoleMessage("Saving item: " + entry.getKey().toString());
+                    customCrafting.saveItem(entry.getKey(), entry.getValue());
                 });
                 customCrafting.getRecipeHandler().getRecipes().values().forEach(recipe -> {
                     api.getChat().sendConsoleMessage("Saving recipe: " + recipe.getNamespacedKey().toString());

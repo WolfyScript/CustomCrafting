@@ -7,12 +7,12 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.inventory.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -32,7 +32,7 @@ public class EliteWorkbenchConditionButton extends ActionButton<CCCache> {
                     //CONFIGURE ELITE WORKBENCHES
                     window.openChat("elite_workbench", guiHandler, (guiHandler1, player1, s, args) -> {
                         if (args.length > 1) {
-                            CustomItem customItem = CustomItems.getCustomItem(new NamespacedKey(args[0], args[1]));
+                            CustomItem customItem = Registry.CUSTOM_ITEMS.get(new NamespacedKey(args[0], args[1]));
                             if (customItem == null || !(customItem.getApiReference() instanceof WolfyUtilitiesRef)) {
                                 window.sendMessage(player1, "error");
                                 return true;

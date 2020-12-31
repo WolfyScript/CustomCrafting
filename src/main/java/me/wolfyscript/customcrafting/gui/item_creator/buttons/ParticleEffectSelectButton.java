@@ -6,8 +6,9 @@ import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.utilities.api.inventory.custom_items.ParticleContent;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.particles.ParticleEffect;
-import me.wolfyscript.utilities.api.particles.ParticleEffects;
+import me.wolfyscript.utilities.util.Registry;
+import me.wolfyscript.utilities.util.particles.ParticleEffect;
+import me.wolfyscript.utilities.util.particles.ParticleLocation;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -15,9 +16,9 @@ import java.util.Locale;
 
 public class ParticleEffectSelectButton extends ActionButton<CCCache> {
 
-    public ParticleEffectSelectButton(ParticleEffect.Action action) {
+    public ParticleEffectSelectButton(ParticleLocation action) {
         super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState<>("particle_effects.input", Material.BARRIER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            if(event instanceof InventoryClickEvent){
+            if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).getClick().isShiftClick()) {
                     items.getItem().getParticleContent().remove(action);
                 } else {
@@ -29,7 +30,7 @@ public class ParticleEffectSelectButton extends ActionButton<CCCache> {
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Items items = guiHandler.getCustomCache().getItems();
             ParticleContent ParticleContent = items.getItem().getParticleContent();
-            ParticleEffect particleEffect = ParticleEffects.getEffect(ParticleContent.getParticleEffect(action));
+            ParticleEffect particleEffect = Registry.PARTICLE_EFFECTS.get(ParticleContent.getParticleEffect(action));
             if (particleEffect != null) {
                 itemStack.setType(particleEffect.getIcon());
                 hashMap.put("%effect_name%", particleEffect.getName());

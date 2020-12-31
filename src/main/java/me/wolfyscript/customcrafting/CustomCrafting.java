@@ -23,11 +23,12 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.world.WorldUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -211,16 +212,6 @@ public class CustomCrafting extends JavaPlugin {
         //Load Metrics
         Metrics metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
-        metrics.addCustomChart(new Metrics.SimplePie("server_software", () -> {
-            String version = Bukkit.getServer().getName();
-            if (WolfyUtilities.hasSpigot()) {
-                version = "Spigot";
-            }
-            if (WolfyUtilities.hasClass("com.destroystokyo.paper.Title")) {
-                version = "Paper";
-            }
-            return version;
-        }));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
 
         System.out.println("------------------------------------------------------------------------");
@@ -245,7 +236,7 @@ public class CustomCrafting extends JavaPlugin {
 
     public void loadRecipesAndItems() {
         recipeHandler.load();
-        CustomItems.initiateMissingBlockEffects();
+        WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
     private void savePlayerStatistics() {
@@ -394,18 +385,18 @@ public class CustomCrafting extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-        if (CustomItems.getCustomItem(namespacedKey) != null) {
-            CustomItems.removeCustomItem(namespacedKey);
+        if (Registry.CUSTOM_ITEMS.get(namespacedKey) != null) {
+            Registry.CUSTOM_ITEMS.remove(namespacedKey);
         }
-        CustomItems.addCustomItem(namespacedKey, customItem);
+        Registry.CUSTOM_ITEMS.register(namespacedKey, customItem);
     }
 
     public boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
-        if (!CustomItems.hasCustomItem(namespacedKey)) {
+        if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
             if (player != null) getApi().getChat().sendPlayerMessage(player, "error");
             return false;
         }
-        CustomItems.removeCustomItem(namespacedKey);
+        Registry.CUSTOM_ITEMS.remove(namespacedKey);
         System.gc();
         if (CustomCrafting.hasDataBaseHandler()) {
             CustomCrafting.getDataBaseHandler().removeItem(namespacedKey);

@@ -12,19 +12,19 @@ import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
-import me.wolfyscript.utilities.api.inventory.custom_items.MetaSettings;
-import me.wolfyscript.utilities.api.inventory.custom_items.api_references.*;
+import me.wolfyscript.utilities.api.inventory.custom_items.meta.MetaSettings;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.*;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.*;
-import me.wolfyscript.utilities.api.particles.ParticleEffect;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.util.particles.ParticleLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -114,7 +114,7 @@ public class ItemCreator extends CCWindow {
                 CustomItem customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
                     customCrafting.saveItem(items.getNamespacedKey(), customItem);
-                    customItem = CustomItems.getCustomItem(items.getNamespacedKey());
+                    customItem = Registry.CUSTOM_ITEMS.get(items.getNamespacedKey());
                 }
                 cache.applyItem(customItem);
                 guiHandler.openCluster("recipe_creator");
@@ -698,19 +698,19 @@ public class ItemCreator extends CCWindow {
         registerButton(new OptionButton(Material.FIREWORK_ROCKET, "particle_effects"));
         {
             registerButton(new DummyButton<>("particle_effects.head", Material.IRON_HELMET));
-            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.HEAD));
+            registerButton(new ParticleEffectSelectButton(ParticleLocation.HEAD));
             registerButton(new DummyButton<>("particle_effects.chest", Material.IRON_CHESTPLATE));
-            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.CHEST));
+            registerButton(new ParticleEffectSelectButton(ParticleLocation.CHEST));
             registerButton(new DummyButton<>("particle_effects.legs", Material.IRON_LEGGINGS));
-            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.LEGS));
+            registerButton(new ParticleEffectSelectButton(ParticleLocation.LEGS));
             registerButton(new DummyButton<>("particle_effects.feet", Material.IRON_BOOTS));
-            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.FEET));
+            registerButton(new ParticleEffectSelectButton(ParticleLocation.FEET));
             registerButton(new DummyButton<>("particle_effects.hand", Material.IRON_SWORD));
-            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.HAND));
+            registerButton(new ParticleEffectSelectButton(ParticleLocation.HAND));
             registerButton(new DummyButton<>("particle_effects.off_hand", Material.SHIELD));
-            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.OFF_HAND));
+            registerButton(new ParticleEffectSelectButton(ParticleLocation.OFF_HAND));
             registerButton(new DummyButton<>("particle_effects.block", Material.GRASS_BLOCK));
-            registerButton(new ParticleEffectSelectButton(ParticleEffect.Action.BLOCK));
+            registerButton(new ParticleEffectSelectButton(ParticleLocation.BLOCK));
         }
 
         registerButton(new OptionButton(Material.GRASS_BLOCK, "vanilla"));

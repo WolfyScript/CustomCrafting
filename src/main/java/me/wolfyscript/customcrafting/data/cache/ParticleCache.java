@@ -1,11 +1,11 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.utilities.api.particles.ParticleEffect;
+import me.wolfyscript.utilities.util.particles.ParticleLocation;
 
 public class ParticleCache {
 
     private int page;
-    private ParticleEffect.Action action;
+    private ParticleLocation action;
 
     public ParticleCache() {
         this.page = 0;
@@ -20,11 +20,11 @@ public class ParticleCache {
         this.page = page;
     }
 
-    public ParticleEffect.Action getAction() {
+    public ParticleLocation getAction() {
         return action;
     }
 
-    public void setAction(ParticleEffect.Action action) {
+    public void setAction(ParticleLocation action) {
         this.action = action;
     }
 }

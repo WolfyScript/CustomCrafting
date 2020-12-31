@@ -25,13 +25,11 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.particles.ParticleEffects;
-import me.wolfyscript.utilities.api.particles.Particles;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Bukkit;
@@ -41,7 +39,6 @@ import org.bukkit.inventory.*;
 import org.bukkit.util.NumberConversions;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -58,9 +55,6 @@ public class RecipeHandler {
 
     private final ArrayList<String> disabledRecipes = new ArrayList<>();
 
-    private final List<Particles> particlesList;
-    private final List<ParticleEffects> particleEffectsList;
-
     private final ConfigAPI configAPI;
     private final WolfyUtilities api;
     private final Chat chat;
@@ -71,8 +65,6 @@ public class RecipeHandler {
         this.chat = api.getChat();
         this.configAPI = api.getConfigAPI();
         this.customCrafting = customCrafting;
-        this.particlesList = new ArrayList<>();
-        this.particleEffectsList = new ArrayList<>();
         this.categories = customCrafting.getConfigHandler().getRecipeBook().getCategories();
         this.objectMapper = JacksonUtil.getObjectMapper();
     }
@@ -138,15 +130,10 @@ public class RecipeHandler {
                         JsonNode node = objectMapper.readTree(file);
                         switch (type) {
                             case "items":
-                                CustomItems.addCustomItem(namespacedKey, objectMapper.convertValue(node, CustomItem.class));
+                                Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.convertValue(node, CustomItem.class));
                                 break;
                             case "particles":
-                                Particles particles = new Particles(api, subfolder, File.separator + "recipes");
-                                particles.load();
-                                particlesList.add(particles);
-                                ParticleEffects particleEffects = new ParticleEffects(api, subfolder, File.separator + "recipes");
-                                particleEffects.load();
-                                particleEffectsList.add(particleEffects);
+                                //TODO: Load particles
                                 break;
                             case "workbench":
                                 if (node.path("shapeless").asBoolean()) {
@@ -206,16 +193,6 @@ public class RecipeHandler {
     public void onSave() {
         customCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
         customCrafting.getConfigHandler().getConfig().save();
-        try {
-            for (Particles particles : particlesList) {
-                particles.save();
-            }
-            for (ParticleEffects particleEffects : particleEffectsList) {
-                particleEffects.save();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void loadDataBase() {

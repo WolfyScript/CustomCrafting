@@ -10,11 +10,11 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.particles.ParticleEffect;
-import me.wolfyscript.utilities.api.particles.ParticleEffects;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import me.wolfyscript.utilities.util.particles.ParticleEffect;
 
 import java.util.Collection;
 import java.util.Map;
@@ -65,8 +65,7 @@ public class MainMenu extends CCWindow {
 
         event.setButton(0, "back");
 
-        Map<NamespacedKey, ParticleEffect> effectsMap = ParticleEffects.getEffects();
-        Collection<ParticleEffect> effects = effectsMap.values();
+        Collection<ParticleEffect> effects = Registry.PARTICLE_EFFECTS.values();
 
         int maxPages = effects.size() / 54 + (effects.size() % 54 > 0 ? 1 : 0);
         if (particleCache.getPage() >= maxPages) {
@@ -80,7 +79,7 @@ public class MainMenu extends CCWindow {
         }
 
         int i = 0;
-        for (Map.Entry<NamespacedKey, ParticleEffect> entry : effectsMap.entrySet()) {
+        for (Map.Entry<NamespacedKey, ParticleEffect> entry : Registry.PARTICLE_EFFECTS.entrySet()) {
             int item = 9 + i;
             if (item < 54) {
                 ParticleEffectButton button = (ParticleEffectButton) getButton("particle_effect.slot" + item);

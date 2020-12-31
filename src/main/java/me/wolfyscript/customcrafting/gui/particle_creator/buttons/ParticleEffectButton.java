@@ -6,9 +6,9 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.api.particles.ParticleEffect;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.particles.ParticleEffect;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 

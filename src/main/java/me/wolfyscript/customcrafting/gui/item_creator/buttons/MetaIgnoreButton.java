@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.utilities.api.inventory.custom_items.Meta;
-import me.wolfyscript.utilities.api.inventory.custom_items.MetaSettings;
+import me.wolfyscript.utilities.api.inventory.custom_items.meta.Meta;
+import me.wolfyscript.utilities.api.inventory.custom_items.meta.MetaSettings;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;

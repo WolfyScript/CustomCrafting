@@ -5,9 +5,9 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItems;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -50,7 +50,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                             api.getChat().sendPlayerMessage(p, "$commands.give.invalid_amount$");
                         }
                     }
-                    CustomItem customItem = CustomItems.getCustomItem(namespacekey);
+                    CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacekey);
                     if (customItem != null) {
                         ItemStack itemStack = customItem.create(amount);
                         if (InventoryUtils.hasInventorySpace(target, itemStack)) {
@@ -84,7 +84,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                         api.getChat().sendConsoleMessage("$commands.give.invalid_amount$");
                     }
                 }
-                CustomItem customItem = CustomItems.getCustomItem(namespacekey);
+                CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacekey);
                 if (customItem != null) {
                     if (InventoryUtils.hasInventorySpace(target, customItem.getItemStack())) {
                         ItemStack itemStack = customItem.create(amount);
@@ -116,7 +116,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                     break;
                 case 2:
                     //Item completion
-                    StringUtil.copyPartialMatches(strings[1], CustomItems.getCustomItems().keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList()), results);
+                    StringUtil.copyPartialMatches(strings[1], Registry.CUSTOM_ITEMS.keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList()), results);
                     break;
             }
         }

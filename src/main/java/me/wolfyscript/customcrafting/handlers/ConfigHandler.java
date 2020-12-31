@@ -9,15 +9,21 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecip
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.api_references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.particles.ParticleAnimation;
+import me.wolfyscript.utilities.util.particles.ParticleEffect;
+import me.wolfyscript.utilities.util.particles.ParticleLocation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +63,9 @@ public class ConfigHandler {
         }
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
 
+        ParticleAnimation enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", null, 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
+        Registry.PARTICLE_ANIMATIONS.register(new NamespacedKey("customcrafting", "advanced_crafting_table"), enchantAnimation);
+
         if (mainConfig.resetKnowledgeBook()) {
             //Creating the knowledgebook item and recipe
             NamespacedKey knowledgebookKey = new NamespacedKey("customcrafting", "knowledge_book");
@@ -65,7 +74,7 @@ public class ConfigHandler {
             knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            ((KnowledgeBookData) knowledgeBook.getCustomData(new NamespacedKey("customcrafting","knowledge_book"))).setEnabled(true);
+            ((KnowledgeBookData) knowledgeBook.getCustomData(new NamespacedKey("customcrafting", "knowledge_book"))).setEnabled(true);
             customCrafting.saveItem(knowledgebookKey, knowledgeBook);
 
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
@@ -84,6 +93,7 @@ public class ConfigHandler {
             advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Workbench for advanced crafting"));
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, new NamespacedKey("customcrafting", "advanced_crafting_table"));
             customCrafting.saveItem(workbenchKey, advancedWorkbench);
 
             ShapedCraftRecipe workbenchCraft = new ShapedCraftRecipe();
@@ -95,6 +105,7 @@ public class ConfigHandler {
             workbenchCraft.setNamespacedKey(workbenchKey);
             workbenchCraft.save();
         }
+
 
         //Loading RecipeBook
         customCrafting.saveResource("recipe_book.json", false);
