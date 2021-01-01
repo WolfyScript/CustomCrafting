@@ -2,11 +2,12 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -68,7 +69,7 @@ public class MainMenu extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
+        CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         event.setButton(0, "settings");
         event.setButton(8, new NamespacedKey("none", "gui_help"));
 
@@ -101,7 +102,7 @@ public class MainMenu extends CCWindow {
             event.setButton(34, "elite_workbench");
         }
         for (int i = 37; i < 44; i++) {
-            event.setButton(i, new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white"));
+            event.setButton(i, new NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white"));
         }
 
         event.setButton(36, "item_editor");

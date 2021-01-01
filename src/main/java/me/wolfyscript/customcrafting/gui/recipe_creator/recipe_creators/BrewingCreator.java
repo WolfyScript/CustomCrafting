@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingContainerButton;
@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingOptionBut
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -345,7 +346,7 @@ public class BrewingCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
+        CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
         update.setButton(0, "back");
         CCCache cache = update.getGuiHandler().getCustomCache();
         BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
@@ -369,7 +370,7 @@ public class BrewingCreator extends RecipeCreator {
         update.setButton(20, "amplifier_change");
         update.setButton(29, "effect_color");
         update.setButton(38, "reset_effects");
-        NamespacedKey gray = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        NamespacedKey gray = new NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white");
         update.setButton(12, gray);
         update.setButton(21, gray);
         update.setButton(30, gray);

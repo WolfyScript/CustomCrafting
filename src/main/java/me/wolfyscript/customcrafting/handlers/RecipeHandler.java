@@ -266,24 +266,24 @@ public class RecipeHandler {
         Get all the Recipes from this group
      */
     public List<ICustomRecipe<?>> getRecipeGroup(String group) {
-        return customRecipes.values().stream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
+        return customRecipes.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
     }
 
     public List<String> getNamespaces() {
-        return customRecipes.keySet().stream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
+        return customRecipes.keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
     }
 
     public List<ICustomRecipe<?>> getRecipesByNamespace(String namespace) {
-        return customRecipes.entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
+        return customRecipes.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
     public Stream<CraftingRecipe<?>> getSimilarRecipesStream(List<List<ItemStack>> items, boolean elite, boolean advanced) {
         AtomicInteger size = new AtomicInteger();
-        items.forEach(stacks -> size.addAndGet((int) stacks.stream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count()));
+        items.forEach(stacks -> size.addAndGet((int) stacks.parallelStream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count()));
         List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
         if (elite) craftingRecipes.addAll(getRecipes(RecipeType.ELITE_WORKBENCH));
         if (advanced) craftingRecipes.addAll(getRecipes(RecipeType.WORKBENCH));
-        return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size.get()).filter(customRecipe -> {
+        return craftingRecipes.parallelStream().filter(r -> r.getIngredients().keySet().size() == size.get()).filter(customRecipe -> {
             if (customRecipe instanceof IShapedCraftingRecipe) {
                 IShapedCraftingRecipe recipe = ((IShapedCraftingRecipe) customRecipe);
                 return items.size() > 0 && recipe.getShape().length > 0 && items.size() == recipe.getShape().length && items.get(0).size() == recipe.getShape()[0].length();
@@ -316,7 +316,7 @@ public class RecipeHandler {
      * @return Recipes without the indicated Type
      */
     public List<ICustomRecipe<?>> getRecipes(CustomItem result) {
-        return customRecipes.values().stream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
+        return customRecipes.values().parallelStream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
     }
 
     //CRAFTING RECIPES
@@ -327,7 +327,7 @@ public class RecipeHandler {
     }
 
     public <T extends ICustomRecipe<?>> List<T> getRecipes(Class<T> type) {
-        return customRecipes.values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+        return customRecipes.values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
 
     public <T extends ICustomRecipe<?>> List<T> getRecipes(RecipeType<T> type) {

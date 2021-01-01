@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,8 +23,8 @@ public class DarkModeSubCommand extends AbstractSubCommand {
         WolfyUtilities api = CustomCrafting.getApi();
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            CustomCrafting.getPlayerStatistics(p).setDarkMode(!CustomCrafting.getPlayerStatistics(p).getDarkMode());
-            if (CustomCrafting.getPlayerStatistics(p).getDarkMode()) {
+            PlayerUtil.getStore(p).setDarkMode(!PlayerUtil.getStore(p).isDarkMode());
+            if (PlayerUtil.getStore(p).isDarkMode()) {
                 api.getChat().sendPlayerMessage(p, "$commands.darkmode.enabled$");
             } else {
                 api.getChat().sendPlayerMessage(p, "$commands.darkmode.disabled$");

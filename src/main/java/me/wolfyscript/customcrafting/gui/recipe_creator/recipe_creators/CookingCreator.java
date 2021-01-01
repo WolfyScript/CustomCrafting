@@ -2,9 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CookingContainerButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
@@ -67,19 +68,19 @@ public class CookingCreator extends RecipeCreator {
         CCCache cache = (CCCache) update.getGuiHandler().getCustomCache();
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
 
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
+        CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
 
         update.setButton(3, "hidden");
         update.setButton(5, "recipe_creator", "conditions");
-        update.setButton(20, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        update.setButton(20, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
         update.setButton(11, "cooking.container_0");
         update.setButton(24, "cooking.container_1");
-        update.setButton(10, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        update.setButton(12, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        update.setButton(10, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
+        update.setButton(12, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
         update.setButton(22, "xp");
         update.setButton(29, "cooking_time");
 
-        if(cache.getCookingRecipe().hasNamespacedKey()){
+        if (cache.getCookingRecipe().hasNamespacedKey()) {
             update.setButton(43, "save");
         }
         update.setButton(44, "save_as");

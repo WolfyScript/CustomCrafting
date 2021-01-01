@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
@@ -13,6 +13,7 @@ import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -117,13 +118,13 @@ public class RecipeBook extends CCWindow {
         super.onUpdateAsync(event);
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         Player player = event.getPlayer();
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);
+        CCPlayerData playerStore = PlayerUtil.getStore(player);
+        NamespacedKey grayBtnKey = new NamespacedKey("none", playerStore.isDarkMode() ? "glass_gray" : "glass_white");
+
         KnowledgeBook knowledgeBook = event.getGuiHandler().getCustomCache().getKnowledgeBook();
 
-        NamespacedKey grayBtnKey = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-
         Category category = knowledgeBook.getCategory();
-        Category switchCategory = ((ItemCategoryButton) event.getGuiHandler().getInvAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(event.getGuiHandler());
+        Category switchCategory = ((ItemCategoryButton) event.getGuiHandler().getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getCategory(event.getGuiHandler());
 
         for (int i = 1; i < 9; i++) {
             event.setButton(i, grayBtnKey);
@@ -132,7 +133,7 @@ public class RecipeBook extends CCWindow {
             if (recipeHandler.getCategories().getSortedMainCategories().size() > 1) {
                 event.setButton(0, "back");
             }
-            event.setButton(4, new NamespacedKey("recipe_book", "itemCategory"));
+            event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
 
             if (knowledgeBook.getRecipeItems().isEmpty()) {
                 List<CustomItem> recipeItems = new ArrayList<>();

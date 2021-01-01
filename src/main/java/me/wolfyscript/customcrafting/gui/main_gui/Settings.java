@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -58,10 +59,10 @@ public class Settings extends CCWindow {
         })));
 
         registerButton(new ToggleButton<>("darkMode", new ButtonState<>("darkMode.disabled", Material.WHITE_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
-            CustomCrafting.getPlayerStatistics(player).setDarkMode(true);
+            PlayerUtil.getStore(player).setDarkMode(true);
             return true;
         }), new ButtonState<>("darkMode.enabled", Material.BLACK_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
-            CustomCrafting.getPlayerStatistics(player).setDarkMode(false);
+            PlayerUtil.getStore(player).setDarkMode(false);
             return true;
         })));
 
@@ -160,7 +161,7 @@ public class Settings extends CCWindow {
         Player player = event.getPlayer();
 
         ((ToggleButton<CCCache>) getButton("lockdown")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isLockedDown());
-        ((ToggleButton<CCCache>) getButton("darkMode")).setState(event.getGuiHandler(), !CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode());
+        ((ToggleButton<CCCache>) getButton("darkMode")).setState(event.getGuiHandler(), !PlayerUtil.getStore(event.getPlayer()).isDarkMode());
         ((ToggleButton<CCCache>) getButton("pretty_printing")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isPrettyPrinting());
         ((ToggleButton<CCCache>) getButton("advanced_workbench")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled());
         ((ToggleButton<CCCache>) getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());

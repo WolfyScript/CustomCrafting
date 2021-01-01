@@ -4,9 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,11 +32,11 @@ public abstract class CraftingWindow extends CCWindow {
         for (int i = 0; i < getSize() - 1; i++) {
             event.setButton(i, new NamespacedKey("none", "glass_black"));
         }
-        event.setButton(getSize() - 1, CustomCrafting.getPlayerStatistics(event.getPlayer()).getDarkMode() ? "texture_dark" : "texture_light");
+        event.setButton(getSize() - 1, PlayerUtil.getStore(event.getPlayer()).isDarkMode() ? "texture_dark" : "texture_light");
     }
 
     @Override
-    public boolean onClose(GuiHandler<CCCache> guiHandler, InventoryView transaction) {
+    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
         Player player = guiHandler.getPlayer();
         CCCache cache = guiHandler.getCustomCache();
         EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();

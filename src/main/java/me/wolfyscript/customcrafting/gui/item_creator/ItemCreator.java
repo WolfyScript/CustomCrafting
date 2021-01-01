@@ -4,13 +4,14 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.meta.MetaSettings;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.*;
@@ -753,8 +754,8 @@ public class ItemCreator extends CCWindow {
         event.setButton(0, "back");
         event.setButton(13, "item_input");
 
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
-        me.wolfyscript.utilities.util.NamespacedKey gray = new me.wolfyscript.utilities.util.NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
+        me.wolfyscript.utilities.util.NamespacedKey gray = new me.wolfyscript.utilities.util.NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white");
         event.setButton(4, gray);
         event.setButton(12, gray);
         event.setButton(14, gray);

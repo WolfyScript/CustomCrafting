@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -16,6 +16,7 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -81,7 +82,7 @@ public class CraftingRecipeBook extends CCWindow {
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
         Player player = event.getPlayer();
         CCCache cache = guiHandler.getCustomCache();
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(player);
+        CCPlayerData data = PlayerUtil.getStore(player);
         EliteWorkbench eliteWorkbenchData = cache.getEliteWorkbench();
         KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
 
@@ -155,10 +156,10 @@ public class CraftingRecipeBook extends CCWindow {
         } else {
             List<ICustomRecipe<?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
-                event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+                event.setButton(i, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
             }
             for (int i = 36; i < 45; i++) {
-                event.setButton(i, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+                event.setButton(i, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
             }
             event.setButton(0, "back");
             int maxPages = recipes.size();

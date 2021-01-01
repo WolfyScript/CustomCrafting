@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
@@ -16,6 +16,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -98,16 +99,17 @@ public class RecipeUtils {
                     List<List<ItemStack>> ingredients = customCrafting.getRecipeHandler().getIngredients(matrix);
                     Player player = (Player) event.getWhoClicked();
                     {//---------COMMANDS AND STATISTICS-------------
-                        PlayerStatistics cache = CustomCrafting.getPlayerStatistics(player);
+                        CCPlayerData playerStore = PlayerUtil.getStore(player);
                         if (config.getCommandsSuccessCrafted() != null && !config.getCommandsSuccessCrafted().isEmpty()) {
                             config.getCommandsSuccessCrafted().forEach(c -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), c.replace("%P%", player.getName()).replace("%UUID%", player.getUniqueId().toString()).replace("%REC%", recipe.getNamespacedKey().toString())));
                         }
-                        cache.addRecipeCrafts(customCraftEvent.getRecipe().getNamespacedKey().toString());
-                        cache.addAmountCrafted(1);
-                        if (CustomCrafting.getWorkbenches().isWorkbench(player.getTargetBlock(null, 5).getLocation())) {
-                            cache.addAmountAdvancedCrafted(1);
+                        playerStore.increaseRecipeCrafts(customCraftEvent.getRecipe().getNamespacedKey(), 1);
+                        playerStore.increaseTotalCrafts(1);
+                        CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(player.getTargetBlock(null, 5).getLocation());
+                        if (customItem != null && customItem.getNamespacedKey().equals(new NamespacedKey("customcrafting", "advanced_crafting_table"))) {
+                            playerStore.increaseAdvancedCrafts(1);
                         } else {
-                            cache.addAmountNormalCrafted(1);
+                            playerStore.increaseNormalCrafts(1);
                         }
                     }//----------------------------------------------
 

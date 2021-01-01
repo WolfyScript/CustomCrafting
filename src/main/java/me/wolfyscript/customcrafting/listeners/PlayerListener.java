@@ -28,11 +28,6 @@ public class PlayerListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         WolfyUtilities api = CustomCrafting.getApi();
-
-        if (!CustomCrafting.hasPlayerCache(player)) {
-            CustomCrafting.getApi().getChat().sendConsoleMessage("Initializing new cache for " + player.getDisplayName());
-            CustomCrafting.renewPlayerStatistics(player);
-        }
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (customCrafting.isOutdated()) {
                 api.getChat().sendPlayerMessage(player, "$msg.player.outdated.msg$");

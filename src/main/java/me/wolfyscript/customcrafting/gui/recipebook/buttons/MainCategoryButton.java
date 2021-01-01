@@ -29,7 +29,7 @@ public class MainCategoryButton extends Button<CCCache> {
     private final Category category;
 
     public MainCategoryButton(String categoryId, CustomCrafting customCrafting) {
-        super("mainCategory." + categoryId, ButtonType.NORMAL);
+        super("main_category." + categoryId, ButtonType.NORMAL);
         this.customCrafting = customCrafting;
         this.categories = customCrafting.getRecipeHandler().getCategories();
         this.category = categories.getMainCategory(categoryId);

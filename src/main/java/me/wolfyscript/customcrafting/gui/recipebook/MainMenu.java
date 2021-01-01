@@ -3,10 +3,11 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.MainCategoryButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
@@ -34,8 +35,8 @@ public class MainMenu extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
-        event.setButton(8, "none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
+        CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
+        event.setButton(8, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
 
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         Categories categories = recipeHandler.getCategories();

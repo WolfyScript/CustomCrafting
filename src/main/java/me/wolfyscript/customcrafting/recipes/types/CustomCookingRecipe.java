@@ -1,12 +1,12 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -132,7 +132,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(event.getPlayer());
+        CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         KnowledgeBook book = event.getGuiHandler().getCustomCache().getKnowledgeBook();
         event.setButton(0, "back");
         List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
@@ -145,7 +145,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
             }
         }
         event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
-        event.setButton(20, new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white"));
+        event.setButton(20, new NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white"));
         event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
         event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
 
@@ -153,7 +153,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
             AtomicInteger i = new AtomicInteger();
             book.setTimerTask(Bukkit.getScheduler().runTaskTimerAsynchronously(event.getGuiHandler().getApi().getPlugin(), () -> {
                 if (i.get() == 0) {
-                    NamespacedKey glass = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+                    NamespacedKey glass = new NamespacedKey("none", data.isDarkMode() ? "glass_black" : "glass_gray");
                     event.setButton(23, glass);
                     event.setButton(22, glass);
                     event.setButton(21, glass);

@@ -6,8 +6,7 @@ import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
-import me.wolfyscript.customcrafting.data.Workbenches;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
@@ -27,6 +26,7 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.Registry;
+import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -36,18 +36,16 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -56,7 +54,6 @@ public class CustomCrafting extends JavaPlugin {
     » 175
      */
     private static CustomCrafting instance;
-    private static final List<PlayerStatistics> playerStatisticsList = new ArrayList<>();
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
     private static RecipeHandler recipeHandler;
@@ -67,7 +64,6 @@ public class CustomCrafting extends JavaPlugin {
     //Utils
     private ChatUtils chatUtils;
 
-    private static Workbenches workbenches = null;
     private static Cauldrons cauldrons = null;
 
     private static String currentVersion;
@@ -78,10 +74,6 @@ public class CustomCrafting extends JavaPlugin {
         return instance;
     }
 
-    public static boolean hasPlayerCache(Player player) {
-        return playerStatisticsList.stream().anyMatch(playerStatistics -> playerStatistics.getUuid().equals(player.getUniqueId()));
-    }
-
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
@@ -90,6 +82,8 @@ public class CustomCrafting extends JavaPlugin {
             CustomItem.registerCustomData(new EliteWorkbenchData.Provider());
             CustomItem.registerCustomData(new KnowledgeBookData.Provider());
             CustomItem.registerCustomData(new CauldronData.Provider());
+
+            CustomPlayerData.register(new CCPlayerData.Provider());
         }
     }
 
@@ -186,9 +180,8 @@ public class CustomCrafting extends JavaPlugin {
             e.printStackTrace();
         }
 
-        loadPlayerStatistics();
+        //PlayerStores.load();
         invHandler.init();
-        workbenches = new Workbenches(this);
 
         cauldrons = new Cauldrons(this);
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -225,54 +218,15 @@ public class CustomCrafting extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            workbenches.endTask();
-            workbenches.save();
             cauldrons.endAutoSaveTask();
             cauldrons.save();
             getRecipeHandler().onSave();
-            savePlayerStatistics();
         }
     }
 
     public void loadRecipesAndItems() {
         recipeHandler.load();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
-    }
-
-    private void savePlayerStatistics() {
-        HashMap<UUID, HashMap<String, Object>> caches = new HashMap<>();
-        playerStatisticsList.forEach(playerStatistics -> caches.put(playerStatistics.getUuid(), playerStatistics.getStats()));
-        try {
-            FileOutputStream fos = new FileOutputStream(new File(getDataFolder() + File.separator + "playerstats.dat"));
-            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
-            oos.writeObject(caches);
-            oos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadPlayerStatistics() {
-        api.getChat().sendConsoleMessage("$msg.startup.playerstats$");
-        File file = new File(getDataFolder() + File.separator + "playerstats.dat");
-        if (file.exists()) {
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream(file);
-                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
-                try {
-                    Object object = ois.readObject();
-                    if (object instanceof HashMap) {
-                        ((HashMap<UUID, HashMap<String, Object>>) object).forEach((uuid, stat) -> playerStatisticsList.add(new PlayerStatistics(uuid, stat)));
-                    }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                ois.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public ConfigHandler getConfigHandler() {
@@ -293,10 +247,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public ChatUtils getChatUtils() {
         return chatUtils;
-    }
-
-    public static Workbenches getWorkbenches() {
-        return workbenches;
     }
 
     public static Cauldrons getCauldrons() {
@@ -339,24 +289,6 @@ public class CustomCrafting extends JavaPlugin {
                 chat.sendConsoleWarning("$msg.startup.update_check_fail$");
             }
         }).start();
-    }
-
-    public static void renewPlayerStatistics(Player player) {
-        if (hasPlayerCache(player)) {
-            PlayerStatistics playerStatistics = getPlayerStatistics(player);
-            playerStatisticsList.remove(playerStatistics);
-        }
-        playerStatisticsList.add(new PlayerStatistics(player.getUniqueId()));
-    }
-
-    public static PlayerStatistics getPlayerStatistics(Player player) {
-        return getPlayerStatistics(player.getUniqueId());
-    }
-
-    public static PlayerStatistics getPlayerStatistics(UUID uuid) {
-        PlayerStatistics playerStatistics = playerStatisticsList.stream().filter(pS -> pS.getUuid().equals(uuid)).findFirst().orElse(new PlayerStatistics(uuid));
-        if (!playerStatisticsList.contains(playerStatistics)) playerStatisticsList.add(playerStatistics);
-        return playerStatistics;
     }
 
     public boolean isOutdated() {

@@ -2,7 +2,8 @@ package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.PlayerStatistics;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -25,9 +26,9 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
-        PlayerStatistics playerStatistics = CustomCrafting.getPlayerStatistics(update.getPlayer());
-        NamespacedKey white = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_gray" : "glass_white");
-        NamespacedKey gray = new NamespacedKey("none", playerStatistics.getDarkMode() ? "glass_black" : "glass_gray");
+        CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
+        NamespacedKey white = new NamespacedKey("none", store.isDarkMode() ? "glass_gray" : "glass_white");
+        NamespacedKey gray = new NamespacedKey("none", store.isDarkMode() ? "glass_black" : "glass_gray");
         if (getSize() > 9) {
             for (int i = 0; i < 9; i++) {
                 update.setButton(i, white);
