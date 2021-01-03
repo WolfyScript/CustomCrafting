@@ -10,8 +10,8 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -196,7 +196,7 @@ public class RecipeBook extends CCWindow {
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
                 NamespacedKey backToList = new NamespacedKey("recipe_book", "back_to_list");
                 ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
-                if (customRecipe.getRecipeType().equals(RecipeType.ELITE_WORKBENCH)) {
+                if (customRecipe.getRecipeType().equals(Types.ELITE_WORKBENCH)) {
                     if (knowledgeBook.getSubFolderPage() > 0) {
                         event.setButton(51, "previous_recipe");
                     }

@@ -7,10 +7,11 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
@@ -63,7 +64,7 @@ public class CCCache extends CustomCache {
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;
-        this.recipeType = RecipeType.WORKBENCH;
+        this.recipeType = Types.WORKBENCH;
 
         setCustomRecipe(new CustomAnvilRecipe());
         setCustomRecipe(new ShapedCraftRecipe());
@@ -185,8 +186,8 @@ public class CCCache extends CustomCache {
      *
      ***************************************************************/
     public CustomCookingRecipe<?,?> getCookingRecipe() {
-        if (recipeType.equals(RecipeType.CAMPFIRE) || recipeType.equals(RecipeType.SMOKER) || recipeType.equals(RecipeType.FURNACE) || recipeType.equals(RecipeType.BLAST_FURNACE)) {
-            return (CustomCookingRecipe<?, ?>) getRecipe(recipeType);
+        if (recipeType instanceof RecipeType.CookingRecipeType) {
+            return getRecipe((RecipeType.CookingRecipeType<?>) recipeType);
         }
         return null;
     }
@@ -227,50 +228,50 @@ public class CCCache extends CustomCache {
      *
      ***************************************************************/
     public AdvancedCraftingRecipe getAdvancedCraftingRecipe() {
-        return getRecipe(RecipeType.WORKBENCH);
+        return getRecipe(Types.WORKBENCH);
     }
 
     public CustomAnvilRecipe getAnvilRecipe() {
-        return getRecipe(RecipeType.ANVIL);
+        return getRecipe(Types.ANVIL);
     }
 
     public EliteCraftingRecipe getEliteCraftingRecipe() {
-        return getRecipe(RecipeType.ELITE_WORKBENCH);
+        return getRecipe(Types.ELITE_WORKBENCH);
     }
 
     public CustomBlastRecipe getBlastRecipe() {
-        return getRecipe(RecipeType.BLAST_FURNACE);
+        return getRecipe(Types.BLAST_FURNACE);
     }
 
     public CustomCampfireRecipe getCampfireRecipe() {
-        return getRecipe(RecipeType.CAMPFIRE);
+        return getRecipe(Types.CAMPFIRE);
     }
 
     public CauldronRecipe getCauldronRecipe() {
-        return getRecipe(RecipeType.CAULDRON);
+        return getRecipe(Types.CAULDRON);
     }
 
     public CustomSmokerRecipe getSmokerRecipe() {
-        return getRecipe(RecipeType.SMOKER);
+        return getRecipe(Types.SMOKER);
     }
 
     public CustomStonecutterRecipe getStonecutterRecipe() {
-        return getRecipe(RecipeType.STONECUTTER);
+        return getRecipe(Types.STONECUTTER);
     }
 
     public CustomFurnaceRecipe getFurnaceRecipe() {
-        return getRecipe(RecipeType.FURNACE);
+        return getRecipe(Types.FURNACE);
     }
 
     public GrindstoneRecipe getGrindstoneRecipe() {
-        return getRecipe(RecipeType.GRINDSTONE);
+        return getRecipe(Types.GRINDSTONE);
     }
 
     public BrewingRecipe getBrewingRecipe() {
-        return getRecipe(RecipeType.BREWING_STAND);
+        return getRecipe(Types.BREWING_STAND);
     }
 
     public CustomSmithingRecipe getSmithingRecipe() {
-        return getRecipe(RecipeType.SMITHING);
+        return getRecipe(Types.SMITHING);
     }
 }

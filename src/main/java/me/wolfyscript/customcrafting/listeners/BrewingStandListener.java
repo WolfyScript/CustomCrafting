@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -159,7 +159,7 @@ public class BrewingStandListener implements Listener {
                         //Check if at least one slot contains an item
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
-                            customCrafting.getRecipeHandler().getAvailableRecipes(RecipeType.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
+                            customCrafting.getRecipeHandler().getAvailableRecipes(Types.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
                                 for (CustomItem customItem : recipe.getIngredients()) {
                                     if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {
                                         //Ingredient is valid
@@ -243,15 +243,12 @@ public class BrewingStandListener implements Listener {
                                                                     if (!recipe.getResults().isEmpty()) {
                                                                         //Result available. Replace the items with a random result from the list. (Percentages of items are used)
                                                                         if (recipe.getResults().size() > 1) {
-                                                                            RandomCollection<CustomItem> items = new RandomCollection<>();
-                                                                            recipe.getResults().forEach(customItem -> items.add(customItem.getRarityPercentage(), customItem));
-                                                                            if (!items.isEmpty()) {
-                                                                                if (!ItemUtils.isAirOrNull(inputItem))
-                                                                                    brewerInventory.setItem(i, items.next().create());
+                                                                            RandomCollection<CustomItem> items = recipe.getResults().parallelStream().collect(RandomCollection.getCollector((rdmC, customItem) -> rdmC.add(customItem.getRarityPercentage(), customItem)));
+                                                                            if (!items.isEmpty() && !ItemUtils.isAirOrNull(inputItem)) {
+                                                                                brewerInventory.setItem(i, items.next().create());
                                                                             }
-                                                                        } else if (recipe.getResult() != null) {
-                                                                            if (!ItemUtils.isAirOrNull(inputItem))
-                                                                                brewerInventory.setItem(i, recipe.getResult().create());
+                                                                        } else if (recipe.getResult() != null && !ItemUtils.isAirOrNull(inputItem)) {
+                                                                            brewerInventory.setItem(i, recipe.getResult().create());
                                                                         }
                                                                     } else {
                                                                         //No result available

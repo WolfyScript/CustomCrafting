@@ -1,7 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.smoker;
 
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -26,7 +27,7 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, 
 
     @Override
     public RecipeType<CustomSmokerRecipe> getRecipeType() {
-        return RecipeType.SMOKER;
+        return Types.SMOKER;
     }
 
     @Override

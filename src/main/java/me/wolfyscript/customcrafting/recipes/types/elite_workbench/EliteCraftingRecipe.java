@@ -4,8 +4,9 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -40,7 +41,7 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRe
 
     @Override
     public RecipeType<EliteCraftingRecipe> getRecipeType() {
-        return RecipeType.ELITE_WORKBENCH;
+        return Types.ELITE_WORKBENCH;
     }
 
     @Override

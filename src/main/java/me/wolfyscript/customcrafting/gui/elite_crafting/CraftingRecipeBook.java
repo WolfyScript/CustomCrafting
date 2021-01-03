@@ -11,9 +11,9 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
@@ -94,7 +94,7 @@ public class CraftingRecipeBook extends CCWindow {
             event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
             if (knowledgeBook.getRecipeItems().isEmpty()) {
 
-                List<ICustomRecipe<?>> recipes = new ArrayList<>(customCrafting.getRecipeHandler().getAvailableRecipes(RecipeType.ELITE_WORKBENCH, player));
+                List<ICustomRecipe<?>> recipes = new ArrayList<>(customCrafting.getRecipeHandler().getAvailableRecipes(Types.ELITE_WORKBENCH, player));
 
                 Iterator<ICustomRecipe<?>> iterator = recipes.iterator();
                 while (iterator.hasNext()) {
@@ -118,7 +118,7 @@ public class CraftingRecipeBook extends CCWindow {
                 }
                 EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
                 if (eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()) {
-                    recipes.addAll(customCrafting.getRecipeHandler().getAvailableRecipes(RecipeType.WORKBENCH, player));
+                    recipes.addAll(customCrafting.getRecipeHandler().getAvailableRecipes(Types.WORKBENCH, player));
                 }
                 if (category != null) {
                     Iterator<ICustomRecipe<?>> recipeIterator = recipes.iterator();

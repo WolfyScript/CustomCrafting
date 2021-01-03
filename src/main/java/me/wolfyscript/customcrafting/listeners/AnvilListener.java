@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilData;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -37,7 +37,7 @@ public class AnvilListener implements Listener {
     public void onCheck(PrepareAnvilEvent event) {
         Player player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
-        List<CustomAnvilRecipe> recipes = customCrafting.getRecipeHandler().getAvailableRecipes(RecipeType.ANVIL, player);
+        List<CustomAnvilRecipe> recipes = customCrafting.getRecipeHandler().getAvailableRecipes(Types.ANVIL, player);
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         preCraftedRecipes.remove(player.getUniqueId());
         for (CustomAnvilRecipe recipe : recipes) {

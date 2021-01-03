@@ -1,7 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.furnace;
 
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -32,7 +33,7 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe
 
     @Override
     public RecipeType<CustomFurnaceRecipe> getRecipeType() {
-        return RecipeType.FURNACE;
+        return Types.FURNACE;
     }
 
     @Override

@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneData;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -197,7 +197,7 @@ public class GrindStoneListener implements Listener {
         AtomicReference<CustomItem> finalInputTop = new AtomicReference<>();
         AtomicReference<CustomItem> finalInputBottom = new AtomicReference<>();
 
-        List<GrindstoneRecipe> allowedRecipes = customCrafting.getRecipeHandler().getAvailableRecipes(RecipeType.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList());
+        List<GrindstoneRecipe> allowedRecipes = customCrafting.getRecipeHandler().getAvailableRecipes(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList());
 
         preCraftedRecipes.remove(player.getUniqueId());
 
@@ -246,17 +246,16 @@ public class GrindStoneListener implements Listener {
         GrindstoneData grindstoneData = new GrindstoneData(foundRecipe, validItem, finalInputTop.get(), finalInputBottom.get());
         CustomItem result = new CustomItem(Material.AIR);
         if (foundRecipe != null) {
-            RandomCollection<CustomItem> items = new RandomCollection<>();
-            foundRecipe.getResults().stream().filter(cI -> !cI.hasPermission() || player.hasPermission(cI.getPermission())).forEach(cI -> items.add(cI.getRarityPercentage(), cI.clone()));
-            HashMap<NamespacedKey, CustomItem> precraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
-            if (precraftedItem.get(foundRecipe.getNamespacedKey()) == null) {
+            HashMap<NamespacedKey, CustomItem> preCraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
+            if (preCraftedItem.get(foundRecipe.getNamespacedKey()) == null) {
+                RandomCollection<CustomItem> items = foundRecipe.getResults().parallelStream().filter((cI) -> !cI.hasPermission() || player.hasPermission(cI.getPermission())).collect(RandomCollection.getCollector((rdmC, cI) -> rdmC.add(cI.getRarityPercentage(), cI)));
                 if (!items.isEmpty()) {
                     result = items.next();
-                    precraftedItem.put(foundRecipe.getNamespacedKey(), result);
-                    precraftedItems.put(player.getUniqueId(), precraftedItem);
+                    preCraftedItem.put(foundRecipe.getNamespacedKey(), result);
+                    precraftedItems.put(player.getUniqueId(), preCraftedItem);
                 }
             } else {
-                result = precraftedItem.get(foundRecipe.getNamespacedKey());
+                result = preCraftedItem.get(foundRecipe.getNamespacedKey());
             }
         }
         return new Pair<>(result, grindstoneData);

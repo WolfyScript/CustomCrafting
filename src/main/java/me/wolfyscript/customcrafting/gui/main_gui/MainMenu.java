@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -27,19 +27,20 @@ public class MainMenu extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new RecipeTypeButton(RecipeType.WORKBENCH, Material.CRAFTING_TABLE));
-        registerButton(new RecipeTypeButton(RecipeType.FURNACE, Material.FURNACE));
-        registerButton(new RecipeTypeButton(RecipeType.ANVIL, Material.ANVIL));
-        registerButton(new RecipeTypeButton(RecipeType.BLAST_FURNACE, Material.BLAST_FURNACE));
-        registerButton(new RecipeTypeButton(RecipeType.SMOKER, Material.SMOKER));
-        registerButton(new RecipeTypeButton(RecipeType.CAMPFIRE, Material.CAMPFIRE));
-        registerButton(new RecipeTypeButton(RecipeType.STONECUTTER, Material.STONECUTTER));
-        registerButton(new RecipeTypeButton(RecipeType.GRINDSTONE, Material.GRINDSTONE));
-        registerButton(new RecipeTypeButton(RecipeType.BREWING_STAND, Material.BREWING_STAND));
-        registerButton(new RecipeTypeButton(RecipeType.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
-        registerButton(new RecipeTypeButton(RecipeType.CAULDRON, Material.CAULDRON));
+        registerButton(new RecipeTypeButton(Types.WORKBENCH, Material.CRAFTING_TABLE));
+        registerButton(new RecipeTypeButton(Types.FURNACE, Material.FURNACE));
+        registerButton(new RecipeTypeButton(Types.ANVIL, Material.ANVIL));
+        registerButton(new RecipeTypeButton(Types.BLAST_FURNACE, Material.BLAST_FURNACE));
+        registerButton(new RecipeTypeButton(Types.SMOKER, Material.SMOKER));
+        registerButton(new RecipeTypeButton(Types.CAMPFIRE, Material.CAMPFIRE));
+        registerButton(new RecipeTypeButton(Types.STONECUTTER, Material.STONECUTTER));
+        registerButton(new RecipeTypeButton(Types.GRINDSTONE, Material.GRINDSTONE));
+        registerButton(new RecipeTypeButton(Types.BREWING_STAND, Material.BREWING_STAND));
+        registerButton(new RecipeTypeButton(Types.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
+        registerButton(new RecipeTypeButton(Types.CAULDRON, Material.CAULDRON));
+
         if (WolfyUtilities.hasNetherUpdate()) {
-            registerButton(new RecipeTypeButton(RecipeType.SMITHING, Material.SMITHING_TABLE));
+            registerButton(new RecipeTypeButton(Types.SMITHING, Material.SMITHING_TABLE));
         }
 
         registerButton(new ActionButton<>("item_editor", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {

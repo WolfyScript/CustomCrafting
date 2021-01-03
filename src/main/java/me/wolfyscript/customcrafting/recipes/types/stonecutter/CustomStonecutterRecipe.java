@@ -2,9 +2,10 @@ package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.recipes.types.RecipeType;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -103,7 +104,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public RecipeType<CustomStonecutterRecipe> getRecipeType() {
-        return RecipeType.STONECUTTER;
+        return Types.STONECUTTER;
     }
 
     @Override

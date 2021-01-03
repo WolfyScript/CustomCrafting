@@ -4,29 +4,18 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.*;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
-import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
@@ -39,19 +28,20 @@ import org.bukkit.inventory.*;
 import org.bukkit.util.NumberConversions;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RecipeHandler {
 
+    public static final File DATA_FOLDER = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
     private final Categories categories;
     private final List<Recipe> allRecipes = new ArrayList<>();
 
-    private final TreeMap<NamespacedKey, ICustomRecipe<?>> customRecipes = new TreeMap<>();
+    private final Map<NamespacedKey, ICustomRecipe<?>> customRecipes = new TreeMap<>();
 
     private final ArrayList<String> disabledRecipes = new ArrayList<>();
 
@@ -69,7 +59,7 @@ public class RecipeHandler {
         this.objectMapper = JacksonUtil.getObjectMapper();
     }
 
-    public void load() {
+    public void load() throws IOException {
         if (CustomCrafting.hasDataBaseHandler()) {
             loadDataBase();
         } else {
@@ -77,117 +67,61 @@ public class RecipeHandler {
         }
     }
 
-    private void loadConfigs() {
+    private void loadConfigs() throws IOException {
         if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
             disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes());
         }
-        chat.sendConsoleMessage("$msg.startup.recipes.title$");
-        File recipesFolder = new File(customCrafting.getDataFolder() + File.separator + "recipes");
-        File[] dirs = recipesFolder.listFiles((dir, name) -> !name.split("\\.")[name.split("\\.").length - 1].equalsIgnoreCase("yml"));
+        if (!DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
+            File old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
+            if (!old.renameTo(DATA_FOLDER)) {
+                customCrafting.getLogger().severe("Couldn't rename folder to the new required names!");
+            }
+        }
+        String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
-            chat.sendConsoleMessage("");
             chat.sendConsoleMessage("$msg.startup.recipes.items$");
-            for (File dir : dirs) {
-                chat.sendConsoleMessage("- " + dir.getName());
-                loadConfig(dir.getName(), "items");
+            for (String dir : dirs) {
+                loadItems(dir);
             }
             chat.sendConsoleMessage("");
             chat.sendConsoleMessage("$msg.startup.recipes.recipes$");
-            for (File dir : dirs) {
-                chat.sendConsoleMessage("- " + dir.getName());
-                loadConfig(dir.getName(), "workbench");
-                loadConfig(dir.getName(), "furnace");
-                loadConfig(dir.getName(), "anvil");
-                loadConfig(dir.getName(), "cauldron");
-                loadConfig(dir.getName(), "blast_furnace");
-                loadConfig(dir.getName(), "smoker");
-                loadConfig(dir.getName(), "campfire");
-                loadConfig(dir.getName(), "stonecutter");
-                loadConfig(dir.getName(), "grindstone");
-                loadConfig(dir.getName(), "brewing_stand");
-                loadConfig(dir.getName(), "elite_workbench");
-                loadConfig(dir.getName(), "smithing");
+            for (String dir : dirs) {
+                chat.sendConsoleMessage("- " + dir);
+                for (RecipeType<? extends ICustomRecipe<?>> type : Types.values()) {
+                    loadRecipe(dir, type);
+                }
             }
             chat.sendConsoleMessage("");
             chat.sendConsoleMessage("$msg.startup.recipes.particles$");
-            for (File dir : dirs) {
-                chat.sendConsoleMessage("- " + dir.getName());
-                loadConfig(dir.getName(), "particles");
+            /*
+            for (String dir : dirs) {
+                chat.sendConsoleMessage("- " + dir);
+                loadConfig(dir, "particles");
             }
+
+             */
         }
     }
 
-    private void loadConfig(String subfolder, String type) {
-        File workbench = new File(customCrafting.getDataFolder() + File.separator + "recipes" + File.separator + subfolder + File.separator + type);
-        workbench.listFiles(file -> {
+    private File[] getFiles(String subFolder, String type) {
+        File data = new File(DATA_FOLDER, subFolder + File.separator + type);
+        if (!data.exists()) return new File[0];
+        return data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
+    }
+
+    private void loadItems(String subFolder) throws IOException {
+        chat.sendConsoleMessage("- " + subFolder);
+        for (File file : getFiles(subFolder, "items")) {
             String name = file.getName();
-            if (name.contains(".")) {
-                String key = name.substring(0, name.lastIndexOf("."));
-                String fileType = name.substring(name.lastIndexOf(".") + 1);
-                if (fileType.equalsIgnoreCase("json")) {
-                    try {
-                        NamespacedKey namespacedKey = new NamespacedKey(subfolder, key);
-                        JsonNode node = objectMapper.readTree(file);
-                        switch (type) {
-                            case "items":
-                                Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.convertValue(node, CustomItem.class));
-                                break;
-                            case "particles":
-                                //TODO: Load particles
-                                break;
-                            case "workbench":
-                                if (node.path("shapeless").asBoolean()) {
-                                    registerRecipe(new ShapelessCraftRecipe(namespacedKey, node));
-                                } else {
-                                    registerRecipe(new ShapedCraftRecipe(namespacedKey, node));
-                                }
-                                break;
-                            case "elite_workbench":
-                                if (node.path("shapeless").asBoolean()) {
-                                    registerRecipe(new ShapelessEliteCraftRecipe(namespacedKey, node));
-                                } else {
-                                    registerRecipe(new ShapedEliteCraftRecipe(namespacedKey, node));
-                                }
-                                break;
-                            case "furnace":
-                                registerRecipe(new CustomFurnaceRecipe(namespacedKey, node));
-                                break;
-                            case "anvil":
-                                registerRecipe(new CustomAnvilRecipe(namespacedKey, node));
-                                break;
-                            case "blast_furnace":
-                                registerRecipe(new CustomBlastRecipe(namespacedKey, node));
-                                break;
-                            case "smoker":
-                                registerRecipe(new CustomSmokerRecipe(namespacedKey, node));
-                                break;
-                            case "campfire":
-                                registerRecipe(new CustomCampfireRecipe(namespacedKey, node));
-                                break;
-                            case "stonecutter":
-                                registerRecipe(new CustomStonecutterRecipe(namespacedKey, node));
-                                break;
-                            case "cauldron":
-                                registerRecipe(new CauldronRecipe(namespacedKey, node));
-                                break;
-                            case "grindstone":
-                                registerRecipe(new GrindstoneRecipe(namespacedKey, node));
-                                break;
-                            case "brewing_stand":
-                                registerRecipe(new BrewingRecipe(namespacedKey, node));
-                                break;
-                            case "smithing":
-                                registerRecipe(new CustomSmithingRecipe(namespacedKey, node));
-                        }
-                    } catch (Exception ex) {
-                        ChatUtils.sendRecipeItemLoadingError(subfolder, name, type, ex);
-                    }
-                } else {
-                    api.getChat().sendConsoleMessage("$msg.startup.recipes.incompatible$", new String[]{"%namespace%", subfolder}, new String[]{"%key%", key}, new String[]{"%file_type%", fileType});
-                }
-            }
-            return true;
-        });
+            Registry.CUSTOM_ITEMS.register(new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf("."))), objectMapper.readValue(file, CustomItem.class));
+        }
+    }
+
+    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?>> type) throws IOException {
+        for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
+            String name = file.getName();
+            registerRecipe(type.getInstance(new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf("."))), objectMapper.readTree(file)));
+        }
     }
 
     public void onSave() {
@@ -212,7 +146,7 @@ public class RecipeHandler {
         chat.sendConsoleMessage("Exported configs to database successfully.");
     }
 
-    public void registerRecipe(ICustomRecipe recipe) {
+    public void registerRecipe(ICustomRecipe<?> recipe) {
         if (recipe instanceof ICustomVanillaRecipe) {
             chat.sendDebugMessage("  - add to Bukkit");
             Bukkit.addRecipe(((ICustomVanillaRecipe<?>) recipe).getVanillaRecipe());
@@ -221,7 +155,7 @@ public class RecipeHandler {
         customRecipes.put(recipe.getNamespacedKey(), recipe);
     }
 
-    public void injectRecipe(ICustomRecipe recipe) {
+    public void injectRecipe(ICustomRecipe<?> recipe) {
         chat.sendDebugMessage("[Inject Recipe]");
         chat.sendDebugMessage("  - unregister old recipe");
         unregisterRecipe(recipe);
@@ -255,7 +189,7 @@ public class RecipeHandler {
         }
     }
 
-    public void unregisterRecipe(ICustomRecipe customRecipe) {
+    public void unregisterRecipe(ICustomRecipe<?> customRecipe) {
         customRecipes.remove(customRecipe.getNamespacedKey());
         if (customRecipe instanceof ICustomVanillaRecipe) {
             unregisterVanillaRecipe(customRecipe.getNamespacedKey());
@@ -278,15 +212,20 @@ public class RecipeHandler {
     }
 
     public Stream<CraftingRecipe<?>> getSimilarRecipesStream(List<List<ItemStack>> items, boolean elite, boolean advanced) {
-        AtomicInteger size = new AtomicInteger();
-        items.forEach(stacks -> size.addAndGet((int) stacks.parallelStream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count()));
+        int size = 0;
+        for (List<ItemStack> stacks : items) {
+            size += stacks.parallelStream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
+        }
         List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
-        if (elite) craftingRecipes.addAll(getRecipes(RecipeType.ELITE_WORKBENCH));
-        if (advanced) craftingRecipes.addAll(getRecipes(RecipeType.WORKBENCH));
-        return craftingRecipes.parallelStream().filter(r -> r.getIngredients().keySet().size() == size.get()).filter(customRecipe -> {
-            if (customRecipe instanceof IShapedCraftingRecipe) {
-                IShapedCraftingRecipe recipe = ((IShapedCraftingRecipe) customRecipe);
-                return items.size() > 0 && recipe.getShape().length > 0 && items.size() == recipe.getShape().length && items.get(0).size() == recipe.getShape()[0].length();
+        if (elite) craftingRecipes.addAll(getRecipes(Types.ELITE_WORKBENCH));
+        if (advanced) craftingRecipes.addAll(getRecipes(Types.WORKBENCH));
+        final int totalSize = size;
+        final int itemsSize = items.size();
+        final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
+        return craftingRecipes.parallelStream().filter(r -> r.getIngredients().keySet().size() == totalSize).filter(recipe -> {
+            if (recipe instanceof IShapedCraftingRecipe) {
+                IShapedCraftingRecipe shapedRecipe = ((IShapedCraftingRecipe) recipe);
+                return itemsSize > 0 && shapedRecipe.getShape().length > 0 && itemsSize == shapedRecipe.getShape().length && items0Size == shapedRecipe.getShape()[0].length();
             }
             return true;
         });
@@ -298,15 +237,6 @@ public class RecipeHandler {
 
     public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
         return customRecipes.get(namespacedKey);
-    }
-
-    @Deprecated
-    public ICustomRecipe<?> getRecipe(String key) {
-        return customRecipes.get(new NamespacedKey(key.split(":")[0], key.split(":")[1]));
-    }
-
-    public List<ICustomRecipe<?>> getRecipes(String type) {
-        return new ArrayList<>(getRecipes(RecipeType.valueOf(type)));
     }
 
     /**
@@ -321,8 +251,8 @@ public class RecipeHandler {
 
     //CRAFTING RECIPES
 
-    public AdvancedCraftingRecipe getAdvancedCraftingRecipe(String key) {
-        ICustomRecipe<?> customRecipe = getRecipe(key);
+    public AdvancedCraftingRecipe getAdvancedCraftingRecipe(NamespacedKey recipeKey) {
+        ICustomRecipe<?> customRecipe = getRecipe(recipeKey);
         return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
     }
 
@@ -334,7 +264,7 @@ public class RecipeHandler {
         return getRecipes(type.getClazz());
     }
 
-    public TreeMap<NamespacedKey, ICustomRecipe<?>> getRecipes() {
+    public Map<NamespacedKey, ICustomRecipe<?>> getRecipes() {
         return customRecipes;
     }
 
@@ -343,7 +273,7 @@ public class RecipeHandler {
         Get the available recipes only.
         Disabled and hidden recipes are removed!
         For the crafting recipes you also need permissions to view them.
-         */
+     */
 
 
     /**
@@ -367,12 +297,7 @@ public class RecipeHandler {
      * @return
      */
     public List<ICustomRecipe<?>> getAvailableRecipes(Player player) {
-        List<ICustomRecipe<?>> recipes = getAvailableRecipes();
-        if (player != null) {
-            recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
-        }
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return recipes;
+        return getAvailable(getAvailableRecipes(), player);
     }
 
     /**
@@ -383,7 +308,7 @@ public class RecipeHandler {
      * @return
      */
     public List<ICustomRecipe<?>> getAvailableRecipes(CustomItem result, Player player) {
-        return getAvailableRecipes(player).stream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
+        return getAvailableRecipes(player).parallelStream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
     }
 
     /**
@@ -394,7 +319,7 @@ public class RecipeHandler {
      * @return
      */
     public List<ICustomRecipe<?>> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
-        return getAvailableRecipes(player).stream().filter(recipe -> recipe.getResults().stream().anyMatch(customItem -> customItem.create().isSimilar(result))).collect(Collectors.toList());
+        return getAvailableRecipes(player).parallelStream().filter(recipe -> recipe.getResults().stream().anyMatch(customItem -> customItem.create().isSimilar(result))).collect(Collectors.toList());
     }
 
     /**
@@ -402,8 +327,8 @@ public class RecipeHandler {
      * @param <T>
      * @return
      */
-    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(Class<T> type) {
-        List<T> recipes = getRecipes(type);
+    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type) {
+        List<T> recipes = getRecipes(type.getClazz());
         recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         return new ArrayList<>(recipes);
@@ -415,32 +340,16 @@ public class RecipeHandler {
      * @param <T>
      * @return
      */
-    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(Class<T> type, Player player) {
-        List<T> recipes = getAvailableRecipes(type);
+    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type, Player player) {
+        return getAvailable(getAvailableRecipes(type), player);
+    }
+
+    private <T extends ICustomRecipe<?>> List<T> getAvailable(List<T> recipes, Player player){
         if (player != null) {
             recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         }
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         return recipes;
-    }
-
-    /**
-     * @param type
-     * @param <T>
-     * @return
-     */
-    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type) {
-        return getAvailableRecipes(type.getClazz());
-    }
-
-    /**
-     * @param type
-     * @param player
-     * @param <T>
-     * @return
-     */
-    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type, Player player) {
-        return getAvailableRecipes(type.getClazz(), player);
     }
 
     //DISABLED RECIPES AND GET ALL RECIPES
@@ -454,7 +363,7 @@ public class RecipeHandler {
             while (iterator.hasNext()) {
                 Recipe recipe = iterator.next();
                 if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (WolfyUtilities.hasNetherUpdate() && recipe instanceof SmithingRecipe)) {
-                    if (((Keyed) recipe).getKey().toString().startsWith("minecraft")) {
+                    if (((Keyed) recipe).getKey().getNamespace().equals("minecraft")) {
                         allRecipes.add(recipe);
                     }
                 }
@@ -472,12 +381,12 @@ public class RecipeHandler {
         }
         ListIterator<List<ItemStack>> iterator = items.listIterator();
         while (iterator.hasNext()) {
-            if (!iterator.next().stream().allMatch(Objects::isNull)) break;
+            if (!iterator.next().parallelStream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
         iterator = items.listIterator(items.size());
         while (iterator.hasPrevious()) {
-            if (!iterator.previous().stream().allMatch(Objects::isNull)) break;
+            if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
         if (!items.isEmpty()) {
@@ -497,7 +406,7 @@ public class RecipeHandler {
     }
 
     private boolean checkColumn(List<List<ItemStack>> items, int column) {
-        if (items.stream().anyMatch(item -> item.get(column) != null)) return true;
+        if (items.parallelStream().anyMatch(item -> item.get(column) != null)) return true;
         items.forEach(item -> item.remove(column));
         return false;
     }

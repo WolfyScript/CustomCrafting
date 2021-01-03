@@ -2,8 +2,10 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -86,7 +88,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
                 if (CustomCrafting.hasDataBaseHandler()) {
                     CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
                 } else {
-                    File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId(), getNamespacedKey().getKey() + ".json");
+                    File file = new File(RecipeHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
                     file.getParentFile().mkdirs();
                     if (file.exists() || file.createNewFile()) {
                         JacksonUtil.getObjectWriter(CustomCrafting.getInst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, this);
@@ -97,13 +99,13 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
                 return false;
             }
             if (player != null) {
-                getAPI().getChat().sendPlayerMessage(player, "recipe_creator", "save.success");
-                getAPI().getChat().sendPlayerMessage(player, "§6" + "recipes/" + getNamespacedKey().getNamespace() + "/" + getRecipeType().getId() + "/" + getNamespacedKey().getKey());
+                getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
+                getAPI().getChat().sendMessage(player, "§6" + "recipes/" + getNamespacedKey().getNamespace() + "/" + getRecipeType().getId() + "/" + getNamespacedKey().getKey());
             }
             return true;
         }
         if (player != null) {
-            getAPI().getChat().sendPlayerMessage(player, "&c" + "Missing NamespacedKey!");
+            getAPI().getChat().sendMessage(player, "&c" + "Missing NamespacedKey!");
         }
         return false;
     }
@@ -120,21 +122,21 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
                 player.sendMessage("§aRecipe deleted!");
                 return true;
             } else {
-                File file = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "recipes" + File.separator + getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId(), getNamespacedKey().getKey() + ".json");
+                File file = new File(RecipeHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
                 System.gc();
                 if (file.delete()) {
-                    if (player != null) getAPI().getChat().sendPlayerMessage(player, "&aRecipe deleted!");
+                    if (player != null) getAPI().getChat().sendMessage(player, "&aRecipe deleted!");
                     return true;
                 } else {
                     file.deleteOnExit();
                     if (player != null)
-                        getAPI().getChat().sendPlayerMessage(player, "&cCouldn't delete recipe on runtime! File is being deleted on restart!");
+                        getAPI().getChat().sendMessage(player, "&cCouldn't delete recipe on runtime! File is being deleted on restart!");
                 }
             }
             return false;
         }
         if (player != null) {
-            getAPI().getChat().sendPlayerMessage(player, "&c" + "Missing NamespacedKey!");
+            getAPI().getChat().sendMessage(player, "&c" + "Missing NamespacedKey!");
         }
         return false;
     }
