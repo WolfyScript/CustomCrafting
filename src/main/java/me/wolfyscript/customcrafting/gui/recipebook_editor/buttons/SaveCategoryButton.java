@@ -31,7 +31,7 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
                                 guiHandler1.openPreviousWindow();
                                 return true;
                             }
-                            api.getChat().sendPlayerMessage(player1, "recipe_book_editor", "save.error");
+                            api.getChat().sendKey(player1, "recipe_book_editor", "save.error");
                             return false;
                         }
                     }
@@ -42,7 +42,7 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
                 if (saveRecipe(recipeBookEditor, recipeBook, api, player)) {
                     guiHandler.openPreviousWindow();
                 } else {
-                    api.getChat().sendPlayerMessage(player, "recipe_book_editor", "save.error");
+                    api.getChat().sendKey(player, "recipe_book_editor", "save.error");
                 }
             }
             return true;
@@ -63,7 +63,7 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
         recipeBookEditor.setCategoryID("");
         try {
             recipeBook.save();
-            api.getChat().sendPlayerMessage(player, "recipe_book_editor", "save.success");
+            api.getChat().sendKey(player, "recipe_book_editor", "save.success");
             return true;
         } catch (IOException e) {
             e.printStackTrace();

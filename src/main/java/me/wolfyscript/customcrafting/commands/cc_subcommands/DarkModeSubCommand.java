@@ -25,9 +25,9 @@ public class DarkModeSubCommand extends AbstractSubCommand {
             Player p = (Player) sender;
             PlayerUtil.getStore(p).setDarkMode(!PlayerUtil.getStore(p).isDarkMode());
             if (PlayerUtil.getStore(p).isDarkMode()) {
-                api.getChat().sendPlayerMessage(p, "$commands.darkmode.enabled$");
+                api.getChat().sendMessage(p, "$commands.darkmode.enabled$");
             } else {
-                api.getChat().sendPlayerMessage(p, "$commands.darkmode.disabled$");
+                api.getChat().sendMessage(p, "$commands.darkmode.disabled$");
             }
         }
         return true;

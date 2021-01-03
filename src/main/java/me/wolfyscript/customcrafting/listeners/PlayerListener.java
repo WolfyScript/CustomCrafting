@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -30,7 +29,7 @@ public class PlayerListener implements Listener {
         WolfyUtilities api = CustomCrafting.getApi();
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (customCrafting.isOutdated()) {
-                api.getChat().sendPlayerMessage(player, "$msg.player.outdated.msg$");
+                api.getChat().sendMessage(player, "$msg.player.outdated.msg$");
                 api.getChat().sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
             } else if (!customCrafting.getPatreon().isPatreon()) {
                 customCrafting.checkUpdate(player);
@@ -45,7 +44,7 @@ public class PlayerListener implements Listener {
             ItemStack itemStack = event.getItem();
             CustomItem customItem = CustomItem.getByItemStack(itemStack);
             if (customItem != null) {
-                KnowledgeBookData knowledgeBook = (KnowledgeBookData) customItem.getCustomData(new NamespacedKey("customcrafting", "knowledge_book"));
+                KnowledgeBookData knowledgeBook = (KnowledgeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
                 if (knowledgeBook.isEnabled()) {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);

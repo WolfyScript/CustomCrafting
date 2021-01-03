@@ -92,7 +92,7 @@ public class AnvilCreator extends RecipeCreator {
             try {
                 repairCost = Math.max(1, Integer.parseInt(args[0]));
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getAnvilRecipe().setRepairCost(repairCost);
@@ -106,7 +106,7 @@ public class AnvilCreator extends RecipeCreator {
             try {
                 durability = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getAnvilRecipe().setDurability(durability);

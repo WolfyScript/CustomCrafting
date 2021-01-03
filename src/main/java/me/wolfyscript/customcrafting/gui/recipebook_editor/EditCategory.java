@@ -92,7 +92,7 @@ public class EditCategory extends CCWindow {
                         ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(namespacedKey);
 
                         if (recipe == null) {
-                            api.getChat().sendPlayerMessage(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
+                            api.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                             return true;
                         }
                         if (remove) {
@@ -130,7 +130,6 @@ public class EditCategory extends CCWindow {
         update.setButton(24, "description.add");
         update.setButton(25, "description.remove");
         update.setButton(37, "recipes");
-
 
         if (recipeBookEditor.hasCategoryID()) {
             update.setButton(52, "save");

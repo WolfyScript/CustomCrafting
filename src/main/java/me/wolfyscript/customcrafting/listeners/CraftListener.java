@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -36,7 +37,7 @@ public class CraftListener implements Listener {
 
     @EventHandler
     public void onAdvancedWorkbench(CustomPreCraftEvent event) {
-        if (!event.isCancelled() && event.getRecipe().getNamespacedKey().toString().equals("customcrafting:advanced_workbench")) {
+        if (!event.isCancelled() && event.getRecipe().getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE)) {
             if (!customCrafting.getConfigHandler().getConfig().isAdvancedWorkbenchEnabled()) {
                 event.setCancelled(true);
             }
@@ -55,14 +56,13 @@ public class CraftListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-
-            if (recipeUtils.getPreCraftedRecipes().containsKey(event.getWhoClicked().getUniqueId())) {
+            if (recipeUtils.has(event.getWhoClicked().getUniqueId())) {
                 inventory.setResult(new ItemStack(Material.AIR));
                 ItemStack[] matrix = inventory.getMatrix().clone();
                 recipeUtils.consumeRecipe(resultItem, matrix, event);
                 Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix));
                 player.updateInventory();
-                recipeUtils.getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                recipeUtils.remove(event.getWhoClicked().getUniqueId());
             }
         } else {
             Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
@@ -79,7 +79,7 @@ public class CraftListener implements Listener {
             RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
             ItemStack result = recipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
-            if (result != null) {
+            if (!ItemUtils.isAirOrNull(result)) {
                 e.getInventory().setResult(result);
                 return;
             }
@@ -88,7 +88,7 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
             //Check for custom recipe that overrides the vanilla recipe
-            ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(((Keyed) e.getRecipe()).getKey().toString());
+            ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(NamespacedKey.getByBukkit(((Keyed) e.getRecipe()).getKey()));
             if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(new ItemStack(Material.AIR));
@@ -96,17 +96,16 @@ public class CraftListener implements Listener {
             }
             //Check for items that are not allowed in vanilla recipes.
             //If one is found, then cancel the recipe.
-            if (Arrays.stream(matrix).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+            if (Arrays.stream(matrix).parallel().map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
                 e.getInventory().setResult(new ItemStack(Material.AIR));
             }
             //At this point the vanilla recipe is valid and can be crafted
-            //api.sendDebugMessage("Use vanilla recipe output!");
             //player.updateInventory();
         } catch (Exception ex) {
             System.out.println("-------- WHAT HAPPENED? Please report! --------");
             ex.printStackTrace();
             System.out.println("-------- WHAT HAPPENED? Please report! --------");
-            recipeUtils.getPreCraftedRecipes().remove(player.getUniqueId());
+            recipeUtils.remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }

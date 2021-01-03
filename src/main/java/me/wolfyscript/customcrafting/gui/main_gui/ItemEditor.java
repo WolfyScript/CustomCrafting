@@ -103,7 +103,7 @@ public class ItemEditor extends CCWindow {
                     }
                     sendItemListExpanded(p);
                 }, true));
-        api.getChat().sendPlayerMessage(player, "&8-------------------------------------------------");
+        api.getChat().sendMessage(player, "&8-------------------------------------------------");
 
         int i = (currentPage - 1) * itemsPerPage;
         for (Map.Entry<NamespacedKey, CustomItem> entry : Registry.CUSTOM_ITEMS.entrySet()) {
@@ -123,7 +123,7 @@ public class ItemEditor extends CCWindow {
             }
         }
         if (cache.getChatLists().getLastUsedItem() != null) {
-            api.getChat().sendPlayerMessage(player, "§ePreviously used:");
+            api.getChat().sendMessage(player, "§ePreviously used:");
             NamespacedKey namespacedKey = cache.getChatLists().getLastUsedItem();
             CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if (customItem != null) {
@@ -134,7 +134,7 @@ public class ItemEditor extends CCWindow {
                 }
             }
         }
-        api.getChat().sendPlayerMessage(player, "&8-------------------------------------------------");
+        api.getChat().sendMessage(player, "&8-------------------------------------------------");
         sendMessage(player, "input");
     }
 }

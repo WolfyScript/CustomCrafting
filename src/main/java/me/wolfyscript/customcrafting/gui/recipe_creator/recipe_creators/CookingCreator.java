@@ -34,7 +34,7 @@ public class CookingCreator extends RecipeCreator {
             try {
                 xp = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getCookingRecipe().setExp(xp);
@@ -48,7 +48,7 @@ public class CookingCreator extends RecipeCreator {
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getCookingRecipe().setCookingTime(time);

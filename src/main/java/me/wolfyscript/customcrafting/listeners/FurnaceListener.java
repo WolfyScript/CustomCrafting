@@ -171,8 +171,7 @@ public class FurnaceListener implements Listener {
                 if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                     event.setCancelled(false);
                     if (customRecipe.getResults().size() > 1) {
-                        RandomCollection<CustomItem> items = new RandomCollection<>();
-                        customRecipe.getResults().forEach(item -> items.add(item.getRarityPercentage(), item));
+                        RandomCollection<CustomItem> items = customRecipe.getResults().parallelStream().collect(RandomCollection.getCollector((rdmC, item) -> rdmC.add(item.getRarityPercentage(), item)));
                         if (!items.isEmpty()) {
                             CustomItem item = items.next();
                             if (currentResultItem == null) {

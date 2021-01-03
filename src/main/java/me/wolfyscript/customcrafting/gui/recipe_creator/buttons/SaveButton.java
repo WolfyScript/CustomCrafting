@@ -39,7 +39,7 @@ public class SaveButton extends ActionButton<CCCache> {
                         return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, customCrafting);
                     }
                 } else {
-                    api.getChat().sendPlayerMessage(player, "recipe_creator", "save.empty");
+                    api.getChat().sendKey(player, "recipe_creator", "save.empty");
                 }
             }
             return true;
@@ -56,12 +56,12 @@ public class SaveButton extends ActionButton<CCCache> {
                     ((IShapedCraftingRecipe) recipe).constructShape();
                 }
                 customCrafting.getRecipeHandler().injectRecipe(recipe);
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "loading.success");
+                api.getChat().sendKey(player, "recipe_creator", "loading.success");
 
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) cache.resetRecipe();
             });
         } catch (Exception ex) {
-            api.getChat().sendPlayerMessage(player, guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "loading.error", new Pair<>("%REC%", recipe.getNamespacedKey().toString()));
+            api.getChat().sendKey(player, guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "loading.error", new Pair<>("%REC%", recipe.getNamespacedKey().toString()));
             ex.printStackTrace();
             return true;
         }

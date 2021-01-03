@@ -49,7 +49,7 @@ public class ConditionsMenu extends CCWindow {
                             long value = Long.parseLong(s);
                             ((WorldTimeCondition) conditions.getByID("world_time")).setTime(value);
                         } catch (NumberFormatException ex) {
-                            api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                            api.getChat().sendKey(player1, "recipe_creator", "valid_number");
                         }
                         return false;
                     });
@@ -77,7 +77,7 @@ public class ConditionsMenu extends CCWindow {
                             int value = Integer.parseInt(s);
                             ((ExperienceCondition) conditions.getByID("player_experience")).setExpLevel(value);
                         } catch (NumberFormatException ex) {
-                            api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                            api.getChat().sendKey(player1, "recipe_creator", "valid_number");
                         }
                         return false;
                     });

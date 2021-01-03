@@ -40,14 +40,14 @@ public class RecipeEditor extends CCWindow {
                 if (args.length > 1) {
                     ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
                     if (recipe == null) {
-                        api.getChat().sendPlayerMessage(player, getNamespacedKey(), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
+                        api.getChat().sendKey(player, getNamespacedKey(), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                         return true;
                     }
                     if (customCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler1)) {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> changeToCreator(guiHandler), 1);
                         return false;
                     } else {
-                        api.getChat().sendPlayerMessage(player1, getNamespacedKey(), "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
+                        api.getChat().sendKey(player1, getNamespacedKey(), "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
                         return true;
                     }
                 }
@@ -63,10 +63,10 @@ public class RecipeEditor extends CCWindow {
                 if (args.length > 1) {
                     ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0], args[1]));
                     if (recipe == null) {
-                        api.getChat().sendPlayerMessage(player, getNamespacedKey(), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
+                        api.getChat().sendKey(player, getNamespacedKey(), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                         return true;
                     }
-                    api.getChat().sendPlayerMessage(player1, getNamespacedKey(), "delete.confirm", new Pair<>("%recipe%", recipe.getNamespacedKey().toString()));
+                    api.getChat().sendKey(player1, getNamespacedKey(), "delete.confirm", new Pair<>("%recipe%", recipe.getNamespacedKey().toString()));
                     api.getChat().sendActionMessage(player1, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player2) -> {
                         guiHandler1.openCluster();
                         Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> recipe.delete(player2));

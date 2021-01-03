@@ -12,6 +12,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
@@ -90,7 +91,7 @@ public class PotionCreator extends CCWindow {
                 guiHandler.getCustomCache().getPotionEffectCache().setDuration(Integer.parseInt(args[0]));
                 return false;
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
+                api.getChat().sendKey(player, new NamespacedKey("item_creator", "main_menu"), "potion.error_number");
             }
             return true;
         }));
@@ -102,7 +103,7 @@ public class PotionCreator extends CCWindow {
                 guiHandler.getCustomCache().getPotionEffectCache().setAmplifier(Integer.parseInt(args[0]));
                 return false;
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "item_creator", "main_menu", "potion.error_number");
+                api.getChat().sendKey(player, new NamespacedKey("item_creator", "main_menu"), "potion.error_number");
             }
             return true;
         }));

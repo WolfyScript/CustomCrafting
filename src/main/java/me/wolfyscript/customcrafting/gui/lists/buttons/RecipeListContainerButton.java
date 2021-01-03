@@ -71,10 +71,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     if (customCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler)) {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new me.wolfyscript.utilities.util.NamespacedKey("recipe_creator", guiHandler.getCustomCache().getRecipeType().getCreatorID())), 1);
                     } else {
-                        api.getChat().sendPlayerMessage(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "recipe_editor"), "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
+                        api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "recipe_editor"), "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
                     }
                 } else {
-                    api.getChat().sendPlayerMessage(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "recipe_editor"), "delete.confirm", new Pair<>("%recipe%", recipe.getNamespacedKey().toString()));
+                    api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "recipe_editor"), "delete.confirm", new Pair<>("%recipe%", recipe.getNamespacedKey().toString()));
                     api.getChat().sendActionMessage(player, new ClickData("$inventories.none.recipe_editor.messages.delete.confirmed$", (wolfyUtilities, player1) -> {
                         guiHandler.openCluster();
                         Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> recipe.delete(player1));

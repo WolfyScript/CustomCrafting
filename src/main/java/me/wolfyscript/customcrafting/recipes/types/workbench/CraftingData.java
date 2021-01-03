@@ -8,15 +8,15 @@ import java.util.HashMap;
 
 public class CraftingData {
 
-    CraftingRecipe recipe;
+    CraftingRecipe<?> recipe;
     HashMap<Vec2d, CustomItem> foundItems;
 
-    public CraftingData(CraftingRecipe recipe, HashMap<Vec2d, CustomItem> foundItems) {
+    public CraftingData(CraftingRecipe<?> recipe, HashMap<Vec2d, CustomItem> foundItems) {
         this.recipe = recipe;
         this.foundItems = foundItems;
     }
 
-    public CraftingRecipe getRecipe() {
+    public CraftingRecipe<?> getRecipe() {
         return recipe;
     }
 

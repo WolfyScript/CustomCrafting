@@ -88,14 +88,6 @@ public class MainConfig extends YamlConfiguration {
         set("recipes.pretty_printing", prettyPrinting);
     }
 
-    public List<String> getCommandsSuccessCrafted() {
-        return getStringList("workbench.commands.successful_craft");
-    }
-
-    public List<String> getCommandsDeniedCraft() {
-        return getStringList("workbench.commands.denied_craft");
-    }
-
     public boolean isLockedDown() {
         return getBoolean("recipes.lockdown");
     }

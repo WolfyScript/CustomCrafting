@@ -23,12 +23,7 @@ public class Cauldron implements Listener {
         this.recipe = event.getRecipe();
 
         Player player = event.getPlayer();
-        RandomCollection<CustomItem> items = new RandomCollection<>();
-        for (CustomItem customItem : recipe.getResults()) {
-            if (!customItem.hasPermission() || player.hasPermission(customItem.getPermission())) {
-                items.add(customItem.getRarityPercentage(), customItem.clone());
-            }
-        }
+        RandomCollection<CustomItem> items = recipe.getResults().parallelStream().filter((item) -> !item.hasPermission() || player.hasPermission(item.getPermission())).collect(RandomCollection.getCollector((rdmC, item) -> rdmC.add(item.getRarityPercentage(), item)));
         if (!items.isEmpty()) {
             this.result = items.next();
         } else {

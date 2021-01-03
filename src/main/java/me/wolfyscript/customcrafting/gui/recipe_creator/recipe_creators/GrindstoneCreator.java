@@ -41,7 +41,7 @@ public class GrindstoneCreator extends RecipeCreator {
             try {
                 xp = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, "recipe_creator", "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getGrindstoneRecipe().setXp(xp);

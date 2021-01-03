@@ -51,9 +51,9 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                             player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
                         }
                         if (((InventoryClickEvent) event).isShiftClick()) {
-                            api.getChat().sendPlayerMessage(player, "$commands.give.success_amount$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()), new Pair<>("%AMOUNT%", String.valueOf(amount)));
+                            api.getChat().sendMessage(player, "$commands.give.success_amount$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()), new Pair<>("%AMOUNT%", String.valueOf(amount)));
                         } else {
-                            api.getChat().sendPlayerMessage(player, "$commands.give.success$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()));
+                            api.getChat().sendMessage(player, "$commands.give.success$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()));
                         }
                     }
                 }

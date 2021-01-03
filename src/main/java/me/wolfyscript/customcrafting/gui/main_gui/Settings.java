@@ -39,7 +39,7 @@ public class Settings extends CCWindow {
         registerButton(new ToggleButton<>("lockdown", new ButtonState<>("lockdown.disabled", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
                 guiHandler.close();
-                api.getChat().sendPlayerMessage(player, "&cAre you sure you want to enable LockDown mode?", "&c&lThis will disable all the custom recipes!");
+                api.getChat().sendMessages(player, "&cAre you sure you want to enable LockDown mode?", "&c&lThis will disable all the custom recipes!");
                 api.getChat().sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
                     customCrafting.getConfigHandler().getConfig().setLockDown(true);
                     wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster();
@@ -49,7 +49,7 @@ public class Settings extends CCWindow {
         }), new ButtonState<>("lockdown.enabled", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
                 guiHandler.close();
-                api.getChat().sendPlayerMessage(player, "&cAre you sure you want to disable LockDown mode?", "&c&lThis will enable all the custom recipes!");
+                api.getChat().sendMessages(player, "&cAre you sure you want to disable LockDown mode?", "&c&lThis will enable all the custom recipes!");
                 api.getChat().sendActionMessage(player, new ClickData("&7[&aYES&7]", (wolfyUtilities, player1) -> {
                     customCrafting.getConfigHandler().getConfig().setLockDown(false);
                     wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster();
@@ -92,7 +92,7 @@ public class Settings extends CCWindow {
                     nextIndex = index - 1 >= 0 ? index - 1 : availableLangs.size() - 1;
                 } else if (((InventoryClickEvent) event).isShiftClick()) {
                     if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
-                        api.getChat().sendPlayerMessage(player, "&eReloading Inventories and Languages!");
+                        api.getChat().sendMessage(player, "&eReloading Inventories and Languages!");
                         InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
                         LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
                         invAPI.reset();
@@ -104,7 +104,7 @@ public class Settings extends CCWindow {
                             e.printStackTrace();
                         }
                         new InventoryHandler(customCrafting).init();
-                        api.getChat().sendPlayerMessage(player, "&aReload complete! Reloaded GUIs and languages");
+                        api.getChat().sendMessage(player, "&aReload complete! Reloaded GUIs and languages");
                         return true;
                     }
                     return true;

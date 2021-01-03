@@ -37,7 +37,7 @@ public class InfoSubCommand extends AbstractSubCommand {
 
     public void printInfo(Player p) {
         WolfyUtilities api = CustomCrafting.getApi();
-        api.getChat().sendPlayerMessage(p, "~*~*~*~*&8[&3&lCustomCrafting&8]&7~*~*~*~*~",
+        api.getChat().sendMessages(p, "~*~*~*~*&8[&3&lCustomCrafting&8]&7~*~*~*~*~",
                 "",
                 "      &n     by &b&n&lWolfyScript&7&n      ",
                 "        ------------------",

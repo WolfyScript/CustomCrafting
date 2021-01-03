@@ -41,7 +41,7 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
                     if (eliteWorkbench.getResult() != null) {
                         if (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult())) {
                             customCrafting.getRecipeUtils().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
-                            customCrafting.getRecipeUtils().getPreCraftedRecipes().put(event.getWhoClicked().getUniqueId(), null);
+                            customCrafting.getRecipeUtils().put(event.getWhoClicked().getUniqueId(), null);
                         }
                     }
                 }

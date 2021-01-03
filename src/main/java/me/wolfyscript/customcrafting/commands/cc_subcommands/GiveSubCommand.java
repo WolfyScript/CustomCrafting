@@ -38,7 +38,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 if (args.length >= 2) {
                     Player target = Bukkit.getPlayer(args[0]);
                     if (target == null) {
-                        api.getChat().sendPlayerMessage(p, "$commands.give.player_offline$", new Pair<>("%PLAYER%", args[0]));
+                        api.getChat().sendMessage(p, "$commands.give.player_offline$", new Pair<>("%PLAYER%", args[0]));
                         return true;
                     }
                     NamespacedKey namespacekey = NamespacedKey.getByString(args[1]);
@@ -47,7 +47,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                         try {
                             amount = Integer.parseInt(args[2]);
                         } catch (NumberFormatException ex) {
-                            api.getChat().sendPlayerMessage(p, "$commands.give.invalid_amount$");
+                            api.getChat().sendMessage(p, "$commands.give.invalid_amount$");
                         }
                     }
                     CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacekey);
@@ -59,12 +59,12 @@ public class GiveSubCommand extends AbstractSubCommand {
                             target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
                         }
                         if (amount > 1) {
-                            api.getChat().sendPlayerMessage(p, "$commands.give.success_amount$", new Pair<>("%PLAYER%", args[0]), new Pair<>("%ITEM%", args[1]), new Pair<>("%AMOUNT%", args[2]));
+                            api.getChat().sendMessage(p, "$commands.give.success_amount$", new Pair<>("%PLAYER%", args[0]), new Pair<>("%ITEM%", args[1]), new Pair<>("%AMOUNT%", args[2]));
                         } else {
-                            api.getChat().sendPlayerMessage(p, "$commands.give.success$", new Pair<>("%PLAYER%", args[0]), new Pair<>("%ITEM%", args[1]));
+                            api.getChat().sendMessage(p, "$commands.give.success$", new Pair<>("%PLAYER%", args[0]), new Pair<>("%ITEM%", args[1]));
                         }
                     } else {
-                        api.getChat().sendPlayerMessage(p, "$commands.give.invalid_item$", new Pair<>("%ITEM%", args[1]));
+                        api.getChat().sendMessage(p, "$commands.give.invalid_item$", new Pair<>("%ITEM%", args[1]));
                     }
                 }
             }

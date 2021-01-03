@@ -31,7 +31,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-                api.getChat().sendPlayerMessage(p, "&eReloading GUIs and Recipes!");
+                api.getChat().sendMessage(p, "&eReloading GUIs and Recipes!");
 
                 if (WolfyUtilities.hasBuzzyBeesUpdate()) {
                     InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
@@ -54,10 +54,10 @@ public class ReloadSubCommand extends AbstractSubCommand {
                             Bukkit.addRecipe(((ICustomVanillaRecipe<?>) iCustomRecipe).getVanillaRecipe());
                         }
                     });
-                    CustomCrafting.getApi().getChat().sendPlayerMessage(p, "§aReload Complete");
+                    CustomCrafting.getApi().getChat().sendMessage(p, "§aReload Complete");
                     return true;
                 }
-                api.getChat().sendPlayerMessage(p, "&cThis command is only available in 1.15+");
+                api.getChat().sendMessage(p, "&cThis command is only available in 1.15+");
             }
         }
         return true;

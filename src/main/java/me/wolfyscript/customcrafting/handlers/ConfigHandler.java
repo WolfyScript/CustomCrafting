@@ -27,6 +27,7 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ConfigHandler {
 
@@ -63,46 +64,43 @@ public class ConfigHandler {
         }
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
 
-        ParticleAnimation enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", null, 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
-        Registry.PARTICLE_ANIMATIONS.register(new NamespacedKey("customcrafting", "advanced_crafting_table"), enchantAnimation);
+        ParticleAnimation enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
+        Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
         if (mainConfig.resetKnowledgeBook()) {
             //Creating the knowledgebook item and recipe
-            NamespacedKey knowledgebookKey = new NamespacedKey("customcrafting", "knowledge_book");
             CustomItem knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
             knowledgeBook.setDisplayName(me.wolfyscript.utilities.util.chat.ChatColor.convert("&6Knowledge Book"));
             knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            ((KnowledgeBookData) knowledgeBook.getCustomData(new NamespacedKey("customcrafting", "knowledge_book"))).setEnabled(true);
-            customCrafting.saveItem(knowledgebookKey, knowledgeBook);
+            ((KnowledgeBookData) knowledgeBook.getCustomData(new NamespacedKey("customcrafting", "recipe_book"))).setEnabled(true);
+            customCrafting.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
             knowledgeBookCraft.setIngredient('A', 0, new CustomItem(Material.BOOK));
             knowledgeBookCraft.setIngredient('B', 0, new CustomItem(Material.CRAFTING_TABLE));
-            knowledgeBookCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(knowledgebookKey)));
-            knowledgeBookCraft.setNamespacedKey(knowledgebookKey);
+            knowledgeBookCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(CustomCrafting.RECIPE_BOOK)));
+            knowledgeBookCraft.setNamespacedKey(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.save();
         }
         if (mainConfig.resetAdvancedWorkbench()) {
             //Creating the advanced workbench item and recipe
-            NamespacedKey workbenchKey = new NamespacedKey("customcrafting", "workbench");
-
             CustomItem advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
             advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Workbench");
             advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Workbench for advanced crafting"));
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, new NamespacedKey("customcrafting", "advanced_crafting_table"));
-            customCrafting.saveItem(workbenchKey, advancedWorkbench);
+            customCrafting.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
 
             ShapedCraftRecipe workbenchCraft = new ShapedCraftRecipe();
             workbenchCraft.setMirrorHorizontal(false);
             workbenchCraft.setIngredient('B', 0, new CustomItem(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('E', 0, new CustomItem(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredient('H', 0, new CustomItem(Material.GLOWSTONE_DUST));
-            workbenchCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(workbenchKey)));
-            workbenchCraft.setNamespacedKey(workbenchKey);
+            workbenchCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(CustomCrafting.ADVANCED_CRAFTING_TABLE)));
+            workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }
 

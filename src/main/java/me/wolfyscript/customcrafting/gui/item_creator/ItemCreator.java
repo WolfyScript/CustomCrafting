@@ -94,14 +94,14 @@ public class ItemCreator extends CCWindow {
                     if (namespacedKey != null) {
                         CustomItem customItem = items.getItem();
                         if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
-                            api.getChat().sendPlayerMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
+                            api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
                             return true;
                         }
                         customCrafting.saveItem(namespacedKey, items.getItem());
                         items.setSaved(true);
                         items.setNamespacedKey(namespacedKey);
                         sendMessage(player, "save.success");
-                        api.getChat().sendPlayerMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
+                        api.getChat().sendMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
                         return false;
                     }
                     return true;
@@ -178,7 +178,7 @@ public class ItemCreator extends CCWindow {
                     if (enchantment != null) {
                         guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
                     } else {
-                        api.getChat().sendPlayerMessage(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
+                        api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
                         return true;
                     }
                 } else {
@@ -192,7 +192,7 @@ public class ItemCreator extends CCWindow {
                 if (enchantment != null) {
                     guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
                 } else {
-                    api.getChat().sendPlayerMessage(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
+                    api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
                     return true;
                 }
                 return false;
@@ -257,7 +257,7 @@ public class ItemCreator extends CCWindow {
                 try {
                     guiHandler.getCustomCache().getItems().setAttribAmount(Double.parseDouble(args[0]));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendPlayerMessage(player, "item_creator", "main_menu", "attribute.amount.error");
+                    api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("item_creator", "main_menu"), "attribute.amount.error");
                     return true;
                 }
                 return false;
@@ -277,8 +277,8 @@ public class ItemCreator extends CCWindow {
                     UUID uuid = UUID.fromString(strings[0]);
                     guiHandler.getCustomCache().getItems().setAttributeUUID(uuid.toString());
                 } catch (IllegalArgumentException ex) {
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "attribute.uuid.error.line1", new Pair<>("%UUID%", strings[0]));
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "attribute.uuid.error.line2");
+                    api.getChat().sendKey(player, getNamespacedKey(), "attribute.uuid.error.line1", new Pair<>("%UUID%", strings[0]));
+                    api.getChat().sendKey(player, getNamespacedKey(), "attribute.uuid.error.line2");
                     return true;
                 }
                 return false;
@@ -382,9 +382,9 @@ public class ItemCreator extends CCWindow {
                     int value = Integer.parseInt(s);
                     ((Damageable) itemMeta).setDamage(value);
                     guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    api.getChat().sendKey(player, getNamespacedKey(), "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "damage.invalid_value", new Pair<>("%VALUE%", s));
+                    api.getChat().sendKey(player, getNamespacedKey(), "damage.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -408,9 +408,9 @@ public class ItemCreator extends CCWindow {
                     int value = Integer.parseInt(s);
                     ((Repairable) itemMeta).setRepairCost(value);
                     guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "repair_cost.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    api.getChat().sendKey(player, getNamespacedKey(), "repair_cost.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "repair_cost.invalid_value", new Pair<>("%VALUE%", s));
+                    api.getChat().sendKey(player, getNamespacedKey(), "repair_cost.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -441,9 +441,9 @@ public class ItemCreator extends CCWindow {
                     int value = Integer.parseInt(s);
                     itemMeta.setCustomModelData(value);
                     guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    api.getChat().sendKey(player, getNamespacedKey(), "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
+                    api.getChat().sendKey(player, getNamespacedKey(), "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -466,9 +466,9 @@ public class ItemCreator extends CCWindow {
                 try {
                     int value = Integer.parseInt(s);
                     guiHandler.getCustomCache().getItems().getItem().setDurabilityCost(value);
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "consume.valid", new Pair<>("%VALUE%", String.valueOf(value)));
+                    api.getChat().sendKey(player, getNamespacedKey(), "consume.valid", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "consume.invalid", new Pair<>("%VALUE%", s));
+                    api.getChat().sendKey(player, getNamespacedKey(), "consume.invalid", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -509,9 +509,9 @@ public class ItemCreator extends CCWindow {
                 try {
                     int value = Integer.parseInt(s);
                     guiHandler.getCustomCache().getItems().getItem().setBurnTime(value);
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "fuel.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    api.getChat().sendKey(player, getNamespacedKey(), "fuel.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendPlayerMessage(player, getNamespacedKey(), "fuel.invalid_value", new Pair<>("%VALUE%", s));
+                    api.getChat().sendKey(player, getNamespacedKey(), "fuel.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;

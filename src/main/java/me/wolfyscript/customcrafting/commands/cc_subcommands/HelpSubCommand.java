@@ -37,11 +37,11 @@ public class HelpSubCommand extends AbstractSubCommand {
 
     public void printHelp(Player p) {
         WolfyUtilities api = CustomCrafting.getApi();
-        api.getChat().sendPlayerMessage(p, "~*~*~*~*&8[&3&lCustomCrafting&8]&7~*~*~*~*~");
+        api.getChat().sendMessage(p, "~*~*~*~*&8[&3&lCustomCrafting&8]&7~*~*~*~*~");
         List<String> help = api.getLanguageAPI().replaceKey("commands.help");
         for (String line : help) {
-            api.getChat().sendPlayerMessage(p, line);
+            api.getChat().sendMessage(p, line);
         }
-        api.getChat().sendPlayerMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
+        api.getChat().sendMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
     }
 }

@@ -88,7 +88,7 @@ public class CauldronCreator extends RecipeCreator {
             try {
                 xp = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getCauldronRecipe().setXp(xp);
@@ -102,7 +102,7 @@ public class CauldronCreator extends RecipeCreator {
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getCauldronRecipe().setCookingTime(time);
@@ -116,7 +116,7 @@ public class CauldronCreator extends RecipeCreator {
             try {
                 waterLvl = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             if (waterLvl > 3) {
@@ -139,7 +139,7 @@ public class CauldronCreator extends RecipeCreator {
                                     try {
                                         level = Integer.parseInt(args[1]);
                                     } catch (NumberFormatException e) {
-                                        api.getChat().sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                                        api.getChat().sendMessage(player, "$msg.gui.recipe_creator.valid_number$");
                                         return true;
                                     }
                                     double modX = recipe.getMythicMobMod().getX();
@@ -151,7 +151,7 @@ public class CauldronCreator extends RecipeCreator {
                                             modY = Double.parseDouble(args[3]);
                                             modZ = Double.parseDouble(args[4]);
                                         } catch (NumberFormatException e) {
-                                            api.getChat().sendPlayerMessage(player, "$msg.gui.recipe_creator.valid_number$");
+                                            api.getChat().sendMessage(player, "$msg.gui.recipe_creator.valid_number$");
                                             return true;
                                         }
                                     }

@@ -41,7 +41,7 @@ public class ChatUtils {
         }
         if (sendMessage) {
             if (sender instanceof Player) {
-                api.getChat().sendPlayerMessage((Player) sender, "$msg.denied_perm$", new Pair<>("%PERM%", perm));
+                api.getChat().sendMessage((Player) sender, "$msg.denied_perm$", new Pair<>("%PERM%", perm));
             } else {
                 sender.sendMessage(api.getChat().getCONSOLE_PREFIX() + api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
             }
@@ -58,7 +58,7 @@ public class ChatUtils {
                 namespacedKey = NamespacedKey.getByString(s);
             }
         } catch (IllegalArgumentException e) {
-            api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.getChat().sendPlayerMessage(player, s1));
+            api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.getChat().sendMessage(player, s1));
         }
         return namespacedKey;
     }
@@ -68,8 +68,8 @@ public class ChatUtils {
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
-        api.getChat().sendPlayerMessage(player, "------------------[&cEdit Description&7]-----------------");
-        api.getChat().sendPlayerMessage(player, "");
+        api.getChat().sendMessage(player, "------------------[&cEdit Description&7]-----------------");
+        api.getChat().sendMessage(player, "");
         if (!description.isEmpty()) {
             int i = 0;
             for (String line : description) {
@@ -81,10 +81,10 @@ public class ChatUtils {
                 i++;
             }
         } else {
-            api.getChat().sendPlayerMessage(player, "&l&cNo Description set yet!");
+            api.getChat().sendMessage(player, "&l&cNo Description set yet!");
         }
-        api.getChat().sendPlayerMessage(player, "");
-        api.getChat().sendPlayerMessage(player, "-------------------------------------------------");
+        api.getChat().sendMessage(player, "");
+        api.getChat().sendMessage(player, "-------------------------------------------------");
         api.getChat().sendActionMessage(player, new ClickData("                    §7[§3Back to Recipe Book Editor§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
     }
 
@@ -93,8 +93,8 @@ public class ChatUtils {
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
-        api.getChat().sendPlayerMessage(player, "-------------------[&cRemove Lore&7]------------------");
-        api.getChat().sendPlayerMessage(player, "");
+        api.getChat().sendMessage(player, "-------------------[&cRemove Lore&7]------------------");
+        api.getChat().sendMessage(player, "");
         List<String> lore;
         if (itemMeta != null && itemMeta.hasLore()) {
             lore = itemMeta.getLore() == null ? new ArrayList<>() : itemMeta.getLore();
@@ -111,10 +111,10 @@ public class ChatUtils {
                 i++;
             }
         } else {
-            api.getChat().sendPlayerMessage(player, "&l&cNo Lore set yet!");
+            api.getChat().sendMessage(player, "&l&cNo Lore set yet!");
         }
-        api.getChat().sendPlayerMessage(player, "");
-        api.getChat().sendPlayerMessage(player, "-------------------------------------------------");
+        api.getChat().sendMessage(player, "");
+        api.getChat().sendMessage(player, "-------------------------------------------------");
         api.getChat().sendActionMessage(player, new ClickData("                        §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> api.getInventoryAPI().getGuiHandler(player1).openCluster(), true));
     }
 
@@ -125,13 +125,13 @@ public class ChatUtils {
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
-        api.getChat().sendPlayerMessage(player, "-----------------[&cRemove Modifier&7]-----------------");
-        api.getChat().sendPlayerMessage(player, "");
+        api.getChat().sendMessage(player, "-----------------[&cRemove Modifier&7]-----------------");
+        api.getChat().sendMessage(player, "");
         if (itemMeta.hasAttributeModifiers()) {
             Collection<AttributeModifier> modifiers = itemMeta.getAttributeModifiers(Attribute.valueOf(cache.getSubSetting().substring("attribute.".length()).toUpperCase(Locale.ROOT)));
             if (modifiers != null) {
-                api.getChat().sendPlayerMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
-                api.getChat().sendPlayerMessage(player, "");
+                api.getChat().sendMessage(player, "        §e§oName   §b§oAmount  §6§oEquipment-Slot  §3§oMode  §7§oUUID");
+                api.getChat().sendMessage(player, "");
                 for (AttributeModifier modifier : modifiers) {
                     api.getChat().sendActionMessage(player,
                             new ClickData("§7[§c-§7] ", (wolfyUtilities, player1) -> {
@@ -146,11 +146,11 @@ public class ChatUtils {
                     );
                 }
             } else {
-                api.getChat().sendPlayerMessage(player, "&cNo attributes set yet!");
+                api.getChat().sendMessage(player, "&cNo attributes set yet!");
             }
         }
-        api.getChat().sendPlayerMessage(player, "");
-        api.getChat().sendPlayerMessage(player, "-------------------------------------------------");
+        api.getChat().sendMessage(player, "");
+        api.getChat().sendMessage(player, "-------------------------------------------------");
         api.getChat().sendActionMessage(player, new ClickData("                     §7[§3Back to ItemCreator§7]", (wolfyUtilities, player1) -> {
             for (int i = 0; i < 15; i++) {
                 player.sendMessage("");
@@ -180,7 +180,7 @@ public class ChatUtils {
 
     public void sendRecipeListExpanded(Player player) {
         sendRecipeList(player, customCrafting.getRecipeHandler().getRecipes(((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeType()));
-        api.getChat().sendPlayerMessage(player, "none", "recipe_editor", "input");
+        api.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "input");
     }
 
     public void sendRecipeList(Player player, List<? extends ICustomRecipe<?>> customRecipes) {
@@ -206,7 +206,7 @@ public class ChatUtils {
                         sendRecipeListExpanded(p);
                     }
                 }));
-        api.getChat().sendPlayerMessage(player, "&8-------------------------------------------------");
+        api.getChat().sendMessage(player, "&8-------------------------------------------------");
 
         for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
             if (i < customRecipes.size()) {
@@ -218,9 +218,9 @@ public class ChatUtils {
                     api.getChat().sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getResult().create())));
                 }
             } else {
-                api.getChat().sendPlayerMessage(player, "");
+                api.getChat().sendMessage(player, "");
             }
         }
-        api.getChat().sendPlayerMessage(player, "&8-------------------------------------------------");
+        api.getChat().sendMessage(player, "&8-------------------------------------------------");
     }
 }

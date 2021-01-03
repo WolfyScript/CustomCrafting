@@ -49,6 +49,11 @@ import java.util.List;
 
 public class CustomCrafting extends JavaPlugin {
 
+    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey("customcrafting", "advanced_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey("customcrafting", "recipe_book");
+    //Used for backwards compatibility
+    public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey("customcrafting", "workbench");
+
     /*
     « 174
     » 175
@@ -158,7 +163,6 @@ public class CustomCrafting extends JavaPlugin {
 
         System.out.println("------------------------------------------------------------------------");
         pM.registerEvents(new CraftListener(this), this);
-        pM.registerEvents(new BlockListener(api), this);
         pM.registerEvents(new FurnaceListener(this), this);
         pM.registerEvents(new AnvilListener(this), this);
         //getServer().getPluginManager().registerEvents(new EnchantListener(), this);
@@ -191,7 +195,11 @@ public class CustomCrafting extends JavaPlugin {
 
         //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
         if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
-            loadRecipesAndItems();
+            try {
+                loadRecipesAndItems();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             getLogger().info("Detected ItemsAdder! CustomItems and Recipes will be loaded after ItemsAdder is successfully loaded!");
             pM.registerEvents(new ItemsAdderListener(this), this);
@@ -224,7 +232,7 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    public void loadRecipesAndItems() {
+    public void loadRecipesAndItems() throws IOException {
         recipeHandler.load();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
@@ -279,7 +287,7 @@ public class CustomCrafting extends JavaPlugin {
                         outdated = true;
                         chat.sendConsoleWarning("$msg.startup.outdated$");
                         if (player != null) {
-                            chat.sendPlayerMessage(player, "$msg.player.outdated.msg$");
+                            chat.sendMessage(player, "$msg.player.outdated.msg$");
                             chat.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
                         }
                         return;
@@ -325,7 +333,7 @@ public class CustomCrafting extends JavaPlugin {
 
     public boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
         if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
-            if (player != null) getApi().getChat().sendPlayerMessage(player, "error");
+            if (player != null) getApi().getChat().sendMessage(player, "error");
             return false;
         }
         Registry.CUSTOM_ITEMS.remove(namespacedKey);
@@ -336,12 +344,12 @@ public class CustomCrafting extends JavaPlugin {
         } else {
             File file = new File(getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/items", namespacedKey.getKey() + ".json");
             if (file.delete()) {
-                if (player != null) getApi().getChat().sendPlayerMessage(player, "&aCustomItem deleted!");
+                if (player != null) getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
                 return true;
             } else {
                 file.deleteOnExit();
                 if (player != null)
-                    getApi().getChat().sendPlayerMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
+                    getApi().getChat().sendMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
             }
         }
         return false;

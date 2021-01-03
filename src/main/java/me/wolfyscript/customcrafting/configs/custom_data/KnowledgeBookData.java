@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.configs.custom_data;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -55,7 +56,7 @@ public class KnowledgeBookData extends CustomData implements Cloneable {
     public static class Provider extends CustomData.Provider<KnowledgeBookData> {
 
         public Provider() {
-            super(new NamespacedKey("customcrafting", "knowledge_book"), KnowledgeBookData.class);
+            super(CustomCrafting.RECIPE_BOOK, KnowledgeBookData.class);
         }
 
     }

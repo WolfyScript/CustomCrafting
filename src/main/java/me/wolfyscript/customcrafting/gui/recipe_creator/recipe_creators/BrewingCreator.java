@@ -69,7 +69,7 @@ public class BrewingCreator extends RecipeCreator {
                         int value = Integer.parseInt(s);
                         brewingRecipe.setDurationChange(value);
                     } catch (NumberFormatException ex) {
-                        api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        api.getChat().sendKey(player1, getCluster(), "valid_number");
                     }
                     return false;
                 });
@@ -93,7 +93,7 @@ public class BrewingCreator extends RecipeCreator {
                         int value = Integer.parseInt(s);
                         brewingRecipe.setAmplifierChange(value);
                     } catch (NumberFormatException ex) {
-                        api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                        api.getChat().sendKey(player1, getCluster(), "valid_number");
                     }
                     return false;
                 });
@@ -128,7 +128,7 @@ public class BrewingCreator extends RecipeCreator {
                             int blue = Integer.parseInt(args[2]);
                             brewingRecipe.setEffectColor(Color.fromRGB(red, green, blue));
                         } catch (NumberFormatException ex) {
-                            api.getChat().sendPlayerMessage(player1, "recipe_creator", "valid_number");
+                            api.getChat().sendKey(player1, getCluster(), "valid_number");
                         }
                     }
                     return false;
@@ -292,7 +292,7 @@ public class BrewingCreator extends RecipeCreator {
             try {
                 value = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getBrewingGUICache().getUpgradeValues().setKey(value);
@@ -306,7 +306,7 @@ public class BrewingCreator extends RecipeCreator {
             try {
                 value = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                api.getChat().sendPlayerMessage(player, "recipe_creator", "valid_number");
+                api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
             guiHandler.getCustomCache().getBrewingGUICache().getUpgradeValues().setValue(value);
