@@ -76,10 +76,10 @@ public class RecipesList extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
-        Category category = ((ItemCategoryButton) guiHandler.getInvAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
+        Category category = ((ItemCategoryButton) guiHandler.getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getCategory(guiHandler);
         int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
         event.setButton(0, "back");
-        event.setButton(4, "recipe_book", "itemCategory");
+        //event.setButton(4, "recipe_book", "item_category");
 
         String namespace = namespaces.getOrDefault(guiHandler, "");
         if (namespace.isEmpty()) {
@@ -96,12 +96,11 @@ public class RecipesList extends CCWindow {
             }
         } else {
             List<Object> recipes = new ArrayList<>();
-            if (category != null) {
-                if (namespace.equalsIgnoreCase("minecraft")) {
-                    recipes.addAll(customCrafting.getRecipeHandler().getVanillaRecipes().stream().filter(recipe -> category.isValid(recipe.getResult().getType())).collect(Collectors.toList()));
-                } else {
-                    recipes.addAll(customCrafting.getRecipeHandler().getRecipesByNamespace(namespace).stream().filter(Objects::nonNull).filter(recipe -> category.isValid(recipe) || (recipe.getResults() != null && recipe.getResults().stream().anyMatch(item -> category.isValid(item.getItemStack().getType())))).collect(Collectors.toList()));
-                }
+            if (namespace.equalsIgnoreCase("minecraft")) {
+                recipes.addAll(customCrafting.getRecipeHandler().getVanillaRecipes());
+            } else {
+                List<ICustomRecipe<?>> customRecipes = customCrafting.getRecipeHandler().getRecipesByNamespace(namespace);
+                recipes.addAll(customRecipes.parallelStream().filter(Objects::nonNull).collect(Collectors.toList()));
             }
             maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
             if (currentPage >= maxPages) {

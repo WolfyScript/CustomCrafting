@@ -43,7 +43,7 @@ public class MainMenu extends CCWindow {
 
         int slot = 0;
         for (String categoryId : categories.getSortedMainCategories()) {
-            event.setButton(slot, "mainCategory." + categoryId);
+            event.setButton(slot, "main_category." + categoryId);
             slot++;
         }
     }

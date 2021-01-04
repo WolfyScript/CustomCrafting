@@ -362,7 +362,7 @@ public class RecipeHandler {
             Iterator<Recipe> iterator = Bukkit.recipeIterator();
             while (iterator.hasNext()) {
                 Recipe recipe = iterator.next();
-                if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (WolfyUtilities.hasNetherUpdate() && recipe instanceof SmithingRecipe)) {
+                if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (WolfyUtilities.hasNetherUpdate() && recipe instanceof SmithingRecipe)) {
                     if (((Keyed) recipe).getKey().getNamespace().equals("minecraft")) {
                         allRecipes.add(recipe);
                     }

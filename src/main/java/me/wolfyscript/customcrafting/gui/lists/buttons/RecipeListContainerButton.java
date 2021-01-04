@@ -11,6 +11,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -101,8 +102,8 @@ public class RecipeListContainerButton extends Button<CCCache> {
         if (getCustomRecipe(guiHandler) != null) {
             ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult().create());
-                if (recipe.getResult().getItemStack().getType().equals(Material.AIR)) {
+                ItemBuilder itemB = new ItemBuilder(recipe.getResult() == null ? new ItemStack(Material.AIR) : recipe.getResult().create());
+                if (ItemUtils.isAirOrNull(recipe.getResult())) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
                 itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
@@ -120,9 +121,12 @@ public class RecipeListContainerButton extends Button<CCCache> {
         } else {
             Recipe recipe = getRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult());
-                if (recipe.getResult().getType().equals(Material.AIR)) {
-                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + ((Keyed) recipe).getKey().toString());
+                ItemBuilder itemB;
+                if (ItemUtils.isAirOrNull(recipe.getResult())) {
+                    itemB = new ItemBuilder(Material.STONE);
+                    itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + ((Keyed) recipe).getKey().toString());
+                } else {
+                    itemB = new ItemBuilder(recipe.getResult());
                 }
                 itemB.addLoreLine("§8" + ((Keyed) recipe).getKey().toString());
                 if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
