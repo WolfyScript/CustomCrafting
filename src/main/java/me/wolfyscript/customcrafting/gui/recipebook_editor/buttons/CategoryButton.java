@@ -28,8 +28,8 @@ public class CategoryButton extends ActionButton<CCCache> {
                         return true;
                     }
                     if (((InventoryClickEvent) event).isLeftClick()) {
-                        Category category = recipeBookEditor.isSwitchCategories() ? recipeBook.getCategories().getSwitchCategory(categoryID) : recipeBook.getCategories().getMainCategory(categoryID);
                         //Edit Category
+                        Category category = recipeBookEditor.isSwitchCategories() ? recipeBook.getCategories().getSwitchCategory(categoryID) : recipeBook.getCategories().getMainCategory(categoryID);
                         recipeBookEditor.setCategoryID(categoryID);
                         recipeBookEditor.setCategory(new Category(category));
                         guiHandler.openWindow("category");

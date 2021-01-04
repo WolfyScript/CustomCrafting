@@ -96,9 +96,9 @@ public class EditCategory extends CCWindow {
                             return true;
                         }
                         if (remove) {
-                            guiHandler.getCustomCache().getRecipeBookEditor().getCategory().getRecipes().remove(namespacedKey);
+                            cache.getRecipeBookEditor().getCategory().getRecipes().remove(namespacedKey);
                         } else {
-                            guiHandler.getCustomCache().getRecipeBookEditor().getCategory().getRecipes().add(namespacedKey);
+                            cache.getRecipeBookEditor().getCategory().getRecipes().add(namespacedKey);
                         }
                     }
                     return false;
@@ -135,7 +135,6 @@ public class EditCategory extends CCWindow {
             update.setButton(52, "save");
         }
         update.setButton(53, "save_as");
-
 
     }
 }

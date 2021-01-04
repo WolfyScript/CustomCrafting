@@ -94,6 +94,16 @@ public class Categories {
         this.sortedSwitchCategories = sortedSwitchCategories;
     }
 
+    @Override
+    public String toString() {
+        return "Categories{" +
+                "sortedMainCategories=" + sortedMainCategories +
+                ", sortedSwitchCategories=" + sortedSwitchCategories +
+                ", mainCategories=" + mainCategories +
+                ", switchCategories=" + switchCategories +
+                '}';
+    }
+
     public static class Serializer extends StdSerializer<Categories> {
 
         public Serializer() {
@@ -163,24 +173,24 @@ public class Categories {
             JsonNode node = jsonParser.readValueAsTree();
             Categories categories = new Categories();
             if (node.has("main")) {
-                JsonNode mainCategories = node.get("main");
+                JsonNode mainCategories = node.path("main");
                 ArrayList<String> sortedMainList = new ArrayList<>();
                 if (mainCategories.has("sort")) {
-                    JsonNode sortedMain = mainCategories.get("sort");
+                    JsonNode sortedMain = mainCategories.path("sort");
                     sortedMain.elements().forEachRemaining(element -> sortedMainList.add(element.asText()));
                 }
                 categories.setSortedMainCategories(sortedMainList);
-                mainCategories.get("options").elements().forEachRemaining(element -> categories.registerMainCategory(element.get("id").asText(), Category.readFromJson(element)));
+                mainCategories.path("options").elements().forEachRemaining(element -> categories.registerMainCategory(element.path("id").asText(), Category.readFromJson(element)));
             }
             if (node.has("switch")) {
-                JsonNode switchCategories = node.get("switch");
+                JsonNode switchCategories = node.path("switch");
                 ArrayList<String> sortedSwitchList = new ArrayList<>();
                 if (switchCategories.has("sort")) {
-                    JsonNode sortedSwitch = switchCategories.get("sort");
+                    JsonNode sortedSwitch = switchCategories.path("sort");
                     sortedSwitch.elements().forEachRemaining(jsonElement -> sortedSwitchList.add(jsonElement.asText()));
                 }
                 categories.setSortedSwitchCategories(sortedSwitchList);
-                switchCategories.get("options").elements().forEachRemaining(element -> categories.registerSwitchCategory(element.get("id").asText(), Category.readFromJson(element)));
+                switchCategories.path("options").elements().forEachRemaining(element -> categories.registerSwitchCategory(element.path("id").asText(), Category.readFromJson(element)));
             }
             return categories;
         }
