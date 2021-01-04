@@ -9,12 +9,9 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-import org.bukkit.Material;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class VariantMenu extends CCWindow {
 
@@ -25,30 +22,27 @@ public class VariantMenu extends CCWindow {
     @Override
     public void onInit() {
         for (int i = 0; i < 45; i++) {
-            registerButton(new VariantContainerButton(i, customCrafting));
+            registerButton(new VariantContainerButton(i));
         }
         registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
             int resultSlot = 9;
+            List<CustomItem> variants = cache.getVariantsData().getVariants();
             switch (cache.getRecipeType().getType()) {
                 case ELITE_WORKBENCH:
                     resultSlot = 36;
                 case WORKBENCH:
                     if (cache.getVariantsData().getSlot() == resultSlot) {
-                        List<CustomItem> items = cache.getVariantsData().getVariants();
-                        items.removeIf(item -> item == null || item.getItemStack().getType().equals(Material.AIR));
-                        cache.getCraftingRecipe().setResult(items);
+                        cache.getCraftingRecipe().setResult(variants);
                     } else {
-                        cache.getCraftingRecipe().setIngredients(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
+                        cache.getCraftingRecipe().setIngredients(cache.getVariantsData().getSlot(), variants);
                     }
                     break;
                 case ANVIL:
-                    List<CustomItem> items = cache.getVariantsData().getVariants();
-                    items.removeIf(item -> item == null || item.getItemStack().getType().equals(Material.AIR));
-                    cache.getAnvilRecipe().setInput(cache.getVariantsData().getSlot(), cache.getVariantsData().getVariants());
+                    cache.getAnvilRecipe().setInput(cache.getVariantsData().getSlot(), variants);
                     break;
                 case STONECUTTER:
                     if (cache.getVariantsData().getSlot() != 1) {
-                        cache.getStonecutterRecipe().setSource(cache.getVariantsData().getVariants());
+                        cache.getStonecutterRecipe().setSource(variants);
                     }
                     break;
                 case FURNACE:
@@ -56,22 +50,19 @@ public class VariantMenu extends CCWindow {
                 case BLAST_FURNACE:
                 case CAMPFIRE:
                     if (cache.getVariantsData().getSlot() != 1) {
-                        cache.getCookingRecipe().setSource(cache.getVariantsData().getVariants());
+                        cache.getCookingRecipe().setSource(variants);
                     } else {
-                        cache.getCookingRecipe().setResult(cache.getVariantsData().getVariants());
+                        cache.getCookingRecipe().setResult(variants);
                     }
                     break;
-                case CAULDRON: {
-                    List<CustomItem> variants = cache.getVariantsData().getVariants().stream().filter(item -> !ItemUtils.isAirOrNull(item)).collect(Collectors.toList());
+                case CAULDRON:
                     if (cache.getVariantsData().getSlot() == 0) {
                         cache.getCauldronRecipe().setIngredients(variants);
                     } else {
                         cache.getCauldronRecipe().setResult(variants);
                     }
-                }
-                break;
+                    break;
                 case BREWING_STAND:
-                    List<CustomItem> variants = cache.getVariantsData().getVariants().stream().filter(item -> !ItemUtils.isAirOrNull(item)).collect(Collectors.toList());
                     switch (cache.getVariantsData().getSlot()) {
                         case 0:
                             cache.getBrewingRecipe().setIngredients(variants);
@@ -83,7 +74,6 @@ public class VariantMenu extends CCWindow {
                             cache.getBrewingRecipe().setResult(variants);
                             break;
                     }
-
             }
             guiHandler.openPreviousWindow();
             return true;

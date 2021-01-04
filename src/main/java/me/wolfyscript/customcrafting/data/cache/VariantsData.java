@@ -1,10 +1,11 @@
 package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import org.bukkit.Material;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VariantsData {
 
@@ -16,25 +17,21 @@ public class VariantsData {
     }
 
     public List<CustomItem> getVariants() {
-        for (int i = variants.size() - 1; i > 0; i--) {
-            if (variants.get(i) == null || variants.get(i).getItemStack().getType().equals(Material.AIR)) {
-                variants.remove(i);
-            }
-        }
-        return variants;
+        return variants.parallelStream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
     }
 
     public void setVariants(List<CustomItem> variants) {
         this.variants = variants;
     }
 
-    public void putVariant(int variantSlot, CustomItem variant) {
-        if (getVariants() != null) {
-            if (getVariants().size() > variantSlot) {
-                getVariants().set(variantSlot, variant);
-            } else {
-                getVariants().add(variant);
-            }
+    public void put(int variantSlot, CustomItem variant) {
+        if (getVariants() == null) {
+            setVariants(new ArrayList<>());
+        }
+        if (getVariants().size() > variantSlot) {
+            getVariants().set(variantSlot, variant);
+        } else {
+            getVariants().add(variant);
         }
     }
 

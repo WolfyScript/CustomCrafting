@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.nms.NMSUtil;
 import me.wolfyscript.utilities.api.nms.block.NMSBrewingStand;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.RandomCollection;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,7 +40,7 @@ public class BrewingStandListener implements Listener {
     private final CustomCrafting customCrafting;
     private final WolfyUtilities wolfyUtilities;
     private final NMSUtil nmsUtil;
-    private final Map<Location, Pair<BukkitTask, HashMap<BrewingRecipe, CustomItem>>> activeBrewingStands = new HashMap<>();
+    private final Map<Location, Pair<BukkitTask, Map<BrewingRecipe, CustomItem>>> activeBrewingStands = new HashMap<>();
 
     public BrewingStandListener(WolfyUtilities wolfyUtilities, CustomCrafting customCrafting) {
         this.wolfyUtilities = wolfyUtilities;
@@ -60,13 +61,8 @@ public class BrewingStandListener implements Listener {
             Location location = inventory.getLocation();
 
             if (event.getSlot() != 4) {
-                final ItemStack cursor = event.getCursor(); //And the item in the cursor
-                final ItemStack currentItem = event.getCurrentItem(); //We want to get the item in the slot
-                /* DEBUG STUFF
-                System.out.println("Action: "+event.getAction());
-                System.out.println("Cursor: "+cursor);
-                System.out.println("CurrentItem: "+currentItem);
-                 */
+                final ItemStack cursor = event.getCursor(); //The item in the cursor
+                final ItemStack currentItem = event.getCurrentItem(); //The item in the slot
                 //Place items
                 if (event.getClickedInventory() == null) return;
                 if (event.getClickedInventory().getType() != InventoryType.BREWING) return;
@@ -93,7 +89,7 @@ public class BrewingStandListener implements Listener {
                                 inventory.setItem(event.getSlot(), itemStack);
                                 event.getWhoClicked().setItemOnCursor(cursor);
                             }, 1);
-                        } else if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
+                        } else if (currentItem.isSimilar(cursor)) {
                             if (currentItem.getAmount() < currentItem.getMaxStackSize()) {
                                 if (cursor.getAmount() > 0) {
                                     event.setCancelled(true);
@@ -113,9 +109,9 @@ public class BrewingStandListener implements Listener {
                             });
                             return;
                         }
-                        //Placing an item
+                        //Placing items
                         if (!ItemUtils.isAirOrNull(currentItem)) {
-                            if (currentItem.isSimilar(cursor) || cursor.isSimilar(currentItem)) {
+                            if (currentItem.isSimilar(cursor)) {
                                 event.setCancelled(true);
                                 int possibleAmount = currentItem.getMaxStackSize() - currentItem.getAmount();
                                 currentItem.setAmount(currentItem.getAmount() + (Math.min(cursor.getAmount(), possibleAmount)));
@@ -128,7 +124,7 @@ public class BrewingStandListener implements Listener {
                                     inventory.setItem(event.getSlot(), itemStack);
                                 }
                             }
-                        } else {
+                        } else if (cursor != null) {
                             ItemStack itemStack = new ItemStack(cursor);
                             event.setCancelled(true);
                             Bukkit.getScheduler().runTask(customCrafting, () -> {
@@ -155,7 +151,7 @@ public class BrewingStandListener implements Listener {
                     if (nmsBrewingStand != null) {
                         int fuelLevel = nmsBrewingStand.getFuelLevel();
                         //Check if recipe is correct
-                        HashMap<BrewingRecipe, CustomItem> brewingRecipeList = new HashMap<>();
+                        Map<BrewingRecipe, CustomItem> brewingRecipeList = new HashMap<>();
                         //Check if at least one slot contains an item
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
@@ -224,30 +220,29 @@ public class BrewingStandListener implements Listener {
                                                 List<Integer> processedSlots = new ArrayList<>();
                                                 for (BrewingRecipe recipe : activeBrewingStands.get(location).getValue().keySet()) {
                                                     if (processedSlots.size() >= 3) break;
-
                                                     BrewerInventory brewerInventory = brewingStand.getInventory();
                                                     finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());
                                                     for (int i = 0; i < 3; i++) {
-                                                        if (processedSlots.contains(i)) {//Make sure the slot isn't processed twice by multiple recipes
+                                                        if (processedSlots.contains(i)) {
                                                             continue;
-                                                        }
+                                                        }//Make sure the slot isn't processed twice by multiple recipes
                                                         ItemStack inputItem = brewerInventory.getItem(i);
                                                         if (!ItemUtils.isAirOrNull(inputItem)) {//is slot not empty?
                                                             //Check if item is contained in recipe before trying to process it
-                                                            if (recipe.getAllowedItems().isEmpty() || recipe.getAllowedItems().stream().anyMatch(item1 -> item1.isSimilar(inputItem, recipe.isExactMeta()))) {
+                                                            if (recipe.getAllowedItems().isEmpty() || recipe.getAllowedItems().parallelStream().anyMatch(item1 -> item1.isSimilar(inputItem, recipe.isExactMeta()))) {
                                                                 //Input in that slot is valid, so marking slot as processed
                                                                 processedSlots.add(i);
                                                                 //Process the item in the slot
                                                                 PotionMeta potionMeta = (PotionMeta) inputItem.getItemMeta();
                                                                 if (potionMeta != null) {
-                                                                    if (!recipe.getResults().isEmpty()) {
+                                                                    if (!InventoryUtils.isCustomItemsListEmpty(recipe.getResults())) {
                                                                         //Result available. Replace the items with a random result from the list. (Percentages of items are used)
                                                                         if (recipe.getResults().size() > 1) {
                                                                             RandomCollection<CustomItem> items = recipe.getResults().parallelStream().collect(RandomCollection.getCollector((rdmC, customItem) -> rdmC.add(customItem.getRarityPercentage(), customItem)));
-                                                                            if (!items.isEmpty() && !ItemUtils.isAirOrNull(inputItem)) {
+                                                                            if (!items.isEmpty()) {
                                                                                 brewerInventory.setItem(i, items.next().create());
                                                                             }
-                                                                        } else if (recipe.getResult() != null && !ItemUtils.isAirOrNull(inputItem)) {
+                                                                        } else if (recipe.getResult() != null) {
                                                                             brewerInventory.setItem(i, recipe.getResult().create());
                                                                         }
                                                                     } else {
