@@ -17,7 +17,6 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -27,6 +26,8 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -104,7 +105,7 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>("blast_furnace", Material.BLAST_FURNACE));
         registerButton(new DummyButton<>("grindstone", Material.GRINDSTONE));
         registerButton(new DummyButton<>("smoker", Material.SMOKER));
-        if (WolfyUtilities.hasNetherUpdate()) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
             registerButton(new DummyButton<>("smithing", Material.SMITHING_TABLE));
         }
         registerButton(new DummyButton<>("cauldron.water.disabled", Material.CAULDRON));

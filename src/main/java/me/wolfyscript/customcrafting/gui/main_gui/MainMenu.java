@@ -8,13 +8,14 @@ import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -39,7 +40,7 @@ public class MainMenu extends CCWindow {
         registerButton(new RecipeTypeButton(Types.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new RecipeTypeButton(Types.CAULDRON, Material.CAULDRON));
 
-        if (WolfyUtilities.hasNetherUpdate()) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
             registerButton(new RecipeTypeButton(Types.SMITHING, Material.SMITHING_TABLE));
         }
 
@@ -84,7 +85,7 @@ public class MainMenu extends CCWindow {
         event.setButton(14, "anvil");
         event.setButton(16, "cauldron");
 
-        if (WolfyUtilities.hasNetherUpdate()) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
             event.setButton(19, "blast_furnace");
             event.setButton(21, "smoker");
             event.setButton(23, "campfire");

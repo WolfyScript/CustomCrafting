@@ -75,10 +75,10 @@
       "inventories": "Initiating Inventory GUIs",
       "placeholder": "Registering PlaceHolder",
       "recipes": {
-        "title": "________[Loading Recipes/Items]________",
-        "items": "---------[Items]---------",
-        "recipes": "--------[Recipes]--------",
-        "particles": "-------[Particles]-------",
+        "title": "Loading Recipes & Items",
+        "items": "---{ Items }",
+        "recipes": "---{ Recipes }",
+        "particles": "---{ Particles }",
         "duplicate": "Ignoring duplicate recipe %namespace%:%key% with the config file %key%.%file_type%!",
         "incompatible": "Unsupported file type! Ignoring %namespace%:%key% with the config file %key%.%file_type%! "
       }

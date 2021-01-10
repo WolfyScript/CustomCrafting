@@ -57,7 +57,6 @@ public class SaveButton extends ActionButton<CCCache> {
                 }
                 customCrafting.getRecipeHandler().injectRecipe(recipe);
                 api.getChat().sendKey(player, "recipe_creator", "loading.success");
-
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) cache.resetRecipe();
             });
         } catch (Exception ex) {

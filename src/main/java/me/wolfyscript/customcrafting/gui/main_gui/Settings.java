@@ -110,7 +110,7 @@ public class Settings extends CCWindow {
                     return true;
                 }
             }
-            customCrafting.getConfigHandler().getConfig().setlanguage(availableLangs.get(nextIndex));
+            customCrafting.getConfigHandler().getConfig().setLanguage(availableLangs.get(nextIndex));
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());

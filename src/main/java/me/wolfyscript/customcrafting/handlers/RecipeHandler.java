@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -13,7 +14,6 @@ import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +21,8 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
@@ -45,7 +47,7 @@ public class RecipeHandler {
 
     private final ArrayList<String> disabledRecipes = new ArrayList<>();
 
-    private final ConfigAPI configAPI;
+    private final MainConfig mainConfig;
     private final WolfyUtilities api;
     private final Chat chat;
     private final ObjectMapper objectMapper;
@@ -53,21 +55,51 @@ public class RecipeHandler {
     public RecipeHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
         this.chat = api.getChat();
-        this.configAPI = api.getConfigAPI();
+        this.mainConfig = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
         this.categories = customCrafting.getConfigHandler().getRecipeBook().getCategories();
         this.objectMapper = JacksonUtil.getObjectMapper();
     }
 
+    private void loadDataBase() {
+        DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
+        chat.sendConsoleMessage("- - - - [Database Storage] - - - -");
+        try {
+            dataBaseHandler.loadItems();
+            chat.sendConsoleMessage("");
+            dataBaseHandler.loadRecipes(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
+        chat.sendConsoleMessage("Exporting configs to database...");
+        getRecipes().values().forEach(dataBaseHandler::updateRecipe);
+        chat.sendConsoleMessage("Exported configs to database successfully.");
+    }
+
     public void load() throws IOException {
+        chat.sendConsoleMessage("$msg.startup.recipes.title$");
         if (CustomCrafting.hasDataBaseHandler()) {
-            loadDataBase();
+            if (mainConfig.isLocalStorageEnabled()) {
+                if (mainConfig.isLocalStorageBeforeDatabase()) {
+                    loadConfigs();
+                    loadDataBase();
+                } else {
+                    loadDataBase();
+                    loadConfigs();
+                }
+            } else {
+                loadDataBase();
+            }
         } else {
             loadConfigs();
         }
     }
 
     private void loadConfigs() throws IOException {
+        chat.sendConsoleMessage("- - - - [Local Storage] - - - -");
         if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
             disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes());
         }
@@ -79,27 +111,22 @@ public class RecipeHandler {
         }
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
-            chat.sendConsoleMessage("$msg.startup.recipes.items$");
             for (String dir : dirs) {
+                chat.sendConsoleMessage("> " + dir);
                 loadItems(dir);
             }
-            chat.sendConsoleMessage("");
-            chat.sendConsoleMessage("$msg.startup.recipes.recipes$");
             for (String dir : dirs) {
-                chat.sendConsoleMessage("- " + dir);
                 for (RecipeType<? extends ICustomRecipe<?>> type : Types.values()) {
                     loadRecipe(dir, type);
                 }
             }
             chat.sendConsoleMessage("");
-            chat.sendConsoleMessage("$msg.startup.recipes.particles$");
+            //chat.sendConsoleMessage("$msg.startup.recipes.particles$");
             /*
             for (String dir : dirs) {
                 chat.sendConsoleMessage("- " + dir);
                 loadConfig(dir, "particles");
-            }
-
-             */
+            }*/
         }
     }
 
@@ -110,7 +137,6 @@ public class RecipeHandler {
     }
 
     private void loadItems(String subFolder) throws IOException {
-        chat.sendConsoleMessage("- " + subFolder);
         for (File file : getFiles(subFolder, "items")) {
             String name = file.getName();
             Registry.CUSTOM_ITEMS.register(new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf("."))), objectMapper.readValue(file, CustomItem.class));
@@ -125,50 +151,33 @@ public class RecipeHandler {
     }
 
     public void onSave() {
-        customCrafting.getConfigHandler().getConfig().setDisabledrecipes(disabledRecipes);
+        customCrafting.getConfigHandler().getConfig().setDisabledRecipes(disabledRecipes);
         customCrafting.getConfigHandler().getConfig().save();
     }
 
-    private void loadDataBase() {
-        DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
-        try {
-            chat.sendConsoleMessage("$msg.startup.recipes.title$");
-            dataBaseHandler.loadItems();
-            dataBaseHandler.loadRecipes(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
-        chat.sendConsoleMessage("Exporting configs to database...");
-        getRecipes().values().forEach(dataBaseHandler::updateRecipe);
-        chat.sendConsoleMessage("Exported configs to database successfully.");
-    }
-
     public void registerRecipe(ICustomRecipe<?> recipe) {
+        if (recipe == null) return;
+        if (customRecipes.containsKey(recipe.getNamespacedKey())) {
+            if (!mainConfig.isDataOverride() || ServerVersion.isBefore(MinecraftVersions.v1_15)) {
+                return;
+            }
+            unregisterRecipe(recipe);
+        }
         if (recipe instanceof ICustomVanillaRecipe) {
-            chat.sendDebugMessage("  - add to Bukkit");
             Bukkit.addRecipe(((ICustomVanillaRecipe<?>) recipe).getVanillaRecipe());
         }
-        chat.sendDebugMessage("  - cache custom recipe");
         customRecipes.put(recipe.getNamespacedKey(), recipe);
     }
 
     public void injectRecipe(ICustomRecipe<?> recipe) {
-        chat.sendDebugMessage("[Inject Recipe]");
-        chat.sendDebugMessage("  - unregister old recipe");
         unregisterRecipe(recipe);
         registerRecipe(recipe);
-        chat.sendDebugMessage("[- - Done - -]");
     }
 
     public void unregisterVanillaRecipe(NamespacedKey namespacedKey) {
-        if (WolfyUtilities.hasBuzzyBeesUpdate()) {
-            chat.sendDebugMessage("      -> using new API method");
+        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
             Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
         } else {
-            chat.sendDebugMessage("      -> using old method");
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
             boolean inject = false;
             while (recipeIterator.hasNext()) {
@@ -362,7 +371,7 @@ public class RecipeHandler {
             Iterator<Recipe> iterator = Bukkit.recipeIterator();
             while (iterator.hasNext()) {
                 Recipe recipe = iterator.next();
-                if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (WolfyUtilities.hasNetherUpdate() && recipe instanceof SmithingRecipe)) {
+                if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16) && recipe instanceof SmithingRecipe)) {
                     if (((Keyed) recipe).getKey().getNamespace().equals("minecraft")) {
                         allRecipes.add(recipe);
                     }

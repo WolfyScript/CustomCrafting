@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
+import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -44,7 +44,7 @@ public class PlayerListener implements Listener {
             ItemStack itemStack = event.getItem();
             CustomItem customItem = CustomItem.getByItemStack(itemStack);
             if (customItem != null) {
-                KnowledgeBookData knowledgeBook = (KnowledgeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
+                RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
                 if (knowledgeBook.isEnabled()) {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);

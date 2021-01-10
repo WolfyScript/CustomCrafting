@@ -45,14 +45,14 @@ public class Cauldrons {
         this.api = WolfyUtilities.get(customCrafting);
         load();
         autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
-            if (customCrafting.getConfigHandler().getConfig().isAutoSaveMesage()) {
+            if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
                 api.getChat().sendConsoleMessage("[$msg.auto_save.start$]");
                 save();
                 api.getChat().sendConsoleMessage("[$msg.auto_save.complete$]");
             } else {
                 save();
             }
-        }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200);
+        }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
 
         AtomicInteger particleTicker = new AtomicInteger(0);
 

@@ -31,14 +31,13 @@ public class PermissionCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         if (recipe instanceof CustomCookingRecipe && data.getPlayer() == null) {
             return true;
         }
         Player player = data.getPlayer();
-        if (option.equals(Conditions.Option.IGNORE)) {
-            return true;
-        }
+        if (option.equals(Conditions.Option.IGNORE)) return true;
+        if (player == null) return false;
         String permissionString = permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey());
         return CustomCrafting.getApi().getPermissions().hasPermission(player, permissionString);
     }

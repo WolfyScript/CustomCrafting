@@ -9,6 +9,8 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,7 +35,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
                 api.getChat().sendMessage(p, "&eReloading GUIs and Recipes!");
 
-                if (WolfyUtilities.hasBuzzyBeesUpdate()) {
+                if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
                     InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
                     LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
                     invAPI.reset();

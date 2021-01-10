@@ -86,7 +86,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
         if (getNamespacedKey() != null) {
             try {
                 if (CustomCrafting.hasDataBaseHandler()) {
-                    CustomCrafting.getDataBaseHandler().updateRecipe(this, false);
+                    CustomCrafting.getDataBaseHandler().updateRecipe(this);
                 } else {
                     File file = new File(RecipeHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
                     file.getParentFile().mkdirs();

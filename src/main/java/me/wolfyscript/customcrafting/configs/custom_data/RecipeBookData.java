@@ -12,11 +12,11 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.io.IOException;
 import java.util.Objects;
 
-public class KnowledgeBookData extends CustomData implements Cloneable {
+public class RecipeBookData extends CustomData implements Cloneable {
 
     private boolean enabled;
 
-    protected KnowledgeBookData(NamespacedKey namespacedKey) {
+    protected RecipeBookData(NamespacedKey namespacedKey) {
         super(namespacedKey);
         this.enabled = false;
     }
@@ -42,9 +42,9 @@ public class KnowledgeBookData extends CustomData implements Cloneable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof KnowledgeBookData)) return false;
+        if (!(o instanceof RecipeBookData)) return false;
         if (!super.equals(o)) return false;
-        KnowledgeBookData that = (KnowledgeBookData) o;
+        RecipeBookData that = (RecipeBookData) o;
         return enabled == that.enabled;
     }
 
@@ -53,10 +53,10 @@ public class KnowledgeBookData extends CustomData implements Cloneable {
         return Objects.hash(super.hashCode(), enabled);
     }
 
-    public static class Provider extends CustomData.Provider<KnowledgeBookData> {
+    public static class Provider extends CustomData.Provider<RecipeBookData> {
 
         public Provider() {
-            super(CustomCrafting.RECIPE_BOOK, KnowledgeBookData.class);
+            super(CustomCrafting.RECIPE_BOOK, RecipeBookData.class);
         }
 
     }

@@ -1,64 +1,60 @@
-# Main Config - CustomCrafting v0.0.9.141
+# Config for CustomCrafting v1.6.4.5
 # -
 # PlaceholderAPI:
 # Identifier: customcrafting
 # Placeholders:
-#   - amount_crafted -> returns the number of crafted custom recipes!
-# -
-# -
-# Debug should be disabled! That are a lot of Messages!
-debug: false
-# Do NOT use it until you know what you are doing!
-experimental_features: false
+#   - %customcrafting_crafts%       > The total custom recipes the player has crafted
+#   - %customcrafting_recipes_[option]%
+#       - %customcrafting_recipes_vanilla%        > The total vanilla recipes that are loaded
+#       - %customcrafting_recipes_custom%         > The total custom recipes that are loaded
+#       - %customcrafting_recipes_available%      > The amount of custom recipes that the player has permission to use
+#   - %customcrafting_recipe_[option]_[namespaced_key]%
+#       - %customcrafting_recipe_type_[namespaced_key]%         > The type of the recipe
+#       - %customcrafting_recipe_crafts_[namespaced_key]%       > How often the player has crafted the recipe
+#       - %customcrafting_recipe_advanced_[namespaced_key]%     > If the recipe is a advanced crafting table recipe
+#       - %customcrafting_recipe_permission_[namespaced_key]%   > If the recipe requires a permission
+#       - %customcrafting_recipe_available_[namespaced_key]%    > If the recipe is available for the player
 
-#The language you want use. The context: <language>_<country>
-#If you have any language file you want to be added to this plugin, then feel free to contact me.
-language: en_US
+debug: false              # Debug should be disabled! That are a lot of Messages!
 
+language: en_US           # The language you want use. The context: <language>_<country> Available languages en_US, de_DE, zh_CN. If you want to edit a language copy it and rename it. Then you can just use your language file name instead and it will also be available in the in-game settings.
+# If you have any language file you want to be added to this plugin, then feel free to contact me.
 creator:
-  reset_after_save: true
+  reset_after_save: true  # Configure if the stored values and items you put or configured in the GUI should be cleared after saving a recipe.
 
-
-#This can be set to false if you have conflicting plugins that also use the alias /cc
 commands:
-  cc: true
-  alias:
-    - "cc"
+  alias: [ "cc" ]         # Aliases for the main command of the plugin. This is often used to prevent incompatibility with other plugins that use the same alias like ChatClear, etc.
 
-databank:
-  enabled: false
-  type: MYSQL
-  host: ""
-  port: 3306
-  database: ""
-  username: ""
-  password: ""
+local_storage:
+  load: true              # this should always be true if you don't use a database or want to export your data to the database. If you use a database you can still load local data, but configure how with the following options.
+  before_database: true   # Specifies if the local storage should be loaded before or after the database. This is useful if you have items/recipes that depend on item in the database or other way around. Make sure that the dependencies of items and recipes are loaded in the correct order.
+  override_data: false    # Sets if already existing recipes/items with the same namespaced key should be replaced when registered. Useful if you want to override a database recipe/item with the one from local storage or, if before_database is enabled, other way around.
+  # The recipes can only be replaced in Minecraft 1.15+, as it the API pre 1.15 is unstable.
+database:
+  enabled: false          # If the database feature should be used or not.
+  type: MYSQL             # The type of the database. Currently only MYSQL
+  host: "localhost"       # The ip or hostname of the data bank
+  port: 3306              # The port of the data bank
+  schema: "mc_plugins"    # The name of the schema
+  username: "minecraft"   # The username of the user to use for the connection.
+  password: ""            # The users password
 
-workbench:
-  enable: true
-  reset: true
-  # Sound after successful crafting!
-  craft_sound:
+crafting_table:
+  enable: true            # If the advanced crafting table is enabled or not.
+  reset: true             # If the crafting table item should be reset on each server start. This means the config is replaced with a new version.
+  craft_sound: # Sound when crafting an custom recipe! Currently not implemented!
     enable: false
     sound: "block.lava.extinguish"
 
-  commands:
-    #The commands that are called after successful craft!
-    successful_craft: []
-    #The commands that are called when the recipe was denied! Caution! It could cause spam!
-    denied_craft: []
+recipe_book:
+  reset: false            # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
+
+recipes:
+  lockdown: false         # Used to block any kind of custom recipe. If enabled no one will be able to craft any custom recipe anymore.
+  pretty_printing: true   # If the configs like items or recipes should be saved using formatting or just one continuous String.
+  disabled_recipes: [ ]   # The vanilla or custom recipes that are blocked from crafting.
 
 data:
   auto_save:
-    # Interval in minutes
-    interval: 30
-    message: true
-
-recipes:
-  lockdown: false
-  vanilla_knowledgebook: true
-  pretty_printing: true
-  disabled_recipes: []
-
-knowledgebook:
-  reset: true
+    interval: 30          # Interval in minutes to save data. Currently used to save the data of the placed cauldrons with campfires underneath and containing items.
+    message: true         # Save message that is printed into the console.

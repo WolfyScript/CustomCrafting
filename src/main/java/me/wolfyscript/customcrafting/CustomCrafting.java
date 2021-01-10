@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.commands.CommandCC;
 import me.wolfyscript.customcrafting.commands.CommandRecipe;
 import me.wolfyscript.customcrafting.configs.custom_data.CauldronData;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.configs.custom_data.KnowledgeBookData;
+import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
@@ -28,6 +28,8 @@ import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
@@ -50,14 +52,13 @@ import java.util.List;
 public class CustomCrafting extends JavaPlugin {
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey("customcrafting", "advanced_crafting_table");
+    public static final NamespacedKey ELITE_CRAFTING_TABLE = new NamespacedKey("customcrafting", "elite_crafting_table");
     public static final NamespacedKey RECIPE_BOOK = new NamespacedKey("customcrafting", "recipe_book");
+    public static final NamespacedKey CAULDRON = new NamespacedKey("customcrafting", "cauldron");
     //Used for backwards compatibility
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey("customcrafting", "workbench");
+    public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey("customcrafting", "elite_workbench");
 
-    /*
-    « 174
-    » 175
-     */
     private static CustomCrafting instance;
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
@@ -85,7 +86,7 @@ public class CustomCrafting extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
             getLogger().info("Registering custom data.");
             CustomItem.registerCustomData(new EliteWorkbenchData.Provider());
-            CustomItem.registerCustomData(new KnowledgeBookData.Provider());
+            CustomItem.registerCustomData(new RecipeBookData.Provider());
             CustomItem.registerCustomData(new CauldronData.Provider());
 
             CustomPlayerData.register(new CCPlayerData.Provider());
@@ -97,6 +98,7 @@ public class CustomCrafting extends JavaPlugin {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
         patreon = new Patreon(this);
+        System.out.println("Server version: " + Bukkit.getVersion());
 
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
@@ -151,8 +153,8 @@ public class CustomCrafting extends JavaPlugin {
         }
         recipeHandler = new RecipeHandler(this);
 
-        if (configHandler.getConfig().isDatabankEnabled()) {
-            dataBaseHandler = new DataBaseHandler(this);
+        if (configHandler.getConfig().isDatabaseEnabled()) {
+            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
         }
 
         InventoryHandler invHandler = new InventoryHandler(this);
@@ -170,7 +172,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new EliteWorkbenchListener(api), this);
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(api, this), this);
-        if (WolfyUtilities.hasNetherUpdate()) {
+        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
             pM.registerEvents(new SmithingListener(this), this);
         }
 
@@ -188,7 +190,7 @@ public class CustomCrafting extends JavaPlugin {
         invHandler.init();
 
         cauldrons = new Cauldrons(this);
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
             chat.sendConsoleMessage("$msg.startup.placeholder$");
             new PlaceHolder(this).register();
         }

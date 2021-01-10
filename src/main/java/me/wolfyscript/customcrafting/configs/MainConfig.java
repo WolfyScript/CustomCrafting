@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.configs;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
@@ -20,15 +21,11 @@ public class MainConfig extends YamlConfiguration {
         return getStringList("commands.alias");
     }
 
-    public boolean isCCenabled() {
-        return getBoolean("commands.cc");
-    }
-
     public String getLanguage() {
         return getString("language");
     }
 
-    public void setlanguage(String lang) {
+    public void setLanguage(String lang) {
         set("language", lang);
     }
 
@@ -40,12 +37,12 @@ public class MainConfig extends YamlConfiguration {
         set("creator.reset_after_save", reset);
     }
 
-    public boolean resetKnowledgeBook() {
-        return getBoolean("knowledgebook.reset");
+    public boolean resetRecipeBook() {
+        return getBoolean("recipe_book.reset");
     }
 
-    public void setResetKnowledgeBook(boolean reset) {
-        set("knowledgebook.reset", reset);
+    public void setResetRecipeBook(boolean reset) {
+        set("recipe_book.reset", reset);
     }
 
     public void setAdvancedWorkbenchEnabled(boolean enabled) {
@@ -64,11 +61,11 @@ public class MainConfig extends YamlConfiguration {
         set("workbench.reset", reset);
     }
 
-    public int getAutosaveInterval() {
-        return getInt("data.auto_save.interval");
+    public long getAutosaveInterval() {
+        return getLong("data.auto_save.interval");
     }
 
-    public boolean isAutoSaveMesage() {
+    public boolean isAutoSaveMessage() {
         return getBoolean("data.auto_save.message");
     }
 
@@ -76,7 +73,7 @@ public class MainConfig extends YamlConfiguration {
         return getStringList("recipes.disabled_recipes");
     }
 
-    public void setDisabledrecipes(List<String> recipes) {
+    public void setDisabledRecipes(List<String> recipes) {
         set("recipes.disabled_recipes", recipes);
     }
 
@@ -100,28 +97,48 @@ public class MainConfig extends YamlConfiguration {
         set("recipes.lockdown", lockdown);
     }
 
-    public boolean isDatabankEnabled() {
-        return getBoolean("databank.enabled");
+    public ConfigurationSection getDatabaseSettings() {
+        return getConfigurationSection("database");
     }
 
-    public String getDatabankHost() {
-        return getString("databank.host");
+    public ConfigurationSection getLocalStorageSettings() {
+        return getConfigurationSection("local_storage");
     }
 
-    public int getDatabankPort() {
-        return getInt("databank.port");
+    public boolean isLocalStorageEnabled() {
+        return getBoolean("local_storage.load");
     }
 
-    public String getDatabankDataBase() {
-        return getString("databank.database");
+    public boolean isLocalStorageBeforeDatabase() {
+        return getBoolean("local_storage.before_database");
     }
 
-    public String getDatabankUsername() {
-        return getString("databank.username");
+    public boolean isDataOverride() {
+        return getBoolean("local_storage.override", false);
     }
 
-    public String getDataBankPassword() {
-        return getString("databank.password");
+    public boolean isDatabaseEnabled() {
+        return getBoolean("database.enabled");
+    }
+
+    public String getDatabaseHost() {
+        return getString("database.host");
+    }
+
+    public int getDatabasePort() {
+        return getInt("database.port");
+    }
+
+    public String getDatabaseSchema() {
+        return getString("database.schema");
+    }
+
+    public String getDatabaseUsername() {
+        return getString("database.username");
+    }
+
+    public String getDatabasePassword() {
+        return getString("database.password");
     }
 
 }

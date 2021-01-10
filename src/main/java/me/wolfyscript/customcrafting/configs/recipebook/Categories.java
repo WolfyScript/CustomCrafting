@@ -171,6 +171,9 @@ public class Categories {
         @Override
         public Categories deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             JsonNode node = jsonParser.readValueAsTree();
+            if (node.has("categories")) {
+                node = node.path("categories");
+            }
             Categories categories = new Categories();
             if (node.has("main")) {
                 JsonNode mainCategories = node.path("main");
