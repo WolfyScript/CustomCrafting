@@ -27,7 +27,7 @@ public class EliteCraftingCluster extends CCCluster {
         registerGuiWindow(new CraftingWindow6(this, customCrafting));
         registerGuiWindow(new CraftingRecipeBook(this, customCrafting));
         setEntry(new NamespacedKey("crafting", "crafting_3"));
-        registerButton(new ActionButton<>("knowledge_book", new ButtonState<>("crafting", "knowledge_book", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>("recipe_book", new ButtonState<>("crafting", "recipe_book", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
             knowledgeBook.setRecipeItems(new ArrayList<>());
             knowledgeBook.stopTimerTask();

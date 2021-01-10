@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.listeners;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -28,8 +29,8 @@ public class EliteWorkbenchListener implements Listener {
             if (WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
                 CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(block.getLocation());
                 if (customItem != null) {
-                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(new NamespacedKey("customcrafting", "elite_workbench"));
-                    if (eliteWorkbench.isEnabled()) {
+                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
+                    if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {
                         event.setUseItemInHand(Event.Result.DENY);
                         event.setUseInteractedBlock(Event.Result.DENY);
                         event.getPlayer().closeInventory();

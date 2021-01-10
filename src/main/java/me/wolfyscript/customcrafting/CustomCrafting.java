@@ -98,8 +98,6 @@ public class CustomCrafting extends JavaPlugin {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
         patreon = new Patreon(this);
-        System.out.println("Server version: " + Bukkit.getVersion());
-
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");

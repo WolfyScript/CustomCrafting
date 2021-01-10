@@ -41,7 +41,7 @@ public class CraftingWindow5 extends CraftingWindow {
             eliteWorkbench.setContents(new ItemStack[25]);
         }
 
-        event.setButton(18, "crafting", "knowledge_book");
+        event.setButton(18, "crafting", "recipe_book");
         int slot;
         for (int i = 0; i < 25; i++) {
             slot = 1 + i + (i / 5) * 4;

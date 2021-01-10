@@ -42,7 +42,7 @@ public class CraftingWindow6 extends CraftingWindow {
             eliteWorkbench.setContents(new ItemStack[36]);
         }
 
-        event.setButton(16, new NamespacedKey("crafting", "knowledge_book"));
+        event.setButton(16, new NamespacedKey("crafting", "recipe_book"));
         int slot;
         for (int i = 0; i < 36; i++) {
             slot = i + (i / 6) * 3;

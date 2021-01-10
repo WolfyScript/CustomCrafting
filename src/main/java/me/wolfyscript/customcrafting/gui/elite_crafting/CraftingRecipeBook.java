@@ -86,11 +86,11 @@ public class CraftingRecipeBook extends CCWindow {
         EliteWorkbench eliteWorkbenchData = cache.getEliteWorkbench();
         KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
 
-        Category category = ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("itemCategory")).getCategory(guiHandler);
+        Category category = ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("item_category")).getCategory(guiHandler);
         if (knowledgeBook.getSubFolder() == 0) {
             event.setButton(0, "back");
             event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
-            event.setButton(4, new NamespacedKey("recipe_book", "itemCategory"));
+            event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
             event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
             if (knowledgeBook.getRecipeItems().isEmpty()) {
 

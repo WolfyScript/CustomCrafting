@@ -23,6 +23,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.*;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.chat.ChatColor;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import me.wolfyscript.utilities.util.particles.ParticleLocation;
@@ -79,9 +80,8 @@ public class ItemCreator extends CCWindow {
                     }
                     //*/
                     //---------------------------------------
-                    CustomItem customItem = CustomItem.getReferenceByItemStack(item != null ? item : new ItemStack(Material.AIR));
-                    items.setItem(customItem);
-                    ((ToggleButton<CCCache>) guiHandler.getWindow().getButton("unbreakable")).setState(guiHandler, (item != null && !item.getType().equals(Material.AIR)) && item.getItemMeta().isUnbreakable());
+                    items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
+                    ((ToggleButton<CCCache>) guiHandler.getWindow().getButton("unbreakable")).setState(guiHandler, !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable());
                 }, null,
                 (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
 

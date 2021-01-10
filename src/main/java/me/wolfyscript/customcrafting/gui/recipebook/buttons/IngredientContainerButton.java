@@ -12,11 +12,12 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonType;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
-import org.bukkit.Material;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
@@ -48,16 +49,14 @@ public class IngredientContainerButton extends Button<CCCache> {
     public static void resetButtons(GuiHandler<CCCache> guiHandler) {
         GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 54; i++) {
-            Button btn = cluster.getButton("ingredient.container_" + i);
+            Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
             if (btn != null) {
                 IngredientContainerButton button = (IngredientContainerButton) btn;
-                if (button.getVariantsMap(guiHandler) != null) {
-                    if (button.getTask(guiHandler) != null) {
-                        button.setTask(guiHandler, null);
-                    }
-                    button.setVariants(guiHandler, null);
-                    button.setTiming(guiHandler, 0);
+                if (button.getTask(guiHandler) != null) {
+                    button.setTask(guiHandler, null);
                 }
+                button.removeVariants(guiHandler);
+                button.setTiming(guiHandler, 0);
             }
         }
     }
@@ -76,7 +75,7 @@ public class IngredientContainerButton extends Button<CCCache> {
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
         KnowledgeBook book = cache.getKnowledgeBook();
-        if (getVariantsMap(guiHandler) != null && getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
+        if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             List<ICustomRecipe<?>> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
             recipes.remove(book.getCurrentRecipe());
@@ -84,13 +83,11 @@ public class IngredientContainerButton extends Button<CCCache> {
                 GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
                 for (int i = 0; i < 54; i++) {
                     IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
-                    if (button.getVariantsMap(guiHandler) != null) {
-                        if (button.getTask(guiHandler) != null) {
-                            button.setTask(guiHandler, null);
-                        }
-                        button.setVariants(guiHandler, null);
-                        button.setTiming(guiHandler, 0);
+                    if (button.getTask(guiHandler) != null) {
+                        button.setTask(guiHandler, null);
                     }
+                    button.removeVariants(guiHandler);
+                    button.setTiming(guiHandler, 0);
                 }
                 book.stopTimerTask();
                 book.setSubFolder(book.getSubFolder() + 1);
@@ -106,7 +103,7 @@ public class IngredientContainerButton extends Button<CCCache> {
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         List<CustomItem> variants = getVariantsMap(guiHandler);
-        inventory.setItem(slot, variants.isEmpty() ? new ItemStack(Material.AIR) : variants.get(getTiming(guiHandler)).create());
+        inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
         if (getTask(guiHandler) == null) {
             setTask(guiHandler, () -> {
                 if (player != null && slot < inventory.getSize()) {
@@ -128,8 +125,13 @@ public class IngredientContainerButton extends Button<CCCache> {
         return timings.getOrDefault(guiHandler, 0);
     }
 
+    @NotNull
     public List<CustomItem> getVariantsMap(GuiHandler<CCCache> guiHandler) {
         return variantsMap.getOrDefault(guiHandler, new ArrayList<>());
+    }
+
+    public void removeVariants(GuiHandler<CCCache> guiHandler) {
+        variantsMap.remove(guiHandler);
     }
 
     public void setVariants(GuiHandler<CCCache> guiHandler, List<CustomItem> variants) {
@@ -156,11 +158,11 @@ public class IngredientContainerButton extends Button<CCCache> {
         return tasks.get(guiHandler);
     }
 
-    public Collection<Runnable> getTasks(){
+    public Collection<Runnable> getTasks() {
         return tasks.values();
     }
 
-    public void updateTasks(){
+    public void updateTasks() {
         tasks.putAll(tasksQueue);
     }
 }

@@ -69,7 +69,7 @@ public class ConfigHandler {
         if (mainConfig.resetRecipeBook()) {
             //Creating the knowledgebook item and recipe
             CustomItem knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
-            knowledgeBook.setDisplayName(me.wolfyscript.utilities.util.chat.ChatColor.convert("&6Knowledge Book"));
+            knowledgeBook.setDisplayName(me.wolfyscript.utilities.util.chat.ChatColor.convert("&6Recipe Book"));
             knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -86,8 +86,8 @@ public class ConfigHandler {
         if (mainConfig.resetAdvancedWorkbench()) {
             //Creating the advanced workbench item and recipe
             CustomItem advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
-            advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Workbench");
-            advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Workbench for advanced crafting"));
+            advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Crafting Table");
+            advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Crafting Table for advanced recipes"));
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, CustomCrafting.ADVANCED_CRAFTING_TABLE);
