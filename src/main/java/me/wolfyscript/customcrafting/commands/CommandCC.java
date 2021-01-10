@@ -26,7 +26,6 @@ public class CommandCC extends IndexCommand {
         registerSubCommand(new GiveSubCommand(cc));
         registerSubCommand(new HelpSubCommand(cc));
         registerSubCommand(new InfoSubCommand(cc));
-        registerSubCommand(new KnowledgeSubCommand(cc));
         registerSubCommand(new LockDownSubCommand(cc));
         registerSubCommand(new ReloadSubCommand(cc));
         registerSubCommand(new SettingsSubCommand(cc));
