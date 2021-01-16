@@ -382,7 +382,7 @@
           }
         },
         "messages": {
-          "input": "&eType in the folder and name of the item! &6example your_item",
+          "input": "&eType in the namespace and key of the item! &6[namespace] [key]",
           "error": "&cThis item does not exist or is not loaded!",
           "item_applied": "&aItem successfully applied to recipe!",
           "item_editable": "&aThis item can now be edited!",
@@ -413,7 +413,7 @@
         },
         "messages": {
           "not_existing": "&cThe recipe &6%recipe% &cdoesn't exist!",
-          "input": "&eType in the name of the folder and recipe! &6weapons titanium_sword",
+          "input": "&eType in the namespace and key! &6[namespace] [key]",
           "invalid_recipe": "&cThis recipe is not a %recipe_type%!",
           "delete": {
             "confirm": "&eDo you really want to delete &6%recipe%?",
@@ -637,8 +637,8 @@
         "messages": {
           "save": {
             "input": {
-              "line1": "&eType in the namespace (folder name) and key (recipe name)!",
-              "line2": "&ee.g.: weapons ultimate_sword"
+              "line1": "&eType in the namespace and key!",
+              "line2": "&eInput format: [namespace] [key]"
             },
             "success": "&aConfig saved to:"
           },
@@ -1853,7 +1853,7 @@
         "override": "&3type the namespace and key from the recipe!",
         "valid_number": "&cType in a valid number!",
         "save": {
-          "input": "&eType in the namespace (folder name) and key (recipe name)!",
+          "input": "&eType in the namespace and key!",
           "empty": "&cCannot save a empty recipe! Check the Result and the source/ingredients",
           "success": "&aRecipe successfully saved to:"
         },
@@ -1972,11 +1972,11 @@
           "world_name": "&eType in the exact world name",
           "world_biome": "&eType in the exact biome name",
           "missing_world": "&cThis world does not exist!",
-          "elite_workbench": "&eType in the folder and name of the CustomItem! Example: &6workbenches golden_workbench",
+          "elite_workbench": "&eType in the namespace and key of the CustomItem! Example: &6[namespace] [key]",
           "player_experience": "&eType in the experience required!",
           "permission": "&eType in the permission string",
           "error": "&cThis item does not exist or is not loaded!",
-          "no_name": "&cYou need to type in the item name!",
+          "no_name": "&cYou need to type in the item key!",
           "not_elite_workbench": "&cThis item is not an Elite Workbench!",
           "already_existing": "&cYou already added this item!"
         }
@@ -2561,20 +2561,20 @@
           "click": "&7[&aClick&7] View Recipe"
         },
         "stonecutter": {
-          "name": "&7Stonecutter"
+          "name": "&6Stonecutter"
         },
         "anvil": {
           "durability": {
-            "name": "&7Durability",
+            "name": "&6Durability",
             "lore": [
-              "&eItems durability is affected.",
-              "&eAmount of change: &6%var%"
+              "&7Items durability is affected.",
+              "&7Amount of change: &e%var%"
             ]
           },
           "result": {
-            "name": "&7Result",
+            "name": "&6Result",
             "lore": [
-              "&eRecipe ouputs the set result.",
+              "&7Recipe ouputs the set result.",
               ""
             ]
           }
@@ -2601,35 +2601,39 @@
             }
           },
           "adv_workbench_on": {
-            "name": "&3Advanced Workbench",
-            "help": [
+            "name": "&6Advanced Crafting Table",
+            "lore": [
               "&7Can only be crafted in",
-              "&7Advanced Workbenches",
+              "&7the Advanced Crafting Table",
               ""
             ]
           },
           "adv_workbench_off": {
-            "name": "&4Every Workbench",
-            "help": [
-              "&7Can be crafted in every Workbench"
+            "name": "&6Every Crafting Table",
+            "lore": [
+              "&7Can be crafted in every Crafting Table"
             ]
           },
           "shapeless_off": {
-            "name": "&3Shaped Recipe",
-            "help": [
-              "&7Recipe has a shape!"
+            "name": "&6Shaped Recipe",
+            "lore": [
+              "&7This Recipe has a shape!",
+              "&7The ingredients need to be arranged",
+              "&7in that exact shape"
             ]
           },
           "shapeless_on": {
-            "name": "&3Shapeless Recipe",
-            "help": [
-              "&7Recipe is shapeless!"
+            "name": "&6Shapeless Recipe",
+            "lore": [
+              "&7This Recipe is shapeless!",
+              "&7The items have no order and",
+              "&7can be arranged in any shape and order."
             ]
           }
         },
         "cooking": {
           "icon": {
-            "name": "&7&l%type%",
+            "name": "&6&l%type%",
             "lore": [
               "&7Cooking Time: &e%time% ticks",
               "&7Experience: &e%xp%"
@@ -2639,16 +2643,16 @@
         "cauldron": {
           "water": {
             "enabled": {
-              "name": "&7Cauldron",
+              "name": "&6Cauldron",
               "lore": [
-                "&eWater is required!",
-                "&eAt least a water level of &6%lvl%&e!"
+                "&7Water is required!",
+                "&7At least a water level of &e%lvl%&7!"
               ]
             },
             "disabled": {
-              "name": "&7Cauldron",
+              "name": "&6Cauldron",
               "lore": [
-                "&eNo water is required!"
+                "&7No water is required!"
               ]
             }
           },
@@ -2671,31 +2675,34 @@
         },
         "brewing": {
           "icon": {
-            "name": "&7&lBrewing",
+            "name": "&6&lBrewing",
             "lore": [
               "&7Brewing Time: &e%time% ticks",
               "&7Fuel cost: &e%cost%"
             ]
           },
           "potion_duration": {
-            "name": "&7Potion Duration",
+            "name": "&6Potion Duration",
             "lore": [
-              "&eThis recipe will increase the ",
-              "&eduration of potion effects ",
-              "&eby &6%value% ticks"
+              "&7This recipe will increase the ",
+              "&7duration of potion effects ",
+              "&7by &e%value% ticks"
             ]
           },
           "potion_amplifier": {
-            "name": "&7Potion Duration",
+            "name": "&6Potion Duration",
             "lore": [
-              "&eThis recipe will increase the ",
-              "&eamplifier of potion effects ",
-              "&eby &6%value% levels"
+              "&7This recipe will increase the ",
+              "&7amplifier of potion effects ",
+              "&7by &e%value% levels"
             ]
           }
         },
         "grindstone": {
-          "name": "&7&lGrindstone"
+          "name": "&6&lGrindstone"
+        },
+        "smithing": {
+          "name": "&6&lSmithing Table"
         },
         "back_to_list": {
           "name": "&7&lReturn",
@@ -2708,10 +2715,10 @@
         "gui_name": "&8&lRecipe Book",
         "items": {
           "elite_workbench": {
-            "name": "&6Elite Workbench Recipes"
+            "name": "&6Elite Crafting Table Recipes"
           },
           "workbench": {
-            "name": "&6Workbench Recipes",
+            "name": "&6Crafting Table Recipes",
             "help": []
           },
           "furnace": {
@@ -2885,7 +2892,7 @@
     "crafting": {
       "global_items": {
         "knowledge_book": {
-          "name": "&eKnowledge Book",
+          "name": "&eRecipe Book",
           "lore": [
           ]
         }
@@ -2905,7 +2912,7 @@
         "gui_name": "&8&lElite Crafting Table"
       },
       "recipe_book": {
-        "gui_name": "&8&lRecipe knowledge Book"
+        "gui_name": "&8&lRecipe Book"
       }
     },
     "particle_creator": {

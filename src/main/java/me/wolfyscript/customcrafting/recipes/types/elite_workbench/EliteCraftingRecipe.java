@@ -51,7 +51,7 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRe
         if (!getIngredients().isEmpty()) {
             event.setButton(24, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             if (getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT)) {
-
+                //TODO Admin view
             }
             List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
             int startSlot = 9 / (conditions.size() + 1);

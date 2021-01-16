@@ -73,12 +73,6 @@ public class RecipeHandler {
         }
     }
 
-    public void migrateConfigsToDB(DataBaseHandler dataBaseHandler) {
-        chat.sendConsoleMessage("Exporting configs to database...");
-        getRecipes().values().forEach(dataBaseHandler::updateRecipe);
-        chat.sendConsoleMessage("Exported configs to database successfully.");
-    }
-
     public void load() throws IOException {
         chat.sendConsoleMessage("$msg.startup.recipes.title$");
         if (CustomCrafting.hasDataBaseHandler()) {
@@ -221,17 +215,13 @@ public class RecipeHandler {
     }
 
     public Stream<CraftingRecipe<?>> getSimilarRecipesStream(List<List<ItemStack>> items, boolean elite, boolean advanced) {
-        int size = 0;
-        for (List<ItemStack> stacks : items) {
-            size += stacks.parallelStream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
-        }
+        final long size = items.stream().flatMap(Collection::parallelStream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
         List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
         if (elite) craftingRecipes.addAll(getRecipes(Types.ELITE_WORKBENCH));
         if (advanced) craftingRecipes.addAll(getRecipes(Types.WORKBENCH));
-        final int totalSize = size;
         final int itemsSize = items.size();
         final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
-        return craftingRecipes.parallelStream().filter(r -> r.getIngredients().keySet().size() == totalSize).filter(recipe -> {
+        return craftingRecipes.parallelStream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {
             if (recipe instanceof IShapedCraftingRecipe) {
                 IShapedCraftingRecipe shapedRecipe = ((IShapedCraftingRecipe) recipe);
                 return itemsSize > 0 && shapedRecipe.getShape().length > 0 && itemsSize == shapedRecipe.getShape().length && items0Size == shapedRecipe.getShape()[0].length();
@@ -292,10 +282,7 @@ public class RecipeHandler {
      * @return
      */
     public List<ICustomRecipe<?>> getAvailableRecipes() {
-        List<ICustomRecipe<?>> recipes = new ArrayList<>(getRecipes().values());
-        recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return recipes;
+        return getRecipes().values().parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
     }
 
     /**
@@ -337,10 +324,7 @@ public class RecipeHandler {
      * @return
      */
     public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type) {
-        List<T> recipes = getRecipes(type.getClazz());
-        recipes.removeIf(recipe -> recipe.isHidden() || customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString()));
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return new ArrayList<>(recipes);
+        return getRecipes(type.getClazz()).parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
     }
 
     /**
@@ -353,7 +337,7 @@ public class RecipeHandler {
         return getAvailable(getAvailableRecipes(type), player);
     }
 
-    private <T extends ICustomRecipe<?>> List<T> getAvailable(List<T> recipes, Player player){
+    private <T extends ICustomRecipe<?>> List<T> getAvailable(List<T> recipes, Player player) {
         if (player != null) {
             recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         }
@@ -399,14 +383,11 @@ public class RecipeHandler {
             iterator.remove();
         }
         if (!items.isEmpty()) {
-            while (true) {
-                if (checkColumn(items, 0)) {
-                    break;
-                }
+            while (!isColumnOccupied(items, 0)) {
             }
             boolean columnBlocked = false;
             for (int i = items.get(0).size() - 1; !columnBlocked && i > 0; i--) {
-                if (checkColumn(items, i)) {
+                if (isColumnOccupied(items, i)) {
                     columnBlocked = true;
                 }
             }
@@ -414,18 +395,17 @@ public class RecipeHandler {
         return items;
     }
 
-    private boolean checkColumn(List<List<ItemStack>> items, int column) {
+    private boolean isColumnOccupied(List<List<ItemStack>> items, int column) {
         if (items.parallelStream().anyMatch(item -> item.get(column) != null)) return true;
         items.forEach(item -> item.remove(column));
         return false;
     }
 
-    public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<?> guiHandler) {
-        CCCache cache = (CCCache) guiHandler.getCustomCache();
-        if (cache.getRecipeType().equals(recipe.getRecipeType())) {
+    public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<CCCache> guiHandler) {
+        if (guiHandler.getCustomCache().getRecipeType().equals(recipe.getRecipeType())) {
             ICustomRecipe<?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
-            cache.setCustomRecipe(recipeCopy);
+            guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
             return true;
         }
         return false;

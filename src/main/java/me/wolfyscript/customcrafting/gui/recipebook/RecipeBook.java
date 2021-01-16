@@ -196,6 +196,7 @@ public class RecipeBook extends CCWindow {
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
                 NamespacedKey backToList = new NamespacedKey("recipe_book", "back_to_list");
                 ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+                customRecipe.renderMenu(this, event);
                 if (customRecipe.getRecipeType().equals(Types.ELITE_WORKBENCH)) {
                     if (knowledgeBook.getSubFolderPage() > 0) {
                         event.setButton(51, "previous_recipe");
@@ -215,7 +216,6 @@ public class RecipeBook extends CCWindow {
                         event.setButton(50, "next_recipe");
                     }
                 }
-                customRecipe.renderMenu(this, event);
             }
         }
     }

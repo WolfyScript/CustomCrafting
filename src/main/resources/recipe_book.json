@@ -7,6 +7,9 @@
         "id": "default",
         "icon": "CRAFTING_TABLE",
         "name": "$knowledgebook.category.main.name$",
+        "description": [
+          "&7Contains all the recipes available"
+        ],
         "itemCategories": [
           "SEARCH"
         ]
@@ -15,6 +18,9 @@
         "id": "customcrafting",
         "icon": "CRAFTING_TABLE",
         "name": "$knowledgebook.category.customcrafting.name$",
+        "description": [
+          "&7Contains CustomCrafting`s special recipes"
+        ],
         "recipes": [
           "customcrafting:workbench",
           "customcrafting:knowledge_book"

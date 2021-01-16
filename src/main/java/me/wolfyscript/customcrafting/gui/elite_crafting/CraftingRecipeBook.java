@@ -172,7 +172,7 @@ public class CraftingRecipeBook extends CCWindow {
                 if (knowledgeBook.getSubFolderPage() > 0) {
                     event.setButton(51, "previous_recipe");
                 }
-                event.setButton(52, "recipe_book", "back_to_list");
+                event.setButton(52, backToList);
                 if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
                     event.setButton(53, "next_recipe");
                 }
@@ -180,7 +180,7 @@ public class CraftingRecipeBook extends CCWindow {
                 if (knowledgeBook.getSubFolderPage() > 0) {
                     event.setButton(48, "previous_recipe");
                 }
-                event.setButton(49, "recipe_book", "back_to_list");
+                event.setButton(49, backToList);
                 if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
                     event.setButton(50, "next_recipe");
                 }

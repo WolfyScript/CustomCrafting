@@ -45,20 +45,20 @@ public class MainConfig extends YamlConfiguration {
         set("recipe_book.reset", reset);
     }
 
-    public void setAdvancedWorkbenchEnabled(boolean enabled) {
-        set("workbench.enable", enabled);
+    public boolean isAdvancedWorkbenchEnabled() {
+        return getBoolean("crafting_table.enable");
     }
 
-    public boolean isAdvancedWorkbenchEnabled() {
-        return getBoolean("workbench.enable");
+    public void setAdvancedWorkbenchEnabled(boolean enabled) {
+        set("crafting_table.enable", enabled);
     }
 
     public boolean resetAdvancedWorkbench() {
-        return getBoolean("workbench.reset");
+        return getBoolean("crafting_table.reset");
     }
 
     public void setResetAdvancedWorkbench(boolean reset) {
-        set("workbench.reset", reset);
+        set("crafting_table.reset", reset);
     }
 
     public long getAutosaveInterval() {

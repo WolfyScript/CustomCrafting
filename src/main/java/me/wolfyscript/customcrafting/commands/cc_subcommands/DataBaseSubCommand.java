@@ -2,8 +2,11 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
+import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.chat.Chat;
+import me.wolfyscript.utilities.util.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -28,17 +31,30 @@ public class DataBaseSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             WolfyUtilities api = CustomCrafting.getApi();
             Player p = (Player) sender;
+            Chat chat = api.getChat();
             //give <player> <namespace:key> [amount]
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
+                if (!CustomCrafting.hasDataBaseHandler()) {
+                    chat.sendMessage(p, "&4No Database found!");
+                    return true;
+                }
                 if (args.length >= 1) {
                     switch (args[0]) {
-                        case "export":
-                            if (CustomCrafting.hasDataBaseHandler()) {
-                                api.getChat().sendMessage(p, "Exporting json configs to Database.");
-                                new Thread(() -> customCrafting.getRecipeHandler().migrateConfigsToDB(CustomCrafting.getDataBaseHandler())).run();
-                            } else {
-                                api.getChat().sendMessage(p, "&4No Database found!");
-                            }
+                        case "export_recipes":
+                            api.getChat().sendMessage(p, "Exporting recipes to Database...");
+                            new Thread(() -> {
+                                DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
+                                customCrafting.getRecipeHandler().getRecipes().values().forEach(dataBaseHandler::updateRecipe);
+                                chat.sendConsoleMessage("Successfully exported recipes to database");
+                            }).start();
+                            break;
+                        case "export_items":
+                            api.getChat().sendMessage(p, "Exporting custom items to Database...");
+                            new Thread(() -> {
+                                DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
+                                Registry.CUSTOM_ITEMS.forEach((item) -> dataBaseHandler.updateItem(item.getNamespacedKey(), item));
+                                chat.sendConsoleMessage("Successfully exported custom items to database");
+                            }).start();
                             break;
                     }
                 }

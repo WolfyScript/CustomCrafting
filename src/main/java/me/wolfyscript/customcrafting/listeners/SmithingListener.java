@@ -11,6 +11,7 @@ import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,7 +31,7 @@ import java.util.UUID;
 public class SmithingListener implements Listener {
 
     private final HashMap<UUID, SmithingData> preCraftedRecipes = new HashMap<>();
-    private final HashMap<UUID, HashMap<NamespacedKey, CustomItem>> precraftedItems = new HashMap<>();
+    private final HashMap<UUID, HashMap<NamespacedKey, CustomItem>> preCraftedItems = new HashMap<>();
 
     private final CustomCrafting customCrafting;
 
@@ -44,6 +45,13 @@ public class SmithingListener implements Listener {
         Player player = (Player) event.getView().getPlayer();
         ItemStack base = inv.getItem(0);
         ItemStack addition = inv.getItem(1);
+
+        if (!ItemUtils.isAirOrNull(event.getResult())) {
+            if (Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString()))) {
+                event.setResult(null);
+                return;
+            }
+        }
 
         preCraftedRecipes.put(player.getUniqueId(), null);
         for (CustomSmithingRecipe recipe : customCrafting.getRecipeHandler().getAvailableRecipes(Types.SMITHING, player)) {
@@ -65,13 +73,13 @@ public class SmithingListener implements Listener {
 
             CustomItem result = null;
 
-            HashMap<NamespacedKey, CustomItem> preCraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
+            HashMap<NamespacedKey, CustomItem> preCraftedItem = preCraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
             if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
                 RandomCollection<CustomItem> items = recipe.getResults().parallelStream().filter(cI -> !cI.hasPermission() || player.hasPermission(cI.getPermission())).collect(RandomCollection.getCollector((rdmC,cI) -> rdmC.add(cI.getRarityPercentage(), cI.clone())));
                 if (!items.isEmpty()) {
                     result = items.next();
                     preCraftedItem.put(recipe.getNamespacedKey(), result);
-                    precraftedItems.put(player.getUniqueId(), preCraftedItem);
+                    preCraftedItems.put(player.getUniqueId(), preCraftedItem);
                 }
             } else {
                 result = preCraftedItem.get(recipe.getNamespacedKey());

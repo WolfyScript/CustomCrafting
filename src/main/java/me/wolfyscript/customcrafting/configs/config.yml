@@ -17,19 +17,30 @@
 
 debug: false              # Debug should be disabled! That are a lot of Messages!
 
-language: en_US           # The language you want use. The context: <language>_<country> Available languages en_US, de_DE, zh_CN. If you want to edit a language copy it and rename it. Then you can just use your language file name instead and it will also be available in the in-game settings.
-# If you have any language file you want to be added to this plugin, then feel free to contact me.
+language: en_US           # The language you want use. The context: <language>_<country> Available languages en_US, de_DE, zh_CN.
+  # If you want to edit a language copy it and rename it.
+  # After renaming you can just use your language file name instead and it will also be available in the in-game settings.
+# If you have any language file you would like to add to this plugin, then feel free to contact me.
+
 creator:
   reset_after_save: true  # Configure if the stored values and items you put or configured in the GUI should be cleared after saving a recipe.
 
 commands:
-  alias: [ "cc" ]         # Aliases for the main command of the plugin. This is often used to prevent incompatibility with other plugins that use the same alias like ChatClear, etc.
+  alias: [ "cc" ]         # Aliases for the main command of the plugin.
+  # This is often used to prevent incompatibility with other plugins that use the same alias like ChatClear, etc.
 
 local_storage:
-  load: true              # this should always be true if you don't use a database or want to export your data to the database. If you use a database you can still load local data, but configure how with the following options.
-  before_database: true   # Specifies if the local storage should be loaded before or after the database. This is useful if you have items/recipes that depend on item in the database or other way around. Make sure that the dependencies of items and recipes are loaded in the correct order.
-  override_data: false    # Sets if already existing recipes/items with the same namespaced key should be replaced when registered. Useful if you want to override a database recipe/item with the one from local storage or, if before_database is enabled, other way around.
-  # The recipes can only be replaced in Minecraft 1.15+, as it the API pre 1.15 is unstable.
+  load: true              # this should always be true if you don't use a database or want to export your data to the database.
+  # If you use a database you can still load local data, but configure how it loads them with the following settings below.
+
+  before_database: true   # Specifies if the local storage should be loaded before or after the database.
+    # This is useful if you have items/recipes that depend on items in the database or other way around.
+  # Make sure that the dependencies of items and recipes are loaded in the correct order.
+
+  override_data: false    # Sets if already existing recipes/items with the same namespaced key should be replaced when registered.
+    # Useful if you want to override a database recipe/item with the one from local storage.
+    # Or when "before_database" enabled override local recipes/items with database data.
+  # The recipes can only be replaced in Minecraft 1.15+, because the API pre 1.15 is unstable.
 database:
   enabled: false          # If the database feature should be used or not.
   type: MYSQL             # The type of the database. Currently only MYSQL
@@ -42,7 +53,7 @@ database:
 crafting_table:
   enable: true            # If the advanced crafting table is enabled or not.
   reset: true             # If the crafting table item should be reset on each server start. This means the config is replaced with a new version.
-  craft_sound: # Sound when crafting an custom recipe! Currently not implemented!
+  craft_sound: # Sound when crafting an custom recipe! Currently not implemented (yet)!
     enable: false
     sound: "block.lava.extinguish"
 
@@ -56,5 +67,6 @@ recipes:
 
 data:
   auto_save:
-    interval: 30          # Interval in minutes to save data. Currently used to save the data of the placed cauldrons with campfires underneath and containing items.
+    interval: 30          # Interval in minutes to save data.
+    # Currently used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
     message: true         # Save message that is printed into the console.

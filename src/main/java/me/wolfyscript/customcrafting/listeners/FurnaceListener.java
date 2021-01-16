@@ -148,7 +148,7 @@ public class FurnaceListener implements Listener {
         Furnace furnace = (Furnace) event.getBlock().getState();
         FurnaceInventory inventory = furnace.getInventory();
         ItemStack currentResultItem = furnace.getInventory().getResult();
-        final Class<?> type;
+        final Class<? extends Recipe> type;
         switch (furnace.getType()) {
             case BLAST_FURNACE:
                 type = BlastingRecipe.class;
@@ -194,7 +194,7 @@ public class FurnaceListener implements Listener {
         }
     }
 
-    private boolean isRecipeValid(Material furnaceType, CustomRecipe recipe) {
+    private boolean isRecipeValid(Material furnaceType, CustomRecipe<?> recipe) {
         if (recipe instanceof CustomCookingRecipe) {
             switch (furnaceType) {
                 case BLAST_FURNACE:

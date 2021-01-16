@@ -180,7 +180,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
                 for (int i = 1; i < 9; i++) {
                     event.setButton(i, glass);
                 }
-                for (int i = 36; i < 45; i++) {
+                for (int i = 36; i < 54; i++) {
                     event.setButton(i, glass);
                 }
             }

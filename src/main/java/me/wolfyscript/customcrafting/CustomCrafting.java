@@ -69,11 +69,8 @@ public class CustomCrafting extends JavaPlugin {
 
     //Utils
     private ChatUtils chatUtils;
-
     private static Cauldrons cauldrons = null;
-
     private static String currentVersion;
-
     private boolean outdated = false;
 
     public static CustomCrafting getInst() {
@@ -84,12 +81,14 @@ public class CustomCrafting extends JavaPlugin {
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
-            getLogger().info("Registering custom data.");
+            getLogger().info("Registering custom data");
             CustomItem.registerCustomData(new EliteWorkbenchData.Provider());
             CustomItem.registerCustomData(new RecipeBookData.Provider());
             CustomItem.registerCustomData(new CauldronData.Provider());
 
             CustomPlayerData.register(new CCPlayerData.Provider());
+        } else {
+            getLogger().severe("Couldn't find WolfyUtilities API!");
         }
     }
 
@@ -107,7 +106,7 @@ public class CustomCrafting extends JavaPlugin {
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
             getLogger().severe("CustomCrafting requires WolfyUtilities to work! Make sure you download and install it besides CC! ");
             getLogger().severe("Download link: https://www.spigotmc.org/resources/wolfyutilities.64124/");
-            System.out.println("--------------------------------------------------------------------------------------------------------");
+            getLogger().severe("--------------------------------------------------------------------------------------------------------");
             setEnabled(false);
             return;
         }
@@ -126,7 +125,7 @@ public class CustomCrafting extends JavaPlugin {
         patreon.initialize();
 
         System.out.println();
-        System.out.println("Special thanks to my Patreons for supporting this project: ");
+        System.out.println("Special thanks to my Patrons for supporting this project: ");
         List<Patron> patronList = patreon.getPatronList();
         int lengthColumn = 20;
         for (int i = 0; i < patronList.size(); i += 2) {
@@ -144,16 +143,16 @@ public class CustomCrafting extends JavaPlugin {
         recipeUtils = new RecipeUtils(this);
         chatUtils = new ChatUtils(this);
         configHandler = new ConfigHandler(this);
+        if (configHandler.getConfig().isDatabaseEnabled()) {
+            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
+        }
+
         try {
             configHandler.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
         recipeHandler = new RecipeHandler(this);
-
-        if (configHandler.getConfig().isDatabaseEnabled()) {
-            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
-        }
 
         InventoryHandler invHandler = new InventoryHandler(this);
 
@@ -184,7 +183,6 @@ public class CustomCrafting extends JavaPlugin {
             e.printStackTrace();
         }
 
-        //PlayerStores.load();
         invHandler.init();
 
         cauldrons = new Cauldrons(this);
@@ -325,9 +323,7 @@ public class CustomCrafting extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-        if (Registry.CUSTOM_ITEMS.get(namespacedKey) != null) {
-            Registry.CUSTOM_ITEMS.remove(namespacedKey);
-        }
+        Registry.CUSTOM_ITEMS.remove(namespacedKey);
         Registry.CUSTOM_ITEMS.register(namespacedKey, customItem);
     }
 

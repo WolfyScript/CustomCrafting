@@ -34,7 +34,7 @@ public class ConfigHandler {
     private final WolfyUtilities api;
     private final ConfigAPI configAPI;
     private final LanguageAPI languageAPI;
-    private MainConfig mainConfig;
+    private final MainConfig mainConfig;
     private RecipeBook recipeBook;
 
     public ConfigHandler(CustomCrafting customCrafting) {
@@ -42,9 +42,7 @@ public class ConfigHandler {
         this.customCrafting = customCrafting;
         this.configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
-    }
 
-    public void load() throws IOException {
         //Load core config!
         //Makes sure that if a config with the old name already exists, it's renamed to the new config name.
         File oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");
@@ -62,7 +60,9 @@ public class ConfigHandler {
             e.printStackTrace();
         }
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
+    }
 
+    public void load() throws IOException {
         ParticleAnimation enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
@@ -103,14 +103,13 @@ public class ConfigHandler {
             workbenchCraft.save();
         }
 
-
         //Loading RecipeBook
         customCrafting.saveResource("recipe_book.json", false);
         this.recipeBook = new RecipeBook(customCrafting);
     }
 
     public void loadLang() throws IOException {
-        String chosenLang = customCrafting.getConfigHandler().getConfig().getString("language");
+        String chosenLang = mainConfig.getString("language");
         customCrafting.saveResource("lang/en_US.json", true);
         customCrafting.saveResource("lang/de_DE.json", true);
         customCrafting.saveResource("lang/zh_CN.json", true);

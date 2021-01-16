@@ -1,30 +1,33 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Category {
 
+    private String id = "";
     private Material icon;
     private String name;
     private List<String> description;
 
     private List<NamespacedKey> recipes;
     private List<Material> materials;
+    @JsonAlias({"itemCategories"})
     private List<CreativeModeTab> creativeModeTabs;
 
     public Category() {
         this.name = "";
+        this.icon = Material.CHEST;
         this.description = new ArrayList<>();
         this.recipes = new ArrayList<>();
         this.creativeModeTabs = new ArrayList<>();
@@ -41,95 +44,71 @@ public class Category {
     }
 
     @JsonGetter
+    public String getId() {
+        return id;
+    }
+
+    @JsonSetter
+    void setId(String id) {
+        this.id = id;
+    }
+
+    @JsonGetter
     public Material getIcon() {
         return icon;
     }
 
+    @JsonSetter
     public void setIcon(Material icon) {
         this.icon = icon;
     }
 
+    @JsonGetter
     public String getName() {
         return name;
     }
 
+    @JsonSetter
     public void setName(String name) {
         this.name = name;
     }
 
+    @JsonGetter
     public List<String> getDescription() {
         return description;
     }
 
+    @JsonSetter
     public void setDescription(List<String> description) {
         this.description = description;
     }
 
+    @JsonGetter
     public List<NamespacedKey> getRecipes() {
         return recipes;
     }
 
+    @JsonSetter
     public void setRecipes(List<NamespacedKey> recipes) {
         this.recipes = recipes;
     }
 
+    @JsonGetter
     public List<Material> getMaterials() {
         return materials;
     }
 
+    @JsonSetter
     public void setMaterials(List<Material> materials) {
         this.materials = materials;
     }
 
-    public static Category readFromJson(JsonNode node){
-        Category category = new Category();
-        String displayName = node.get("name").asText();
-        Material icon = Material.matchMaterial(node.get("icon").asText());
-        List<String> description = new ArrayList<>();
-        if (node.has("description")) {
-            node.get("description").forEach(jsonElement -> description.add(jsonElement.asText()));
-        }
-        List<NamespacedKey> recipes = new ArrayList<>();
-        if (node.has("recipes")) {
-            node.get("recipes").forEach(jsonElement -> {
-                String[] recipe = jsonElement.asText().split(":");
-                recipes.add(new NamespacedKey(recipe[0], recipe[1]));
-            });
-        }
-        List<Material> materials = new ArrayList<>();
-        if (node.has("materials")) {
-            node.get("materials").forEach(jsonElement -> {
-                Material material = Material.matchMaterial(jsonElement.asText());
-                if (material != null) {
-                    materials.add(material);
-                }
-            });
-        }
-        List<CreativeModeTab> itemCategories = new ArrayList<>();
-        if (node.has("itemCategories")) {
-            node.get("itemCategories").forEach(jsonElement -> {
-                String materialNmn = jsonElement.asText();
-                try {
-                    CreativeModeTab itemCategory = CreativeModeTab.valueOf(materialNmn);
-                    itemCategories.add(itemCategory);
-                } catch (IllegalArgumentException ex) {
-                    Bukkit.getLogger().warning("Failed to load ItemCategory for Category: must be BREWING, BUILDING_BLOCKS, DECORATIONS, COMBAT, TOOLS, REDSTONE,  FOOD, TRANSPORTATION, MISC, SEARCH! Got " + materialNmn);
-                }
-            });
-        }
-        category.setIcon(icon);
-        category.setName(displayName);
-        category.setDescription(description);
-        category.setCreativeModeTabs(itemCategories);
-        category.setMaterials(materials);
-        category.setRecipes(recipes);
-        return category;
-    }
-
+    @JsonGetter
     public List<CreativeModeTab> getCreativeModeTabs() {
         return creativeModeTabs;
     }
 
+    @JsonSetter
     public void setCreativeModeTabs(List<CreativeModeTab> itemCategories) {
         this.creativeModeTabs = itemCategories;
     }
@@ -148,31 +127,5 @@ public class Category {
         }
         return materials.contains(material);
     }
-
-    public void writeToJson(JsonGenerator gen) throws IOException {
-        gen.writeStringField("icon", getIcon().name());
-        gen.writeStringField("name", getName());
-        gen.writeArrayFieldStart("description");
-        for (String s : getDescription()) {
-            gen.writeString(s);
-        }
-        gen.writeEndArray();
-        gen.writeArrayFieldStart("materials");
-        for (Material material : getMaterials()) {
-            gen.writeString(material.toString());
-        }
-        gen.writeEndArray();
-        gen.writeArrayFieldStart("recipes");
-        for (NamespacedKey recipe : getRecipes()) {
-            gen.writeString(recipe.toString());
-        }
-        gen.writeEndArray();
-        gen.writeArrayFieldStart("itemCategories");
-        for (CreativeModeTab creativeModeTab : getCreativeModeTabs()) {
-            gen.writeString(creativeModeTab.toString());
-        }
-        gen.writeEndArray();
-    }
-
 
 }

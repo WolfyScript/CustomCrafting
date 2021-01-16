@@ -26,7 +26,7 @@ public class EliteWorkbenchListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (!event.useInteractedBlock().equals(Event.Result.DENY) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !event.getPlayer().isSneaking()) {
             Block block = event.getClickedBlock();
-            if (WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
+            if (block != null && WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
                 CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(block.getLocation());
                 if (customItem != null) {
                     EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);

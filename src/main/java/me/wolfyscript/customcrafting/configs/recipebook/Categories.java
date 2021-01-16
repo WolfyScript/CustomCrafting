@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class Categories {
     }
 
     public void registerMainCategory(String key, Category category) {
+        category.setId(key);
         if (!sortedMainCategories.contains(key)) {
             sortedMainCategories.add(key);
         }
@@ -44,6 +46,7 @@ public class Categories {
     }
 
     public void registerSwitchCategory(String key, Category category) {
+        category.setId(key);
         if (!sortedSwitchCategories.contains(key)) {
             sortedSwitchCategories.add(key);
         }
@@ -127,10 +130,7 @@ public class Categories {
                     gen.writeEndArray();
                     gen.writeArrayFieldStart("options");
                     for (Map.Entry<String, Category> entry : categories.mainCategories.entrySet()) {
-                        gen.writeStartObject();
-                        entry.getValue().writeToJson(gen);
-                        gen.writeStringField("id", entry.getKey());
-                        gen.writeEndObject();
+                        gen.writeObject(entry.getValue());
                     }
                     gen.writeEndArray();
                 }
@@ -145,10 +145,7 @@ public class Categories {
                     gen.writeEndArray();
                     gen.writeArrayFieldStart("options");
                     for (Map.Entry<String, Category> entry : categories.switchCategories.entrySet()) {
-                        gen.writeStartObject();
-                        entry.getValue().writeToJson(gen);
-                        gen.writeStringField("id", entry.getKey());
-                        gen.writeEndObject();
+                        gen.writeObject(entry.getValue());
                     }
                     gen.writeEndArray();
                 }
@@ -183,7 +180,10 @@ public class Categories {
                     sortedMain.elements().forEachRemaining(element -> sortedMainList.add(element.asText()));
                 }
                 categories.setSortedMainCategories(sortedMainList);
-                mainCategories.path("options").elements().forEachRemaining(element -> categories.registerMainCategory(element.path("id").asText(), Category.readFromJson(element)));
+                mainCategories.path("options").elements().forEachRemaining(element -> {
+                    Category category = JacksonUtil.getObjectMapper().convertValue(element, Category.class);
+                    categories.registerMainCategory(category.getId(), category);
+                });
             }
             if (node.has("switch")) {
                 JsonNode switchCategories = node.path("switch");
@@ -193,7 +193,10 @@ public class Categories {
                     sortedSwitch.elements().forEachRemaining(jsonElement -> sortedSwitchList.add(jsonElement.asText()));
                 }
                 categories.setSortedSwitchCategories(sortedSwitchList);
-                switchCategories.path("options").elements().forEachRemaining(element -> categories.registerSwitchCategory(element.path("id").asText(), Category.readFromJson(element)));
+                switchCategories.path("options").elements().forEachRemaining(element -> {
+                    Category category = JacksonUtil.getObjectMapper().convertValue(element, Category.class);
+                    categories.registerSwitchCategory(category.getId(), category);
+                });
             }
             return categories;
         }
