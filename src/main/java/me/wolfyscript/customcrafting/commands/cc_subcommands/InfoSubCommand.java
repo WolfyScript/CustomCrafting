@@ -20,7 +20,6 @@ public class InfoSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
-        WolfyUtilities api = CustomCrafting.getApi();
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.info")) {

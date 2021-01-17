@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,18 +21,15 @@ public class LockDownSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
         WolfyUtilities api = CustomCrafting.getApi();
-
-        Player p = (Player) sender;
-        if (sender instanceof ConsoleCommandSender || ChatUtils.checkPerm(p, "customcrafting.cmd.lockdown")) {
+        if (ChatUtils.checkPerm(sender, "customcrafting.cmd.lockdown")) {
             customCrafting.getConfigHandler().getConfig().toggleLockDown();
-
-            if(sender instanceof Player){
+            if (sender instanceof Player) {
                 if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
-                    api.getChat().sendMessage(p, "$commands.lockdown.enabled$");
+                    api.getChat().sendMessage((Player) sender, "$commands.lockdown.enabled$");
                 } else {
-                    api.getChat().sendMessage(p, "$commands.lockdown.disabled$");
+                    api.getChat().sendMessage((Player) sender, "$commands.lockdown.disabled$");
                 }
-            }else{
+            } else {
                 if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
                     api.getChat().sendConsoleMessage("$commands.lockdown.enabled$");
                 } else {

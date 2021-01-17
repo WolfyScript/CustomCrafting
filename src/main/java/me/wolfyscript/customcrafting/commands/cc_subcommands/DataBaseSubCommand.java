@@ -41,7 +41,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                 if (args.length >= 1) {
                     switch (args[0]) {
                         case "export_recipes":
-                            api.getChat().sendMessage(p, "Exporting recipes to Database...");
+                            chat.sendMessage(p, "Exporting recipes to Database...");
                             new Thread(() -> {
                                 DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
                                 customCrafting.getRecipeHandler().getRecipes().values().forEach(dataBaseHandler::updateRecipe);
@@ -49,7 +49,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                             }).start();
                             break;
                         case "export_items":
-                            api.getChat().sendMessage(p, "Exporting custom items to Database...");
+                            chat.sendMessage(p, "Exporting custom items to Database...");
                             new Thread(() -> {
                                 DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
                                 Registry.CUSTOM_ITEMS.forEach((item) -> dataBaseHandler.updateItem(item.getNamespacedKey(), item));
@@ -65,10 +65,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
 
     @Override
     protected @Nullable List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] strings) {
-        List<String> results = new ArrayList<>();
-        if (strings.length == 1) {
-            StringUtil.copyPartialMatches(strings[0], DATABASE, results);
-        }
+        List<String> results = strings.length == 1 ? StringUtil.copyPartialMatches(strings[0], DATABASE, new ArrayList<>()) : new ArrayList<>();
         Collections.sort(results);
         return results;
     }

@@ -15,17 +15,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandRecipe extends IndexCommand {
-
-    private final List<String> COMMANDS = Arrays.asList("toggle", "edit", "delete", "save");
 
     private final CustomCrafting customCrafting;
 
     public CommandRecipe(CustomCrafting customCrafting) {
-        super("recipes", "", "/recipes <setting>", new ArrayList<>());
+        super("recipes", "", "/recipes", new ArrayList<>());
         this.customCrafting = customCrafting;
         registerSubCommand(new EditSubCommand(customCrafting));
         registerSubCommand(new DeleteSubCommand(customCrafting));
@@ -49,11 +45,5 @@ public class CommandRecipe extends IndexCommand {
             }
         }
         return super.execute(sender, s, args);
-    }
-
-    @NotNull
-    @Override
-    public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] strings) throws IllegalArgumentException {
-        return super.tabComplete(sender, alias, strings);
     }
 }

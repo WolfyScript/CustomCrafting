@@ -27,13 +27,11 @@ public class SettingsSubCommand extends AbstractSubCommand {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.settings")) {
                 if (args.length > 1) {
-                    switch (args[0]) {
-                        case "pretty_printing":
-                            if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")) {
-                                customCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.valueOf(args[1].toLowerCase(Locale.ROOT)));
-                                api.getChat().sendMessage(p, "&aSet &epretty printing &ato &e" + args[1].toLowerCase(Locale.ROOT));
-                            }
-                            break;
+                    if ("pretty_printing".equals(args[0])) {
+                        if (args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")) {
+                            customCrafting.getConfigHandler().getConfig().setPrettyPrinting(Boolean.parseBoolean(args[1].toLowerCase(Locale.ROOT)));
+                            api.getChat().sendMessage(p, "&aSet &epretty printing &ato &e" + args[1].toLowerCase(Locale.ROOT));
+                        }
                     }
                 }
             }
