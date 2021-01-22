@@ -48,7 +48,7 @@ public class Cauldron implements Listener {
         if (data == null || data.isEmpty())
             return null;
         String[] args = data.split(";");
-        CauldronRecipe recipe = (CauldronRecipe) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.getByString(args[0]));
+        CauldronRecipe recipe = (CauldronRecipe) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.of(args[0]));
         if (recipe == null) {
             return null;
         }

@@ -151,16 +151,13 @@ public class RecipeHandler {
 
     public void registerRecipe(ICustomRecipe<?> recipe) {
         if (recipe == null) return;
-        if (customRecipes.containsKey(recipe.getNamespacedKey())) {
-            if (!mainConfig.isDataOverride() || ServerVersion.isBefore(MinecraftVersions.v1_15)) {
-                return;
-            }
+        if (customRecipes.containsKey(recipe.getNamespacedKey()) && mainConfig.isDataOverride() && ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
             unregisterRecipe(recipe);
         }
+        customRecipes.put(recipe.getNamespacedKey(), recipe);
         if (recipe instanceof ICustomVanillaRecipe) {
             Bukkit.addRecipe(((ICustomVanillaRecipe<?>) recipe).getVanillaRecipe());
         }
-        customRecipes.put(recipe.getNamespacedKey(), recipe);
     }
 
     public void injectRecipe(ICustomRecipe<?> recipe) {
@@ -221,17 +218,13 @@ public class RecipeHandler {
         if (advanced) craftingRecipes.addAll(getRecipes(Types.WORKBENCH));
         final int itemsSize = items.size();
         final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
-        return craftingRecipes.parallelStream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {
+        return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {
             if (recipe instanceof IShapedCraftingRecipe) {
                 IShapedCraftingRecipe shapedRecipe = ((IShapedCraftingRecipe) recipe);
                 return itemsSize > 0 && shapedRecipe.getShape().length > 0 && itemsSize == shapedRecipe.getShape().length && items0Size == shapedRecipe.getShape()[0].length();
             }
             return true;
-        });
-    }
-
-    public List<CraftingRecipe<?>> getSimilarRecipes(List<List<ItemStack>> items, boolean elite, boolean advanced) {
-        return getSimilarRecipesStream(items, elite, advanced).collect(Collectors.toList());
+        }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
     }
 
     public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {

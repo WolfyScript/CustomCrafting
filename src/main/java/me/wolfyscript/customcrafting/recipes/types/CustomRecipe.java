@@ -50,9 +50,9 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
             JsonNode resultNode = node.path("result");
             if (resultNode.isObject()) {
                 results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
-                resultNode.path("variants").forEach(jsonNode -> results.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class))));
+                resultNode.path("variants").forEach(jsonNode -> results.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class))));
             } else {
-                resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+                resultNode.elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
             }
             setResult(results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
             //setResult(Streams.stream(node.path("result").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(i -> !ItemUtils.isAirOrNull(i)).collect(Collectors.toList()));
@@ -71,7 +71,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
         this.hidden = false;
     }
 
-    public CustomRecipe(CustomRecipe craftingRecipe) {
+    public CustomRecipe(CustomRecipe<?> craftingRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.getApi();
         this.namespacedKey = craftingRecipe.getNamespacedKey();

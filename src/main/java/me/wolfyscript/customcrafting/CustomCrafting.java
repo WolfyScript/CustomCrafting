@@ -82,9 +82,9 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
         if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
             getLogger().info("Registering custom data");
-            CustomItem.registerCustomData(new EliteWorkbenchData.Provider());
-            CustomItem.registerCustomData(new RecipeBookData.Provider());
-            CustomItem.registerCustomData(new CauldronData.Provider());
+            Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
+            Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
+            Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
 
             CustomPlayerData.register(new CCPlayerData.Provider());
         } else {
@@ -314,7 +314,7 @@ public class CustomCrafting extends JavaPlugin {
             CustomCrafting.getDataBaseHandler().updateItem(namespacedKey, customItem);
         } else {
             try {
-                File file = new File(getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/items", namespacedKey.getKey() + ".json");
+                File file = new File(RecipeHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
                 file.getParentFile().mkdirs();
                 if (file.exists() || file.createNewFile()) {
                     JacksonUtil.getObjectWriter(getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
@@ -338,7 +338,7 @@ public class CustomCrafting extends JavaPlugin {
             CustomCrafting.getDataBaseHandler().removeItem(namespacedKey);
             return true;
         } else {
-            File file = new File(getDataFolder() + "/recipes/" + namespacedKey.getNamespace() + "/items", namespacedKey.getKey() + ".json");
+            File file = new File(RecipeHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
             if (file.delete()) {
                 if (player != null) getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
                 return true;

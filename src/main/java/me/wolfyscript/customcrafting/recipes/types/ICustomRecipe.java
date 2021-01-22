@@ -100,7 +100,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
             }
             if (player != null) {
                 getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
-                getAPI().getChat().sendMessage(player, "§6" + "recipes/" + getNamespacedKey().getNamespace() + "/" + getRecipeType().getId() + "/" + getNamespacedKey().getKey());
+                getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
             }
             return true;
         }

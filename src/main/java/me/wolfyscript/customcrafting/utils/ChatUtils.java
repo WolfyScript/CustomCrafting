@@ -55,7 +55,7 @@ public class ChatUtils {
             if (s.length() > 1) {
                 namespacedKey = new NamespacedKey(args[0], args[1]);
             } else if (s.contains(":")) {
-                namespacedKey = NamespacedKey.getByString(s);
+                namespacedKey = NamespacedKey.of(s);
             }
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.getChat().sendMessage(player, s1));

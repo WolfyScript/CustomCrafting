@@ -13,10 +13,11 @@ public class CustomPreCraftEvent extends CustomCraftEvent {
     private final boolean isRepair;
     private List<List<ItemStack>> ingredients;
 
-    public CustomPreCraftEvent(boolean isRepair, CraftingRecipe craftingRecipe, Inventory inventory, List<List<ItemStack>> ingredients) {
+    public CustomPreCraftEvent(boolean cancelled, boolean isRepair, CraftingRecipe<?> craftingRecipe, Inventory inventory, List<List<ItemStack>> ingredients) {
         super(craftingRecipe, inventory);
         this.isRepair = isRepair;
         this.ingredients = ingredients;
+        setCancelled(cancelled);
     }
 
     public boolean isRepair() {

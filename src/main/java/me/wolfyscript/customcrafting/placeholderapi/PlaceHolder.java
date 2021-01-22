@@ -86,7 +86,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                     for (int i = 3; i < args.length; i++) {
                         recipeID.append(args[i]);
                     }
-                    NamespacedKey recipeKey = NamespacedKey.getByString(recipeID.toString());
+                    NamespacedKey recipeKey = NamespacedKey.of(recipeID.toString());
                     ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(recipeKey);
                     switch (args[1]) {
                         case "type":

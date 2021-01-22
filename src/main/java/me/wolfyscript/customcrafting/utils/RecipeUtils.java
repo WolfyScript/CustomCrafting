@@ -7,17 +7,14 @@ import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
-import me.wolfyscript.utilities.util.RandomUtils;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -25,9 +22,6 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RecipeUtils {
 
@@ -46,39 +40,30 @@ public class RecipeUtils {
         }
         RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
         List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
-        Stream<CraftingRecipe<?>> stream = recipeHandler.getSimilarRecipes(ingredients, elite, advanced).stream().sorted(Comparator.comparing(ICustomRecipe::getPriority));
-        CustomItem customItem = stream.map(recipe -> checkRecipe(recipe, ingredients, player, inventory, recipeHandler, isRepair, () -> recipe.check(ingredients))).filter(Objects::nonNull).findFirst().orElse(null);
+        CustomItem customItem = recipeHandler.getSimilarRecipesStream(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, inventory, recipeHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
         return customItem == null ? null : customItem.create();
     }
 
-    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Inventory inventory, RecipeHandler recipeHandler, boolean isRepair, Supplier<CraftingData> craftingDataSupplier) {
-        CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(isRepair, recipe, inventory, matrix);
-        customPreCraftEvent.setCancelled(true);
-        CraftingData craftingData = null;
-        if (!recipeHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString()) && recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, player.getTargetBlock(null, 5), player.getOpenInventory()))) {
-            craftingData = craftingDataSupplier.get();
-            if (craftingData != null) {
-                customPreCraftEvent.setCancelled(false);
-            }
+    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Inventory inventory, RecipeHandler recipeHandler, boolean isRepair) {
+        if (recipeHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString())) {
+            return null; //No longer call Event if recipe is disabled!
         }
-        //The event is still called even if the recipe is invalid! This will allow other plugins to manipulate their own recipes or use their own checks!
-        Bukkit.getPluginManager().callEvent(customPreCraftEvent);
+        CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, player.getTargetBlock(null, 5), player.getOpenInventory())) ? recipe.check(matrix) : null;
+        CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(craftingData == null, isRepair, recipe, inventory, matrix);
+        Bukkit.getPluginManager().callEvent(customPreCraftEvent); //The event is still called even if the recipe is invalid! This will allow other plugins to manipulate their own recipes or use their own checks!
         if (!customPreCraftEvent.isCancelled()) {
-            //api.sendDebugMessage("Recipe \"" + customPreCraftEvent.getRecipe().getNamespacedKey().toString() + "\" detected!");
             put(player.getUniqueId(), craftingData);
-            Map<NamespacedKey, CustomItem> preCraftedItem = preCraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
-            CustomItem result = new CustomItem(Material.AIR);
+            Map<NamespacedKey, CustomItem> preCraftedItem = getPreCraftedItems(player.getUniqueId());
             if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
                 RandomCollection<CustomItem> items = customPreCraftEvent.getResult().parallelStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
                 if (!items.isEmpty()) {
-                    result = items.next();
+                    CustomItem result = items.next();
                     preCraftedItem.put(recipe.getNamespacedKey(), result);
-                    preCraftedItems.put(player.getUniqueId(), preCraftedItem);
+                    return result;
                 }
             } else {
-                result = preCraftedItem.get(recipe.getNamespacedKey());
+                return preCraftedItem.get(recipe.getNamespacedKey());
             }
-            return result;
         }
         return null;
     }
@@ -86,11 +71,12 @@ public class RecipeUtils {
     public void consumeRecipe(ItemStack result, ItemStack[] matrix, InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
         InventoryView inventoryView = event.getView();
-        if (!ItemUtils.isAirOrNull(result) && has(event.getWhoClicked().getUniqueId())) {
+        if (inventory != null && !ItemUtils.isAirOrNull(result) && has(event.getWhoClicked().getUniqueId())) {
             CraftingData craftingData = preCraftedRecipes.get(event.getWhoClicked().getUniqueId());
             CraftingRecipe<?> recipe = craftingData.getRecipe();
             if (recipe != null) {
                 CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, inventory);
+                Bukkit.getPluginManager().callEvent(customCraftEvent);
                 if (!customCraftEvent.isCancelled() && event.getCurrentItem() != null) {
                     List<List<ItemStack>> ingredients = customCrafting.getRecipeHandler().getIngredients(matrix);
                     Player player = (Player) event.getWhoClicked();
@@ -98,46 +84,47 @@ public class RecipeUtils {
                         CCPlayerData playerStore = PlayerUtil.getStore(player);
                         playerStore.increaseRecipeCrafts(customCraftEvent.getRecipe().getNamespacedKey(), 1);
                         playerStore.increaseTotalCrafts(1);
-                        CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(player.getTargetBlock(null, 5).getLocation());
+                        CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(inventory.getLocation());
                         if (customItem != null && customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE)) {
                             playerStore.increaseAdvancedCrafts(1);
                         } else {
                             playerStore.increaseNormalCrafts(1);
                         }
                     }//----------------------------------------------
-                    //CALCULATE AMOUNTS CRAFTABLE AND REMOVE THEM!
-                    int amount = recipe.getAmountCraftable(ingredients, craftingData);
-                    List<CustomItem> results = recipe.getResults().parallelStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
-                    if (results.size() < 2 && event.isShiftClick()) {
-                        if (result.getAmount() > 0) {
-                            int possible = Math.min(InventoryUtils.getInventorySpace(inventoryView.getBottomInventory(), result) / result.getAmount(), amount);
-                            if (possible > 0) {
-                                recipe.removeMatrix(ingredients, inventory, possible, craftingData);
-                            }
-                            event.setCurrentItem(new ItemStack(Material.AIR));
+                    if (event.isShiftClick()) {
+                        int possible = Math.min(InventoryUtils.getInventorySpace(inventoryView.getBottomInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData));
+                        event.setCurrentItem(ItemUtils.AIR);
+                        if (possible > 0) {
+                            recipe.removeMatrix(ingredients, inventory, possible, craftingData);
+                            RandomCollection<CustomItem> results = recipe.getResults().parallelStream().filter(cI -> !cI.hasPermission() || player.hasPermission(cI.getPermission())).collect(RandomCollection.getCollector((rdmC, cI) -> rdmC.add(cI.getRarityPercentage(), cI.clone())));
                             for (int i = 0; i < possible; i++) {
-                                inventoryView.getBottomInventory().addItem(result);
-                                result = !results.isEmpty() ? results.get(RandomUtils.random.nextInt(customCraftEvent.getResult().size())).create() : new ItemStack(Material.AIR);
+                                inventoryView.getBottomInventory().addItem(results.next().create());
                             }
                         }
                     } else if (!event.isShiftClick()) {
                         ItemStack cursor = inventoryView.getCursor();
-                        if (ItemUtils.isAirOrNull(cursor) || cursor.getAmount() + result.getAmount() < cursor.getMaxStackSize()) {
-                            Map<NamespacedKey, CustomItem> preCraftedItem = preCraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
+                        if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.getAmount() + result.getAmount() <= cursor.getMaxStackSize())) {
                             recipe.removeMatrix(ingredients, inventory, 1, craftingData);
-                            if (!ItemUtils.isAirOrNull(cursor) && result.isSimilar(cursor)) {
-                                cursor.setAmount(cursor.getAmount() + result.getAmount());
-                            } else if (ItemUtils.isAirOrNull(cursor)) {
+                            if (ItemUtils.isAirOrNull(cursor)) {
                                 inventoryView.setCursor(result);
+                            } else {
+                                cursor.setAmount(cursor.getAmount() + result.getAmount());
                             }
-                            preCraftedItem.put(recipe.getNamespacedKey(), null);
-                            preCraftedItems.put(player.getUniqueId(), preCraftedItem);
+                            getPreCraftedItems(player.getUniqueId()).remove(recipe.getNamespacedKey());
                         }
                     }
                 }
             }
             remove(event.getWhoClicked().getUniqueId());
         }
+    }
+
+    private Map<NamespacedKey, CustomItem> getPreCraftedItems(UUID uuid) {
+        if (preCraftedItems.containsKey(uuid)) {
+            return preCraftedItems.get(uuid);
+        }
+        preCraftedItems.put(uuid, new HashMap<>());
+        return preCraftedItems.get(uuid);
     }
 
     public void put(UUID uuid, CraftingData craftingData) {

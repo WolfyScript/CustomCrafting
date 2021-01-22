@@ -166,7 +166,7 @@ public class FurnaceListener implements Listener {
                 event.setCancelled(true);
                 continue;
             }
-            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.getByString(((Keyed) recipe).getKey().toString()));
+            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.of(((Keyed) recipe).getKey().toString()));
             if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                 if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                     event.setCancelled(false);

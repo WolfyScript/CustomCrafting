@@ -64,7 +64,7 @@ public class EliteWorkbenchCondition extends Condition {
         JsonNode array = node.get("elite_workbenches");
         array.elements().forEachRemaining(element -> {
             if(element.isValueNode()){
-                addEliteWorkbenches(NamespacedKey.getByString(element.asText()));
+                addEliteWorkbenches(NamespacedKey.of(element.asText()));
             }
         });
     }

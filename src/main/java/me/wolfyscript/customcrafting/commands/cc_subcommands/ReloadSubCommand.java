@@ -2,23 +2,21 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
-import me.wolfyscript.customcrafting.handlers.InventoryHandler;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.RecipeHandler;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ReloadSubCommand extends AbstractSubCommand {
@@ -36,8 +34,9 @@ public class ReloadSubCommand extends AbstractSubCommand {
                 api.getChat().sendMessage(p, "&eReloading GUIs and Recipes!");
 
                 if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-                    InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
+                    InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
                     LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
+                    /*
                     invAPI.reset();
                     langAPI.unregisterLanguages();
                     try {
@@ -47,15 +46,10 @@ public class ReloadSubCommand extends AbstractSubCommand {
                         e.printStackTrace();
                     }
                     new InventoryHandler(customCrafting).init();
-
+                     */
                     //Reload Recipes
                     RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
-                    recipeHandler.getRecipes().forEach((namespacedKey, iCustomRecipe) -> {
-                        if (iCustomRecipe instanceof ICustomVanillaRecipe) {
-                            recipeHandler.unregisterVanillaRecipe(iCustomRecipe.getNamespacedKey());
-                            Bukkit.addRecipe(((ICustomVanillaRecipe<?>) iCustomRecipe).getVanillaRecipe());
-                        }
-                    });
+                    new HashMap<>(recipeHandler.getRecipes()).forEach((namespacedKey, iCustomRecipe) -> recipeHandler.injectRecipe(iCustomRecipe));
                     CustomCrafting.getApi().getChat().sendMessage(p, "§aReload Complete");
                     return true;
                 }

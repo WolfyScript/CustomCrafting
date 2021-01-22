@@ -14,7 +14,10 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.meta.MetaSettings;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.*;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.MythicMobsRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.OraxenRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -140,14 +143,6 @@ public class ItemCreator extends CCWindow {
         }));
         registerButton(new DummyButton<>("reference.oraxen", Material.DIAMOND, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
             hashMap.put("%item_key%", ((OraxenRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID());
-            return itemStack;
-        }));
-        registerButton(new DummyButton<>("reference.itemsadder", Material.GRASS_BLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%item_key%", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemName());
-            return itemStack;
-        }));
-        registerButton(new DummyButton<>("reference.mythicmobs", Material.WITHER_SKELETON_SKULL, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
-            hashMap.put("%item_key%", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemName());
             return itemStack;
         }));
 
@@ -730,10 +725,7 @@ public class ItemCreator extends CCWindow {
                 return true;
             })));
         }
-
-        for (String meta : dummyMetaSettings.getMetas()) {
-            registerButton(new MetaIgnoreButton(meta));
-        }
+        Registry.META_PROVIDER.keySet().forEach(namespacedKey -> registerButton(new MetaIgnoreButton(namespacedKey)));
     }
 
     @Override
@@ -790,8 +782,6 @@ public class ItemCreator extends CCWindow {
                 event.setButton(5, "reference.wolfyutilites");
             } else if (customItem.getApiReference() instanceof OraxenRef) {
                 event.setButton(5, "reference.oraxen");
-            } else if (customItem.getApiReference() instanceof ItemsAdderRef) {
-                event.setButton(5, "reference.itemsadder");
             } else if (customItem.getApiReference() instanceof MythicMobsRef) {
                 event.setButton(5, "reference.mythicmobs");
             }
@@ -846,17 +836,17 @@ public class ItemCreator extends CCWindow {
                 case "display_name":
                     event.setButton(39, "display_name.set");
                     event.setButton(41, "display_name.remove");
-                    event.setButton(45, "meta_ignore.name");
+                    event.setButton(45, "meta_ignore.wolfyutilities.name");
                     break;
                 case "enchantments":
                     event.setButton(39, "enchantments.add");
                     event.setButton(41, "enchantments.remove");
-                    event.setButton(45, "meta_ignore.enchant");
+                    event.setButton(45, "meta_ignore.wolfyutilities.enchant");
                     break;
                 case "lore":
                     event.setButton(39, "lore.add");
                     event.setButton(41, "lore.remove");
-                    event.setButton(45, "meta_ignore.lore");
+                    event.setButton(45, "meta_ignore.wolfyutilities.lore");
                     break;
                 case "flags":
                     ((ToggleButton<CCCache>) getButton("flags.attributes")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES));
@@ -871,7 +861,7 @@ public class ItemCreator extends CCWindow {
                     event.setButton(43, "flags.placed_on");
                     event.setButton(47, "flags.potion_effects");
                     event.setButton(51, "flags.enchants");
-                    event.setButton(45, "meta_ignore.flags");
+                    event.setButton(45, "meta_ignore.wolfyutilities.flags");
                     break;
                 case "attribute":
                     event.setButton(36, "attribute.generic_max_health");
@@ -886,14 +876,14 @@ public class ItemCreator extends CCWindow {
                     event.setButton(48, "attribute.generic_luck");
                     event.setButton(49, "attribute.horse_jump_strength");
                     event.setButton(50, "attribute.zombie_spawn_reinforcements");
-                    event.setButton(45, "meta_ignore.attributes_modifiers");
+                    event.setButton(45, "meta_ignore.wolfyutilities.attributes_modifiers");
                     break;
                 case "player_head":
                     if (items.getItem() != null && item.getType().equals(Material.PLAYER_HEAD)) {
                         event.setButton(38, "player_head.texture.input");
                         event.setButton(39, "player_head.texture.apply");
                         event.setButton(41, "player_head.owner");
-                        event.setButton(45, "meta_ignore.playerHead");
+                        event.setButton(45, "meta_ignore.wolfyutilities.playerHead");
                     }
                     break;
                 case "potion":
@@ -901,18 +891,18 @@ public class ItemCreator extends CCWindow {
                         event.setButton(39, "potion.add");
                         event.setButton(40, "potion_beta.add");
                         event.setButton(41, "potion.remove");
-                        event.setButton(45, "meta_ignore.potion");
+                        event.setButton(45, "meta_ignore.wolfyutilities.potion");
                     }
                     break;
                 case "damage":
                     event.setButton(39, "damage.set");
                     event.setButton(41, "damage.reset");
-                    event.setButton(45, "meta_ignore.damage");
+                    event.setButton(45, "meta_ignore.wolfyutilities.damage");
                     break;
                 case "repair_cost":
                     event.setButton(39, "repair_cost.set");
                     event.setButton(41, "repair_cost.reset");
-                    event.setButton(45, "meta_ignore.repairCost");
+                    event.setButton(45, "meta_ignore.wolfyutilities.repairCost");
                     break;
                 case "fuel":
                     event.setButton(39, "fuel.burn_time.set");
@@ -927,7 +917,7 @@ public class ItemCreator extends CCWindow {
                 case "custom_model_data":
                     event.setButton(39, "custom_model_data.set");
                     event.setButton(41, "custom_model_data.reset");
-                    event.setButton(45, "meta_ignore.customModelData");
+                    event.setButton(45, "meta_ignore.wolfyutilities.customModelData");
                     break;
                 case "consume":
                     ((ToggleButton<CCCache>) getButton("consume.consume_item")).setState(event.getGuiHandler(), customItem.isConsumed());
@@ -945,8 +935,8 @@ public class ItemCreator extends CCWindow {
                     event.setButton(40, "custom_durability.set_tag");
                     event.setButton(42, "custom_durability.set_durability");
                     event.setButton(49, "custom_durability.remove");
-                    event.setButton(45, "meta_ignore.custom_damage");
-                    event.setButton(53, "meta_ignore.custom_durability");
+                    event.setButton(45, "meta_ignore.wolfyutilities.custom_damage");
+                    event.setButton(53, "meta_ignore.wolfyutilities.custom_durability");
                     break;
                 case "localized_name":
                     event.setButton(39, "localized_name.set");

@@ -21,7 +21,7 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class CraftListener implements Listener {
 
@@ -46,22 +46,20 @@ public class CraftListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null || !(event.getClickedInventory() instanceof CraftingInventory)) return;
-        Player player = (Player) event.getWhoClicked();
+        if (!(event.getClickedInventory() instanceof CraftingInventory)) return;
         CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
-        ItemStack resultItem = inventory.getResult();
-
         if (event.getSlot() == 0) {
-            if (resultItem == null || (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem) && !event.isShiftClick())) {
+            ItemStack resultItem = inventory.getResult();
+            if (ItemUtils.isAirOrNull(resultItem) || (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem) && !event.isShiftClick())) {
                 event.setCancelled(true);
                 return;
             }
             if (recipeUtils.has(event.getWhoClicked().getUniqueId())) {
-                inventory.setResult(new ItemStack(Material.AIR));
-                ItemStack[] matrix = inventory.getMatrix().clone();
+                event.setCancelled(true);
+                ItemStack[] matrix = inventory.getMatrix();
                 recipeUtils.consumeRecipe(resultItem, matrix, event);
+                //Possible if there are some tick/timing base issues! inventory.setMatrix(new ItemStack[9]);
                 Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix));
-                player.updateInventory();
                 recipeUtils.remove(event.getWhoClicked().getUniqueId());
             }
         } else {
@@ -88,7 +86,7 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
             //Check for custom recipe that overrides the vanilla recipe
-            ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(NamespacedKey.getByBukkit(((Keyed) e.getRecipe()).getKey()));
+            ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(NamespacedKey.of(((Keyed) e.getRecipe()).getKey()));
             if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(new ItemStack(Material.AIR));
@@ -96,7 +94,7 @@ public class CraftListener implements Listener {
             }
             //Check for items that are not allowed in vanilla recipes.
             //If one is found, then cancel the recipe.
-            if (Arrays.stream(matrix).parallel().map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+            if (Stream.of(matrix).parallel().map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
                 e.getInventory().setResult(new ItemStack(Material.AIR));
             }
             //At this point the vanilla recipe is valid and can be crafted

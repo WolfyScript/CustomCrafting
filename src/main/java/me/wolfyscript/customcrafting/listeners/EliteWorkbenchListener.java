@@ -31,9 +31,7 @@ public class EliteWorkbenchListener implements Listener {
                 if (customItem != null) {
                     EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
                     if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {
-                        event.setUseItemInHand(Event.Result.DENY);
-                        event.setUseInteractedBlock(Event.Result.DENY);
-                        event.getPlayer().closeInventory();
+                        event.setCancelled(true);
                         ((CCCache) api.getInventoryAPI().getGuiHandler(event.getPlayer()).getCustomCache()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
                         api.getInventoryAPI().getGuiHandler(event.getPlayer()).openWindow(new NamespacedKey("crafting", "crafting_grid" + eliteWorkbench.getGridSize()));
                     }

@@ -15,9 +15,9 @@ public class CustomCraftEvent extends Event implements Cancellable {
     private List<CustomItem> result;
     private final Inventory inventory;
     private boolean cancelled;
-    private final CraftingRecipe craftingRecipe;
+    private final CraftingRecipe<?> craftingRecipe;
 
-    public CustomCraftEvent(CraftingRecipe craftingRecipe, Inventory inventory) {
+    public CustomCraftEvent(CraftingRecipe<?> craftingRecipe, Inventory inventory) {
         this.craftingRecipe = craftingRecipe;
         this.inventory = inventory;
         this.result = craftingRecipe.getResults();
@@ -36,7 +36,7 @@ public class CustomCraftEvent extends Event implements Cancellable {
         this.result = result;
     }
 
-    public CraftingRecipe getRecipe() {
+    public CraftingRecipe<?> getRecipe() {
         return craftingRecipe;
     }
 

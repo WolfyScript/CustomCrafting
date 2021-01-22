@@ -49,7 +49,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                             api.getChat().sendMessage(p, "$commands.give.invalid_amount$");
                         }
                     }
-                    CustomItem customItem = Registry.CUSTOM_ITEMS.get(NamespacedKey.getByString(args[1]));
+                    CustomItem customItem = Registry.CUSTOM_ITEMS.get(NamespacedKey.of(args[1]));
                     if (customItem != null) {
                         ItemStack itemStack = customItem.create(amount);
                         if (InventoryUtils.hasInventorySpace(target, itemStack)) {
@@ -74,7 +74,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                     api.getChat().sendConsoleMessage("$commands.give.player_offline$", args[0]);
                     return true;
                 }
-                NamespacedKey namespacekey = NamespacedKey.getByString(args[1]);
+                NamespacedKey namespacekey = NamespacedKey.of(args[1]);
                 int amount = 1;
                 if (args.length > 2) {
                     try {
