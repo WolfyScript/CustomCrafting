@@ -36,7 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class RecipeHandler {
+public class DataHandler {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
@@ -52,7 +52,7 @@ public class RecipeHandler {
     private final Chat chat;
     private final ObjectMapper objectMapper;
 
-    public RecipeHandler(CustomCrafting customCrafting) {
+    public DataHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
         this.chat = api.getChat();
         this.mainConfig = customCrafting.getConfigHandler().getConfig();
@@ -61,19 +61,7 @@ public class RecipeHandler {
         this.objectMapper = JacksonUtil.getObjectMapper();
     }
 
-    private void loadDataBase() {
-        DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
-        chat.sendConsoleMessage("- - - - [Database Storage] - - - -");
-        try {
-            dataBaseHandler.loadItems();
-            chat.sendConsoleMessage("");
-            dataBaseHandler.loadRecipes(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void load() throws IOException {
+    public void load(boolean update) throws IOException {
         chat.sendConsoleMessage("$msg.startup.recipes.title$");
         if (CustomCrafting.hasDataBaseHandler()) {
             if (mainConfig.isLocalStorageEnabled()) {
@@ -89,6 +77,31 @@ public class RecipeHandler {
             }
         } else {
             loadConfigs();
+        }
+        if (update) {
+            int lastBukkitVersion = mainConfig.getInt("data.bukkit_version");
+            int lastVersion = mainConfig.getInt("data.version");
+            if (lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION) {
+                chat.sendConsoleMessage("[ Converting Items & Recipes to the latest Bukkit and Config format ]");
+                saveData();
+                chat.sendConsoleMessage("Loading Items & Recipes from updated configs...");
+                load(false);
+                chat.sendConsoleMessage("[ Conversion of Item & Recipes complete! ]");
+                mainConfig.set("data.version", CustomCrafting.CONFIG_VERSION);
+                mainConfig.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
+            }
+        }
+    }
+
+    private void loadDataBase() {
+        DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
+        chat.sendConsoleMessage("- - - - [Database Storage] - - - -");
+        try {
+            dataBaseHandler.loadItems();
+            chat.sendConsoleMessage("");
+            dataBaseHandler.loadRecipes(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -115,13 +128,13 @@ public class RecipeHandler {
                 }
             }
             chat.sendConsoleMessage("");
-            //chat.sendConsoleMessage("$msg.startup.recipes.particles$");
-            /*
-            for (String dir : dirs) {
-                chat.sendConsoleMessage("- " + dir);
-                loadConfig(dir, "particles");
-            }*/
         }
+    }
+
+    public void saveData() {
+        chat.sendConsoleMessage("Saving Items & Recipes");
+        Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> customCrafting.saveItem(entry.getKey(), entry.getValue()));
+        customCrafting.getRecipeHandler().getRecipes().values().forEach(ICustomRecipe::save);
     }
 
     private File[] getFiles(String subFolder, String type) {
@@ -140,7 +153,7 @@ public class RecipeHandler {
     private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?>> type) throws IOException {
         for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
             String name = file.getName();
-            registerRecipe(type.getInstance(new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf("."))), objectMapper.readTree(file)));
+            injectRecipe(type.getInstance(new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf("."))), objectMapper.readTree(file)));
         }
     }
 
@@ -165,7 +178,7 @@ public class RecipeHandler {
         registerRecipe(recipe);
     }
 
-    public void unregisterVanillaRecipe(NamespacedKey namespacedKey) {
+    public void unregisterBukkitRecipe(NamespacedKey namespacedKey) {
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
             Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
         } else {
@@ -192,7 +205,7 @@ public class RecipeHandler {
     public void unregisterRecipe(ICustomRecipe<?> customRecipe) {
         customRecipes.remove(customRecipe.getNamespacedKey());
         if (customRecipe instanceof ICustomVanillaRecipe) {
-            unregisterVanillaRecipe(customRecipe.getNamespacedKey());
+            unregisterBukkitRecipe(customRecipe.getNamespacedKey());
         }
     }
 

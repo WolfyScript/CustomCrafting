@@ -53,7 +53,7 @@ public class DataBaseHandler extends SQLDataBase {
         }
     }
 
-    public void loadRecipes(RecipeHandler recipeHandler) throws SQLException {
+    public void loadRecipes(DataHandler dataHandler) throws SQLException {
         chat.sendConsoleMessage("$msg.startup.recipes.recipes$");
         PreparedStatement recipesQuery = open().prepareStatement("SELECT * FROM customcrafting_recipes");
         ResultSet resultSet = recipesQuery.executeQuery();
@@ -64,10 +64,9 @@ public class DataBaseHandler extends SQLDataBase {
             String namespace = resultSet.getString("rNamespace");
             String key = resultSet.getString("rKey");
             NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
-            chat.sendConsoleMessage("> " + namespacedKey.toString());
             ICustomRecipe<?> recipe = getRecipe(namespacedKey);
             if (recipe != null) {
-                recipeHandler.registerRecipe(recipe);
+                dataHandler.injectRecipe(recipe);
             } else {
                 chat.sendConsoleMessage("Error loading recipe \"" + namespacedKey.toString() + "\". Couldn't find recipe in DataBase!");
             }
@@ -86,7 +85,6 @@ public class DataBaseHandler extends SQLDataBase {
             String key = resultSet.getString("rKey");
             String data = resultSet.getString("rData");
             if (namespace != null && key != null && data != null && !data.equals("{}")) {
-                chat.sendConsoleMessage("> " + namespace + ":" + key);
                 try {
                     Registry.CUSTOM_ITEMS.register(new NamespacedKey(namespace, key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                 } catch (JsonProcessingException e) {

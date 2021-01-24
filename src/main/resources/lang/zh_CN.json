@@ -167,7 +167,7 @@
           "name": "&3&l帮助",
           "lore": [
             "%wolfyutilities.help%",
-            "<empty>",
+            "",
             "&7[&a已启用&7] &e单击以关闭按钮说明."
           ],
           "help": []
@@ -176,7 +176,7 @@
           "name": "&3&l帮助",
           "lore": [
             "%wolfyutilities.help%",
-            "<empty>",
+            "",
             "&7[&c已禁用&7] &e单击以打开按钮说明."
           ],
           "help": []
@@ -2427,7 +2427,7 @@
     },
     "crafting": {
       "global_items": {
-        "knowledge_book": {
+        "recipe_book": {
           "name": "&e知识之书",
           "lore": [
           ]

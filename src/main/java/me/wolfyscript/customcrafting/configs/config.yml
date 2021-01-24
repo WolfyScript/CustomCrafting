@@ -66,6 +66,8 @@ recipes:
   disabled_recipes: [ ]   # The vanilla or custom recipes that are blocked from crafting.
 
 data:
+  bukkit_version: 0              # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up to date.
+  version: 0                     # Do not change this number! It is used to update configs of recipes and items to new formats!
   auto_save:
     interval: 30          # Interval in minutes to save data.
     # Currently used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.

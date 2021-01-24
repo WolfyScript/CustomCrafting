@@ -76,9 +76,9 @@
       "placeholder": "Registering PlaceHolder",
       "recipes": {
         "title": "Loading Recipes & Items",
-        "items": "---{ Items }",
-        "recipes": "---{ Recipes }",
-        "particles": "---{ Particles }",
+        "items": "Loading Items",
+        "recipes": "Loading Recipes",
+        "particles": "Loading Particles",
         "duplicate": "Ignoring duplicate recipe %namespace%:%key% with the config file %key%.%file_type%!",
         "incompatible": "Unsupported file type! Ignoring %namespace%:%key% with the config file %key%.%file_type%! "
       }
@@ -110,15 +110,20 @@
   },
   "commands": {
     "help": [
+      "&e/cc &7- &eOpens the GUI",
       "",
-      "            &bMain command: &e/cc",
+      "&e/cc &7<option>",
       "",
-      "                &3/cc &6<label>",
-      "  &6help     &7-  &3Displays list of commands",
-      "  &6clear    &7-  &3Resets Player cache",
-      "  &6info      &7-  &3Displays info about this plugin",
-      "  &6studio    &7-  &3Opens the GUI Studio",
-      "  &6give     &7-  &3Gives custom items to players"
+      "&7Options:",
+      "&einfo       &7- &eDisplays info about this plugin",
+      "&egive       &7- &eGives Custom Items to players",
+      "&edatabase   &7- &eExport specific data to database",
+      "&edarkmode   &7- &eToggles the darkmode/lightmode of the GUI",
+      "&edebug      &7- &eToggles the debug mode. Might spam a lot of messages!",
+      "&elockdown   &7- &eToggles LockDown mode. If enabled no custom recipe can be crafted!",
+      "&ehelp       &7- &eDisplays list of commands",
+      "",
+      "For more info visit the Wiki:"
     ],
     "info": "&3type &6\"/cc help\" &3for help!",
     "lockdown": {
@@ -168,7 +173,7 @@
           "name": "&3&lHelp",
           "lore": [
             "%wolfyutilities.help%",
-            "<empty>",
+            "",
             "&7[&aEnabled&7] &eClick to disable Button descriptions."
           ],
           "help": []
@@ -177,7 +182,7 @@
           "name": "&3&lHelp",
           "lore": [
             "%wolfyutilities.help%",
-            "<empty>",
+            "",
             "&7[&cDisabled&7] &eClick to view Button descriptions."
           ],
           "help": []
@@ -2891,7 +2896,7 @@
     },
     "crafting": {
       "global_items": {
-        "knowledge_book": {
+        "recipe_book": {
           "name": "&eRecipe Book",
           "lore": [
           ]

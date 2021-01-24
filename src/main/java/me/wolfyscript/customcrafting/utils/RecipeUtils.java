@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomCraftEvent;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -38,14 +38,14 @@ public class RecipeUtils {
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             return null;
         }
-        RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
-        List<List<ItemStack>> ingredients = recipeHandler.getIngredients(matrix);
-        CustomItem customItem = recipeHandler.getSimilarRecipesStream(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, inventory, recipeHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
+        DataHandler dataHandler = customCrafting.getRecipeHandler();
+        List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
+        CustomItem customItem = dataHandler.getSimilarRecipesStream(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, inventory, dataHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
         return customItem == null ? null : customItem.create();
     }
 
-    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Inventory inventory, RecipeHandler recipeHandler, boolean isRepair) {
-        if (recipeHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString())) {
+    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Inventory inventory, DataHandler dataHandler, boolean isRepair) {
+        if (dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString())) {
             return null; //No longer call Event if recipe is disabled!
         }
         CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, player.getTargetBlock(null, 5), player.getOpenInventory())) ? recipe.check(matrix) : null;

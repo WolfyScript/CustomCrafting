@@ -4,6 +4,10 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.chat.Chat;
+import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.chat.ClickEvent;
+import me.wolfyscript.utilities.api.chat.HoverEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +41,14 @@ public class HelpSubCommand extends AbstractSubCommand {
 
     public void printHelp(Player p) {
         WolfyUtilities api = CustomCrafting.getApi();
-        api.getChat().sendMessage(p, "~*~*~*~*&8[&3&lCustomCrafting&8]&7~*~*~*~*~");
+        Chat chat = api.getChat();
+        chat.sendMessage(p, "———————— &3&lCustomCrafting &7————————");
+        chat.sendMessage(p, "");
         List<String> help = api.getLanguageAPI().replaceKey("commands.help");
         for (String line : help) {
-            api.getChat().sendMessage(p, line);
+            chat.sendMessage(p, line);
         }
-        api.getChat().sendMessage(p, "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~");
+        chat.sendActionMessage(p, new ClickData("&ehttps://github.com/WolfyScript/CustomCrafting-Wiki/wiki", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "Go to Wiki"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/WolfyScript/CustomCrafting-Wiki/wiki")));
+        chat.sendMessage(p, "—————————————————————————");
     }
 }

@@ -44,15 +44,7 @@ public class Cauldrons {
         this.customCrafting = customCrafting;
         this.api = WolfyUtilities.get(customCrafting);
         load();
-        autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), () -> {
-            if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
-                api.getChat().sendConsoleMessage("[$msg.auto_save.start$]");
-                save();
-                api.getChat().sendConsoleMessage("[$msg.auto_save.complete$]");
-            } else {
-                save();
-            }
-        }, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
+        autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), this::save, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
 
         AtomicInteger particleTicker = new AtomicInteger(0);
 
@@ -194,7 +186,9 @@ public class Cauldrons {
 
     public void save() {
         try {
-            api.getChat().sendConsoleMessage("Saving Cauldrons");
+            if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
+                api.getChat().sendConsoleMessage("Saving Cauldrons");
+            }
             this.isBeingSaved = true;
             FileOutputStream fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
             BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);

@@ -23,6 +23,7 @@ public class Patreon {
         addPatron(new Patron("Junye Zhou", Tier.DIAMOND));
         addPatron(new Patron("Vincent Deniau", "a307c2b3-463a-4db6-8a6a-07419909af72", Tier.WOLFRAM));
         addPatron(new Patron("gizmonster", "e502d121-de9d-4f5d-b7e5-0da747c4e2e8", Tier.WOLFRAM));
+        addPatron(new Patron("Thomas Texier", "5780bf01-16df-4f58-a768-1a78445f3d87", Tier.ELITE));
         addPatron(new Patron("John", Tier.WOLFRAM));
         addPatron(new Patron("HittmanA", Tier.WOLFRAM));
         addPatron(new Patron("CypherPhyre", Tier.WOLFRAM));
@@ -31,6 +32,7 @@ public class Patreon {
         addPatron(new Patron("The Hound Brothers", Tier.WOLFRAM));
         addPatron(new Patron("Jason Asada", Tier.WOLFRAM));
         addPatron(new Patron("Inec Ackerr", Tier.WOLFRAM));
+        addPatron(new Patron("伟铎 谢", Tier.WOLFRAM));
         addPatron(new Patron("ValentineDesigns"));
         addPatron(new Patron("Gleaks mania"));
 

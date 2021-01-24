@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -88,7 +88,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
                 if (CustomCrafting.hasDataBaseHandler()) {
                     CustomCrafting.getDataBaseHandler().updateRecipe(this);
                 } else {
-                    File file = new File(RecipeHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
+                    File file = new File(DataHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
                     file.getParentFile().mkdirs();
                     if (file.exists() || file.createNewFile()) {
                         JacksonUtil.getObjectWriter(CustomCrafting.getInst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, this);
@@ -122,7 +122,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
                 player.sendMessage("§aRecipe deleted!");
                 return true;
             } else {
-                File file = new File(RecipeHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
+                File file = new File(DataHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
                 System.gc();
                 if (file.delete()) {
                     if (player != null) getAPI().getChat().sendMessage(player, "&aRecipe deleted!");

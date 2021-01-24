@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -30,7 +30,6 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         this.customCrafting = customCrafting;
     }
 
-
     @Override
     public void init(GuiWindow guiWindow) {
     }
@@ -52,10 +51,10 @@ public class RecipeBookContainerButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
-        RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
+        DataHandler dataHandler = customCrafting.getRecipeHandler();
         KnowledgeBook book = cache.getKnowledgeBook();
         CustomItem customItem = getRecipeItem(guiHandler);
-        List<ICustomRecipe<?>> recipes = recipeHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
+        List<ICustomRecipe<?>> recipes = dataHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
         recipes.remove(book.getCurrentRecipe());
         if (!recipes.isEmpty()) {
             book.setSubFolder(1);

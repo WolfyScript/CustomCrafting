@@ -2,12 +2,9 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.command.CommandSender;
@@ -15,8 +12,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ReloadSubCommand extends AbstractSubCommand {
@@ -31,26 +28,17 @@ public class ReloadSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-                api.getChat().sendMessage(p, "&eReloading GUIs and Recipes!");
-
+                api.getChat().sendMessage(p, "&eReloading Items and Recipes!");
                 if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-                    InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
-                    LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
-                    /*
-                    invAPI.reset();
-                    langAPI.unregisterLanguages();
+                    //Reload Recipes
+                    DataHandler dataHandler = customCrafting.getRecipeHandler();
+                    dataHandler.saveData();
                     try {
-                        customCrafting.getConfigHandler().save();
-                        customCrafting.getConfigHandler().loadLang();
+                        dataHandler.load(false);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    new InventoryHandler(customCrafting).init();
-                     */
-                    //Reload Recipes
-                    RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
-                    new HashMap<>(recipeHandler.getRecipes()).forEach((namespacedKey, iCustomRecipe) -> recipeHandler.injectRecipe(iCustomRecipe));
-                    CustomCrafting.getApi().getChat().sendMessage(p, "§aReload Complete");
+                    api.getChat().sendMessage(p, "&aReload Complete");
                     return true;
                 }
                 api.getChat().sendMessage(p, "&cThis command is only available in 1.15+");

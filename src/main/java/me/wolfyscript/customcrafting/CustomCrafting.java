@@ -12,8 +12,8 @@ import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.InventoryHandler;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -59,11 +59,15 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey("customcrafting", "workbench");
     public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey("customcrafting", "elite_workbench");
 
+    public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
+    public static final int CONFIG_VERSION = 1;
+
     private static CustomCrafting instance;
     private static WolfyUtilities api;
     private static ConfigHandler configHandler;
-    private static RecipeHandler recipeHandler;
+    private static DataHandler dataHandler;
     private static DataBaseHandler dataBaseHandler = null;
+    private InventoryHandler inventoryHandler;
     private RecipeUtils recipeUtils;
     private Patreon patreon;
 
@@ -113,31 +117,33 @@ public class CustomCrafting extends JavaPlugin {
 
         api = WolfyUtilities.get(instance);
         Chat chat = api.getChat();
-        chat.setIN_GAME_PREFIX("§7[§6CC§7] ");
+        chat.setIN_GAME_PREFIX("§7[§3CC§7] ");
         chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
 
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
-
         if (patreon.isPatreon()) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         }
-
         patreon.initialize();
-
         System.out.println();
         System.out.println("Special thanks to my Patrons for supporting this project: ");
         List<Patron> patronList = patreon.getPatronList();
         int lengthColumn = 20;
-        for (int i = 0; i < patronList.size(); i += 2) {
-            StringBuilder sB = new StringBuilder();
-            String name = patronList.get(i).getName();
-            sB.append(name);
-            for (int j = 0; j < lengthColumn - name.length(); j++) {
-                sB.append(" ");
+        int size = patronList.size();
+        for (int i = 0; i <= size; i += 2) {
+            if (i < size) {
+                StringBuilder sB = new StringBuilder();
+                String name = patronList.get(i).getName();
+                sB.append("| ").append(name);
+                for (int j = 0; j < lengthColumn - name.length(); j++) {
+                    sB.append(" ");
+                }
+                if (i + 1 < patronList.size()) {
+                    sB.append("| ").append(patronList.get(i + 1).getName());
+                }
+                System.out.println("    " + sB.toString());
             }
-            System.out.println("    " + sB.append(patronList.get(i + 1).getName()).toString());
         }
-        System.out.println();
         System.out.println("------------------------------------------------------------------------");
 
         recipeUtils = new RecipeUtils(this);
@@ -148,13 +154,13 @@ public class CustomCrafting extends JavaPlugin {
         }
 
         try {
-            configHandler.load();
+            configHandler.loadDefaults();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        recipeHandler = new RecipeHandler(this);
+        dataHandler = new DataHandler(this);
 
-        InventoryHandler invHandler = new InventoryHandler(this);
+        inventoryHandler = new InventoryHandler(this);
 
         PluginManager pM = Bukkit.getPluginManager();
 
@@ -183,7 +189,7 @@ public class CustomCrafting extends JavaPlugin {
             e.printStackTrace();
         }
 
-        invHandler.init();
+        inventoryHandler.init();
 
         cauldrons = new Cauldrons(this);
         if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
@@ -231,7 +237,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public void loadRecipesAndItems() throws IOException {
-        recipeHandler.load();
+        dataHandler.load(true);
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
@@ -243,8 +249,12 @@ public class CustomCrafting extends JavaPlugin {
         return api;
     }
 
-    public RecipeHandler getRecipeHandler() {
-        return recipeHandler;
+    public DataHandler getRecipeHandler() {
+        return dataHandler;
+    }
+
+    public InventoryHandler getInventoryHandler() {
+        return inventoryHandler;
     }
 
     public RecipeUtils getRecipeUtils() {
@@ -314,7 +324,7 @@ public class CustomCrafting extends JavaPlugin {
             CustomCrafting.getDataBaseHandler().updateItem(namespacedKey, customItem);
         } else {
             try {
-                File file = new File(RecipeHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
+                File file = new File(DataHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
                 file.getParentFile().mkdirs();
                 if (file.exists() || file.createNewFile()) {
                     JacksonUtil.getObjectWriter(getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
@@ -323,7 +333,6 @@ public class CustomCrafting extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-        Registry.CUSTOM_ITEMS.remove(namespacedKey);
         Registry.CUSTOM_ITEMS.register(namespacedKey, customItem);
     }
 
@@ -338,7 +347,7 @@ public class CustomCrafting extends JavaPlugin {
             CustomCrafting.getDataBaseHandler().removeItem(namespacedKey);
             return true;
         } else {
-            File file = new File(RecipeHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
+            File file = new File(DataHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
             if (file.delete()) {
                 if (player != null) getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
                 return true;

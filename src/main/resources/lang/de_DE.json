@@ -20,10 +20,6 @@
     }
   },
   "msg": {
-    "auto_save": {
-      "start": "   Autospeichern   ",
-      "complete": " Autospeichern "
-    },
     "startup": {
       "outdated": "Deine Version ist veraltet! Eine neue Version ist verfügbar! Lade es hier herunter : https://www.spigotmc.org/resources/55883/",
       "update_check_fail": "Fehler beim überprüfen von Updates!",
@@ -59,15 +55,20 @@
   },
   "commands": {
     "help": [
+      "&e/cc &7- &eÖffnet das GUI",
       "",
-      "            &bHauptbefehl: &e/cc",
+      "&e/cc &7<option>",
       "",
-      "                &3/cc &6<label>",
-      "  &6help     &7-  &3zeigt die Liste von Befehlen",
-      "  &6clear    &7-  &3Setzt den Player Cache zurück!",
-      "  &6info      &7-  &3Zeigt infos über das plugin an",
-      "  &6studio    &7-  &3Öffnet das GUI Studio",
-      "  &6give     &7-  &3Gebe Spielern Custom Items"
+      "&7Options:",
+      "&einfo       &7- &eZeigt infos über das plugin an",
+      "&egive       &7- &eGibt Spielern Custom Items",
+      "&edatabase   &7- &eExportiere Recipes & Items zur Datenbank",
+      "&edarkmode   &7- &eSchaltet den darkmode/lightmode vom GUI um",
+      "&edebug      &7- &eSchaltet den Debug Modus um.",
+      "&elockdown   &7- &eSchaltet den LockDown Modus um. Blockt jedes Rezept wenn eingeschaltet!",
+      "&ehelp       &7- &eListet die Befehle auf",
+      "",
+      "Für mehr information besuche die Wiki:"
     ],
     "info": "&3gebe &6\"/cc help\" &3für hilfe ein!",
     "lockdown": {
@@ -117,7 +118,7 @@
           "name": "&3&lHilfe",
           "lore": [
             "%wolfyutilities.help%",
-            "<empty>",
+            "",
             "&7[&aAktiviert&7] &eKlick um Knopfbeschreibungen zu deaktivieren!"
           ],
           "help": []
@@ -126,7 +127,7 @@
           "name": "&3&lHilfe",
           "lore": [
             "%wolfyutilities.help%",
-            "<empty>",
+            "",
             "&7[&cDeaktiviert&7] &eKlick um Knopfbeschreibung zu aktivieren!"
           ],
           "help": []
@@ -2049,7 +2050,7 @@
     },
     "crafting": {
       "global_items": {
-        "knowledge_book": {
+        "recipe_book": {
           "name": "&eKnowledge Book",
           "lore": [
           ]

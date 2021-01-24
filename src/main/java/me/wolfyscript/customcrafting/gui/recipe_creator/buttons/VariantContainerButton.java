@@ -29,14 +29,13 @@ public class VariantContainerButton extends ItemInputButton<CCCache> {
             }
             return false;
         }, (cache, guiHandler, player, guiInventory, itemStack, i, event) -> {
-            VariantsData variantsData = cache.getVariantsData();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
-            variantsData.put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR));
+            cache.getVariantsData().put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR));
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            VariantsData variantsData = guiHandler.getCustomCache().getVariantsData();
-            return variantsData.getVariants() != null && variantsData.getVariants().size() > variantSlot ? variantsData.getVariants().get(variantSlot).getIDItem() : new ItemStack(Material.AIR);
+            VariantsData variantsData = cache.getVariantsData();
+            return variantsData.getVariants().size() > variantSlot ? variantsData.getVariants().get(variantSlot).getIDItem() : new ItemStack(Material.AIR);
         }));
     }
 }

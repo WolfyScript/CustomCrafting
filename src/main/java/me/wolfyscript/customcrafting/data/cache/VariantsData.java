@@ -25,13 +25,13 @@ public class VariantsData {
     }
 
     public void put(int variantSlot, CustomItem variant) {
-        if (getVariants() == null) {
+        if (variants == null) {
             setVariants(new ArrayList<>());
         }
-        if (getVariants().size() > variantSlot) {
-            getVariants().set(variantSlot, variant);
+        if (variants.size() > variantSlot) {
+            variants.set(variantSlot, variant);
         } else {
-            getVariants().add(variant);
+            variants.add(variant);
         }
     }
 

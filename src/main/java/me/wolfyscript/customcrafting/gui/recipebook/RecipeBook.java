@@ -9,7 +9,7 @@ import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
@@ -116,7 +116,7 @@ public class RecipeBook extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
+        DataHandler dataHandler = customCrafting.getRecipeHandler();
         Player player = event.getPlayer();
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         NamespacedKey grayBtnKey = new NamespacedKey("none", playerStore.isDarkMode() ? "glass_gray" : "glass_white");
@@ -130,14 +130,14 @@ public class RecipeBook extends CCWindow {
             event.setButton(i, grayBtnKey);
         }
         if (knowledgeBook.getSubFolder() == 0) {
-            if (recipeHandler.getCategories().getSortedMainCategories().size() > 1) {
+            if (dataHandler.getCategories().getSortedMainCategories().size() > 1) {
                 event.setButton(0, "back");
             }
             event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
 
             if (knowledgeBook.getRecipeItems().isEmpty()) {
                 List<CustomItem> recipeItems = new ArrayList<>();
-                recipeHandler.getAvailableRecipes(player).stream().filter(customRecipe -> {
+                dataHandler.getAvailableRecipes(player).stream().filter(customRecipe -> {
                     if (switchCategory != null) {
                         List<CustomItem> items;
                         if (customRecipe instanceof CustomAnvilRecipe) {

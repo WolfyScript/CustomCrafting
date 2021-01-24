@@ -1,4 +1,5 @@
 name: CustomCrafting
+authors: [ WolfyScript ]
 main: me.wolfyscript.customcrafting.CustomCrafting
 version: ${project.version}
 api-version: "1.14"

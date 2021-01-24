@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.handlers.RecipeHandler;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
@@ -74,7 +74,7 @@ public class CraftListener implements Listener {
     public void onPreCraft(PrepareItemCraftEvent e) {
         Player player = (Player) e.getView().getPlayer();
         try {
-            RecipeHandler recipeHandler = customCrafting.getRecipeHandler();
+            DataHandler dataHandler = customCrafting.getRecipeHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
             ItemStack result = recipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
@@ -86,16 +86,16 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
             //Check for custom recipe that overrides the vanilla recipe
-            ICraftingRecipe recipe = recipeHandler.getAdvancedCraftingRecipe(NamespacedKey.of(((Keyed) e.getRecipe()).getKey()));
-            if (recipeHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
+            ICraftingRecipe recipe = dataHandler.getAdvancedCraftingRecipe(NamespacedKey.of(((Keyed) e.getRecipe()).getKey()));
+            if (dataHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!
-                e.getInventory().setResult(new ItemStack(Material.AIR));
+                e.getInventory().setResult(ItemUtils.AIR);
                 return;
             }
             //Check for items that are not allowed in vanilla recipes.
             //If one is found, then cancel the recipe.
             if (Stream.of(matrix).parallel().map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
-                e.getInventory().setResult(new ItemStack(Material.AIR));
+                e.getInventory().setResult(ItemUtils.AIR);
             }
             //At this point the vanilla recipe is valid and can be crafted
             //player.updateInventory();

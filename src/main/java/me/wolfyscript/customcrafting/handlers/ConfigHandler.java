@@ -53,7 +53,6 @@ public class ConfigHandler {
         mainConfig.loadDefaults();
         configAPI.registerConfig(mainConfig);
         //
-
         try {
             loadLang();
         } catch (IOException e) {
@@ -62,7 +61,7 @@ public class ConfigHandler {
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
     }
 
-    public void load() throws IOException {
+    public void loadDefaults() throws IOException {
         ParticleAnimation enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 

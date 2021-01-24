@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -85,7 +84,7 @@ public class Settings extends CCWindow {
         registerButton(new ActionButton<>("language", new ButtonState<>("language", Material.BOOKSHELF, (cache, guiHandler, player, inventory, slot, event) -> {
             int index = availableLangs.indexOf(customCrafting.getConfigHandler().getConfig().getLanguage());
             int nextIndex = index;
-            if(event instanceof InventoryClickEvent){
+            if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).isLeftClick() && !((InventoryClickEvent) event).isShiftClick()) {
                     nextIndex = (index + 1 < availableLangs.size()) ? index + 1 : 0;
                 } else if (((InventoryClickEvent) event).isRightClick() && !((InventoryClickEvent) event).isShiftClick()) {
@@ -95,7 +94,6 @@ public class Settings extends CCWindow {
                         api.getChat().sendMessage(player, "&eReloading Inventories and Languages!");
                         InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
                         LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
-                        invAPI.reset();
                         langAPI.unregisterLanguages();
                         customCrafting.getConfigHandler().getConfig().save();
                         try {
@@ -103,8 +101,9 @@ public class Settings extends CCWindow {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        new InventoryHandler(customCrafting).init();
+                        invAPI.reset();
                         api.getChat().sendMessage(player, "&aReload complete! Reloaded GUIs and languages");
+                        guiHandler.close();
                         return true;
                     }
                     return true;
