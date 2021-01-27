@@ -50,4 +50,9 @@ public class CraftingWindow6 extends CraftingWindow {
         }
         event.setButton(43, "result_slot");
     }
+
+    @Override
+    public int getGridX() {
+        return 0;
+    }
 }

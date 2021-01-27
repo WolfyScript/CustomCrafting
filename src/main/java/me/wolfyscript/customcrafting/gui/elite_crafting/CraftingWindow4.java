@@ -44,9 +44,14 @@ public class CraftingWindow4 extends CraftingWindow {
         event.setButton(15, "crafting", "recipe_book");
         int slot;
         for (int i = 0; i < 16; i++) {
-            slot = 1 + i + (i / 4) * 5;
+            slot = getGridX() + i + (i / 4) * 5;
             event.setButton(slot, "crafting.slot_" + i);
         }
         event.setButton(25, "result_slot");
+    }
+
+    @Override
+    public int getGridX() {
+        return 1;
     }
 }

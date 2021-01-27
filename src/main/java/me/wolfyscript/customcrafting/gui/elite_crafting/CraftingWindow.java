@@ -35,6 +35,8 @@ public abstract class CraftingWindow extends CCWindow {
         event.setButton(getSize() - 1, PlayerUtil.getStore(event.getPlayer()).isDarkMode() ? "texture_dark" : "texture_light");
     }
 
+    public abstract int getGridX();
+
     @Override
     public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
         Player player = guiHandler.getPlayer();

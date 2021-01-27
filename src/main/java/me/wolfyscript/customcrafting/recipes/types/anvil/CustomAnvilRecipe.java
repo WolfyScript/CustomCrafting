@@ -259,6 +259,11 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     }
 
     @Override
+    public List<CustomItem> getRecipeBookItems() {
+        return getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? getResults() : hasInputLeft() ? getInputLeft() : getInputRight();
+    }
+
+    @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         List<CustomItem> inputLeft = getInputLeft();
         List<CustomItem> inputRight = getInputRight();
@@ -275,7 +280,6 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(0, "back");
         event.setButton(10, new NamespacedKey("recipe_book", "ingredient.container_10"));
         event.setButton(13, new NamespacedKey("recipe_book", "ingredient.container_13"));
         NamespacedKey glass = new NamespacedKey("none", "glass_green");

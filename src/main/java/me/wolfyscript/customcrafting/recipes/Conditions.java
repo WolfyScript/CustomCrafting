@@ -46,6 +46,10 @@ public class Conditions extends HashMap<String, Condition> {
         return true;
     }
 
+    public EliteWorkbenchCondition getEliteCraftingTableCondition() {
+        return (EliteWorkbenchCondition) get("elite_crafting_table");
+    }
+
     public Condition getByID(String id) {
         return get(id);
     }

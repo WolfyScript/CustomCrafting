@@ -134,7 +134,6 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         KnowledgeBook book = event.getGuiHandler().getCustomCache().getKnowledgeBook();
-        event.setButton(0, "back");
         List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;

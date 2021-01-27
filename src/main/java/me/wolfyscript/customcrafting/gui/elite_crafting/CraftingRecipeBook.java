@@ -12,7 +12,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
@@ -99,8 +98,8 @@ public class CraftingRecipeBook extends CCWindow {
                 Iterator<ICustomRecipe<?>> iterator = recipes.iterator();
                 while (iterator.hasNext()) {
                     EliteCraftingRecipe recipe = (EliteCraftingRecipe) iterator.next();
-                    if (!recipe.getConditions().getByID("elite_workbench").getOption().equals(Conditions.Option.IGNORE)) {
-                        if (!((EliteWorkbenchCondition) recipe.getConditions().getByID("elite_workbench")).getEliteWorkbenches().contains(eliteWorkbenchData.getEliteWorkbenchData().getNamespacedKey())) {
+                    if (!recipe.getConditions().getEliteCraftingTableCondition().getOption().equals(Conditions.Option.IGNORE)) {
+                        if (!recipe.getConditions().getEliteCraftingTableCondition().getEliteWorkbenches().contains(eliteWorkbenchData.getEliteWorkbenchData().getNamespacedKey())) {
                             iterator.remove();
                             continue;
                         }

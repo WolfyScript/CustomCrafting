@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -26,29 +25,29 @@ public class EliteWorkbenchConditionButton extends ActionButton<CCCache> {
             if(event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
-                    conditions.getByID("elite_workbench").toggleOption();
+                    conditions.getEliteCraftingTableCondition().toggleOption();
                     recipeConfig.setConditions(conditions);
                 } else if (!((InventoryClickEvent) event).isShiftClick()) {
                     //CONFIGURE ELITE WORKBENCHES
                     window.openChat("elite_workbench", guiHandler, (guiHandler1, player1, s, args) -> {
                         if (args.length > 1) {
                             CustomItem customItem = Registry.CUSTOM_ITEMS.get(new NamespacedKey(args[0], args[1]));
-                            if (customItem == null || !(customItem.getApiReference() instanceof WolfyUtilitiesRef)) {
+                            if (customItem == null) {
                                 window.sendMessage(player1, "error");
                                 return true;
                             }
-                            NamespacedKey namespacedKey = ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey();
-                            EliteWorkbenchData data = (EliteWorkbenchData) customItem.getCustomData(new NamespacedKey("customcrafting","elite_workbench"));
+                            NamespacedKey namespacedKey = customItem.getNamespacedKey();
+                            EliteWorkbenchData data = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
                             if (!data.isEnabled()) {
                                 window.sendMessage(player1, "not_elite_workbench");
                                 return true;
                             }
-                            EliteWorkbenchCondition condition = (EliteWorkbenchCondition) conditions.getByID("elite_workbench");
+                            EliteWorkbenchCondition condition = conditions.getEliteCraftingTableCondition();
                             if (condition.getEliteWorkbenches().contains(namespacedKey)) {
                                 window.sendMessage(player1, "already_existing");
                                 return true;
                             }
-                            ((EliteWorkbenchCondition) conditions.getByID("elite_workbench")).addEliteWorkbenches(namespacedKey);
+                            condition.addEliteWorkbenches(namespacedKey);
                             recipeConfig.setConditions(conditions);
                             return false;
                         }
@@ -56,8 +55,8 @@ public class EliteWorkbenchConditionButton extends ActionButton<CCCache> {
                         return true;
                     });
                 } else {
-                    if (((EliteWorkbenchCondition) conditions.getByID("elite_workbench")).getEliteWorkbenches().size() > 0) {
-                        ((EliteWorkbenchCondition) conditions.getByID("elite_workbench")).getEliteWorkbenches().remove(((EliteWorkbenchCondition) conditions.getByID("elite_workbench")).getEliteWorkbenches().size() - 1);
+                    if (conditions.getEliteCraftingTableCondition().getEliteWorkbenches().size() > 0) {
+                        conditions.getEliteCraftingTableCondition().getEliteWorkbenches().remove(conditions.getEliteCraftingTableCondition().getEliteWorkbenches().size() - 1);
                         recipeConfig.setConditions(conditions);
                     }
                     return false;
@@ -65,7 +64,7 @@ public class EliteWorkbenchConditionButton extends ActionButton<CCCache> {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
-            EliteWorkbenchCondition condition = (EliteWorkbenchCondition) guiHandler.getCustomCache().getRecipe().getConditions().getByID("elite_workbench");
+            EliteWorkbenchCondition condition = guiHandler.getCustomCache().getRecipe().getConditions().getEliteCraftingTableCondition();
             hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getEliteWorkbenches().size()) {

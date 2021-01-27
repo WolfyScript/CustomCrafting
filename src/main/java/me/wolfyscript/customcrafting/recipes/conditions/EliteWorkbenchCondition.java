@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -23,7 +24,7 @@ public class EliteWorkbenchCondition extends Condition {
     private final List<NamespacedKey> eliteWorkbenches;
 
     public EliteWorkbenchCondition() {
-        super("elite_workbench");
+        super("elite_crafting_table");
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
         this.eliteWorkbenches = new ArrayList<>();
@@ -40,7 +41,7 @@ public class EliteWorkbenchCondition extends Condition {
                 CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(location);
                 if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef) {
                     if (eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey())) {
-                        EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData(new NamespacedKey("customcrafting","elite_workbench"));
+                        EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
                         return eliteWorkbenchData.isEnabled();
                     }
                 }
@@ -52,7 +53,7 @@ public class EliteWorkbenchCondition extends Condition {
 
     @Override
     public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        gen.writeArrayFieldStart("elite_workbenches");
+        gen.writeArrayFieldStart("elite_crafting_tables");
         for (NamespacedKey s : eliteWorkbenches) {
             gen.writeString(s.toString());
         }
@@ -61,7 +62,7 @@ public class EliteWorkbenchCondition extends Condition {
 
     @Override
     public void readFromJson(JsonNode node) {
-        JsonNode array = node.get("elite_workbenches");
+        JsonNode array = node.has("elite_crafting_tables") ? node.get("elite_crafting_tables") : node.get("elite_workbenches");
         array.elements().forEachRemaining(element -> {
             if(element.isValueNode()){
                 addEliteWorkbenches(NamespacedKey.of(element.asText()));
