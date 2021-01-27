@@ -2712,7 +2712,8 @@
         "back_to_list": {
           "name": "&7&lReturn",
           "lore": [
-            "&7» &eReturn to Recipe List"
+            "&7Left Click &l»&r &eReturn to previous Recipe",
+            "&7Right Click &l»&r &eReturn to Recipe List"
           ]
         }
       },

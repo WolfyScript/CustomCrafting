@@ -17,6 +17,7 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -31,6 +32,7 @@ import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.CookingRecipe;
 
 import java.util.ArrayList;
@@ -57,13 +59,30 @@ public class RecipeBookCluster extends CCCluster {
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
         }));
-        registerButton(new ActionButton<>("back_to_list", Material.BARRIER, (cache, guiHandler, player, inventory, slot, inventoryClickEvent) -> {
-            KnowledgeBook book = cache.getKnowledgeBook();
-            book.stopTimerTask();
-            IngredientContainerButton.resetButtons(guiHandler);
-            book.setResearchItems(new ArrayList<>());
-            book.setSubFolderRecipes(new ArrayList<>());
-            book.setSubFolder(0);
+        registerButton(new ActionButton<>("back_to_list", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+            if (event instanceof InventoryClickEvent) {
+                KnowledgeBook book = cache.getKnowledgeBook();
+                book.stopTimerTask();
+                IngredientContainerButton.resetButtons(guiHandler);
+                if (((InventoryClickEvent) event).isLeftClick()) {
+                    book.getResearchItems().remove(book.getSubFolder() - 1);
+                    book.setSubFolder(book.getSubFolder() - 1);
+                    if (book.getSubFolder() > 0) {
+                        CustomItem item = book.getResearchItem();
+                        book.setSubFolderRecipes(customCrafting.getRecipeHandler().getRecipes(item));
+                        if (book.getSubFolderRecipes().size() > 0) {
+                            book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
+                        }
+                        return true;
+                    } else {
+                        book.setSubFolderRecipes(new ArrayList<>());
+                    }
+                } else {
+                    book.setResearchItems(new ArrayList<>());
+                    book.setSubFolderRecipes(new ArrayList<>());
+                    book.setSubFolder(0);
+                }
+            }
             return true;
         }));
 

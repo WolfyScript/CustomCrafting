@@ -310,7 +310,7 @@ public class DataHandler {
      * @return
      */
     public List<ICustomRecipe<?>> getAvailableRecipes(CustomItem result, Player player) {
-        return getAvailableRecipes(player).parallelStream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
+        return getAvailableRecipesBySimilarResult(result.create(), player);
     }
 
     /**
@@ -321,7 +321,7 @@ public class DataHandler {
      * @return
      */
     public List<ICustomRecipe<?>> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
-        return getAvailableRecipes(player).parallelStream().filter(recipe -> recipe.getResults().stream().anyMatch(customItem -> customItem.create().isSimilar(result))).collect(Collectors.toList());
+        return getAvailableRecipes(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
     }
 
     /**

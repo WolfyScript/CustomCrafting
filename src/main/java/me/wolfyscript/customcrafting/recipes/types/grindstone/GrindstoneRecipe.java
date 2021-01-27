@@ -182,7 +182,6 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(0, "back");
         NamespacedKey glass = new NamespacedKey("none", "glass_green");
         event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
         event.setButton(12, glass);

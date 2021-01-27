@@ -120,7 +120,6 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(0, "back");
         //TODO STONECUTTER
         NamespacedKey glass = new NamespacedKey("none", "glass_green");
         event.setButton(20, new NamespacedKey("recipe_book", "ingredient.container_20"));

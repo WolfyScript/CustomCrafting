@@ -17,20 +17,22 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNod
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.inventory.PotionUtils;
 import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
+
+    private static final CustomItem placeHolderPotion = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!"));
 
     List<CustomItem> allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
     private List<CustomItem> ingredients; //The top ingredient of the recipe. Always required.
@@ -329,23 +331,87 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
     }
 
     @Override
+    public boolean findResultItem(ItemStack result) {
+        if (getResults().isEmpty()) {
+            if (getAllowedItems().isEmpty()) {
+                return result.getType().equals(Material.POTION);
+            }
+            return getAllowedItems().stream().anyMatch(customItem -> customItem.create().isSimilar(result));
+        }
+        return super.findResultItem(result);
+    }
+
+    @Override
+    public List<CustomItem> getRecipeBookItems() {
+        if (getResults().isEmpty()) {
+            if (getAllowedItems().isEmpty()) {
+                return Collections.singletonList(placeHolderPotion);
+            }
+            return getIngredients();
+        }
+        return getResults();
+    }
+
+    @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getResults());
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_3")).setVariants(guiHandler, getIngredients());
         if (!getAllowedItems().isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, getAllowedItems());
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_0")).setVariants(guiHandler, getAllowedItems());
+        } else {
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_0")).setVariants(guiHandler, Collections.singletonList(placeHolderPotion));
+        }
+        if (!getResults().isEmpty()) {
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_1")).setVariants(guiHandler, getResults());
+        } else {
+            CustomItem modifications = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
+            modifications.addLoreLine("");
+            if (resetEffects) {
+                modifications.addLoreLine("&4All effects will be removed!");
+            } else {
+                if (durationChange != 0 || amplifierChange != 0) {
+                    modifications.addLoreLine(ChatColor.convert("&eOverall Modifications:"));
+                    if (durationChange != 0) {
+                        modifications.addLoreLine(ChatColor.convert("&7Duration: " + (durationChange > 0 ? "+ " : " ") + durationChange));
+                    }
+                    if (amplifierChange != 0) {
+                        modifications.addLoreLine(ChatColor.convert("&7Amplifier: " + (amplifierChange > 0 ? "+ " : " ") + amplifierChange));
+                    }
+                    modifications.addLoreLine("");
+                }
+                if (!effectUpgrades.isEmpty()) {
+                    modifications.addLoreLine(ChatColor.convert("&eEffect Modifications:"));
+                    for (Map.Entry<PotionEffectType, Pair<Integer, Integer>> entry : effectUpgrades.entrySet()) {
+                        modifications.addLoreLine(PotionUtils.getPotionEffectLore(entry.getValue().getKey(), entry.getValue().getValue(), entry.getKey()));
+                    }
+                    modifications.addLoreLine("");
+                }
+                if (!effectAdditions.isEmpty()) {
+                    modifications.addLoreLine(ChatColor.convert("&eEffect Additions:"));
+                    for (Map.Entry<PotionEffect, Boolean> entry : effectAdditions.entrySet()) {
+                        PotionEffect effect = entry.getKey();
+                        modifications.addLoreLine(PotionUtils.getPotionEffectLore(effect.getAmplifier(), effect.getDuration(), effect.getType()));
+                    }
+                    modifications.addLoreLine("");
+                }
+                if (!effectRemovals.isEmpty()) {
+                    modifications.addLoreLine(ChatColor.convert("&4Removed:"));
+                    for (PotionEffectType type : effectRemovals) {
+                        modifications.addLoreLine(ChatColor.convert("&9" + PotionUtils.getPotionName(type)));
+                    }
+                }
+            }
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_1")).setVariants(guiHandler, Collections.singletonList(modifications));
         }
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         //TODO MENU
-        event.setButton(0, "back");
-        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
+        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_3"));
         event.setButton(20, new NamespacedKey("recipe_book", "brewing.icon"));
 
-        if (!InventoryUtils.isCustomItemsListEmpty(this.getAllowedItems())) {
-            event.setButton(29, new NamespacedKey("recipe_book", "ingredient.container_29"));
-        }
+        event.setButton(29, new NamespacedKey("recipe_book", "ingredient.container_0"));
+        event.setButton(32, new NamespacedKey("recipe_book", "ingredient.container_1"));
 
 
     }

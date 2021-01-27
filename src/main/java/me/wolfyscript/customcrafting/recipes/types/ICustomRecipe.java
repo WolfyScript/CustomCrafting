@@ -20,6 +20,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -42,16 +43,6 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
     String getGroup();
 
     void setGroup(String group);
-
-    @Deprecated
-    default CustomItem getCustomResult() {
-        return getResult();
-    }
-
-    @Deprecated
-    default List<CustomItem> getCustomResults(){
-        return getResults();
-    }
 
     @Nullable
     default CustomItem getResult() {
@@ -148,6 +139,14 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
     C clone();
 
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
+
+    default boolean findResultItem(ItemStack result) {
+        return getResults().parallelStream().anyMatch(customItem -> customItem.create().isSimilar(result));
+    }
+
+    default List<CustomItem> getRecipeBookItems() {
+        return getResults();
+    }
 
     void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event);
 

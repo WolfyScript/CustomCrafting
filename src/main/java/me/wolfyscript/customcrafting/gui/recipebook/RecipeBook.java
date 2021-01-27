@@ -12,7 +12,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerB
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -28,6 +27,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class RecipeBook extends CCWindow {
 
@@ -55,27 +56,12 @@ public class RecipeBook extends CCWindow {
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
-            if (book.getSubFolder() == 0) {
-                book.setRecipeItems(new ArrayList<>());
-                guiHandler.openPreviousWindow();
-            } else {
-                book.getResearchItems().remove(book.getSubFolder() - 1);
-                book.setSubFolder(book.getSubFolder() - 1);
-                if (book.getSubFolder() > 0) {
-                    CustomItem item = book.getResearchItem();
-                    book.setSubFolderRecipes(customCrafting.getRecipeHandler().getRecipes(item));
-                    if (book.getSubFolderRecipes().size() > 0) {
-                        book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
-                    }
-                    return true;
-                } else {
-                    book.setSubFolderRecipes(new ArrayList<>());
-                }
-            }
+            book.setRecipeItems(new ArrayList<>());
+            guiHandler.openPreviousWindow();
             return true;
         })));
 
-        registerButton(new ActionButton<>("next_recipe", new ButtonState<>("next_recipe", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"),(cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>("next_recipe", new ButtonState<>("next_recipe", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
@@ -85,7 +71,7 @@ public class RecipeBook extends CCWindow {
                 book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(nextPage));
             }
             return true;
-        },(values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             KnowledgeBook book = guiHandler.getCustomCache().getKnowledgeBook();
             values.put("%page%", book.getSubFolderPage() + 1);
             values.put("%max_pages%", book.getSubFolderRecipes().size());
@@ -134,32 +120,19 @@ public class RecipeBook extends CCWindow {
                 event.setButton(0, "back");
             }
             event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
-
             if (knowledgeBook.getRecipeItems().isEmpty()) {
-                List<CustomItem> recipeItems = new ArrayList<>();
-                dataHandler.getAvailableRecipes(player).stream().filter(customRecipe -> {
-                    if (switchCategory != null) {
-                        List<CustomItem> items;
-                        if (customRecipe instanceof CustomAnvilRecipe) {
-                            items = ((CustomAnvilRecipe) customRecipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? customRecipe.getResults() : ((CustomAnvilRecipe) customRecipe).hasInputLeft() ? ((CustomAnvilRecipe) customRecipe).getInputLeft() : ((CustomAnvilRecipe) customRecipe).getInputRight();
-                        } else {
-                            items = customRecipe.getResults();
-                        }
-                        if (category != null) {
-                            if (!category.isValid(customRecipe) && items.stream().noneMatch(customItem -> category.isValid(customItem.getItemStack().getType()))) {
+                knowledgeBook.setRecipeItems(
+                        dataHandler.getAvailableRecipes(player).parallelStream().filter(recipe -> {
+                            if (switchCategory == null) return true;
+                            List<CustomItem> items = recipe.getRecipeBookItems();
+                            if (category != null && !category.isValid(recipe) && items.parallelStream().noneMatch(customItem -> category.isValid(customItem.getItemStack().getType()))) {
                                 return false;
                             }
-                        }
-                        return switchCategory.isValid(customRecipe) || items.stream().anyMatch(customItem -> switchCategory.isValid(customItem.getItemStack().getType()));
-                    }
-                    return true;
-                }).map(recipe -> {
-                    if (recipe instanceof CustomAnvilRecipe) {
-                        return ((CustomAnvilRecipe) recipe).getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? recipe.getResults() : ((CustomAnvilRecipe) recipe).hasInputLeft() ? ((CustomAnvilRecipe) recipe).getInputLeft() : ((CustomAnvilRecipe) recipe).getInputRight();
-                    }
-                    return recipe.getResults();
-                }).forEach(customItems -> customItems.stream().filter(item -> recipeItems.stream().noneMatch(rItem -> rItem.create().isSimilar(item.create()))).forEach(recipeItems::add));
-                knowledgeBook.setRecipeItems(recipeItems);
+                            return switchCategory.isValid(recipe) || items.parallelStream().anyMatch(customItem -> switchCategory.isValid(customItem.getItemStack().getType()));
+                        }).map(ICustomRecipe::getRecipeBookItems).collect((Supplier<ArrayList<CustomItem>>) ArrayList::new,
+                                (customItems, itemsToAdd) -> customItems.addAll(itemsToAdd.stream().filter(item -> customItems.stream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())),
+                                (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.stream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())))
+                );
             }
             List<CustomItem> recipeItems = knowledgeBook.getRecipeItems();
             int maxPages = recipeItems.size() / 45 + (recipeItems.size() % 45 > 0 ? 1 : 0);
@@ -187,7 +160,6 @@ public class RecipeBook extends CCWindow {
             for (int i = 36; i < 45; i++) {
                 event.setButton(i, grayBtnKey);
             }
-            event.setButton(0, "back");
             int maxPages = recipes.size();
             if (knowledgeBook.getSubFolderPage() >= maxPages) {
                 knowledgeBook.setSubFolderPage(0);

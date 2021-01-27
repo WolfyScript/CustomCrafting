@@ -285,7 +285,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(0, "back");
         int invSlot;
         for (int i = 0; i < 6; i++) {
             invSlot = 10 + i + (i / 3) * 6;
