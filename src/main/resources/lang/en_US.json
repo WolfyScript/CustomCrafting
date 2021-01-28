@@ -2682,24 +2682,8 @@
           "icon": {
             "name": "&6&lBrewing",
             "lore": [
-              "&7Brewing Time: &e%time% ticks",
+              "",
               "&7Fuel cost: &e%cost%"
-            ]
-          },
-          "potion_duration": {
-            "name": "&6Potion Duration",
-            "lore": [
-              "&7This recipe will increase the ",
-              "&7duration of potion effects ",
-              "&7by &e%value% ticks"
-            ]
-          },
-          "potion_amplifier": {
-            "name": "&6Potion Duration",
-            "lore": [
-              "&7This recipe will increase the ",
-              "&7amplifier of potion effects ",
-              "&7by &e%value% levels"
             ]
           }
         },

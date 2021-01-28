@@ -5,8 +5,6 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -30,13 +28,16 @@ public class ToggleSubCommand extends AbstractSubCommand {
                 if (args.length > 0) {
                     String id = args[0];
                     if (!id.isEmpty() && id.contains(":")) {
-                        if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
+                        me.wolfyscript.utilities.util.NamespacedKey namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
+                        if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(namespacedKey)) {
                             sender.sendMessage("Enabled recipe " + id);
-                            customCrafting.getRecipeHandler().getDisabledRecipes().remove(id);
+                            customCrafting.getRecipeHandler().getDisabledRecipes().remove(namespacedKey);
                         } else {
                             sender.sendMessage("Disabled recipe " + id);
-                            customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
-                            Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(new NamespacedKey(id.split(":")[0], id.split(":")[1])));
+                            customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
+                            if (namespacedKey != null) {
+                                Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(namespacedKey.toBukkit()));
+                            }
                         }
                     }
                 }
@@ -49,7 +50,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
-        List<String> recipes = customCrafting.getRecipeHandler().getVanillaRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> ((Keyed) recipe).getKey().toString()).collect(Collectors.toList());
+        List<String> recipes = customCrafting.getRecipeHandler().getBukkitNamespacedKeys();
         recipes.addAll(customCrafting.getRecipeHandler().getRecipes(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
         StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
         return results;

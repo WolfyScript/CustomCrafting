@@ -403,9 +403,9 @@ public class ItemCreator extends CCWindow {
                     int value = Integer.parseInt(s);
                     ((Repairable) itemMeta).setRepairCost(value);
                     guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                    api.getChat().sendKey(player, getNamespacedKey(), "repair_cost.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    api.getChat().sendKey(player, getNamespacedKey(), "repair.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendKey(player, getNamespacedKey(), "repair_cost.invalid_value", new Pair<>("%VALUE%", s));
+                    api.getChat().sendKey(player, getNamespacedKey(), "repair.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;

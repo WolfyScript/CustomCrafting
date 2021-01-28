@@ -162,11 +162,12 @@ public class FurnaceListener implements Listener {
         List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult()).stream().filter(recipe -> type.isInstance(recipe) && recipe.getResult().isSimilar(event.getResult())).collect(Collectors.toList());
         for (Recipe recipe : recipes) {
             if (!(recipe instanceof Keyed)) continue;
-            if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
+            NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) recipe).getKey());
+            if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(namespacedKey)) {
                 event.setCancelled(true);
                 continue;
             }
-            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.of(((Keyed) recipe).getKey().toString()));
+            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) customCrafting.getRecipeHandler().getRecipe(namespacedKey);
             if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                 if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                     event.setCancelled(false);

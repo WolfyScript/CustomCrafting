@@ -43,20 +43,15 @@ public class RecipeType<C extends ICustomRecipe<?>> {
         return clazz;
     }
 
-    public C getInstance(NamespacedKey namespacedKey, JsonNode node){
-        try {
-            return clazz.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        return clazz.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
     }
 
     public Types.Type getType() {
         return type;
     }
 
-    public String name(){
+    public String name() {
         return getType().toString();
     }
 

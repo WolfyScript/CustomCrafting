@@ -86,8 +86,9 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
             //Check for custom recipe that overrides the vanilla recipe
-            ICraftingRecipe recipe = dataHandler.getAdvancedCraftingRecipe(NamespacedKey.of(((Keyed) e.getRecipe()).getKey()));
-            if (dataHandler.getDisabledRecipes().contains(((Keyed) e.getRecipe()).getKey().toString()) || recipe != null) {
+            NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) e.getRecipe()).getKey());
+            ICraftingRecipe recipe = dataHandler.getAdvancedCraftingRecipe(namespacedKey);
+            if (dataHandler.getDisabledRecipes().contains(namespacedKey) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);
                 return;
@@ -100,9 +101,9 @@ public class CraftListener implements Listener {
             //At this point the vanilla recipe is valid and can be crafted
             //player.updateInventory();
         } catch (Exception ex) {
-            System.out.println("-------- WHAT HAPPENED? Please report! --------");
+            CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             ex.printStackTrace();
-            System.out.println("-------- WHAT HAPPENED? Please report! --------");
+            CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             recipeUtils.remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }

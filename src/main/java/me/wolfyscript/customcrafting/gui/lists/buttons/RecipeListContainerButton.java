@@ -13,7 +13,10 @@ import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Keyed;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -62,7 +65,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
-        String id = getCustomRecipe(guiHandler) != null ? getCustomRecipe(guiHandler).getNamespacedKey().toString() : ((Keyed) getRecipe(guiHandler)).getKey().toString();
+        String id = getCustomRecipe(guiHandler) != null ? getCustomRecipe(guiHandler).getNamespacedKey().toString() : me.wolfyscript.utilities.util.NamespacedKey.of(((Keyed) getRecipe(guiHandler)).getKey()).toString();
         if(event instanceof InventoryClickEvent){
             if (((InventoryClickEvent) event).isShiftClick() && getCustomRecipe(guiHandler) != null) {
                 ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
@@ -83,12 +86,15 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 }
             } else {
                 if (!id.isEmpty() && id.contains(":")) {
-                    if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
-                        customCrafting.getRecipeHandler().getDisabledRecipes().remove(id);
+                    me.wolfyscript.utilities.util.NamespacedKey namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
+                    if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(namespacedKey)) {
+                        customCrafting.getRecipeHandler().getDisabledRecipes().remove(namespacedKey);
                     } else {
-                        customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
+                        customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
                         for (Player player1 : Bukkit.getOnlinePlayers()) {
-                            player1.undiscoverRecipe(new NamespacedKey(id.split(":")[0], id.split(":")[1]));
+                            if (namespacedKey != null) {
+                                player1.undiscoverRecipe(namespacedKey.toBukkit());
+                            }
                         }
                     }
                 }
@@ -107,7 +113,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
                 itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
-                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString())) {
+                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())) {
                     itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {
                     itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
@@ -129,7 +135,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB = new ItemBuilder(recipe.getResult());
                 }
                 itemB.addLoreLine("§8" + ((Keyed) recipe).getKey().toString());
-                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString())) {
+                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(me.wolfyscript.utilities.util.NamespacedKey.of(((Keyed) recipe).getKey()))) {
                     itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {
                     itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));

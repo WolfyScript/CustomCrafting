@@ -28,7 +28,7 @@ public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, Bl
     @Override
     public BlastingRecipe getVanillaRecipe() {
         RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
-        return new BlastingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().create(), choice, getExp(), getCookingTime());
+        return new BlastingRecipe(getNamespacedKey().toBukkit(), getResult().create(), choice, getExp(), getCookingTime());
     }
 
     @Override

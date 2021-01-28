@@ -406,12 +406,14 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        //TODO MENU
-        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_3"));
+        event.setButton(12, new NamespacedKey("recipe_book", "ingredient.container_3"));
         event.setButton(20, new NamespacedKey("recipe_book", "brewing.icon"));
+        event.setButton(21, new NamespacedKey("none", "glass_green"));
 
-        event.setButton(29, new NamespacedKey("recipe_book", "ingredient.container_0"));
-        event.setButton(32, new NamespacedKey("recipe_book", "ingredient.container_1"));
+        event.setButton(30, new NamespacedKey("recipe_book", "ingredient.container_0"));
+        event.setButton(31, new NamespacedKey("none", "glass_green"));
+        event.setButton(32, new NamespacedKey("none", "glass_green"));
+        event.setButton(33, new NamespacedKey("recipe_book", "ingredient.container_1"));
 
 
     }

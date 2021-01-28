@@ -40,8 +40,8 @@ public class SmithingCreator extends RecipeCreator {
         CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, "back");
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
-        ((ToggleButton) getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
-        ((ToggleButton) getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
+        ((ToggleButton<CCCache>) getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
+        ((ToggleButton<CCCache>) getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
         event.setButton(1, "hidden");
         event.setButton(3, "recipe_creator", "conditions");
         event.setButton(5, "priority");

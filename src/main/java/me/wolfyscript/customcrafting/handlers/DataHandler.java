@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.handlers;
 
+import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
@@ -31,6 +32,7 @@ import org.bukkit.util.NumberConversions;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,11 +43,10 @@ public class DataHandler {
     public static final File DATA_FOLDER = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
     private final Categories categories;
-    private final List<Recipe> allRecipes = new ArrayList<>();
+    private final List<NamespacedKey> disabledRecipes = new ArrayList<>();
+    private List<Recipe> minecraftRecipes = new ArrayList<>();
 
     private final Map<NamespacedKey, ICustomRecipe<?>> customRecipes = new TreeMap<>();
-
-    private final ArrayList<String> disabledRecipes = new ArrayList<>();
 
     private final MainConfig mainConfig;
     private final WolfyUtilities api;
@@ -61,7 +62,7 @@ public class DataHandler {
         this.objectMapper = JacksonUtil.getObjectMapper();
     }
 
-    public void load(boolean update) throws IOException {
+    public void load(boolean update) {
         chat.sendConsoleMessage("$msg.startup.recipes.title$");
         if (CustomCrafting.hasDataBaseHandler()) {
             if (mainConfig.isLocalStorageEnabled()) {
@@ -105,10 +106,10 @@ public class DataHandler {
         }
     }
 
-    private void loadConfigs() throws IOException {
+    private void loadConfigs() {
         chat.sendConsoleMessage("- - - - [Local Storage] - - - -");
         if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
-            disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes());
+            disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
         }
         if (!DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
             File old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
@@ -143,17 +144,29 @@ public class DataHandler {
         return data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
     }
 
-    private void loadItems(String subFolder) throws IOException {
+    private void loadItems(String subFolder) {
         for (File file : getFiles(subFolder, "items")) {
             String name = file.getName();
-            Registry.CUSTOM_ITEMS.register(new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf("."))), objectMapper.readValue(file, CustomItem.class));
+            NamespacedKey namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
+            try {
+                Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
+            } catch (IOException e) {
+                customCrafting.getLogger().severe(String.format("Could not load item '%s'! ", namespacedKey.toString()));
+                e.printStackTrace();
+            }
         }
     }
 
-    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?>> type) throws IOException {
+    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?>> type) {
         for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
             String name = file.getName();
-            injectRecipe(type.getInstance(new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf("."))), objectMapper.readTree(file)));
+            NamespacedKey namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
+            try {
+                injectRecipe(type.getInstance(namespacedKey, objectMapper.readTree(file)));
+            } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                customCrafting.getLogger().severe(String.format("Could not load recipe '%s'! ", namespacedKey.toString()));
+                e.printStackTrace();
+            }
         }
     }
 
@@ -180,7 +193,7 @@ public class DataHandler {
 
     public void unregisterBukkitRecipe(NamespacedKey namespacedKey) {
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-            Bukkit.removeRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()));
+            Bukkit.removeRecipe(namespacedKey.toBukkit());
         } else {
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
             boolean inject = false;
@@ -270,7 +283,7 @@ public class DataHandler {
     }
 
     public Map<NamespacedKey, ICustomRecipe<?>> getRecipes() {
-        return customRecipes;
+        return Collections.unmodifiableMap(customRecipes);
     }
 
 
@@ -288,7 +301,7 @@ public class DataHandler {
      * @return
      */
     public List<ICustomRecipe<?>> getAvailableRecipes() {
-        return getRecipes().values().parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
+        return getRecipes().values().parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
     }
 
     /**
@@ -330,7 +343,7 @@ public class DataHandler {
      * @return
      */
     public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type) {
-        return getRecipes(type.getClazz()).parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey().toString())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
+        return getRecipes(type.getClazz()).parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
     }
 
     /**
@@ -352,24 +365,25 @@ public class DataHandler {
     }
 
     //DISABLED RECIPES AND GET ALL RECIPES
-    public ArrayList<String> getDisabledRecipes() {
+    public List<NamespacedKey> getDisabledRecipes() {
         return disabledRecipes;
     }
 
-    public List<Recipe> getVanillaRecipes() {
-        if (allRecipes.isEmpty()) {
+    public List<Recipe> getMinecraftRecipes() {
+        if (minecraftRecipes.isEmpty()) {
             Iterator<Recipe> iterator = Bukkit.recipeIterator();
-            while (iterator.hasNext()) {
-                Recipe recipe = iterator.next();
+            minecraftRecipes = Streams.stream(iterator).filter(recipe -> {
                 if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16) && recipe instanceof SmithingRecipe)) {
-                    if (((Keyed) recipe).getKey().getNamespace().equals("minecraft")) {
-                        allRecipes.add(recipe);
-                    }
+                    return ((Keyed) recipe).getKey().getNamespace().equals("minecraft");
                 }
-            }
-            allRecipes.sort(Comparator.comparing(o -> ((Keyed) o).getKey().toString()));
+                return false;
+            }).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).collect(Collectors.toList());
         }
-        return allRecipes;
+        return Collections.unmodifiableList(minecraftRecipes);
+    }
+
+    public List<String> getBukkitNamespacedKeys() {
+        return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.of(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
     }
 
     public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {

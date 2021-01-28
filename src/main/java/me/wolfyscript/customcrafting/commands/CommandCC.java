@@ -18,7 +18,7 @@ public class CommandCC extends IndexCommand {
     private final CustomCrafting customCrafting;
 
     public CommandCC(CustomCrafting cc) {
-        super("customcrafting", "The main command of CustomCrafting", "/customcrafting <label>", cc.getConfigHandler().getConfig().getCustomCraftingAlias());
+        super("customcrafting", "The main command of CustomCrafting", "/customcrafting [<option>]", cc.getConfigHandler().getConfig().getCustomCraftingAlias());
         this.customCrafting = cc;
         registerSubCommand(new DarkModeSubCommand(cc));
         registerSubCommand(new DataBaseSubCommand(cc));

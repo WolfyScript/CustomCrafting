@@ -38,6 +38,6 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, 
     @Override
     public SmokingRecipe getVanillaRecipe() {
         RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
-        return new SmokingRecipe(new org.bukkit.NamespacedKey(getNamespacedKey().getNamespace(), getNamespacedKey().getKey()), getResult().create(), choice, getExp(), getCookingTime());
+        return new SmokingRecipe(getNamespacedKey().toBukkit(), getResult().create(), choice, getExp(), getCookingTime());
     }
 }

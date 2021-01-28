@@ -8,8 +8,10 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Recipe;
 
@@ -39,34 +41,31 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                     }
                 } else {
                     if (namespace.equalsIgnoreCase("minecraft")) {
-                        if (clickEvent.isShiftClick() && clickEvent.isLeftClick()) {
-                            for (Recipe recipe : customCrafting.getRecipeHandler().getVanillaRecipes()) {
+                        if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
+                            for (Recipe recipe : customCrafting.getRecipeHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    String id = ((Keyed) recipe).getKey().toString();
-                                    if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
-                                        customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
+                                    NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) recipe).getKey());
+                                    if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(namespacedKey)) {
+                                        customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
                                     }
                                 }
                             }
-                        } else if (clickEvent.isShiftClick() && clickEvent.isRightClick()) {
-                            for (Recipe recipe : customCrafting.getRecipeHandler().getVanillaRecipes()) {
+                        } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
+                            for (Recipe recipe : customCrafting.getRecipeHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    customCrafting.getRecipeHandler().getDisabledRecipes().remove(((Keyed) recipe).getKey().toString());
+                                    customCrafting.getRecipeHandler().getDisabledRecipes().remove(NamespacedKey.of(((Keyed) recipe).getKey()));
                                 }
                             }
                         }
-                    } else {
-                        if (clickEvent.isShiftClick() && clickEvent.isLeftClick()) {
-                            for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
-                                String id = recipe.getNamespacedKey().toString();
-                                if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(id)) {
-                                    customCrafting.getRecipeHandler().getDisabledRecipes().add(id);
-                                }
+                    } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
+                        for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                            if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())) {
+                                customCrafting.getRecipeHandler().getDisabledRecipes().add(recipe.getNamespacedKey());
                             }
-                        } else if (clickEvent.isShiftClick() && clickEvent.isRightClick()) {
-                            for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
-                                customCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getNamespacedKey().toString());
-                            }
+                        }
+                    } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
+                        for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                            customCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getNamespacedKey());
                         }
                     }
                 }

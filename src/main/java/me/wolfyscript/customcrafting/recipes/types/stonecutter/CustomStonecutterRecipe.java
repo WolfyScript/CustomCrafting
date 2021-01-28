@@ -140,6 +140,6 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
         RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
-        return new StonecuttingRecipe(new org.bukkit.NamespacedKey(namespacedKey.getNamespace(), namespacedKey.getKey()), getResult().create(), choice);
+        return new StonecuttingRecipe(namespacedKey.toBukkit(), getResult().create(), choice);
     }
 }

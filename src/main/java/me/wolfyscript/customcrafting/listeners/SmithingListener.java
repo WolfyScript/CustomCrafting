@@ -47,7 +47,7 @@ public class SmithingListener implements Listener {
         ItemStack addition = inv.getItem(1);
 
         if (!ItemUtils.isAirOrNull(event.getResult())) {
-            if (Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(((Keyed) recipe).getKey().toString()))) {
+            if (Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(NamespacedKey.of(((Keyed) recipe).getKey())))) {
                 event.setResult(null);
                 return;
             }

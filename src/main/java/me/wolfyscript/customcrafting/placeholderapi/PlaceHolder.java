@@ -68,7 +68,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                 if (args.length > 1) {
                     switch (args[1]) {
                         case "vanilla":
-                            return String.valueOf(customCrafting.getRecipeHandler().getVanillaRecipes().size());
+                            return String.valueOf(customCrafting.getRecipeHandler().getMinecraftRecipes().size());
                         case "custom":
                             return String.valueOf(customCrafting.getRecipeHandler().getRecipes().size());
                         case "available":

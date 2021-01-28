@@ -3,9 +3,11 @@ package me.wolfyscript.customcrafting.configs;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainConfig extends YamlConfiguration {
 
@@ -73,8 +75,8 @@ public class MainConfig extends YamlConfiguration {
         return getStringList("recipes.disabled_recipes");
     }
 
-    public void setDisabledRecipes(List<String> recipes) {
-        set("recipes.disabled_recipes", recipes);
+    public void setDisabledRecipes(List<NamespacedKey> recipes) {
+        set("recipes.disabled_recipes", recipes.parallelStream().map(NamespacedKey::toString).collect(Collectors.toList()));
     }
 
     public boolean isPrettyPrinting() {

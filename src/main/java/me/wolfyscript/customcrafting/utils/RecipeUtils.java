@@ -45,7 +45,7 @@ public class RecipeUtils {
     }
 
     public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Inventory inventory, DataHandler dataHandler, boolean isRepair) {
-        if (dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey().toString())) {
+        if (dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey())) {
             return null; //No longer call Event if recipe is disabled!
         }
         CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, player.getTargetBlock(null, 5), player.getOpenInventory())) ? recipe.check(matrix) : null;

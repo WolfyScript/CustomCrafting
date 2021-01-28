@@ -97,7 +97,7 @@ public class RecipesList extends CCWindow {
         } else {
             List<Object> recipes = new ArrayList<>();
             if (namespace.equalsIgnoreCase("minecraft")) {
-                recipes.addAll(customCrafting.getRecipeHandler().getVanillaRecipes());
+                recipes.addAll(customCrafting.getRecipeHandler().getMinecraftRecipes());
             } else {
                 List<ICustomRecipe<?>> customRecipes = customCrafting.getRecipeHandler().getRecipesByNamespace(namespace);
                 recipes.addAll(customRecipes.parallelStream().filter(Objects::nonNull).collect(Collectors.toList()));

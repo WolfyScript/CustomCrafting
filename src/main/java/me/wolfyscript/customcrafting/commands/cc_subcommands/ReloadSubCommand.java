@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +32,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
                     //Reload Recipes
                     DataHandler dataHandler = customCrafting.getRecipeHandler();
                     dataHandler.saveData();
-                    try {
-                        dataHandler.load(false);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    dataHandler.load(false);
                     api.getChat().sendMessage(p, "&aReload Complete");
                     return true;
                 }
