@@ -58,7 +58,7 @@ crafting_table:
     sound: "block.lava.extinguish"
 
 recipe_book:
-  reset: false            # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
+  reset: true             # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
 
 recipes:
   lockdown: false         # Used to block any kind of custom recipe. If enabled no one will be able to craft any custom recipe anymore.

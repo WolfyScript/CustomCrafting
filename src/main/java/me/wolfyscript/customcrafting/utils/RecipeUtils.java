@@ -75,6 +75,8 @@ public class RecipeUtils {
             CraftingData craftingData = preCraftedRecipes.get(event.getWhoClicked().getUniqueId());
             CraftingRecipe<?> recipe = craftingData.getRecipe();
             if (recipe != null) {
+                //TODO: Make as much as possible async and prevent items from bugging when crafting.
+                //Perhaps I should create a remote Minecraft server to test the plugin on.
                 CustomCraftEvent customCraftEvent = new CustomCraftEvent(recipe, inventory);
                 Bukkit.getPluginManager().callEvent(customCraftEvent);
                 if (!customCraftEvent.isCancelled() && event.getCurrentItem() != null) {

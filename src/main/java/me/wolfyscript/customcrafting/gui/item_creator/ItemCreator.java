@@ -491,7 +491,7 @@ public class ItemCreator extends CCWindow {
                     }
                 });
                 return false;
-            }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().hasReplacement() ? new CustomItem(cache.getItems().getItem().getReplacement()).create() : new ItemStack(Material.AIR))));
+            }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().hasReplacement() ? CustomItem.with(cache.getItems().getItem().getReplacement()).create() : new ItemStack(Material.AIR))));
         }
 
         //FUEL Settings

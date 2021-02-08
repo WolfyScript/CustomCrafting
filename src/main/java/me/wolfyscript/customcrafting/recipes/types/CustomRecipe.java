@@ -49,7 +49,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
             List<CustomItem> results = new ArrayList<>();
             JsonNode resultNode = node.path("result");
             if (resultNode.isObject()) {
-                results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
+                results.add(CustomItem.of(mapper.convertValue(resultNode, APIReference.class)));
                 resultNode.path("variants").forEach(jsonNode -> results.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class))));
             } else {
                 resultNode.elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));

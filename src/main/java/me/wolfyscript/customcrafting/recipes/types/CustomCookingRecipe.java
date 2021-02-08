@@ -45,13 +45,13 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
             List<CustomItem> results = new ArrayList<>();
             JsonNode resultNode = node.path("source");
             if (resultNode.isObject()) {
-                results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
+                results.add(CustomItem.of(mapper.convertValue(resultNode, APIReference.class)));
                 JsonNode variantsNode = resultNode.path("variants");
                 for (JsonNode jsonNode : variantsNode) {
-                    results.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class)));
+                    results.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class)));
                 }
             } else {
-                resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+                resultNode.elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
             }
             this.source = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
         }

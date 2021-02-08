@@ -111,12 +111,6 @@ public class DataHandler {
         if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
             disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
         }
-        if (!DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
-            File old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
-            if (!old.renameTo(DATA_FOLDER)) {
-                customCrafting.getLogger().severe("Couldn't rename folder to the new required names!");
-            }
-        }
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
             for (String dir : dirs) {

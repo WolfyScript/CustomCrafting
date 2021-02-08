@@ -58,10 +58,10 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
                 List<CustomItem> results = new ArrayList<>();
                 JsonNode resultNode = modeNode.path("result");
                 if (resultNode.isObject()) {
-                    results.add(new CustomItem(mapper.convertValue(resultNode, APIReference.class)));
-                    resultNode.path("variants").forEach(jsonNode -> results.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class))));
+                    results.add(CustomItem.of(mapper.convertValue(resultNode, APIReference.class)));
+                    resultNode.path("variants").forEach(jsonNode -> results.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class))));
                 } else {
-                    resultNode.elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+                    resultNode.elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
                 }
                 this.result = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
             }
@@ -100,7 +100,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     private void readInput(int slot, JsonNode node) {
         List<CustomItem> results = new ArrayList<>();
-        node.path("input_"+(slot == 0 ? "left" : "right")).elements().forEachRemaining(n -> results.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+        node.path("input_" + (slot == 0 ? "left" : "right")).elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
         this.ingredients.put(slot, results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
     }
 

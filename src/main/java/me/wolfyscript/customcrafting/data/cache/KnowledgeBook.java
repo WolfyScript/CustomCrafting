@@ -12,33 +12,34 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KnowledgeBook {
 
     private final CustomCrafting customCrafting;
-    private int page, subFolder, subFolderPage;
+    private final Map<Category, List<CustomItem>> cachedEliteCategoryItems;
     private Category category;
     private WorkbenchFilter workbenchFilter;
 
     private BukkitTask timerTask;
     private HashMap<Integer, Integer> timerTimings;
-
-    private List<ICustomRecipe<?>> subFolderRecipes;
-    private List<CustomItem> recipeItems;
+    private int page, subFolderPage;
+    private Map<Category, Map<Category, List<CustomItem>>> cachedCategoryItems;
+    private Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
 
     public KnowledgeBook() {
         this.customCrafting = (CustomCrafting) Bukkit.getPluginManager().getPlugin("CustomCrafting");
         this.page = 0;
-        this.subFolder = 0;
         this.subFolderPage = 0;
         this.category = null;
         this.researchItems = new ArrayList<>();
-        this.recipeItems = new ArrayList<>();
         this.timerTask = null;
         this.timerTimings = new HashMap<>();
-        this.subFolderRecipes = new ArrayList<>();
         workbenchFilter = WorkbenchFilter.ALL;
+        this.cachedCategoryItems = new HashMap<>();
+        this.cachedEliteCategoryItems = new HashMap<>();
+        this.cachedSubFolderRecipes = new HashMap<>();
     }
 
     public HashMap<Integer, Integer> getTimerTimings() {
@@ -61,7 +62,7 @@ public class KnowledgeBook {
     }
 
     public ICustomRecipe<?> getCurrentRecipe() {
-        if (getSubFolderPage() < getSubFolderRecipes().size()) {
+        if (getSubFolderPage() >= 0 && getSubFolderPage() < getSubFolderRecipes().size()) {
             return getSubFolderRecipes().get(getSubFolderPage());
         }
         return null;
@@ -96,19 +97,15 @@ public class KnowledgeBook {
     }
 
     public int getSubFolder() {
-        return subFolder;
-    }
-
-    public void setSubFolder(int subFolder) {
-        this.subFolder = subFolder;
+        return researchItems.size();
     }
 
     public List<ICustomRecipe<?>> getSubFolderRecipes() {
-        return subFolderRecipes;
+        return this.cachedSubFolderRecipes.getOrDefault(getResearchItem(), new ArrayList<>());
     }
 
-    public void setSubFolderRecipes(List<ICustomRecipe<?>> subFolderRecipes) {
-        this.subFolderRecipes = subFolderRecipes;
+    public void setSubFolderRecipes(CustomItem customItem, List<ICustomRecipe<?>> subFolderRecipes) {
+        this.cachedSubFolderRecipes.put(customItem, subFolderRecipes);
     }
 
     public int getSubFolderPage() {
@@ -123,24 +120,51 @@ public class KnowledgeBook {
         return researchItems;
     }
 
+    public void addResearchItem(CustomItem item) {
+        researchItems.add(0, item);
+    }
+
+    public void removePreviousResearchItem() {
+        researchItems.remove(0);
+    }
+
     public void setResearchItems(List<CustomItem> researchItems) {
         this.researchItems = researchItems;
     }
 
     public CustomItem getResearchItem() {
-        return getResearchItems().get(getSubFolder() - 1);
+        return getResearchItems().get(0);
     }
 
-    public List<CustomItem> getRecipeItems() {
-        return recipeItems;
+    public List<CustomItem> getRecipeItems(Category switchCategory) {
+        Map<Category, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
+        return cachedItems.getOrDefault(switchCategory, new ArrayList<>());
     }
 
-    public void setRecipeItems(List<CustomItem> recipeItems) {
-        this.recipeItems = recipeItems;
+    public void setRecipeItems(Category switchCategory, List<CustomItem> recipeItems) {
+        Map<Category, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
+        cachedItems.put(switchCategory, recipeItems);
+        this.cachedCategoryItems.put(category, cachedItems);
+    }
+
+    public List<CustomItem> getEliteRecipeItems(Category switchCategory) {
+        return cachedEliteCategoryItems.getOrDefault(switchCategory, new ArrayList<>());
+    }
+
+    public void setEliteRecipeItems(Category switchCategory, List<CustomItem> recipeItems) {
+        this.cachedEliteCategoryItems.put(switchCategory, recipeItems);
     }
 
     public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
         recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
+    }
+
+    public void setCachedCategoryItems(Map<Category, Map<Category, List<CustomItem>>> cachedCategoryItems) {
+        this.cachedCategoryItems = cachedCategoryItems;
+    }
+
+    public void setCachedSubFolderRecipes(Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes) {
+        this.cachedSubFolderRecipes = cachedSubFolderRecipes;
     }
 
     public enum WorkbenchFilter {

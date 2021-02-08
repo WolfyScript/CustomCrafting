@@ -44,20 +44,16 @@ public class CraftingRecipeBook extends CCWindow {
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
-            book.setRecipeItems(new ArrayList<>());
             if (book.getSubFolder() == 0) {
                 guiHandler.openPreviousWindow();
             } else {
                 book.stopTimerTask();
-                book.getResearchItems().remove(book.getSubFolder() - 1);
-                book.setSubFolder(book.getSubFolder() - 1);
+                book.removePreviousResearchItem();
                 if (book.getSubFolder() > 0) {
                     CustomItem item = book.getResearchItem();
-                    book.setSubFolderRecipes(customCrafting.getRecipeHandler().getRecipes(item));
+                    book.setSubFolderRecipes(item, customCrafting.getRecipeHandler().getRecipes(item));
                     book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
                     return true;
-                } else {
-                    book.setSubFolderRecipes(new ArrayList<>());
                 }
             }
             return true;
@@ -91,10 +87,8 @@ public class CraftingRecipeBook extends CCWindow {
             event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
             event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
             event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
-            if (knowledgeBook.getRecipeItems().isEmpty()) {
-
+            if (knowledgeBook.getEliteRecipeItems(category).isEmpty()) {
                 List<ICustomRecipe<?>> recipes = new ArrayList<>(customCrafting.getRecipeHandler().getAvailableRecipes(Types.ELITE_WORKBENCH, player));
-
                 Iterator<ICustomRecipe<?>> iterator = recipes.iterator();
                 while (iterator.hasNext()) {
                     EliteCraftingRecipe recipe = (EliteCraftingRecipe) iterator.next();
@@ -131,10 +125,10 @@ public class CraftingRecipeBook extends CCWindow {
                 }
                 List<CustomItem> recipeItems = new ArrayList<>();
                 recipes.stream().map(ICustomRecipe::getResults).forEach(items -> recipeItems.addAll(items.stream().filter(item -> !recipeItems.contains(item)).collect(Collectors.toList())));
-                knowledgeBook.setRecipeItems(recipeItems);
+                knowledgeBook.setEliteRecipeItems(category, recipeItems);
             }
 
-            List<CustomItem> recipeItems = knowledgeBook.getRecipeItems();
+            List<CustomItem> recipeItems = knowledgeBook.getEliteRecipeItems(category);
             int maxPages = recipeItems.size() / 45 + (recipeItems.size() % 45 > 0 ? 1 : 0);
             if (knowledgeBook.getPage() >= maxPages) {
                 knowledgeBook.setPage(0);

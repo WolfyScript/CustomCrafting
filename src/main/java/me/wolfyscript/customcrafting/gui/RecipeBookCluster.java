@@ -65,22 +65,19 @@ public class RecipeBookCluster extends CCCluster {
                 book.stopTimerTask();
                 IngredientContainerButton.resetButtons(guiHandler);
                 if (((InventoryClickEvent) event).isLeftClick()) {
-                    book.getResearchItems().remove(book.getSubFolder() - 1);
-                    book.setSubFolder(book.getSubFolder() - 1);
+                    book.removePreviousResearchItem();
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
-                        book.setSubFolderRecipes(customCrafting.getRecipeHandler().getRecipes(item));
+                        if (book.getSubFolderRecipes().isEmpty()) {
+                            book.setSubFolderRecipes(item, customCrafting.getRecipeHandler().getRecipes(item));
+                        }
                         if (book.getSubFolderRecipes().size() > 0) {
                             book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
                         }
                         return true;
-                    } else {
-                        book.setSubFolderRecipes(new ArrayList<>());
                     }
                 } else {
                     book.setResearchItems(new ArrayList<>());
-                    book.setSubFolderRecipes(new ArrayList<>());
-                    book.setSubFolder(0);
                 }
             }
             return true;

@@ -62,6 +62,12 @@ public class ConfigHandler {
     }
 
     public void loadDefaults() throws IOException {
+        if (!DataHandler.DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
+            File old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
+            if (!old.renameTo(DataHandler.DATA_FOLDER)) {
+                customCrafting.getLogger().severe("Couldn't rename folder to the new required names!");
+            }
+        }
         ParticleAnimation enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
@@ -78,7 +84,7 @@ public class ConfigHandler {
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
             knowledgeBookCraft.setIngredient('A', 0, new CustomItem(Material.BOOK));
             knowledgeBookCraft.setIngredient('B', 0, new CustomItem(Material.CRAFTING_TABLE));
-            knowledgeBookCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(CustomCrafting.RECIPE_BOOK)));
+            knowledgeBookCraft.setResult(0, CustomItem.of(new WolfyUtilitiesRef(CustomCrafting.RECIPE_BOOK)));
             knowledgeBookCraft.setNamespacedKey(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.save();
         }
@@ -97,7 +103,7 @@ public class ConfigHandler {
             workbenchCraft.setIngredient('B', 0, new CustomItem(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('E', 0, new CustomItem(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredient('H', 0, new CustomItem(Material.GLOWSTONE_DUST));
-            workbenchCraft.setResult(0, new CustomItem(new WolfyUtilitiesRef(CustomCrafting.ADVANCED_CRAFTING_TABLE)));
+            workbenchCraft.setResult(0, CustomItem.of(new WolfyUtilitiesRef(CustomCrafting.ADVANCED_CRAFTING_TABLE)));
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }

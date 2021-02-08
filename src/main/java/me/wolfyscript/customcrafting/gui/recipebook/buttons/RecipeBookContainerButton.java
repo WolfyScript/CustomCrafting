@@ -55,12 +55,10 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         KnowledgeBook book = cache.getKnowledgeBook();
         CustomItem customItem = getRecipeItem(guiHandler);
         List<ICustomRecipe<?>> recipes = dataHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
-        recipes.remove(book.getCurrentRecipe());
         if (!recipes.isEmpty()) {
-            book.setSubFolder(1);
             book.setSubFolderPage(0);
-            book.getResearchItems().add(customItem);
-            book.setSubFolderRecipes(recipes);
+            book.addResearchItem(customItem);
+            book.setSubFolderRecipes(customItem, recipes);
             book.applyRecipeToButtons(guiHandler, recipes.get(0));
         }
         return true;

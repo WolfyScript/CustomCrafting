@@ -33,9 +33,9 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
 
     public CustomSmithingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        base = Streams.stream(node.path("base").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
-        addition = Streams.stream(node.path("addition").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
-        result = Streams.stream(node.path("result").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        base = Streams.stream(node.path("base").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        addition = Streams.stream(node.path("addition").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        result = Streams.stream(node.path("result").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
     }
 

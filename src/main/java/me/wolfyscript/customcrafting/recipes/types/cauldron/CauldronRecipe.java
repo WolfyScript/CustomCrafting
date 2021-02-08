@@ -54,12 +54,12 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
         {
             JsonNode dropNode = node.path("dropItems");
             this.dropItems = dropNode.path("enabled").asBoolean();
-            this.handItem = new CustomItem(mapper.convertValue(dropNode.path("handItem"), APIReference.class));
+            this.handItem = CustomItem.of(mapper.convertValue(dropNode.path("handItem"), APIReference.class));
         }
         {
             List<CustomItem> ingredients = new ArrayList<>();
             JsonNode ingredientNode = node.path("ingredients");
-            ingredientNode.elements().forEachRemaining(n -> ingredients.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+            ingredientNode.elements().forEachRemaining(n -> ingredients.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
             setIngredients(ingredients.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
         }
         if(result == null){

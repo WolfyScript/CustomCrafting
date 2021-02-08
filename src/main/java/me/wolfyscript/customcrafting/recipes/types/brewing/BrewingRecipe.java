@@ -60,13 +60,13 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
     //Conditions for the Potions inside the 3 slots at the bottom
     private Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects; //The effects that are required with the current Duration and amplitude. Integer values == 0 will be ignored and any value will be allowed.
 
-
     public BrewingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        ingredients = Streams.stream(node.path("ingredients").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        ingredients = Streams.stream(node.path("ingredients").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         this.fuelCost = node.path("fuel_cost").asInt(1);
         this.brewTime = node.path("brew_time").asInt(80);
-        allowedItems = Streams.stream(node.path("allowed_items").elements()).map(n -> new CustomItem(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        this.allowedItems = Streams.stream(node.path("allowed_items").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        this.result = Streams.stream(node.path("results").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
 
         setDurationChange(node.path("duration_change").asInt());
         setAmplifierChange(node.path("amplifier_change").asInt());
@@ -91,8 +91,6 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
             }
         });
         setEffectUpgrades(effectUpgrades);
-
-        this.result = Streams.stream(node.path("results").elements()).map(n -> mapper.convertValue(n, CustomItem.class)).collect(Collectors.toList());
 
         Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects = new HashMap<>();
         node.path("required_effects").elements().forEachRemaining(n -> {

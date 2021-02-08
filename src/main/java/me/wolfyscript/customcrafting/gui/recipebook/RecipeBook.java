@@ -56,7 +56,6 @@ public class RecipeBook extends CCWindow {
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
-            book.setRecipeItems(new ArrayList<>());
             guiHandler.openPreviousWindow();
             return true;
         })));
@@ -120,8 +119,8 @@ public class RecipeBook extends CCWindow {
                 event.setButton(0, "back");
             }
             event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
-            if (knowledgeBook.getRecipeItems().isEmpty()) {
-                knowledgeBook.setRecipeItems(
+            if (knowledgeBook.getRecipeItems(switchCategory).isEmpty()) {
+                knowledgeBook.setRecipeItems(switchCategory,
                         dataHandler.getAvailableRecipes(player).parallelStream().filter(recipe -> {
                             if (switchCategory == null) return true;
                             List<CustomItem> items = recipe.getRecipeBookItems();
@@ -134,7 +133,7 @@ public class RecipeBook extends CCWindow {
                                 (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.stream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())))
                 );
             }
-            List<CustomItem> recipeItems = knowledgeBook.getRecipeItems();
+            List<CustomItem> recipeItems = knowledgeBook.getRecipeItems(switchCategory);
             int maxPages = recipeItems.size() / 45 + (recipeItems.size() % 45 > 0 ? 1 : 0);
             if (knowledgeBook.getPage() >= maxPages) {
                 knowledgeBook.setPage(0);

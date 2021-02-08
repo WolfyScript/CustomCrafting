@@ -45,13 +45,13 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
             List<CustomItem> sources = new ArrayList<>();
             JsonNode sourceNode = node.path("source");
             if (sourceNode.isObject()) {
-                sources.add(new CustomItem(mapper.convertValue(sourceNode, APIReference.class)));
+                sources.add(CustomItem.of(mapper.convertValue(sourceNode, APIReference.class)));
                 JsonNode variantsNode = sourceNode.path("variants");
                 for (JsonNode jsonNode : variantsNode) {
-                    sources.add(new CustomItem(mapper.convertValue(jsonNode, APIReference.class)));
+                    sources.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class)));
                 }
             } else {
-                sourceNode.elements().forEachRemaining(n -> sources.add(new CustomItem(mapper.convertValue(n, APIReference.class))));
+                sourceNode.elements().forEachRemaining(n -> sources.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
             }
             this.source = sources.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
         }

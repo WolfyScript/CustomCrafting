@@ -77,24 +77,24 @@ public class IngredientContainerButton extends Button<CCCache> {
         KnowledgeBook book = cache.getKnowledgeBook();
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
-            List<ICustomRecipe<?>> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
-            recipes.remove(book.getCurrentRecipe());
-            if (!recipes.isEmpty()) {
-                GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
-                for (int i = 0; i < 54; i++) {
-                    IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
-                    if (button.getTask(guiHandler) != null) {
-                        button.setTask(guiHandler, null);
+            if (!customItem.equals(book.getResearchItem())) {
+                List<ICustomRecipe<?>> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
+                if (!recipes.isEmpty()) {
+                    GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
+                    for (int i = 0; i < 54; i++) {
+                        IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
+                        if (button.getTask(guiHandler) != null) {
+                            button.setTask(guiHandler, null);
+                        }
+                        button.removeVariants(guiHandler);
+                        button.setTiming(guiHandler, 0);
                     }
-                    button.removeVariants(guiHandler);
-                    button.setTiming(guiHandler, 0);
+                    book.stopTimerTask();
+                    book.setSubFolderPage(0);
+                    book.addResearchItem(customItem);
+                    book.setSubFolderRecipes(customItem, recipes);
+                    book.applyRecipeToButtons(guiHandler, recipes.get(0));
                 }
-                book.stopTimerTask();
-                book.setSubFolder(book.getSubFolder() + 1);
-                book.setSubFolderPage(0);
-                book.getResearchItems().add(customItem);
-                book.setSubFolderRecipes(recipes);
-                book.applyRecipeToButtons(guiHandler, recipes.get(0));
             }
         }
         return true;

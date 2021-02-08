@@ -11,8 +11,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
-
 public class EliteCraftingCluster extends CCCluster {
 
     public EliteCraftingCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
@@ -29,10 +27,8 @@ public class EliteCraftingCluster extends CCCluster {
         setEntry(new NamespacedKey("crafting", "crafting_3"));
         registerButton(new ActionButton<>("recipe_book", new ButtonState<>("crafting", "recipe_book", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
-            knowledgeBook.setRecipeItems(new ArrayList<>());
             knowledgeBook.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
-            knowledgeBook.setRecipeItems(new ArrayList<>());
             guiHandler.openWindow("recipe_book");
             return true;
         })));

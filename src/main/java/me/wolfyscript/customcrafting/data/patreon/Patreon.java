@@ -13,7 +13,7 @@ public class Patreon {
     List<Patron> patronList = new ArrayList<>();
 
     public Patreon(CustomCrafting customCrafting) {
-        this.isPatreon = !customCrafting.getDescription().getVersion().endsWith(".0");
+        this.isPatreon = false;//!customCrafting.getDescription().getVersion().endsWith(".0");
     }
 
     public void initialize() {

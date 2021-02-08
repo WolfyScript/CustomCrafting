@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainCategoryButton extends Button<CCCache> {
 
@@ -76,7 +75,6 @@ public class MainCategoryButton extends Button<CCCache> {
         if (category != null) {
             KnowledgeBook knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
             knowledgeBook.setCategory(category);
-            knowledgeBook.setRecipeItems(new ArrayList<>());
             guiHandler.openWindow("recipe_book");
         }
         return true;

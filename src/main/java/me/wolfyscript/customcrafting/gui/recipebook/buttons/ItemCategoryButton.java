@@ -20,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ItemCategoryButton extends Button<CCCache> {
@@ -83,7 +82,6 @@ public class ItemCategoryButton extends Button<CCCache> {
                 categoryMap.put(guiHandler, 0);
             }
             KnowledgeBook knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
-            knowledgeBook.setRecipeItems(new ArrayList<>());
         }
         return true;
     }

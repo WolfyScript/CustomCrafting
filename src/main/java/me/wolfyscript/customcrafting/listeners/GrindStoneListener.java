@@ -274,6 +274,7 @@ public class GrindStoneListener implements Listener {
         }
         switch (material) {
             case BOW:
+            case ENCHANTED_BOOK:
             case CROSSBOW:
             case TRIDENT:
             case SHIELD:
