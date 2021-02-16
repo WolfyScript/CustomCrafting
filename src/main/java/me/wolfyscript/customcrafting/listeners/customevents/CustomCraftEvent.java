@@ -1,18 +1,14 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 
-import java.util.List;
-
 public class CustomCraftEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
-    private List<CustomItem> result;
     private final Inventory inventory;
     private boolean cancelled;
     private final CraftingRecipe<?> craftingRecipe;
@@ -20,20 +16,11 @@ public class CustomCraftEvent extends Event implements Cancellable {
     public CustomCraftEvent(CraftingRecipe<?> craftingRecipe, Inventory inventory) {
         this.craftingRecipe = craftingRecipe;
         this.inventory = inventory;
-        this.result = craftingRecipe.getResults();
         this.cancelled = false;
     }
 
     public Inventory getInventory() {
         return inventory;
-    }
-
-    public List<CustomItem> getResult() {
-        return result;
-    }
-
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
     }
 
     public CraftingRecipe<?> getRecipe() {

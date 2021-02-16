@@ -37,7 +37,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
                     InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
                     Bukkit.getOnlinePlayers().forEach(player -> {
                         GuiHandler<CCCache> guiHandler = invAPI.getGuiHandler(player);
-                        guiHandler.getCustomCache().getKnowledgeBook().setCachedCategoryItems(new HashMap<>());
+                        guiHandler.getCustomCache().getKnowledgeBook().resetCachedCategoryItems();
                         guiHandler.getCustomCache().getKnowledgeBook().setCachedSubFolderRecipes(new HashMap<>());
                         guiHandler.getCustomCache().getKnowledgeBook().setResearchItems(new ArrayList<>());
                     });
@@ -45,6 +45,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
                     DataHandler dataHandler = customCrafting.getRecipeHandler();
                     dataHandler.saveData();
                     dataHandler.load(false);
+                    dataHandler.indexRecipeItems();
                     api.getChat().sendMessage(p, "&aReload Complete");
                     return true;
                 }

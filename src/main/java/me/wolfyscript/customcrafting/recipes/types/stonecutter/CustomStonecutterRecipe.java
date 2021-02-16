@@ -96,7 +96,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
         {
             gen.writeArrayFieldStart("source");
             for (CustomItem customItem : getSource()) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }

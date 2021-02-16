@@ -48,6 +48,7 @@ import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -60,7 +61,7 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey("customcrafting", "elite_workbench");
 
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
-    public static final int CONFIG_VERSION = 1;
+    public static final int CONFIG_VERSION = 2;
 
     private static CustomCrafting instance;
     private static WolfyUtilities api;
@@ -237,7 +238,11 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public void loadRecipesAndItems() throws IOException {
+        if (!configHandler.getConfig().getDisabledRecipes().isEmpty()) {
+            dataHandler.getDisabledRecipes().addAll(configHandler.getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
+        }
         dataHandler.load(true);
+        dataHandler.indexRecipeItems();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 

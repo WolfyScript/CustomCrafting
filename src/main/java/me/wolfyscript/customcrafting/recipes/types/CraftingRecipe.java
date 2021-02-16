@@ -209,7 +209,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         {
             gen.writeArrayFieldStart("result");
             for (CustomItem customItem : getResults()) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }
@@ -220,7 +220,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
                 if(!InventoryUtils.isCustomItemsListEmpty(ingred)){
                     gen.writeArrayFieldStart(entry.getKey().toString());
                     for (CustomItem customItem : ingred) {
-                        gen.writeObject(customItem.getApiReference());
+                        saveCustomItem(customItem, gen);
                     }
                     gen.writeEndArray();
                 }

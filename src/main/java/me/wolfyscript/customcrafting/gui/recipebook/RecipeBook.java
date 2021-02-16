@@ -15,14 +15,17 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -32,19 +35,24 @@ import java.util.stream.Collectors;
 
 public class RecipeBook extends CCWindow {
 
-    private final BukkitTask tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
-        for (int i = 0; i < 54; i++) {
-            Button<CCCache> btn = getButton("ingredient.container_" + i);
-            if (btn instanceof IngredientContainerButton) {
-                IngredientContainerButton cBtn = (IngredientContainerButton) btn;
-                cBtn.getTasks().forEach(runnable -> Bukkit.getScheduler().runTask(customCrafting, runnable));
-                cBtn.updateTasks();
-            }
-        }
-    }, 1, 20);
+    private final BukkitTask tickTask;
 
     public RecipeBook(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "recipe_book", 54, customCrafting);
+
+        tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+            for (int i = 0; i < 36; i++) {
+                Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
+                if (btn instanceof IngredientContainerButton) {
+                    IngredientContainerButton cBtn = (IngredientContainerButton) btn;
+                    cBtn.getTasks().forEach(runnable -> {
+                        if (runnable != null) {
+                            Bukkit.getScheduler().runTask(customCrafting, runnable);
+                        }
+                    });
+                }
+            }
+        }, 1, 30);
     }
 
     @Override
@@ -119,37 +127,37 @@ public class RecipeBook extends CCWindow {
                 event.setButton(0, "back");
             }
             event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
-            if (knowledgeBook.getRecipeItems(switchCategory).isEmpty()) {
-                knowledgeBook.setRecipeItems(switchCategory,
-                        dataHandler.getAvailableRecipes(player).parallelStream().filter(recipe -> {
-                            if (switchCategory == null) return true;
-                            List<CustomItem> items = recipe.getRecipeBookItems();
-                            if (category != null && !category.isValid(recipe) && items.parallelStream().noneMatch(customItem -> category.isValid(customItem.getItemStack().getType()))) {
-                                return false;
-                            }
-                            return switchCategory.isValid(recipe) || items.parallelStream().anyMatch(customItem -> switchCategory.isValid(customItem.getItemStack().getType()));
-                        }).map(ICustomRecipe::getRecipeBookItems).collect((Supplier<ArrayList<CustomItem>>) ArrayList::new,
-                                (customItems, itemsToAdd) -> customItems.addAll(itemsToAdd.stream().filter(item -> customItems.stream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())),
-                                (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.stream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())))
-                );
-            }
-            List<CustomItem> recipeItems = knowledgeBook.getRecipeItems(switchCategory);
-            int maxPages = recipeItems.size() / 45 + (recipeItems.size() % 45 > 0 ? 1 : 0);
-            if (knowledgeBook.getPage() >= maxPages) {
-                knowledgeBook.setPage(0);
-            }
-            if (knowledgeBook.getPage() != 0) {
-                event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
-            }
-            if (knowledgeBook.getPage() + 1 < maxPages) {
-                event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
-            }
-            int item = 0;
-            for (int i = 45 * knowledgeBook.getPage(); item < 45 && i < recipeItems.size(); i++) {
-                RecipeBookContainerButton button = (RecipeBookContainerButton) getButton("recipe_book.container_" + item);
-                button.setRecipeItem(event.getGuiHandler(), recipeItems.get(i));
-                event.setButton(9 + item, button);
-                item++;
+            if (knowledgeBook.getRecipeItems(switchCategory) != null) {
+                if (knowledgeBook.getRecipeItems(switchCategory).isEmpty()) {
+                    knowledgeBook.setRecipeItems(switchCategory, null);
+                    Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
+                        List<CustomItem> cachedItems = dataHandler.getIndexedRecipeItems(player, category, switchCategory).parallelStream()
+                                .map(ICustomRecipe::getRecipeBookItems).collect((Supplier<ArrayList<CustomItem>>) ArrayList::new,
+                                        (customItems, itemsToAdd) -> customItems.addAll(itemsToAdd.stream().filter(item -> customItems.parallelStream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())),
+                                        (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.parallelStream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())));
+                        knowledgeBook.setRecipeItems(switchCategory, !cachedItems.isEmpty() ? cachedItems : null);
+                        event.getGuiHandler().openWindow(this);
+                    });
+                    return;
+                }
+                List<CustomItem> recipeItems = new ArrayList<>(knowledgeBook.getRecipeItems(switchCategory));
+                int maxPages = recipeItems.size() / 45 + (recipeItems.size() % 45 > 0 ? 1 : 0);
+                if (knowledgeBook.getPage() >= maxPages) {
+                    knowledgeBook.setPage(0);
+                }
+                if (knowledgeBook.getPage() != 0) {
+                    event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
+                }
+                if (knowledgeBook.getPage() + 1 < maxPages) {
+                    event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
+                }
+                for (int item = 0, i = 45 * knowledgeBook.getPage(); item < 45 && i < recipeItems.size(); i++, item++) {
+                    RecipeBookContainerButton button = (RecipeBookContainerButton) getButton("recipe_book.container_" + item);
+                    if (button != null) {
+                        button.setRecipeItem(event.getGuiHandler(), recipeItems.get(i));
+                        event.setButton(9 + item, button);
+                    }
+                }
             }
         } else {
             List<ICustomRecipe<?>> recipes = knowledgeBook.getSubFolderRecipes();
@@ -189,5 +197,16 @@ public class RecipeBook extends CCWindow {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
+        for (int i = 0; i < 36; i++) {
+            Button<CCCache> btn = this.getCluster().getButton("ingredient.container_" + i);
+            if (btn instanceof IngredientContainerButton) {
+                ((IngredientContainerButton) btn).removeTask(guiHandler);
+            }
+        }
+        return super.onClose(guiHandler, guiInventory, transaction);
     }
 }

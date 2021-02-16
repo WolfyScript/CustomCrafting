@@ -107,7 +107,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     private void writeInput(int slot, JsonGenerator gen) throws IOException {
         gen.writeArrayFieldStart("input_"+(slot == 0 ? "left" : "right"));
         for (CustomItem customItem : this.ingredients.get(slot)) {
-            gen.writeObject(customItem.getApiReference());
+            saveCustomItem(customItem, gen);
         }
         gen.writeEndArray();
     }
@@ -248,7 +248,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
             {
                 gen.writeArrayFieldStart("result");
                 for (CustomItem customItem : result) {
-                    gen.writeObject(customItem.getApiReference());
+                    saveCustomItem(customItem, gen);
                 }
                 gen.writeEndArray();
             }

@@ -89,7 +89,7 @@ public class DataBaseHandler extends SQLDataBase {
                 try {
                     Registry.CUSTOM_ITEMS.register(new NamespacedKey(namespace, key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                 } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                    chat.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                 }
             } else {
                 chat.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacedkey or data!");

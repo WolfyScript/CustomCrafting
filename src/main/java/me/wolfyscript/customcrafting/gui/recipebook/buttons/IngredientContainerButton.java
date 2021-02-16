@@ -81,10 +81,10 @@ public class IngredientContainerButton extends Button<CCCache> {
                 List<ICustomRecipe<?>> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
                 if (!recipes.isEmpty()) {
                     GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
-                    for (int i = 0; i < 54; i++) {
+                    for (int i = 0; i < 36; i++) {
                         IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
                         if (button.getTask(guiHandler) != null) {
-                            button.setTask(guiHandler, null);
+                            button.removeTask(guiHandler);
                         }
                         button.removeVariants(guiHandler);
                         button.setTiming(guiHandler, 0);
@@ -109,8 +109,9 @@ public class IngredientContainerButton extends Button<CCCache> {
                 if (player != null && slot < inventory.getSize()) {
                     if (!variants.isEmpty()) {
                         int variant = getTiming(guiHandler);
-                        inventory.setItem(slot, variants.get(variant).create());
-                        setTiming(guiHandler, ++variant < variants.size() ? variant : 0);
+                        variant = ++variant < variants.size() ? variant : 0;
+                        guiInventory.setItem(slot, variants.get(variant).create());
+                        setTiming(guiHandler, variant);
                     }
                 }
             });
@@ -151,15 +152,27 @@ public class IngredientContainerButton extends Button<CCCache> {
     }
 
     public void setTask(GuiHandler<CCCache> guiHandler, Runnable task) {
-        tasksQueue.put(guiHandler, task);
+        synchronized (tasks) {
+            tasks.put(guiHandler, task);
+        }
+    }
+
+    public void removeTask(GuiHandler<CCCache> guiHandler) {
+        synchronized (tasks) {
+            tasks.remove(guiHandler);
+        }
     }
 
     public Runnable getTask(GuiHandler<CCCache> guiHandler) {
-        return tasks.get(guiHandler);
+        synchronized (tasks) {
+            return tasks.get(guiHandler);
+        }
     }
 
     public Collection<Runnable> getTasks() {
-        return tasks.values();
+        synchronized (tasks) {
+            return tasks.values();
+        }
     }
 
     public void updateTasks() {

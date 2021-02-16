@@ -3,11 +3,6 @@ authors: [ WolfyScript ]
 main: me.wolfyscript.customcrafting.CustomCrafting
 version: ${project.version}
 api-version: "1.14"
-
-softdepend:
-  - WolfyUtilities
-  - PlaceholderAPI
-  - MythicMobs
-  - Oraxen
-  - ItemsAdder
+depend: [ WolfyUtilities ]
+softdepend: [ PlaceholderAPI, MythicMobs, Oraxen, ItemsAdder ]
 description: Create your own custom recipes for workbenches and furnaces. Disable Vanilla recipes and more.

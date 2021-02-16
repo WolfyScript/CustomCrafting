@@ -248,14 +248,14 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
         {
             gen.writeArrayFieldStart("result");
             for (CustomItem customItem : getResults()) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }
         {
             gen.writeArrayFieldStart("ingredients");
             for (CustomItem customItem : getIngredients()) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }

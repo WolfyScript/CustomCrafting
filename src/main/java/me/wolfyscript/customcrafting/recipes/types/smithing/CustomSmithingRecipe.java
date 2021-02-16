@@ -123,21 +123,21 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
         {
             gen.writeArrayFieldStart("result");
             for (CustomItem customItem : result) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }
         {
             gen.writeArrayFieldStart("base");
             for (CustomItem customItem : base) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }
         {
             gen.writeArrayFieldStart("addition");
             for (CustomItem customItem : addition) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }

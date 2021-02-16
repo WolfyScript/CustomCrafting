@@ -153,21 +153,21 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
         {
             gen.writeArrayFieldStart("result");
             for (CustomItem customItem : result) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }
         {
             gen.writeArrayFieldStart("input_top");
             for (CustomItem customItem : getInputTop()) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }
         {
             gen.writeArrayFieldStart("input_bottom");
             for (CustomItem customItem : getInputBottom()) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }

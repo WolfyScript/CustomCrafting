@@ -24,7 +24,7 @@ public class KnowledgeBook {
     private BukkitTask timerTask;
     private HashMap<Integer, Integer> timerTimings;
     private int page, subFolderPage;
-    private Map<Category, Map<Category, List<CustomItem>>> cachedCategoryItems;
+    private final Map<Category, Map<Category, List<CustomItem>>> cachedCategoryItems;
     private Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
 
@@ -136,12 +136,12 @@ public class KnowledgeBook {
         return getResearchItems().get(0);
     }
 
-    public List<CustomItem> getRecipeItems(Category switchCategory) {
+    synchronized public List<CustomItem> getRecipeItems(Category switchCategory) {
         Map<Category, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
         return cachedItems.getOrDefault(switchCategory, new ArrayList<>());
     }
 
-    public void setRecipeItems(Category switchCategory, List<CustomItem> recipeItems) {
+    synchronized public void setRecipeItems(Category switchCategory, List<CustomItem> recipeItems) {
         Map<Category, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
         cachedItems.put(switchCategory, recipeItems);
         this.cachedCategoryItems.put(category, cachedItems);
@@ -159,8 +159,8 @@ public class KnowledgeBook {
         recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
     }
 
-    public void setCachedCategoryItems(Map<Category, Map<Category, List<CustomItem>>> cachedCategoryItems) {
-        this.cachedCategoryItems = cachedCategoryItems;
+    public void resetCachedCategoryItems() {
+        this.cachedCategoryItems.clear();
     }
 
     public void setCachedSubFolderRecipes(Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes) {

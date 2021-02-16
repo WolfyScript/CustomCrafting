@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -13,6 +12,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonType;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -74,14 +74,23 @@ public class ItemCategoryButton extends Button<CCCache> {
 
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
-        if (!categories.getSortedSwitchCategories().isEmpty()) {
-            int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
-            if (currentIndex < categories.getSortedSwitchCategories().size() - 1) {
-                categoryMap.put(guiHandler, currentIndex + 1);
-            } else {
-                categoryMap.put(guiHandler, 0);
+        if (event instanceof InventoryClickEvent) {
+            if (!categories.getSortedSwitchCategories().isEmpty()) {
+                int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
+                if (((InventoryClickEvent) event).isLeftClick()) {
+                    if (currentIndex < categories.getSortedSwitchCategories().size() - 1) {
+                        categoryMap.put(guiHandler, currentIndex + 1);
+                    } else {
+                        categoryMap.put(guiHandler, 0);
+                    }
+                } else {
+                    if (currentIndex > 0) {
+                        categoryMap.put(guiHandler, currentIndex - 1);
+                    } else {
+                        categoryMap.put(guiHandler, categories.getSortedSwitchCategories().size() - 1);
+                    }
+                }
             }
-            KnowledgeBook knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
         }
         return true;
     }

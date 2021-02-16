@@ -4,6 +4,7 @@ import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -43,10 +44,12 @@ public class DataHandler {
     public static final File DATA_FOLDER = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
     private final Categories categories;
-    private final List<NamespacedKey> disabledRecipes = new ArrayList<>();
+    private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 
     private final Map<NamespacedKey, ICustomRecipe<?>> customRecipes = new TreeMap<>();
+
+    private final Map<Category, Map<Category, List<ICustomRecipe<?>>>> indexedCategoryRecipes;
 
     private final MainConfig mainConfig;
     private final WolfyUtilities api;
@@ -60,6 +63,7 @@ public class DataHandler {
         this.customCrafting = customCrafting;
         this.categories = customCrafting.getConfigHandler().getRecipeBook().getCategories();
         this.objectMapper = JacksonUtil.getObjectMapper();
+        this.indexedCategoryRecipes = new HashMap<>();
     }
 
     public void load(boolean update) {
@@ -108,9 +112,6 @@ public class DataHandler {
 
     private void loadConfigs() {
         chat.sendConsoleMessage("- - - - [Local Storage] - - - -");
-        if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
-            disabledRecipes.addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
-        }
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
             for (String dir : dirs) {
@@ -145,8 +146,7 @@ public class DataHandler {
             try {
                 Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
             } catch (IOException e) {
-                customCrafting.getLogger().severe(String.format("Could not load item '%s'! ", namespacedKey.toString()));
-                e.printStackTrace();
+                customCrafting.getLogger().severe(String.format("Could not load item '%s': %s", namespacedKey.toString(), e.getMessage()));
             }
         }
     }
@@ -158,8 +158,7 @@ public class DataHandler {
             try {
                 injectRecipe(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                customCrafting.getLogger().severe(String.format("Could not load recipe '%s'! ", namespacedKey.toString()));
-                e.printStackTrace();
+                customCrafting.getLogger().severe(String.format("Could not load recipe '%s': %s", namespacedKey.toString(), e.getMessage()));
             }
         }
     }
@@ -216,8 +215,36 @@ public class DataHandler {
         }
     }
 
-    /*
-        Get all the Recipes from this group
+    public List<ICustomRecipe<?>> getIndexedRecipeItems(Player player, Category mainCategory, Category switchCategory) {
+        return getAvailable(indexedCategoryRecipes.getOrDefault(mainCategory, new HashMap<>()).getOrDefault(switchCategory, new ArrayList<>()), player);
+    }
+
+    /**
+     * Indexes the recipes for all the available categories.
+     * <p>
+     * If there are already indexed recipes they will be cleared and re-indexed.
+     */
+    public void indexRecipeItems() {
+        chat.sendConsoleMessage("Indexing Recipes for Recipe Book...");
+        indexedCategoryRecipes.clear();
+        for (Category mainCategory : categories.getMainCategories().values()) {
+            Map<Category, List<ICustomRecipe<?>>> indexSwitchCategories = new HashMap<>();
+            for (Category switchCategory : categories.getSwitchCategories().values()) {
+                indexSwitchCategories.put(switchCategory, getAvailableRecipes().parallelStream().filter(recipe -> {
+                    if (switchCategory == null) return true;
+                    List<CustomItem> items = recipe.getRecipeBookItems();
+                    if (mainCategory != null && !mainCategory.isValid(recipe) && items.parallelStream().noneMatch(customItem -> mainCategory.isValid(customItem.getItemStack().getType()))) {
+                        return false;
+                    }
+                    return switchCategory.isValid(recipe) || items.parallelStream().anyMatch(customItem -> switchCategory.isValid(customItem.getItemStack().getType()));
+                }).collect(Collectors.toList()));
+            }
+            indexedCategoryRecipes.put(mainCategory, indexSwitchCategories);
+        }
+    }
+
+    /**
+     * Get all the Recipes from this group
      */
     public List<ICustomRecipe<?>> getRecipeGroup(String group) {
         return customRecipes.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
@@ -350,16 +377,16 @@ public class DataHandler {
         return getAvailable(getAvailableRecipes(type), player);
     }
 
-    private <T extends ICustomRecipe<?>> List<T> getAvailable(List<T> recipes, Player player) {
+    synchronized private <T extends ICustomRecipe<?>> List<T> getAvailable(List<T> recipes, Player player) {
         if (player != null) {
             recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         }
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         return recipes;
     }
-
     //DISABLED RECIPES AND GET ALL RECIPES
-    public List<NamespacedKey> getDisabledRecipes() {
+
+    public Set<NamespacedKey> getDisabledRecipes() {
         return disabledRecipes;
     }
 
@@ -397,22 +424,19 @@ public class DataHandler {
             iterator.remove();
         }
         if (!items.isEmpty()) {
-            while (!isColumnOccupied(items, 0)) {
-            }
-            boolean columnBlocked = false;
-            for (int i = items.get(0).size() - 1; !columnBlocked && i > 0; i--) {
-                if (isColumnOccupied(items, i)) {
-                    columnBlocked = true;
-                }
-            }
+            isColumnOccupied(items, -1);
+            isColumnOccupied(items, items.get(0).size());
         }
         return items;
     }
 
-    private boolean isColumnOccupied(List<List<ItemStack>> items, int column) {
-        if (items.parallelStream().anyMatch(item -> item.get(column) != null)) return true;
-        items.forEach(item -> item.remove(column));
-        return false;
+    private void isColumnOccupied(List<List<ItemStack>> items, int column) {
+        int columnToCheck = column <= -1 ? 0 : --column;
+        if (items.size() > 0 && columnToCheck >= 0 && columnToCheck < items.get(0).size()) {
+            if (items.parallelStream().anyMatch(item -> item.get(columnToCheck) != null)) return;
+            items.forEach(item -> item.remove(columnToCheck));
+            isColumnOccupied(items, columnToCheck);
+        }
     }
 
     public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<CCCache> guiHandler) {

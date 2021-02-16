@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
@@ -163,5 +164,13 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
         gen.writeStringField("priority", priority.toString());
         gen.writeBooleanField("exactItemMeta", exactMeta);
         gen.writeObjectField("conditions", conditions);
+    }
+
+    protected void saveCustomItem(CustomItem customItem, JsonGenerator gen) throws IOException {
+        if (customItem.hasNamespacedKey()) {
+            gen.writeObject(new WolfyUtilitiesRef(customItem.getNamespacedKey()));
+        } else {
+            gen.writeObject(customItem.getApiReference());
+        }
     }
 }

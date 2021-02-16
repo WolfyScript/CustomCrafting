@@ -6,7 +6,9 @@ import me.wolfyscript.utilities.api.config.YamlConfiguration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MainConfig extends YamlConfiguration {
@@ -71,11 +73,11 @@ public class MainConfig extends YamlConfiguration {
         return getBoolean("data.auto_save.message");
     }
 
-    public List<String> getDisabledRecipes() {
-        return getStringList("recipes.disabled_recipes");
+    public Set<String> getDisabledRecipes() {
+        return new HashSet<>(getStringList("recipes.disabled_recipes"));
     }
 
-    public void setDisabledRecipes(List<NamespacedKey> recipes) {
+    public void setDisabledRecipes(Set<NamespacedKey> recipes) {
         set("recipes.disabled_recipes", recipes.parallelStream().map(NamespacedKey::toString).collect(Collectors.toList()));
     }
 

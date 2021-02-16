@@ -55,9 +55,12 @@ public class CraftListener implements Listener {
                 return;
             }
             if (recipeUtils.has(event.getWhoClicked().getUniqueId())) {
+                inventory.setResult(ItemUtils.AIR);
                 event.setCancelled(true);
                 ItemStack[] matrix = inventory.getMatrix();
                 recipeUtils.consumeRecipe(resultItem, matrix, event);
+                //inventory.setMatrix(new ItemStack[9]);
+                //inventory.setMatrix(matrix);
                 //Possible if there are some tick/timing base issues! inventory.setMatrix(new ItemStack[9]);
                 Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix));
                 recipeUtils.remove(event.getWhoClicked().getUniqueId());

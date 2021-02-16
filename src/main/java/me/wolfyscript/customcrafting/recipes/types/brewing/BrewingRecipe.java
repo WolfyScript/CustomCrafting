@@ -261,7 +261,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
         gen.writeArrayFieldStart("ingredients");
         for (CustomItem customItem : getIngredients()) {
-            gen.writeObject(customItem.getApiReference());
+            saveCustomItem(customItem, gen);
         }
         gen.writeEndArray();
 
@@ -270,13 +270,13 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
         gen.writeArrayFieldStart("allowed_items");
         for (CustomItem customItem : getAllowedItems()) {
-            gen.writeObject(customItem.getApiReference());
+            saveCustomItem(customItem, gen);
         }
         gen.writeEndArray();
 
         gen.writeArrayFieldStart("results");
         for (CustomItem customItem : getResults()) {
-            gen.writeObject(customItem.getApiReference());
+            saveCustomItem(customItem, gen);
         }
         gen.writeEndArray();
 

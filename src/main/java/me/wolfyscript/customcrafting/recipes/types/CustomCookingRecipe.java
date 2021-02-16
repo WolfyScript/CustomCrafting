@@ -183,14 +183,14 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         {
             gen.writeArrayFieldStart("result");
             for (CustomItem customItem : result) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }
         {
             gen.writeArrayFieldStart("source");
             for (CustomItem customItem : source) {
-                gen.writeObject(customItem.getApiReference());
+                saveCustomItem(customItem, gen);
             }
             gen.writeEndArray();
         }

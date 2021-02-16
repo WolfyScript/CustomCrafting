@@ -89,6 +89,14 @@ public class Categories {
         return getMainCategory(getSortedMainCategories().get(index));
     }
 
+    public HashMap<String, Category> getMainCategories() {
+        return mainCategories;
+    }
+
+    public HashMap<String, Category> getSwitchCategories() {
+        return switchCategories;
+    }
+
     public List<String> getSortedSwitchCategories() {
         return sortedSwitchCategories;
     }
