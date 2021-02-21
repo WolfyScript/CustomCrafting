@@ -261,8 +261,12 @@ public class DataHandler {
     public Stream<CraftingRecipe<?>> getSimilarRecipesStream(List<List<ItemStack>> items, boolean elite, boolean advanced) {
         final long size = items.stream().flatMap(Collection::parallelStream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
         List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
-        if (elite) craftingRecipes.addAll(getRecipes(Types.ELITE_WORKBENCH));
-        if (advanced) craftingRecipes.addAll(getRecipes(Types.WORKBENCH));
+        if (elite) {
+            craftingRecipes.addAll(getRecipes(Types.ELITE_WORKBENCH));
+        }
+        if (advanced) {
+            craftingRecipes.addAll(getRecipes(Types.WORKBENCH));
+        }
         final int itemsSize = items.size();
         final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
         return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {

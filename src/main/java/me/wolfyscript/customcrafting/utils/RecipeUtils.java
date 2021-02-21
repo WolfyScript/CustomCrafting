@@ -14,6 +14,7 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -27,9 +28,12 @@ public class RecipeUtils {
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final Map<UUID, Map<NamespacedKey, CustomItem>> preCraftedItems = new HashMap<>();
     private final CustomCrafting customCrafting;
+    private final DataHandler dataHandler;
 
     public RecipeUtils(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
+        this.dataHandler = customCrafting.getRecipeHandler();
+
     }
 
     public ItemStack preCheckRecipe(ItemStack[] matrix, Player player, boolean isRepair, Inventory inventory, boolean elite, boolean advanced) {
@@ -37,17 +41,17 @@ public class RecipeUtils {
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             return null;
         }
-        DataHandler dataHandler = customCrafting.getRecipeHandler();
         List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
-        CustomItem customItem = dataHandler.getSimilarRecipesStream(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, inventory, dataHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
+        Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
+        CustomItem customItem = dataHandler.getSimilarRecipesStream(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory, dataHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
         return customItem == null ? null : customItem.create();
     }
 
-    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Inventory inventory, DataHandler dataHandler, boolean isRepair) {
+    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Block block, Inventory inventory, DataHandler dataHandler, boolean isRepair) {
         if (dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey())) {
             return null; //No longer call Event if recipe is disabled!
         }
-        CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, player.getTargetBlock(null, 5), player.getOpenInventory())) ? recipe.check(matrix) : null;
+        CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix) : null;
         CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(craftingData == null, isRepair, recipe, inventory, matrix);
         Bukkit.getPluginManager().callEvent(customPreCraftEvent); //The event is still called even if the recipe is invalid! This will allow other plugins to manipulate their own recipes or use their own checks!
         if (!customPreCraftEvent.isCancelled()) {
@@ -88,7 +92,7 @@ public class RecipeUtils {
                     }
                 });
                 if (event.isShiftClick()) {
-                    List<List<ItemStack>> ingredients = customCrafting.getRecipeHandler().getIngredients(matrix);
+                    List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
                     int possible = Math.min(InventoryUtils.getInventorySpace(inventoryView.getBottomInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData));
                     if (possible > 0) {
                         recipe.removeMatrix(ingredients, inventory, possible, craftingData);
@@ -100,7 +104,7 @@ public class RecipeUtils {
                 } else if (!event.isShiftClick()) {
                     ItemStack cursor = inventoryView.getCursor();
                     if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.getAmount() + result.getAmount() <= cursor.getMaxStackSize())) {
-                        recipe.removeMatrix(customCrafting.getRecipeHandler().getIngredients(matrix), inventory, 1, craftingData);
+                        recipe.removeMatrix(dataHandler.getIngredients(matrix), inventory, 1, craftingData);
                         if (ItemUtils.isAirOrNull(cursor)) {
                             inventoryView.setCursor(result);
                         } else {
