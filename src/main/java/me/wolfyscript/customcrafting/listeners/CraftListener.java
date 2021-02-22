@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -55,21 +56,19 @@ public class CraftListener implements Listener {
                 return;
             }
             if (recipeUtils.has(event.getWhoClicked().getUniqueId())) {
-                inventory.setResult(ItemUtils.AIR);
+                //inventory.setResult(ItemUtils.AIR);
                 event.setCancelled(true);
                 ItemStack[] matrix = inventory.getMatrix();
                 recipeUtils.consumeRecipe(resultItem, matrix, event);
-                //inventory.setMatrix(new ItemStack[9]);
-                //inventory.setMatrix(matrix);
-                //Possible if there are some tick/timing base issues! inventory.setMatrix(new ItemStack[9]);
+                //Possible that there are some tick/timing base issues! inventory.setMatrix(new ItemStack[9]);
                 Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix));
                 recipeUtils.remove(event.getWhoClicked().getUniqueId());
             }
-        } else {
-            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+        } else if ((event.getAction().equals(InventoryAction.PLACE_ALL) || event.getAction().equals(InventoryAction.PLACE_ONE) || event.getAction().equals(InventoryAction.PLACE_SOME)) && inventory.getItem(event.getSlot()) != null) {
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
                 PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(inventory, event.getView(), false);
                 Bukkit.getPluginManager().callEvent(event1);
-            }, 1);
+            });
         }
     }
 

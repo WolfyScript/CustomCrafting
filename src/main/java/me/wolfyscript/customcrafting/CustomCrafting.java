@@ -147,7 +147,6 @@ public class CustomCrafting extends JavaPlugin {
         }
         System.out.println("------------------------------------------------------------------------");
 
-        recipeUtils = new RecipeUtils(this);
         chatUtils = new ChatUtils(this);
         configHandler = new ConfigHandler(this);
         if (configHandler.getConfig().isDatabaseEnabled()) {
@@ -160,6 +159,8 @@ public class CustomCrafting extends JavaPlugin {
             e.printStackTrace();
         }
         dataHandler = new DataHandler(this);
+
+        recipeUtils = new RecipeUtils(this);
 
         inventoryHandler = new InventoryHandler(this);
 
