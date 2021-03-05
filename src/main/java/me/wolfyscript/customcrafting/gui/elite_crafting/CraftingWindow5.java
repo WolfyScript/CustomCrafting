@@ -37,7 +37,7 @@ public class CraftingWindow5 extends CraftingWindow {
         CCCache cache = event.getGuiHandler().getCustomCache();
         EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
         if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
-            eliteWorkbench.setCurrentGridSize(5);
+            eliteWorkbench.setCurrentGridSize((byte) 5);
             eliteWorkbench.setContents(new ItemStack[25]);
         }
 

@@ -4,7 +4,10 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.lists.CustomItemList;
 import me.wolfyscript.customcrafting.gui.lists.RecipesList;
-import me.wolfyscript.customcrafting.gui.main_gui.*;
+import me.wolfyscript.customcrafting.gui.main_gui.ItemEditor;
+import me.wolfyscript.customcrafting.gui.main_gui.MainMenu;
+import me.wolfyscript.customcrafting.gui.main_gui.PatronsMenu;
+import me.wolfyscript.customcrafting.gui.main_gui.Settings;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -28,7 +31,6 @@ public class MainCluster extends CCCluster {
         registerButton(new DummyButton<>("glass_red", new ButtonState<>("background", Material.RED_STAINED_GLASS_PANE)));
 
         registerButton(new DummyButton<>("glass_white", new ButtonState<>("background", Material.WHITE_STAINED_GLASS_PANE)));
-
         registerButton(new DummyButton<>("glass_green", new ButtonState<>("background", Material.GREEN_STAINED_GLASS_PANE)));
         registerButton(new DummyButton<>("glass_purple", new ButtonState<>("background", Material.PURPLE_STAINED_GLASS_PANE)));
         registerButton(new DummyButton<>("glass_pink", new ButtonState<>("background", Material.PINK_STAINED_GLASS_PANE)));
@@ -74,7 +76,6 @@ public class MainCluster extends CCCluster {
         registerGuiWindow(new MainMenu(this, customCrafting));
         registerGuiWindow(new ItemEditor(this, customCrafting));
         registerGuiWindow(new CustomItemList(this, customCrafting));
-        registerGuiWindow(new RecipeEditor(this, customCrafting));
         registerGuiWindow(new RecipesList(this, customCrafting));
         registerGuiWindow(new Settings(this, customCrafting));
         registerGuiWindow(new PatronsMenu(this, customCrafting));

@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilData;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -79,7 +80,7 @@ public class AnvilListener implements Listener {
 
             //RECIPE RESULTS!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                result = new ItemBuilder(recipe.getResult().create());
+                result = new ItemBuilder(recipe.getResult() != null ? recipe.getResult().create() : ItemUtils.AIR);
             } else {
                 result = new ItemBuilder(event.getResult());
                 if (result.create().hasItemMeta()) {

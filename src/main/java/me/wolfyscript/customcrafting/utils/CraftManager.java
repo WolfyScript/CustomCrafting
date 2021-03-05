@@ -23,14 +23,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class RecipeUtils {
+public class CraftManager {
 
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final Map<UUID, Map<NamespacedKey, CustomItem>> preCraftedItems = new HashMap<>();
     private final CustomCrafting customCrafting;
     private final DataHandler dataHandler;
 
-    public RecipeUtils(CustomCrafting customCrafting) {
+    public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.dataHandler = customCrafting.getRecipeHandler();
     }
@@ -104,13 +104,16 @@ public class RecipeUtils {
                     ItemStack cursor = inventoryView.getCursor();
                     if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.getAmount() + result.getAmount() <= cursor.getMaxStackSize())) {
                         recipe.removeMatrix(dataHandler.getIngredients(matrix), inventory, 1, craftingData);
-                        if (ItemUtils.isAirOrNull(cursor)) {
-                            inventoryView.setCursor(result);
-                        } else {
-                            cursor.setAmount(cursor.getAmount() + result.getAmount());
-                        }
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
+                            if (ItemUtils.isAirOrNull(cursor)) {
+                                inventoryView.setCursor(result);
+                            } else {
+                                cursor.setAmount(cursor.getAmount() + result.getAmount());
+                            }
+                        }, 2);
                         getPreCraftedItems(player.getUniqueId()).remove(recipe.getNamespacedKey());
                     }
+
                 }
             }
             remove(event.getWhoClicked().getUniqueId());

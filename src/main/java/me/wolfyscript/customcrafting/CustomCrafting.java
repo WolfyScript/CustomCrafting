@@ -17,7 +17,7 @@ import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.customcrafting.utils.RecipeUtils;
+import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -34,8 +34,11 @@ import me.wolfyscript.utilities.util.world.WorldUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -69,7 +72,7 @@ public class CustomCrafting extends JavaPlugin {
     private static DataHandler dataHandler;
     private static DataBaseHandler dataBaseHandler = null;
     private InventoryHandler inventoryHandler;
-    private RecipeUtils recipeUtils;
+    private CraftManager craftManager;
     private Patreon patreon;
 
     //Utils
@@ -160,7 +163,7 @@ public class CustomCrafting extends JavaPlugin {
         }
         dataHandler = new DataHandler(this);
 
-        recipeUtils = new RecipeUtils(this);
+        craftManager = new CraftManager(this);
 
         inventoryHandler = new InventoryHandler(this);
 
@@ -221,6 +224,12 @@ public class CustomCrafting extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
 
+
+        ShapelessRecipe shapelessRecipe = new ShapelessRecipe(new org.bukkit.NamespacedKey(this, "internal/data/placeholder"), new ItemStack(Material.STONE));
+        shapelessRecipe.addIngredient(Material.STONE);
+        Bukkit.addRecipe(shapelessRecipe);
+
+
         System.out.println("------------------------------------------------------------------------");
     }
 
@@ -263,8 +272,8 @@ public class CustomCrafting extends JavaPlugin {
         return inventoryHandler;
     }
 
-    public RecipeUtils getRecipeUtils() {
-        return recipeUtils;
+    public CraftManager getRecipeUtils() {
+        return craftManager;
     }
 
     public ChatUtils getChatUtils() {

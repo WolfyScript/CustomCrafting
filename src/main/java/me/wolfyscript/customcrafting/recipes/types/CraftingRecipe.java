@@ -34,6 +34,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     protected List<CustomItem> result;
     protected Map<Character, List<CustomItem>> ingredients;
 
+    protected List<List<CustomItem>> items;
+
     protected int bookGridSize = 3;
     protected int bookSquaredGrid = 9;
 

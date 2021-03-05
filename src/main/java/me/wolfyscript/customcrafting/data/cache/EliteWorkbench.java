@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class EliteWorkbench {
 
-    private int currentGridSize;
+    private byte currentGridSize;
     private EliteWorkbenchData eliteWorkbench;
     private ItemStack result;
     private ItemStack[] contents;
@@ -25,11 +25,11 @@ public class EliteWorkbench {
         this.contents = contents;
     }
 
-    public int getCurrentGridSize() {
+    public byte getCurrentGridSize() {
         return currentGridSize;
     }
 
-    public void setCurrentGridSize(int currentGridSize) {
+    public void setCurrentGridSize(byte currentGridSize) {
         this.currentGridSize = currentGridSize;
     }
 

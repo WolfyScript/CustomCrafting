@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
+import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -7,14 +8,18 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapelessRecipe;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements IShapelessCraftingRecipe {
+public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements IShapelessCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
 
     public ShapelessCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -29,10 +34,6 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
     public ShapelessCraftRecipe(AdvancedCraftingRecipe craftingRecipe) {
         super(craftingRecipe);
         this.shapeless = true;
-    }
-
-    public ShapelessCraftRecipe(ShapelessCraftRecipe craftingRecipe) {
-        this((AdvancedCraftingRecipe) craftingRecipe);
     }
 
     @Override
@@ -73,5 +74,20 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("shapeless", true);
+    }
+
+    @Override
+    public ShapelessRecipe getVanillaRecipe() {
+        if (!allowVanillaRecipe()) {
+            if (!ItemUtils.isAirOrNull(getResult())) {
+                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResult().create());
+                for (List<CustomItem> value : getIngredients().values()) {
+                    shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
+                }
+                shapelessRecipe.setGroup(getGroup());
+                return shapelessRecipe;
+            }
+        }
+        return null;
     }
 }

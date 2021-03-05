@@ -10,7 +10,6 @@ public class ChatLists {
     private String lastUsedRecipe;
     private NamespacedKey lastUsedItem;
 
-
     public ChatLists() {
         this.currentPageRecipes = 1;
         this.currentPageItems = 1;

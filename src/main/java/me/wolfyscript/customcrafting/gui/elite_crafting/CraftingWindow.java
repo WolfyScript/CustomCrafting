@@ -52,7 +52,7 @@ public abstract class CraftingWindow extends CCWindow {
         eliteWorkbench.setEliteWorkbenchData(null);
         eliteWorkbench.setResult(new ItemStack(Material.AIR));
         eliteWorkbench.setContents(null);
-        eliteWorkbench.setCurrentGridSize(0);
+        eliteWorkbench.setCurrentGridSize((byte) 0);
         return false;
     }
 

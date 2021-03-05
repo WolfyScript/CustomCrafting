@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
+import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -9,16 +10,22 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.Seriali
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RecipeUtil;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe {
+public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
 
+    private int width;
+    private int height;
     private String[] shape, shapeMirrorHorizontal, shapeMirrorVertical, shapeRotated;
     private boolean mirrorHorizontal, mirrorVertical, mirrorRotation;
 
@@ -27,9 +34,9 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         this.shapeless = false;
         constructShape();
         JsonNode mirrorNode = node.path("mirror");
-        this.mirrorHorizontal = mirrorNode.get("horizontal").asBoolean(true);
-        this.mirrorVertical = mirrorNode.get("vertical").asBoolean(false);
-        this.mirrorRotation = mirrorNode.get("rotation").asBoolean(false);
+        this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(false);
+        this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
+        this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
 
     public ShapedCraftRecipe() {
@@ -40,22 +47,21 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         this.mirrorRotation = false;
     }
 
-    public ShapedCraftRecipe(ShapedCraftRecipe craftingRecipe) {
-        super(craftingRecipe);
-        this.shapeless = false;
-        constructShape();
-        this.mirrorHorizontal = craftingRecipe.mirrorHorizontal();
-        this.mirrorVertical = craftingRecipe.mirrorVertical();
-        this.mirrorRotation = craftingRecipe.mirrorRotation();
-    }
-
     public ShapedCraftRecipe(AdvancedCraftingRecipe craftingRecipe) {
         super(craftingRecipe);
         this.shapeless = false;
         constructShape();
-        this.mirrorHorizontal = true;
-        this.mirrorVertical = false;
-        this.mirrorRotation = false;
+        if (craftingRecipe instanceof ShapedCraftRecipe) {
+            this.width = ((ShapedCraftRecipe) craftingRecipe).width;
+            this.height = ((ShapedCraftRecipe) craftingRecipe).height;
+            this.mirrorHorizontal = ((ShapedCraftRecipe) craftingRecipe).mirrorHorizontal();
+            this.mirrorVertical = ((ShapedCraftRecipe) craftingRecipe).mirrorVertical();
+            this.mirrorRotation = ((ShapedCraftRecipe) craftingRecipe).mirrorRotation();
+        } else {
+            this.mirrorHorizontal = true;
+            this.mirrorVertical = false;
+            this.mirrorRotation = false;
+        }
     }
 
     @Override
@@ -131,7 +137,6 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
             return craftingData;
         }
         return null;
-
     }
 
     private CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape) {
@@ -207,6 +212,9 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         for (int i = 0; i < this.shapeRotated.length; i++) {
             this.shapeRotated[i] = new StringBuilder(this.shapeRotated[i]).reverse().toString();
         }
+        //Set Recipe Width and Height
+        this.width = this.shape.length > 0 ? this.shape[0].length() : 0;
+        this.height = this.shape.length;
     }
 
     @Override
@@ -217,5 +225,19 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         gen.writeBooleanField("vertical", this.mirrorVertical);
         gen.writeBooleanField("rotation", this.mirrorRotation);
         gen.writeEndObject();
+    }
+
+    @Override
+    public ShapedRecipe getVanillaRecipe() {
+        if (!allowVanillaRecipe()) {
+            if (!ItemUtils.isAirOrNull(getResult()) && this.width > 0) {
+                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResult().create());
+                recipe.shape(shape);
+                getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
+                recipe.setGroup(getGroup());
+                return recipe;
+            }
+        }
+        return null;
     }
 }

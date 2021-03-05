@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
-import me.wolfyscript.customcrafting.utils.RecipeUtils;
+import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,12 +28,12 @@ import java.util.stream.Stream;
 public class CraftListener implements Listener {
 
     private final CustomCrafting customCrafting;
-    private final RecipeUtils recipeUtils;
+    private final CraftManager craftManager;
     private final WolfyUtilities api;
 
     public CraftListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.recipeUtils = customCrafting.getRecipeUtils();
+        this.craftManager = customCrafting.getRecipeUtils();
         this.api = WolfyUtilities.get(customCrafting);
     }
 
@@ -55,14 +56,15 @@ public class CraftListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (recipeUtils.has(event.getWhoClicked().getUniqueId())) {
+            if (craftManager.has(event.getWhoClicked().getUniqueId())) {
                 //inventory.setResult(ItemUtils.AIR);
-                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
                 ItemStack[] matrix = inventory.getMatrix();
-                recipeUtils.consumeRecipe(resultItem, matrix, event);
-                //Possible that there are some tick/timing base issues! inventory.setMatrix(new ItemStack[9]);
-                Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix));
-                recipeUtils.remove(event.getWhoClicked().getUniqueId());
+                craftManager.consumeRecipe(resultItem, matrix, event);
+                //TODO: Items still bug a bit when crafting.
+                //((Player) event.getWhoClicked()).updateInventory(); //This helps, but the bug is not gone completely. Assumption: The crafting logic of vanilla minecraft is called afterwards and bugs the items, because there is no actual recipe registered.
+                Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix)); // Setting the matrix 1 tick later overrides the bugged items. Setting it directly will also cause the newly set items to bug.
+                craftManager.remove(event.getWhoClicked().getUniqueId());
             }
         } else if ((event.getAction().equals(InventoryAction.PLACE_ALL) || event.getAction().equals(InventoryAction.PLACE_ONE) || event.getAction().equals(InventoryAction.PLACE_SOME)) && inventory.getItem(event.getSlot()) != null) {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
@@ -78,8 +80,9 @@ public class CraftListener implements Listener {
         try {
             DataHandler dataHandler = customCrafting.getRecipeHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
-            ItemStack result = recipeUtils.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
+            ItemStack result = craftManager.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
+                //api.getNmsUtil().getInventoryUtil().setCurrentRecipe(e.getInventory(), org.bukkit.NamespacedKey.minecraft());
                 e.getInventory().setResult(result);
                 return;
             }
@@ -106,7 +109,7 @@ public class CraftListener implements Listener {
             CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             ex.printStackTrace();
             CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
-            recipeUtils.remove(player.getUniqueId());
+            craftManager.remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }
