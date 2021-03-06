@@ -6,8 +6,8 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -42,17 +42,10 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     public CustomStonecutterRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         {
+            this.result = new ArrayList<>();
+            ItemLoader.loadToList(node.path("result"), this.result);
             List<CustomItem> sources = new ArrayList<>();
-            JsonNode sourceNode = node.path("source");
-            if (sourceNode.isObject()) {
-                sources.add(CustomItem.of(mapper.convertValue(sourceNode, APIReference.class)));
-                JsonNode variantsNode = sourceNode.path("variants");
-                for (JsonNode jsonNode : variantsNode) {
-                    sources.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class)));
-                }
-            } else {
-                sourceNode.elements().forEachRemaining(n -> sources.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
-            }
+            node.path("source").elements().forEachRemaining(n -> ItemLoader.loadToList(n, sources));
             this.source = sources.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
         }
     }
@@ -139,7 +132,10 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
-        RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
-        return new StonecuttingRecipe(namespacedKey.toBukkit(), getResult().create(), choice);
+        if (getResult() != null) {
+            RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
+            return new StonecuttingRecipe(namespacedKey.toBukkit(), getResult().create(), choice);
+        }
+        return null;
     }
 }

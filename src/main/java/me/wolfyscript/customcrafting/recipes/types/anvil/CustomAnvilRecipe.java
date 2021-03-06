@@ -5,8 +5,8 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -56,13 +56,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
             this.durability = modeNode.path("durability").asInt(0);
             {
                 List<CustomItem> results = new ArrayList<>();
-                JsonNode resultNode = modeNode.path("result");
-                if (resultNode.isObject()) {
-                    results.add(CustomItem.of(mapper.convertValue(resultNode, APIReference.class)));
-                    resultNode.path("variants").forEach(jsonNode -> results.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class))));
-                } else {
-                    resultNode.elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
-                }
+                modeNode.path("result").elements().forEachRemaining(n -> ItemLoader.loadToList(n, results));
                 this.result = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
             }
         }
@@ -100,7 +94,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     private void readInput(int slot, JsonNode node) {
         List<CustomItem> results = new ArrayList<>();
-        node.path("input_" + (slot == 0 ? "left" : "right")).elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
+        node.path("input_" + (slot == 0 ? "left" : "right")).elements().forEachRemaining(n -> ItemLoader.loadToList(n, results));
         this.ingredients.put(slot, results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
     }
 

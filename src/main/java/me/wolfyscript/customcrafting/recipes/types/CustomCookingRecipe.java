@@ -6,9 +6,9 @@ import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -43,16 +43,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         this.cookingTime = node.path("cooking_time").asInt();
         {
             List<CustomItem> results = new ArrayList<>();
-            JsonNode resultNode = node.path("source");
-            if (resultNode.isObject()) {
-                results.add(CustomItem.of(mapper.convertValue(resultNode, APIReference.class)));
-                JsonNode variantsNode = resultNode.path("variants");
-                for (JsonNode jsonNode : variantsNode) {
-                    results.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class)));
-                }
-            } else {
-                resultNode.elements().forEachRemaining(n -> results.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
-            }
+            node.path("source").elements().forEachRemaining(n -> ItemLoader.loadToList(n, results));
             this.source = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
         }
     }

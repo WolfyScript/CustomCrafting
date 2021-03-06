@@ -6,8 +6,8 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -33,9 +33,9 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
 
     public CustomSmithingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        base = Streams.stream(node.path("base").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
-        addition = Streams.stream(node.path("addition").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
-        result = Streams.stream(node.path("result").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        base = Streams.stream(node.path("base").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        addition = Streams.stream(node.path("addition").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        result = Streams.stream(node.path("result").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
     }
 

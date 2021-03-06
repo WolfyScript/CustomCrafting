@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.lists.buttons.CustomItemSelectButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.ItemNamespaceButton;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -18,6 +19,8 @@ import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CustomItemList extends CCWindow {
 
@@ -72,7 +75,7 @@ public class CustomItemList extends CCWindow {
 
         String namespace = items.getListNamespace();
         if (namespace == null) {
-            List<String> namespaceList = Registry.CUSTOM_ITEMS.getNamespaces();
+            List<String> namespaceList = Registry.CUSTOM_ITEMS.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().collect(Collectors.toList());
             maxPages = namespaceList.size() / 45;
             for (int i = 45 * page, item = 0; item < 45 && i < namespaceList.size(); i++, item++) {
                 Button<CCCache> btn = new ItemNamespaceButton(namespaceList.get(i));
@@ -80,7 +83,7 @@ public class CustomItemList extends CCWindow {
                 update.setButton(9 + item, btn);
             }
         } else {
-            List<CustomItem> customItems = Registry.CUSTOM_ITEMS.get(namespace);
+            List<CustomItem> customItems = Registry.CUSTOM_ITEMS.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && namespace.equals(NamespacedKeyUtils.getInternalNamespace(entry.getKey()))).map(Map.Entry::getValue).collect(Collectors.toList());
             for (int i = items.getListPage() * 45, s = 9; i < customItems.size() && s < 45; i++, s++) {
                 NamespacedKey namespacedKey = customItems.get(i).getNamespacedKey();
                 String id = "item_" + namespacedKey.toString().replace(":", "__");

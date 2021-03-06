@@ -7,9 +7,9 @@ import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -48,7 +48,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
             ingredientsNode.fields().forEachRemaining(entry -> {
                 String key = entry.getKey();
                 List<CustomItem> data = new ArrayList<>();
-                entry.getValue().elements().forEachRemaining(item -> data.add(CustomItem.of(mapper.convertValue(item, APIReference.class))));
+                entry.getValue().elements().forEachRemaining(item -> ItemLoader.loadToList(item, data));
                 ingredients.put(key.charAt(0), data.stream().filter(item -> !ItemUtils.isAirOrNull(item)).collect(Collectors.toList()));
             });
             this.ingredients = ingredients;

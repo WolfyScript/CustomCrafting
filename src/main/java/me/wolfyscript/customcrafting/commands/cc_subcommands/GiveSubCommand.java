@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -49,7 +50,8 @@ public class GiveSubCommand extends AbstractSubCommand {
                             api.getChat().sendMessage(p, "$commands.give.invalid_amount$");
                         }
                     }
-                    CustomItem customItem = Registry.CUSTOM_ITEMS.get(NamespacedKey.of(args[1]));
+                    NamespacedKey namespacedKey = NamespacedKeyUtils.fromInternal(NamespacedKey.of(args[1]));
+                    CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
                     if (customItem != null) {
                         ItemStack itemStack = customItem.create(amount);
                         if (InventoryUtils.hasInventorySpace(target, itemStack)) {

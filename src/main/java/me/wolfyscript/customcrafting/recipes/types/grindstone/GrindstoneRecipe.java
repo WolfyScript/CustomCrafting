@@ -5,8 +5,8 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -34,30 +34,12 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
         this.xp = node.path("exp").intValue();
         {
             List<CustomItem> input = new ArrayList<>();
-            JsonNode resultNode = node.path("input_top");
-            if (resultNode.isObject()) {
-                input.add(CustomItem.of(mapper.convertValue(resultNode, APIReference.class)));
-                JsonNode variantsNode = resultNode.path("variants");
-                for (JsonNode jsonNode : variantsNode) {
-                    input.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class)));
-                }
-            } else {
-                resultNode.elements().forEachRemaining(n -> input.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
-            }
+            node.path("input_top").elements().forEachRemaining(n -> ItemLoader.loadToList(n, input));
             this.inputTop = input.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
         }
         {
             List<CustomItem> input = new ArrayList<>();
-            JsonNode resultNode = node.path("input_bottom");
-            if (resultNode.isObject()) {
-                input.add(CustomItem.of(mapper.convertValue(resultNode, APIReference.class)));
-                JsonNode variantsNode = resultNode.path("variants");
-                for (JsonNode jsonNode : variantsNode) {
-                    input.add(CustomItem.of(mapper.convertValue(jsonNode, APIReference.class)));
-                }
-            } else {
-                resultNode.elements().forEachRemaining(n -> input.add(CustomItem.of(mapper.convertValue(n, APIReference.class))));
-            }
+            node.path("input_bottom").elements().forEachRemaining(n -> ItemLoader.loadToList(n, input));
             this.inputBottom = input.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
         }
     }

@@ -87,7 +87,7 @@ public class DataBaseHandler extends SQLDataBase {
             String data = resultSet.getString("rData");
             if (namespace != null && key != null && data != null && !data.equals("{}")) {
                 try {
-                    Registry.CUSTOM_ITEMS.register(new NamespacedKey(namespace, key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                    Registry.CUSTOM_ITEMS.register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                 } catch (JsonProcessingException e) {
                     chat.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                 }

@@ -6,8 +6,8 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -62,11 +62,11 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
     public BrewingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        ingredients = Streams.stream(node.path("ingredients").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        ingredients = Streams.stream(node.path("ingredients").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         this.fuelCost = node.path("fuel_cost").asInt(1);
         this.brewTime = node.path("brew_time").asInt(80);
-        this.allowedItems = Streams.stream(node.path("allowed_items").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
-        this.result = Streams.stream(node.path("results").elements()).map(n -> CustomItem.of(mapper.convertValue(n, APIReference.class))).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        this.allowedItems = Streams.stream(node.path("allowed_items").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        this.result = Streams.stream(node.path("results").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
 
         setDurationChange(node.path("duration_change").asInt());
         setAmplifierChange(node.path("amplifier_change").asInt());

@@ -50,17 +50,12 @@ public class ChatUtils {
     }
 
     public static NamespacedKey getNamespacedKey(Player player, String s, String[] args) {
-        NamespacedKey namespacedKey = null;
         try {
-            if (s.length() > 1) {
-                namespacedKey = new NamespacedKey(args[0], args[1]);
-            } else if (s.contains(":")) {
-                namespacedKey = NamespacedKey.of(s);
-            }
+            return NamespacedKeyUtils.fromInternal(s.length() > 1 ? new NamespacedKey(args[0], args[1]) : s.contains(":") ? NamespacedKey.of(s) : null);
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.getChat().sendMessage(player, s1));
         }
-        return namespacedKey;
+        return null;
     }
 
     public static void sendCategoryDescription(Player player) {
