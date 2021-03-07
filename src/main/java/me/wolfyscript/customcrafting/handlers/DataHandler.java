@@ -14,7 +14,6 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -95,6 +94,7 @@ public class DataHandler {
                 chat.sendConsoleMessage("[ Conversion of Item & Recipes complete! ]");
                 mainConfig.set("data.version", CustomCrafting.CONFIG_VERSION);
                 mainConfig.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
+                mainConfig.reload();
             }
         }
     }
@@ -130,7 +130,7 @@ public class DataHandler {
 
     public void saveData() {
         chat.sendConsoleMessage("Saving Items & Recipes");
-        Registry.CUSTOM_ITEMS.entrySet().stream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).forEach(entry -> customCrafting.saveItem(entry.getKey(), entry.getValue()));
+        Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> customCrafting.saveItem(entry.getKey(), entry.getValue()));
         customCrafting.getRecipeHandler().getRecipes().values().forEach(ICustomRecipe::save);
     }
 

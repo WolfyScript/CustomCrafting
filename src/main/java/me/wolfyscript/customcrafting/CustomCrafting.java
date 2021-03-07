@@ -18,6 +18,7 @@ import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -55,16 +56,16 @@ import java.util.stream.Collectors;
 
 public class CustomCrafting extends JavaPlugin {
 
-    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey("customcrafting", "advanced_crafting_table");
-    public static final NamespacedKey ELITE_CRAFTING_TABLE = new NamespacedKey("customcrafting", "elite_crafting_table");
-    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey("customcrafting", "recipe_book");
-    public static final NamespacedKey CAULDRON = new NamespacedKey("customcrafting", "cauldron");
+    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
+    public static final NamespacedKey ELITE_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
+    public static final NamespacedKey CAULDRON = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
     //Used for backwards compatibility
-    public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey("customcrafting", "workbench");
-    public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey("customcrafting", "elite_workbench");
+    public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
+    public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_workbench");
 
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
-    public static final int CONFIG_VERSION = 2;
+    public static final int CONFIG_VERSION = 3;
 
     private static CustomCrafting instance;
     private static WolfyUtilities api;
@@ -335,41 +336,47 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {
-        if (CustomCrafting.hasDataBaseHandler()) {
-            CustomCrafting.getDataBaseHandler().updateItem(namespacedKey, customItem);
-        } else {
-            try {
-                File file = new File(DataHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
-                file.getParentFile().mkdirs();
-                if (file.exists() || file.createNewFile()) {
-                    JacksonUtil.getObjectWriter(getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
+        if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+            NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+            if (CustomCrafting.hasDataBaseHandler()) {
+                CustomCrafting.getDataBaseHandler().updateItem(internalKey, customItem);
+            } else {
+                try {
+                    File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
+                    file.getParentFile().mkdirs();
+                    if (file.exists() || file.createNewFile()) {
+                        JacksonUtil.getObjectWriter(getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            Registry.CUSTOM_ITEMS.register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
         }
-        Registry.CUSTOM_ITEMS.register(namespacedKey, customItem);
     }
 
     public boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
-        if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
-            if (player != null) getApi().getChat().sendMessage(player, "error");
-            return false;
-        }
-        Registry.CUSTOM_ITEMS.remove(namespacedKey);
-        System.gc();
-        if (CustomCrafting.hasDataBaseHandler()) {
-            CustomCrafting.getDataBaseHandler().removeItem(namespacedKey);
-            return true;
-        } else {
-            File file = new File(DataHandler.DATA_FOLDER + File.separator + namespacedKey.getNamespace() + File.separator + "items", namespacedKey.getKey() + ".json");
-            if (file.delete()) {
-                if (player != null) getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
+        if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+            if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
+                if (player != null) getApi().getChat().sendMessage(player, "error");
+                return false;
+            }
+            Registry.CUSTOM_ITEMS.remove(namespacedKey);
+            System.gc();
+            NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+            if (CustomCrafting.hasDataBaseHandler()) {
+                CustomCrafting.getDataBaseHandler().removeItem(internalKey);
                 return true;
             } else {
-                file.deleteOnExit();
-                if (player != null)
-                    getApi().getChat().sendMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
+                File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
+                if (file.delete()) {
+                    if (player != null) getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
+                    return true;
+                } else {
+                    file.deleteOnExit();
+                    if (player != null)
+                        getApi().getChat().sendMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
+                }
             }
         }
         return false;

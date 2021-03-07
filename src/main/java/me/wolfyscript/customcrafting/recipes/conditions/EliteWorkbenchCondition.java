@@ -6,13 +6,12 @@ import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.world.WorldUtils;
-import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -37,8 +36,7 @@ public class EliteWorkbenchCondition extends Condition {
         }
         if (recipe instanceof EliteCraftingRecipe) {
             if (data.getBlock() != null) {
-                Location location = data.getBlock().getLocation();
-                CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(location);
+                CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
                 if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef) {
                     if (eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey())) {
                         EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);

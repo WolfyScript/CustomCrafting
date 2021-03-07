@@ -11,6 +11,7 @@ import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.meta.MetaSettings;
@@ -104,7 +105,8 @@ public class ItemCreator extends CCWindow {
                         items.setSaved(true);
                         items.setNamespacedKey(namespacedKey);
                         sendMessage(player, "save.success");
-                        api.getChat().sendMessage(player1, "&6" + namespacedKey.getNamespace() + "/items/" + namespacedKey.getKey());
+                        me.wolfyscript.utilities.util.NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+                        api.getChat().sendMessage(player1, "&6" + internalKey.getNamespace() + "/items/" + internalKey.getKey());
                         return false;
                     }
                     return true;

@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -29,6 +30,14 @@ public class GiveSubCommand extends AbstractSubCommand {
         super("give", new ArrayList<>(), customCrafting);
     }
 
+    private static final List<String> NUMBERS = new ArrayList<>();
+
+    static {
+        for (int i = 0; i < 65; i++) {
+            NUMBERS.add(String.valueOf(i));
+        }
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = CustomCrafting.getApi();
@@ -46,6 +55,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 }
                 NamespacedKey namespacedKey = NamespacedKey.of(args[1]);
                 Pair<String, String> itemValue = new Pair<>("%ITEM%", args[1]);
+                //not required values ---------------------------------------
                 int amount = 1;
                 if (args.length > 2) {
                     try {
@@ -59,45 +69,48 @@ public class GiveSubCommand extends AbstractSubCommand {
                         return true;
                     }
                 }
-                Pair<String, String> amountValue = new Pair<>("%AMOUNT%", args[2]);
+                Pair<String, String> amountValue = new Pair<>("%AMOUNT%", String.valueOf(amount));
                 boolean dropItems = true;
                 if (args.length > 3) {
                     dropItems = Boolean.parseBoolean(args[3]);
                 }
-                CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
-                if (customItem != null) {
-                    ItemStack itemStack = customItem.create(amount);
-                    if (InventoryUtils.hasInventorySpace(target, itemStack)) {
-                        target.getInventory().addItem(itemStack);
-                    } else if (dropItems) {
-                        target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
-                    } else {
-                        if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
+                //------------------------------------------------------------
+                if (namespacedKey != null) {
+                    CustomItem customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
+                    if (customItem != null) {
+                        ItemStack itemStack = customItem.create(amount);
+                        if (InventoryUtils.hasInventorySpace(target, itemStack)) {
+                            target.getInventory().addItem(itemStack);
+                        } else if (dropItems) {
+                            target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
                         } else {
-                            api.getChat().sendConsoleMessage("$commands.give.no_inv_space$", args[1]);
+                            if (sender instanceof Player) {
+                                api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
+                            } else {
+                                api.getChat().sendConsoleMessage("$commands.give.no_inv_space$", args[1]);
+                            }
+                            return true;
+                        }
+                        if (amount > 1) {
+                            if (sender instanceof Player) {
+                                api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
+                            } else {
+                                api.getChat().sendConsoleMessage("$commands.give.success_amount$", args[2], args[1], args[0]);
+                            }
+                        } else {
+                            if (sender instanceof Player) {
+                                api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
+                            } else {
+                                api.getChat().sendConsoleMessage("$commands.give.success$", args[1], args[0]);
+                            }
                         }
                         return true;
                     }
-                    if (amount > 1) {
-                        if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
-                        } else {
-                            api.getChat().sendConsoleMessage("$commands.give.success_amount$", args[2], args[1], args[0]);
-                        }
-                    } else {
-                        if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
-                        } else {
-                            api.getChat().sendConsoleMessage("$commands.give.success$", args[1], args[0]);
-                        }
-                    }
+                }
+                if (sender instanceof Player) {
+                    api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
                 } else {
-                    if (sender instanceof Player) {
-                        api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
-                    } else {
-                        api.getChat().sendConsoleMessage("$commands.give.invalid_item$", args[1]);
-                    }
+                    api.getChat().sendConsoleMessage("$commands.give.invalid_item$", args[1]);
                 }
             }
         }
@@ -115,9 +128,10 @@ public class GiveSubCommand extends AbstractSubCommand {
                     break;
                 case 2:
                     //Item completion
-                    StringUtil.copyPartialMatches(strings[1], Registry.CUSTOM_ITEMS.keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList()), results);
+                    StringUtil.copyPartialMatches(strings[1], Registry.CUSTOM_ITEMS.keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).collect(Collectors.toList()), results);
                     break;
                 case 3:
+                    StringUtil.copyPartialMatches(strings[2], NUMBERS, results);
                     break;
                 case 4:
                     //Drop Items

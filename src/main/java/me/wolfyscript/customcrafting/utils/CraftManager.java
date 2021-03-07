@@ -12,7 +12,6 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -83,7 +82,7 @@ public class CraftManager {
                     CCPlayerData playerStore = PlayerUtil.getStore(player);
                     playerStore.increaseRecipeCrafts(recipe.getNamespacedKey(), 1);
                     playerStore.increaseTotalCrafts(1);
-                    CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(inventory.getLocation());
+                    CustomItem customItem = NamespacedKeyUtils.getCustomItem(inventory.getLocation());
                     if (customItem != null && customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE)) {
                         playerStore.increaseAdvancedCrafts(1);
                     } else {

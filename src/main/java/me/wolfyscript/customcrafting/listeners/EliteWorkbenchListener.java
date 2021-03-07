@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -27,7 +28,7 @@ public class EliteWorkbenchListener implements Listener {
         if (!event.useInteractedBlock().equals(Event.Result.DENY) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !event.getPlayer().isSneaking()) {
             Block block = event.getClickedBlock();
             if (block != null && WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
-                CustomItem customItem = WorldUtils.getWorldCustomItemStore().getCustomItem(block.getLocation());
+                CustomItem customItem = NamespacedKeyUtils.getCustomItem(block);
                 if (customItem != null) {
                     EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
                     if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {
@@ -39,6 +40,5 @@ public class EliteWorkbenchListener implements Listener {
             }
         }
     }
-
 
 }
