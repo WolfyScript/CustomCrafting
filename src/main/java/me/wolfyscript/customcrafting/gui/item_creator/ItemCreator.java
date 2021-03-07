@@ -333,7 +333,7 @@ public class ItemCreator extends CCWindow {
                     }
                     items.getItem().setItemMeta(itemMeta);
                 });
-                cache.getPotionEffectCache().setRecipePotionEffect(true);
+                cache.getPotionEffectCache().setRecipePotionEffect(false);
                 guiHandler.openWindow(new me.wolfyscript.utilities.util.NamespacedKey("potion_creator", "potion_creator"));
                 return true;
             }));
