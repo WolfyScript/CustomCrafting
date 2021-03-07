@@ -139,7 +139,7 @@
       "invalid_amount": "&cInvalid amount! Is it a number?",
       "success": "&aGave &e%ITEM%&a to &e%PLAYER%",
       "success_amount": "&aGave &e%AMOUNT%x %ITEM%&a to &e%PLAYER%",
-      "no_inv_space": "&cNo space in Inventory!",
+      "no_inv_space": "&cNo space in inventory for &4%ITEM%!",
       "invalid_item": "&cThe item &4%ITEM%&c does not exist!"
     },
     "recipes": {
