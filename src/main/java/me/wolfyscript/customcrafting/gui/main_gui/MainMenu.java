@@ -49,7 +49,7 @@ public class MainMenu extends CCWindow {
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
             cache.getItems().setNamespacedKey(null);
-            guiHandler.openWindow("item_editor");
+            guiHandler.openCluster("item_creator");
             return true;
         }));
 
