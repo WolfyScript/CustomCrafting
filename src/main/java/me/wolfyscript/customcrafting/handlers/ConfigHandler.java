@@ -109,7 +109,10 @@ public class ConfigHandler {
         }
 
         //Loading RecipeBook
-        customCrafting.saveResource("recipe_book.json", false);
+        File recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
+        if (!recipeBookFile.exists()) {
+            customCrafting.saveResource("recipe_book.json", false);
+        }
         this.recipeBook = new RecipeBook(customCrafting);
     }
 
