@@ -25,7 +25,7 @@ import java.util.*;
 public class IngredientContainerButton extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
-    private final HashMap<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, Set<CustomItem>> variantsMap = new HashMap<>();
     private final HashMap<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
 
     private final HashMap<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
@@ -102,7 +102,7 @@ public class IngredientContainerButton extends Button<CCCache> {
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        List<CustomItem> variants = getVariantsMap(guiHandler);
+        Set<CustomItem> variants = getVariantsMap(guiHandler);
         inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
         if (getTask(guiHandler) == null) {
             setTask(guiHandler, () -> {
@@ -127,15 +127,15 @@ public class IngredientContainerButton extends Button<CCCache> {
     }
 
     @NotNull
-    public List<CustomItem> getVariantsMap(GuiHandler<CCCache> guiHandler) {
-        return variantsMap.getOrDefault(guiHandler, new ArrayList<>());
+    public Set<CustomItem> getVariantsMap(GuiHandler<CCCache> guiHandler) {
+        return variantsMap.getOrDefault(guiHandler, new HashSet<>());
     }
 
     public void removeVariants(GuiHandler<CCCache> guiHandler) {
         variantsMap.remove(guiHandler);
     }
 
-    public void setVariants(GuiHandler<CCCache> guiHandler, List<CustomItem> variants) {
+    public void setVariants(GuiHandler<CCCache> guiHandler, Set<CustomItem> variants) {
         if (variants != null) {
             Iterator<CustomItem> iterator = variants.iterator();
             while (iterator.hasNext()) {

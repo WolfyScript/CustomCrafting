@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.RecipeItemStack;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -55,11 +56,10 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
         if (item == null) return null;
         for (Character key : getIngredients().keySet()) {
             if (usedKeys.contains(key)) continue;
-            for (CustomItem ingredient : getIngredients().get(key)) {
-                if (ingredient.isSimilar(item, isExactMeta())) {
-                    usedKeys.add(key);
-                    return ingredient.clone();
-                }
+            CustomItem validItem = getIngredients().get(key).check(item, isExactMeta());
+            if (validItem != null) {
+                usedKeys.add(key);
+                return validItem.clone();
             }
         }
         return null;
@@ -81,8 +81,8 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
         if (!allowVanillaRecipe()) {
             if (!ItemUtils.isAirOrNull(getResult())) {
                 ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResult().create());
-                for (List<CustomItem> value : getIngredients().values()) {
-                    shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
+                for (RecipeItemStack value : getIngredients().values()) {
+                    shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
                 }
                 shapelessRecipe.setGroup(getGroup());
                 return shapelessRecipe;

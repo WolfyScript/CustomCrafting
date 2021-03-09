@@ -9,6 +9,7 @@ import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCrafting
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.customcrafting.utils.RecipeItemStack;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -18,7 +19,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 
 import java.io.IOException;
@@ -32,9 +32,9 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     protected boolean shapeless;
 
     protected List<CustomItem> result;
-    protected Map<Character, List<CustomItem>> ingredients;
+    protected Map<Character, RecipeItemStack> ingredients;
 
-    protected List<List<CustomItem>> items;
+    protected List<RecipeItemStack> items;
 
     protected int bookGridSize = 3;
     protected int bookSquaredGrid = 9;
@@ -43,13 +43,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         super(namespacedKey, node);
         //Get Ingredients
         {
-            Map<Character, List<CustomItem>> ingredients = new TreeMap<>();
+            Map<Character, RecipeItemStack> ingredients = new TreeMap<>();
             JsonNode ingredientsNode = node.path("ingredients");
             ingredientsNode.fields().forEachRemaining(entry -> {
                 String key = entry.getKey();
-                List<CustomItem> data = new ArrayList<>();
-                entry.getValue().elements().forEachRemaining(item -> ItemLoader.loadToList(item, data));
-                ingredients.put(key.charAt(0), data.stream().filter(item -> !ItemUtils.isAirOrNull(item)).collect(Collectors.toList()));
+                RecipeItemStack recipeItemStack = ItemLoader.loadRecipeItem(entry.getValue());
+                ingredients.put(key.charAt(0), recipeItemStack);
             });
             this.ingredients = ingredients;
         }
@@ -68,28 +67,28 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public Map<Character, List<CustomItem>> getIngredients() {
+    public Map<Character, RecipeItemStack> getIngredients() {
         return ingredients;
     }
 
     @Override
-    public List<CustomItem> getIngredients(char key) {
-        return new ArrayList<>(getIngredients().getOrDefault(key, new ArrayList<>()));
+    public void setIngredients(Map<Character, RecipeItemStack> ingredients) {
+        this.ingredients = ingredients;
     }
 
     @Override
-    public List<CustomItem> getIngredients(int slot) {
+    public RecipeItemStack getIngredients(char key) {
+        return getIngredients().getOrDefault(key, new RecipeItemStack());
+    }
+
+    @Override
+    public RecipeItemStack getIngredients(int slot) {
         return getIngredients(LETTERS[slot]);
     }
 
     @Override
-    public void setIngredients(char key, List<CustomItem> ingredients) {
+    public void setIngredients(char key, RecipeItemStack ingredients) {
         this.ingredients.put(key, ingredients);
-    }
-
-    @Override
-    public void setIngredients(int slot, List<CustomItem> ingredients) {
-        this.ingredients.put(LETTERS[slot], ingredients);
     }
 
     @Override
@@ -98,9 +97,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public CustomItem getIngredient(char key) {
-        List<CustomItem> list = getIngredients(key);
-        return list.size() > 0 ? list.get(0) : null;
+    public void setIngredients(int slot, RecipeItemStack ingredients) {
+        this.ingredients.put(LETTERS[slot], ingredients);
     }
 
     @Override
@@ -109,8 +107,14 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
+    public CustomItem getIngredient(char key) {
+        RecipeItemStack list = getIngredients(key);
+        return list.size() > 0 ? list.get(0) : null;
+    }
+
+    @Override
     public void setIngredient(char key, int variant, CustomItem customItem) {
-        List<CustomItem> ingredient = getIngredients(key);
+        RecipeItemStack ingredient = getIngredients(key);
         if (variant < ingredient.size()) {
             if (ItemUtils.isAirOrNull(customItem)) {
                 ingredient.remove(variant);
@@ -121,10 +125,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
             ingredient.add(customItem);
         }
         ingredients.put(key, ingredient);
-    }
-
-    public void setIngredients(Map<Character, List<CustomItem>> ingredients) {
-        this.ingredients = ingredients;
     }
 
     @Override
@@ -164,7 +164,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         if (!getIngredients().isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, getResults());
             for (int i = 0; i < bookSquaredGrid; i++) {
-                List<CustomItem> variants = getIngredients(i);
+                RecipeItemStack variants = getIngredients(i);
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, variants);
             }
         }
@@ -217,13 +217,10 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         }
         {
             gen.writeObjectFieldStart("ingredients");
-            for (Map.Entry<Character, List<CustomItem>> entry : ingredients.entrySet()) {
-                List<CustomItem> ingred = entry.getValue();
-                if(!InventoryUtils.isCustomItemsListEmpty(ingred)){
+            for (Map.Entry<Character, RecipeItemStack> entry : ingredients.entrySet()) {
+                if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                     gen.writeArrayFieldStart(entry.getKey().toString());
-                    for (CustomItem customItem : ingred) {
-                        saveCustomItem(customItem, gen);
-                    }
+                    gen.writeObject(entry.getValue());
                     gen.writeEndArray();
                 }
             }

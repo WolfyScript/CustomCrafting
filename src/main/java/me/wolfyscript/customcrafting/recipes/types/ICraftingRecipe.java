@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.utils.RecipeItemStack;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.inventory.Inventory;
@@ -44,21 +45,21 @@ public interface ICraftingRecipe {
 
     void setResult(List<CustomItem> result);
 
-    void setIngredients(Map<Character, List<CustomItem>> ingredients);
+    void setIngredients(char key, RecipeItemStack ingredients);
 
-    void setIngredients(char key, List<CustomItem> ingredients);
+    void setIngredients(int slot, RecipeItemStack ingredients);
 
-    void setIngredients(int slot, List<CustomItem> ingredients);
+    RecipeItemStack getIngredients(char key);
 
     void setIngredient(char key, int variant, CustomItem customItem);
 
     void setIngredient(int slot, int variant, CustomItem customItem);
 
-    List<CustomItem> getIngredients(char key);
+    RecipeItemStack getIngredients(int slot);
 
-    List<CustomItem> getIngredients(int slot);
+    Map<Character, RecipeItemStack> getIngredients();
 
-    Map<Character, List<CustomItem>> getIngredients();
+    void setIngredients(Map<Character, RecipeItemStack> ingredients);
 
     CustomItem getIngredient(char key);
 

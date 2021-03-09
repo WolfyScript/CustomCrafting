@@ -11,6 +11,18 @@ import java.util.List;
 
 public class ItemLoader {
 
+    public static RecipeItemStack loadRecipeItem(JsonNode node) {
+        if (node.isArray()) {
+            RecipeItemStack recipeItemStack = new RecipeItemStack();
+            node.elements().forEachRemaining(item -> recipeItemStack.getItems().add(JacksonUtil.getObjectMapper().convertValue(node, APIReference.class)));
+            return recipeItemStack;
+        }
+        RecipeItemStack recipeItemStack = JacksonUtil.getObjectMapper().convertValue(node, RecipeItemStack.class);
+        if (recipeItemStack != null) {
+            recipeItemStack.buildChoices();
+        }
+        return recipeItemStack;
+    }
 
     public static void loadToList(JsonNode node, List<CustomItem> items) {
         items.add(load(node));

@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.RecipeItemStack;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -9,7 +10,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNod
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RecipeUtil;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -148,7 +148,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         for (int c = 0; c < matrix.size(); c++) {
             for (int r = 0; r < matrix.get(c).size(); r++) {
                 if ((matrix.get(c).get(r) != null && c < shape.length && r < shape[c].length() && shape[c].charAt(r) != ' ')) {
-                    CustomItem item = checkIngredient(matrix.get(c).get(r), getIngredients().get(shape[c].charAt(r)));
+                    CustomItem item = getIngredients().get(shape[c].charAt(r)).check(matrix.get(c).get(r), isExactMeta());
                     if (item == null) return null;
                     foundItems.put(new Vec2d(r, c), item);
                     containedKeys.add(shape[c].charAt(r));
@@ -160,10 +160,6 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems) : null;
     }
 
-    private CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
-        return ingredients.stream().filter(customItem -> customItem.isSimilar(input, isExactMeta())).findFirst().orElse(null);
-    }
-
     @Override
     public ShapedCraftRecipe clone() {
         return new ShapedCraftRecipe(this);
@@ -171,14 +167,14 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
 
     @Override
     public void constructShape() {
-        Map<Character, List<CustomItem>> ingredients = getIngredients();
+        Map<Character, RecipeItemStack> ingredients = getIngredients();
         String[] shape = new String[3];
         int index = 0;
         int row = 0;
         for (int i = 0; i < 9; i++) {
             char ingrd = LETTERS[i];
-            List<CustomItem> items = ingredients.get(ingrd);
-            if (items == null || InventoryUtils.isCustomItemsListEmpty(items)) {
+            RecipeItemStack items = ingredients.get(ingrd);
+            if (items == null || items.isEmpty()) {
                 if (shape[row] != null) {
                     shape[row] = shape[row] + " ";
                 } else {
@@ -233,7 +229,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
             if (!ItemUtils.isAirOrNull(getResult()) && this.width > 0) {
                 ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResult().create());
                 recipe.shape(shape);
-                getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
+                getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
                 recipe.setGroup(getGroup());
                 return recipe;
             }
