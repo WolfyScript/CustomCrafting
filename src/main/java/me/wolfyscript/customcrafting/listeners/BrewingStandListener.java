@@ -127,10 +127,8 @@ public class BrewingStandListener implements Listener {
                         } else if (cursor != null) {
                             ItemStack itemStack = new ItemStack(cursor);
                             event.setCancelled(true);
-                            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                                inventory.setItem(event.getSlot(), itemStack);
-                                event.getView().setCursor(new ItemStack(Material.AIR));
-                            });
+                            inventory.setItem(event.getSlot(), itemStack);
+                            event.getView().setCursor(new ItemStack(Material.AIR));
                         }
                         player.updateInventory();//And we update the inventory
                     }
