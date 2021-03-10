@@ -193,7 +193,7 @@ public class DataHandler {
             boolean inject = false;
             while (recipeIterator.hasNext()) {
                 Recipe recipe = recipeIterator.next();
-                if (((Keyed) recipe).getKey().toString().equals(namespacedKey.toString())) {
+                if (((Keyed) recipe).getKey().toString().equals(namespacedKey.toBukkit(customCrafting).toString())) {
                     if (!inject) {
                         inject = true;
                     }
