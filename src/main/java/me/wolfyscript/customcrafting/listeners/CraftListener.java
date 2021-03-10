@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -20,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -82,7 +84,6 @@ public class CraftListener implements Listener {
             ItemStack[] matrix = e.getInventory().getMatrix();
             ItemStack result = craftManager.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
-                //api.getNmsUtil().getInventoryUtil().setCurrentRecipe(e.getInventory(), org.bukkit.NamespacedKey.minecraft());
                 e.getInventory().setResult(result);
                 return;
             }
@@ -111,6 +112,13 @@ public class CraftListener implements Listener {
             CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             craftManager.remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
+        }
+    }
+
+    @EventHandler
+    public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
+        if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+            event.setCancelled(true);
         }
     }
 }

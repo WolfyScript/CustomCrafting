@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -231,7 +232,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     public ShapedRecipe getVanillaRecipe() {
         if (!allowVanillaRecipe()) {
             if (!ItemUtils.isAirOrNull(getResult()) && this.width > 0) {
-                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResult().create());
+                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.getInst()), getResult().create());
                 recipe.shape(shape);
                 getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
                 recipe.setGroup(getGroup());
