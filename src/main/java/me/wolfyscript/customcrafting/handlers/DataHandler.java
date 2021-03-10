@@ -187,7 +187,7 @@ public class DataHandler {
 
     public void unregisterBukkitRecipe(NamespacedKey namespacedKey) {
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-            Bukkit.removeRecipe(namespacedKey.toBukkit());
+            Bukkit.removeRecipe(namespacedKey.toBukkit(customCrafting));
         } else {
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
             boolean inject = false;
