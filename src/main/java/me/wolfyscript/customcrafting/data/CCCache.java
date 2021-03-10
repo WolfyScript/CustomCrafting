@@ -48,11 +48,13 @@ public class CCCache extends CustomCache {
     private final Items items = new Items();
     private final PotionEffects potionEffectCache = new PotionEffects();
     private final KnowledgeBook knowledgeBook = new KnowledgeBook();
-    private final VariantsData variantsData = new VariantsData();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
     private final BrewingGUICache brewingGUICache = new BrewingGUICache();
+
+    private final VariantsData variantsData = new VariantsData();
+    private final IngredientData ingredientData = new IngredientData();
 
     private ApplyItem applyItem;
     private ApplyPotionEffect applyPotionEffect;
@@ -122,6 +124,10 @@ public class CCCache extends CustomCache {
 
     public PotionEffects getPotionEffectCache() {
         return potionEffectCache;
+    }
+
+    public IngredientData getIngredientData() {
+        return ingredientData;
     }
 
     public void setApplyPotionEffect(ApplyPotionEffect applyPotionEffect) {

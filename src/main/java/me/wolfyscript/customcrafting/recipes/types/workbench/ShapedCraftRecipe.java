@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
-import me.wolfyscript.customcrafting.utils.RecipeItemStack;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -167,13 +167,13 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
 
     @Override
     public void constructShape() {
-        Map<Character, RecipeItemStack> ingredients = getIngredients();
+        Map<Character, Ingredient> ingredients = getIngredients();
         String[] shape = new String[3];
         int index = 0;
         int row = 0;
         for (int i = 0; i < 9; i++) {
             char ingrd = LETTERS[i];
-            RecipeItemStack items = ingredients.get(ingrd);
+            Ingredient items = ingredients.get(ingrd);
             if (items == null || items.isEmpty()) {
                 if (shape[row] != null) {
                     shape[row] = shape[row] + " ";

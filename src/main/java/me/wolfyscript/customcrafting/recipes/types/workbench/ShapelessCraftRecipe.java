@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
-import me.wolfyscript.customcrafting.utils.RecipeItemStack;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -81,7 +81,7 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
         if (!allowVanillaRecipe()) {
             if (!ItemUtils.isAirOrNull(getResult())) {
                 ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResult().create());
-                for (RecipeItemStack value : getIngredients().values()) {
+                for (Ingredient value : getIngredients().values()) {
                     shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
                 }
                 shapelessRecipe.setGroup(getGroup());

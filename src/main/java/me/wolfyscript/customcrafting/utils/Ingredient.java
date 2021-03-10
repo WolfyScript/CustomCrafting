@@ -13,44 +13,43 @@ import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RecipeItemStack {
+public class Ingredient {
 
     @JsonIgnore
-    private final Set<CustomItem> choices;
+    private final List<CustomItem> choices;
 
-    private Set<APIReference> items;
-    private Set<NamespacedKey> tags;
+    private List<APIReference> items;
+    private List<NamespacedKey> tags;
 
-    public RecipeItemStack() {
-        this.items = new HashSet<>();
-        this.tags = new HashSet<>();
-        this.choices = new HashSet<>();
+    public Ingredient() {
+        this.items = new ArrayList<>();
+        this.tags = new ArrayList<>();
+        this.choices = new ArrayList<>();
     }
 
-    public RecipeItemStack(Set<APIReference> items, Set<NamespacedKey> tags) {
+    public Ingredient(List<APIReference> items, List<NamespacedKey> tags) {
         this.items = items;
         this.tags = tags;
-        this.choices = new HashSet<>();
+        this.choices = new ArrayList<>();
     }
 
-    public Set<NamespacedKey> getTags() {
+    public List<NamespacedKey> getTags() {
         return tags;
     }
 
-    public void setTags(Set<NamespacedKey> tags) {
+    public void setTags(List<NamespacedKey> tags) {
         this.tags = tags;
     }
 
-    public Set<APIReference> getItems() {
+    public List<APIReference> getItems() {
         return items;
     }
 
-    public void setItems(Set<APIReference> items) {
+    public void setItems(List<APIReference> items) {
         this.items = items;
     }
 
@@ -76,7 +75,7 @@ public class RecipeItemStack {
         }).filter(Objects::nonNull).distinct().forEach(this.choices::addAll);
     }
 
-    public Set<CustomItem> getChoices() {
+    public List<CustomItem> getChoices() {
         return choices;
     }
 
