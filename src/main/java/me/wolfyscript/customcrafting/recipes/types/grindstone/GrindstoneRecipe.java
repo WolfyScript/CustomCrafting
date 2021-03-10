@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -15,44 +16,35 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
 
-    private List<CustomItem> inputTop, inputBottom, result;
+    private Ingredient inputTop, inputBottom;
+    private List<CustomItem> result;
     private int xp;
 
-    public GrindstoneRecipe(NamespacedKey namespacedKey, JsonNode node){
+    public GrindstoneRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.xp = node.path("exp").intValue();
-        {
-            List<CustomItem> input = new ArrayList<>();
-            node.path("input_top").elements().forEachRemaining(n -> ItemLoader.loadToList(n, input));
-            this.inputTop = input.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-        }
-        {
-            List<CustomItem> input = new ArrayList<>();
-            node.path("input_bottom").elements().forEachRemaining(n -> ItemLoader.loadToList(n, input));
-            this.inputBottom = input.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-        }
+        this.inputTop = ItemLoader.loadRecipeItem(node.path("input_top"));
+        this.inputBottom = ItemLoader.loadRecipeItem(node.path("input_bottom"));
     }
 
     public GrindstoneRecipe() {
         super();
         this.result = new ArrayList<>();
-        this.inputTop = new ArrayList<>();
-        this.inputBottom = new ArrayList<>();
+        this.inputTop = new Ingredient();
+        this.inputBottom = new Ingredient();
         this.xp = 0;
     }
 
-    public GrindstoneRecipe(GrindstoneRecipe grindstoneRecipe){
+    public GrindstoneRecipe(GrindstoneRecipe grindstoneRecipe) {
         super(grindstoneRecipe);
         this.result = grindstoneRecipe.getResults();
         this.inputBottom = grindstoneRecipe.getInputBottom();
@@ -75,36 +67,20 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
         this.result = result;
     }
 
-    public List<CustomItem> getInputTop() {
-        return new ArrayList<>(inputTop);
+    public Ingredient getInputTop() {
+        return inputTop;
     }
 
-    public void setInputTop(List<CustomItem> inputTop) {
+    public void setInputTop(Ingredient inputTop) {
         this.inputTop = inputTop;
     }
 
-    public void setInputTop(CustomItem item) {
-        if (this.inputTop.size() > 0) {
-            inputTop.set(0, item);
-        } else {
-            inputTop.add(item);
-        }
+    public Ingredient getInputBottom() {
+        return inputBottom;
     }
 
-    public List<CustomItem> getInputBottom() {
-        return new ArrayList<>(inputBottom);
-    }
-
-    public void setInputBottom(List<CustomItem> inputBottom) {
+    public void setInputBottom(Ingredient inputBottom) {
         this.inputBottom = inputBottom;
-    }
-
-    public void setInputBottom(CustomItem item) {
-        if (this.inputBottom.size() > 0) {
-            inputBottom.set(0, item);
-        } else {
-            inputBottom.add(item);
-        }
     }
 
     public void setResult(int variant, CustomItem ingredient) {

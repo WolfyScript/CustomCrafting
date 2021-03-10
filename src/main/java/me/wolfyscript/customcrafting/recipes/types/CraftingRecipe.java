@@ -98,12 +98,11 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
 
     @Override
     public void setIngredients(int slot, Ingredient ingredients) {
-        this.ingredients.put(LETTERS[slot], ingredients);
-    }
-
-    @Override
-    public void setIngredient(int slot, int variant, CustomItem customItem) {
-        setIngredient(LETTERS[slot], variant, customItem);
+        if (ingredients == null || ingredients.isEmpty()) {
+            this.ingredients.remove(LETTERS[slot]);
+        } else {
+            this.ingredients.put(LETTERS[slot], ingredients);
+        }
     }
 
     @Override
@@ -112,20 +111,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         return list.size() > 0 ? list.get(0) : null;
     }
 
-    @Override
-    public void setIngredient(char key, int variant, CustomItem customItem) {
-        Ingredient ingredient = getIngredients(key);
-        if (variant < ingredient.size()) {
-            if (ItemUtils.isAirOrNull(customItem)) {
-                ingredient.remove(variant);
-            } else {
-                ingredient.set(variant, customItem);
-            }
-        } else if (!ItemUtils.isAirOrNull(customItem)) {
-            ingredient.add(customItem);
-        }
-        ingredients.put(key, ingredient);
-    }
 
     @Override
     public void setResult(List<CustomItem> result) {

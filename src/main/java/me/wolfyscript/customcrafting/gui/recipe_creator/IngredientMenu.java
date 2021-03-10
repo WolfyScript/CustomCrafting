@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonContainerIngredientItems;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -21,10 +22,49 @@ public class IngredientMenu extends CCWindow {
         for (int i = 0; i < 36; i++) {
             registerButton(new ButtonContainerIngredientItems(i));
         }
-
         registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+            if (cache.getIngredientData().isNew()) {
+                int recipeSlot = cache.getIngredientData().getSlot();
+                Ingredient ingredient = cache.getIngredientData().getIngredient();
+                switch (cache.getRecipeType().getType()) {
+                    case WORKBENCH:
+                    case ELITE_WORKBENCH:
+                        cache.getCraftingRecipe().setIngredients(recipeSlot, ingredient);
+                        break;
+                    case SMOKER:
+                    case FURNACE:
+                    case BLAST_FURNACE:
+                    case CAMPFIRE:
+                        cache.getCookingRecipe().setSource(ingredient);
+                        break;
+                    case SMITHING:
+                        if (recipeSlot == 0) {
+                            cache.getSmithingRecipe().setBase(ingredient);
+                        } else {
+                            cache.getSmithingRecipe().setAddition(ingredient);
+                        }
+                        break;
+                    case GRINDSTONE:
+                        if (recipeSlot == 0) {
+                            cache.getGrindstoneRecipe().setInputTop(ingredient);
+                        } else {
+                            cache.getGrindstoneRecipe().setInputBottom(ingredient);
+                        }
+                        break;
+                    case STONECUTTER:
+                        cache.getStonecutterRecipe().setSource(ingredient);
+                        break;
+                    case ANVIL:
+                        cache.getAnvilRecipe().setInput(recipeSlot, ingredient);
+                        break;
+                    case CAULDRON:
+                        //TODO: Find a way to implement Ingredients
+                        break;
+                    case BREWING_STAND:
+                        cache.getBrewingRecipe().setIngredients(ingredient);
 
-
+                }
+            }
             guiHandler.openPreviousWindow();
             return true;
         })));

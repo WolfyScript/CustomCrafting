@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -25,16 +26,16 @@ import java.util.stream.Collectors;
 
 public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
 
-    private List<CustomItem> base;
-    private List<CustomItem> addition;
+    private Ingredient base;
+    private Ingredient addition;
     private List<CustomItem> result;
 
     private boolean preserveEnchants;
 
     public CustomSmithingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        base = Streams.stream(node.path("base").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
-        addition = Streams.stream(node.path("addition").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        base = ItemLoader.loadRecipeItem(node.path("base"));
+        addition = ItemLoader.loadRecipeItem(node.path("addition"));
         result = Streams.stream(node.path("result").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
     }
@@ -65,19 +66,19 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
         return new ArrayList<>(result);
     }
 
-    public List<CustomItem> getAddition() {
-        return new ArrayList<>(addition);
+    public Ingredient getAddition() {
+        return addition;
     }
 
-    public void setAddition(List<CustomItem> addition) {
+    public void setAddition(Ingredient addition) {
         this.addition = addition;
     }
 
-    public List<CustomItem> getBase() {
-        return new ArrayList<>(base);
+    public Ingredient getBase() {
+        return base;
     }
 
-    public void setBase(List<CustomItem> base) {
+    public void setBase(Ingredient base) {
         this.base = base;
     }
 
@@ -127,19 +128,7 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
             }
             gen.writeEndArray();
         }
-        {
-            gen.writeArrayFieldStart("base");
-            for (CustomItem customItem : base) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
-        {
-            gen.writeArrayFieldStart("addition");
-            for (CustomItem customItem : addition) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
+        gen.writeObjectField("base", base);
+        gen.writeObjectField("addition", addition);
     }
 }

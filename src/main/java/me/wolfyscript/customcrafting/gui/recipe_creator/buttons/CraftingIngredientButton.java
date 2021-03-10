@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
@@ -12,25 +13,27 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CraftingIngredientButton extends ItemInputButton<CCCache> {
 
     public CraftingIngredientButton(int recipeSlot, CustomCrafting customCrafting) {
         super("crafting.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CraftingRecipe<?> workbench = cache.getCraftingRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                List<CustomItem> variants = new ArrayList<>();
                 if ((!(workbench instanceof EliteCraftingRecipe) && recipeSlot == 9) || (workbench instanceof EliteCraftingRecipe && recipeSlot == 36)) {
                     if (workbench.getResults() != null) {
-                        variants = workbench.getResults();
+                        cache.getVariantsData().setSlot(recipeSlot);
+                        cache.getVariantsData().setVariants(workbench.getResults());
                     }
-                } else if (workbench.getIngredients(recipeSlot) != null) {
-                    variants = workbench.getIngredients(recipeSlot);
+                } else {
+                    cache.getIngredientData().setSlot(recipeSlot);
+                    if (workbench.getIngredients(recipeSlot) != null) {
+                        cache.getIngredientData().setIngredient(workbench.getIngredients(recipeSlot));
+                        cache.getIngredientData().setNew(false);
+                    } else {
+                        cache.getIngredientData().setIngredient(new Ingredient());
+                        cache.getIngredientData().setNew(true);
+                    }
                 }
-                cache.getVariantsData().setSlot(recipeSlot);
-                cache.getVariantsData().setVariants(variants);
                 guiHandler.openWindow("variants");
                 return true;
             }

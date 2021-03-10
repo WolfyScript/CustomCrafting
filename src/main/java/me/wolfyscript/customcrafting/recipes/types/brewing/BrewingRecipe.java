@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -35,7 +36,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
     private static final CustomItem placeHolderPotion = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!"));
 
     List<CustomItem> allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
-    private List<CustomItem> ingredients; //The top ingredient of the recipe. Always required.
+    private Ingredient ingredients; //The top ingredient of the recipe. Always required.
     private int fuelCost; //The fuel cost of recipe
     private int brewTime; //The brew time in ticks
 
@@ -62,7 +63,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
     public BrewingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        ingredients = Streams.stream(node.path("ingredients").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        ingredients = ItemLoader.loadRecipeItem(node.path("ingredients"));
         this.fuelCost = node.path("fuel_cost").asInt(1);
         this.brewTime = node.path("brew_time").asInt(80);
         this.allowedItems = Streams.stream(node.path("allowed_items").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
@@ -104,7 +105,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
     public BrewingRecipe() {
         super();
-        this.ingredients = new ArrayList<>();
+        this.ingredients = new Ingredient();
         this.fuelCost = 1;
         this.brewTime = 400;
         this.allowedItems = new ArrayList<>();
@@ -170,11 +171,11 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         this.brewTime = brewTime;
     }
 
-    public List<CustomItem> getIngredients() {
-        return new ArrayList<>(ingredients);
+    public Ingredient getIngredients() {
+        return ingredients;
     }
 
-    public void setIngredients(List<CustomItem> ingredients) {
+    public void setIngredients(Ingredient ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -259,11 +260,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
 
-        gen.writeArrayFieldStart("ingredients");
-        for (CustomItem customItem : getIngredients()) {
-            saveCustomItem(customItem, gen);
-        }
-        gen.writeEndArray();
+        gen.writeObjectField("ingredients", ingredients);
 
         gen.writeNumberField("fuel_cost", fuelCost);
         gen.writeNumberField("brew_time", brewTime);

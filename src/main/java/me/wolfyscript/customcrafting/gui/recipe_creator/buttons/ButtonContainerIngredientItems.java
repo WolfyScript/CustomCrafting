@@ -21,8 +21,8 @@ public class ButtonContainerIngredientItems extends ActionButton<CCCache> {
                 if (!ItemUtils.isAirOrNull(inventory.getItem(slot))) {
                     IngredientData data = cache.getIngredientData();
                     Ingredient ingredient = data.getIngredient();
-
                 }
+                return true;
             }
             return false;
         }, (cache, guiHandler, player, guiInventory, itemStack, i, inventoryInteractEvent) -> {

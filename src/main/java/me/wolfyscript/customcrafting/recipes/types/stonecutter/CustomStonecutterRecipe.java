@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -16,7 +17,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
@@ -31,26 +31,22 @@ import java.util.stream.Collectors;
 public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecipe> implements ICustomVanillaRecipe<StonecuttingRecipe> {
 
     private List<CustomItem> result;
-    private List<CustomItem> source;
+    private Ingredient source;
 
     public CustomStonecutterRecipe() {
         super();
         this.result = new ArrayList<>();
-        this.source = new ArrayList<>();
+        this.source = new Ingredient();
     }
 
     public CustomStonecutterRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        {
-            this.result = new ArrayList<>();
-            ItemLoader.loadToList(node.path("result"), this.result);
-            List<CustomItem> sources = new ArrayList<>();
-            node.path("source").elements().forEachRemaining(n -> ItemLoader.loadToList(n, sources));
-            this.source = sources.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-        }
+        this.result = new ArrayList<>();
+        ItemLoader.loadToList(node.path("result"), this.result);
+        this.source = ItemLoader.loadRecipeItem(node.path("source"));
     }
 
-    public CustomStonecutterRecipe(CustomStonecutterRecipe customStonecutterRecipe){
+    public CustomStonecutterRecipe(CustomStonecutterRecipe customStonecutterRecipe) {
         super(customStonecutterRecipe);
         this.result = customStonecutterRecipe.getResults();
         this.source = customStonecutterRecipe.getSource();
@@ -66,33 +62,19 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
         this.result = result;
     }
 
-    public List<CustomItem> getSource() {
+    public Ingredient getSource() {
         return new ArrayList<>(source);
     }
 
-    public void setSource(List<CustomItem> source) {
+    public void setSource(Ingredient source) {
         this.source = source;
-    }
-
-    public void setSource(int variant, CustomItem ingredient) {
-        if (variant < source.size()) {
-            source.set(variant, ingredient);
-        } else {
-            source.add(ingredient);
-        }
     }
 
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeObjectField("result", result.get(0).getApiReference());
-        {
-            gen.writeArrayFieldStart("source");
-            for (CustomItem customItem : getSource()) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
+        gen.writeObjectField("source", this.source);
     }
 
     @Override

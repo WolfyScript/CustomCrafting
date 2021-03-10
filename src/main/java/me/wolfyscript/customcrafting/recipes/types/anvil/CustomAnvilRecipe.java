@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -34,7 +35,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     private RepairCostMode repairCostMode;
     private int durability;
 
-    private HashMap<Integer, List<CustomItem>> ingredients;
+    private HashMap<Integer, Ingredient> ingredients;
     private List<CustomItem> result;
 
     public CustomAnvilRecipe(NamespacedKey namespacedKey, JsonNode node) {
@@ -93,16 +94,12 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     }
 
     private void readInput(int slot, JsonNode node) {
-        List<CustomItem> results = new ArrayList<>();
-        node.path("input_" + (slot == 0 ? "left" : "right")).elements().forEachRemaining(n -> ItemLoader.loadToList(n, results));
-        this.ingredients.put(slot, results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+        this.ingredients.put(slot, ItemLoader.loadRecipeItem(node.path("input_" + (slot == 0 ? "left" : "right"))));
     }
 
     private void writeInput(int slot, JsonGenerator gen) throws IOException {
-        gen.writeArrayFieldStart("input_"+(slot == 0 ? "left" : "right"));
-        for (CustomItem customItem : this.ingredients.get(slot)) {
-            saveCustomItem(customItem, gen);
-        }
+        gen.writeArrayFieldStart("input_" + (slot == 0 ? "left" : "right"));
+        gen.writeObject(this.ingredients.get(slot));
         gen.writeEndArray();
     }
 
@@ -140,28 +137,28 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
         this.durability = durability;
     }
 
-    public void setInputLeft(List<CustomItem> inputLeft) {
-        ingredients.put(0, inputLeft);
-    }
-
-    public List<CustomItem> getInputLeft() {
+    public Ingredient getInputLeft() {
         return getInput(0);
     }
 
-    public void setInputRight(List<CustomItem> inputRight) {
-        ingredients.put(1, inputRight);
+    public void setInputLeft(Ingredient inputLeft) {
+        ingredients.put(0, inputLeft);
     }
 
-    public List<CustomItem> getInputRight() {
+    public Ingredient getInputRight() {
         return getInput(1);
     }
 
-    public void setInput(int slot, List<CustomItem> input) {
+    public void setInputRight(Ingredient inputRight) {
+        ingredients.put(1, inputRight);
+    }
+
+    public void setInput(int slot, Ingredient input) {
         ingredients.put(slot, input);
     }
 
-    public List<CustomItem> getInput(int slot) {
-        return new ArrayList<>(ingredients.getOrDefault(slot, new ArrayList<>()));
+    public Ingredient getInput(int slot) {
+        return ingredients.get(slot);
     }
 
     public boolean hasInputLeft() {
@@ -259,8 +256,8 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        List<CustomItem> inputLeft = getInputLeft();
-        List<CustomItem> inputRight = getInputRight();
+        Ingredient inputLeft = getInputLeft();
+        Ingredient inputRight = getInputRight();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
         ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
         List<CustomItem> variants = Collections.singletonList(new CustomItem(Material.AIR));

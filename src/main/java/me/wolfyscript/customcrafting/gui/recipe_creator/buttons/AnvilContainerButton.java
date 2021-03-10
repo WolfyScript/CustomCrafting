@@ -21,7 +21,7 @@ public class AnvilContainerButton extends ItemInputButton<CCCache> {
             CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 cache.getVariantsData().setSlot(inputSlot);
-                cache.getVariantsData().setVariants(inputSlot == 2 ? anvilRecipe.getResults() : anvilRecipe.getInput(inputSlot));
+                cache.getVariantsData().setVariants(inputSlot == 2 ? anvilRecipe.getResults());
                 guiHandler.openWindow("variants");
                 return true;
             }

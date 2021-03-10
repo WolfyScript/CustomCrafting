@@ -53,6 +53,14 @@ public class Ingredient {
         this.items = items;
     }
 
+    public void put(int variantSlot, CustomItem variant) {
+        if (this.items.size() > variantSlot) {
+            this.items.set(variantSlot, variant.getApiReference());
+        } else {
+            this.items.add(variant.getApiReference());
+        }
+    }
+
     public void buildChoices() {
         this.choices.clear();
         this.choices.addAll(items.parallelStream().map(CustomItem::of).collect(Collectors.toSet()));

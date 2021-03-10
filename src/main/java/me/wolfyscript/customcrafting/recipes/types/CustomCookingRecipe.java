@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -17,7 +18,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T extends CookingRecipe<?>> extends CustomRecipe<C> implements ICustomVanillaRecipe<T> {
 
     private List<CustomItem> result;
-    private List<CustomItem> source;
+    private Ingredient source;
     private float exp;
     private int cookingTime;
 
@@ -41,17 +41,13 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         super(namespacedKey, node);
         this.exp = node.path("exp").floatValue();
         this.cookingTime = node.path("cooking_time").asInt();
-        {
-            List<CustomItem> results = new ArrayList<>();
-            node.path("source").elements().forEachRemaining(n -> ItemLoader.loadToList(n, results));
-            this.source = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-        }
+        this.source = ItemLoader.loadRecipeItem(node.path("source"));
     }
 
     public CustomCookingRecipe() {
         super();
         this.result = new ArrayList<>();
-        this.source = new ArrayList<>();
+        this.source = new Ingredient();
         this.exp = 0;
         this.cookingTime = 80;
     }
@@ -64,20 +60,12 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         this.cookingTime = customCookingRecipe.getCookingTime();
     }
 
-    public List<CustomItem> getSource() {
-        return new ArrayList<>(this.source);
+    public Ingredient getSource() {
+        return this.source;
     }
 
-    public void setSource(List<CustomItem> source) {
+    public void setSource(Ingredient source) {
         this.source = source;
-    }
-
-    public void setSource(int variant, CustomItem ingredient) {
-        if (variant < source.size()) {
-            source.set(variant, ingredient);
-        } else {
-            source.add(ingredient);
-        }
     }
 
     @Override
@@ -180,9 +168,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         }
         {
             gen.writeArrayFieldStart("source");
-            for (CustomItem customItem : source) {
-                saveCustomItem(customItem, gen);
-            }
+            gen.writeObject(source);
             gen.writeEndArray();
         }
     }

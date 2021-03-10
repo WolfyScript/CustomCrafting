@@ -9,6 +9,7 @@ import java.util.List;
 public class IngredientData {
 
     private boolean isNew;
+    private int slot;
     private Ingredient ingredient;
 
     public IngredientData() {
@@ -22,6 +23,14 @@ public class IngredientData {
 
     public void setNew(boolean aNew) {
         isNew = aNew;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 
     public Ingredient getIngredient() {
