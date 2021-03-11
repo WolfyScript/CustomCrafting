@@ -389,8 +389,8 @@ public class DataHandler {
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         return recipes;
     }
-    //DISABLED RECIPES AND GET ALL RECIPES
 
+    //DISABLED RECIPES AND GET ALL RECIPES
     public Set<NamespacedKey> getDisabledRecipes() {
         return disabledRecipes;
     }
