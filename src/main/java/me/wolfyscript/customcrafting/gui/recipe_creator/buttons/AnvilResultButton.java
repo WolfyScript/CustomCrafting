@@ -14,14 +14,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class AnvilContainerButton extends ItemInputButton<CCCache> {
+public class AnvilResultButton extends ItemInputButton<CCCache> {
 
-    public AnvilContainerButton(int inputSlot, CustomCrafting customCrafting) {
-        super("container_" + inputSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+    public AnvilResultButton(CustomCrafting customCrafting) {
+        super("anvil.result", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                cache.getVariantsData().setSlot(inputSlot);
-                cache.getVariantsData().setVariants(inputSlot == 2 ? anvilRecipe.getResults());
+                cache.getVariantsData().setSlot(2);
+                cache.getVariantsData().setVariants(anvilRecipe.getResults());
                 guiHandler.openWindow("variants");
                 return true;
             }
@@ -31,22 +31,17 @@ public class AnvilContainerButton extends ItemInputButton<CCCache> {
                 return;
             }
             CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
-            List<CustomItem> items = inputSlot == 2 ? anvilRecipe.getResults() : anvilRecipe.getInput(inputSlot);
-
+            List<CustomItem> items = anvilRecipe.getResults();
             CustomItem input = !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR);
             if (items.size() > 0) {
                 items.set(0, input);
             } else {
                 items.add(input);
             }
-            if(inputSlot == 2){
-                anvilRecipe.setResult(items);
-            }else{
-                anvilRecipe.setInput(inputSlot, items);
-            }
+            anvilRecipe.setResult(items);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CustomAnvilRecipe anvilRecipe = guiHandler.getCustomCache().getAnvilRecipe();
-            List<CustomItem> items = inputSlot == 2 ? anvilRecipe.getResults() : anvilRecipe.getInput(inputSlot);
+            List<CustomItem> items = anvilRecipe.getResults();
             return InventoryUtils.isCustomItemsListEmpty(items) ? new ItemStack(Material.AIR) : items.get(0).create();
         }));
     }

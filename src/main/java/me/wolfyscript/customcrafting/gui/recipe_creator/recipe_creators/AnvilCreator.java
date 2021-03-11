@@ -2,9 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.AnvilContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.AnvilResultButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -13,7 +14,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,9 +30,9 @@ public class AnvilCreator extends RecipeCreator {
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
 
-        registerButton(new AnvilContainerButton(0, customCrafting));
-        registerButton(new AnvilContainerButton(1, customCrafting));
-        registerButton(new AnvilContainerButton(2, customCrafting));
+        registerButton(new RecipeIngredientButton(0, customCrafting));
+        registerButton(new RecipeIngredientButton(1, customCrafting));
+        registerButton(new AnvilResultButton(customCrafting));
 
         registerButton(new ActionButton<>("mode", Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomAnvilRecipe.Mode mode = guiHandler.getCustomCache().getAnvilRecipe().getMode();
@@ -131,10 +131,10 @@ public class AnvilCreator extends RecipeCreator {
         event.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
         event.setButton(5, "priority");
         event.setButton(7, "exact_meta");
-        event.setButton(19, "container_0");
-        event.setButton(21, "container_1");
+        event.setButton(19, "recipe.ingredient_0");
+        event.setButton(21, "recipe.ingredient_1");
         if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-            event.setButton(25, "container_2");
+            event.setButton(25, "anvil.result");
         } else if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
             event.setButton(25, "durability");
         } else {
@@ -157,7 +157,7 @@ public class AnvilCreator extends RecipeCreator {
     @Override
     public boolean validToSave(CCCache cache) {
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
-        if (InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInputLeft()) && InventoryUtils.isCustomItemsListEmpty(anvilRecipe.getInputRight()))
+        if (anvilRecipe.getInputLeft().isEmpty() && anvilRecipe.getInputRight().isEmpty())
             return false;
         return !anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT) || anvilRecipe.getResults() != null && !anvilRecipe.getResults().isEmpty();
     }

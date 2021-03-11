@@ -21,18 +21,7 @@ public class BrewingContainerButton extends ItemInputButton<CCCache> {
         super("brewing.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                List<CustomItem> variants = new ArrayList<>();
-                switch (recipeSlot) {
-                    case 0:
-                        variants = brewingRecipe.getIngredients();
-                        break;
-                    case 1:
-                        variants = brewingRecipe.getAllowedItems();
-                        break;
-                    case 2:
-                        variants = brewingRecipe.getResults();
-                        break;
-                }
+                List<CustomItem> variants = recipeSlot == 1 ? brewingRecipe.getAllowedItems() : brewingRecipe.getResults();
                 if (variants == null) variants = new ArrayList<>();
                 cache.getVariantsData().setSlot(recipeSlot);
                 cache.getVariantsData().setVariants(variants);
@@ -50,46 +39,29 @@ public class BrewingContainerButton extends ItemInputButton<CCCache> {
                 customItem = CustomItem.getReferenceByItemStack(itemStack);
             }
             List<CustomItem> inputs;
-            switch (recipeSlot) {
-                case 0:
-                    inputs = brewingRecipe.getIngredients();
-                    if (inputs.size() > 0) {
-                        inputs.set(0, customItem);
-                    } else {
-                        inputs.add(customItem);
-                    }
-                    brewingRecipe.setIngredients(inputs);
-                    break;
-                case 1:
-                    inputs = brewingRecipe.getAllowedItems();
-                    if (inputs.size() > 0) {
-                        inputs.set(0, customItem);
-                    } else {
-                        inputs.add(customItem);
-                    }
-                    brewingRecipe.setAllowedItems(inputs);
-                    break;
-                case 2:
-                    inputs = brewingRecipe.getResults();
-                    if (inputs.size() > 0) {
-                        inputs.set(0, customItem);
-                    } else {
-                        inputs.add(customItem);
-                    }
-                    brewingRecipe.setResult(inputs);
-                    break;
+            if (recipeSlot == 1) {
+                inputs = brewingRecipe.getAllowedItems();
+                if (inputs.size() > 0) {
+                    inputs.set(0, customItem);
+                } else {
+                    inputs.add(customItem);
+                }
+                brewingRecipe.setAllowedItems(inputs);
+            } else {
+                inputs = brewingRecipe.getResults();
+                if (inputs.size() > 0) {
+                    inputs.set(0, customItem);
+                } else {
+                    inputs.add(customItem);
+                }
+                brewingRecipe.setResult(inputs);
             }
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             BrewingRecipe brewingRecipe = guiHandler.getCustomCache().getBrewingRecipe();
-            switch (recipeSlot) {
-                case 0:
-                    return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getIngredients()) ? brewingRecipe.getIngredients().get(0).create() : new ItemStack(Material.AIR);
-                case 1:
-                    return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getAllowedItems()) ? brewingRecipe.getAllowedItems().get(0).create() : new ItemStack(Material.AIR);
-                case 2:
-                    return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getResults()) ? brewingRecipe.getResults().get(0).create() : new ItemStack(Material.AIR);
+            if (recipeSlot == 1) {
+                return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getAllowedItems()) ? brewingRecipe.getAllowedItems().get(0).create() : new ItemStack(Material.AIR);
             }
-            return new ItemStack(Material.AIR);
+            return !InventoryUtils.isCustomItemsListEmpty(brewingRecipe.getResults()) ? brewingRecipe.getResults().get(0).create() : new ItemStack(Material.AIR);
         }));
     }
 }

@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.GrindstoneContainerButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -27,9 +28,9 @@ public class GrindstoneCreator extends RecipeCreator {
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
 
-        registerButton(new GrindstoneContainerButton(0, customCrafting));
-        registerButton(new GrindstoneContainerButton(1, customCrafting));
-        registerButton(new GrindstoneContainerButton(2, customCrafting));
+        registerButton(new RecipeIngredientButton(0, customCrafting));
+        registerButton(new RecipeIngredientButton(1, customCrafting));
+        registerButton(new GrindstoneContainerButton(customCrafting));
 
         registerButton(new DummyButton<>("grindstone", Material.GRINDSTONE));
 
@@ -67,12 +68,12 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(5, "priority");
         update.setButton(7, "exact_meta");
 
-        update.setButton(11, "grindstone.container_0");
+        update.setButton(11, "recipe.ingredient_0");
         update.setButton(20, "grindstone");
-        update.setButton(29, "grindstone.container_1");
+        update.setButton(29, "recipe.ingredient_1");
 
         update.setButton(23, "xp");
-        update.setButton(25, "grindstone.container_2");
+        update.setButton(25, "grindstone.result");
 
         if(grindstoneRecipe.hasNamespacedKey()){
             update.setButton(43, "save");

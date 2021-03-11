@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class RecipeIngredientButton extends ItemInputButton<CCCache> {
 
     public RecipeIngredientButton(int recipeSlot, CustomCrafting customCrafting) {
-        super("crafting.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+        super("recipe.ingredient_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 cache.getIngredientData().setSlot(recipeSlot);
                 Ingredient ingredient = getIngredient(cache, recipeSlot);

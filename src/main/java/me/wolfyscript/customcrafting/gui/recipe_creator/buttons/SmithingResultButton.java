@@ -14,14 +14,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class SmithingContainerButton extends ItemInputButton<CCCache> {
+public class SmithingResultButton extends ItemInputButton<CCCache> {
 
-    public SmithingContainerButton(int inputSlot, CustomCrafting customCrafting) {
-        super("container_" + inputSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+    public SmithingResultButton(CustomCrafting customCrafting) {
+        super("result", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                cache.getVariantsData().setSlot(inputSlot);
-                cache.getVariantsData().setVariants(inputSlot == 2 ? smithingRecipe.getResults() : inputSlot == 0 ? smithingRecipe.getBase() : smithingRecipe.getAddition());
+                cache.getVariantsData().setSlot(2);
+                cache.getVariantsData().setVariants(smithingRecipe.getResults());
                 guiHandler.openWindow("variants");
                 return true;
             }
@@ -31,23 +31,17 @@ public class SmithingContainerButton extends ItemInputButton<CCCache> {
                 return;
             }
             CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
-            List<CustomItem> items = inputSlot == 2 ? smithingRecipe.getResults() : inputSlot == 0 ? smithingRecipe.getBase() : smithingRecipe.getAddition();
+            List<CustomItem> items = smithingRecipe.getResults();
             CustomItem input = !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR);
             if (items.size() > 0) {
                 items.set(0, input);
             } else {
                 items.add(input);
             }
-            if(inputSlot == 2){
-                smithingRecipe.setResult(items);
-            }else if(inputSlot == 0){
-                smithingRecipe.setBase(items);
-            }else{
-                smithingRecipe.setAddition(items);
-            }
+            smithingRecipe.setResult(items);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CustomSmithingRecipe smithingRecipe = guiHandler.getCustomCache().getSmithingRecipe();
-            List<CustomItem> items = inputSlot == 2 ? smithingRecipe.getResults() : inputSlot == 0 ? smithingRecipe.getBase() : smithingRecipe.getAddition();
+            List<CustomItem> items = smithingRecipe.getResults();
             return InventoryUtils.isCustomItemsListEmpty(items) ? new ItemStack(Material.AIR) : items.get(0).create();
         }));
     }

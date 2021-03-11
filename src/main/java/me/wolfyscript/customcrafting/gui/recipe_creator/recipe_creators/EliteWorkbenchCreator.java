@@ -2,9 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingIngredientButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingResultButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
@@ -29,8 +30,9 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         registerButton(new PriorityButton());
 
         for (int i = 0; i < 37; i++) {
-            registerButton(new CraftingIngredientButton(i, customCrafting));
+            registerButton(new RecipeIngredientButton(i, customCrafting));
         }
+        registerButton(new CraftingResultButton(customCrafting));
 
         registerButton(new ToggleButton<>("workbench.shapeless", false, new ButtonState<>("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
             cache.setCustomRecipe(new ShapedEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
@@ -94,9 +96,9 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         int slot;
         for (int i = 0; i < 36; i++) {
             slot = i + (i / 6) * 3;
-            update.setButton(slot, "crafting.container_" + i);
+            update.setButton(slot, "recipe.ingredient_" + i);
         }
-        update.setButton(25, "crafting.container_36");
+        update.setButton(25, "crafting.result");
         update.setButton(24, "workbench.shapeless");
 
         update.setButton(42, "hidden");

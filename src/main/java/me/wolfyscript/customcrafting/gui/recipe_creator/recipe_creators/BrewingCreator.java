@@ -5,10 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingContainerButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingOptionButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -20,7 +17,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -49,7 +45,7 @@ public class BrewingCreator extends RecipeCreator {
         registerButton(new PriorityButton());
 
         registerButton(new DummyButton<>("brewing_stand", Material.BREWING_STAND));
-        registerButton(new BrewingContainerButton(0, customCrafting));
+        registerButton(new RecipeIngredientButton(0, customCrafting));
         registerButton(new BrewingContainerButton(1, customCrafting));
 
         registerButton(new DummyButton<>("allowed_items", Material.POTION));
@@ -359,7 +355,7 @@ public class BrewingCreator extends RecipeCreator {
         update.setButton(5, "priority");
         update.setButton(7, "exact_meta");
 
-        update.setButton(9, "brewing.container_0");
+        update.setButton(9, "recipe.ingredient_0");
         update.setButton(10, "brewing_stand");
 
         update.setButton(36, "brewing.container_1");
@@ -424,6 +420,6 @@ public class BrewingCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        return !InventoryUtils.isCustomItemsListEmpty(cache.getBrewingRecipe().getIngredients());
+        return !cache.getBrewingRecipe().getIngredients().isEmpty();
     }
 }

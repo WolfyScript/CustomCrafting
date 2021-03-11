@@ -3,7 +3,8 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CookingContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CookingResultButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -23,8 +24,8 @@ public class CookingCreator extends RecipeCreator {
     public void onInit() {
         super.onInit();
 
-        registerButton(new CookingContainerButton(0, customCrafting));
-        registerButton(new CookingContainerButton(1, customCrafting));
+        registerButton(new RecipeIngredientButton(0, customCrafting));
+        registerButton(new CookingResultButton(customCrafting));
 
         registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%XP%", guiHandler.getCustomCache().getCookingRecipe().getExp());
@@ -73,8 +74,8 @@ public class CookingCreator extends RecipeCreator {
         update.setButton(3, "hidden");
         update.setButton(5, "recipe_creator", "conditions");
         update.setButton(20, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
-        update.setButton(11, "cooking.container_0");
-        update.setButton(24, "cooking.container_1");
+        update.setButton(11, "recipe.ingredient_0");
+        update.setButton(24, "cooking.result");
         update.setButton(10, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
         update.setButton(12, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
         update.setButton(22, "xp");
@@ -93,7 +94,7 @@ public class CookingCreator extends RecipeCreator {
             case CAMPFIRE:
             case FURNACE:
                 CustomCookingRecipe<?, ?> furnace = cache.getCookingRecipe();
-                if (!InventoryUtils.isCustomItemsListEmpty(furnace.getSource()) && !InventoryUtils.isCustomItemsListEmpty(furnace.getResults()))
+                if (!furnace.getSource().isEmpty() && !InventoryUtils.isCustomItemsListEmpty(furnace.getResults()))
                     return true;
         }
         return false;

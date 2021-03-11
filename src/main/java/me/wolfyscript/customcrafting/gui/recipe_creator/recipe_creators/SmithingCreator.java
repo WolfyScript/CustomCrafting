@@ -4,7 +4,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SmithingContainerButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SmithingResultButton;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -24,9 +25,9 @@ public class SmithingCreator extends RecipeCreator {
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
 
-        registerButton(new SmithingContainerButton(0, customCrafting));
-        registerButton(new SmithingContainerButton(1, customCrafting));
-        registerButton(new SmithingContainerButton(2, customCrafting));
+        registerButton(new RecipeIngredientButton(0, customCrafting));
+        registerButton(new RecipeIngredientButton(1, customCrafting));
+        registerButton(new SmithingResultButton(customCrafting));
     }
 
     @Override
@@ -46,9 +47,9 @@ public class SmithingCreator extends RecipeCreator {
         event.setButton(3, "recipe_creator", "conditions");
         event.setButton(5, "priority");
         event.setButton(7, "exact_meta");
-        event.setButton(19, "container_0");
-        event.setButton(22, "container_1");
-        event.setButton(25, "container_2");
+        event.setButton(19, "recipe.ingredient_0");
+        event.setButton(22, "recipe.ingredient_1");
+        event.setButton(25, "result");
 
         if (smithingRecipe.hasNamespacedKey()) {
             event.setButton(43, "save");
@@ -59,6 +60,6 @@ public class SmithingCreator extends RecipeCreator {
     @Override
     public boolean validToSave(CCCache cache) {
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
-        return !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getBase()) && !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getAddition()) && !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getResults());
+        return !smithingRecipe.getBase().isEmpty() && !smithingRecipe.getAddition().isEmpty() && !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getResults());
     }
 }
