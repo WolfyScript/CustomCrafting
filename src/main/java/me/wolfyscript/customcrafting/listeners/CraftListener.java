@@ -3,8 +3,12 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.CraftRecipeMCRegistry;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -118,7 +122,21 @@ public class CraftListener implements Listener {
     @EventHandler
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
         if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            event.setCancelled(true);
+            NamespacedKey key = NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(event.getRecipe()));
+            if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(key)) {
+                ICustomRecipe<?> customRecipe = customCrafting.getRecipeHandler().getRecipe(key);
+                if (customRecipe instanceof CraftingRecipe) {
+                    if (customCrafting.getConfigHandler().getConfig().isMCRegistry(CraftRecipeMCRegistry.LIMITED)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                    if (customRecipe.isHidden() || (customRecipe.getConditions().getByID("permission") != null && !customRecipe.getConditions().getByID("permission").check(customRecipe, new Conditions.Data(event.getPlayer(), null, null)))) {
+                        event.setCancelled(true);
+                    }
+                }
+            } else {
+                event.setCancelled(true);
+            }
         }
     }
 }

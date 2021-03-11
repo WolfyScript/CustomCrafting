@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.furnace;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -28,7 +29,7 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe
     @Override
     public FurnaceRecipe getVanillaRecipe() {
         RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().parallelStream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().parallelStream().map(i -> i.create().getType()).collect(Collectors.toList()));
-        return new FurnaceRecipe(getNamespacedKey().toBukkit(), getResult().create(), choice, getExp(), getCookingTime());
+        return new FurnaceRecipe(getNamespacedKey().toBukkit(CustomCrafting.getInst()), getResult().create(), choice, getExp(), getCookingTime());
     }
 
     @Override

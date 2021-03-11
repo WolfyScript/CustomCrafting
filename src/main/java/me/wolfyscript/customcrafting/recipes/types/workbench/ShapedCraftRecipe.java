@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.CraftRecipeMCRegistry;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -230,7 +231,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
 
     @Override
     public ShapedRecipe getVanillaRecipe() {
-        if (!allowVanillaRecipe()) {
+        if (!allowVanillaRecipe() && !CustomCrafting.getInst().getConfigHandler().getConfig().isMCRegistry(CraftRecipeMCRegistry.DISABLED)) {
             if (!ItemUtils.isAirOrNull(getResult()) && this.width > 0) {
                 ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.getInst()), getResult().create());
                 recipe.shape(shape);

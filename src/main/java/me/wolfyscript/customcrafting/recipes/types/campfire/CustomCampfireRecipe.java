@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.campfire;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -28,7 +29,7 @@ public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireReci
     @Override
     public CampfireRecipe getVanillaRecipe() {
         RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().stream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().stream().map(i -> i.create().getType()).collect(Collectors.toList()));
-        return new CampfireRecipe(getNamespacedKey().toBukkit(), getResult().create(), choice, getExp(), getCookingTime());
+        return new CampfireRecipe(getNamespacedKey().toBukkit(CustomCrafting.getInst()), getResult().create(), choice, getExp(), getCookingTime());
     }
 
     @Override
