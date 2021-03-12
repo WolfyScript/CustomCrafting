@@ -1,13 +1,12 @@
 package me.wolfyscript.customcrafting.recipes.types.smithing;
 
-import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -17,12 +16,10 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
 
@@ -36,14 +33,13 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe> {
         super(namespacedKey, node);
         base = ItemLoader.loadRecipeItem(node.path("base"));
         addition = ItemLoader.loadRecipeItem(node.path("addition"));
-        result = Streams.stream(node.path("result").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
     }
 
     public CustomSmithingRecipe() {
         super();
-        this.base = new ArrayList<>();
-        this.addition = new ArrayList<>();
+        this.base = new Ingredient();
+        this.addition = new Ingredient();
         this.result = new ArrayList<>();
         this.preserveEnchants = true;
     }

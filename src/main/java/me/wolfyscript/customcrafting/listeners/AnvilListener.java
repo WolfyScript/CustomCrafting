@@ -42,18 +42,13 @@ public class AnvilListener implements Listener {
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         preCraftedRecipes.remove(player.getUniqueId());
         for (CustomAnvilRecipe recipe : recipes) {
-            CustomItem finalInputLeft = null;
-            CustomItem finalInputRight = null;
+            Optional<CustomItem> finalInputLeft = Optional.empty();
+            Optional<CustomItem> finalInputRight = Optional.empty();
 
             if (recipe.hasInputLeft()) {
                 if (inventory.getItem(0) != null) {
-                    for (CustomItem customItem : recipe.getInputLeft()) {
-                        if (customItem.isSimilar(inventory.getItem(0), recipe.isExactMeta())) {
-                            finalInputLeft = customItem.clone();
-                            break;
-                        }
-                    }
-                    if (finalInputLeft == null) {
+                    finalInputLeft = recipe.getInputLeft().check(inventory.getItem(0), recipe.isExactMeta());
+                    if (!finalInputLeft.isPresent()) {
                         continue;
                     }
                 } else {
@@ -62,13 +57,8 @@ public class AnvilListener implements Listener {
             }
             if (recipe.hasInputRight()) {
                 if (inventory.getItem(1) != null) {
-                    for (CustomItem customItem : recipe.getInputRight()) {
-                        if (customItem.isSimilar(inventory.getItem(1), recipe.isExactMeta())) {
-                            finalInputRight = customItem.clone();
-                            break;
-                        }
-                    }
-                    if (finalInputRight == null) {
+                    finalInputRight = recipe.getInputRight().check(inventory.getItem(1), recipe.isExactMeta());
+                    if (!finalInputRight.isPresent()) {
                         continue;
                     }
                 } else {
@@ -150,9 +140,8 @@ public class AnvilListener implements Listener {
             }
 
             //Save current active recipe to consume correct item inputs!
-            AnvilData anvilData = new AnvilData(recipe, finalInputLeft, finalInputRight);
+            AnvilData anvilData = new AnvilData(recipe, finalInputLeft.orElse(null), finalInputRight.orElse(null));
             preCraftedRecipes.put(player.getUniqueId(), anvilData);
-
             /*
                  Set the values and result 1 tick after they are replaced by NMS.
                  So the player will get the correct Item and the correct values are displayed!

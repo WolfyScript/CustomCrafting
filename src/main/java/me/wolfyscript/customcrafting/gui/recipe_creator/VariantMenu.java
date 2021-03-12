@@ -29,31 +29,19 @@ public class VariantMenu extends CCWindow {
             List<CustomItem> variants = cache.getVariantsData().getVariants();
             switch (cache.getRecipeType().getType()) {
                 case ELITE_WORKBENCH:
-                    resultSlot = 36;
                 case WORKBENCH:
-                    if (cache.getVariantsData().getSlot() == resultSlot) {
-                        cache.getCraftingRecipe().setResult(variants);
-                    } else {
-                        cache.getCraftingRecipe().setIngredients(cache.getVariantsData().getSlot(), variants);
-                    }
+                    cache.getCraftingRecipe().setResult(variants);
                     break;
                 case ANVIL:
-                    cache.getAnvilRecipe().setInput(cache.getVariantsData().getSlot(), variants);
+                    cache.getAnvilRecipe().setResult(variants);
                     break;
                 case STONECUTTER:
-                    if (cache.getVariantsData().getSlot() != 1) {
-                        cache.getStonecutterRecipe().setSource(variants);
-                    }
                     break;
                 case FURNACE:
                 case SMOKER:
                 case BLAST_FURNACE:
                 case CAMPFIRE:
-                    if (cache.getVariantsData().getSlot() != 1) {
-                        cache.getCookingRecipe().setSource(variants);
-                    } else {
-                        cache.getCookingRecipe().setResult(variants);
-                    }
+                    cache.getCookingRecipe().setResult(variants);
                     break;
                 case CAULDRON:
                     if (cache.getVariantsData().getSlot() == 0) {
@@ -63,16 +51,10 @@ public class VariantMenu extends CCWindow {
                     }
                     break;
                 case BREWING_STAND:
-                    switch (cache.getVariantsData().getSlot()) {
-                        case 0:
-                            cache.getBrewingRecipe().setIngredients(variants);
-                            break;
-                        case 1:
-                            cache.getBrewingRecipe().setAllowedItems(variants);
-                            break;
-                        case 2:
-                            cache.getBrewingRecipe().setResult(variants);
-                            break;
+                    if (cache.getVariantsData().getSlot() == 1) {
+                        cache.getBrewingRecipe().setAllowedItems(variants);
+                    } else {
+                        cache.getBrewingRecipe().setResult(variants);
                     }
             }
             guiHandler.openPreviousWindow();

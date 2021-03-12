@@ -5,11 +5,11 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneData;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
+import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.RandomCollection;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -205,20 +205,20 @@ public class GrindStoneListener implements Listener {
         boolean validItem = false;
 
         for (GrindstoneRecipe grindstoneRecipe : allowedRecipes) {
-            List<CustomItem> input = grindstoneRecipe.getInputBottom();
-            List<CustomItem> otherInput = grindstoneRecipe.getInputTop();
+            Ingredient input = grindstoneRecipe.getInputBottom();
+            Ingredient otherInput = grindstoneRecipe.getInputTop();
             if (slot == 0) {
                 input = grindstoneRecipe.getInputTop();
                 otherInput = grindstoneRecipe.getInputBottom();
             }
-            Optional<CustomItem> optional = input.stream().filter(customItem -> customItem.isSimilar(item, grindstoneRecipe.isExactMeta())).findFirst();
+            Optional<CustomItem> optional = input.check(item, grindstoneRecipe.isExactMeta());
             if (!optional.isPresent()) {
                 //Item is invalid! Go to next recipe!
                 continue;
             }
             if (!ItemUtils.isAirOrNull(itemOther)) {
                 //Another item exists in the other slot! Check if current and other item are a valid recipe
-                Optional<CustomItem> optionalOther = otherInput.stream().filter(customItem -> customItem.isSimilar(itemOther, grindstoneRecipe.isExactMeta())).findFirst();
+                Optional<CustomItem> optionalOther = otherInput.check(itemOther, grindstoneRecipe.isExactMeta());
                 if (!optionalOther.isPresent()) {
                     //Other exiting Item is invalid!
                     continue;
@@ -228,7 +228,7 @@ public class GrindStoneListener implements Listener {
                 } else {
                     finalInputTop.set(optionalOther.get());
                 }
-            } else if (!InventoryUtils.isCustomItemsListEmpty(otherInput)) { //Other slot is empty! check if current item is in a recipe
+            } else if (!otherInput.isEmpty()) { //Other slot is empty! check if current item is in a recipe
                 //Recipe has other input! This recipe is not yet valid!
                 validItem = true;
                 break;

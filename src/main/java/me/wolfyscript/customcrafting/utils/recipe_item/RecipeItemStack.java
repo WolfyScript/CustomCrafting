@@ -1,5 +1,6 @@
-package me.wolfyscript.customcrafting.utils;
+package me.wolfyscript.customcrafting.utils.recipe_item;
 
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
@@ -18,54 +19,50 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Ingredient {
+public abstract class RecipeItemStack {
 
     @JsonIgnore
-    private final List<CustomItem> choices;
+    protected final List<CustomItem> choices;
 
     private List<APIReference> items;
     private List<NamespacedKey> tags;
 
-    public Ingredient() {
+    public RecipeItemStack() {
         this.items = new ArrayList<>();
         this.tags = new ArrayList<>();
         this.choices = new ArrayList<>();
+        buildChoices();
     }
 
-    public Ingredient(Material material) {
-        this(new ItemStack(material));
-    }
-
-    public Ingredient(ItemStack itemStack) {
-        this();
-        this.items = Arrays.asList(new VanillaRef(itemStack));
-    }
-
-    public Ingredient(Material... materials) {
+    public RecipeItemStack(Material... materials) {
         this();
         this.items = Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList());
+        buildChoices();
     }
 
-    public Ingredient(ItemStack... items) {
+    public RecipeItemStack(ItemStack... items) {
         this();
         this.items = Arrays.stream(items).map(VanillaRef::new).collect(Collectors.toList());
+        buildChoices();
     }
 
-    public Ingredient(List<Material> items, NamespacedKey... tags) {
+    public RecipeItemStack(NamespacedKey... tags) {
         this();
-        this.items = items.stream().map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList());
         this.tags = Arrays.asList(tags);
+        buildChoices();
     }
 
-    public Ingredient(List<APIReference> items) {
+    public RecipeItemStack(APIReference... references) {
         this();
-        this.items = items;
+        this.items = Arrays.asList(references);
+        buildChoices();
     }
 
-    public Ingredient(List<APIReference> items, List<NamespacedKey> tags) {
+    public RecipeItemStack(List<APIReference> references, List<NamespacedKey> tags) {
         this();
-        this.items = items;
+        this.items = references;
         this.tags = tags;
+        buildChoices();
     }
 
     public List<NamespacedKey> getTags() {
@@ -94,14 +91,14 @@ public class Ingredient {
 
     public void buildChoices() {
         this.choices.clear();
-        this.choices.addAll(items.parallelStream().map(CustomItem::of).collect(Collectors.toSet()));
+        this.choices.addAll(items.stream().map(ItemLoader::load).collect(Collectors.toSet()));
         tags.stream().map(namespacedKey -> {
             if (namespacedKey.getNamespace().equals("minecraft")) {
                 String[] key = namespacedKey.getKey().split("/", 2);
                 if (key.length > 1 && (key[0].equals("blocks") || key[0].equals("items"))) {
                     Tag<Material> tag = Bukkit.getTag(key[0], org.bukkit.NamespacedKey.minecraft(key[1]), Material.class);
                     if (tag != null) {
-                        return tag.getValues().parallelStream().map(CustomItem::new).collect(Collectors.toSet());
+                        return tag.getValues().stream().map(CustomItem::new).collect(Collectors.toSet());
                     }
                 }
             } else {
@@ -122,20 +119,16 @@ public class Ingredient {
         return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
     }
 
-    public Stream<CustomItem> getChoicesStream(){
+    public Stream<CustomItem> getChoicesStream() {
         return choices.stream();
     }
 
-    public List<ItemStack> getBukkitChoices(){
+    public List<ItemStack> getBukkitChoices() {
         return getChoicesStream().map(CustomItem::create).collect(Collectors.toList());
     }
 
-    public List<ItemStack> getBukkitChoices(Player player){
-        return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).map(CustomItem::create).collect(Collectors.toList());
-    }
-
     public boolean isEmpty() {
-        return InventoryUtils.isCustomItemsListEmpty(new ArrayList<>(this.choices));
+        return InventoryUtils.isCustomItemsListEmpty(this.choices);
     }
 
     public boolean test(ItemStack itemStack, boolean exactMatch) {
@@ -148,5 +141,12 @@ public class Ingredient {
         return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
     }
 
-
+    @Override
+    public String toString() {
+        return "RecipeItemStack{" +
+                "choices=" + choices +
+                ", items=" + items +
+                ", tags=" + tags +
+                '}';
+    }
 }

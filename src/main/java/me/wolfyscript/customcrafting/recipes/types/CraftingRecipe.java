@@ -7,9 +7,9 @@ import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
-import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -42,25 +42,22 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     public CraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         //Get Ingredients
-        {
-            Map<Character, Ingredient> ingredients = new TreeMap<>();
-            JsonNode ingredientsNode = node.path("ingredients");
-            ingredientsNode.fields().forEachRemaining(entry -> {
-                String key = entry.getKey();
-                Ingredient ingredient = ItemLoader.loadRecipeItem(entry.getValue());
-                ingredients.put(key.charAt(0), ingredient);
-            });
-            this.ingredients = ingredients;
-        }
+        Map<Character, Ingredient> ingredients = new TreeMap<>();
+        node.path("ingredients").fields().forEachRemaining(entry -> {
+            String key = entry.getKey();
+            Ingredient ingredient = ItemLoader.loadRecipeItem(entry.getValue());
+            ingredients.put(key.charAt(0), ingredient);
+        });
+        this.ingredients = ingredients;
     }
 
-    public CraftingRecipe(){
+    public CraftingRecipe() {
         super();
         this.result = new ArrayList<>();
         this.ingredients = new HashMap<>();
     }
 
-    public CraftingRecipe(CraftingRecipe<?> craftingRecipe){
+    public CraftingRecipe(CraftingRecipe<?> craftingRecipe) {
         super(craftingRecipe);
         this.result = craftingRecipe.getResults();
         this.ingredients = craftingRecipe.getIngredients();
@@ -87,12 +84,17 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void setIngredients(int slot, Ingredient ingredients) {
+    public void setIngredients(char key, Ingredient ingredients) {
         if (ingredients == null || ingredients.isEmpty()) {
-            this.ingredients.remove(LETTERS[slot]);
+            this.ingredients.remove(key);
         } else {
-            this.ingredients.put(LETTERS[slot], ingredients);
+            this.ingredients.put(key, ingredients);
         }
+    }
+
+    @Override
+    public void setIngredients(int slot, Ingredient ingredients) {
+        setIngredients(LETTERS[slot], ingredients);
     }
 
     @Override

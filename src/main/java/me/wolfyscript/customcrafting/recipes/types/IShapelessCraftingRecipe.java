@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
-import me.wolfyscript.customcrafting.utils.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.inventory.ItemStack;
 

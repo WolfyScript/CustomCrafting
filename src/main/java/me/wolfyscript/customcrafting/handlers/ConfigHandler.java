@@ -6,11 +6,11 @@ import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
-import me.wolfyscript.customcrafting.utils.Ingredient;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
@@ -24,14 +24,11 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class ConfigHandler {
 
@@ -48,16 +45,14 @@ public class ConfigHandler {
         this.configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
 
-        //Load core config!
-        //Makes sure that if a config with the old name already exists, it's renamed to the new config name.
-        File oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");
+        File oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");//Makes sure that if a config with the old name already exists, it's renamed to the new config name.
         if(oldConfigFile.exists()){
             oldConfigFile.renameTo(new File(customCrafting.getDataFolder().getPath(), "config.yml"));
         }
         this.mainConfig = new MainConfig(configAPI, customCrafting);
         mainConfig.loadDefaults();
         configAPI.registerConfig(mainConfig);
-        //
+
         try {
             loadLang();
         } catch (IOException e) {
@@ -77,7 +72,6 @@ public class ConfigHandler {
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
         if (mainConfig.resetRecipeBook()) {
-            //Creating the knowledgebook item and recipe
             CustomItem knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
             knowledgeBook.setDisplayName(me.wolfyscript.utilities.util.chat.ChatColor.convert("&6Recipe Book"));
             knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
@@ -87,14 +81,13 @@ public class ConfigHandler {
             customCrafting.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
-            knowledgeBookCraft.setIngredients('A', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.BOOK))), new ArrayList<>()));
-            knowledgeBookCraft.setIngredients('B', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.CRAFTING_TABLE))), new ArrayList<>()));
-            knowledgeBookCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.RECIPE_BOOK)));
+            knowledgeBookCraft.setIngredients('A', new Ingredient(Material.BOOK));
+            knowledgeBookCraft.setIngredients('B', new Ingredient(Material.CRAFTING_TABLE));
+            knowledgeBookCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
             knowledgeBookCraft.setNamespacedKey(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.save();
         }
         if (mainConfig.resetAdvancedWorkbench()) {
-            //Creating the advanced workbench item and recipe
             CustomItem advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
             advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Crafting Table");
             advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Crafting Table for advanced recipes"));
@@ -105,10 +98,10 @@ public class ConfigHandler {
 
             ShapedCraftRecipe workbenchCraft = new ShapedCraftRecipe();
             workbenchCraft.setMirrorHorizontal(false);
-            workbenchCraft.setIngredients('B', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.GOLD_INGOT))), new ArrayList<>()));
-            workbenchCraft.setIngredients('E', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.CRAFTING_TABLE))), new ArrayList<>()));
-            workbenchCraft.setIngredients('H', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.GLOWSTONE_DUST))), new ArrayList<>()));
-            workbenchCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.ADVANCED_CRAFTING_TABLE)));
+            workbenchCraft.setIngredients('B', new Ingredient(Material.GOLD_INGOT));
+            workbenchCraft.setIngredients('E', new Ingredient(Material.CRAFTING_TABLE));
+            workbenchCraft.setIngredients('H', new Ingredient(Material.GLOWSTONE_DUST));
+            workbenchCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.ADVANCED_CRAFTING_TABLE))));
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }
