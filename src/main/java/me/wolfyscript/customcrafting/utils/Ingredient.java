@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.tags.CustomTag;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -13,10 +14,7 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,10 +32,40 @@ public class Ingredient {
         this.choices = new ArrayList<>();
     }
 
+    public Ingredient(Material material) {
+        this(new ItemStack(material));
+    }
+
+    public Ingredient(ItemStack itemStack) {
+        this();
+        this.items = Arrays.asList(new VanillaRef(itemStack));
+    }
+
+    public Ingredient(Material... materials) {
+        this();
+        this.items = Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList());
+    }
+
+    public Ingredient(ItemStack... items) {
+        this();
+        this.items = Arrays.stream(items).map(VanillaRef::new).collect(Collectors.toList());
+    }
+
+    public Ingredient(List<Material> items, NamespacedKey... tags) {
+        this();
+        this.items = items.stream().map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList());
+        this.tags = Arrays.asList(tags);
+    }
+
+    public Ingredient(List<APIReference> items) {
+        this();
+        this.items = items;
+    }
+
     public Ingredient(List<APIReference> items, List<NamespacedKey> tags) {
+        this();
         this.items = items;
         this.tags = tags;
-        this.choices = new ArrayList<>();
     }
 
     public List<NamespacedKey> getTags() {

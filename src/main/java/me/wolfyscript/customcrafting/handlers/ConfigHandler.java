@@ -6,9 +6,11 @@ import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
@@ -22,11 +24,14 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class ConfigHandler {
 
@@ -82,8 +87,8 @@ public class ConfigHandler {
             customCrafting.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
-            knowledgeBookCraft.setIngredient('A', 0, new CustomItem(Material.BOOK));
-            knowledgeBookCraft.setIngredient('B', 0, new CustomItem(Material.CRAFTING_TABLE));
+            knowledgeBookCraft.setIngredients('A', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.BOOK))), new ArrayList<>()));
+            knowledgeBookCraft.setIngredients('B', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.CRAFTING_TABLE))), new ArrayList<>()));
             knowledgeBookCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.RECIPE_BOOK)));
             knowledgeBookCraft.setNamespacedKey(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.save();
@@ -100,9 +105,9 @@ public class ConfigHandler {
 
             ShapedCraftRecipe workbenchCraft = new ShapedCraftRecipe();
             workbenchCraft.setMirrorHorizontal(false);
-            workbenchCraft.setIngredient('B', 0, new CustomItem(Material.GOLD_INGOT));
-            workbenchCraft.setIngredient('E', 0, new CustomItem(Material.CRAFTING_TABLE));
-            workbenchCraft.setIngredient('H', 0, new CustomItem(Material.GLOWSTONE_DUST));
+            workbenchCraft.setIngredients('B', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.GOLD_INGOT))), new ArrayList<>()));
+            workbenchCraft.setIngredients('E', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.CRAFTING_TABLE))), new ArrayList<>()));
+            workbenchCraft.setIngredients('H', new Ingredient(Collections.singletonList(new VanillaRef(new ItemStack(Material.GLOWSTONE_DUST))), new ArrayList<>()));
             workbenchCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.ADVANCED_CRAFTING_TABLE)));
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
