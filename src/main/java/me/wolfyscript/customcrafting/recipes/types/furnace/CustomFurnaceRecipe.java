@@ -27,8 +27,7 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe
 
     @Override
     public FurnaceRecipe getVanillaRecipe() {
-        RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().parallelStream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().parallelStream().map(i -> i.create().getType()).collect(Collectors.toList()));
-        return new FurnaceRecipe(getNamespacedKey().toBukkit(), getResult().create(), choice, getExp(), getCookingTime());
+        return new FurnaceRecipe(getNamespacedKey().toBukkit(), getResult().create(), getRecipeChoice(), getExp(), getCookingTime());
     }
 
     @Override

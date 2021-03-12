@@ -45,8 +45,6 @@ public interface ICraftingRecipe {
 
     void setResult(List<CustomItem> result);
 
-    void setIngredients(char key, Ingredient ingredients);
-
     void setIngredients(int slot, Ingredient ingredients);
 
     Ingredient getIngredients(char key);
@@ -56,8 +54,4 @@ public interface ICraftingRecipe {
     Map<Character, Ingredient> getIngredients();
 
     void setIngredients(Map<Character, Ingredient> ingredients);
-
-    CustomItem getIngredient(char key);
-
-    CustomItem getIngredient(int slot);
 }

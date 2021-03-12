@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.utils.Ingredient;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -13,10 +14,7 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShapedCraftingRecipe {
 
@@ -96,14 +94,14 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
 
     @Override
     public void constructShape() {
-        Map<Character, List<CustomItem>> ingredients = getIngredients();
+        Map<Character, Ingredient> ingredients = getIngredients();
         String[] shape = new String[6];
         int index = 0;
         int row = 0;
         for (int i = 0; i < 36; i++) {
             char ingrd = LETTERS[i];
-            List<CustomItem> items = ingredients.get(ingrd);
-            if (items == null || InventoryUtils.isCustomItemsListEmpty(items)) {
+            Ingredient items = ingredients.get(ingrd);
+            if (items == null || items.isEmpty()) {
                 if (shape[row] != null) {
                     shape[row] = shape[row] + " ";
                 } else {
@@ -205,13 +203,12 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
                 if ((matrix.get(i).get(j) != null && i < shape.length && j < shape[i].length() && shape[i].charAt(j) != ' ')) {
-                    CustomItem item = checkIngredient(matrix.get(i).get(j), getIngredients().get(shape[i].charAt(j)));
-                    if (item == null) {
+                    Optional<CustomItem> item = getIngredients(shape[i].charAt(j)).check(matrix.get(i).get(j), isExactMeta());
+                    if (!item.isPresent()) {
                         return null;
-                    } else {
-                        foundItems.put(new Vec2d(j, i), item);
-                        containedKeys.add(shape[i].charAt(j));
                     }
+                    foundItems.put(new Vec2d(j, i), item.get());
+                    containedKeys.add(shape[i].charAt(j));
                 } else if (!(matrix.get(i).get(j) == null && (i >= shape.length || j >= shape[i].length() || shape[i].charAt(j) == ' '))) {
                     return null;
                 }
@@ -219,15 +216,6 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         }
         if (containedKeys.containsAll(getIngredients().keySet())) {
             return new CraftingData(this, foundItems);
-        }
-        return null;
-    }
-
-    private CustomItem checkIngredient(ItemStack input, List<CustomItem> ingredients) {
-        for (CustomItem ingredient : ingredients) {
-            if (ingredient.isSimilar(input, isExactMeta())) {
-                return ingredient.clone();
-            }
         }
         return null;
     }
@@ -242,12 +230,10 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         super.writeToJson(gen, serializerProvider);
 
         gen.writeObjectField("shape", shape);
-        {
-            gen.writeObjectFieldStart("mirror");
-            gen.writeBooleanField("horizontal", this.mirrorHorizontal);
-            gen.writeBooleanField("vertical", this.mirrorVertical);
-            gen.writeBooleanField("rotation", this.mirrorRotation);
-            gen.writeEndObject();
-        }
+        gen.writeObjectFieldStart("mirror");
+        gen.writeBooleanField("horizontal", this.mirrorHorizontal);
+        gen.writeBooleanField("vertical", this.mirrorVertical);
+        gen.writeBooleanField("rotation", this.mirrorRotation);
+        gen.writeEndObject();
     }
 }

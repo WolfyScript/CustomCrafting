@@ -251,7 +251,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     @Override
     public List<CustomItem> getRecipeBookItems() {
-        return getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? getResults() : hasInputLeft() ? getInputLeft() : getInputRight();
+        return getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? getResults() : hasInputLeft() ? getInputLeft().getChoices() : getInputRight().getChoices();
     }
 
     @Override
@@ -260,13 +260,13 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
         Ingredient inputRight = getInputRight();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
         ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
-        List<CustomItem> variants = Collections.singletonList(new CustomItem(Material.AIR));
         if (getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-            variants = Collections.singletonList(getResult());
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(getResult()));
         } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
-            variants = inputLeft;
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, inputLeft);
+        }else{
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
         }
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, variants);
     }
 
     @Override

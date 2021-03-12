@@ -14,34 +14,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IShapelessCraftingRecipe {
 
     public ShapelessEliteCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         shapeless = true;
-        if(getIngredients().size() <= 9){
+        if (getIngredients().size() <= 9) {
             requiredGridSize = 3;
-        }else if (getIngredients().size() <= 16){
+        } else if (getIngredients().size() <= 16) {
             requiredGridSize = 4;
-        }else if (getIngredients().size() <= 25){
+        } else if (getIngredients().size() <= 25) {
             requiredGridSize = 5;
-        }else if (getIngredients().size() <= 36){
+        } else if (getIngredients().size() <= 36) {
             requiredGridSize = 6;
         }
     }
 
-    public ShapelessEliteCraftRecipe(){
+    public ShapelessEliteCraftRecipe() {
         super();
         this.shapeless = true;
     }
 
-    public ShapelessEliteCraftRecipe(EliteCraftingRecipe eliteCraftingRecipe){
+    public ShapelessEliteCraftRecipe(EliteCraftingRecipe eliteCraftingRecipe) {
         super(eliteCraftingRecipe);
         this.shapeless = true;
     }
 
-    public ShapelessEliteCraftRecipe(ShapelessEliteCraftRecipe eliteCraftingRecipe){
+    public ShapelessEliteCraftRecipe(ShapelessEliteCraftRecipe eliteCraftingRecipe) {
         this((EliteCraftingRecipe) eliteCraftingRecipe);
     }
 
@@ -52,10 +53,8 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
                 ItemStack itemStack = matrix.get(i).get(j);
-                if (itemStack == null) {
-                    continue;
-                }
-                CustomItem item = checkIngredient(usedKeys, itemStack);
+                if (itemStack == null) continue;
+                CustomItem item = checkIngredient(getIngredients(), usedKeys, itemStack, isExactMeta());
                 if (item != null) {
                     foundItems.put(new Vec2d(j, i), item);
                 }
@@ -63,21 +62,6 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
         }
         if (usedKeys.containsAll(getIngredients().keySet())) {
             return new CraftingData(this, foundItems);
-        }
-        return null;
-    }
-
-    public CustomItem checkIngredient(List<Character> usedKeys, ItemStack item) {
-        for (Character key : getIngredients().keySet()) {
-            if (!usedKeys.contains(key)) {
-                for (CustomItem ingredient : getIngredients().get(key)) {
-                    if (!ingredient.isSimilar(item, isExactMeta())) {
-                        continue;
-                    }
-                    usedKeys.add(key);
-                    return ingredient.clone();
-                }
-            }
         }
         return null;
     }

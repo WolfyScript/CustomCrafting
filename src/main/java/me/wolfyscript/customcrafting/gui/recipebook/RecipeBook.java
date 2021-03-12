@@ -29,6 +29,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -132,9 +133,13 @@ public class RecipeBook extends CCWindow {
                     knowledgeBook.setRecipeItems(switchCategory, null);
                     Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
                         List<CustomItem> cachedItems = dataHandler.getIndexedRecipeItems(player, category, switchCategory).parallelStream()
-                                .map(ICustomRecipe::getRecipeBookItems).collect((Supplier<ArrayList<CustomItem>>) ArrayList::new,
-                                        (customItems, itemsToAdd) -> customItems.addAll(itemsToAdd.stream().filter(item -> customItems.parallelStream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())),
-                                        (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.parallelStream().noneMatch(customItem -> customItem.create().isSimilar(item.create()))).collect(Collectors.toList())));
+                                .map(ICustomRecipe::getRecipeBookItems).flatMap(Collection::stream).collect((Supplier<ArrayList<CustomItem>>) ArrayList::new,
+                                        (customItems, itemToAdd) -> {
+                                            if(customItems.parallelStream().noneMatch(item -> item.getItemStack().isSimilar(itemToAdd.getItemStack()))){
+                                                customItems.add(itemToAdd);
+                                            }
+                                        },
+                                        (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.parallelStream().noneMatch(customItem -> customItem.getItemStack().isSimilar(item.getItemStack()))).collect(Collectors.toList())));
                         knowledgeBook.setRecipeItems(switchCategory, !cachedItems.isEmpty() ? cachedItems : null);
                         event.getGuiHandler().openWindow(this);
                     });

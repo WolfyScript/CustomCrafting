@@ -108,27 +108,13 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeNumberField("exp", xp);
-        {
-            gen.writeArrayFieldStart("result");
-            for (CustomItem customItem : result) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
+        gen.writeArrayFieldStart("result");
+        for (CustomItem customItem : result) {
+            saveCustomItem(customItem, gen);
         }
-        {
-            gen.writeArrayFieldStart("input_top");
-            for (CustomItem customItem : getInputTop()) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
-        {
-            gen.writeArrayFieldStart("input_bottom");
-            for (CustomItem customItem : getInputBottom()) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
+        gen.writeEndArray();
+        gen.writeObjectField("input_top", getInputTop());
+        gen.writeObjectField("input_bottom", getInputBottom());
     }
 
     @Override

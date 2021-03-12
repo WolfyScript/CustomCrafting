@@ -10,12 +10,15 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Ingredient {
 
@@ -87,6 +90,22 @@ public class Ingredient {
         return choices;
     }
 
+    public List<CustomItem> getChoices(Player player) {
+        return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
+    }
+
+    public Stream<CustomItem> getChoicesStream(){
+        return choices.stream();
+    }
+
+    public List<ItemStack> getBukkitChoices(){
+        return getChoicesStream().map(CustomItem::create).collect(Collectors.toList());
+    }
+
+    public List<ItemStack> getBukkitChoices(Player player){
+        return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).map(CustomItem::create).collect(Collectors.toList());
+    }
+
     public boolean isEmpty() {
         return InventoryUtils.isCustomItemsListEmpty(new ArrayList<>(this.choices));
     }
@@ -96,9 +115,9 @@ public class Ingredient {
         return choices.stream().anyMatch(customItem -> customItem.isSimilar(itemStack, exactMatch));
     }
 
-    public CustomItem check(ItemStack itemStack, boolean exactMatch) {
-        if (itemStack == null) return null;
-        return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst().orElse(null);
+    public Optional<CustomItem> check(ItemStack itemStack, boolean exactMatch) {
+        if (itemStack == null) return Optional.empty();
+        return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
     }
 
 

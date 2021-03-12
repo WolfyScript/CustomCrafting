@@ -29,10 +29,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BrewingStandListener implements Listener {
@@ -156,25 +153,23 @@ public class BrewingStandListener implements Listener {
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
                             customCrafting.getRecipeHandler().getAvailableRecipes(Types.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
-                                for (CustomItem customItem : recipe.getIngredients()) {
-                                    if (customItem.isSimilar(ingredient, recipe.isExactMeta())) {
-                                        //Ingredient is valid
-                                        //Checking for valid item in the bottom 3 slots of the brewing inventory
-                                        if (recipe.getAllowedItems().isEmpty()
-                                                ||
-                                                recipe.getAllowedItems().stream().anyMatch(item1 -> {
-                                                    for (int i = 0; i < 3; i++) {
-                                                        ItemStack itemStack = inventory.getItem(i);
-                                                        if (!ItemUtils.isAirOrNull(itemStack) && item1.isSimilar(itemStack, recipe.isExactMeta())) {
-                                                            return true;
-                                                        }
+                                Optional<CustomItem> optional = recipe.getIngredients().check(ingredient, recipe.isExactMeta());
+                                if (optional.isPresent()) {
+                                    //Ingredient is valid
+                                    //Checking for valid item in the bottom 3 slots of the brewing inventory
+                                    if (recipe.getAllowedItems().isEmpty()
+                                            ||
+                                            recipe.getAllowedItems().stream().anyMatch(item1 -> {
+                                                for (int i = 0; i < 3; i++) {
+                                                    ItemStack itemStack = inventory.getItem(i);
+                                                    if (!ItemUtils.isAirOrNull(itemStack) && item1.isSimilar(itemStack, recipe.isExactMeta())) {
+                                                        return true;
                                                     }
-                                                    return false;
-                                                })) {
-                                            //Brewing Inventory contains a valid item for that recipe
-                                            brewingRecipeList.put(recipe, customItem);
-                                        }
-                                        break;
+                                                }
+                                                return false;
+                                            })) {
+                                        //Brewing Inventory contains a valid item for that recipe
+                                        brewingRecipeList.put(recipe, optional.get());
                                     }
                                 }
                             });

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements IShapelessCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
@@ -43,26 +44,13 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
         HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
-                CustomItem item = checkIngredient(usedKeys, matrix.get(i).get(j));
+                CustomItem item = checkIngredient(getIngredients(), usedKeys, matrix.get(i).get(j), isExactMeta());
                 if (item != null) {
                     foundItems.put(new Vec2d(j, i), item);
                 }
             }
         }
         return usedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems) : null;
-    }
-
-    public CustomItem checkIngredient(List<Character> usedKeys, ItemStack item) {
-        if (item == null) return null;
-        for (Character key : getIngredients().keySet()) {
-            if (usedKeys.contains(key)) continue;
-            CustomItem validItem = getIngredients().get(key).check(item, isExactMeta());
-            if (validItem != null) {
-                usedKeys.add(key);
-                return validItem.clone();
-            }
-        }
-        return null;
     }
 
     @Override

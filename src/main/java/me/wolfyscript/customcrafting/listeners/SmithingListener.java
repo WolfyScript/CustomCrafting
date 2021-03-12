@@ -58,11 +58,11 @@ public class SmithingListener implements Listener {
             if (!recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
                 continue;
             }
-            Optional<CustomItem> optionalBase = recipe.getBase().stream().filter(customItem -> customItem.isSimilar(base, recipe.isExactMeta())).findFirst();
+            Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isExactMeta());
             if (!optionalBase.isPresent()) {
                 continue;
             }
-            Optional<CustomItem> optionalAddition = recipe.getAddition().stream().filter(customItem -> customItem.isSimilar(addition, recipe.isExactMeta())).findFirst();
+            Optional<CustomItem> optionalAddition = recipe.getAddition().check(addition, recipe.isExactMeta());
             if (!optionalAddition.isPresent()) {
                 continue;
             }

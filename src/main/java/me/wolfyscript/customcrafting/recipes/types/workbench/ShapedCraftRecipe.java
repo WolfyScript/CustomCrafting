@@ -16,10 +16,7 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
@@ -148,9 +145,11 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         for (int c = 0; c < matrix.size(); c++) {
             for (int r = 0; r < matrix.get(c).size(); r++) {
                 if ((matrix.get(c).get(r) != null && c < shape.length && r < shape[c].length() && shape[c].charAt(r) != ' ')) {
-                    CustomItem item = getIngredients().get(shape[c].charAt(r)).check(matrix.get(c).get(r), isExactMeta());
-                    if (item == null) return null;
-                    foundItems.put(new Vec2d(r, c), item);
+                    Optional<CustomItem> item = getIngredients().get(shape[c].charAt(r)).check(matrix.get(c).get(r), isExactMeta());
+                    if (!item.isPresent()){
+                        return null;
+                    }
+                    foundItems.put(new Vec2d(r, c), item.get());
                     containedKeys.add(shape[c].charAt(r));
                 } else if (!(matrix.get(c).get(r) == null && (c >= shape.length || r >= shape[c].length() || shape[c].charAt(r) == ' '))) {
                     return null;

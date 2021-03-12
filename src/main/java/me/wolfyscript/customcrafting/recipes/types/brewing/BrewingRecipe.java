@@ -342,7 +342,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
             if (getAllowedItems().isEmpty()) {
                 return Collections.singletonList(placeHolderPotion);
             }
-            return getIngredients();
+            return getIngredients().getChoices();
         }
         return getResults();
     }
