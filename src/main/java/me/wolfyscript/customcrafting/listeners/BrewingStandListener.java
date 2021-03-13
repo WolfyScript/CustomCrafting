@@ -121,14 +121,14 @@ public class BrewingStandListener implements Listener {
                                     event.setCancelled(true);
                                     ItemStack itemStack = new ItemStack(cursor);
                                     event.getView().setCursor(currentItem);
-                                    inventory.setItem(event.getSlot(), itemStack);
+                                    event.setCurrentItem(itemStack);
                                 }
                             }
                         } else if (cursor != null) {
                             ItemStack itemStack = new ItemStack(cursor);
                             event.setCancelled(true);
-                            inventory.setItem(event.getSlot(), itemStack);
                             event.getView().setCursor(new ItemStack(Material.AIR));
+                            event.setCurrentItem(itemStack);
                         }
                         player.updateInventory();//And we update the inventory
                     }
