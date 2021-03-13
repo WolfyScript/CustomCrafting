@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe
 import me.wolfyscript.customcrafting.recipes.types.smithing.SmithingData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
@@ -75,12 +74,9 @@ public class SmithingListener implements Listener {
 
             HashMap<NamespacedKey, CustomItem> preCraftedItem = preCraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
             if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
-                RandomCollection<CustomItem> items = recipe.getResults().parallelStream().filter(cI -> !cI.hasPermission() || player.hasPermission(cI.getPermission())).collect(RandomCollection.getCollector((rdmC,cI) -> rdmC.add(cI.getRarityPercentage(), cI.clone())));
-                if (!items.isEmpty()) {
-                    result = items.next();
-                    preCraftedItem.put(recipe.getNamespacedKey(), result);
-                    preCraftedItems.put(player.getUniqueId(), preCraftedItem);
-                }
+                result = recipe.getResult().getCustomItem(player);
+                preCraftedItem.put(recipe.getNamespacedKey(), result);
+                preCraftedItems.put(player.getUniqueId(), preCraftedItem);
             } else {
                 result = preCraftedItem.get(recipe.getNamespacedKey());
             }
@@ -118,7 +114,7 @@ public class SmithingListener implements Listener {
             } else if (!ItemUtils.isAirOrNull(event.getCursor())) {
                 event.setCancelled(true);
                 return;
-            }else{
+            } else {
                 event.getView().setCursor(resultStack);
             }
 

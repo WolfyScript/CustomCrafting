@@ -15,7 +15,10 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -127,18 +130,12 @@ public abstract class RecipeItemStack {
         return getChoicesStream().map(CustomItem::create).collect(Collectors.toList());
     }
 
+    public int size(){
+        return getChoices().size();
+    }
+
     public boolean isEmpty() {
         return InventoryUtils.isCustomItemsListEmpty(this.choices);
-    }
-
-    public boolean test(ItemStack itemStack, boolean exactMatch) {
-        if (itemStack == null) return false;
-        return choices.stream().anyMatch(customItem -> customItem.isSimilar(itemStack, exactMatch));
-    }
-
-    public Optional<CustomItem> check(ItemStack itemStack, boolean exactMatch) {
-        if (itemStack == null) return Optional.empty();
-        return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
     }
 
     @Override

@@ -89,7 +89,7 @@ public class EditCategory extends CCWindow {
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
-                        ICustomRecipe<?> recipe = customCrafting.getRecipeHandler().getRecipe(namespacedKey);
+                        ICustomRecipe<?,?> recipe = customCrafting.getRecipeHandler().getRecipe(namespacedKey);
 
                         if (recipe == null) {
                             api.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));

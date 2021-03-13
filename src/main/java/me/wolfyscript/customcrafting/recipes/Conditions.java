@@ -37,7 +37,7 @@ public class Conditions extends HashMap<String, Condition> {
         addCondition(new WorldBiomeCondition());
     }
 
-    public boolean checkConditions(ICustomRecipe<?> customRecipe, Data data) {
+    public boolean checkConditions(ICustomRecipe<?,?> customRecipe, Data data) {
         for (Condition condition : values()) {
             if (!condition.check(customRecipe, data)) {
                 return false;

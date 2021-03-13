@@ -6,6 +6,8 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -28,7 +30,7 @@ import java.io.IOException;
 import java.util.List;
 
 @JsonSerialize(using = ICustomRecipe.Serializer.class)
-public interface ICustomRecipe<C extends ICustomRecipe<?>> {
+public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTarget> {
 
     WolfyUtilities getAPI();
 
@@ -45,13 +47,13 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
     void setGroup(String group);
 
     @Nullable
-    default CustomItem getResult() {
-        return getResults().size() > 0 ? getResults().get(0) : null;
+    default CustomItem getResultItem() {
+        return getResult().getChoices().get(0);
     }
 
-    List<CustomItem> getResults();
+    Result<T> getResult();
 
-    void setResult(List<CustomItem> result);
+    void setResult(Result<T> result);
 
     RecipePriority getPriority();
 
@@ -141,11 +143,11 @@ public interface ICustomRecipe<C extends ICustomRecipe<?>> {
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 
     default boolean findResultItem(ItemStack result) {
-        return getResults().parallelStream().anyMatch(customItem -> customItem.create().isSimilar(result));
+        return getResult().getChoices().parallelStream().anyMatch(customItem -> customItem.create().isSimilar(result));
     }
 
     default List<CustomItem> getRecipeBookItems() {
-        return getResults();
+        return getResult().getChoices();
     }
 
     void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event);

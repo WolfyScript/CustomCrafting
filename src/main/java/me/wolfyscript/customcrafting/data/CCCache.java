@@ -38,7 +38,7 @@ public class CCCache extends CustomCache {
     private Setting setting;
 
     //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
-    private final HashMap<RecipeType<?>, ICustomRecipe<?>> recipes = new HashMap<>();
+    private final HashMap<RecipeType<?>, ICustomRecipe<?,?>> recipes = new HashMap<>();
 
     private final CustomCrafting customCrafting;
     private String subSetting;
@@ -53,7 +53,6 @@ public class CCCache extends CustomCache {
     private final ParticleCache particleCache = new ParticleCache();
     private final BrewingGUICache brewingGUICache = new BrewingGUICache();
 
-    private final VariantsData variantsData = new VariantsData();
     private final IngredientData ingredientData = new IngredientData();
 
     private ApplyItem applyItem;
@@ -108,10 +107,6 @@ public class CCCache extends CustomCache {
 
     public ChatLists getChatLists() {
         return chatLists;
-    }
-
-    public VariantsData getVariantsData() {
-        return variantsData;
     }
 
     public KnowledgeBook getKnowledgeBook() {
@@ -173,15 +168,15 @@ public class CCCache extends CustomCache {
     }
 
     //Recipes
-    public void setCustomRecipe(ICustomRecipe<?> customRecipe) {
+    public void setCustomRecipe(ICustomRecipe<?,?> customRecipe) {
         recipes.put(customRecipe.getRecipeType(), customRecipe);
     }
 
-    public ICustomRecipe<?> getRecipe() {
+    public ICustomRecipe<?,?> getRecipe() {
         return getRecipe(getRecipeType());
     }
 
-    public <T extends ICustomRecipe<?>> T getRecipe(RecipeType<T> recipeType) {
+    public <T extends ICustomRecipe<?,?>> T getRecipe(RecipeType<T> recipeType) {
         return recipeType.getClazz().cast(recipes.get(recipeType));
     }
 

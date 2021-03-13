@@ -3,14 +3,9 @@ package me.wolfyscript.customcrafting.recipes.types.campfire;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.CampfireRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-
-import java.util.stream.Collectors;
 
 public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireRecipe, CampfireRecipe> {
 
@@ -28,7 +23,7 @@ public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireReci
 
     @Override
     public CampfireRecipe getVanillaRecipe() {
-        return new CampfireRecipe(getNamespacedKey().toBukkit(), getResult().create(), getRecipeChoice(), getExp(), getCookingTime());
+        return new CampfireRecipe(getNamespacedKey().toBukkit(), getResultItem().create(), getRecipeChoice(), getExp(), getCookingTime());
     }
 
     @Override

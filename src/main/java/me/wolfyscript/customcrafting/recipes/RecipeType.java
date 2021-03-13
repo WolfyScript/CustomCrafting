@@ -9,7 +9,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
-public class RecipeType<C extends ICustomRecipe<?>> {
+public class RecipeType<C extends ICustomRecipe<?,?>> {
 
     /**
      * This is the RecipeType object.

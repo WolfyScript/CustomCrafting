@@ -46,7 +46,7 @@ public class BrewingCreator extends RecipeCreator {
 
         registerButton(new DummyButton<>("brewing_stand", Material.BREWING_STAND));
         registerButton(new RecipeIngredientButton(0, customCrafting));
-        registerButton(new BrewingContainerButton(1, customCrafting));
+        registerButton(new RecipeIngredientButton(1, customCrafting));
 
         registerButton(new DummyButton<>("allowed_items", Material.POTION));
 
@@ -170,7 +170,7 @@ public class BrewingCreator extends RecipeCreator {
 
         registerButton(new BrewingOptionButton(Material.ITEM_FRAME, "result"));
         registerButton(new ActionButton<>("result.info", Material.BOOK));
-        registerButton(new BrewingContainerButton(2, customCrafting));
+        registerButton(new RecipeResultButton());
 
         registerButton(new BrewingOptionButton(Material.ANVIL, "effect_additions"));
         registerButton(new DummyButton<>("effect_additions.info", Material.LINGERING_POTION, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {
@@ -381,7 +381,7 @@ public class BrewingCreator extends RecipeCreator {
 
         switch (brewingGUICache.getOption()) {
             case "result":
-                update.setButton(32, "brewing.container_2");
+                update.setButton(32, "recipe.result");
                 update.setButton(34, "result.info");
                 break;
             case "effect_removals":

@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.VariantsData;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -15,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class VariantContainerButton extends ItemInputButton<CCCache> {
 
-    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getVariantsData().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipe().getResult().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
 
     public VariantContainerButton(int variantSlot) {
         super("variant_container_" + variantSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
@@ -32,10 +31,7 @@ public class VariantContainerButton extends ItemInputButton<CCCache> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
-            cache.getVariantsData().put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR));
-        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            VariantsData variantsData = cache.getVariantsData();
-            return variantsData.getVariants().size() > variantSlot ? variantsData.getVariants().get(variantSlot).getIDItem() : new ItemStack(Material.AIR);
-        }));
+            cache.getRecipe().getResult().put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR));
+        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> cache.getRecipe().getResult().size() > variantSlot ? cache.getRecipe().getResult().getChoices().get(variantSlot).getIDItem() : new ItemStack(Material.AIR)));
     }
 }

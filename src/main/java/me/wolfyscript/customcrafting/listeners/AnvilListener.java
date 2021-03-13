@@ -70,7 +70,7 @@ public class AnvilListener implements Listener {
 
             //RECIPE RESULTS!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-                result = new ItemBuilder(recipe.getResult() != null ? recipe.getResult().create() : ItemUtils.AIR);
+                result = new ItemBuilder(recipe.getResultItem() != null ? recipe.getResultItem().create() : ItemUtils.AIR);
             } else {
                 result = new ItemBuilder(event.getResult());
                 if (result.create().hasItemMeta()) {

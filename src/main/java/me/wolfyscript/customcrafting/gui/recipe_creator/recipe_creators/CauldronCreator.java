@@ -4,9 +4,10 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CauldronContainerButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -15,7 +16,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.*;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -36,8 +36,8 @@ public class CauldronCreator extends RecipeCreator {
 
         registerButton(new DummyButton<>("cauldron", Material.CAULDRON));
 
-        registerButton(new CauldronContainerButton(0, customCrafting));
-        registerButton(new CauldronContainerButton(1, customCrafting));
+        registerButton(new RecipeIngredientButton(0, customCrafting));
+        registerButton(new RecipeResultButton());
         registerButton(new ItemInputButton<>("handItem_container", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 Bukkit.getScheduler().runTask(customCrafting, () -> {
@@ -199,7 +199,7 @@ public class CauldronCreator extends RecipeCreator {
         update.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
         update.setButton(5, "priority");
         update.setButton(7, "exact_meta");
-        update.setButton(11, "cauldron.container_0");
+        update.setButton(11, "recipe.ingredient_0");
         update.setButton(13, "cookingTime");
 
         update.setButton(19, "water");
@@ -207,7 +207,7 @@ public class CauldronCreator extends RecipeCreator {
         update.setButton(21, "waterLevel");
 
         update.setButton(23, "xp");
-        update.setButton(25, "cauldron.container_1");
+        update.setButton(25, "recipe.result");
 
         update.setButton(29, "fire");
         update.setButton(34, "dropItems");
@@ -228,6 +228,6 @@ public class CauldronCreator extends RecipeCreator {
     @Override
     public boolean validToSave(CCCache cache) {
         CauldronRecipe config = cache.getCauldronRecipe();
-        return !InventoryUtils.isCustomItemsListEmpty(config.getIngredients()) && !InventoryUtils.isCustomItemsListEmpty(config.getResults());
+        return !config.getIngredients().isEmpty() && !config.getResult().isEmpty();
     }
 }

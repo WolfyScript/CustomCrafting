@@ -43,8 +43,6 @@ public interface ICraftingRecipe {
         return totalAmount;
     }
 
-    void setResult(List<CustomItem> result);
-
     void setIngredients(int slot, Ingredient ingredients);
 
     void setIngredients(char key, Ingredient ingredients);

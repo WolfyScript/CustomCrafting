@@ -66,8 +66,8 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
     @Override
     public ShapelessRecipe getVanillaRecipe() {
         if (!allowVanillaRecipe()) {
-            if (!ItemUtils.isAirOrNull(getResult())) {
-                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResult().create());
+            if (!ItemUtils.isAirOrNull(getResultItem())) {
+                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResultItem().create());
                 for (Ingredient value : getIngredients().values()) {
                     shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
                 }

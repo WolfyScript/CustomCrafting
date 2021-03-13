@@ -10,7 +10,8 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRec
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -19,19 +20,19 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends CustomRecipe<C> implements ICraftingRecipe {
+public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
 
     protected static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
     protected boolean shapeless;
-
-    protected List<CustomItem> result;
     protected Map<Character, Ingredient> ingredients;
 
     protected List<Ingredient> items;
@@ -45,7 +46,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         Map<Character, Ingredient> ingredients = new TreeMap<>();
         node.path("ingredients").fields().forEachRemaining(entry -> {
             String key = entry.getKey();
-            Ingredient ingredient = ItemLoader.loadRecipeItem(entry.getValue());
+            Ingredient ingredient = ItemLoader.loadIngredient(entry.getValue());
             ingredients.put(key.charAt(0), ingredient);
         });
         this.ingredients = ingredients;
@@ -53,13 +54,13 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
 
     public CraftingRecipe() {
         super();
-        this.result = new ArrayList<>();
+        this.result = new Result<>();
         this.ingredients = new HashMap<>();
     }
 
     public CraftingRecipe(CraftingRecipe<?> craftingRecipe) {
         super(craftingRecipe);
-        this.result = craftingRecipe.getResults();
+        this.result = craftingRecipe.getResult();
         this.ingredients = craftingRecipe.getIngredients();
     }
 
@@ -98,28 +99,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
-    }
-
-    public void setResult(int variant, CustomItem customItem) {
-        if (variant < result.size()) {
-            if (ItemUtils.isAirOrNull(customItem)) {
-                result.remove(variant);
-            } else {
-                result.set(variant, customItem);
-            }
-        } else if (!ItemUtils.isAirOrNull(customItem)) {
-            result.add(customItem);
-        }
-    }
-
-    @Override
-    public List<CustomItem> getResults() {
-        return new ArrayList<>(result);
-    }
-
-    @Override
     public boolean isShapeless() {
         return shapeless;
     }
@@ -132,7 +111,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!getIngredients().isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, getResults());
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < bookSquaredGrid; i++) {
                 Ingredient variants = getIngredients(i);
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, variants);
@@ -178,13 +157,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("shapeless", shapeless);
-        {
-            gen.writeArrayFieldStart("result");
-            for (CustomItem customItem : getResults()) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
+        gen.writeObjectField("result", result);
         {
             gen.writeObjectFieldStart("ingredients");
             for (Map.Entry<Character, Ingredient> entry : ingredients.entrySet()) {

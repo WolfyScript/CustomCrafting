@@ -3,16 +3,15 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.GrindstoneContainerButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Material;
 
 public class GrindstoneCreator extends RecipeCreator {
@@ -30,7 +29,7 @@ public class GrindstoneCreator extends RecipeCreator {
 
         registerButton(new RecipeIngredientButton(0, customCrafting));
         registerButton(new RecipeIngredientButton(1, customCrafting));
-        registerButton(new GrindstoneContainerButton(customCrafting));
+        registerButton(new RecipeResultButton());
 
         registerButton(new DummyButton<>("grindstone", Material.GRINDSTONE));
 
@@ -73,7 +72,7 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(29, "recipe.ingredient_1");
 
         update.setButton(23, "xp");
-        update.setButton(25, "grindstone.result");
+        update.setButton(25, "recipe.result");
 
         if(grindstoneRecipe.hasNamespacedKey()){
             update.setButton(43, "save");
@@ -86,7 +85,7 @@ public class GrindstoneCreator extends RecipeCreator {
     public boolean validToSave(CCCache cache) {
         GrindstoneRecipe recipe = cache.getGrindstoneRecipe();
         if (!recipe.getInputTop().isEmpty() || !recipe.getInputBottom().isEmpty()) {
-            return !InventoryUtils.isCustomItemsListEmpty(recipe.getResults());
+            return !recipe.getResult().isEmpty();
         }
         return false;
     }

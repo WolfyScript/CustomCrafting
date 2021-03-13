@@ -47,9 +47,9 @@ public class DataHandler {
     private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 
-    private final Map<NamespacedKey, ICustomRecipe<?>> customRecipes = new TreeMap<>();
+    private final Map<NamespacedKey, ICustomRecipe<?,?>> customRecipes = new TreeMap<>();
 
-    private final Map<Category, Map<Category, List<ICustomRecipe<?>>>> indexedCategoryRecipes;
+    private final Map<Category, Map<Category, List<ICustomRecipe<?,?>>>> indexedCategoryRecipes;
 
     private final MainConfig mainConfig;
     private final WolfyUtilities api;
@@ -120,7 +120,7 @@ public class DataHandler {
                 loadItems(dir);
             }
             for (String dir : dirs) {
-                for (RecipeType<? extends ICustomRecipe<?>> type : Types.values()) {
+                for (RecipeType<? extends ICustomRecipe<?,?>> type : Types.values()) {
                     loadRecipe(dir, type);
                 }
             }
@@ -152,7 +152,7 @@ public class DataHandler {
         }
     }
 
-    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?>> type) {
+    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?,?>> type) {
         for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
             String name = file.getName();
             NamespacedKey namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
@@ -169,7 +169,7 @@ public class DataHandler {
         customCrafting.getConfigHandler().getConfig().save();
     }
 
-    public void registerRecipe(ICustomRecipe<?> recipe) {
+    public void registerRecipe(ICustomRecipe<?,?> recipe) {
         if (recipe == null) return;
         if (customRecipes.containsKey(recipe.getNamespacedKey()) && mainConfig.isDataOverride() && ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
             unregisterRecipe(recipe);
@@ -180,7 +180,7 @@ public class DataHandler {
         }
     }
 
-    public void injectRecipe(ICustomRecipe<?> recipe) {
+    public void injectRecipe(ICustomRecipe<?,?> recipe) {
         unregisterRecipe(recipe);
         registerRecipe(recipe);
     }
@@ -209,14 +209,14 @@ public class DataHandler {
         }
     }
 
-    public void unregisterRecipe(ICustomRecipe<?> customRecipe) {
+    public void unregisterRecipe(ICustomRecipe<?,?> customRecipe) {
         customRecipes.remove(customRecipe.getNamespacedKey());
         if (customRecipe instanceof ICustomVanillaRecipe) {
             unregisterBukkitRecipe(customRecipe.getNamespacedKey());
         }
     }
 
-    public List<ICustomRecipe<?>> getIndexedRecipeItems(Player player, Category mainCategory, Category switchCategory) {
+    public List<ICustomRecipe<?,?>> getIndexedRecipeItems(Player player, Category mainCategory, Category switchCategory) {
         return getAvailable(indexedCategoryRecipes.getOrDefault(mainCategory, new HashMap<>()).getOrDefault(switchCategory, new ArrayList<>()), player);
     }
 
@@ -229,7 +229,7 @@ public class DataHandler {
         chat.sendConsoleMessage("Indexing Recipes for Recipe Book...");
         indexedCategoryRecipes.clear();
         for (Category mainCategory : categories.getMainCategories().values()) {
-            Map<Category, List<ICustomRecipe<?>>> indexSwitchCategories = new HashMap<>();
+            Map<Category, List<ICustomRecipe<?,?>>> indexSwitchCategories = new HashMap<>();
             for (Category switchCategory : categories.getSwitchCategories().values()) {
                 indexSwitchCategories.put(switchCategory, getAvailableRecipes().parallelStream().filter(recipe -> {
                     if (switchCategory == null) return true;
@@ -247,7 +247,7 @@ public class DataHandler {
     /**
      * Get all the Recipes from this group
      */
-    public List<ICustomRecipe<?>> getRecipeGroup(String group) {
+    public List<ICustomRecipe<?,?>> getRecipeGroup(String group) {
         return customRecipes.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
     }
 
@@ -255,7 +255,7 @@ public class DataHandler {
         return customRecipes.keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
     }
 
-    public List<ICustomRecipe<?>> getRecipesByNamespace(String namespace) {
+    public List<ICustomRecipe<?,?>> getRecipesByNamespace(String namespace) {
         return customRecipes.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
     }
 
@@ -279,7 +279,7 @@ public class DataHandler {
         }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
     }
 
-    public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
+    public ICustomRecipe<?,?> getRecipe(NamespacedKey namespacedKey) {
         return customRecipes.get(namespacedKey);
     }
 
@@ -289,26 +289,26 @@ public class DataHandler {
      * @param result
      * @return Recipes without the indicated Type
      */
-    public List<ICustomRecipe<?>> getRecipes(CustomItem result) {
-        return customRecipes.values().parallelStream().filter(recipe -> recipe.getResults().contains(result)).collect(Collectors.toList());
+    public List<ICustomRecipe<?,?>> getRecipes(CustomItem result) {
+        return customRecipes.values().parallelStream().filter(recipe -> recipe.getResult().getChoices().contains(result)).collect(Collectors.toList());
     }
 
     //CRAFTING RECIPES
 
     public AdvancedCraftingRecipe getAdvancedCraftingRecipe(NamespacedKey recipeKey) {
-        ICustomRecipe<?> customRecipe = getRecipe(recipeKey);
+        ICustomRecipe<?,?> customRecipe = getRecipe(recipeKey);
         return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
     }
 
-    public <T extends ICustomRecipe<?>> List<T> getRecipes(Class<T> type) {
+    public <T extends ICustomRecipe<?,?>> List<T> getRecipes(Class<T> type) {
         return customRecipes.values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
 
-    public <T extends ICustomRecipe<?>> List<T> getRecipes(RecipeType<T> type) {
+    public <T extends ICustomRecipe<?,?>> List<T> getRecipes(RecipeType<T> type) {
         return getRecipes(type.getClazz());
     }
 
-    public Map<NamespacedKey, ICustomRecipe<?>> getRecipes() {
+    public Map<NamespacedKey, ICustomRecipe<?,?>> getRecipes() {
         return Collections.unmodifiableMap(customRecipes);
     }
 
@@ -326,7 +326,7 @@ public class DataHandler {
      *
      * @return
      */
-    public List<ICustomRecipe<?>> getAvailableRecipes() {
+    public List<ICustomRecipe<?,?>> getAvailableRecipes() {
         return getRecipes().values().parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
     }
 
@@ -337,7 +337,7 @@ public class DataHandler {
      * @param player
      * @return
      */
-    public List<ICustomRecipe<?>> getAvailableRecipes(Player player) {
+    public List<ICustomRecipe<?,?>> getAvailableRecipes(Player player) {
         return getAvailable(getAvailableRecipes(), player);
     }
 
@@ -348,7 +348,7 @@ public class DataHandler {
      * @param player
      * @return
      */
-    public List<ICustomRecipe<?>> getAvailableRecipes(CustomItem result, Player player) {
+    public List<ICustomRecipe<?,?>> getAvailableRecipes(CustomItem result, Player player) {
         return getAvailableRecipesBySimilarResult(result.create(), player);
     }
 
@@ -359,7 +359,7 @@ public class DataHandler {
      * @param player
      * @return
      */
-    public List<ICustomRecipe<?>> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
+    public List<ICustomRecipe<?,?>> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
         return getAvailableRecipes(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
     }
 
@@ -368,7 +368,7 @@ public class DataHandler {
      * @param <T>
      * @return
      */
-    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type) {
+    public <T extends ICustomRecipe<?,?>> List<T> getAvailableRecipes(RecipeType<T> type) {
         return getRecipes(type.getClazz()).parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
     }
 
@@ -378,11 +378,11 @@ public class DataHandler {
      * @param <T>
      * @return
      */
-    public <T extends ICustomRecipe<?>> List<T> getAvailableRecipes(RecipeType<T> type, Player player) {
+    public <T extends ICustomRecipe<?,?>> List<T> getAvailableRecipes(RecipeType<T> type, Player player) {
         return getAvailable(getAvailableRecipes(type), player);
     }
 
-    synchronized private <T extends ICustomRecipe<?>> List<T> getAvailable(List<T> recipes, Player player) {
+    synchronized private <T extends ICustomRecipe<?,?>> List<T> getAvailable(List<T> recipes, Player player) {
         if (player != null) {
             recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
         }
@@ -444,9 +444,9 @@ public class DataHandler {
         }
     }
 
-    public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<CCCache> guiHandler) {
+    public boolean loadRecipeIntoCache(ICustomRecipe<?,?> recipe, GuiHandler<CCCache> guiHandler) {
         if (guiHandler.getCustomCache().getRecipeType().equals(recipe.getRecipeType())) {
-            ICustomRecipe<?> recipeCopy = recipe.clone();
+            ICustomRecipe<?,?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
             guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
             return true;

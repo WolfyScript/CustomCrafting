@@ -8,6 +8,9 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -17,7 +20,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.util.Vector;
@@ -28,14 +30,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
+public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarget> {
 
     private int cookingTime;
     private int waterLevel;
     private float xp;
     private CustomItem handItem;
-    private List<CustomItem> result;
-    private List<CustomItem> ingredients;
+    private Ingredient ingredients;
     private boolean dropItems;
     private boolean needsFire;
     private boolean needsWater;
@@ -56,13 +57,9 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
             this.dropItems = dropNode.path("enabled").asBoolean();
             this.handItem = ItemLoader.load(dropNode.path("handItem"));
         }
-        {
-            List<CustomItem> ingredients = new ArrayList<>();
-            node.path("ingredients").elements().forEachRemaining(n -> ItemLoader.loadToList(n, ingredients));
-            setIngredients(ingredients.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
-        }
+        this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
         if(result == null){
-            this.result = new ArrayList<>();
+            this.result = new Result<>();
         }
         {
             JsonNode mythicMobNode = node.path("mythicMob");
@@ -78,8 +75,8 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
 
     public CauldronRecipe() {
         super();
-        this.result = new ArrayList<>();
-        this.ingredients = new ArrayList<>();
+        this.result = new Result<>();
+        this.ingredients = new Ingredient();
         this.dropItems = true;
         this.xp = 0;
         this.cookingTime = 80;
@@ -94,7 +91,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
 
     public CauldronRecipe(CauldronRecipe cauldronRecipe) {
         super(cauldronRecipe);
-        this.result = cauldronRecipe.getResults();
+        this.result = cauldronRecipe.getResult();
         this.ingredients = cauldronRecipe.getIngredients();
         this.dropItems = cauldronRecipe.dropItems();
         this.xp = cauldronRecipe.getXp();
@@ -148,11 +145,11 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
         this.xp = xp;
     }
 
-    public List<CustomItem> getIngredients() {
-        return new ArrayList<>(ingredients);
+    public Ingredient getIngredients() {
+        return ingredients;
     }
 
-    public void setIngredients(List<CustomItem> ingredients) {
+    public void setIngredients(Ingredient ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -166,7 +163,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
 
     public List<Item> checkRecipe(List<Item> items) {
         List<Item> validItems = new ArrayList<>();
-        for (CustomItem customItem : getIngredients()) {
+        for (CustomItem customItem : getIngredients().getChoices()) {
             for (Item item : items) {
                 if (customItem.isSimilar(item.getItemStack(), isExactMeta()) && customItem.getAmount() == item.getItemStack().getAmount()) {
                     validItems.add(item);
@@ -218,16 +215,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
     }
 
     @Override
-    public List<CustomItem> getResults() {
-        return new ArrayList<>(this.result);
-    }
-
-    @Override
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
-    }
-
-    @Override
     public CauldronRecipe clone() {
         return new CauldronRecipe(this);
     }
@@ -244,20 +231,8 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
         gen.writeNumberField("waterLevel", waterLevel);
         gen.writeBooleanField("water", needsWater);
         gen.writeBooleanField("fire", needsFire);
-        {
-            gen.writeArrayFieldStart("result");
-            for (CustomItem customItem : getResults()) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
-        {
-            gen.writeArrayFieldStart("ingredients");
-            for (CustomItem customItem : getIngredients()) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
+        gen.writeObjectField("result", this.result);
+        gen.writeObjectField("ingredients", ingredients);
         gen.writeObjectFieldStart("mythicMob");
         gen.writeStringField("name", mythicMobName);
         gen.writeNumberField("level", mythicMobLevel);
@@ -269,17 +244,17 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe> {
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        List<CustomItem> ingredients = getIngredients();
+        Ingredient ingredients = getIngredients();
         int invSlot;
         for (int i = 0; i < 6; i++) {
             invSlot = 10 + i + (i / 3) * 6;
             if (i < ingredients.size()) {
-                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(ingredients.get(i)));
+                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(ingredients.getChoices().get(i)));
             } else {
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
             }
         }
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, Collections.singletonList(getResult()));
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, Collections.singletonList(getResultItem()));
     }
 
     @Override

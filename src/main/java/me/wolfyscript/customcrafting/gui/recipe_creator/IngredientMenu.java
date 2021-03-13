@@ -58,7 +58,7 @@ public class IngredientMenu extends CCWindow {
                         cache.getAnvilRecipe().setInput(recipeSlot, ingredient);
                         break;
                     case CAULDRON:
-                        //TODO: Find a way to implement Ingredients
+                        cache.getCauldronRecipe().setIngredients(ingredient);
                         break;
                     case BREWING_STAND:
                         cache.getBrewingRecipe().setIngredients(ingredient);

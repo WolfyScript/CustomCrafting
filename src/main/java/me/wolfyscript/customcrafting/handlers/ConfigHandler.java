@@ -83,7 +83,7 @@ public class ConfigHandler {
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
             knowledgeBookCraft.setIngredients('A', new Ingredient(Material.BOOK));
             knowledgeBookCraft.setIngredients('B', new Ingredient(Material.CRAFTING_TABLE));
-            knowledgeBookCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
+            knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
             knowledgeBookCraft.setNamespacedKey(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.save();
         }
@@ -101,7 +101,7 @@ public class ConfigHandler {
             workbenchCraft.setIngredients('B', new Ingredient(Material.GOLD_INGOT));
             workbenchCraft.setIngredients('E', new Ingredient(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredients('H', new Ingredient(Material.GLOWSTONE_DUST));
-            workbenchCraft.setResult(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.ADVANCED_CRAFTING_TABLE))));
+            workbenchCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.ADVANCED_CRAFTING_TABLE))));
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }

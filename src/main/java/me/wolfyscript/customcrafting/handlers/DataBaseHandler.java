@@ -65,7 +65,7 @@ public class DataBaseHandler extends SQLDataBase {
             String namespace = resultSet.getString("rNamespace");
             String key = resultSet.getString("rKey");
             NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
-            ICustomRecipe<?> recipe = getRecipe(namespacedKey);
+            ICustomRecipe<?,?> recipe = getRecipe(namespacedKey);
             if (recipe != null) {
                 dataHandler.injectRecipe(recipe);
             } else {
@@ -121,7 +121,7 @@ public class DataBaseHandler extends SQLDataBase {
         return null;
     }
 
-    public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
+    public ICustomRecipe<?,?> getRecipe(NamespacedKey namespacedKey) {
         ResultSet resultSet = getRecipeData(namespacedKey);
         try {
             while (resultSet.next()) {
@@ -140,7 +140,7 @@ public class DataBaseHandler extends SQLDataBase {
         return null;
     }
 
-    public void addRecipe(ICustomRecipe<?> data) {
+    public void addRecipe(ICustomRecipe<?,?> data) {
         try {
             PreparedStatement pState = open().prepareStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) VALUES (?, ?, ?, ?)");
             pState.setString(1, data.getNamespacedKey().getNamespace());
@@ -153,7 +153,7 @@ public class DataBaseHandler extends SQLDataBase {
         }
     }
 
-    public void updateRecipe(ICustomRecipe<?> data) {
+    public void updateRecipe(ICustomRecipe<?,?> data) {
         if (hasRecipe(data.getNamespacedKey())) {
             try {
                 PreparedStatement pState = open().prepareStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");

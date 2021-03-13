@@ -25,7 +25,7 @@ public class KnowledgeBook {
     private HashMap<Integer, Integer> timerTimings;
     private int page, subFolderPage;
     private final Map<Category, Map<Category, List<CustomItem>>> cachedCategoryItems;
-    private Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes;
+    private Map<CustomItem, List<ICustomRecipe<?,?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
 
     public KnowledgeBook() {
@@ -61,7 +61,7 @@ public class KnowledgeBook {
         }
     }
 
-    public ICustomRecipe<?> getCurrentRecipe() {
+    public ICustomRecipe<?, ?> getCurrentRecipe() {
         if (getSubFolderPage() >= 0 && getSubFolderPage() < getSubFolderRecipes().size()) {
             return getSubFolderRecipes().get(getSubFolderPage());
         }
@@ -100,11 +100,11 @@ public class KnowledgeBook {
         return researchItems.size();
     }
 
-    public List<ICustomRecipe<?>> getSubFolderRecipes() {
+    public List<ICustomRecipe<?, ?>> getSubFolderRecipes() {
         return this.cachedSubFolderRecipes.getOrDefault(getResearchItem(), new ArrayList<>());
     }
 
-    public void setSubFolderRecipes(CustomItem customItem, List<ICustomRecipe<?>> subFolderRecipes) {
+    public void setSubFolderRecipes(CustomItem customItem, List<ICustomRecipe<?, ?>> subFolderRecipes) {
         this.cachedSubFolderRecipes.put(customItem, subFolderRecipes);
     }
 
@@ -155,7 +155,7 @@ public class KnowledgeBook {
         this.cachedEliteCategoryItems.put(switchCategory, recipeItems);
     }
 
-    public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
+    public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, ICustomRecipe<?,?> recipe) {
         recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
     }
 
@@ -163,7 +163,7 @@ public class KnowledgeBook {
         this.cachedCategoryItems.clear();
     }
 
-    public void setCachedSubFolderRecipes(Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes) {
+    public void setCachedSubFolderRecipes(Map<CustomItem, List<ICustomRecipe<?,?>>> cachedSubFolderRecipes) {
         this.cachedSubFolderRecipes = cachedSubFolderRecipes;
     }
 

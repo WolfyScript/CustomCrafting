@@ -33,7 +33,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
     private final HashMap<GuiHandler<CCCache>, Recipe> recipes = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, ICustomRecipe<?>> customRecipes = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, ICustomRecipe<?,?>> customRecipes = new HashMap<>();
     private final WolfyUtilities api;
 
     public RecipeListContainerButton(int slot, CustomCrafting customCrafting) {
@@ -68,7 +68,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
         String id = getCustomRecipe(guiHandler) != null ? getCustomRecipe(guiHandler).getNamespacedKey().toString() : me.wolfyscript.utilities.util.NamespacedKey.of(((Keyed) getRecipe(guiHandler)).getKey()).toString();
         if(event instanceof InventoryClickEvent){
             if (((InventoryClickEvent) event).isShiftClick() && getCustomRecipe(guiHandler) != null) {
-                ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
+                ICustomRecipe<?,?> recipe = getCustomRecipe(guiHandler);
                 if (((InventoryClickEvent) event).isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
                     cache.setRecipeType(recipe.getRecipeType());
@@ -106,10 +106,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         if (getCustomRecipe(guiHandler) != null) {
-            ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
+            ICustomRecipe<?,?> recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult() == null ? new ItemStack(Material.AIR) : recipe.getResult().create());
-                if (ItemUtils.isAirOrNull(recipe.getResult())) {
+                ItemBuilder itemB = new ItemBuilder(recipe.getResultItem() == null ? new ItemStack(Material.AIR) : recipe.getResultItem().create());
+                if (ItemUtils.isAirOrNull(recipe.getResultItem())) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
                 itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
@@ -145,11 +145,11 @@ public class RecipeListContainerButton extends Button<CCCache> {
         }
     }
 
-    public ICustomRecipe<?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
+    public ICustomRecipe<?,?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
         return customRecipes.getOrDefault(guiHandler, null);
     }
 
-    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
+    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, ICustomRecipe<?,?> recipe) {
         customRecipes.put(guiHandler, recipe);
     }
 

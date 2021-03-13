@@ -8,8 +8,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.NMSUtil;
 import me.wolfyscript.utilities.api.nms.block.NMSBrewingStand;
 import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.RandomCollection;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -157,17 +155,17 @@ public class BrewingStandListener implements Listener {
                                 if (optional.isPresent()) {
                                     //Ingredient is valid
                                     //Checking for valid item in the bottom 3 slots of the brewing inventory
-                                    if (recipe.getAllowedItems().isEmpty()
-                                            ||
-                                            recipe.getAllowedItems().stream().anyMatch(item1 -> {
-                                                for (int i = 0; i < 3; i++) {
-                                                    ItemStack itemStack = inventory.getItem(i);
-                                                    if (!ItemUtils.isAirOrNull(itemStack) && item1.isSimilar(itemStack, recipe.isExactMeta())) {
-                                                        return true;
-                                                    }
-                                                }
-                                                return false;
-                                            })) {
+                                    boolean valid = true;
+                                    if (!recipe.getAllowedItems().isEmpty()) {
+                                        for (int i = 0; i < 3; i++) {
+                                            ItemStack itemStack = inventory.getItem(i);
+                                            if (!recipe.getAllowedItems().test(itemStack, recipe.isExactMeta())) {
+                                                valid = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (valid) {
                                         //Brewing Inventory contains a valid item for that recipe
                                         brewingRecipeList.put(recipe, optional.get());
                                     }
@@ -224,21 +222,17 @@ public class BrewingStandListener implements Listener {
                                                         ItemStack inputItem = brewerInventory.getItem(i);
                                                         if (!ItemUtils.isAirOrNull(inputItem)) {//is slot not empty?
                                                             //Check if item is contained in recipe before trying to process it
-                                                            if (recipe.getAllowedItems().isEmpty() || recipe.getAllowedItems().parallelStream().anyMatch(item1 -> item1.isSimilar(inputItem, recipe.isExactMeta()))) {
+                                                            if (recipe.getAllowedItems().isEmpty() || recipe.getAllowedItems().test(inputItem, recipe.isExactMeta())) {
                                                                 //Input in that slot is valid, so marking slot as processed
                                                                 processedSlots.add(i);
                                                                 //Process the item in the slot
                                                                 PotionMeta potionMeta = (PotionMeta) inputItem.getItemMeta();
                                                                 if (potionMeta != null) {
-                                                                    if (!InventoryUtils.isCustomItemsListEmpty(recipe.getResults())) {
+                                                                    if (!recipe.getResult().isEmpty()) {
                                                                         //Result available. Replace the items with a random result from the list. (Percentages of items are used)
-                                                                        if (recipe.getResults().size() > 1) {
-                                                                            RandomCollection<CustomItem> items = recipe.getResults().parallelStream().collect(RandomCollection.getCollector((rdmC, customItem) -> rdmC.add(customItem.getRarityPercentage(), customItem)));
-                                                                            if (!items.isEmpty()) {
-                                                                                brewerInventory.setItem(i, items.next().create());
-                                                                            }
-                                                                        } else if (recipe.getResult() != null) {
-                                                                            brewerInventory.setItem(i, recipe.getResult().create());
+                                                                        Optional<CustomItem> item = recipe.getResult().getItem(player);
+                                                                        if (item.isPresent()) {
+                                                                            brewerInventory.setItem(i, item.get().create());
                                                                         }
                                                                     } else {
                                                                         //No result available

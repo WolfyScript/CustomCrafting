@@ -56,12 +56,9 @@ public class CraftManager {
             put(player.getUniqueId(), craftingData);
             Map<NamespacedKey, CustomItem> preCraftedItem = getPreCraftedItems(player.getUniqueId());
             if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
-                RandomCollection<CustomItem> items = customPreCraftEvent.getResult().parallelStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
-                if (!items.isEmpty()) {
-                    CustomItem result = items.next();
-                    preCraftedItem.put(recipe.getNamespacedKey(), result);
-                    return result;
-                }
+                CustomItem result = customPreCraftEvent.getResult().getCustomItem(player);
+                preCraftedItem.put(recipe.getNamespacedKey(), result);
+                return result;
             } else {
                 return preCraftedItem.get(recipe.getNamespacedKey());
             }
@@ -94,7 +91,7 @@ public class CraftManager {
                     int possible = Math.min(InventoryUtils.getInventorySpace(inventoryView.getBottomInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData));
                     if (possible > 0) {
                         recipe.removeMatrix(ingredients, inventory, possible, craftingData);
-                        RandomCollection<CustomItem> results = recipe.getResults().parallelStream().filter(cI -> !cI.hasPermission() || player.hasPermission(cI.getPermission())).collect(RandomCollection.getCollector((rdmC, cI) -> rdmC.add(cI.getRarityPercentage(), cI.clone())));
+                        RandomCollection<CustomItem> results = recipe.getResult().getRandomChoices(player);
                         for (int i = 0; i < possible; i++) {
                             inventoryView.getBottomInventory().addItem(results.next().create());
                         }

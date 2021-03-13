@@ -7,6 +7,8 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -16,14 +18,12 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
+public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResultTarget> {
 
     private boolean blockRepair;
     private boolean blockRename;
@@ -36,7 +36,6 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     private int durability;
 
     private HashMap<Integer, Ingredient> ingredients;
-    private List<CustomItem> result;
 
     public CustomAnvilRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -55,11 +54,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
             JsonNode modeNode = node.path("mode");
             this.mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
             this.durability = modeNode.path("durability").asInt(0);
-            {
-                List<CustomItem> results = new ArrayList<>();
-                modeNode.path("result").elements().forEachRemaining(n -> ItemLoader.loadToList(n, results));
-                this.result = results.stream().filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList());
-            }
+            this.result = ItemLoader.loadResult(modeNode.path("result"));
         }
         readInput(0, node);
         readInput(1, node);
@@ -82,7 +77,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     public CustomAnvilRecipe() {
         super();
         this.ingredients = new HashMap<>();
-        this.result = new ArrayList<>();
+        this.result = new Result<>();
         this.mode = Mode.RESULT;
         this.durability = 0;
         this.repairCost = 1;
@@ -94,7 +89,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
     }
 
     private void readInput(int slot, JsonNode node) {
-        this.ingredients.put(slot, ItemLoader.loadRecipeItem(node.path("input_" + (slot == 0 ? "left" : "right"))));
+        this.ingredients.put(slot, ItemLoader.loadIngredient(node.path("input_" + (slot == 0 ? "left" : "right"))));
     }
 
     private void writeInput(int slot, JsonGenerator gen) throws IOException {
@@ -105,11 +100,6 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     public int getDurability() {
         return durability;
-    }
-
-    @Override
-    public List<CustomItem> getResults() {
-        return new ArrayList<>(result);
     }
 
     public Mode getMode() {
@@ -126,11 +116,6 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     public void setRepairCost(int repairCost) {
         this.repairCost = repairCost;
-    }
-
-    @Override
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
     }
 
     public void setDurability(int durability) {
@@ -236,13 +221,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
             gen.writeObjectFieldStart("mode");
             gen.writeNumberField("durability", durability);
             gen.writeStringField("usedMode", mode.toString());
-            {
-                gen.writeArrayFieldStart("result");
-                for (CustomItem customItem : result) {
-                    saveCustomItem(customItem, gen);
-                }
-                gen.writeEndArray();
-            }
+            gen.writeObjectField("result", result);
             gen.writeEndObject();
         }
         writeInput(0, gen);
@@ -251,7 +230,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
 
     @Override
     public List<CustomItem> getRecipeBookItems() {
-        return getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? getResults() : hasInputLeft() ? getInputLeft().getChoices() : getInputRight().getChoices();
+        return getMode().equals(CustomAnvilRecipe.Mode.RESULT) ? getResult().getChoices() : hasInputLeft() ? getInputLeft().getChoices() : getInputRight().getChoices();
     }
 
     @Override
@@ -261,7 +240,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe> {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
         ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
         if (getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(getResult()));
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(getResultItem()));
         } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, inputLeft);
         }else{

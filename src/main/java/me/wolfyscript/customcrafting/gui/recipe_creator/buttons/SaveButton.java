@@ -29,7 +29,7 @@ public class SaveButton extends ActionButton<CCCache> {
                         recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                             NamespacedKey namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
                             if (namespacedKey != null) {
-                                ICustomRecipe<?> recipe = cache.getRecipe();
+                                ICustomRecipe<?,?> recipe = cache.getRecipe();
                                 recipe.setNamespacedKey(namespacedKey);
                                 return saveRecipe(cache, recipe, player1, api, guiHandler, customCrafting);
                             }
@@ -46,7 +46,7 @@ public class SaveButton extends ActionButton<CCCache> {
         }));
     }
 
-    private static boolean saveRecipe(CCCache cache, ICustomRecipe<?> recipe, Player player, WolfyUtilities api, GuiHandler<CCCache> guiHandler, CustomCrafting customCrafting) {
+    private static boolean saveRecipe(CCCache cache, ICustomRecipe<?,?> recipe, Player player, WolfyUtilities api, GuiHandler<CCCache> guiHandler, CustomCrafting customCrafting) {
         if (!recipe.save(player)) {
             return true;
         }

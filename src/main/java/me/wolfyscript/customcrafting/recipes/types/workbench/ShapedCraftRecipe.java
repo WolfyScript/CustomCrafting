@@ -225,8 +225,8 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     @Override
     public ShapedRecipe getVanillaRecipe() {
         if (!allowVanillaRecipe()) {
-            if (!ItemUtils.isAirOrNull(getResult()) && this.width > 0) {
-                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResult().create());
+            if (!ItemUtils.isAirOrNull(getResultItem()) && this.width > 0) {
+                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResultItem().create());
                 recipe.shape(shape);
                 getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
                 recipe.setGroup(getGroup());

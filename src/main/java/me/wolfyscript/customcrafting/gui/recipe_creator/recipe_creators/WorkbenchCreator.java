@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.CraftingResultButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
@@ -15,7 +15,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 public class WorkbenchCreator extends RecipeCreator {
@@ -35,7 +34,7 @@ public class WorkbenchCreator extends RecipeCreator {
             registerButton(new RecipeIngredientButton(i, customCrafting));
         }
 
-        registerButton(new CraftingResultButton(customCrafting));
+        registerButton(new RecipeResultButton());
 
         registerButton(new ToggleButton<>("workbench.shapeless", false, new ButtonState<>("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().setCustomRecipe(new ShapedCraftRecipe(guiHandler.getCustomCache().getAdvancedCraftingRecipe()));
@@ -100,7 +99,7 @@ public class WorkbenchCreator extends RecipeCreator {
             update.setButton(10 + i + (i / 3) * 6, "recipe.ingredient_" + i);
         }
         update.setButton(22, "workbench.shapeless");
-        update.setButton(24, "crafting.result");
+        update.setButton(24, "recipe.result");
 
         update.setButton(1, "hidden");
         update.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
@@ -116,6 +115,6 @@ public class WorkbenchCreator extends RecipeCreator {
     @Override
     public boolean validToSave(CCCache cache) {
         AdvancedCraftingRecipe workbench = cache.getAdvancedCraftingRecipe();
-        return workbench.getIngredients() != null && !InventoryUtils.isCustomItemsListEmpty(workbench.getResults());
+        return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
     }
 }

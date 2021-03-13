@@ -3,14 +3,9 @@ package me.wolfyscript.customcrafting.recipes.types.smoker;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmokingRecipe;
-
-import java.util.stream.Collectors;
 
 public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, SmokingRecipe> {
 
@@ -38,6 +33,6 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, 
 
     @Override
     public SmokingRecipe getVanillaRecipe() {
-        return new SmokingRecipe(getNamespacedKey().toBukkit(), getResult().create(), getRecipeChoice(), getExp(), getCookingTime());
+        return new SmokingRecipe(getNamespacedKey().toBukkit(), getResultItem().create(), getRecipeChoice(), getExp(), getCookingTime());
     }
 }

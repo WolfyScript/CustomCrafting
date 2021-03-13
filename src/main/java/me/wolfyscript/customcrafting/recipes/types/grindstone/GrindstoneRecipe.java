@@ -7,7 +7,8 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -20,25 +21,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
+public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultTarget> {
 
     private Ingredient inputTop, inputBottom;
-    private List<CustomItem> result;
     private int xp;
 
     public GrindstoneRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.xp = node.path("exp").intValue();
-        this.inputTop = ItemLoader.loadRecipeItem(node.path("input_top"));
-        this.inputBottom = ItemLoader.loadRecipeItem(node.path("input_bottom"));
+        this.inputTop = ItemLoader.loadIngredient(node.path("input_top"));
+        this.inputBottom = ItemLoader.loadIngredient(node.path("input_bottom"));
     }
 
     public GrindstoneRecipe() {
         super();
-        this.result = new ArrayList<>();
+        this.result = new Result<>();
         this.inputTop = new Ingredient();
         this.inputBottom = new Ingredient();
         this.xp = 0;
@@ -46,7 +44,7 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
 
     public GrindstoneRecipe(GrindstoneRecipe grindstoneRecipe) {
         super(grindstoneRecipe);
-        this.result = grindstoneRecipe.getResults();
+        this.result = grindstoneRecipe.getResult();
         this.inputBottom = grindstoneRecipe.getInputBottom();
         this.inputTop = grindstoneRecipe.getInputTop();
         this.xp = grindstoneRecipe.getXp();
@@ -55,16 +53,6 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
     @Override
     public RecipeType<GrindstoneRecipe> getRecipeType() {
         return Types.GRINDSTONE;
-    }
-
-    @Override
-    public List<CustomItem> getResults() {
-        return new ArrayList<>(result);
-    }
-
-    @Override
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
     }
 
     public Ingredient getInputTop() {
@@ -81,14 +69,6 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
 
     public void setInputBottom(Ingredient inputBottom) {
         this.inputBottom = inputBottom;
-    }
-
-    public void setResult(int variant, CustomItem ingredient) {
-        if (variant < result.size()) {
-            result.set(variant, ingredient);
-        } else {
-            result.add(ingredient);
-        }
     }
 
     public int getXp() {
@@ -108,11 +88,7 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeNumberField("exp", xp);
-        gen.writeArrayFieldStart("result");
-        for (CustomItem customItem : result) {
-            saveCustomItem(customItem, gen);
-        }
-        gen.writeEndArray();
+        gen.writeObjectField("result", result);
         gen.writeObjectField("input_top", getInputTop());
         gen.writeObjectField("input_bottom", getInputBottom());
     }
@@ -121,7 +97,7 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe> {
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getInputTop());
         ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, getInputBottom());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResults());
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResult());
     }
 
     @Override

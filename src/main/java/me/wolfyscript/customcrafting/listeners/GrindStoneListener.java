@@ -9,7 +9,6 @@ import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
-import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -74,7 +73,7 @@ public class GrindStoneListener implements Listener {
                     inventory.setItem(1, itemBottom);
                 }
 
-                if(grindstoneData.getRecipe().getXp() > 0){
+                if (grindstoneData.getRecipe().getXp() > 0) {
                     ExperienceOrb orb = (ExperienceOrb) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
                     orb.setExperience(grindstoneData.getRecipe().getXp());
                 }
@@ -248,12 +247,9 @@ public class GrindStoneListener implements Listener {
         if (foundRecipe != null) {
             HashMap<NamespacedKey, CustomItem> preCraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
             if (preCraftedItem.get(foundRecipe.getNamespacedKey()) == null) {
-                RandomCollection<CustomItem> items = foundRecipe.getResults().parallelStream().filter((cI) -> !cI.hasPermission() || player.hasPermission(cI.getPermission())).collect(RandomCollection.getCollector((rdmC, cI) -> rdmC.add(cI.getRarityPercentage(), cI)));
-                if (!items.isEmpty()) {
-                    result = items.next();
-                    preCraftedItem.put(foundRecipe.getNamespacedKey(), result);
-                    precraftedItems.put(player.getUniqueId(), preCraftedItem);
-                }
+                result = foundRecipe.getResult().getCustomItem(player);
+                preCraftedItem.put(foundRecipe.getNamespacedKey(), result);
+                precraftedItems.put(player.getUniqueId(), preCraftedItem);
             } else {
                 result = preCraftedItem.get(foundRecipe.getNamespacedKey());
             }

@@ -8,7 +8,9 @@ import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.FixedResultTarget;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -17,49 +19,36 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecipe> implements ICustomVanillaRecipe<StonecuttingRecipe> {
+public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecipe, FixedResultTarget> implements ICustomVanillaRecipe<StonecuttingRecipe> {
 
-    private List<CustomItem> result;
     private Ingredient source;
 
     public CustomStonecutterRecipe() {
         super();
-        this.result = new ArrayList<>();
+        this.result = new Result<>();
         this.source = new Ingredient();
     }
 
     public CustomStonecutterRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.result = new ArrayList<>();
-        ItemLoader.loadToList(node.path("result"), this.result);
-        this.source = ItemLoader.loadRecipeItem(node.path("source"));
+        this.result = new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class));
+        this.source = ItemLoader.loadIngredient(node.path("source"));
     }
 
     public CustomStonecutterRecipe(CustomStonecutterRecipe customStonecutterRecipe) {
         super(customStonecutterRecipe);
-        this.result = customStonecutterRecipe.getResults();
+        this.result = customStonecutterRecipe.getResult();
         this.source = customStonecutterRecipe.getSource();
-    }
-
-    @Override
-    public List<CustomItem> getResults() {
-        return new ArrayList<>(result);
-    }
-
-    @Override
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
     }
 
     public Ingredient getSource() {
@@ -73,7 +62,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField("result", result.get(0).getApiReference());
+        gen.writeObjectField("result", result.getChoices().get(0).getApiReference());
         gen.writeObjectField("source", this.source);
     }
 
@@ -90,7 +79,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_20")).setVariants(guiHandler, getSource());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, Collections.singletonList(getResult()));
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, Collections.singletonList(getResultItem()));
     }
 
     @Override
@@ -114,9 +103,9 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
-        if (getResult() != null) {
+        if (getResultItem() != null) {
             RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).collect(Collectors.toList()));
-            return new StonecuttingRecipe(namespacedKey.toBukkit(), getResult().create(), choice);
+            return new StonecuttingRecipe(namespacedKey.toBukkit(), getResultItem().create(), choice);
         }
         return null;
     }

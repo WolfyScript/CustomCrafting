@@ -9,7 +9,6 @@ import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
@@ -171,21 +170,18 @@ public class FurnaceListener implements Listener {
             if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
                 if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                     event.setCancelled(false);
-                    if (customRecipe.getResults().size() > 1) {
-                        RandomCollection<CustomItem> items = customRecipe.getResults().parallelStream().collect(RandomCollection.getCollector((rdmC, item) -> rdmC.add(item.getRarityPercentage(), item)));
-                        if (!items.isEmpty()) {
-                            CustomItem item = items.next();
-                            if (currentResultItem == null) {
-                                event.setResult(item.create());
-                                break;
-                            }
-                            int nextAmount = currentResultItem.getAmount() + item.getAmount();
-                            if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
-                                inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                                currentResultItem.setAmount(nextAmount);
-                            }
-                            event.setCancelled(true);
+                    if (customRecipe.getResult().size() > 1) {
+                        CustomItem item = customRecipe.getResult().getItem().orElse(new CustomItem(Material.AIR));
+                        if (currentResultItem == null) {
+                            event.setResult(item.create());
+                            break;
                         }
+                        int nextAmount = currentResultItem.getAmount() + item.getAmount();
+                        if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
+                            inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                            currentResultItem.setAmount(nextAmount);
+                        }
+                        event.setCancelled(true);
                     }
                     break;
                 } else {
@@ -195,7 +191,7 @@ public class FurnaceListener implements Listener {
         }
     }
 
-    private boolean isRecipeValid(Material furnaceType, CustomRecipe<?> recipe) {
+    private boolean isRecipeValid(Material furnaceType, CustomRecipe<?, ?> recipe) {
         if (recipe instanceof CustomCookingRecipe) {
             switch (furnaceType) {
                 case BLAST_FURNACE:

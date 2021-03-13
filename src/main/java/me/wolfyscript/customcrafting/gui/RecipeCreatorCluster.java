@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.IngredientMenu;
-import me.wolfyscript.customcrafting.gui.recipe_creator.VariantMenu;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ResultMenu;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -28,7 +28,7 @@ public class RecipeCreatorCluster extends CCCluster {
         registerGuiWindow(new BrewingCreator(this, customCrafting));
         registerGuiWindow(new SmithingCreator(this, customCrafting));
         registerGuiWindow(new ConditionsMenu(this, customCrafting));
-        registerGuiWindow(new VariantMenu(this, customCrafting));
+        registerGuiWindow(new ResultMenu(this, customCrafting));
         registerGuiWindow(new IngredientMenu(this, customCrafting));
 
         registerButton(new ActionButton<>("conditions", Material.CYAN_CONCRETE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {

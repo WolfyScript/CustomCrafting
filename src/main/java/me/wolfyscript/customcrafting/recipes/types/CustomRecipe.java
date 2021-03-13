@@ -1,10 +1,11 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
-import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
@@ -13,13 +14,11 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNod
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
-public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustomRecipe<C> {
+public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends ResultTarget> implements ICustomRecipe<C, T> {
 
     protected NamespacedKey namespacedKey;
     protected boolean exactMeta, hidden;
@@ -29,6 +28,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
     protected String group;
     protected WolfyUtilities api;
     protected ObjectMapper mapper;
+    protected Result<T> result;
 
     public CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.mapper = JacksonUtil.getObjectMapper();
@@ -46,7 +46,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
 
         //Sets the result of the recipe if one exists in the config
         if (node.has("result") && !node.path("result").isObject()) {
-            setResult(Streams.stream(node.path("result").elements()).map(ItemLoader::load).filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+            setResult(ItemLoader.loadResult(node.path("result")));
         }
     }
 
@@ -62,7 +62,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
         this.hidden = false;
     }
 
-    public CustomRecipe(CustomRecipe<?> craftingRecipe) {
+    public CustomRecipe(CustomRecipe<?, ?> craftingRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.getApi();
         this.namespacedKey = craftingRecipe.getNamespacedKey();
@@ -142,6 +142,16 @@ public abstract class CustomRecipe<C extends CustomRecipe<?>> implements ICustom
     @Override
     public void setConditions(Conditions conditions) {
         this.conditions = conditions;
+    }
+
+    @Override
+    public Result<T> getResult() {
+        return result;
+    }
+
+    @Override
+    public void setResult(Result<T> result) {
+        this.result = result;
     }
 
     @Override

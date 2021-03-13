@@ -9,6 +9,8 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.FixedResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -26,14 +28,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T extends CookingRecipe<?>> extends CustomRecipe<C> implements ICustomVanillaRecipe<T> {
+public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T extends CookingRecipe<?>> extends CustomRecipe<C, FixedResultTarget> implements ICustomVanillaRecipe<T> {
 
-    private List<CustomItem> result;
     private Ingredient source;
     private float exp;
     private int cookingTime;
@@ -42,12 +42,12 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         super(namespacedKey, node);
         this.exp = node.path("exp").floatValue();
         this.cookingTime = node.path("cooking_time").asInt();
-        this.source = ItemLoader.loadRecipeItem(node.path("source"));
+        this.source = ItemLoader.loadIngredient(node.path("source"));
     }
 
     public CustomCookingRecipe() {
         super();
-        this.result = new ArrayList<>();
+        this.result = new Result<>();
         this.source = new Ingredient();
         this.exp = 0;
         this.cookingTime = 80;
@@ -55,7 +55,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
 
     public CustomCookingRecipe(CustomCookingRecipe<?, ?> customCookingRecipe) {
         super(customCookingRecipe);
-        this.result = customCookingRecipe.getResults();
+        this.result = customCookingRecipe.getResult();
         this.source = customCookingRecipe.getSource();
         this.exp = customCookingRecipe.getExp();
         this.cookingTime = customCookingRecipe.getCookingTime();
@@ -67,24 +67,6 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
 
     public void setSource(Ingredient source) {
         this.source = source;
-    }
-
-    @Override
-    public List<CustomItem> getResults() {
-        return new ArrayList<>(this.result);
-    }
-
-    @Override
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
-    }
-
-    public void setResult(int variant, CustomItem ingredient) {
-        if (variant < result.size()) {
-            result.set(variant, ingredient);
-        } else {
-            result.add(ingredient);
-        }
     }
 
     public void setCookingTime(int cookingTime) {
@@ -111,7 +93,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         Player player = guiHandler.getPlayer();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getSource().getChoices(player));
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResults().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
     }
 
     @Override
@@ -164,13 +146,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         super.writeToJson(gen, serializerProvider);
         gen.writeNumberField("cooking_time", cookingTime);
         gen.writeNumberField("exp", exp);
-        {
-            gen.writeArrayFieldStart("result");
-            for (CustomItem customItem : result) {
-                saveCustomItem(customItem, gen);
-            }
-            gen.writeEndArray();
-        }
+        gen.writeObjectField("result", result);
         {
             gen.writeArrayFieldStart("source");
             gen.writeObject(source);

@@ -127,7 +127,7 @@ public class Cauldrons {
                     } else {
                         cauldron.decreasePassedTicks(2);
                         if (cauldron.getPassedTicks() <= 0) {
-                            for (CustomItem customItem : cauldron.getRecipe().getIngredients()) {
+                            for (CustomItem customItem : cauldron.getRecipe().getIngredients().getChoices()) {
                                 Bukkit.getScheduler().runTask(customCrafting, () -> world.dropItemNaturally(loc.add(0.0, 0.5, 0.0), customItem.getItemStack()));
                             }
                             cauldronItr.remove();

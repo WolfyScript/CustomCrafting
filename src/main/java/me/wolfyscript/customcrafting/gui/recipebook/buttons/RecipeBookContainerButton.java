@@ -54,7 +54,7 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         DataHandler dataHandler = customCrafting.getRecipeHandler();
         KnowledgeBook book = cache.getKnowledgeBook();
         CustomItem customItem = getRecipeItem(guiHandler);
-        List<ICustomRecipe<?>> recipes = dataHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
+        List<ICustomRecipe<?,?>> recipes = dataHandler.getAvailableRecipesBySimilarResult(customItem.create(), player);
         if (!recipes.isEmpty()) {
             book.setSubFolderPage(0);
             book.addResearchItem(customItem);

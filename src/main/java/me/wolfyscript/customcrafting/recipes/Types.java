@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class Types {
 
-    static final Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
+    static final Set<RecipeType<? extends ICustomRecipe<?, ?>>> values = new HashSet<>();
 
     public enum Type {
         WORKBENCH, ELITE_WORKBENCH, ANVIL, FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE, STONECUTTER, CAULDRON, GRINDSTONE, BREWING_STAND, SMITHING
@@ -46,7 +46,7 @@ public class Types {
     public static final RecipeType<BrewingRecipe> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, BrewingRecipe.class);
     public static final RecipeType<CustomSmithingRecipe> SMITHING = new RecipeType<>(Type.SMITHING, CustomSmithingRecipe.class);
 
-    public static Set<RecipeType<? extends ICustomRecipe<?>>> values() {
+    public static Set<RecipeType<? extends ICustomRecipe<?,?>>> values() {
         return Collections.unmodifiableSet(values);
     }
 

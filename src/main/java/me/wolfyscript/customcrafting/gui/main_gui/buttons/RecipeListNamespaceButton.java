@@ -45,9 +45,7 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                             for (Recipe recipe : customCrafting.getRecipeHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
                                     NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) recipe).getKey());
-                                    if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(namespacedKey)) {
-                                        customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
-                                    }
+                                    customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
                                 }
                             }
                         } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
@@ -58,13 +56,11 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                             }
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
-                        for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
-                            if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())) {
-                                customCrafting.getRecipeHandler().getDisabledRecipes().add(recipe.getNamespacedKey());
-                            }
+                        for (ICustomRecipe<?,?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                            customCrafting.getRecipeHandler().getDisabledRecipes().add(recipe.getNamespacedKey());
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                        for (ICustomRecipe<?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
+                        for (ICustomRecipe<?,?> recipe : customCrafting.getRecipeHandler().getRecipesByNamespace(namespace)) {
                             customCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getNamespacedKey());
                         }
                     }

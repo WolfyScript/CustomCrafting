@@ -3,14 +3,9 @@ package me.wolfyscript.customcrafting.recipes.types.blast_furnace;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.BlastingRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-
-import java.util.stream.Collectors;
 
 public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, BlastingRecipe> {
 
@@ -28,7 +23,7 @@ public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, Bl
 
     @Override
     public BlastingRecipe getVanillaRecipe() {
-        return new BlastingRecipe(getNamespacedKey().toBukkit(), getResult().create(), getRecipeChoice(), getExp(), getCookingTime());
+        return new BlastingRecipe(getNamespacedKey().toBukkit(), getResultItem().create(), getRecipeChoice(), getExp(), getCookingTime());
     }
 
     @Override

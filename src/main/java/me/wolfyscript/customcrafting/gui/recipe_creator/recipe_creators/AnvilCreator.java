@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.AnvilResultButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -32,7 +32,7 @@ public class AnvilCreator extends RecipeCreator {
 
         registerButton(new RecipeIngredientButton(0, customCrafting));
         registerButton(new RecipeIngredientButton(1, customCrafting));
-        registerButton(new AnvilResultButton(customCrafting));
+        registerButton(new RecipeResultButton());
 
         registerButton(new ActionButton<>("mode", Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomAnvilRecipe.Mode mode = guiHandler.getCustomCache().getAnvilRecipe().getMode();
@@ -134,7 +134,7 @@ public class AnvilCreator extends RecipeCreator {
         event.setButton(19, "recipe.ingredient_0");
         event.setButton(21, "recipe.ingredient_1");
         if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-            event.setButton(25, "anvil.result");
+            event.setButton(25, "recipe.result");
         } else if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
             event.setButton(25, "durability");
         } else {
@@ -159,6 +159,6 @@ public class AnvilCreator extends RecipeCreator {
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
         if (anvilRecipe.getInputLeft().isEmpty() && anvilRecipe.getInputRight().isEmpty())
             return false;
-        return !anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT) || anvilRecipe.getResults() != null && !anvilRecipe.getResults().isEmpty();
+        return !anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT) || anvilRecipe.getResult() != null && !anvilRecipe.getResult().isEmpty();
     }
 }

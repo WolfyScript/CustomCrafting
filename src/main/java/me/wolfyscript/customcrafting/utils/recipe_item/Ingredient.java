@@ -1,11 +1,13 @@
 package me.wolfyscript.customcrafting.utils.recipe_item;
 
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Ingredient extends RecipeItemStack {
 
@@ -31,6 +33,16 @@ public class Ingredient extends RecipeItemStack {
 
     public Ingredient(List<APIReference> references, List<NamespacedKey> tags) {
         super(references, tags);
+    }
+
+    public boolean test(ItemStack itemStack, boolean exactMatch) {
+        if (itemStack == null) return false;
+        return choices.stream().anyMatch(customItem -> customItem.isSimilar(itemStack, exactMatch));
+    }
+
+    public Optional<CustomItem> check(ItemStack itemStack, boolean exactMatch) {
+        if (itemStack == null) return Optional.empty();
+        return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
     }
 
 }

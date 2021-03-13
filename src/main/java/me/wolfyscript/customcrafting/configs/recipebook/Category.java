@@ -113,7 +113,7 @@ public class Category {
         this.creativeModeTabs = itemCategories;
     }
 
-    public boolean isValid(ICustomRecipe<?> recipe) {
+    public boolean isValid(ICustomRecipe<?,?> recipe) {
         if (recipes.isEmpty()) return false;
         return recipes.contains(recipe.getNamespacedKey());
     }

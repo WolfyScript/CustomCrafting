@@ -5,12 +5,11 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.SmithingResultButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 
 public class SmithingCreator extends RecipeCreator {
 
@@ -27,7 +26,7 @@ public class SmithingCreator extends RecipeCreator {
 
         registerButton(new RecipeIngredientButton(0, customCrafting));
         registerButton(new RecipeIngredientButton(1, customCrafting));
-        registerButton(new SmithingResultButton(customCrafting));
+        registerButton(new RecipeResultButton());
     }
 
     @Override
@@ -49,7 +48,7 @@ public class SmithingCreator extends RecipeCreator {
         event.setButton(7, "exact_meta");
         event.setButton(19, "recipe.ingredient_0");
         event.setButton(22, "recipe.ingredient_1");
-        event.setButton(25, "result");
+        event.setButton(25, "recipe.result");
 
         if (smithingRecipe.hasNamespacedKey()) {
             event.setButton(43, "save");
@@ -60,6 +59,6 @@ public class SmithingCreator extends RecipeCreator {
     @Override
     public boolean validToSave(CCCache cache) {
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
-        return !smithingRecipe.getBase().isEmpty() && !smithingRecipe.getAddition().isEmpty() && !InventoryUtils.isCustomItemsListEmpty(smithingRecipe.getResults());
+        return !smithingRecipe.getBase().isEmpty() && !smithingRecipe.getAddition().isEmpty() && !smithingRecipe.getResult().isEmpty();
     }
 }

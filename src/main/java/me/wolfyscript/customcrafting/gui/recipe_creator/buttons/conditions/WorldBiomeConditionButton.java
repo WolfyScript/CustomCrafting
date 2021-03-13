@@ -19,7 +19,7 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
     public WorldBiomeConditionButton() {
         super("conditions.world_biome", new ButtonState<>("world_biome", Material.SAND, (cache, guiHandler, player, inventory, slot, event) -> {
             GuiWindow<CCCache> window = guiHandler.getWindow();
-            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?,?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             Conditions conditions = recipeConfig.getConditions();
             if(event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {

@@ -8,6 +8,8 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.FixedResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -19,7 +21,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.Seriali
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.chat.ChatColor;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PotionUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -31,11 +32,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
+public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget> {
 
     private static final CustomItem placeHolderPotion = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!"));
 
-    List<CustomItem> allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
+    Ingredient allowedItems; //The CustomItems that can be used. Needs to be a potion of course.
     private Ingredient ingredients; //The top ingredient of the recipe. Always required.
     private int fuelCost; //The fuel cost of recipe
     private int brewTime; //The brew time in ticks
@@ -54,20 +55,18 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
     private List<PotionEffectType> effectRemovals; //These effects will be removed from the potions
     private Map<PotionEffect, Boolean> effectAdditions; //These effects will be added with an option if they should be replaced if they are already present
     private Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the the values of these PotionEffects will added to the existing effects and boolean values will be replaced.
-
     //Instead of all these options you can use a set result.
-    private List<CustomItem> result;
 
     //Conditions for the Potions inside the 3 slots at the bottom
     private Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects; //The effects that are required with the current Duration and amplitude. Integer values == 0 will be ignored and any value will be allowed.
 
     public BrewingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        ingredients = ItemLoader.loadRecipeItem(node.path("ingredients"));
+        ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
+        this.result = ItemLoader.loadResult(node.path("results"));
         this.fuelCost = node.path("fuel_cost").asInt(1);
         this.brewTime = node.path("brew_time").asInt(80);
-        this.allowedItems = Streams.stream(node.path("allowed_items").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
-        this.result = Streams.stream(node.path("results").elements()).map(ItemLoader::load).filter(cI -> !ItemUtils.isAirOrNull(cI)).collect(Collectors.toList());
+        this.allowedItems = ItemLoader.loadIngredient(node.path("allowed_items"));
 
         setDurationChange(node.path("duration_change").asInt());
         setAmplifierChange(node.path("amplifier_change").asInt());
@@ -108,7 +107,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         this.ingredients = new Ingredient();
         this.fuelCost = 1;
         this.brewTime = 400;
-        this.allowedItems = new ArrayList<>();
+        this.allowedItems = new Ingredient();
 
         this.durationChange = 0;
         this.amplifierChange = 0;
@@ -117,7 +116,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         this.effectRemovals = new ArrayList<>();
         this.effectAdditions = new HashMap<>();
         this.effectUpgrades = new HashMap<>();
-        this.result = new ArrayList<>();
+        this.result = new Result<>();
         this.requiredEffects = new HashMap<>();
     }
 
@@ -136,23 +135,13 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         this.effectRemovals = brewingRecipe.getEffectRemovals();
         this.effectAdditions = brewingRecipe.getEffectAdditions();
         this.effectUpgrades = brewingRecipe.getEffectUpgrades();
-        this.result = brewingRecipe.getResults();
+        this.result = brewingRecipe.getResult();
         this.requiredEffects = brewingRecipe.getRequiredEffects();
     }
 
     @Override
     public RecipeType<BrewingRecipe> getRecipeType() {
         return Types.BREWING_STAND;
-    }
-
-    @Override
-    public List<CustomItem> getResults() {
-        return new ArrayList<>(result);
-    }
-
-    @Override
-    public void setResult(List<CustomItem> result) {
-        this.result = result;
     }
 
     public int getFuelCost() {
@@ -179,11 +168,11 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         this.ingredients = ingredients;
     }
 
-    public List<CustomItem> getAllowedItems() {
-        return new ArrayList<>(allowedItems);
+    public Ingredient getAllowedItems() {
+        return allowedItems;
     }
 
-    public void setAllowedItems(List<CustomItem> allowedItems) {
+    public void setAllowedItems(Ingredient allowedItems) {
         this.allowedItems = allowedItems;
     }
 
@@ -265,17 +254,9 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         gen.writeNumberField("fuel_cost", fuelCost);
         gen.writeNumberField("brew_time", brewTime);
 
-        gen.writeArrayFieldStart("allowed_items");
-        for (CustomItem customItem : getAllowedItems()) {
-            saveCustomItem(customItem, gen);
-        }
-        gen.writeEndArray();
+        gen.writeObjectField("allowed_items", allowedItems);
 
-        gen.writeArrayFieldStart("results");
-        for (CustomItem customItem : getResults()) {
-            saveCustomItem(customItem, gen);
-        }
-        gen.writeEndArray();
+        gen.writeObjectField("results", result);
 
         //Load options
         gen.writeNumberField("duration_change", durationChange);
@@ -327,24 +308,24 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
 
     @Override
     public boolean findResultItem(ItemStack result) {
-        if (getResults().isEmpty()) {
+        if (this.getResult().isEmpty()) {
             if (getAllowedItems().isEmpty()) {
                 return result.getType().equals(Material.POTION);
             }
-            return getAllowedItems().stream().anyMatch(customItem -> customItem.create().isSimilar(result));
+            return getAllowedItems().getChoices().stream().anyMatch(customItem -> customItem.create().isSimilar(result));
         }
         return super.findResultItem(result);
     }
 
     @Override
     public List<CustomItem> getRecipeBookItems() {
-        if (getResults().isEmpty()) {
+        if (this.getResult().isEmpty()) {
             if (getAllowedItems().isEmpty()) {
                 return Collections.singletonList(placeHolderPotion);
             }
             return getIngredients().getChoices();
         }
-        return getResults();
+        return this.getResult().getChoices();
     }
 
     @Override
@@ -355,8 +336,8 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe> {
         } else {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_0")).setVariants(guiHandler, Collections.singletonList(placeHolderPotion));
         }
-        if (!getResults().isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_1")).setVariants(guiHandler, getResults());
+        if (!this.getResult().isEmpty()) {
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_1")).setVariants(guiHandler, this.getResult());
         } else {
             CustomItem modifications = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
             modifications.addLoreLine("");

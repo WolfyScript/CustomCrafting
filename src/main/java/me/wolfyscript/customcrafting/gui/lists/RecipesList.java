@@ -99,7 +99,7 @@ public class RecipesList extends CCWindow {
             if (namespace.equalsIgnoreCase("minecraft")) {
                 recipes.addAll(customCrafting.getRecipeHandler().getMinecraftRecipes());
             } else {
-                List<ICustomRecipe<?>> customRecipes = customCrafting.getRecipeHandler().getRecipesByNamespace(namespace);
+                List<ICustomRecipe<?,?>> customRecipes = customCrafting.getRecipeHandler().getRecipesByNamespace(namespace);
                 recipes.addAll(customRecipes.parallelStream().filter(Objects::nonNull).collect(Collectors.toList()));
             }
             maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
@@ -111,7 +111,7 @@ public class RecipesList extends CCWindow {
                 Object recipe = recipes.get(i);
                 RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
                 if (recipe instanceof ICustomRecipe) {
-                    button.setCustomRecipe(event.getGuiHandler(), (ICustomRecipe<?>) recipe);
+                    button.setCustomRecipe(event.getGuiHandler(), (ICustomRecipe<?,?>) recipe);
                 } else if (recipe instanceof Recipe) {
                     button.setRecipe(event.getGuiHandler(), (Recipe) recipe);
                 }

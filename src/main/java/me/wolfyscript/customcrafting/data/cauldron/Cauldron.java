@@ -5,8 +5,6 @@ import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.RandomCollection;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -23,12 +21,7 @@ public class Cauldron implements Listener {
         this.recipe = event.getRecipe();
 
         Player player = event.getPlayer();
-        RandomCollection<CustomItem> items = recipe.getResults().parallelStream().filter((item) -> !item.hasPermission() || player.hasPermission(item.getPermission())).collect(RandomCollection.getCollector((rdmC, item) -> rdmC.add(item.getRarityPercentage(), item)));
-        if (!items.isEmpty()) {
-            this.result = items.next();
-        } else {
-            this.result = new CustomItem(Material.AIR);
-        }
+        this.result = recipe.getResult().getCustomItem(player);
 
         this.dropItems = event.dropItems();
         this.cookingTime = event.getCookingTime();

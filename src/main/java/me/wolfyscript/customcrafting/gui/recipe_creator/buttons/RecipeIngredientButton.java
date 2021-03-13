@@ -70,10 +70,10 @@ public class RecipeIngredientButton extends ItemInputButton<CCCache> {
                 ingredient = cache.getAnvilRecipe().getInput(recipeSlot);
                 break;
             case CAULDRON:
-                //TODO: Find a way to implement Ingredients
+                ingredient = cache.getCauldronRecipe().getIngredients();
                 break;
             case BREWING_STAND:
-                ingredient = cache.getBrewingRecipe().getIngredients();
+                ingredient = recipeSlot == 0 ? cache.getBrewingRecipe().getIngredients() : cache.getBrewingRecipe().getAllowedItems();
         }
         return ingredient;
     }

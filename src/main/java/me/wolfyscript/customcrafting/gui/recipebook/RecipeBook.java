@@ -165,7 +165,7 @@ public class RecipeBook extends CCWindow {
                 }
             }
         } else {
-            List<ICustomRecipe<?>> recipes = knowledgeBook.getSubFolderRecipes();
+            List<ICustomRecipe<?,?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, grayBtnKey);
             }
@@ -179,7 +179,7 @@ public class RecipeBook extends CCWindow {
 
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
                 NamespacedKey backToList = new NamespacedKey("recipe_book", "back_to_list");
-                ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+                ICustomRecipe<?,?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
                 customRecipe.renderMenu(this, event);
                 if (customRecipe.getRecipeType().equals(Types.ELITE_WORKBENCH)) {
                     if (knowledgeBook.getSubFolderPage() > 0) {
