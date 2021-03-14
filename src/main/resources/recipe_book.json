@@ -22,8 +22,8 @@
           "&7Contains CustomCrafting`s special recipes"
         ],
         "recipes": [
-          "customcrafting:workbench",
-          "customcrafting:knowledge_book"
+          "customcrafting:advanced_crafting_table",
+          "customcrafting:recipe_book"
         ]
       }
     ]

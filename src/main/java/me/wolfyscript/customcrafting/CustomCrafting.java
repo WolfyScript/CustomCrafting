@@ -230,9 +230,6 @@ public class CustomCrafting extends JavaPlugin {
         shapelessRecipe.addIngredient(Material.STONE);
         Bukkit.addRecipe(shapelessRecipe);
 
-        for (int i = 'A' - 10; i < 'A'+26; i++) {
-            System.out.println("Char: "+ (char) i + " - " + i);
-        }
         System.out.println("------------------------------------------------------------------------");
     }
 

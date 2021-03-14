@@ -89,6 +89,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         if (ingredients == null || ingredients.isEmpty()) {
             this.ingredients.remove(key);
         } else {
+            ingredients.buildChoices();
             this.ingredients.put(key, ingredients);
         }
     }
@@ -162,9 +163,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
             gen.writeObjectFieldStart("ingredients");
             for (Map.Entry<Character, Ingredient> entry : ingredients.entrySet()) {
                 if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                    gen.writeArrayFieldStart(entry.getKey().toString());
-                    gen.writeObject(entry.getValue());
-                    gen.writeEndArray();
+                    gen.writeObjectField(entry.getKey().toString(), entry.getValue());
                 }
             }
             gen.writeEndObject();

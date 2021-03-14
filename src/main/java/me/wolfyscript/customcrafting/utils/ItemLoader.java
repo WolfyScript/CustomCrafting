@@ -39,7 +39,6 @@ public class ItemLoader {
                 }
             });
             result.buildChoices();
-            System.out.println(" Result: " + result);
             return result;
         }
         Result<T> result = JacksonUtil.getObjectMapper().convertValue(node, new TypeReference<Result<T>>() {});

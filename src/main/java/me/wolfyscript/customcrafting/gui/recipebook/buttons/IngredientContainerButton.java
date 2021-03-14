@@ -4,8 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.RecipeItemStack;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -137,12 +136,8 @@ public class IngredientContainerButton extends Button<CCCache> {
         variantsMap.remove(guiHandler);
     }
 
-    public void setVariants(GuiHandler<CCCache> guiHandler, Ingredient ingredient) {
-        setVariants(guiHandler, ingredient.getChoices());
-    }
-
-    public void setVariants(GuiHandler<CCCache> guiHandler, Result<?> result) {
-        setVariants(guiHandler, result.getChoices());
+    public void setVariants(GuiHandler<CCCache> guiHandler, RecipeItemStack recipeItemStack) {
+        this.variantsMap.put(guiHandler, recipeItemStack.getChoices(guiHandler.getPlayer()));
     }
 
     public void setVariants(GuiHandler<CCCache> guiHandler, List<CustomItem> variants) {

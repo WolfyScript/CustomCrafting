@@ -31,38 +31,27 @@ public abstract class RecipeItemStack {
     private List<NamespacedKey> tags;
 
     public RecipeItemStack() {
-        this.items = new ArrayList<>();
-        this.tags = new ArrayList<>();
-        this.choices = new ArrayList<>();
-        buildChoices();
+        this(new ArrayList<>(), new ArrayList<>());
     }
 
     public RecipeItemStack(Material... materials) {
-        this();
-        this.items = Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList());
-        buildChoices();
+        this(Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList()), new ArrayList<>());
     }
 
     public RecipeItemStack(ItemStack... items) {
-        this();
-        this.items = Arrays.stream(items).map(VanillaRef::new).collect(Collectors.toList());
-        buildChoices();
+        this(Arrays.stream(items).map(VanillaRef::new).collect(Collectors.toList()), new ArrayList<>());
     }
 
     public RecipeItemStack(NamespacedKey... tags) {
-        this();
-        this.tags = Arrays.asList(tags);
-        buildChoices();
+        this(new ArrayList<>(), Arrays.asList(tags));
     }
 
     public RecipeItemStack(APIReference... references) {
-        this();
-        this.items = Arrays.asList(references);
-        buildChoices();
+        this(Arrays.asList(references), new ArrayList<>());
     }
 
     public RecipeItemStack(List<APIReference> references, List<NamespacedKey> tags) {
-        this();
+        this.choices = new ArrayList<>();
         this.items = references;
         this.tags = tags;
         buildChoices();
@@ -95,7 +84,7 @@ public abstract class RecipeItemStack {
     public void buildChoices() {
         this.choices.clear();
         this.choices.addAll(items.stream().map(ItemLoader::load).collect(Collectors.toSet()));
-        tags.stream().map(namespacedKey -> {
+        this.tags.stream().map(namespacedKey -> {
             if (namespacedKey.getNamespace().equals("minecraft")) {
                 String[] key = namespacedKey.getKey().split("/", 2);
                 if (key.length > 1 && (key[0].equals("blocks") || key[0].equals("items"))) {
@@ -116,7 +105,7 @@ public abstract class RecipeItemStack {
 
     @JsonIgnore
     public List<CustomItem> getChoices() {
-        return choices;
+        return new ArrayList<>(choices);
     }
 
     public List<CustomItem> getChoices(Player player) {
