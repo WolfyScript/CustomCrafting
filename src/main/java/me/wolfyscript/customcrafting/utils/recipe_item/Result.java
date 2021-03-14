@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -71,6 +72,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     /**
      * @return The ItemStack of the first CustomItem in the choices or AIR if choices are empty.
      */
+    @JsonIgnore
     public ItemStack getItemStack() {
         return isEmpty() ? ItemUtils.AIR : getChoices().get(0).create();
     }
@@ -79,6 +81,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         return getItem(player).orElse(new CustomItem(Material.AIR));
     }
 
+    @JsonIgnore
     public Optional<CustomItem> getItem() {
         RandomCollection<CustomItem> items = getChoices().parallelStream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
         return Optional.ofNullable(!items.isEmpty() ? items.next() : null);

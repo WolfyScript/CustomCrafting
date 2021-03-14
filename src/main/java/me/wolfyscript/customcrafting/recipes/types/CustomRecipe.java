@@ -45,7 +45,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
         this.hidden = node.path("hidden").asBoolean(false);
 
         //Sets the result of the recipe if one exists in the config
-        if (node.has("result") && !node.path("result").isObject()) {
+        if (node.has("result")) {
             setResult(ItemLoader.loadResult(node.path("result")));
         }
     }

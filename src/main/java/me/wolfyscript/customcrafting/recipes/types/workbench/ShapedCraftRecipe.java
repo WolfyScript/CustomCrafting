@@ -206,7 +206,6 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         for (int i = 0; i < this.shapeRotated.length; i++) {
             this.shapeRotated[i] = new StringBuilder(this.shapeRotated[i]).reverse().toString();
         }
-        //Set Recipe Width and Height
         this.width = this.shape.length > 0 ? this.shape[0].length() : 0;
         this.height = this.shape.length;
     }

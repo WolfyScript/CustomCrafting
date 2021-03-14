@@ -32,8 +32,14 @@ public class ItemLoader {
     public static <T extends ResultTarget> Result<T> loadResult(JsonNode node) {
         if (node.isArray()) {
             Result<T> result = new Result<>();
-            node.elements().forEachRemaining(item -> result.getItems().add(JacksonUtil.getObjectMapper().convertValue(item, APIReference.class)));
+            node.elements().forEachRemaining(item -> {
+                APIReference reference = JacksonUtil.getObjectMapper().convertValue(item, APIReference.class);
+                if (reference != null) {
+                    result.getItems().add(reference);
+                }
+            });
             result.buildChoices();
+            System.out.println(" Result: " + result);
             return result;
         }
         Result<T> result = JacksonUtil.getObjectMapper().convertValue(node, new TypeReference<Result<T>>() {});

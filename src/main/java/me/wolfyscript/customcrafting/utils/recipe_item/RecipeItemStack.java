@@ -114,6 +114,7 @@ public abstract class RecipeItemStack {
         }).filter(Objects::nonNull).distinct().forEach(this.choices::addAll);
     }
 
+    @JsonIgnore
     public List<CustomItem> getChoices() {
         return choices;
     }
@@ -122,18 +123,22 @@ public abstract class RecipeItemStack {
         return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
     }
 
+    @JsonIgnore
     public Stream<CustomItem> getChoicesStream() {
         return choices.stream();
     }
 
+    @JsonIgnore
     public List<ItemStack> getBukkitChoices() {
         return getChoicesStream().map(CustomItem::create).collect(Collectors.toList());
     }
 
+    @JsonIgnore
     public int size(){
         return getChoices().size();
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return InventoryUtils.isCustomItemsListEmpty(this.choices);
     }

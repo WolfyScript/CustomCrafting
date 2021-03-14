@@ -157,6 +157,7 @@ public class DataHandler {
             String name = file.getName();
             NamespacedKey namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
             try {
+                customCrafting.getLogger().info(" - " + namespacedKey.toString());
                 injectRecipe(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 customCrafting.getLogger().severe(String.format("Could not load recipe '%s': %s", namespacedKey.toString(), e.getMessage()));
