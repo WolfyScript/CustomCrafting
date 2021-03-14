@@ -46,11 +46,6 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
 
     void setGroup(String group);
 
-    @Nullable
-    default CustomItem getResultItem() {
-        return getResult().getChoices().get(0);
-    }
-
     Result<T> getResult();
 
     void setResult(Result<T> result);

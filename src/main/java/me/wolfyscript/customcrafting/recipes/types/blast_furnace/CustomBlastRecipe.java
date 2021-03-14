@@ -23,7 +23,7 @@ public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, Bl
 
     @Override
     public BlastingRecipe getVanillaRecipe() {
-        return new BlastingRecipe(getNamespacedKey().toBukkit(), getResultItem().create(), getRecipeChoice(), getExp(), getCookingTime());
+        return new BlastingRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
     }
 
     @Override

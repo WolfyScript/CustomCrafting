@@ -22,6 +22,6 @@ public class RecipeResultButton extends ItemInputButton<CCCache> {
                 return;
             }
             cache.getRecipe().getResult().put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
-        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> cache.getRecipe().getResultItem() != null ? cache.getRecipe().getResultItem().create() : ItemUtils.AIR));
+        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> cache.getRecipe().getResult().getItemStack()));
     }
 }

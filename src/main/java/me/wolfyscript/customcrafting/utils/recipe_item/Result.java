@@ -6,6 +6,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -46,25 +47,32 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         this.target = target;
     }
 
-    public void setExtensions(List<ResultExtension> extensions) {
-        this.extensions = extensions;
-    }
-
     public T getTarget() {
         return target;
+    }
+
+    public void setExtensions(List<ResultExtension> extensions) {
+        this.extensions = extensions;
     }
 
     public List<ResultExtension> getExtensions() {
         return extensions;
     }
 
-    public RandomCollection<CustomItem> getRandomChoices(Player player){
+    public RandomCollection<CustomItem> getRandomChoices(Player player) {
         return getChoices(player).parallelStream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
     }
 
     public Optional<CustomItem> getItem(Player player) {
         RandomCollection<CustomItem> items = getRandomChoices(player);
         return Optional.ofNullable(!items.isEmpty() ? items.next() : null);
+    }
+
+    /**
+     * @return The ItemStack of the first CustomItem in the choices or AIR if choices are empty.
+     */
+    public ItemStack getItemStack() {
+        return isEmpty() ? ItemUtils.AIR : getChoices().get(0).create();
     }
 
     public CustomItem getCustomItem(Player player) {

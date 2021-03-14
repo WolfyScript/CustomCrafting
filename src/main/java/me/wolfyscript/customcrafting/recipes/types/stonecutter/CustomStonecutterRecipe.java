@@ -26,7 +26,6 @@ import org.bukkit.inventory.StonecuttingRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecipe, FixedResultTarget> implements ICustomVanillaRecipe<StonecuttingRecipe> {
@@ -79,7 +78,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         ((IngredientContainerButton) cluster.getButton("ingredient.container_20")).setVariants(guiHandler, getSource());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, Collections.singletonList(getResultItem()));
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResult());
     }
 
     @Override
@@ -103,9 +102,9 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
-        if (getResultItem() != null) {
+        if (!getResult().isEmpty()) {
             RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).collect(Collectors.toList()));
-            return new StonecuttingRecipe(namespacedKey.toBukkit(), getResultItem().create(), choice);
+            return new StonecuttingRecipe(namespacedKey.toBukkit(), getResult().getItemStack(), choice);
         }
         return null;
     }

@@ -254,7 +254,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
                 ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
             }
         }
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, Collections.singletonList(getResultItem()));
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, getResult());
     }
 
     @Override

@@ -240,7 +240,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
         ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
         ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
         if (getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(getResultItem()));
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, getResult());
         } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, inputLeft);
         }else{

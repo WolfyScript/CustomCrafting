@@ -23,7 +23,7 @@ public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireReci
 
     @Override
     public CampfireRecipe getVanillaRecipe() {
-        return new CampfireRecipe(getNamespacedKey().toBukkit(), getResultItem().create(), getRecipeChoice(), getExp(), getCookingTime());
+        return new CampfireRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
     }
 
     @Override

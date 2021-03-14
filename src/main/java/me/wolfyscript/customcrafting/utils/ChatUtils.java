@@ -207,10 +207,10 @@ public class ChatUtils {
             if (i < customRecipes.size()) {
                 ICustomRecipe<?,?> recipe = customRecipes.get(i);
                 ClickEvent commandSuggest = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey());
-                if (recipe.getResultItem() == null) {
+                if (recipe.getResult().isEmpty()) {
                     api.getChat().sendActionMessage(player, new ClickData(" - §7[§c!§7] §c", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§cFailed to load result item!")));
                 } else {
-                    api.getChat().sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getResultItem().create())));
+                    api.getChat().sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getResult().getItemStack())));
                 }
             } else {
                 api.getChat().sendMessage(player, "");

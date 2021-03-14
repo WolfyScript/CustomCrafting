@@ -9,7 +9,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
@@ -66,8 +65,8 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
     @Override
     public ShapelessRecipe getVanillaRecipe() {
         if (!allowVanillaRecipe()) {
-            if (!ItemUtils.isAirOrNull(getResultItem())) {
-                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResultItem().create());
+            if (!getResult().isEmpty()) {
+                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack());
                 for (Ingredient value : getIngredients().values()) {
                     shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
                 }

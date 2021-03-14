@@ -10,7 +10,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNod
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RecipeUtil;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
@@ -225,8 +224,8 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     @Override
     public ShapedRecipe getVanillaRecipe() {
         if (!allowVanillaRecipe()) {
-            if (!ItemUtils.isAirOrNull(getResultItem()) && this.width > 0) {
-                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResultItem().create());
+            if (!getResult().isEmpty() && this.width > 0) {
+                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack());
                 recipe.shape(shape);
                 getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
                 recipe.setGroup(getGroup());

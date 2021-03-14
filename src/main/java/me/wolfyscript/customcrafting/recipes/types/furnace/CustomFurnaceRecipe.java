@@ -23,7 +23,7 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe
 
     @Override
     public FurnaceRecipe getVanillaRecipe() {
-        return new FurnaceRecipe(getNamespacedKey().toBukkit(), getResultItem().create(), getRecipeChoice(), getExp(), getCookingTime());
+        return new FurnaceRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
     }
 
     @Override
