@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class Ingredient extends RecipeItemStack {
 
@@ -31,7 +32,7 @@ public class Ingredient extends RecipeItemStack {
         super(references);
     }
 
-    public Ingredient(List<APIReference> references, List<NamespacedKey> tags) {
+    public Ingredient(List<APIReference> references, Set<NamespacedKey> tags) {
         super(references, tags);
     }
 

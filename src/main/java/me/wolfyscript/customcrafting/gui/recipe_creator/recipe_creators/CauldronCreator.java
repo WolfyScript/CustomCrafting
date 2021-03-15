@@ -4,10 +4,10 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -36,8 +36,8 @@ public class CauldronCreator extends RecipeCreator {
 
         registerButton(new DummyButton<>("cauldron", Material.CAULDRON));
 
-        registerButton(new RecipeIngredientButton(0, customCrafting));
-        registerButton(new RecipeResultButton());
+        registerButton(new ButtonRecipeIngredient(0));
+        registerButton(new ButtonRecipeResult());
         registerButton(new ItemInputButton<>("handItem_container", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 Bukkit.getScheduler().runTask(customCrafting, () -> {

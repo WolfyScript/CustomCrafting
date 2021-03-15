@@ -44,11 +44,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         super(namespacedKey, node);
         //Get Ingredients
         Map<Character, Ingredient> ingredients = new TreeMap<>();
-        node.path("ingredients").fields().forEachRemaining(entry -> {
-            String key = entry.getKey();
-            Ingredient ingredient = ItemLoader.loadIngredient(entry.getValue());
-            ingredients.put(key.charAt(0), ingredient);
-        });
+        node.path("ingredients").fields().forEachRemaining(entry -> ingredients.put(entry.getKey().charAt(0), ItemLoader.loadIngredient(entry.getValue())));
         this.ingredients = ingredients;
     }
 
@@ -76,7 +72,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
 
     @Override
     public Ingredient getIngredients(char key) {
-        return getIngredients().getOrDefault(key, new Ingredient());
+        return getIngredients().get(key);
     }
 
     @Override
@@ -86,7 +82,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
 
     @Override
     public void setIngredients(char key, Ingredient ingredients) {
-        if (ingredients == null || ingredients.isEmpty()) {
+        if (ingredients == null) {
             this.ingredients.remove(key);
         } else {
             ingredients.buildChoices();
@@ -159,14 +155,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("shapeless", shapeless);
         gen.writeObjectField("result", result);
-        {
-            gen.writeObjectFieldStart("ingredients");
-            for (Map.Entry<Character, Ingredient> entry : ingredients.entrySet()) {
-                if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                    gen.writeObjectField(entry.getKey().toString(), entry.getValue());
-                }
-            }
-            gen.writeEndObject();
-        }
+        gen.writeObjectField("ingredients", ingredients);
     }
 }

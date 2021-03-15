@@ -7,13 +7,13 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class Result<T extends ResultTarget> extends RecipeItemStack {
 
@@ -40,7 +40,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         super(references);
     }
 
-    public Result(List<APIReference> references, List<NamespacedKey> tags) {
+    public Result(List<APIReference> references, Set<NamespacedKey> tags) {
         super(references, tags);
     }
 
@@ -67,14 +67,6 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     public Optional<CustomItem> getItem(Player player) {
         RandomCollection<CustomItem> items = getRandomChoices(player);
         return Optional.ofNullable(!items.isEmpty() ? items.next() : null);
-    }
-
-    /**
-     * @return The ItemStack of the first CustomItem in the choices or AIR if choices are empty.
-     */
-    @JsonIgnore
-    public ItemStack getItemStack() {
-        return isEmpty() ? ItemUtils.AIR : getChoices().get(0).create();
     }
 
     public CustomItem getCustomItem(Player player) {

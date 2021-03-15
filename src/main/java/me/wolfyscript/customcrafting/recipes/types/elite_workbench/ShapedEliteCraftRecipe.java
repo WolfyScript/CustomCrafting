@@ -202,7 +202,9 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
                 if ((matrix.get(i).get(j) != null && i < shape.length && j < shape[i].length() && shape[i].charAt(j) != ' ')) {
-                    Optional<CustomItem> item = getIngredients(shape[i].charAt(j)).check(matrix.get(i).get(j), isExactMeta());
+                    Ingredient ingredient = getIngredients(shape[i].charAt(j));
+                    if(ingredient == null) return null;
+                    Optional<CustomItem> item = ingredient.check(matrix.get(i).get(j), isExactMeta());
                     if (!item.isPresent()) {
                         return null;
                     }

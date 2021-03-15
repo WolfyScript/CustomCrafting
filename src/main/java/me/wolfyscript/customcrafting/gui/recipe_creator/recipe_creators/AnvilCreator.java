@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -30,9 +30,9 @@ public class AnvilCreator extends RecipeCreator {
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
 
-        registerButton(new RecipeIngredientButton(0, customCrafting));
-        registerButton(new RecipeIngredientButton(1, customCrafting));
-        registerButton(new RecipeResultButton());
+        registerButton(new ButtonRecipeIngredient(0));
+        registerButton(new ButtonRecipeIngredient(1));
+        registerButton(new ButtonRecipeResult());
 
         registerButton(new ActionButton<>("mode", Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomAnvilRecipe.Mode mode = guiHandler.getCustomCache().getAnvilRecipe().getMode();

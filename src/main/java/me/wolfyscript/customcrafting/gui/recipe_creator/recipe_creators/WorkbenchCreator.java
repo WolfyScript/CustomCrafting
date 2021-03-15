@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeIngredientButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.RecipeResultButton;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
@@ -31,10 +31,10 @@ public class WorkbenchCreator extends RecipeCreator {
         registerButton(new PriorityButton());
 
         for (int i = 0; i < 9; i++) {
-            registerButton(new RecipeIngredientButton(i, customCrafting));
+            registerButton(new ButtonRecipeIngredient(i));
         }
 
-        registerButton(new RecipeResultButton());
+        registerButton(new ButtonRecipeResult());
 
         registerButton(new ToggleButton<>("workbench.shapeless", false, new ButtonState<>("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().setCustomRecipe(new ShapedCraftRecipe(guiHandler.getCustomCache().getAdvancedCraftingRecipe()));

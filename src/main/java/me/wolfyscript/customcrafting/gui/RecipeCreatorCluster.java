@@ -27,6 +27,7 @@ public class RecipeCreatorCluster extends CCCluster {
         registerGuiWindow(new EliteWorkbenchCreator(this, customCrafting));
         registerGuiWindow(new BrewingCreator(this, customCrafting));
         registerGuiWindow(new SmithingCreator(this, customCrafting));
+        //Other Menus
         registerGuiWindow(new ConditionsMenu(this, customCrafting));
         registerGuiWindow(new ResultMenu(this, customCrafting));
         registerGuiWindow(new IngredientMenu(this, customCrafting));

@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -47,8 +48,10 @@ public interface ICraftingRecipe {
 
     void setIngredients(char key, Ingredient ingredients);
 
+    @Nullable
     Ingredient getIngredients(char key);
 
+    @Nullable
     Ingredient getIngredients(int slot);
 
     Map<Character, Ingredient> getIngredients();

@@ -16,13 +16,13 @@ import java.util.List;
 public class ItemLoader {
 
     public static Ingredient loadIngredient(JsonNode node) {
+        final Ingredient ingredient;
         if (node.isArray()) {
-            Ingredient ingredient = new Ingredient();
+            ingredient = new Ingredient();
             node.elements().forEachRemaining(item -> ingredient.getItems().add(JacksonUtil.getObjectMapper().convertValue(item, APIReference.class)));
-            ingredient.buildChoices();
-            return ingredient;
+        }else{
+            ingredient = JacksonUtil.getObjectMapper().convertValue(node, Ingredient.class);
         }
-        Ingredient ingredient = JacksonUtil.getObjectMapper().convertValue(node, Ingredient.class);
         if (ingredient != null) {
             ingredient.buildChoices();
         }
