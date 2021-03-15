@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,26 +23,32 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
 
     public Result() {
         super();
+        this.extensions = new ArrayList<>();
     }
 
     public Result(Material... materials) {
         super(materials);
+        this.extensions = new ArrayList<>();
     }
 
     public Result(ItemStack... items) {
         super(items);
+        this.extensions = new ArrayList<>();
     }
 
     public Result(NamespacedKey... tags) {
         super(tags);
+        this.extensions = new ArrayList<>();
     }
 
     public Result(APIReference... references) {
         super(references);
+        this.extensions = new ArrayList<>();
     }
 
     public Result(List<APIReference> references, Set<NamespacedKey> tags) {
         super(references, tags);
+        this.extensions = new ArrayList<>();
     }
 
     public void setTarget(T target) {
