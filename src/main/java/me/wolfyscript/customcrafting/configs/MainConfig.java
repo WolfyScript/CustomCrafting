@@ -154,4 +154,8 @@ public class MainConfig extends YamlConfiguration {
         return getMCRegistry().equals(option);
     }
 
+    public boolean isBrewingRecipes(){
+        return getBoolean("recipes.brewing");
+    }
+
 }

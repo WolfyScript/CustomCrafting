@@ -65,7 +65,7 @@ recipes:
     # ENABLED: Recipes are registered
     # LIMITED: Recipes are registered, but players cannot see them in the vanilla recipe book
   # DISABLED: No recipes are registered. This might cause some issues. Only Disable if you encounter this issue: https://bugs.mojang.com/browse/MC-185901
-
+  brewing: false          # Toggle the Brewing Recipes. They are off by default to prevent possible duplication issues
   lockdown: false         # Used to block any kind of custom recipe. If enabled no one will be able to craft any custom recipe anymore.
   pretty_printing: true   # If the configs like items or recipes should be saved using formatting or just one continuous String.
   disabled_recipes: [ ]   # The vanilla or custom recipes that are blocked from crafting.

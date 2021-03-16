@@ -55,7 +55,7 @@ public class BrewingStandListener implements Listener {
 
     @EventHandler
     public void onInv(InventoryClickEvent event) {
-        if (event.getClickedInventory() instanceof BrewerInventory) {
+        if (event.getClickedInventory() instanceof BrewerInventory && customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
             BrewerInventory inventory = (BrewerInventory) event.getClickedInventory();
             Player player = (Player) event.getWhoClicked();
             Location location = inventory.getLocation();
@@ -84,11 +84,9 @@ public class BrewingStandListener implements Listener {
                             event.setCancelled(true);
                             ItemStack itemStack = cursor.clone();
                             cursor.setAmount(cursor.getAmount() - 1);
-                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                itemStack.setAmount(1);
-                                inventory.setItem(event.getSlot(), itemStack);
-                                event.getWhoClicked().setItemOnCursor(cursor);
-                            }, 1);
+                            itemStack.setAmount(1);
+                            event.setCurrentItem(itemStack);
+                            event.getWhoClicked().setItemOnCursor(cursor);
                         } else if (currentItem.isSimilar(cursor)) {
                             if (currentItem.getAmount() < currentItem.getMaxStackSize()) {
                                 if (cursor.getAmount() > 0) {
