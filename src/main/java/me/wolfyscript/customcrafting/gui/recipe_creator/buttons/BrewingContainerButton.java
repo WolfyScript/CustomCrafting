@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,8 +42,10 @@ public class BrewingContainerButton extends ItemInputButton<CCCache> {
             }
             return false;
         },(cache, guiHandler, player, guiInventory, itemStack, i, event) -> {
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                return;
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
+                if (!event.getView().getBottomInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
+                    return;
+                }
             }
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             CustomItem customItem = new CustomItem(Material.AIR);
