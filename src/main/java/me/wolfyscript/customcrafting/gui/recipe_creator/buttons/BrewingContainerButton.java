@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class BrewingContainerButton extends ItemInputButton<CCCache> {
 
-    public BrewingContainerButton(int recipeSlot, CustomCrafting customCrafting) {
+    public BrewingContainerButton(int recipeSlot) {
         super("brewing.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {

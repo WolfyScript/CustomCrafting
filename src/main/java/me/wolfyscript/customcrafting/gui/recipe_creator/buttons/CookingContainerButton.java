@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -17,7 +16,7 @@ import java.util.List;
 
 public class CookingContainerButton extends ItemInputButton<CCCache> {
 
-    public CookingContainerButton(int inputSlot, CustomCrafting customCrafting) {
+    public CookingContainerButton(int inputSlot) {
         super("cooking.container_" + inputSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomCookingRecipe<?, ?> cooking = cache.getCookingRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {

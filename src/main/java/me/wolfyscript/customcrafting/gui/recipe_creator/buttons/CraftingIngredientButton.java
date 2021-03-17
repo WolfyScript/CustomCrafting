@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class CraftingIngredientButton extends ItemInputButton<CCCache> {
 
-    public CraftingIngredientButton(int recipeSlot, CustomCrafting customCrafting) {
+    public CraftingIngredientButton(int recipeSlot) {
         super("crafting.container_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CraftingRecipe<?> workbench = cache.getCraftingRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {

@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
@@ -22,7 +21,7 @@ public class CauldronContainerButton extends ItemInputButton<CCCache> {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getCauldronRecipe().setResult(Collections.singletonList(items.getItem()));
 
-    public CauldronContainerButton(int inputSlot, CustomCrafting customCrafting) {
+    public CauldronContainerButton(int inputSlot) {
         super("cauldron.container_" + inputSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CauldronRecipe recipe = cache.getCauldronRecipe();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {

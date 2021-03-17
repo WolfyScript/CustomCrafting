@@ -24,9 +24,9 @@ public class SmithingCreator extends RecipeCreator {
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
 
-        registerButton(new SmithingContainerButton(0, customCrafting));
-        registerButton(new SmithingContainerButton(1, customCrafting));
-        registerButton(new SmithingContainerButton(2, customCrafting));
+        registerButton(new SmithingContainerButton(0));
+        registerButton(new SmithingContainerButton(1));
+        registerButton(new SmithingContainerButton(2));
     }
 
     @Override

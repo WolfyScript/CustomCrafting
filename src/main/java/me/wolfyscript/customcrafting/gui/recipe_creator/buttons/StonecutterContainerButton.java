@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
@@ -21,7 +20,7 @@ public class StonecutterContainerButton extends ItemInputButton<CCCache> {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getStonecutterRecipe().setResult(Collections.singletonList(items.getItem()));
 
-    public StonecutterContainerButton(int inputSlot, CustomCrafting customCrafting) {
+    public StonecutterContainerButton(int inputSlot) {
         super("stonecutter.container_" + inputSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             CustomStonecutterRecipe stonecutter = cache.getStonecutterRecipe();
             if (event instanceof InventoryClickEvent) {

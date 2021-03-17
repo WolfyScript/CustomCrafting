@@ -31,7 +31,7 @@ public class WorkbenchCreator extends RecipeCreator {
         registerButton(new PriorityButton());
 
         for (int i = 0; i < 10; i++) {
-            registerButton(new CraftingIngredientButton(i, customCrafting));
+            registerButton(new CraftingIngredientButton(i));
         }
 
         registerButton(new ToggleButton<>("workbench.shapeless", false, new ButtonState<>("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {

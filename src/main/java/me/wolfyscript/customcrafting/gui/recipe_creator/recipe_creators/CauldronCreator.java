@@ -36,8 +36,8 @@ public class CauldronCreator extends RecipeCreator {
 
         registerButton(new DummyButton<>("cauldron", Material.CAULDRON));
 
-        registerButton(new CauldronContainerButton(0, customCrafting));
-        registerButton(new CauldronContainerButton(1, customCrafting));
+        registerButton(new CauldronContainerButton(0));
+        registerButton(new CauldronContainerButton(1));
         registerButton(new ItemInputButton<>("handItem_container", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 Bukkit.getScheduler().runTask(customCrafting, () -> {

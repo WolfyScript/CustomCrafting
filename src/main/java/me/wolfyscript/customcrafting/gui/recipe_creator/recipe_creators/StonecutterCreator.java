@@ -19,8 +19,8 @@ public class StonecutterCreator extends RecipeCreator {
     public void onInit() {
         super.onInit();
 
-        registerButton(new StonecutterContainerButton(0, customCrafting));
-        registerButton(new StonecutterContainerButton(1, customCrafting));
+        registerButton(new StonecutterContainerButton(0));
+        registerButton(new StonecutterContainerButton(1));
     }
 
     @Override

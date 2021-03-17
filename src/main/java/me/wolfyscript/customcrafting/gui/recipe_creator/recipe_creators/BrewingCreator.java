@@ -49,8 +49,8 @@ public class BrewingCreator extends RecipeCreator {
         registerButton(new PriorityButton());
 
         registerButton(new DummyButton<>("brewing_stand", Material.BREWING_STAND));
-        registerButton(new BrewingContainerButton(0, customCrafting));
-        registerButton(new BrewingContainerButton(1, customCrafting));
+        registerButton(new BrewingContainerButton(0));
+        registerButton(new BrewingContainerButton(1));
 
         registerButton(new DummyButton<>("allowed_items", Material.POTION));
 
@@ -174,7 +174,7 @@ public class BrewingCreator extends RecipeCreator {
 
         registerButton(new BrewingOptionButton(Material.ITEM_FRAME, "result"));
         registerButton(new ActionButton<>("result.info", Material.BOOK));
-        registerButton(new BrewingContainerButton(2, customCrafting));
+        registerButton(new BrewingContainerButton(2));
 
         registerButton(new BrewingOptionButton(Material.ANVIL, "effect_additions"));
         registerButton(new DummyButton<>("effect_additions.info", Material.LINGERING_POTION, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {

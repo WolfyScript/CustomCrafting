@@ -23,8 +23,8 @@ public class CookingCreator extends RecipeCreator {
     public void onInit() {
         super.onInit();
 
-        registerButton(new CookingContainerButton(0, customCrafting));
-        registerButton(new CookingContainerButton(1, customCrafting));
+        registerButton(new CookingContainerButton(0));
+        registerButton(new CookingContainerButton(1));
 
         registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%XP%", guiHandler.getCustomCache().getCookingRecipe().getExp());
