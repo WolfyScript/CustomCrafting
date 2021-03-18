@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.commands.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -51,7 +52,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
         List<String> recipes = customCrafting.getRecipeHandler().getBukkitNamespacedKeys();
-        recipes.addAll(customCrafting.getRecipeHandler().getRecipes(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
+        recipes.addAll(Registry.RECIPES.get(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
         StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
         return results;
     }

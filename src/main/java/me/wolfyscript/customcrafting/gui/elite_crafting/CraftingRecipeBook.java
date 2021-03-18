@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -52,7 +53,7 @@ public class CraftingRecipeBook extends CCWindow {
                 book.removePreviousResearchItem();
                 if (book.getSubFolder() > 0) {
                     CustomItem item = book.getResearchItem();
-                    book.setSubFolderRecipes(item, customCrafting.getRecipeHandler().getRecipes(item));
+                    book.setSubFolderRecipes(item, Registry.RECIPES.get(item));
                     book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
                     return true;
                 }
@@ -89,8 +90,8 @@ public class CraftingRecipeBook extends CCWindow {
             event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
             event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
             if (knowledgeBook.getEliteRecipeItems(category).isEmpty()) {
-                List<ICustomRecipe<?,?>> recipes = new ArrayList<>(customCrafting.getRecipeHandler().getAvailableRecipes(Types.ELITE_WORKBENCH, player));
-                Iterator<ICustomRecipe<?,?>> iterator = recipes.iterator();
+                List<ICustomRecipe<?, ?>> recipes = new ArrayList<>(Registry.RECIPES.getAvailable(Types.ELITE_WORKBENCH, player));
+                Iterator<ICustomRecipe<?, ?>> iterator = recipes.iterator();
                 while (iterator.hasNext()) {
                     EliteCraftingRecipe recipe = (EliteCraftingRecipe) iterator.next();
                     if (!recipe.getConditions().getEliteCraftingTableCondition().getOption().equals(Conditions.Option.IGNORE)) {
@@ -105,14 +106,14 @@ public class CraftingRecipeBook extends CCWindow {
                         }
                     } else {
                         ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) recipe;
-                        if (recipe1.getShape().length > eliteWorkbenchData.getCurrentGridSize() || recipe1.getShape()[0].length() > eliteWorkbenchData.getCurrentGridSize()) {
+                        if (recipe1.getHeight() > eliteWorkbenchData.getCurrentGridSize() || recipe1.getWidth() > eliteWorkbenchData.getCurrentGridSize()) {
                             iterator.remove();
                         }
                     }
                 }
                 EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
                 if (eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes()) {
-                    recipes.addAll(customCrafting.getRecipeHandler().getAvailableRecipes(Types.WORKBENCH, player));
+                    recipes.addAll(Registry.RECIPES.getAvailable(Types.WORKBENCH, player));
                 }
                 if (category != null) {
                     Iterator<ICustomRecipe<?,?>> recipeIterator = recipes.iterator();

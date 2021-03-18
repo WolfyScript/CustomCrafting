@@ -35,11 +35,8 @@ import me.wolfyscript.utilities.util.world.WorldUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -224,11 +221,6 @@ public class CustomCrafting extends JavaPlugin {
         Metrics metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
-
-
-        ShapelessRecipe shapelessRecipe = new ShapelessRecipe(new org.bukkit.NamespacedKey(this, "internal/data/placeholder"), new ItemStack(Material.STONE));
-        shapelessRecipe.addIngredient(Material.STONE);
-        Bukkit.addRecipe(shapelessRecipe);
 
         System.out.println("------------------------------------------------------------------------");
     }

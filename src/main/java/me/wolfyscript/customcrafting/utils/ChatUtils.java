@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -174,7 +175,7 @@ public class ChatUtils {
     }
 
     public void sendRecipeListExpanded(Player player) {
-        sendRecipeList(player, customCrafting.getRecipeHandler().getRecipes(((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeType()));
+        sendRecipeList(player, Registry.RECIPES.get(((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeType()));
         api.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "input");
     }
 

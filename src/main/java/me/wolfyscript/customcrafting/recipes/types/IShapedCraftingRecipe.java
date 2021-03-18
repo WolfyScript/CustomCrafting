@@ -10,6 +10,10 @@ public interface IShapedCraftingRecipe {
 
     String[] getShape();
 
+    int getWidth();
+
+    int getHeight();
+
     void setMirrorHorizontal(boolean mirrorHorizontal);
 
     void setMirrorVertical(boolean mirrorHorizontal);

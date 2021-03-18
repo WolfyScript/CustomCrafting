@@ -44,7 +44,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                             chat.sendMessage(p, "Exporting recipes to Database...");
                             new Thread(() -> {
                                 DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
-                                customCrafting.getRecipeHandler().getRecipes().values().forEach(dataBaseHandler::updateRecipe);
+                                me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(dataBaseHandler::updateRecipe);
                                 chat.sendConsoleMessage("Successfully exported recipes to database");
                             }).start();
                             break;

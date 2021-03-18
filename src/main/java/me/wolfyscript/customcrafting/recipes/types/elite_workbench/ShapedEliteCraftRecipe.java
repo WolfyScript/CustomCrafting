@@ -17,6 +17,8 @@ import java.util.*;
 
 public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShapedCraftingRecipe {
 
+    private int width;
+    private int height;
     private String[] shape, shapeMirrorHorizontal, shapeMirrorVertical, shapeRotated;
     private boolean mirrorHorizontal, mirrorVertical, mirrorRotation;
 
@@ -25,7 +27,7 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         this.shapeless = false;
         constructShape();
         JsonNode mirrorNode = node.path("mirror");
-        this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
+        this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(false);
         this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
@@ -74,6 +76,16 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
     @Override
     public String[] getShape() {
         return shape;
+    }
+
+    @Override
+    public int getWidth() {
+        return this.width;
+    }
+
+    @Override
+    public int getHeight() {
+        return this.height;
     }
 
     @Override
@@ -134,21 +146,8 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         for (int i = 0; i < this.shapeRotated.length; i++) {
             this.shapeRotated[i] = new StringBuilder(this.shapeRotated[i]).reverse().toString();
         }
-
-        if (this.shape.length == 0) {
-            requiredGridSize = 3;
-        } else {
-            int size = Math.max(this.shape.length, this.shape[0].length());
-            if (size <= 3) {
-                requiredGridSize = 3;
-            } else if (size <= 4) {
-                requiredGridSize = 4;
-            } else if (size <= 5) {
-                requiredGridSize = 5;
-            } else if (size <= 6) {
-                requiredGridSize = 6;
-            }
-        }
+        this.width = this.shape.length > 0 ? this.shape[0].length() : 0;
+        this.height = this.shape.length;
     }
 
     public void setMirrorHorizontal(boolean mirrorHorizontal) {

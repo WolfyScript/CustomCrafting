@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.RecipeCreator;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -55,7 +56,7 @@ public class SaveButton extends ActionButton<CCCache> {
                 if (recipe instanceof IShapedCraftingRecipe) {
                     ((IShapedCraftingRecipe) recipe).constructShape();
                 }
-                customCrafting.getRecipeHandler().injectRecipe(recipe);
+                Registry.RECIPES.register(recipe);
                 api.getChat().sendKey(player, "recipe_creator", "loading.success");
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) cache.resetRecipe();
             });

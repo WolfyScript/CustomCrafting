@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.data.cauldron;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -41,7 +42,7 @@ public class Cauldron implements Listener {
         if (data == null || data.isEmpty())
             return null;
         String[] args = data.split(";");
-        CauldronRecipe recipe = (CauldronRecipe) customCrafting.getRecipeHandler().getRecipe(NamespacedKey.of(args[0]));
+        CauldronRecipe recipe = (CauldronRecipe) Registry.RECIPES.get(NamespacedKey.of(args[0]));
         if (recipe == null) {
             return null;
         }

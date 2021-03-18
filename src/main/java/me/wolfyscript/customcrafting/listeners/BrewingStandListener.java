@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -150,7 +151,7 @@ public class BrewingStandListener implements Listener {
                         //Check if at least one slot contains an item
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
-                            customCrafting.getRecipeHandler().getAvailableRecipes(Types.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
+                            Registry.RECIPES.getAvailable(Types.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
                                 Optional<CustomItem> optional = recipe.getIngredients().check(ingredient, recipe.isExactMeta());
                                 if (optional.isPresent()) {
                                     //Ingredient is valid

@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.commands.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -33,7 +34,7 @@ public class DeleteSubCommand extends AbstractSubCommand {
             Player player = (Player) sender;
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.delete")) {
                 if (args.length > 0) {
-                    ICustomRecipe<?,?> customRecipe = customCrafting.getRecipeHandler().getRecipe(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
+                    ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
                     if (customRecipe != null) {
                         api.getChat().sendMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new Pair<>("%RECIPE%", customRecipe.getNamespacedKey().toString()));
                         api.getChat().sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player))), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> api.getChat().sendMessage(player1, "§cCancelled"), new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete ")));
@@ -50,7 +51,7 @@ public class DeleteSubCommand extends AbstractSubCommand {
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
-        List<String> recipes = customCrafting.getRecipeHandler().getRecipes().keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList());
+        List<String> recipes = Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList());
         StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
         return results;
     }

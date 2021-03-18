@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -83,13 +84,13 @@ public class EditCategory extends CCWindow {
 
         registerButton(new ActionButton<>("recipes", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
-            customCrafting.getChatUtils().sendRecipeList(player, new ArrayList<>(customCrafting.getRecipeHandler().getRecipes().values()));
+            customCrafting.getChatUtils().sendRecipeList(player, new ArrayList<>(Registry.RECIPES.values()));
             if(event instanceof InventoryClickEvent){
                 boolean remove = ((InventoryClickEvent) event).isRightClick();
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
-                        ICustomRecipe<?,?> recipe = customCrafting.getRecipeHandler().getRecipe(namespacedKey);
+                        ICustomRecipe<?, ?> recipe = Registry.RECIPES.get(namespacedKey);
 
                         if (recipe == null) {
                             api.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));

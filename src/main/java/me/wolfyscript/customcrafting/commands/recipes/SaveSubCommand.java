@@ -1,11 +1,11 @@
 package me.wolfyscript.customcrafting.commands.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.util.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -31,7 +31,7 @@ public class SaveSubCommand extends AbstractSubCommand {
                     api.getChat().sendConsoleMessage("Saving item: " + entry.getKey().toString());
                     customCrafting.saveItem(entry.getKey(), entry.getValue());
                 });
-                customCrafting.getRecipeHandler().getRecipes().values().forEach(recipe -> {
+                Registry.RECIPES.values().forEach(recipe -> {
                     api.getChat().sendConsoleMessage("Saving recipe: " + recipe.getNamespacedKey().toString());
                     recipe.save();
                 });
@@ -49,7 +49,7 @@ public class SaveSubCommand extends AbstractSubCommand {
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> recipes = customCrafting.getRecipeHandler().getBukkitNamespacedKeys();
-        recipes.addAll(customCrafting.getRecipeHandler().getRecipes(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
+        recipes.addAll(Registry.RECIPES.get(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
         return StringUtil.copyPartialMatches(args[args.length - 1], recipes, new ArrayList<>());
     }
 }

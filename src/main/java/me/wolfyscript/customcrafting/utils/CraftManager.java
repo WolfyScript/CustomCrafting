@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
@@ -41,7 +42,7 @@ public class CraftManager {
         }
         List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
         Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
-        CustomItem customItem = dataHandler.getSimilarRecipesStream(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory, dataHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
+        CustomItem customItem = Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory, dataHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
         return customItem == null ? null : customItem.create();
     }
 
@@ -86,6 +87,7 @@ public class CraftManager {
                         playerStore.increaseNormalCrafts(1);
                     }
                 });
+                recipe.getResult().executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
                 if (event.isShiftClick()) {
                     List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
                     int possible = Math.min(InventoryUtils.getInventorySpace(inventoryView.getBottomInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData));

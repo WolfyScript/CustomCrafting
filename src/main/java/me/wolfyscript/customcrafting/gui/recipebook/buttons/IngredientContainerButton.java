@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -25,16 +25,14 @@ import java.util.*;
 
 public class IngredientContainerButton extends Button<CCCache> {
 
-    private final CustomCrafting customCrafting;
     private final HashMap<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
     private final HashMap<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
 
     private final HashMap<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
     private final HashMap<GuiHandler<CCCache>, Runnable> tasksQueue = new HashMap<>();
 
-    public IngredientContainerButton(int slot, CustomCrafting customCrafting) {
+    public IngredientContainerButton(int slot) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
-        this.customCrafting = customCrafting;
     }
 
     @Override
@@ -79,7 +77,7 @@ public class IngredientContainerButton extends Button<CCCache> {
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
-                List<ICustomRecipe<?, ?>> recipes = customCrafting.getRecipeHandler().getAvailableRecipesBySimilarResult(customItem.create(), player);
+                List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
                     GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
                     for (int i = 0; i < 36; i++) {

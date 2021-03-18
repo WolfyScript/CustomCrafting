@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneData;
@@ -196,7 +197,7 @@ public class GrindStoneListener implements Listener {
         AtomicReference<CustomItem> finalInputTop = new AtomicReference<>();
         AtomicReference<CustomItem> finalInputBottom = new AtomicReference<>();
 
-        List<GrindstoneRecipe> allowedRecipes = customCrafting.getRecipeHandler().getAvailableRecipes(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList());
+        List<GrindstoneRecipe> allowedRecipes = Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList());
 
         preCraftedRecipes.remove(player.getUniqueId());
 

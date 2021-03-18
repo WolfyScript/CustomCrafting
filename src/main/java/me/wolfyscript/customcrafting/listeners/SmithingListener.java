@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
@@ -53,7 +54,7 @@ public class SmithingListener implements Listener {
         }
 
         preCraftedRecipes.put(player.getUniqueId(), null);
-        for (CustomSmithingRecipe recipe : customCrafting.getRecipeHandler().getAvailableRecipes(Types.SMITHING, player)) {
+        for (CustomSmithingRecipe recipe : Registry.RECIPES.getAvailable(Types.SMITHING, player)) {
             if (!recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
                 continue;
             }

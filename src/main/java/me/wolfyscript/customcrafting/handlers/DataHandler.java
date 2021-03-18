@@ -2,26 +2,20 @@ package me.wolfyscript.customcrafting.handlers;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.Registry;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
@@ -29,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
-import org.bukkit.util.NumberConversions;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +30,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DataHandler {
 
@@ -46,8 +38,6 @@ public class DataHandler {
     private final Categories categories;
     private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
     private List<Recipe> minecraftRecipes = new ArrayList<>();
-
-    private final Map<NamespacedKey, ICustomRecipe<?,?>> customRecipes = new TreeMap<>();
 
     private final Map<Category, Map<Category, List<ICustomRecipe<?,?>>>> indexedCategoryRecipes;
 
@@ -105,7 +95,7 @@ public class DataHandler {
         try {
             dataBaseHandler.loadItems();
             chat.sendConsoleMessage("");
-            dataBaseHandler.loadRecipes(this);
+            dataBaseHandler.loadRecipes();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -131,7 +121,7 @@ public class DataHandler {
     public void saveData() {
         chat.sendConsoleMessage("Saving Items & Recipes");
         Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> customCrafting.saveItem(entry.getKey(), entry.getValue()));
-        customCrafting.getRecipeHandler().getRecipes().values().forEach(ICustomRecipe::save);
+        me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(ICustomRecipe::save);
     }
 
     private File[] getFiles(String subFolder, String type) {
@@ -157,7 +147,7 @@ public class DataHandler {
             String name = file.getName();
             NamespacedKey namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
             try {
-                injectRecipe(type.getInstance(namespacedKey, objectMapper.readTree(file)));
+                Registry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 customCrafting.getLogger().severe(String.format("Could not load recipe '%s': %s", namespacedKey.toString(), e.getMessage()));
             }
@@ -169,55 +159,8 @@ public class DataHandler {
         customCrafting.getConfigHandler().getConfig().save();
     }
 
-    public void registerRecipe(ICustomRecipe<?,?> recipe) {
-        if (recipe == null) return;
-        if (customRecipes.containsKey(recipe.getNamespacedKey()) && mainConfig.isDataOverride() && ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-            unregisterRecipe(recipe);
-        }
-        customRecipes.put(recipe.getNamespacedKey(), recipe);
-        if (recipe instanceof ICustomVanillaRecipe) {
-            Bukkit.addRecipe(((ICustomVanillaRecipe<?>) recipe).getVanillaRecipe());
-        }
-    }
-
-    public void injectRecipe(ICustomRecipe<?,?> recipe) {
-        unregisterRecipe(recipe);
-        registerRecipe(recipe);
-    }
-
-    public void unregisterBukkitRecipe(NamespacedKey namespacedKey) {
-        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-            Bukkit.removeRecipe(namespacedKey.toBukkit());
-        } else {
-            Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-            boolean inject = false;
-            while (recipeIterator.hasNext()) {
-                Recipe recipe = recipeIterator.next();
-                if (((Keyed) recipe).getKey().toString().equals(namespacedKey.toString())) {
-                    if (!inject) {
-                        inject = true;
-                    }
-                    recipeIterator.remove();
-                }
-            }
-            if (inject) {
-                Bukkit.resetRecipes();
-                while (recipeIterator.hasNext()) {
-                    Bukkit.addRecipe(recipeIterator.next());
-                }
-            }
-        }
-    }
-
-    public void unregisterRecipe(ICustomRecipe<?,?> customRecipe) {
-        customRecipes.remove(customRecipe.getNamespacedKey());
-        if (customRecipe instanceof ICustomVanillaRecipe) {
-            unregisterBukkitRecipe(customRecipe.getNamespacedKey());
-        }
-    }
-
     public List<ICustomRecipe<?,?>> getIndexedRecipeItems(Player player, Category mainCategory, Category switchCategory) {
-        return getAvailable(indexedCategoryRecipes.getOrDefault(mainCategory, new HashMap<>()).getOrDefault(switchCategory, new ArrayList<>()), player);
+        return Registry.RECIPES.getAvailable(indexedCategoryRecipes.getOrDefault(mainCategory, new HashMap<>()).getOrDefault(switchCategory, new ArrayList<>()), player);
     }
 
     /**
@@ -231,7 +174,7 @@ public class DataHandler {
         for (Category mainCategory : categories.getMainCategories().values()) {
             Map<Category, List<ICustomRecipe<?,?>>> indexSwitchCategories = new HashMap<>();
             for (Category switchCategory : categories.getSwitchCategories().values()) {
-                indexSwitchCategories.put(switchCategory, getAvailableRecipes().parallelStream().filter(recipe -> {
+                indexSwitchCategories.put(switchCategory, Registry.RECIPES.getAvailable().parallelStream().filter(recipe -> {
                     if (switchCategory == null) return true;
                     List<CustomItem> items = recipe.getRecipeBookItems();
                     if (mainCategory != null && !mainCategory.isValid(recipe) && items.parallelStream().noneMatch(customItem -> mainCategory.isValid(customItem.getItemStack().getType()))) {
@@ -244,151 +187,6 @@ public class DataHandler {
         }
     }
 
-    /**
-     * Get all the Recipes from this group
-     */
-    public List<ICustomRecipe<?,?>> getRecipeGroup(String group) {
-        return customRecipes.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
-    }
-
-    public List<String> getNamespaces() {
-        return customRecipes.keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
-    }
-
-    public List<ICustomRecipe<?,?>> getRecipesByNamespace(String namespace) {
-        return customRecipes.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
-    }
-
-    public Stream<CraftingRecipe<?>> getSimilarRecipesStream(List<List<ItemStack>> items, boolean elite, boolean advanced) {
-        final long size = items.stream().flatMap(Collection::parallelStream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
-        List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
-        if (elite) {
-            craftingRecipes.addAll(getRecipes(Types.ELITE_WORKBENCH));
-        }
-        if (advanced) {
-            craftingRecipes.addAll(getRecipes(Types.WORKBENCH));
-        }
-        final int itemsSize = items.size();
-        final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
-        return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {
-            if (recipe instanceof IShapedCraftingRecipe) {
-                IShapedCraftingRecipe shapedRecipe = ((IShapedCraftingRecipe) recipe);
-                return itemsSize > 0 && shapedRecipe.getShape().length > 0 && itemsSize == shapedRecipe.getShape().length && items0Size == shapedRecipe.getShape()[0].length();
-            }
-            return true;
-        }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
-    }
-
-    public ICustomRecipe<?,?> getRecipe(NamespacedKey namespacedKey) {
-        return customRecipes.get(namespacedKey);
-    }
-
-    /**
-     * This method returns all the recipes that are cached.
-     *
-     * @param result
-     * @return Recipes without the indicated Type
-     */
-    public List<ICustomRecipe<?,?>> getRecipes(CustomItem result) {
-        return customRecipes.values().parallelStream().filter(recipe -> recipe.getResult().getChoices().contains(result)).collect(Collectors.toList());
-    }
-
-    //CRAFTING RECIPES
-
-    public AdvancedCraftingRecipe getAdvancedCraftingRecipe(NamespacedKey recipeKey) {
-        ICustomRecipe<?,?> customRecipe = getRecipe(recipeKey);
-        return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
-    }
-
-    public <T extends ICustomRecipe<?,?>> List<T> getRecipes(Class<T> type) {
-        return customRecipes.values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
-    }
-
-    public <T extends ICustomRecipe<?,?>> List<T> getRecipes(RecipeType<T> type) {
-        return getRecipes(type.getClazz());
-    }
-
-    public Map<NamespacedKey, ICustomRecipe<?,?>> getRecipes() {
-        return Collections.unmodifiableMap(customRecipes);
-    }
-
-
-    /*
-        Get the available recipes only.
-        Disabled and hidden recipes are removed!
-        For the crafting recipes you also need permissions to view them.
-     */
-
-
-    /**
-     * Get all the recipes that are available.
-     * Recipes that are hidden or disabled are not included.
-     *
-     * @return
-     */
-    public List<ICustomRecipe<?,?>> getAvailableRecipes() {
-        return getRecipes().values().parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
-    }
-
-    /**
-     * Similar to {@link #getAvailableRecipes()} only includes the visible and enabled recipes, but also takes the player into account.
-     * Recipes that the player has no permission to view are not included.
-     *
-     * @param player
-     * @return
-     */
-    public List<ICustomRecipe<?,?>> getAvailableRecipes(Player player) {
-        return getAvailable(getAvailableRecipes(), player);
-    }
-
-    /**
-     * The same as {@link #getAvailableRecipes(Player)}, but only includes the recipes that contain the CustomItem in the result List.
-     *
-     * @param result
-     * @param player
-     * @return
-     */
-    public List<ICustomRecipe<?,?>> getAvailableRecipes(CustomItem result, Player player) {
-        return getAvailableRecipesBySimilarResult(result.create(), player);
-    }
-
-    /**
-     * The same as {@link #getAvailableRecipes(Player)}, but only includes the recipes that contain the similar ItemStack in the result List.
-     *
-     * @param result
-     * @param player
-     * @return
-     */
-    public List<ICustomRecipe<?,?>> getAvailableRecipesBySimilarResult(ItemStack result, Player player) {
-        return getAvailableRecipes(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
-    }
-
-    /**
-     * @param type
-     * @param <T>
-     * @return
-     */
-    public <T extends ICustomRecipe<?,?>> List<T> getAvailableRecipes(RecipeType<T> type) {
-        return getRecipes(type.getClazz()).parallelStream().filter(recipe -> !recipe.isHidden() && !customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
-    }
-
-    /**
-     * @param type
-     * @param player
-     * @param <T>
-     * @return
-     */
-    public <T extends ICustomRecipe<?,?>> List<T> getAvailableRecipes(RecipeType<T> type, Player player) {
-        return getAvailable(getAvailableRecipes(type), player);
-    }
-
-    synchronized private <T extends ICustomRecipe<?,?>> List<T> getAvailable(List<T> recipes, Player player) {
-        if (player != null) {
-            recipes.removeIf(recipe -> recipe.getConditions().getByID("permission") != null && !recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null)));
-        }
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        return recipes;
-    }
     //DISABLED RECIPES AND GET ALL RECIPES
 
     public Set<NamespacedKey> getDisabledRecipes() {
@@ -397,8 +195,7 @@ public class DataHandler {
 
     public List<Recipe> getMinecraftRecipes() {
         if (minecraftRecipes.isEmpty()) {
-            Iterator<Recipe> iterator = Bukkit.recipeIterator();
-            minecraftRecipes = Streams.stream(iterator).filter(recipe -> {
+            minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> {
                 if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16) && recipe instanceof SmithingRecipe)) {
                     return ((Keyed) recipe).getKey().getNamespace().equals("minecraft");
                 }
@@ -412,11 +209,25 @@ public class DataHandler {
         return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.of(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
     }
 
+    private int gridSize(ItemStack[] ingredients) {
+        switch (ingredients.length) {
+            case 9:
+                return 3;
+            case 16:
+                return 4;
+            case 25:
+                return 5;
+            case 36:
+                return 6;
+        }
+        return (int) Math.sqrt(ingredients.length);
+    }
+
     public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {
         List<List<ItemStack>> items = new ArrayList<>();
-        int gridSize = NumberConversions.toInt(Math.sqrt(ingredients.length));
+        int gridSize = gridSize(ingredients);
         for (int y = 0; y < gridSize; y++) {
-            items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
+            items.add(Arrays.asList(Arrays.copyOfRange(ingredients, y * gridSize, gridSize + y * gridSize)));
         }
         ListIterator<List<ItemStack>> iterator = items.listIterator();
         while (iterator.hasNext()) {

@@ -12,8 +12,6 @@ import java.io.IOException;
 
 public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRecipe> {
 
-    protected int requiredGridSize;
-
     public EliteCraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.bookGridSize = 6;
@@ -30,10 +28,6 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRe
         super(eliteCraftingRecipe);
         this.bookGridSize = 6;
         this.bookSquaredGrid = 36;
-    }
-
-    public int getRequiredGridSize() {
-        return requiredGridSize;
     }
 
     @Override

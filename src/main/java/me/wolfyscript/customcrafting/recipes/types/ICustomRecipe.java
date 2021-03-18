@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -18,6 +19,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Bukkit;
@@ -30,12 +32,13 @@ import java.io.IOException;
 import java.util.List;
 
 @JsonSerialize(using = ICustomRecipe.Serializer.class)
-public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTarget> {
+public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTarget> extends Keyed {
 
     WolfyUtilities getAPI();
 
     boolean hasNamespacedKey();
 
+    @Override
     NamespacedKey getNamespacedKey();
 
     void setNamespacedKey(NamespacedKey namespacedKey);
@@ -104,7 +107,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
 
     default boolean delete(@Nullable Player player) {
         if (getNamespacedKey() != null) {
-            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> CustomCrafting.getInst().getRecipeHandler().unregisterRecipe(this));
+            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> Registry.RECIPES.remove(getNamespacedKey()));
             if (CustomCrafting.hasDataBaseHandler()) {
                 CustomCrafting.getDataBaseHandler().removeRecipe(getNamespacedKey().getNamespace(), getNamespacedKey().getKey());
                 player.sendMessage("§aRecipe deleted!");

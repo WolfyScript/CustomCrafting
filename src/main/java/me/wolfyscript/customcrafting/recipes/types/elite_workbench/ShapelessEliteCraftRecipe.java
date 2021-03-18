@@ -17,15 +17,6 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
     public ShapelessEliteCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         shapeless = true;
-        if (getIngredients().size() <= 9) {
-            requiredGridSize = 3;
-        } else if (getIngredients().size() <= 16) {
-            requiredGridSize = 4;
-        } else if (getIngredients().size() <= 25) {
-            requiredGridSize = 5;
-        } else if (getIngredients().size() <= 36) {
-            requiredGridSize = 6;
-        }
     }
 
     public ShapelessEliteCraftRecipe() {

@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui.lists;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -16,10 +17,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.inventory.Recipe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RecipesList extends CCWindow {
@@ -85,7 +83,7 @@ public class RecipesList extends CCWindow {
         if (namespace.isEmpty()) {
             List<String> namespaceList = new ArrayList<>();
             namespaceList.add("minecraft");
-            namespaceList.addAll(customCrafting.getRecipeHandler().getNamespaces());
+            namespaceList.addAll(Registry.RECIPES.namespaces());
             maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
             int item = 0;
             for (int i = 45 * currentPage; item < 45 && i < namespaceList.size(); i++) {
@@ -99,7 +97,7 @@ public class RecipesList extends CCWindow {
             if (namespace.equalsIgnoreCase("minecraft")) {
                 recipes.addAll(customCrafting.getRecipeHandler().getMinecraftRecipes());
             } else {
-                List<ICustomRecipe<?,?>> customRecipes = customCrafting.getRecipeHandler().getRecipesByNamespace(namespace);
+                Set<ICustomRecipe<?, ?>> customRecipes = Registry.RECIPES.get(namespace);
                 recipes.addAll(customRecipes.parallelStream().filter(Objects::nonNull).collect(Collectors.toList()));
             }
             maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);

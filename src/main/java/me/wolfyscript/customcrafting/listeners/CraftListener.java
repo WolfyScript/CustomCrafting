@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
@@ -92,7 +93,7 @@ public class CraftListener implements Listener {
             //api.sendDebugMessage("Detected recipe: " + ((Keyed) e.getRecipe()).getKey());
             //Check for custom recipe that overrides the vanilla recipe
             NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) e.getRecipe()).getKey());
-            ICraftingRecipe recipe = dataHandler.getAdvancedCraftingRecipe(namespacedKey);
+            ICraftingRecipe recipe = Registry.RECIPES.getAdvancedCrafting(namespacedKey);
             if (dataHandler.getDisabledRecipes().contains(namespacedKey) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);

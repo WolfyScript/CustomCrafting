@@ -7,9 +7,12 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,5 +87,9 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     public Optional<CustomItem> getItem() {
         RandomCollection<CustomItem> items = getChoices().parallelStream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
         return Optional.ofNullable(!items.isEmpty() ? items.next() : null);
+    }
+
+    public void executeExtensions(@NotNull Location location, boolean isWorkstation, @Nullable Player player) {
+        extensions.forEach(resultExtension -> resultExtension.onCraft(location, isWorkstation, player));
     }
 }

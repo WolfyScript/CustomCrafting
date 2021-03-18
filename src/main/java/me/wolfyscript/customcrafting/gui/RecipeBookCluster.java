@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.MainMenu;
@@ -69,7 +70,7 @@ public class RecipeBookCluster extends CCCluster {
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
                         if (book.getSubFolderRecipes().isEmpty()) {
-                            book.setSubFolderRecipes(item, customCrafting.getRecipeHandler().getRecipes(item));
+                            book.setSubFolderRecipes(item, Registry.RECIPES.get(item));
                         }
                         if (book.getSubFolderRecipes().size() > 0) {
                             book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
@@ -149,7 +150,7 @@ public class RecipeBookCluster extends CCCluster {
             return itemStack;
         }));
         for (int i = 0; i < 54; i++) {
-            registerButton(new IngredientContainerButton(i, customCrafting));
+            registerButton(new IngredientContainerButton(i));
         }
 
         registerButton(new DummyButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {

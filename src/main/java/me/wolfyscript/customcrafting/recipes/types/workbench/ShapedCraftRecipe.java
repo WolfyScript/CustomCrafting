@@ -30,7 +30,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         this.shapeless = false;
         constructShape();
         JsonNode mirrorNode = node.path("mirror");
-        this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(false);
+        this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
         this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
@@ -78,6 +78,16 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     @Override
     public String[] getShape() {
         return shape;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 
     @Override
@@ -144,8 +154,10 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         for (int c = 0; c < matrix.size(); c++) {
             for (int r = 0; r < matrix.get(c).size(); r++) {
                 if ((matrix.get(c).get(r) != null && c < shape.length && r < shape[c].length() && shape[c].charAt(r) != ' ')) {
-                    Optional<CustomItem> item = getIngredients().get(shape[c].charAt(r)).check(matrix.get(c).get(r), isExactMeta());
-                    if (!item.isPresent()){
+                    Ingredient ingredient = getIngredients(shape[c].charAt(r));
+                    if (ingredient == null) return null;
+                    Optional<CustomItem> item = ingredient.check(matrix.get(c).get(r), isExactMeta());
+                    if (!item.isPresent()) {
                         return null;
                     }
                     foundItems.put(new Vec2d(r, c), item.get());

@@ -54,7 +54,7 @@ public class DataBaseHandler extends SQLDataBase {
         }
     }
 
-    public void loadRecipes(DataHandler dataHandler) throws SQLException {
+    public void loadRecipes() throws SQLException {
         chat.sendConsoleMessage("$msg.startup.recipes.recipes$");
         PreparedStatement recipesQuery = open().prepareStatement("SELECT * FROM customcrafting_recipes");
         ResultSet resultSet = recipesQuery.executeQuery();
@@ -67,7 +67,7 @@ public class DataBaseHandler extends SQLDataBase {
             NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
             ICustomRecipe<?,?> recipe = getRecipe(namespacedKey);
             if (recipe != null) {
-                dataHandler.injectRecipe(recipe);
+                me.wolfyscript.customcrafting.Registry.RECIPES.register(recipe);
             } else {
                 chat.sendConsoleMessage("Error loading recipe \"" + namespacedKey.toString() + "\". Couldn't find recipe in DataBase!");
             }
