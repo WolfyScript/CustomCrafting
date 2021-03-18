@@ -8,6 +8,9 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -28,6 +31,7 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ConfigHandler {
@@ -101,7 +105,10 @@ public class ConfigHandler {
             workbenchCraft.setIngredients('B', new Ingredient(Material.GOLD_INGOT));
             workbenchCraft.setIngredients('E', new Ingredient(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredients('H', new Ingredient(Material.GLOWSTONE_DUST));
-            workbenchCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.ADVANCED_CRAFTING_TABLE))));
+            Result<SlotResultTarget> result = workbenchCraft.getResult();
+            result.put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.ADVANCED_CRAFTING_TABLE))));
+            result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
+
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }

@@ -1,8 +1,12 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.extension;
 
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -16,11 +20,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class ResultExtension {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonPropertyOrder(value = {"key", "outer_radius", "inner_radius"})
+public abstract class ResultExtension implements Keyed {
 
+    @JsonProperty(value = "key")
+    private final NamespacedKey namespacedKey;
+    @JsonProperty(value = "outer_radius")
     protected Vector outerRadius = new Vector(0, 0, 0);
+    @JsonProperty(value = "inner_radius")
     protected Vector innerRadius = new Vector(0, 0, 0);
-    private NamespacedKey id;
+
+    private ResultExtension() {
+        this.namespacedKey = null;
+    }
+
+    protected ResultExtension(NamespacedKey namespacedKey) {
+        this.namespacedKey = namespacedKey;
+    }
 
     /**
      * Called only when crafted in a workstation.
@@ -69,15 +86,12 @@ public abstract class ResultExtension {
         }
     }
 
-    public NamespacedKey getId() {
-        return id;
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return namespacedKey;
     }
 
-    public void setId(NamespacedKey id) {
-        this.id = id;
-    }
-
-    protected final <E extends Entity> List<E> getEntitiesInRange(Class<E> entityType, Location location, Vector outerRadius, Vector innerRadius) {
+    protected <E extends Entity> List<E> getEntitiesInRange(Class<E> entityType, Location location, Vector outerRadius, Vector innerRadius) {
         World world = location.getWorld();
         if (world != null) {
             List<E> outerEntities = world.getNearbyEntities(location, outerRadius.getX(), outerRadius.getZ(), outerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).collect(Collectors.toList());
@@ -91,15 +105,19 @@ public abstract class ResultExtension {
     }
 
 
-    public static abstract class Provider<T extends ResultExtension> implements Keyed {
+    public static class Provider<T extends ResultExtension> implements Keyed {
 
         private final NamespacedKey namespacedKey;
+        private final Class<T> extensionClass;
 
-        public Provider(NamespacedKey namespacedKey) {
+        public Provider(NamespacedKey namespacedKey, Class<T> extensionClass) {
             this.namespacedKey = namespacedKey;
+            this.extensionClass = extensionClass;
         }
 
-        public abstract T parse(JsonNode node);
+        public T parse(JsonNode node) {
+            return JacksonUtil.getObjectMapper().convertValue(node, extensionClass);
+        }
 
         @Override
         public NamespacedKey getNamespacedKey() {

@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -26,9 +27,20 @@ import java.util.stream.Stream;
 
 public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends me.wolfyscript.utilities.util.Registry<T> {
 
+    /**
+     * This Registry contains all the recipes of this plugin.
+     */
     RecipeRegistry RECIPES = new RecipeRegistry();
 
+    /**
+     * This Registry contains all the custom Result Extensions that can be saved to a Result.
+     */
+    ResultExtensionRegistry RESULT_EXTENSIONS = new ResultExtensionRegistry();
 
+    /**
+     * The custom Registry for the Recipes of CustomCrafting.
+     * Providing a lot of functionality to get the recipes you need.
+     */
     class RecipeRegistry extends me.wolfyscript.utilities.util.Registry.SimpleRegistry<ICustomRecipe<?, ?>> {
 
         public RecipeRegistry() {
@@ -193,8 +205,14 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                 }
             }
         }
-
     }
 
+    class ResultExtensionRegistry extends SimpleRegistry<ResultExtension.Provider<?>> {
+
+        public void register(ResultExtension value) {
+            super.register(new ResultExtension.Provider<>(value.getNamespacedKey(), value.getClass()));
+        }
+
+    }
 
 }

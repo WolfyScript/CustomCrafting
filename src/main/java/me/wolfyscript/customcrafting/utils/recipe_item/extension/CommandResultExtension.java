@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.utils.recipe_item.extension;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -11,13 +12,26 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandResultExtension extends ResultExtension {
 
-    private final List<String> commands = new ArrayList<>();
-    private final List<String> consoleCommands = new ArrayList<>();
-    private final List<String> playerCommands = new ArrayList<>();
-    private final List<String> nearPlayers = new ArrayList<>();
+    private List<String> consoleCommands = new ArrayList<>();
+    private List<String> playerCommands = new ArrayList<>();
+    private boolean nearPlayer = false;
+    private boolean nearWorkstation = false;
+
+    public CommandResultExtension() {
+        super(new NamespacedKey("customcrafting", "command"));
+    }
+
+    public CommandResultExtension(List<String> consoleCommands, List<String> playerCommands, boolean nearPlayer, boolean nearWorkstation) {
+        this();
+        this.consoleCommands = consoleCommands;
+        this.playerCommands = playerCommands;
+        this.nearPlayer = nearPlayer;
+        this.nearWorkstation = nearWorkstation;
+    }
 
     @Override
     public void onWorkstation(Block block, @Nullable Player player) {
@@ -26,31 +40,33 @@ public class CommandResultExtension extends ResultExtension {
 
     @Override
     public void onLocation(Location location, @Nullable Player player) {
-        if (!nearPlayers.isEmpty()) {
-            List<Player> playersInRange = getEntitiesInRange(Player.class, location, outerRadius, innerRadius);
-            playersInRange.forEach(player1 -> {
-                executeCommands(playerCommands, player1);
-                executeCommands(consoleCommands, player1);
-            });
+        if ((player != null && nearPlayer) || nearWorkstation) {
+            getEntitiesInRange(Player.class, location, outerRadius, innerRadius).forEach(this::executeCommands);
         }
     }
 
     @Override
     public void onPlayer(@NotNull Player player, Location location) {
-        executeCommands(playerCommands, player);
-        executeCommands(consoleCommands, player);
+        executeCommands(player);
     }
 
-    private void executeCommands(List<String> commands, Player player) {
-        if (commands.isEmpty()) return;
-        commands.forEach(s -> {
+    private void executeCommands(Player player) {
+        if (!consoleCommands.isEmpty()) {
+            parseCommands(consoleCommands, player).forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s));
+        }
+        if (!playerCommands.isEmpty()) {
+            parseCommands(playerCommands, player).forEach(s -> Bukkit.dispatchCommand(player, s));
+        }
+    }
+
+    private List<String> parseCommands(List<String> commands, Player player) {
+        return commands.stream().map(s -> {
             if (WolfyUtilities.hasPlaceHolderAPI()) {
-                s = PlaceholderAPI.setPlaceholders(player, s);
+                return PlaceholderAPI.setPlaceholders(player, s);
             } else {
-                s = s.replace("%player%", player.getName());
+                return s.replace("%player%", player.getName());
             }
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s);
-        });
+        }).collect(Collectors.toList());
     }
 
 

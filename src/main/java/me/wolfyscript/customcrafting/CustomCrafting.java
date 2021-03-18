@@ -19,6 +19,7 @@ import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -26,7 +27,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
-import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
@@ -91,6 +91,10 @@ public class CustomCrafting extends JavaPlugin {
             Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
             Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
             Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
+
+            getLogger().info("Registering Result Extensions");
+            Registry.RESULT_EXTENSIONS.register(new CommandResultExtension());
+
 
             CustomPlayerData.register(new CCPlayerData.Provider());
         } else {

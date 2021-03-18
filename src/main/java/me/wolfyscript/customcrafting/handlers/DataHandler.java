@@ -227,7 +227,7 @@ public class DataHandler {
         List<List<ItemStack>> items = new ArrayList<>();
         int gridSize = gridSize(ingredients);
         for (int y = 0; y < gridSize; y++) {
-            items.add(Arrays.asList(Arrays.copyOfRange(ingredients, y * gridSize, gridSize + y * gridSize)));
+            items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
         }
         ListIterator<List<ItemStack>> iterator = items.listIterator();
         while (iterator.hasNext()) {

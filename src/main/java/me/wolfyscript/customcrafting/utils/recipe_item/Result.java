@@ -1,10 +1,14 @@
 package me.wolfyscript.customcrafting.utils.recipe_item;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
 import org.bukkit.Location;
@@ -62,12 +66,47 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         return target;
     }
 
-    public void setExtensions(List<ResultExtension> extensions) {
+    @JsonProperty("extensions")
+    public List<ResultExtension> getExtensions() {
+        return extensions;
+    }
+
+    @JsonIgnore
+    public void setExtensions(ArrayList<ResultExtension> extensions) {
         this.extensions = extensions;
     }
 
-    public List<ResultExtension> getExtensions() {
-        return extensions;
+    @JsonProperty("extensions")
+    private void setExtensions(List<JsonNode> extensionNodes) {
+        List<ResultExtension> resultExtensions = new ArrayList<>();
+        for (JsonNode node : extensionNodes) {
+            if (!node.has("key")) continue;
+            NamespacedKey key = NamespacedKey.of(node.path("key").asText());
+            if (key != null) {
+                ResultExtension.Provider<?> provider = Registry.RESULT_EXTENSIONS.get(key);
+                if (provider != null) {
+                    ResultExtension extension = provider.parse(node);
+                    if (extension != null) {
+                        resultExtensions.add(extension);
+                        continue;
+                    }
+                    CustomCrafting.getInst().getLogger().warning(String.format("Failed to load Result Extension '%s'", key.toString()));
+                }
+            }
+        }
+        this.extensions = resultExtensions;
+    }
+
+    public void addExtension(ResultExtension extension) {
+        this.extensions.add(extension);
+    }
+
+    public void removeExtension(ResultExtension extension) {
+        this.extensions.remove(extension);
+    }
+
+    public void removeExtension(int index) {
+        this.extensions.remove(index);
     }
 
     public RandomCollection<CustomItem> getRandomChoices(Player player) {
