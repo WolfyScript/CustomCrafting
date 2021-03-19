@@ -91,6 +91,22 @@ public abstract class ResultExtension implements Keyed {
         return namespacedKey;
     }
 
+    public Vector getInnerRadius() {
+        return innerRadius;
+    }
+
+    public void setInnerRadius(Vector innerRadius) {
+        this.innerRadius = innerRadius;
+    }
+
+    public Vector getOuterRadius() {
+        return outerRadius;
+    }
+
+    public void setOuterRadius(Vector outerRadius) {
+        this.outerRadius = outerRadius;
+    }
+
     protected <E extends Entity> List<E> getEntitiesInRange(Class<E> entityType, Location location, Vector outerRadius, Vector innerRadius) {
         World world = location.getWorld();
         if (world != null) {

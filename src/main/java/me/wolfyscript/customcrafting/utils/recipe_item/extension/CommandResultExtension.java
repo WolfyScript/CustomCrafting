@@ -50,7 +50,7 @@ public class CommandResultExtension extends ResultExtension {
         executeCommands(player);
     }
 
-    private void executeCommands(Player player) {
+    protected void executeCommands(Player player) {
         if (!consoleCommands.isEmpty()) {
             parseCommands(consoleCommands, player).forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s));
         }
@@ -59,7 +59,7 @@ public class CommandResultExtension extends ResultExtension {
         }
     }
 
-    private List<String> parseCommands(List<String> commands, Player player) {
+    protected List<String> parseCommands(List<String> commands, Player player) {
         return commands.stream().map(s -> {
             if (WolfyUtilities.hasPlaceHolderAPI()) {
                 return PlaceholderAPI.setPlaceholders(player, s);

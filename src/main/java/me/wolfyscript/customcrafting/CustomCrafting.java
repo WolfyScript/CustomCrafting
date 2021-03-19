@@ -20,6 +20,8 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
+import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
+import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -94,6 +96,8 @@ public class CustomCrafting extends JavaPlugin {
 
             getLogger().info("Registering Result Extensions");
             Registry.RESULT_EXTENSIONS.register(new CommandResultExtension());
+            Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
+            Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
 
 
             CustomPlayerData.register(new CCPlayerData.Provider());
