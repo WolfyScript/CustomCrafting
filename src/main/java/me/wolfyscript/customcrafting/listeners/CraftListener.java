@@ -4,8 +4,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.CraftRecipeMCRegistry;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -21,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -83,7 +89,6 @@ public class CraftListener implements Listener {
             ItemStack[] matrix = e.getInventory().getMatrix();
             ItemStack result = craftManager.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
-                //api.getNmsUtil().getInventoryUtil().setCurrentRecipe(e.getInventory(), org.bukkit.NamespacedKey.minecraft());
                 e.getInventory().setResult(result);
                 return;
             }
@@ -112,6 +117,27 @@ public class CraftListener implements Listener {
             CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             craftManager.remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
+        }
+    }
+
+    @EventHandler
+    public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
+        if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+            NamespacedKey key = NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(event.getRecipe()));
+            if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(key)) {
+                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(key);
+                if (customRecipe instanceof CraftingRecipe) {
+                    if (customCrafting.getConfigHandler().getConfig().isMCRegistry(CraftRecipeMCRegistry.LIMITED)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                    if (customRecipe.isHidden() || (customRecipe.getConditions().getByID("permission") != null && !customRecipe.getConditions().getByID("permission").check(customRecipe, new Conditions.Data(event.getPlayer(), null, null)))) {
+                        event.setCancelled(true);
+                    }
+                }
+            } else {
+                event.setCancelled(true);
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
                             sender.sendMessage("Disabled recipe " + id);
                             customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
                             if (namespacedKey != null) {
-                                Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(namespacedKey.toBukkit()));
+                                Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(namespacedKey.toBukkit(CustomCrafting.getInst())));
                             }
                         }
                     }

@@ -93,7 +93,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                         customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
                         for (Player player1 : Bukkit.getOnlinePlayers()) {
                             if (namespacedKey != null) {
-                                player1.undiscoverRecipe(namespacedKey.toBukkit());
+                                player1.undiscoverRecipe(namespacedKey.toBukkit(CustomCrafting.getInst()));
                             }
                         }
                     }

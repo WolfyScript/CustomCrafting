@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.configs;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.utils.CraftRecipeMCRegistry;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.config.YamlConfiguration;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -143,6 +144,18 @@ public class MainConfig extends YamlConfiguration {
 
     public String getDatabasePassword() {
         return getString("database.password");
+    }
+
+    public CraftRecipeMCRegistry getMCRegistry() {
+        return CraftRecipeMCRegistry.valueOf(getString("recipes.mc_registry"));
+    }
+
+    public boolean isMCRegistry(CraftRecipeMCRegistry option) {
+        return getMCRegistry().equals(option);
+    }
+
+    public boolean isBrewingRecipes() {
+        return getBoolean("recipes.brewing");
     }
 
 }
