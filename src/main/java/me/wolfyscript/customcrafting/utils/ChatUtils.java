@@ -50,13 +50,18 @@ public class ChatUtils {
         return false;
     }
 
-    public static NamespacedKey getNamespacedKey(Player player, String s, String[] args) {
+    public static NamespacedKey getInternalNamespacedKey(Player player, String s, String[] args) {
         try {
-            return NamespacedKeyUtils.fromInternal(s.length() > 1 ? new NamespacedKey(args[0], args[1]) : s.contains(":") ? NamespacedKey.of(s) : null);
+            return s.length() > 1 ? new NamespacedKey(args[0], args[1]) : s.contains(":") ? NamespacedKey.of(s) : null;
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.getChat().sendMessage(player, s1));
         }
         return null;
+    }
+
+
+    public static NamespacedKey getNamespacedKey(Player player, String s, String[] args) {
+        return NamespacedKeyUtils.fromInternal(getInternalNamespacedKey(player, s, args));
     }
 
     public static void sendCategoryDescription(Player player) {

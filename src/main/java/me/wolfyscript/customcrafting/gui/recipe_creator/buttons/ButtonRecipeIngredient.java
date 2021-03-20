@@ -8,6 +8,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
@@ -29,7 +30,9 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             }
             return false;
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) { return; }
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
+                return;
+            }
             Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
             if (ingredient == null) {
                 ingredient = new Ingredient();

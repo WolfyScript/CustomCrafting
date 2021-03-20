@@ -28,7 +28,7 @@ public class SaveButton extends ActionButton<CCCache> {
                 if (recipeCreator.validToSave(cache)) {
                     if (saveAs) {
                         recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
-                            NamespacedKey namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
+                            NamespacedKey namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
                             if (namespacedKey != null) {
                                 ICustomRecipe<?,?> recipe = cache.getRecipe();
                                 recipe.setNamespacedKey(namespacedKey);

@@ -61,7 +61,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField("result", result.getChoices().get(0).getApiReference());
+        gen.writeObjectField("result", result.getItems().get(0));
         gen.writeObjectField("source", this.source);
     }
 
@@ -102,7 +102,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
-        if (!getResult().isEmpty()) {
+        if (!getResult().isEmpty() && !getSource().isEmpty()) {
             RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).collect(Collectors.toList()));
             return new StonecuttingRecipe(namespacedKey.toBukkit(), getResult().getItemStack(), choice);
         }

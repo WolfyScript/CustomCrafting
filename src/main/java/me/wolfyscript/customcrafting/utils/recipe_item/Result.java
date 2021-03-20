@@ -11,6 +11,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonP
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -129,6 +130,6 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     public void executeExtensions(@NotNull Location location, boolean isWorkstation, @Nullable Player player) {
-        extensions.forEach(resultExtension -> resultExtension.onCraft(location, isWorkstation, player));
+        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> extensions.forEach(resultExtension -> resultExtension.onCraft(location, isWorkstation, player)), 2);
     }
 }

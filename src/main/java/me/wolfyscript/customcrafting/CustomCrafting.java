@@ -293,7 +293,7 @@ public class CustomCrafting extends JavaPlugin {
         new Thread(() -> {
             try {
                 HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
-
+                con.setReadTimeout(2000);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String version = bufferedReader.readLine();
 

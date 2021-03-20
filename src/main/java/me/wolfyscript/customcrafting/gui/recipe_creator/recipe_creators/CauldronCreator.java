@@ -1,7 +1,5 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
-import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
@@ -14,8 +12,12 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.*;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -38,7 +40,7 @@ public class CauldronCreator extends RecipeCreator {
 
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeResult());
-        registerButton(new ItemInputButton<>("handItem_container", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ItemInputButton<>("handItem_container", new ButtonState<>("handItem_container", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 Bukkit.getScheduler().runTask(customCrafting, () -> {
                     if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
@@ -49,15 +51,19 @@ public class CauldronCreator extends RecipeCreator {
                 });
                 return true;
             }
-            Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.getCustomCache().getCauldronRecipe().setHandItem(inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR)));
             return false;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        }, (cache, guiHandler, player, inventory, itemStack, slot, event) -> {
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
+                return;
+            }
+            guiHandler.getCustomCache().getCauldronRecipe().setHandItem(!ItemUtils.isAirOrNull(inventory.getItem(slot)) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
+        }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CustomItem customItem = guiHandler.getCustomCache().getCauldronRecipe().getHandItem();
             if (customItem != null) {
                 return customItem.getItemStack();
             }
             return itemStack;
-        }));
+        })));
 
         registerButton(new ToggleButton<>("dropItems", new ButtonState<>("dropItems.enabled", Material.DROPPER, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getCauldronRecipe().setDropItems(false);
@@ -127,6 +133,7 @@ public class CauldronCreator extends RecipeCreator {
         }));
 
         if (WolfyUtilities.hasMythicMobs()) {
+            /*
             registerButton(new ActionButton<>("mythicMob", Material.WITHER_SKELETON_SKULL, (cache, guiHandler, player, inventory, slot, event) -> {
                 if(event instanceof InventoryClickEvent){
                     if (((InventoryClickEvent) event).getClick().isLeftClick()) {
@@ -176,6 +183,7 @@ public class CauldronCreator extends RecipeCreator {
                 hashMap.put("%mob.modZ%", guiHandler.getCustomCache().getCauldronRecipe().getMythicMobMod().getZ());
                 return itemStack;
             }));
+             //*/
         }
     }
 
@@ -214,9 +222,6 @@ public class CauldronCreator extends RecipeCreator {
 
         if (!cauldronRecipe.dropItems()) {
             update.setButton(33, "handItem_container");
-        }
-        if (WolfyUtilities.hasMythicMobs()) {
-            update.setButton(14, "mythicMob");
         }
 
         if(cauldronRecipe.hasNamespacedKey()){

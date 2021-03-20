@@ -22,7 +22,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.Seriali
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
-import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,10 +40,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
     private boolean needsFire;
     private boolean needsWater;
 
-    private String mythicMobName;
-    private int mythicMobLevel;
-    private Vector mythicMobMod;
-
     public CauldronRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.xp = node.path("exp").floatValue();
@@ -58,19 +53,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
             this.handItem = ItemLoader.load(dropNode.path("handItem"));
         }
         this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
-        if(result == null){
-            this.result = new Result<>();
-        }
-        {
-            JsonNode mythicMobNode = node.path("mythicMob");
-            this.mythicMobName = mythicMobNode.path("name").asText();
-            this.mythicMobLevel = mythicMobNode.path("level").asInt();
-            Vector vector = new Vector(0, 0, 0);
-            vector.setX(mythicMobNode.path("modX").asDouble());
-            vector.setY(mythicMobNode.path("modY").asDouble());
-            vector.setZ(mythicMobNode.path("modZ").asDouble());
-            this.mythicMobMod = vector;
-        }
     }
 
     public CauldronRecipe() {
@@ -84,9 +66,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
         this.waterLevel = 0;
         this.needsWater = true;
         this.handItem = new CustomItem(Material.AIR);
-        this.mythicMobLevel = 0;
-        this.mythicMobMod = new Vector();
-        this.mythicMobName = "";
     }
 
     public CauldronRecipe(CauldronRecipe cauldronRecipe) {
@@ -100,9 +79,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
         this.waterLevel = cauldronRecipe.getWaterLevel();
         this.needsWater = cauldronRecipe.needsWater();
         this.handItem = cauldronRecipe.getHandItem();
-        this.mythicMobName = cauldronRecipe.getMythicMobName();
-        this.mythicMobLevel = cauldronRecipe.getMythicMobLevel();
-        this.mythicMobMod = cauldronRecipe.getMythicMobMod();
     }
 
     public int getCookingTime() {
@@ -185,30 +161,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
         this.handItem = handItem;
     }
 
-    public String getMythicMobName() {
-        return mythicMobName;
-    }
-
-    public void setMythicMobName(String mythicMobName) {
-        this.mythicMobName = mythicMobName;
-    }
-
-    public int getMythicMobLevel() {
-        return mythicMobLevel;
-    }
-
-    public void setMythicMobLevel(int mythicMobLevel) {
-        this.mythicMobLevel = mythicMobLevel;
-    }
-
-    public Vector getMythicMobMod() {
-        return mythicMobMod;
-    }
-
-    public void setMythicMobMod(Vector mythicMobMod) {
-        this.mythicMobMod = mythicMobMod;
-    }
-
     @Override
     public RecipeType<CauldronRecipe> getRecipeType() {
         return Types.CAULDRON;
@@ -233,13 +185,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
         gen.writeBooleanField("fire", needsFire);
         gen.writeObjectField("result", this.result);
         gen.writeObjectField("ingredients", ingredients);
-        gen.writeObjectFieldStart("mythicMob");
-        gen.writeStringField("name", mythicMobName);
-        gen.writeNumberField("level", mythicMobLevel);
-        gen.writeNumberField("modX", mythicMobMod.getX());
-        gen.writeNumberField("modY", mythicMobMod.getY());
-        gen.writeNumberField("modZ", mythicMobMod.getZ());
-        gen.writeEndObject();
     }
 
     @Override
@@ -276,11 +221,5 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, SlotResultTarge
         event.setButton(23, new NamespacedKey("recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled"));
         event.setButton(32, new NamespacedKey("recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
         event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_25"));
-    }
-
-    public void setMythicMob(String name, int level, double modX, double modY, double modZ) {
-        this.mythicMobName = name;
-        this.mythicMobLevel = level;
-        this.mythicMobMod = new Vector(modX, modY, modZ);
     }
 }

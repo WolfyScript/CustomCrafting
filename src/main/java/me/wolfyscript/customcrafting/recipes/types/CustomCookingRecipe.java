@@ -147,10 +147,6 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         gen.writeNumberField("cooking_time", cookingTime);
         gen.writeNumberField("exp", exp);
         gen.writeObjectField("result", result);
-        {
-            gen.writeArrayFieldStart("source");
-            gen.writeObject(source);
-            gen.writeEndArray();
-        }
+        gen.writeObjectField("source", source);
     }
 }

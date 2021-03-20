@@ -33,6 +33,9 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, 
 
     @Override
     public SmokingRecipe getVanillaRecipe() {
-        return new SmokingRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+        if (!getSource().isEmpty()) {
+            return new SmokingRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+        }
+        return null;
     }
 }

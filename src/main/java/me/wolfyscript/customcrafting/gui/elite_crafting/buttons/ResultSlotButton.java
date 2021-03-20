@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.elite_crafting.CraftingWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -22,8 +23,11 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
             if (event instanceof InventoryClickEvent) {
                 if (inventory.getWindow() instanceof CraftingWindow) {
                     InventoryClickEvent clickEvent = (InventoryClickEvent) event;
-                    if (clickEvent.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && clickEvent.getClickedInventory().equals(event.getView().getBottomInventory())) {
+                    if (clickEvent.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getView().getBottomInventory().equals(clickEvent.getClickedInventory())) {
                         ItemStack itemStack = clickEvent.getCurrentItem().clone();
+                        if (!InventoryUtils.hasInventorySpace(eliteWorkbench.getContents(), itemStack)) {
+                            return true;
+                        }
                         for (int i = 0; i < eliteWorkbench.getCurrentGridSize() * eliteWorkbench.getCurrentGridSize(); i++) {
                             ItemStack item = eliteWorkbench.getContents()[i];
                             if (item == null) {

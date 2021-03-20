@@ -132,6 +132,7 @@ public abstract class RecipeItemStack {
 
     @JsonIgnore
     public boolean isEmpty() {
+        buildChoices();
         return InventoryUtils.isCustomItemsListEmpty(this.choices);
     }
 

@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.data.cauldron;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
@@ -15,6 +14,7 @@ public class Cauldron implements Listener {
     private final int cookingTime;
     private int passedTicks;
     private boolean done;
+    private boolean forRemoval;
     private final boolean dropItems;
     private CustomItem result;
 
@@ -28,6 +28,7 @@ public class Cauldron implements Listener {
         this.cookingTime = event.getCookingTime();
         this.passedTicks = 0;
         this.done = false;
+        this.forRemoval = false;
     }
 
     public Cauldron(CauldronRecipe recipe, int passedTicks, int cookingTime, boolean done, boolean dropItems) {
@@ -38,7 +39,7 @@ public class Cauldron implements Listener {
         this.cookingTime = cookingTime;
     }
 
-    public static Cauldron fromString(CustomCrafting customCrafting, String data) {
+    public static Cauldron fromString(String data) {
         if (data == null || data.isEmpty())
             return null;
         String[] args = data.split(";");
@@ -104,5 +105,13 @@ public class Cauldron implements Listener {
 
     public void setResult(CustomItem result) {
         this.result = result;
+    }
+
+    public boolean isForRemoval() {
+        return forRemoval;
+    }
+
+    public void setForRemoval(boolean forRemoval) {
+        this.forRemoval = forRemoval;
     }
 }
