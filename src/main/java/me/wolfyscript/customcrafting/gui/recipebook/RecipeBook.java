@@ -30,6 +30,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -140,6 +141,7 @@ public class RecipeBook extends CCWindow {
                                             }
                                         },
                                         (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.parallelStream().noneMatch(customItem -> customItem.getItemStack().isSimilar(item.getItemStack()))).collect(Collectors.toList())));
+                        cachedItems.sort(Comparator.comparing(o -> o.getItemStack().getType()));
                         knowledgeBook.setRecipeItems(switchCategory, !cachedItems.isEmpty() ? cachedItems : null);
                         event.getGuiHandler().openWindow(this);
                     });

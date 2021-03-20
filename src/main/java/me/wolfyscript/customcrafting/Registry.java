@@ -80,8 +80,8 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param namespace
          * @return
          */
-        public Set<ICustomRecipe<?, ?>> get(String namespace) {
-            return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toSet());
+        public List<ICustomRecipe<?, ?>> get(String namespace) {
+            return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
         }
 
         /**

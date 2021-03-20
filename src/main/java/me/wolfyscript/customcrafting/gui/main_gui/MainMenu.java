@@ -90,22 +90,29 @@ public class MainMenu extends CCWindow {
             event.setButton(21, "smoker");
             event.setButton(23, "campfire");
             event.setButton(25, "stonecutter");
-            event.setButton(28, "grindstone");
             if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
+                event.setButton(28, "grindstone");
                 event.setButton(30, "brewing_stand");
+                event.setButton(32, "elite_workbench");
+                event.setButton(34, "smithing");
+            } else {
+                event.setButton(29, "grindstone");
+                event.setButton(31, "elite_workbench");
+                event.setButton(33, "smithing");
             }
-            event.setButton(32, "elite_workbench");
-            event.setButton(34, "smithing");
         } else {
             event.setButton(20, "blast_furnace");
             event.setButton(22, "smoker");
             event.setButton(24, "campfire");
             event.setButton(28, "stonecutter");
-            event.setButton(30, "grindstone");
             if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
+                event.setButton(30, "grindstone");
                 event.setButton(32, "brewing_stand");
+                event.setButton(34, "elite_workbench");
+            } else {
+                event.setButton(29, "grindstone");
+                event.setButton(33, "elite_workbench");
             }
-            event.setButton(34, "elite_workbench");
         }
         for (int i = 37; i < 44; i++) {
             event.setButton(i, new NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white"));

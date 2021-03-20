@@ -15,6 +15,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import org.bukkit.Keyed;
 import org.bukkit.inventory.Recipe;
 
 import java.util.*;
@@ -84,6 +85,7 @@ public class RecipesList extends CCWindow {
             List<String> namespaceList = new ArrayList<>();
             namespaceList.add("minecraft");
             namespaceList.addAll(Registry.RECIPES.namespaces());
+            namespaceList.sort(String::compareToIgnoreCase);
             maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
             int item = 0;
             for (int i = 45 * currentPage; item < 45 && i < namespaceList.size(); i++) {
@@ -93,28 +95,28 @@ public class RecipesList extends CCWindow {
                 item++;
             }
         } else {
-            List<Object> recipes = new ArrayList<>();
             if (namespace.equalsIgnoreCase("minecraft")) {
-                recipes.addAll(customCrafting.getRecipeHandler().getMinecraftRecipes());
-            } else {
-                Set<ICustomRecipe<?, ?>> customRecipes = Registry.RECIPES.get(namespace);
-                recipes.addAll(customRecipes.parallelStream().filter(Objects::nonNull).collect(Collectors.toList()));
-            }
-            maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
-            if (currentPage >= maxPages) {
-                currentPage = 0;
-            }
-            int item = 0;
-            for (int i = 45 * currentPage; item < 45 && i < recipes.size(); i++) {
-                Object recipe = recipes.get(i);
-                RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
-                if (recipe instanceof ICustomRecipe) {
-                    button.setCustomRecipe(event.getGuiHandler(), (ICustomRecipe<?,?>) recipe);
-                } else if (recipe instanceof Recipe) {
-                    button.setRecipe(event.getGuiHandler(), (Recipe) recipe);
+                List<Recipe> recipes = customCrafting.getRecipeHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
+                maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
+                if (currentPage >= maxPages) {
+                    currentPage = 0;
                 }
-                event.setButton(9 + item, button);
-                item++;
+                for (int i = 45 * currentPage, item = 0; item < 45 && i < recipes.size(); i++, item++) {
+                    RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
+                    button.setRecipe(event.getGuiHandler(), recipes.get(i));
+                    event.setButton(9 + item, button);
+                }
+            } else {
+                List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
+                maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
+                if (currentPage >= maxPages) {
+                    currentPage = 0;
+                }
+                for (int i = 45 * currentPage, item = 0; item < 45 && i < recipes.size(); i++, item++) {
+                    RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
+                    button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));
+                    event.setButton(9 + item, button);
+                }
             }
         }
         if (currentPage != 0) {

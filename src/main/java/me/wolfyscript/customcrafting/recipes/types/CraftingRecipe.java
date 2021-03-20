@@ -110,8 +110,10 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         if (!getIngredients().isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < bookSquaredGrid; i++) {
-                Ingredient variants = getIngredients(i);
-                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, variants);
+                Ingredient ingredient = getIngredients(i);
+                if (ingredient != null) {
+                    ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
+                }
             }
         }
     }

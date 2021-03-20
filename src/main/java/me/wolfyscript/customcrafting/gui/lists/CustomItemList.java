@@ -20,6 +20,7 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CustomItemList extends CCWindow {
@@ -66,16 +67,14 @@ public class CustomItemList extends CCWindow {
         update.setButton(0, "back");
         CCCache cache = update.getGuiHandler().getCustomCache();
         Items items = cache.getItems();
-
         int page = items.getListPage();
         int maxPages = Registry.CUSTOM_ITEMS.keySet().size() / 45;
         if (page > maxPages) {
             items.setListPage(maxPages);
         }
-
         String namespace = items.getListNamespace();
         if (namespace == null) {
-            List<String> namespaceList = Registry.CUSTOM_ITEMS.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().collect(Collectors.toList());
+            List<String> namespaceList = Registry.CUSTOM_ITEMS.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().filter(Objects::nonNull).sorted(String::compareToIgnoreCase).collect(Collectors.toList());
             maxPages = namespaceList.size() / 45;
             for (int i = 45 * page, item = 0; item < 45 && i < namespaceList.size(); i++, item++) {
                 Button<CCCache> btn = new ItemNamespaceButton(namespaceList.get(i));
@@ -94,7 +93,6 @@ public class CustomItemList extends CCWindow {
                 update.setButton(s, id);
             }
         }
-
         if (page > 0) {
             update.setButton(3, "previous_page");
         }
