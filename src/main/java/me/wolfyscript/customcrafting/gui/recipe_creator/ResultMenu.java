@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import org.bukkit.Material;
 
 public class ResultMenu extends CCWindow {
 
@@ -26,6 +27,16 @@ public class ResultMenu extends CCWindow {
             guiHandler.openPreviousWindow();
             return true;
         })));
+
+        registerButton(new ActionButton<>("target", Material.ARROW, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+
+            return true;
+        }));
+
+        registerButton(new ActionButton<>("extensions", Material.COMMAND_BLOCK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+
+            return true;
+        }));
     }
 
     @Override
@@ -34,11 +45,16 @@ public class ResultMenu extends CCWindow {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<CCCache> event) {
-        super.onUpdateAsync(event);
-        event.setButton(0, "back");
-        for (int i = 0; i < 45; i++) {
-            event.setButton(9 + i, "variant_container_" + i);
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
+        super.onUpdateAsync(update);
+        update.setButton(0, "back");
+        for (int i = 0; i < 36; i++) {
+            update.setButton(9 + i, "variant_container_" + i);
         }
+        update.setButton(47, "target");
+        update.setButton(49, "extensions");
+        update.setButton(51, "recipe_creator", "tags");
+
+
     }
 }

@@ -10,18 +10,24 @@ import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FurnaceListener implements Listener {
@@ -36,89 +42,19 @@ public class FurnaceListener implements Listener {
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         if (event.getClickedInventory() != null && invs.contains(event.getClickedInventory().getType())) {
-            FurnaceInventory furnaceInventory = (FurnaceInventory) event.getClickedInventory();
             if (event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
                 Material material = Material.FURNACE;
-                if (event.getWhoClicked().getTargetBlockExact(6) != null) {
-                    material = event.getWhoClicked().getTargetBlockExact(6).getType();
+                Location location = event.getInventory().getLocation();
+                if (location != null) {
+                    material = location.getBlock().getType();
                 }
-                ItemStack input = event.getCursor();
-                if (input != null) {
-                    for (CustomItem customItem : Registry.CUSTOM_ITEMS.values()) {
-                        if (customItem.getBurnTime() > 0) {
-                            if (customItem.isSimilar(input)) {
-                                if (customItem.getAllowedBlocks().contains(material)) {
-                                    if (event.getClick().equals(ClickType.LEFT)) {
-                                        ItemStack fuel = furnaceInventory.getFuel();
-                                        if (fuel != null && !fuel.getType().equals(Material.AIR)) {
-                                            if (fuel.isSimilar(input)) {
-                                                event.setCancelled(true);
-                                                int possibleAmount = fuel.getMaxStackSize() - fuel.getAmount();
-                                                fuel.setAmount(fuel.getAmount() + (Math.min(input.getAmount(), possibleAmount)));
-                                                input.setAmount(input.getAmount() - possibleAmount);
-                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                                    furnaceInventory.setFuel(fuel);
-                                                    event.getWhoClicked().setItemOnCursor(input);
-                                                }, 1);
-                                            } else {
-                                                if (customItem.getItemStack().getType().isFuel()) {
-                                                    event.setCancelled(true);
-                                                }
-                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                                    event.getWhoClicked().setItemOnCursor(furnaceInventory.getFuel());
-                                                    furnaceInventory.setFuel(input);
-                                                }, 1);
-                                            }
-                                        } else {
-                                            if (!event.getAction().equals(InventoryAction.PICKUP_ALL)) {
-                                                if (customItem.getItemStack().getType().isFuel()) {
-                                                    event.setCancelled(true);
-                                                }
-                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                                    event.getWhoClicked().setItemOnCursor(new ItemStack(Material.AIR));
-                                                    furnaceInventory.setFuel(input);
-                                                }, 1);
-                                            }
-                                        }
-                                    } else {
-                                        ItemStack fuel = furnaceInventory.getFuel();
-                                        if (fuel != null && !fuel.getType().equals(Material.AIR)) {
-                                            if (fuel.isSimilar(input)) {
-                                                if (fuel.getAmount() < fuel.getMaxStackSize()) {
-                                                    if (input.getAmount() > 0) {
-                                                        event.setCancelled(true);
-                                                        fuel.setAmount(fuel.getAmount() + 1);
-                                                        input.setAmount(input.getAmount() - 1);
-                                                        event.getWhoClicked().setItemOnCursor(input);
-                                                    }
-                                                }
-                                            } else {
-                                                //TODO: Switch Cursor with Fuel!
-                                                if (customItem.getItemStack().getType().isFuel()) {
-                                                    event.setCancelled(true);
-                                                }
-                                                Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                                    event.getWhoClicked().setItemOnCursor(furnaceInventory.getFuel());
-                                                    furnaceInventory.setFuel(input);
-                                                }, 1);
-                                            }
-                                        } else {
-                                            event.setCancelled(true);
-                                            input.setAmount(input.getAmount() - 1);
-                                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> {
-                                                ItemStack itemStack = new ItemStack(input);
-                                                itemStack.setAmount(1);
-                                                furnaceInventory.setFuel(itemStack);
-                                                event.getWhoClicked().setItemOnCursor(input);
-                                            }, 1);
-                                        }
-                                    }
-                                } else {
-                                    event.setCancelled(true);
-                                }
-                                break;
-                            }
-                        }
+                if (event.getCursor() == null) return;
+                Optional<CustomItem> fuelItem = Registry.CUSTOM_ITEMS.values().parallelStream().filter(customItem -> customItem.getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
+                if (fuelItem.isPresent()) {
+                    if (fuelItem.get().getAllowedBlocks().contains(material)) {
+                        InventoryUtils.calculateClickedSlot(event);
+                    } else {
+                        event.setCancelled(true);
                     }
                 }
             }

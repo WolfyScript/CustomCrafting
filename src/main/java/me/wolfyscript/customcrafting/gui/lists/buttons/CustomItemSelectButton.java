@@ -39,7 +39,6 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                         cache.applyItem(customItem);
                         items.setRecipeItem(false);
                         api.getInventoryAPI().getGuiWindow(new NamespacedKey("none", "item_editor")).sendMessage(player, "item_applied");
-                        guiHandler.openPreviousWindow();
                         guiHandler.openCluster("recipe_creator");
                     } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
                         ItemStack itemStack = customItem.create();

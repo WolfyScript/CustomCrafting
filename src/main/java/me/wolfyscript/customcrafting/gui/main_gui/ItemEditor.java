@@ -21,9 +21,10 @@ public class ItemEditor extends CCWindow {
     @Override
     public void onInit() {
         registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.openPreviousWindow();
             if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                 guiHandler.openCluster("recipe_creator");
+            } else {
+                guiHandler.openPreviousWindow();
             }
             return true;
         })));

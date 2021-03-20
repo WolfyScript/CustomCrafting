@@ -9,10 +9,10 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.NMSUtil;
 import me.wolfyscript.utilities.api.nms.block.NMSBrewingStand;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -75,24 +75,6 @@ public class BrewingStandListener implements Listener {
                             });
                             return;
                         }
-                        //Dropping one item
-                        if (ItemUtils.isAirOrNull(currentItem)) {
-                            event.setCancelled(true);
-                            ItemStack itemStack = cursor.clone();
-                            cursor.setAmount(cursor.getAmount() - 1);
-                            itemStack.setAmount(1);
-                            event.setCurrentItem(itemStack);
-                            event.getWhoClicked().setItemOnCursor(cursor);
-                        } else if (currentItem.isSimilar(cursor)) {
-                            if (currentItem.getAmount() < currentItem.getMaxStackSize()) {
-                                if (cursor.getAmount() > 0) {
-                                    event.setCancelled(true);
-                                    currentItem.setAmount(currentItem.getAmount() + 1);
-                                    cursor.setAmount(cursor.getAmount() - 1);
-                                    player.updateInventory();
-                                }
-                            }
-                        }
                     } else {
                         if (event.getAction().equals(InventoryAction.PICKUP_ALL) || ItemUtils.isAirOrNull(event.getCursor()) || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR)) {
                             //Make sure cursor contains item and the item isn't picked up
@@ -103,29 +85,8 @@ public class BrewingStandListener implements Listener {
                             });
                             return;
                         }
-                        //Placing items
-                        if (!ItemUtils.isAirOrNull(currentItem)) {
-                            if (currentItem.isSimilar(cursor)) {
-                                event.setCancelled(true);
-                                int possibleAmount = currentItem.getMaxStackSize() - currentItem.getAmount();
-                                currentItem.setAmount(currentItem.getAmount() + (Math.min(cursor.getAmount(), possibleAmount)));
-                                cursor.setAmount(cursor.getAmount() - possibleAmount);
-                            } else {
-                                if (!ItemUtils.isAirOrNull(cursor)) {
-                                    event.setCancelled(true);
-                                    ItemStack itemStack = new ItemStack(cursor);
-                                    event.getView().setCursor(currentItem);
-                                    event.setCurrentItem(itemStack);
-                                }
-                            }
-                        } else if (cursor != null) {
-                            ItemStack itemStack = new ItemStack(cursor);
-                            event.setCancelled(true);
-                            event.getView().setCursor(new ItemStack(Material.AIR));
-                            event.setCurrentItem(itemStack);
-                        }
-                        player.updateInventory();//And we update the inventory
                     }
+                    InventoryUtils.calculateClickedSlot(event);
                 }
             }
 

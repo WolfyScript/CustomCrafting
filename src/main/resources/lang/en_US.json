@@ -1852,6 +1852,14 @@
               ]
             }
           }
+        },
+        "tags": {
+          "name": "&6&lTags &8[&7WIP&8]",
+          "lore": [
+            "&7Allows you to configure Tags.",
+            "&7Tags are a collection of Items,",
+            "&7that can make creation a lot easier."
+          ]
         }
       },
       "global_messages": {
@@ -2510,7 +2518,6 @@
       "smithing": {
         "gui_name": "&4&lCreator &7[&8Smithing Table&7]",
         "items": {
-
         }
       },
       "variants": {
@@ -2521,6 +2528,28 @@
           "&7Tip:",
           "&eShift &7+ &eRight click &7will open the ItemEditor"
         ]
+      },
+      "ingredient": {
+        "gui_name": "&8&lIngredient Options"
+      },
+      "result": {
+        "gui_name": "&8&lResult Options",
+        "items": {
+          "target": {
+            "name": "&6&lTarget &8[&7WIP&8]",
+            "lore": [
+              "&7Allows to target an Ingredient slot",
+              "&7and manipulate the Result according to it."
+            ]
+          },
+          "extensions": {
+            "name": "&6&lExtensions &8[&7WIP&8]",
+            "lore": [
+              "&7Execute extensions on crafting, smelting & more.",
+              "&7They can be commands, mob spawning, sound, etc."
+            ]
+          }
+        }
       }
     },
     "recipe_book": {

@@ -36,5 +36,10 @@ public class RecipeCreatorCluster extends CCCluster {
             guiHandler.openWindow("conditions");
             return true;
         }));
+
+        registerButton(new ActionButton<>("tags", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+
+            return true;
+        }));
     }
 }

@@ -10,7 +10,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-import org.bukkit.Material;
 
 public class IngredientMenu extends CCWindow {
 
@@ -31,11 +30,6 @@ public class IngredientMenu extends CCWindow {
             guiHandler.openPreviousWindow();
             return true;
         })));
-
-        registerButton(new ActionButton<>("tags", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-
-            return true;
-        }));
     }
 
     @Override
@@ -45,7 +39,7 @@ public class IngredientMenu extends CCWindow {
         for (int i = 0; i < 36; i++) {
             update.setButton(9 + i, "item_container_" + i);
         }
-        update.setButton(49, "tags");
+        update.setButton(49, "recipe_creator", "tags");
     }
 
     @Override
