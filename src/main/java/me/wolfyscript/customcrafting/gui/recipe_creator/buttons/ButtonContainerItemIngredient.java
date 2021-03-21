@@ -15,11 +15,11 @@ public class ButtonContainerItemIngredient extends ActionButton<CCCache> {
 
     private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getIngredientData().getIngredient().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
 
-    public ButtonContainerItemIngredient(int slot) {
-        super("item_container_" + slot, Material.AIR, (cache, guiHandler, player, inventory, i, event) -> {
+    public ButtonContainerItemIngredient(int ingredSlot) {
+        super("item_container_" + ingredSlot, Material.AIR, (cache, guiHandler, player, inventory, invSlot, event) -> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                if (!ItemUtils.isAirOrNull(inventory.getItem(slot))) {
-                    cache.getItems().setVariant(slot, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
+                if (!ItemUtils.isAirOrNull(inventory.getItem(invSlot))) {
+                    cache.getItems().setVariant(ingredSlot, CustomItem.getReferenceByItemStack(inventory.getItem(invSlot)));
                     cache.setApplyItem(APPLY_ITEM);
                     guiHandler.openWindow(new NamespacedKey("none", "item_editor"));
                 }
@@ -30,10 +30,10 @@ public class ButtonContainerItemIngredient extends ActionButton<CCCache> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
-            cache.getIngredientData().getIngredient().put(slot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR));
+            cache.getIngredientData().getIngredient().put(ingredSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR));
         }, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             Ingredient data = cache.getIngredientData().getIngredient();
-            return data != null ? data.getItemStack(slot) : ItemUtils.AIR;
+            return data != null ? data.getItemStack(ingredSlot) : ItemUtils.AIR;
         }, (cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
         });
     }
