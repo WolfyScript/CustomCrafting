@@ -10,14 +10,15 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
 
     public ButtonRecipeIngredient(int recipeSlot) {
         super("recipe.ingredient_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+            Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 cache.getIngredientData().setSlot(recipeSlot);
-                Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
                 if (ingredient != null) {
                     cache.getIngredientData().setIngredient(ingredient);
                     cache.getIngredientData().setNew(false);
@@ -28,12 +29,15 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
                 guiHandler.openWindow("ingredient");
                 return true;
             }
-            return false;
+            return ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
+            Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
+            if (ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty()) {
+                return;
+            }
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
                 return;
             }
-            Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
             if (ingredient == null) {
                 ingredient = new Ingredient();
                 IngredientMenu.setIngredient(cache, ingredient, recipeSlot);
@@ -41,7 +45,7 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             ingredient.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
-            return ingredient != null ? ingredient.getItemStack() : ItemUtils.AIR;
+            return ingredient != null ? ingredient.getItemStack() : new ItemStack(Material.AIR);
         }));
     }
 

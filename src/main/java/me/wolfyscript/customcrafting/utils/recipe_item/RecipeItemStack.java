@@ -10,6 +10,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -73,12 +74,12 @@ public abstract class RecipeItemStack {
 
     public void put(int variantSlot, CustomItem variant) {
         if (this.items.size() > variantSlot) {
-            if(variant != null){
+            if (variant != null) {
                 this.items.set(variantSlot, variant.getApiReference());
-            }else{
+            } else {
                 this.items.remove(variantSlot);
             }
-        } else if(variant != null){
+        } else if (variant != null) {
             this.items.add(variant.getApiReference());
         }
     }
@@ -88,12 +89,9 @@ public abstract class RecipeItemStack {
         this.choices.addAll(items.stream().map(ItemLoader::load).collect(Collectors.toSet()));
         this.tags.stream().map(namespacedKey -> {
             if (namespacedKey.getNamespace().equals("minecraft")) {
-                String[] key = namespacedKey.getKey().split("/", 2);
-                if (key.length > 1 && (key[0].equals("blocks") || key[0].equals("items"))) {
-                    Tag<Material> tag = Bukkit.getTag(key[0], org.bukkit.NamespacedKey.minecraft(key[1]), Material.class);
-                    if (tag != null) {
-                        return tag.getValues().stream().map(CustomItem::new).collect(Collectors.toSet());
-                    }
+                Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(namespacedKey.getKey()), Material.class);
+                if (tag != null) {
+                    return tag.getValues().stream().map(CustomItem::new).collect(Collectors.toSet());
                 }
             } else {
                 CustomTag<CustomItem> tag = Registry.ITEM_TAGS.getTag(namespacedKey);
@@ -126,7 +124,7 @@ public abstract class RecipeItemStack {
     }
 
     @JsonIgnore
-    public int size(){
+    public int size() {
         return getChoices().size();
     }
 
@@ -137,21 +135,26 @@ public abstract class RecipeItemStack {
     }
 
     /**
-     *
      * @return
      */
     @JsonIgnore
-    public ItemStack getItemStack(){
-        if (getItems().size() > 0) {
+    public ItemStack getItemStack() {
+        if (!getItems().isEmpty()) {
             return CustomItem.with(getItems().get(0)).create();
-        }else{
-            //TODO: Display Tag placeholder when no item is available!
+        } else if (!getTags().isEmpty()) {
+            Optional<NamespacedKey> tag = getTags().stream().findFirst();
+            if (tag.isPresent()) {
+                ItemBuilder itemBuilder = new ItemBuilder(Material.NAME_TAG);
+                itemBuilder.setDisplayName("§6§lTag");
+                itemBuilder.addLoreLine("§7" + tag.get().toString());
+                return itemBuilder.create();
+            }
         }
         return ItemUtils.AIR;
     }
 
     @JsonIgnore
-    public ItemStack getItemStack(int slot){
+    public ItemStack getItemStack(int slot) {
         List<APIReference> refs = getItems();
         if (refs.size() > slot) {
             APIReference ref = refs.get(slot);

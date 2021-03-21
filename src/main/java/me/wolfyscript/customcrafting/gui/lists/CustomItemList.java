@@ -31,7 +31,7 @@ public class CustomItemList extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODY0Zjc3OWE4ZTNmZmEyMzExNDNmYTY5Yjk2YjE0ZWUzNWMxNmQ2NjllMTljNzVmZDFhN2RhNGJmMzA2YyJ9fX0="), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (items.getListNamespace() != null) {
                 items.setListNamespace(null);
             } else {
@@ -96,7 +96,7 @@ public class CustomItemList extends CCWindow {
         if (page > 0) {
             update.setButton(3, "previous_page");
         }
-        if (maxPages > 0 && page < maxPages) {
+        if (page + 1 < maxPages) {
             update.setButton(6, "next_page");
         }
     }

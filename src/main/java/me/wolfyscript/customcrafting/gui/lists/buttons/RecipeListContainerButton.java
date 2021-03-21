@@ -108,7 +108,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
         if (getCustomRecipe(guiHandler) != null) {
             ICustomRecipe<?,?> recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult().getItemStack());
+                ItemBuilder itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
                 if (recipe.getResult().isEmpty()) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }

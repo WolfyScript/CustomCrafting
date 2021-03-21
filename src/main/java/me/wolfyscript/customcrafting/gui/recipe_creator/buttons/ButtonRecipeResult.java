@@ -13,12 +13,17 @@ public class ButtonRecipeResult extends ItemInputButton<CCCache> {
 
     public ButtonRecipeResult() {
         super("recipe.result", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+            Result<?> result = cache.getRecipe().getResult();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 guiHandler.openWindow("result");
                 return true;
             }
-            return false;
+            return result.getItems().isEmpty() && !result.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
+            Result<?> result = cache.getRecipe().getResult();
+            if (result.getItems().isEmpty() && !result.getTags().isEmpty()) {
+                return;
+            }
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 return;
             }

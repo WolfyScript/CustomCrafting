@@ -156,7 +156,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return recipes.stream().filter(recipe -> recipe.getConditions().getByID("permission") == null || recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 
-
         public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
             final long size = items.stream().flatMap(Collection::parallelStream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
             List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
