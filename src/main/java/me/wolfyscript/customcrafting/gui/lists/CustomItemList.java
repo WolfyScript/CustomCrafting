@@ -68,7 +68,7 @@ public class CustomItemList extends CCWindow {
         CCCache cache = update.getGuiHandler().getCustomCache();
         Items items = cache.getItems();
         int page = items.getListPage();
-        int maxPages = Registry.CUSTOM_ITEMS.keySet().size() / 45;
+        int maxPages = Registry.CUSTOM_ITEMS.keySet().size() / 45 + (Registry.CUSTOM_ITEMS.keySet().size() % 45 > 0 ? 1 : 0);
         if (page > maxPages) {
             items.setListPage(maxPages);
         }

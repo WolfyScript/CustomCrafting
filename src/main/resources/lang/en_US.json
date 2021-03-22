@@ -165,6 +165,10 @@
           "name": "&5Back",
           "help": []
         },
+        "back_bottom": {
+          "name": "&c&lBack",
+          "lore": []
+        },
         "close": {
           "name": "&4Close",
           "help": []
@@ -2548,6 +2552,20 @@
               "&7Execute extensions on crafting, smelting & more.",
               "&7They can be commands, mob spawning, sound, etc."
             ]
+          }
+        }
+      },
+      "tag_settings": {
+        "gui_name": "&6&lTag Settings"
+      },
+      "tag_list": {
+        "gui_name": "&8&lTags",
+        "items": {
+          "next_page": {
+            "name": "&7&lNext"
+          },
+          "previous_page": {
+            "name": "&7&lPrevious"
           }
         }
       }

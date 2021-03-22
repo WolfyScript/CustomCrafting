@@ -8,6 +8,7 @@ import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -17,12 +18,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonPropertyOrder(value = {"key", "outer_radius", "inner_radius"})
 public abstract class ResultExtension implements Keyed {
+
+    protected Material icon = Material.CHAIN_COMMAND_BLOCK;
+    protected String title = "&6&lExtension";
+    protected List<String> description;
 
     @JsonProperty(value = "key")
     private final NamespacedKey namespacedKey;
@@ -37,6 +43,15 @@ public abstract class ResultExtension implements Keyed {
 
     protected ResultExtension(NamespacedKey namespacedKey) {
         this.namespacedKey = namespacedKey;
+        this.title = "&6&lExtension";
+        this.description = Arrays.asList("&7" + namespacedKey.toString(), "");
+    }
+
+    public ResultExtension(NamespacedKey namespacedKey, Material icon, String title, List<String> description) {
+        this(namespacedKey);
+        this.icon = icon;
+        this.title = title;
+        this.description = description;
     }
 
     /**
@@ -119,7 +134,6 @@ public abstract class ResultExtension implements Keyed {
         }
         return new ArrayList<>();
     }
-
 
     public static class Provider<T extends ResultExtension> implements Keyed {
 

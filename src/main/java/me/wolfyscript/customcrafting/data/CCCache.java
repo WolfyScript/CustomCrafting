@@ -54,6 +54,7 @@ public class CCCache extends CustomCache {
     private final BrewingGUICache brewingGUICache = new BrewingGUICache();
 
     private final IngredientData ingredientData = new IngredientData();
+    private final TagSettingsCache tagSettingsCache = new TagSettingsCache();
 
     private ApplyItem applyItem;
     private ApplyPotionEffect applyPotionEffect;
@@ -123,6 +124,10 @@ public class CCCache extends CustomCache {
 
     public IngredientData getIngredientData() {
         return ingredientData;
+    }
+
+    public TagSettingsCache getTagSettingsCache() {
+        return tagSettingsCache;
     }
 
     public void setApplyPotionEffect(ApplyPotionEffect applyPotionEffect) {

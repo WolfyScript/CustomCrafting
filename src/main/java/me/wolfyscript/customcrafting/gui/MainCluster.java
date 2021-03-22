@@ -46,6 +46,10 @@ public class MainCluster extends CCCluster {
             guiHandler.openPreviousWindow();
             return true;
         }));
+        registerButton(new ActionButton<>("back_bottom", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openPreviousWindow();
+            return true;
+        }));
 
         registerButton(new ActionButton<>("patreon", PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openWindow("patrons_menu");
