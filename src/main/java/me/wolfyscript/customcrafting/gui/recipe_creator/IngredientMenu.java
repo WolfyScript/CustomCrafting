@@ -86,40 +86,35 @@ public class IngredientMenu extends CCWindow {
                 break;
             case BREWING_STAND:
                 cache.getBrewingRecipe().setIngredients(ingredient);
+            default:
+                //Invalid Recipe Type!
         }
     }
 
     public static Ingredient getIngredient(CCCache cache, int recipeSlot) {
-        Ingredient ingredient = null;
         switch (cache.getRecipeType().getType()) {
             case ELITE_WORKBENCH:
             case WORKBENCH:
-                ingredient = cache.getCraftingRecipe().getIngredients(recipeSlot);
-                break;
+                return cache.getCraftingRecipe().getIngredients(recipeSlot);
             case SMOKER:
             case FURNACE:
             case BLAST_FURNACE:
             case CAMPFIRE:
-                ingredient = cache.getCookingRecipe().getSource();
-                break;
+                return cache.getCookingRecipe().getSource();
             case SMITHING:
-                ingredient = recipeSlot == 0 ? cache.getSmithingRecipe().getBase() : cache.getSmithingRecipe().getAddition();
-                break;
+                return recipeSlot == 0 ? cache.getSmithingRecipe().getBase() : cache.getSmithingRecipe().getAddition();
             case GRINDSTONE:
-                ingredient = recipeSlot == 0 ? cache.getGrindstoneRecipe().getInputTop() : cache.getGrindstoneRecipe().getInputBottom();
-                break;
+                return recipeSlot == 0 ? cache.getGrindstoneRecipe().getInputTop() : cache.getGrindstoneRecipe().getInputBottom();
             case STONECUTTER:
-                ingredient = cache.getStonecutterRecipe().getSource();
-                break;
+                return cache.getStonecutterRecipe().getSource();
             case ANVIL:
-                ingredient = cache.getAnvilRecipe().getInput(recipeSlot);
-                break;
+                return cache.getAnvilRecipe().getInput(recipeSlot);
             case CAULDRON:
-                ingredient = cache.getCauldronRecipe().getIngredients();
-                break;
+                return cache.getCauldronRecipe().getIngredients();
             case BREWING_STAND:
-                ingredient = recipeSlot == 0 ? cache.getBrewingRecipe().getIngredients() : cache.getBrewingRecipe().getAllowedItems();
+                return recipeSlot == 0 ? cache.getBrewingRecipe().getIngredients() : cache.getBrewingRecipe().getAllowedItems();
+            default:
+                return null;
         }
-        return ingredient;
     }
 }
