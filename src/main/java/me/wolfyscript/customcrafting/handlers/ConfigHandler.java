@@ -9,9 +9,6 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecip
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.config.ConfigAPI;
@@ -27,14 +24,12 @@ import me.wolfyscript.utilities.util.particles.ParticleLocation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ConfigHandler {
@@ -110,10 +105,11 @@ public class ConfigHandler {
             workbenchCraft.setIngredients('H', new Ingredient(Material.GLOWSTONE_DUST));
             Result<SlotResultTarget> result = workbenchCraft.getResult();
             result.put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.ADVANCED_CRAFTING_TABLE))));
+            /*
             result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
             result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
             result.addExtension(new MythicMobResultExtension("MobName", 10));
-
+             */
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }

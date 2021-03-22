@@ -22,11 +22,13 @@ import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
+import org.bukkit.inventory.SmithingRecipe;
 
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class SmithingListener implements Listener {
 
@@ -45,14 +47,14 @@ public class SmithingListener implements Listener {
         Player player = (Player) event.getView().getPlayer();
         ItemStack base = inv.getItem(0);
         ItemStack addition = inv.getItem(1);
-
         if (!ItemUtils.isAirOrNull(event.getResult())) {
-            if (Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof Keyed && customCrafting.getRecipeHandler().getDisabledRecipes().contains(NamespacedKey.of(((Keyed) recipe).getKey())))) {
+            if (Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof SmithingRecipe && customCrafting.getRecipeHandler().getDisabledRecipes().contains(NamespacedKey.of(((Keyed) recipe).getKey())))) {
                 event.setResult(null);
-                return;
+            }
+            if (Stream.of(inv.getStorageContents()).parallel().map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+                event.setResult(null);
             }
         }
-
         preCraftedRecipes.put(player.getUniqueId(), null);
         for (CustomSmithingRecipe recipe : Registry.RECIPES.getAvailable(Types.SMITHING, player)) {
             if (!recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
