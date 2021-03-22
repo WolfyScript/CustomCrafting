@@ -25,12 +25,10 @@ import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExte
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.world.WorldUtils;
@@ -44,7 +42,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
@@ -99,18 +96,13 @@ public class CustomCrafting extends JavaPlugin {
             Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
             Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
 
-
             CustomPlayerData.register(new CCPlayerData.Provider());
         } else {
             getLogger().severe("Couldn't find WolfyUtilities API!");
         }
     }
 
-    @Override
-    public void onEnable() {
-        instance = this;
-        currentVersion = instance.getDescription().getVersion();
-        patreon = new Patreon(this);
+    private boolean writeBanner() {
         System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
@@ -122,15 +114,12 @@ public class CustomCrafting extends JavaPlugin {
             getLogger().severe("Download link: https://www.spigotmc.org/resources/wolfyutilities.64124/");
             getLogger().severe("--------------------------------------------------------------------------------------------------------");
             setEnabled(false);
-            return;
+            return true;
         }
+        return false;
+    }
 
-        api = WolfyUtilities.get(instance);
-        Chat chat = api.getChat();
-        chat.setIN_GAME_PREFIX("§7[§3CC§7] ");
-        chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
-
-        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
+    private void writePatreonCredits() {
         if (patreon.isPatreon()) {
             System.out.println("Thanks for actively supporting this plugin on Patreon!");
         }
@@ -154,30 +143,11 @@ public class CustomCrafting extends JavaPlugin {
                 System.out.println("    " + sB.toString());
             }
         }
-        System.out.println("------------------------------------------------------------------------");
+    }
 
-        chatUtils = new ChatUtils(this);
-        configHandler = new ConfigHandler(this);
-        if (configHandler.getConfig().isDatabaseEnabled()) {
-            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
-        }
-
-        try {
-            configHandler.loadDefaults();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        dataHandler = new DataHandler(this);
-
-        craftManager = new CraftManager(this);
-
-        inventoryHandler = new InventoryHandler(this);
-
+    private void registerListeners() {
         PluginManager pM = Bukkit.getPluginManager();
-
         pM.registerEvents(new PlayerListener(this), this);
-
-        System.out.println("------------------------------------------------------------------------");
         pM.registerEvents(new CraftListener(this), this);
         pM.registerEvents(new FurnaceListener(this), this);
         pM.registerEvents(new AnvilListener(this), this);
@@ -189,7 +159,13 @@ public class CustomCrafting extends JavaPlugin {
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
             pM.registerEvents(new SmithingListener(this), this);
         }
+        if (WolfyUtilities.hasPlugin("ItemsAdder")) {
+            getLogger().info("Detected ItemsAdder! CustomItems and Recipes will be loaded after ItemsAdder is successfully loaded!");
+            pM.registerEvents(new ItemsAdderListener(this), this);
+        }
+    }
 
+    private void registerCommands() {
         final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
         serverCommandMap.setAccessible(true);
         try {
@@ -199,6 +175,36 @@ public class CustomCrafting extends JavaPlugin {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onEnable() {
+        instance = this;
+        currentVersion = instance.getDescription().getVersion();
+        api = WolfyUtilities.get(instance);
+        Chat chat = api.getChat();
+        chat.setIN_GAME_PREFIX("§7[§3CC§7] ");
+        chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
+        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
+        patreon = new Patreon(this);
+
+        if (writeBanner()) return;
+        writePatreonCredits();
+        System.out.println("------------------------------------------------------------------------");
+
+        chatUtils = new ChatUtils(this);
+        configHandler = new ConfigHandler(this);
+        if (configHandler.getConfig().isDatabaseEnabled()) {
+            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
+        }
+        configHandler.loadDefaults();
+        dataHandler = new DataHandler(this);
+        craftManager = new CraftManager(this);
+        inventoryHandler = new InventoryHandler(this);
+
+        System.out.println("------------------------------------------------------------------------");
+        registerListeners();
+        registerCommands();
 
         inventoryHandler.init();
 
@@ -207,7 +213,6 @@ public class CustomCrafting extends JavaPlugin {
             chat.sendConsoleMessage("$msg.startup.placeholder$");
             new PlaceHolder(this).register();
         }
-
         //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
         if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
             try {
@@ -215,21 +220,15 @@ public class CustomCrafting extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            getLogger().info("Detected ItemsAdder! CustomItems and Recipes will be loaded after ItemsAdder is successfully loaded!");
-            pM.registerEvents(new ItemsAdderListener(this), this);
         }
-
         //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
         if (!patreon.isPatreon()) {
             checkUpdate(null);
         }
-
         //Load Metrics
         Metrics metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
-
         System.out.println("------------------------------------------------------------------------");
     }
 
@@ -332,52 +331,5 @@ public class CustomCrafting extends JavaPlugin {
 
     public static DataBaseHandler getDataBaseHandler() {
         return dataBaseHandler;
-    }
-
-    public void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {
-        if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            if (CustomCrafting.hasDataBaseHandler()) {
-                CustomCrafting.getDataBaseHandler().updateItem(internalKey, customItem);
-            } else {
-                try {
-                    File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
-                    file.getParentFile().mkdirs();
-                    if (file.exists() || file.createNewFile()) {
-                        JacksonUtil.getObjectWriter(getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            Registry.CUSTOM_ITEMS.register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
-        }
-    }
-
-    public boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
-        if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
-                if (player != null) getApi().getChat().sendMessage(player, "error");
-                return false;
-            }
-            Registry.CUSTOM_ITEMS.remove(namespacedKey);
-            System.gc();
-            NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            if (CustomCrafting.hasDataBaseHandler()) {
-                CustomCrafting.getDataBaseHandler().removeItem(internalKey);
-                return true;
-            } else {
-                File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
-                if (file.delete()) {
-                    if (player != null) getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
-                    return true;
-                } else {
-                    file.deleteOnExit();
-                    if (player != null)
-                        getApi().getChat().sendMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
-                }
-            }
-        }
-        return false;
     }
 }

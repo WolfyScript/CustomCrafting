@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -63,7 +64,7 @@ public class ConfigHandler {
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
     }
 
-    public void loadDefaults() throws IOException {
+    public void loadDefaults() {
         if (!DataHandler.DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
             File old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
             if (!old.renameTo(DataHandler.DATA_FOLDER)) {
@@ -80,7 +81,7 @@ public class ConfigHandler {
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
-            customCrafting.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
+            ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
             ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
             knowledgeBookCraft.setIngredients('A', new Ingredient(Material.BOOK));
@@ -96,7 +97,7 @@ public class ConfigHandler {
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, CustomCrafting.ADVANCED_CRAFTING_TABLE);
-            customCrafting.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
+            ItemLoader.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
 
             ShapedCraftRecipe workbenchCraft = new ShapedCraftRecipe();
             workbenchCraft.setMirrorHorizontal(false);

@@ -11,6 +11,7 @@ import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -101,7 +102,7 @@ public class ItemCreator extends CCWindow {
                             api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
                             return true;
                         }
-                        customCrafting.saveItem(namespacedKey, items.getItem());
+                        ItemLoader.saveItem(namespacedKey, items.getItem());
                         items.setSaved(true);
                         items.setNamespacedKey(namespacedKey);
                         sendMessage(player, "save.success");
@@ -119,7 +120,7 @@ public class ItemCreator extends CCWindow {
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 CustomItem customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
-                    customCrafting.saveItem(items.getNamespacedKey(), customItem);
+                    ItemLoader.saveItem(items.getNamespacedKey(), customItem);
                     customItem = Registry.CUSTOM_ITEMS.get(items.getNamespacedKey());
                 }
                 cache.applyItem(customItem);
