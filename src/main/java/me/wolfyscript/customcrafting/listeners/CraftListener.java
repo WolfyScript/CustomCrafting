@@ -85,7 +85,7 @@ public class CraftListener implements Listener {
     public void onPreCraft(PrepareItemCraftEvent e) {
         Player player = (Player) e.getView().getPlayer();
         try {
-            DataHandler dataHandler = customCrafting.getRecipeHandler();
+            DataHandler dataHandler = customCrafting.getDataHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
             ItemStack result = craftManager.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
@@ -112,9 +112,9 @@ public class CraftListener implements Listener {
             //At this point the vanilla recipe is valid and can be crafted
             //player.updateInventory();
         } catch (Exception ex) {
-            CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
+            CustomCrafting.inst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             ex.printStackTrace();
-            CustomCrafting.getInst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
+            CustomCrafting.inst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             craftManager.remove(player.getUniqueId());
             e.getInventory().setResult(new ItemStack(Material.AIR));
         }
@@ -124,7 +124,7 @@ public class CraftListener implements Listener {
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
         if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             NamespacedKey key = NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(event.getRecipe()));
-            if (!customCrafting.getRecipeHandler().getDisabledRecipes().contains(key)) {
+            if (!customCrafting.getDataHandler().getDisabledRecipes().contains(key)) {
                 ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(key);
                 if (customRecipe instanceof CraftingRecipe) {
                     if (customCrafting.getConfigHandler().getConfig().isMCRegistry(CraftRecipeMCRegistry.LIMITED)) {

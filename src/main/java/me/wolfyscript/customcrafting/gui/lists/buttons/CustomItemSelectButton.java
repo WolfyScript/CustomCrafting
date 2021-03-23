@@ -27,7 +27,7 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
             if (!Registry.CUSTOM_ITEMS.has(namespacedKey) || ItemUtils.isAirOrNull(Registry.CUSTOM_ITEMS.get(namespacedKey))) {
                 return true;
             }
-            WolfyUtilities api = CustomCrafting.getApi();
+            WolfyUtilities api = CustomCrafting.inst().getApi();
             CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if(event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).isRightClick()) {
@@ -64,7 +64,7 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                 ItemBuilder itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");
                 itemB.addLoreLine("§8" + namespacedKey.toString());
-                CustomCrafting.getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(ChatColor.convert(s)));
+                CustomCrafting.inst().getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(ChatColor.convert(s)));
                 return itemB.create();
             }
             ItemBuilder itemB = new ItemBuilder(itemStack);

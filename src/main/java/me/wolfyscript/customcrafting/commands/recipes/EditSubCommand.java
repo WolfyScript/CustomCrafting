@@ -32,7 +32,7 @@ public class EditSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         if (sender instanceof Player) {
-            WolfyUtilities api = CustomCrafting.getApi();
+            WolfyUtilities api = CustomCrafting.inst().getApi();
             Player player = (Player) sender;
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit")) {
                 if (args.length > 0) {
@@ -40,7 +40,7 @@ public class EditSubCommand extends AbstractSubCommand {
                     if (customRecipe != null) {
                         GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
                         guiHandler.getCustomCache().setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
-                        if (customCrafting.getRecipeHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
+                        if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("none", "recipe_creator")), 1);
                         }
                     } else {

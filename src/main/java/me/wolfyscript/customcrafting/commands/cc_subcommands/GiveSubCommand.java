@@ -40,7 +40,7 @@ public class GiveSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        WolfyUtilities api = CustomCrafting.getApi();
+        WolfyUtilities api = CustomCrafting.inst().getApi();
         if (args.length >= 2) {
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
                 Player target = Bukkit.getPlayer(args[0]);

@@ -1,14 +1,12 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
@@ -40,7 +38,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     protected int bookGridSize = 3;
     protected int bookSquaredGrid = 9;
 
-    public CraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
+    protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         //Get Ingredients
         Map<Character, Ingredient> ingredients = new TreeMap<>();
@@ -66,18 +64,13 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void setIngredients(Map<Character, Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    @Override
-    public Ingredient getIngredients(char key) {
-        return getIngredients().get(key);
-    }
-
-    @Override
     public Ingredient getIngredients(int slot) {
         return getIngredients(LETTERS[slot]);
+    }
+
+    @Override
+    public void setIngredients(Map<Character, Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 
     @Override
@@ -120,7 +113,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         if (!getIngredients().isEmpty()) {
             if (this instanceof AdvancedCraftingRecipe && getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
                 NamespacedKey glass = new NamespacedKey("none", "glass_purple");

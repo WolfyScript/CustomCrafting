@@ -49,18 +49,13 @@ public class ConfigHandler {
         this.languageAPI = api.getLanguageAPI();
 
         File oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");//Makes sure that if a config with the old name already exists, it's renamed to the new config name.
-        if(oldConfigFile.exists()){
-            oldConfigFile.renameTo(new File(customCrafting.getDataFolder().getPath(), "config.yml"));
+        if (oldConfigFile.exists() && !oldConfigFile.renameTo(new File(customCrafting.getDataFolder().getPath(), "config.yml"))) {
+            customCrafting.getLogger().severe("Couldn't rename 'main_config.yml' to 'config.yml'!");
         }
         this.mainConfig = new MainConfig(configAPI, customCrafting);
         mainConfig.loadDefaults();
         configAPI.registerConfig(mainConfig);
-
-        try {
-            loadLang();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadLang();
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
     }
 
@@ -123,7 +118,7 @@ public class ConfigHandler {
         this.recipeBook = new RecipeBook(customCrafting);
     }
 
-    public void loadLang() throws IOException {
+    public void loadLang() {
         String chosenLang = mainConfig.getString("language");
         customCrafting.saveResource("lang/en_US.json", true);
         customCrafting.saveResource("lang/de_DE.json", true);
@@ -131,14 +126,14 @@ public class ConfigHandler {
 
         Language fallBackLanguage = new Language(customCrafting, "en_US");
         languageAPI.registerLanguage(fallBackLanguage);
-        System.out.println("Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
+        customCrafting.getLogger().info(() -> "Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
 
         File file = new File(customCrafting.getDataFolder(), "lang/" + chosenLang + ".json");
         if (file.exists()) {
             Language language = new Language(customCrafting, chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);
-            System.out.println("Loaded active language \"" + chosenLang + "\" v" + language.getVersion() + " translated by " + String.join(", ", language.getAuthors()));
+            customCrafting.getLogger().info(() -> "Loaded active language \"" + chosenLang + "\" v" + language.getVersion() + " translated by " + String.join(", ", language.getAuthors()));
         }
     }
 

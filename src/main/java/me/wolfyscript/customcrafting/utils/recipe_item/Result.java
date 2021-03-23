@@ -91,7 +91,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
                         resultExtensions.add(extension);
                         continue;
                     }
-                    CustomCrafting.getInst().getLogger().warning(String.format("Failed to load Result Extension '%s'", key.toString()));
+                    CustomCrafting.inst().getLogger().warning(String.format("Failed to load Result Extension '%s'", key.toString()));
                 }
             }
         }
@@ -130,6 +130,6 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     public void executeExtensions(@NotNull Location location, boolean isWorkstation, @Nullable Player player) {
-        Bukkit.getScheduler().runTaskLater(CustomCrafting.getInst(), () -> extensions.forEach(resultExtension -> resultExtension.onCraft(location, isWorkstation, player)), 2);
+        Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> extensions.forEach(resultExtension -> resultExtension.onCraft(location, isWorkstation, player)), 2);
     }
 }

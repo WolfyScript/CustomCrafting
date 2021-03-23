@@ -43,26 +43,26 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                 } else {
                     if (namespace.equalsIgnoreCase("minecraft")) {
                         if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
-                            for (Recipe recipe : customCrafting.getRecipeHandler().getMinecraftRecipes()) {
+                            for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
                                     NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) recipe).getKey());
-                                    customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
+                                    customCrafting.getDataHandler().getDisabledRecipes().add(namespacedKey);
                                 }
                             }
                         } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                            for (Recipe recipe : customCrafting.getRecipeHandler().getMinecraftRecipes()) {
+                            for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    customCrafting.getRecipeHandler().getDisabledRecipes().remove(NamespacedKey.of(((Keyed) recipe).getKey()));
+                                    customCrafting.getDataHandler().getDisabledRecipes().remove(NamespacedKey.of(((Keyed) recipe).getKey()));
                                 }
                             }
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
                         for (ICustomRecipe<?, ?> recipe : Registry.RECIPES.get(namespace)) {
-                            customCrafting.getRecipeHandler().getDisabledRecipes().add(recipe.getNamespacedKey());
+                            customCrafting.getDataHandler().getDisabledRecipes().add(recipe.getNamespacedKey());
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                         for (ICustomRecipe<?, ?> recipe : Registry.RECIPES.get(namespace)) {
-                            customCrafting.getRecipeHandler().getDisabledRecipes().remove(recipe.getNamespacedKey());
+                            customCrafting.getDataHandler().getDisabledRecipes().remove(recipe.getNamespacedKey());
                         }
                     }
                 }

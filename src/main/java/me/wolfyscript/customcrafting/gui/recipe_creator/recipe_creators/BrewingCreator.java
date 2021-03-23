@@ -403,8 +403,9 @@ public class BrewingCreator extends RecipeCreator {
                 update.setButton(35, "effect_upgrades.duration");
                 update.setButton(40, "effect_upgrades.apply");
                 update.setButton(41, "effect_upgrades.remove");
-
-
+                break;
+            default:
+                //No sub-menu selected!
         }
         //requiredEffects
         //effectRemovals

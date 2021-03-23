@@ -96,7 +96,7 @@ public class RecipesList extends CCWindow {
             }
         } else {
             if (namespace.equalsIgnoreCase("minecraft")) {
-                List<Recipe> recipes = customCrafting.getRecipeHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
+                List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
                 maxPages = recipes.size() / 45 + (recipes.size() % 45 > 0 ? 1 : 0);
                 if (currentPage >= maxPages) {
                     currentPage = 0;

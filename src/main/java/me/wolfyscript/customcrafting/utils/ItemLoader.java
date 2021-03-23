@@ -75,14 +75,14 @@ public class ItemLoader {
     public static void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            if (CustomCrafting.hasDataBaseHandler()) {
-                CustomCrafting.getDataBaseHandler().updateItem(internalKey, customItem);
+            if (CustomCrafting.inst().hasDataBaseHandler()) {
+                CustomCrafting.inst().getDataBaseHandler().updateItem(internalKey, customItem);
             } else {
                 try {
                     File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
                     file.getParentFile().mkdirs();
                     if (file.exists() || file.createNewFile()) {
-                        JacksonUtil.getObjectWriter(CustomCrafting.getInst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
+                        JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -95,24 +95,25 @@ public class ItemLoader {
     public static boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             if (!me.wolfyscript.customcrafting.Registry.CUSTOM_ITEMS.has(namespacedKey)) {
-                if (player != null) CustomCrafting.getApi().getChat().sendMessage(player, "error");
+                if (player != null) CustomCrafting.inst().getApi().getChat().sendMessage(player, "error");
                 return false;
             }
             me.wolfyscript.customcrafting.Registry.CUSTOM_ITEMS.remove(namespacedKey);
             System.gc();
             NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            if (CustomCrafting.hasDataBaseHandler()) {
-                CustomCrafting.getDataBaseHandler().removeItem(internalKey);
+            if (CustomCrafting.inst().hasDataBaseHandler()) {
+                CustomCrafting.inst().getDataBaseHandler().removeItem(internalKey);
                 return true;
             } else {
                 File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
                 if (file.delete()) {
-                    if (player != null) CustomCrafting.getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
+                    if (player != null)
+                        CustomCrafting.inst().getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
                     return true;
                 } else {
                     file.deleteOnExit();
                     if (player != null)
-                        CustomCrafting.getApi().getChat().sendMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
+                        CustomCrafting.inst().getApi().getChat().sendMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
                 }
             }
         }

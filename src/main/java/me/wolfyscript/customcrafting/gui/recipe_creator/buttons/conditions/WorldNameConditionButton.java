@@ -55,7 +55,7 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             WorldNameCondition condition = (WorldNameCondition) guiHandler.getCustomCache().getRecipe().getConditions().getByID("world_name");
-            hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.getApi()));
+            hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.inst().getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getWorldNames().size()) {
                     hashMap.put("%var" + i + "%", condition.getWorldNames().get(i));

@@ -21,7 +21,7 @@ public class DebugSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
         if (sender instanceof Player) {
-            WolfyUtilities api = CustomCrafting.getApi();
+            WolfyUtilities api = CustomCrafting.inst().getApi();
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.debug")) {
                 customCrafting.getConfigHandler().getConfig().set("debug", !api.hasDebuggingMode());

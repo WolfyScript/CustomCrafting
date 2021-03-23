@@ -31,7 +31,7 @@ public class ItemCategoryButton extends Button<CCCache> {
     public ItemCategoryButton(CustomCrafting customCrafting) {
         super("item_category", ButtonType.NORMAL);
         this.customCrafting = customCrafting;
-        this.categories = customCrafting.getRecipeHandler().getCategories();
+        this.categories = customCrafting.getDataHandler().getCategories();
         this.categoryMap = new HashMap<>();
     }
 

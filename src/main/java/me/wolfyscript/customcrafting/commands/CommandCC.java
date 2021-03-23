@@ -33,7 +33,7 @@ public class CommandCC extends IndexCommand {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String s, @NotNull String[] args) {
-        WolfyUtilities api = CustomCrafting.getApi();
+        WolfyUtilities api = CustomCrafting.inst().getApi();
         if (args.length > 0) {
             if (!super.execute(sender, s, args)) {
                 getSubCommands().get("help").onCommand(sender, args[0], Arrays.copyOfRange(args, 1, args.length));

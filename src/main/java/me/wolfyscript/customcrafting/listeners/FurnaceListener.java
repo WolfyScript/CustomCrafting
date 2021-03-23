@@ -98,7 +98,7 @@ public class FurnaceListener implements Listener {
         for (Recipe recipe : recipes) {
             if (!(recipe instanceof Keyed)) continue;
             NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) recipe).getKey());
-            if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(namespacedKey)) {
+            if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
                 event.setCancelled(true);
                 continue;
             }

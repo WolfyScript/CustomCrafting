@@ -25,7 +25,7 @@ import java.util.Locale;
 
 public class ChatUtils {
 
-    private static final WolfyUtilities api = CustomCrafting.getApi();
+    private static final WolfyUtilities api = CustomCrafting.inst().getApi();
     private final CustomCrafting customCrafting;
 
     public ChatUtils(CustomCrafting customCrafting) {

@@ -32,11 +32,11 @@ public class CommandRecipe extends IndexCommand {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String s, @NotNull String[] args) {
         if (args.length == 0 && sender instanceof Player) {
-            WolfyUtilities api = CustomCrafting.getApi();
+            WolfyUtilities api = CustomCrafting.inst().getApi();
             Player p = (Player) sender;
             InventoryAPI<?> invAPI = api.getInventoryAPI();
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.recipes")) {
-                Categories categories = customCrafting.getRecipeHandler().getCategories();
+                Categories categories = customCrafting.getDataHandler().getCategories();
                 if (categories.getSortedMainCategories().size() > 1) {
                     invAPI.openCluster(p, "recipe_book");
                 } else {

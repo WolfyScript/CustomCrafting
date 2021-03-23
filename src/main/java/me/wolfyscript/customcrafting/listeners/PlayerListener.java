@@ -26,7 +26,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        WolfyUtilities api = CustomCrafting.getApi();
+        WolfyUtilities api = CustomCrafting.inst().getApi();
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (customCrafting.isOutdated()) {
                 api.getChat().sendMessage(player, "$msg.player.outdated.msg$");
@@ -49,7 +49,7 @@ public class PlayerListener implements Listener {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);
                     event.getPlayer().closeInventory();
-                    CustomCrafting.getApi().getInventoryAPI().openCluster(p, "recipe_book");
+                    CustomCrafting.inst().getApi().getInventoryAPI().openCluster(p, "recipe_book");
                 }
             }
         }

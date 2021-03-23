@@ -48,6 +48,7 @@ import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class CustomCrafting extends JavaPlugin {
@@ -63,69 +64,68 @@ public class CustomCrafting extends JavaPlugin {
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 3;
 
+    //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
-    private static WolfyUtilities api;
-    private static ConfigHandler configHandler;
-    private static DataHandler dataHandler;
-    private static DataBaseHandler dataBaseHandler = null;
+    //Utils
+    private final String currentVersion;
+    private final Patreon patreon;
+    private final ChatUtils chatUtils;
+    //The main WolfyUtilities instance
+    private WolfyUtilities api;
     private InventoryHandler inventoryHandler;
     private CraftManager craftManager;
-    private Patreon patreon;
+    //File Handlers to load, save or edit data
+    private ConfigHandler configHandler;
+    private DataHandler dataHandler;
+    private DataBaseHandler dataBaseHandler = null;
+    private Cauldrons cauldrons = null;
 
-    //Utils
-    private ChatUtils chatUtils;
-    private static Cauldrons cauldrons = null;
-    private static String currentVersion;
     private boolean outdated = false;
 
-    public static CustomCrafting getInst() {
+    public CustomCrafting() {
+        super();
+        instance = this;
+        currentVersion = instance.getDescription().getVersion();
+
+        this.chatUtils = new ChatUtils(this);
+        this.patreon = new Patreon(this);
+    }
+
+    public static CustomCrafting inst() {
         return instance;
     }
 
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
-        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
-            getLogger().info("Registering custom data");
-            Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
-            Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
-            Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
 
-            getLogger().info("Registering Result Extensions");
-            Registry.RESULT_EXTENSIONS.register(new CommandResultExtension());
-            Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
-            Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
+        getLogger().info("Registering custom data");
+        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
+        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
+        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
 
-            CustomPlayerData.register(new CCPlayerData.Provider());
-        } else {
-            getLogger().severe("Couldn't find WolfyUtilities API!");
-        }
+        getLogger().info("Registering Result Extensions");
+        Registry.RESULT_EXTENSIONS.register(new CommandResultExtension());
+        Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
+        Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
+        CustomPlayerData.register(new CCPlayerData.Provider());
     }
 
-    private boolean writeBanner() {
-        System.out.println("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
-        System.out.println("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
-        System.out.println("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        System.out.println("    v" + currentVersion + " " + (patreon.isPatreon() ? "Patreon" : "Free"));
-        System.out.println(" ");
-
-        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") == null) {
-            getLogger().severe("CustomCrafting requires WolfyUtilities to work! Make sure you download and install it besides CC! ");
-            getLogger().severe("Download link: https://www.spigotmc.org/resources/wolfyutilities.64124/");
-            getLogger().severe("--------------------------------------------------------------------------------------------------------");
-            setEnabled(false);
-            return true;
-        }
-        return false;
+    private void writeBanner() {
+        getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
+        getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
+        getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
+        getLogger().info(() -> "    v" + currentVersion + " " + (patreon.isPatreon() ? "Patreon" : "Free"));
+        getLogger().info(" ");
     }
 
     private void writePatreonCredits() {
         if (patreon.isPatreon()) {
-            System.out.println("Thanks for actively supporting this plugin on Patreon!");
+            getLogger().info("Thanks for actively supporting this plugin on Patreon!");
         }
         patreon.initialize();
-        System.out.println();
-        System.out.println("Special thanks to my Patrons for supporting this project: ");
+        getLogger().info("");
+        getLogger().info("Special thanks to my Patrons for supporting this project: ");
         List<Patron> patronList = patreon.getPatronList();
         int lengthColumn = 20;
         int size = patronList.size();
@@ -140,7 +140,7 @@ public class CustomCrafting extends JavaPlugin {
                 if (i + 1 < patronList.size()) {
                     sB.append("| ").append(patronList.get(i + 1).getName());
                 }
-                System.out.println("    " + sB.toString());
+                getLogger().log(Level.INFO, "     {0}", sB);
             }
         }
     }
@@ -179,20 +179,16 @@ public class CustomCrafting extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
-        currentVersion = instance.getDescription().getVersion();
-        api = WolfyUtilities.get(instance);
+        api = WolfyUtilities.get(this); //Must be initialized here, because it registers Events!
         Chat chat = api.getChat();
         chat.setIN_GAME_PREFIX("§7[§3CC§7] ");
         chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
-        patreon = new Patreon(this);
 
-        if (writeBanner()) return;
+        writeBanner();
         writePatreonCredits();
-        System.out.println("------------------------------------------------------------------------");
+        getLogger().info("------------------------------------------------------------------------");
 
-        chatUtils = new ChatUtils(this);
         configHandler = new ConfigHandler(this);
         if (configHandler.getConfig().isDatabaseEnabled()) {
             dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
@@ -202,7 +198,7 @@ public class CustomCrafting extends JavaPlugin {
         craftManager = new CraftManager(this);
         inventoryHandler = new InventoryHandler(this);
 
-        System.out.println("------------------------------------------------------------------------");
+        getLogger().info("------------------------------------------------------------------------");
         registerListeners();
         registerCommands();
 
@@ -215,11 +211,7 @@ public class CustomCrafting extends JavaPlugin {
         }
         //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
         if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
-            try {
-                loadRecipesAndItems();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            loadRecipesAndItems();
         }
         //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
         if (!patreon.isPatreon()) {
@@ -229,24 +221,22 @@ public class CustomCrafting extends JavaPlugin {
         Metrics metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
-        System.out.println("------------------------------------------------------------------------");
+        getLogger().info("------------------------------------------------------------------------");
     }
 
     @Override
     public void onDisable() {
-        if (Bukkit.getPluginManager().getPlugin("WolfyUtilities") != null) {
-            try {
-                configHandler.save();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            cauldrons.endAutoSaveTask();
-            cauldrons.save();
-            getRecipeHandler().onSave();
+        try {
+            configHandler.save();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        cauldrons.endAutoSaveTask();
+        cauldrons.save();
+        getDataHandler().onSave();
     }
 
-    public void loadRecipesAndItems() throws IOException {
+    public void loadRecipesAndItems() {
         if (!configHandler.getConfig().getDisabledRecipes().isEmpty()) {
             dataHandler.getDisabledRecipes().addAll(configHandler.getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
         }
@@ -259,12 +249,20 @@ public class CustomCrafting extends JavaPlugin {
         return configHandler;
     }
 
-    public static WolfyUtilities getApi() {
+    public WolfyUtilities getApi() {
         return api;
     }
 
-    public DataHandler getRecipeHandler() {
+    public DataHandler getDataHandler() {
         return dataHandler;
+    }
+
+    public boolean hasDataBaseHandler() {
+        return dataBaseHandler != null;
+    }
+
+    public DataBaseHandler getDataBaseHandler() {
+        return dataBaseHandler;
     }
 
     public InventoryHandler getInventoryHandler() {
@@ -279,7 +277,7 @@ public class CustomCrafting extends JavaPlugin {
         return chatUtils;
     }
 
-    public static Cauldrons getCauldrons() {
+    public Cauldrons getCauldrons() {
         return cauldrons;
     }
 
@@ -323,13 +321,5 @@ public class CustomCrafting extends JavaPlugin {
 
     public boolean isOutdated() {
         return outdated;
-    }
-
-    public static boolean hasDataBaseHandler() {
-        return dataBaseHandler != null;
-    }
-
-    public static DataBaseHandler getDataBaseHandler() {
-        return dataBaseHandler;
     }
 }

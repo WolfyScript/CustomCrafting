@@ -24,7 +24,7 @@ public class HelpSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
-        WolfyUtilities api = CustomCrafting.getApi();
+        WolfyUtilities api = CustomCrafting.inst().getApi();
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.help")) {
@@ -40,7 +40,7 @@ public class HelpSubCommand extends AbstractSubCommand {
     }
 
     public void printHelp(Player p) {
-        WolfyUtilities api = CustomCrafting.getApi();
+        WolfyUtilities api = CustomCrafting.inst().getApi();
         Chat chat = api.getChat();
         chat.sendMessage(p, "———————— &3&lCustomCrafting &7————————");
         chat.sendMessage(p, "");

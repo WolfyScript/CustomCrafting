@@ -8,18 +8,15 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -92,16 +89,10 @@ public class Settings extends CCWindow {
                 } else if (((InventoryClickEvent) event).isShiftClick()) {
                     if (ChatUtils.checkPerm(player, "customcrafting.cmd.reload")) {
                         api.getChat().sendMessage(player, "&eReloading Inventories and Languages!");
-                        InventoryAPI<?> invAPI = CustomCrafting.getApi().getInventoryAPI();
-                        LanguageAPI langAPI = CustomCrafting.getApi().getLanguageAPI();
-                        langAPI.unregisterLanguages();
+                        customCrafting.getApi().getLanguageAPI().unregisterLanguages();
                         customCrafting.getConfigHandler().getConfig().save();
-                        try {
-                            customCrafting.getConfigHandler().loadLang();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        invAPI.reset();
+                        customCrafting.getConfigHandler().loadLang();
+                        customCrafting.getApi().getInventoryAPI().reset();
                         api.getChat().sendMessage(player, "&aReload complete! Reloaded GUIs and languages");
                         guiHandler.close();
                         return true;

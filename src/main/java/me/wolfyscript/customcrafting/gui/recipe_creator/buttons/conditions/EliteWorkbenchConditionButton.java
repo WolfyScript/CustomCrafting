@@ -65,7 +65,7 @@ public class EliteWorkbenchConditionButton extends ActionButton<CCCache> {
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             EliteWorkbenchCondition condition = guiHandler.getCustomCache().getRecipe().getConditions().getEliteCraftingTableCondition();
-            hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.getApi()));
+            hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.inst().getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getEliteWorkbenches().size()) {
                     hashMap.put("%var" + i + "%", condition.getEliteWorkbenches().get(i));

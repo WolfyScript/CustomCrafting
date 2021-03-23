@@ -19,7 +19,7 @@ public class MainMenu extends CCWindow {
 
     @Override
     public void onInit() {
-        DataHandler dataHandler = customCrafting.getRecipeHandler();
+        DataHandler dataHandler = customCrafting.getDataHandler();
         Categories categories = dataHandler.getCategories();
 
         for (String categoryId : categories.getSortedMainCategories()) {
@@ -38,7 +38,7 @@ public class MainMenu extends CCWindow {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         event.setButton(8, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
 
-        DataHandler dataHandler = customCrafting.getRecipeHandler();
+        DataHandler dataHandler = customCrafting.getDataHandler();
         Categories categories = dataHandler.getCategories();
 
         int slot = 0;

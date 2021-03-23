@@ -32,7 +32,7 @@ public class CraftManager {
 
     public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.dataHandler = customCrafting.getRecipeHandler();
+        this.dataHandler = customCrafting.getDataHandler();
     }
 
     public ItemStack preCheckRecipe(ItemStack[] matrix, Player player, boolean isRepair, Inventory inventory, boolean elite, boolean advanced) {

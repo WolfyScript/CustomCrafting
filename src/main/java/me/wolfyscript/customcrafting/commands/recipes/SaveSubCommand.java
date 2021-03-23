@@ -25,7 +25,7 @@ public class SaveSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        WolfyUtilities api = CustomCrafting.getApi();
+        WolfyUtilities api = CustomCrafting.inst().getApi();
         if (sender instanceof Player) {
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
                 Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> {
@@ -49,7 +49,7 @@ public class SaveSubCommand extends AbstractSubCommand {
     @Override
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
-        List<String> recipes = customCrafting.getRecipeHandler().getBukkitNamespacedKeys();
+        List<String> recipes = customCrafting.getDataHandler().getBukkitNamespacedKeys();
         recipes.addAll(Registry.RECIPES.get(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
         return StringUtil.copyPartialMatches(args[args.length - 1], recipes, new ArrayList<>());
     }

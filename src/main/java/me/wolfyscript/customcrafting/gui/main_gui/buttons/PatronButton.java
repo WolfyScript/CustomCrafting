@@ -39,7 +39,7 @@ public class PatronButton extends DummyButton<CCCache> {
         this.head.setItemMeta(skullMeta);
 
 
-        Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.getInst(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.inst(), () -> {
             try {
                 if (!uuid.isEmpty()) {
                     URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");

@@ -44,12 +44,14 @@ public interface ICraftingRecipe {
         return totalAmount;
     }
 
+    @Nullable
+    default Ingredient getIngredients(char key) {
+        return getIngredients().get(key);
+    }
+
     void setIngredients(int slot, Ingredient ingredients);
 
     void setIngredients(char key, Ingredient ingredients);
-
-    @Nullable
-    Ingredient getIngredients(char key);
 
     @Nullable
     Ingredient getIngredients(int slot);

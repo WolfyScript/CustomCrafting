@@ -149,7 +149,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
 
         private <T extends ICustomRecipe<?, ?>> List<T> getAvailable(Stream<T> recipes) {
-            return recipes.filter(recipe -> !recipe.isHidden() && !CustomCrafting.getInst().getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
+            return recipes.filter(recipe -> !recipe.isHidden() && !CustomCrafting.inst().getDataHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 
         synchronized public <T extends ICustomRecipe<?, ?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {

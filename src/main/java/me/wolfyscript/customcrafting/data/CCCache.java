@@ -62,7 +62,7 @@ public class CCCache extends CustomCache {
     private RecipeType<?> recipeType;
 
     public CCCache() {
-        this.customCrafting = CustomCrafting.getInst();
+        this.customCrafting = CustomCrafting.inst();
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;

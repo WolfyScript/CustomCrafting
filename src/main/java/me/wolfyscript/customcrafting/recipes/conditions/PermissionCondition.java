@@ -39,7 +39,7 @@ public class PermissionCondition extends Condition {
         if (option.equals(Conditions.Option.IGNORE)) return true;
         if (player == null) return false;
         String permissionString = permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey());
-        return CustomCrafting.getApi().getPermissions().hasPermission(player, permissionString);
+        return CustomCrafting.inst().getApi().getPermissions().hasPermission(player, permissionString);
     }
 
     @Override

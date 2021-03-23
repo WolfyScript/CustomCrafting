@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 public class DataHandler {
 
-    public static final File DATA_FOLDER = new File(CustomCrafting.getInst().getDataFolder() + File.separator + "data");
+    public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
     private final Categories categories;
     private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
@@ -59,7 +59,7 @@ public class DataHandler {
 
     public void load(boolean update) {
         chat.sendConsoleMessage("$msg.startup.recipes.title$");
-        if (CustomCrafting.hasDataBaseHandler()) {
+        if (CustomCrafting.inst().hasDataBaseHandler()) {
             if (mainConfig.isLocalStorageEnabled()) {
                 if (mainConfig.isLocalStorageBeforeDatabase()) {
                     loadConfigs();
@@ -91,7 +91,7 @@ public class DataHandler {
     }
 
     private void loadDataBase() {
-        DataBaseHandler dataBaseHandler = CustomCrafting.getDataBaseHandler();
+        DataBaseHandler dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
         chat.sendConsoleMessage("- - - - [Database Storage] - - - -");
         try {
             dataBaseHandler.loadItems();
@@ -220,8 +220,9 @@ public class DataHandler {
                 return 5;
             case 36:
                 return 6;
+            default:
+                return (int) Math.sqrt(ingredients.length);
         }
-        return (int) Math.sqrt(ingredients.length);
     }
 
     public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {
@@ -249,7 +250,7 @@ public class DataHandler {
 
     private void isColumnOccupied(List<List<ItemStack>> items, int column) {
         int columnToCheck = column <= -1 ? 0 : --column;
-        if (items.size() > 0 && columnToCheck >= 0 && columnToCheck < items.get(0).size()) {
+        if (!items.isEmpty() && columnToCheck >= 0 && columnToCheck < items.get(0).size()) {
             if (items.parallelStream().anyMatch(item -> item.get(columnToCheck) != null)) return;
             items.forEach(item -> item.remove(columnToCheck));
             isColumnOccupied(items, columnToCheck);

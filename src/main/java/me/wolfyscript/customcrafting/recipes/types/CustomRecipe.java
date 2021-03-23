@@ -30,7 +30,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
 
     public CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.getApi();
+        this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = namespacedKey;
         //Get fields from JsonNode
         this.group = node.path("group").asText("");
@@ -50,7 +50,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
 
     public CustomRecipe() {
         this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.getApi();
+        this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = null;
 
         this.group = "";
@@ -62,7 +62,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
 
     public CustomRecipe(CustomRecipe<?, ?> craftingRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.getApi();
+        this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = craftingRecipe.getNamespacedKey();
 
         this.group = craftingRecipe.getGroup();

@@ -76,13 +76,13 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
     default boolean save(@Nullable Player player) {
         if (getNamespacedKey() != null) {
             try {
-                if (CustomCrafting.hasDataBaseHandler()) {
-                    CustomCrafting.getDataBaseHandler().updateRecipe(this);
+                if (CustomCrafting.inst().hasDataBaseHandler()) {
+                    CustomCrafting.inst().getDataBaseHandler().updateRecipe(this);
                 } else {
                     File file = new File(DataHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
                     file.getParentFile().mkdirs();
                     if (file.exists() || file.createNewFile()) {
-                        JacksonUtil.getObjectWriter(CustomCrafting.getInst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, this);
+                        JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, this);
                     }
                 }
             } catch (IOException e) {
@@ -107,9 +107,9 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
 
     default boolean delete(@Nullable Player player) {
         if (getNamespacedKey() != null) {
-            Bukkit.getScheduler().runTask(CustomCrafting.getInst(), () -> Registry.RECIPES.remove(getNamespacedKey()));
-            if (CustomCrafting.hasDataBaseHandler()) {
-                CustomCrafting.getDataBaseHandler().removeRecipe(getNamespacedKey().getNamespace(), getNamespacedKey().getKey());
+            Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> Registry.RECIPES.remove(getNamespacedKey()));
+            if (CustomCrafting.inst().hasDataBaseHandler()) {
+                CustomCrafting.inst().getDataBaseHandler().removeRecipe(getNamespacedKey().getNamespace(), getNamespacedKey().getKey());
                 player.sendMessage("§aRecipe deleted!");
                 return true;
             } else {

@@ -28,7 +28,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
-        WolfyUtilities api = CustomCrafting.getApi();
+        WolfyUtilities api = CustomCrafting.inst().getApi();
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
@@ -42,7 +42,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
                         guiHandler.getCustomCache().getKnowledgeBook().setResearchItems(new ArrayList<>());
                     });
                     //Reload Recipes
-                    DataHandler dataHandler = customCrafting.getRecipeHandler();
+                    DataHandler dataHandler = customCrafting.getDataHandler();
                     dataHandler.saveData();
                     dataHandler.load(false);
                     dataHandler.indexRecipeItems();

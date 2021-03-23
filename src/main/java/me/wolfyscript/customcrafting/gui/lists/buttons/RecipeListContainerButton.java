@@ -39,7 +39,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
     public RecipeListContainerButton(int slot, CustomCrafting customCrafting) {
         super("recipe_list.container_" + slot, null);
         this.customCrafting = customCrafting;
-        this.api = CustomCrafting.getApi();
+        this.api = CustomCrafting.inst().getApi();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 if (((InventoryClickEvent) event).isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
                     cache.setRecipeType(recipe.getRecipeType());
-                    if (customCrafting.getRecipeHandler().loadRecipeIntoCache(recipe, guiHandler)) {
+                    if (customCrafting.getDataHandler().loadRecipeIntoCache(recipe, guiHandler)) {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new me.wolfyscript.utilities.util.NamespacedKey("recipe_creator", guiHandler.getCustomCache().getRecipeType().getCreatorID())), 1);
                     } else {
                         api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "recipe_editor"), "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
@@ -87,13 +87,13 @@ public class RecipeListContainerButton extends Button<CCCache> {
             } else {
                 if (!id.isEmpty() && id.contains(":")) {
                     me.wolfyscript.utilities.util.NamespacedKey namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
-                    if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(namespacedKey)) {
-                        customCrafting.getRecipeHandler().getDisabledRecipes().remove(namespacedKey);
+                    if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
+                        customCrafting.getDataHandler().getDisabledRecipes().remove(namespacedKey);
                     } else {
-                        customCrafting.getRecipeHandler().getDisabledRecipes().add(namespacedKey);
+                        customCrafting.getDataHandler().getDisabledRecipes().add(namespacedKey);
                         for (Player player1 : Bukkit.getOnlinePlayers()) {
                             if (namespacedKey != null) {
-                                player1.undiscoverRecipe(namespacedKey.toBukkit(CustomCrafting.getInst()));
+                                player1.undiscoverRecipe(namespacedKey.toBukkit(CustomCrafting.inst()));
                             }
                         }
                     }
@@ -113,15 +113,15 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
                 itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
-                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())) {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
+                if (customCrafting.getDataHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())) {
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.inst().getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.inst().getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
                 }
                 itemB.addLoreLine("");
                 itemB.addLoreLine("§8" + recipe.getRecipeType().name());
-                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.edit$")));
-                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.delete$")));
+                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.inst().getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.edit$")));
+                itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.inst().getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.delete$")));
                 inventory.setItem(slot, itemB.create());
             }
         } else {
@@ -135,10 +135,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB = new ItemBuilder(recipe.getResult());
                 }
                 itemB.addLoreLine("§8" + ((Keyed) recipe).getKey().toString());
-                if (customCrafting.getRecipeHandler().getDisabledRecipes().contains(me.wolfyscript.utilities.util.NamespacedKey.of(((Keyed) recipe).getKey()))) {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
+                if (customCrafting.getDataHandler().getDisabledRecipes().contains(me.wolfyscript.utilities.util.NamespacedKey.of(((Keyed) recipe).getKey()))) {
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.inst().getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {
-                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
+                    itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.inst().getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.enabled$")));
                 }
                 inventory.setItem(slot, itemB.create());
             }

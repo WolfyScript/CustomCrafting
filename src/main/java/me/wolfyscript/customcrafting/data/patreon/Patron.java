@@ -23,7 +23,7 @@ public class Patron {
     public Patron(String name, String uuid, @NotNull ItemStack head, Patreon.Tier tier) {
         this.head = head;
         //https://sessionserver.mojang.com/session/minecraft/profile/db61eab07fb148db986f125e73787976?unsigned=false
-        Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.getInst(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.inst(), () -> {
             try {
                 if (!uuid.isEmpty()) {
                     URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");

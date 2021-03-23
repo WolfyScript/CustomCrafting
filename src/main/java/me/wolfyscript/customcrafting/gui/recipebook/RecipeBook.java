@@ -111,7 +111,7 @@ public class RecipeBook extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
-        DataHandler dataHandler = customCrafting.getRecipeHandler();
+        DataHandler dataHandler = customCrafting.getDataHandler();
         Player player = event.getPlayer();
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         NamespacedKey grayBtnKey = new NamespacedKey("none", playerStore.isDarkMode() ? "glass_gray" : "glass_white");

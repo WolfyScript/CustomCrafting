@@ -57,7 +57,7 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             WorldBiomeCondition condition = (WorldBiomeCondition) guiHandler.getCustomCache().getRecipe().getConditions().getByID("world_biome");
-            hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.getApi()));
+            hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.inst().getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getBiomes().size()) {
                     hashMap.put("%var" + i + "%", condition.getBiomes().get(i));
