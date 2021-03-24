@@ -27,7 +27,11 @@ public class ResultMenu extends CCWindow {
             guiHandler.openPreviousWindow();
             return true;
         })));
-
+        registerButton(new ActionButton<>("tags", new ButtonState<>("recipe_creator", "tags", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            cache.getTagSettingsCache().setRecipeItemStack(cache.getRecipe().getResult());
+            guiHandler.openWindow("tag_settings");
+            return true;
+        })));
         registerButton(new ActionButton<>("target", Material.ARROW, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
 
             return true;
@@ -53,7 +57,7 @@ public class ResultMenu extends CCWindow {
         }
         update.setButton(47, "target");
         update.setButton(49, "extensions");
-        update.setButton(51, "recipe_creator", "tags");
+        update.setButton(51, "tags");
 
 
     }

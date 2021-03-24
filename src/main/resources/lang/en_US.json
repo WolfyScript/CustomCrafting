@@ -2556,7 +2556,23 @@
         }
       },
       "tag_settings": {
-        "gui_name": "&6&lTag Settings"
+        "gui_name": "&8&lTag Settings",
+        "items": {
+          "add_tag_list": {
+            "name": "&6&lAdd Tag &8[&7List&8]",
+            "lore": [
+              "&7Add Tag from List"
+            ]
+          },
+          "tag_container": {
+            "name": "&6&lTag",
+            "lore": [
+              "&7%namespaced_key%",
+              "",
+              "&7[&aShift-Right-Click&7] Remove Tag"
+            ]
+          }
+        }
       },
       "tag_list": {
         "gui_name": "&8&lTags",
@@ -2566,6 +2582,13 @@
           },
           "previous_page": {
             "name": "&7&lPrevious"
+          },
+          "tag": {
+            "name": "&6&l%namespaced_key%",
+            "lore": [
+              "",
+              "&7[&aClick&7] &7Add Tag"
+            ]
           }
         }
       }

@@ -42,11 +42,11 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
                         }
                         return false;
                     } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK)) {
-                        if (eliteWorkbench.getResult() != null && customCrafting.getRecipeUtils().has(event.getWhoClicked().getUniqueId())) {
+                        if (eliteWorkbench.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
                             if (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult())) {
-                                customCrafting.getRecipeUtils().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
+                                customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
                                 eliteWorkbench.setResult(null);
-                                customCrafting.getRecipeUtils().remove(event.getWhoClicked().getUniqueId());
+                                customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
                             }
                         }
                     }
@@ -66,7 +66,7 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
         }, (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
             EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
             EliteWorkbenchData eliteWorkbenchData = eliteWorkbench.getEliteWorkbenchData();
-            ItemStack result = customCrafting.getRecipeUtils().preCheckRecipe(eliteWorkbench.getContents(), player, false, inventory, true, eliteWorkbenchData.isAdvancedRecipes());
+            ItemStack result = customCrafting.getCraftManager().preCheckRecipe(eliteWorkbench.getContents(), player, inventory, true, eliteWorkbenchData.isAdvancedRecipes());
             eliteWorkbench.setResult(result);
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
