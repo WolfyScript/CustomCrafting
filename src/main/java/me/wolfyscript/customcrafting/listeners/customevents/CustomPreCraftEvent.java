@@ -11,20 +11,14 @@ import java.util.List;
 public class CustomPreCraftEvent extends CustomCraftEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    private final boolean isRepair;
     private me.wolfyscript.customcrafting.utils.recipe_item.Result<SlotResultTarget> result;
     private List<List<ItemStack>> ingredients;
 
-    public CustomPreCraftEvent(boolean cancelled, boolean isRepair, CraftingRecipe<?> craftingRecipe, Inventory inventory, List<List<ItemStack>> ingredients) {
+    public CustomPreCraftEvent(boolean cancelled, CraftingRecipe<?> craftingRecipe, Inventory inventory, List<List<ItemStack>> ingredients) {
         super(craftingRecipe, inventory);
-        this.isRepair = isRepair;
         this.result = craftingRecipe.getResult();
         this.ingredients = ingredients;
         setCancelled(cancelled);
-    }
-
-    public boolean isRepair() {
-        return isRepair;
     }
 
     public me.wolfyscript.customcrafting.utils.recipe_item.Result<SlotResultTarget> getResult() {

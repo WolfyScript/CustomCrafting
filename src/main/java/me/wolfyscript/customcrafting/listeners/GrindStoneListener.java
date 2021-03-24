@@ -246,14 +246,7 @@ public class GrindStoneListener implements Listener {
         GrindstoneData grindstoneData = new GrindstoneData(foundRecipe, validItem, finalInputTop.get(), finalInputBottom.get());
         CustomItem result = new CustomItem(Material.AIR);
         if (foundRecipe != null) {
-            HashMap<NamespacedKey, CustomItem> preCraftedItem = precraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
-            if (preCraftedItem.get(foundRecipe.getNamespacedKey()) == null) {
-                result = foundRecipe.getResult().getCustomItem(player);
-                preCraftedItem.put(foundRecipe.getNamespacedKey(), result);
-                precraftedItems.put(player.getUniqueId(), preCraftedItem);
-            } else {
-                result = preCraftedItem.get(foundRecipe.getNamespacedKey());
-            }
+            result = foundRecipe.getResult().getItem(player, inventoryView.getTopInventory().getStorageContents()).orElse(new CustomItem(Material.AIR));
         }
         return new Pair<>(result, grindstoneData);
     }

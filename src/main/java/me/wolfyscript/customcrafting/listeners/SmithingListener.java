@@ -12,6 +12,7 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -73,11 +74,11 @@ public class SmithingListener implements Listener {
             assert base != null;
             assert addition != null;
 
-            CustomItem result = null;
+            CustomItem result;
 
             HashMap<NamespacedKey, CustomItem> preCraftedItem = preCraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
             if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
-                result = recipe.getResult().getCustomItem(player);
+                result = recipe.getResult().getItem(player, new ItemStack[]{base, addition}).orElse(new CustomItem(Material.AIR));
                 preCraftedItem.put(recipe.getNamespacedKey(), result);
                 preCraftedItems.put(player.getUniqueId(), preCraftedItem);
             } else {

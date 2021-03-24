@@ -9,11 +9,11 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,7 +26,6 @@ import java.util.*;
 public class CraftManager {
 
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
-    private final Map<UUID, Map<NamespacedKey, CustomItem>> preCraftedItems = new HashMap<>();
     private final CustomCrafting customCrafting;
     private final DataHandler dataHandler;
 
@@ -35,34 +34,28 @@ public class CraftManager {
         this.dataHandler = customCrafting.getDataHandler();
     }
 
-    public ItemStack preCheckRecipe(ItemStack[] matrix, Player player, boolean isRepair, Inventory inventory, boolean elite, boolean advanced) {
+    public ItemStack preCheckRecipe(ItemStack[] matrix, Player player, Inventory inventory, boolean elite, boolean advanced) {
         remove(player.getUniqueId());
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             return null;
         }
         List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
         Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
-        CustomItem customItem = Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory, dataHandler, isRepair)).filter(Objects::nonNull).findFirst().orElse(null);
+        CustomItem customItem = Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, matrix, ingredients, player, targetBlock, inventory, dataHandler)).filter(Objects::nonNull).findFirst().orElse(null);
         return customItem == null ? null : customItem.create();
     }
 
-    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> matrix, Player player, Block block, Inventory inventory, DataHandler dataHandler, boolean isRepair) {
+    public CustomItem checkRecipe(CraftingRecipe<?> recipe, ItemStack[] matrix, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory, DataHandler dataHandler) {
         if (dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey())) {
             return null; //No longer call Event if recipe is disabled!
         }
-        CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix) : null;
-        CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(craftingData == null, isRepair, recipe, inventory, matrix);
+        CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(ingredients) : null;
+        CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(craftingData == null, recipe, inventory, ingredients);
         Bukkit.getPluginManager().callEvent(customPreCraftEvent); //The event is still called even if the recipe is invalid! This will allow other plugins to manipulate their own recipes or use their own checks!
         if (!customPreCraftEvent.isCancelled()) {
             put(player.getUniqueId(), craftingData);
-            Map<NamespacedKey, CustomItem> preCraftedItem = getPreCraftedItems(player.getUniqueId());
-            if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
-                CustomItem result = customPreCraftEvent.getResult().getCustomItem(player);
-                preCraftedItem.put(recipe.getNamespacedKey(), result);
-                return result;
-            } else {
-                return preCraftedItem.get(recipe.getNamespacedKey());
-            }
+            return customPreCraftEvent.getResult().getItem(player, matrix).orElse(new CustomItem(Material.AIR));
+
         }
         return null;
     }
@@ -74,7 +67,6 @@ public class CraftManager {
             CraftingData craftingData = preCraftedRecipes.get(event.getWhoClicked().getUniqueId());
             CraftingRecipe<?> recipe = craftingData.getRecipe();
             if (recipe != null && !ItemUtils.isAirOrNull(result)) {
-                //TODO: Make as much as possible async and prevent items from bugging when crafting.
                 Player player = (Player) event.getWhoClicked();
                 Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
                     CCPlayerData playerStore = PlayerUtil.getStore(player);
@@ -92,8 +84,8 @@ public class CraftManager {
                     List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
                     int possible = Math.min(InventoryUtils.getInventorySpace(inventoryView.getBottomInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData));
                     if (possible > 0) {
+                        RandomCollection<CustomItem> results = recipe.getResult().getRandomChoices(player, matrix);
                         recipe.removeMatrix(ingredients, inventory, possible, craftingData);
-                        RandomCollection<CustomItem> results = recipe.getResult().getRandomChoices(player);
                         for (int i = 0; i < possible; i++) {
                             inventoryView.getBottomInventory().addItem(results.next().create());
                         }
@@ -109,21 +101,12 @@ public class CraftManager {
                                 cursor.setAmount(cursor.getAmount() + result.getAmount());
                             }
                         }, 2);
-                        getPreCraftedItems(player.getUniqueId()).remove(recipe.getNamespacedKey());
+                        recipe.getResult().removeCachedItem(player);
                     }
-
                 }
             }
             remove(event.getWhoClicked().getUniqueId());
         }
-    }
-
-    private Map<NamespacedKey, CustomItem> getPreCraftedItems(UUID uuid) {
-        if (preCraftedItems.containsKey(uuid)) {
-            return preCraftedItems.get(uuid);
-        }
-        preCraftedItems.put(uuid, new HashMap<>());
-        return preCraftedItems.get(uuid);
     }
 
     public void put(UUID uuid, CraftingData craftingData) {

@@ -40,7 +40,7 @@ public class CraftListener implements Listener {
 
     public CraftListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.craftManager = customCrafting.getRecipeUtils();
+        this.craftManager = customCrafting.getCraftManager();
         this.api = WolfyUtilities.get(customCrafting);
     }
 
@@ -87,7 +87,7 @@ public class CraftListener implements Listener {
         try {
             DataHandler dataHandler = customCrafting.getDataHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
-            ItemStack result = craftManager.preCheckRecipe(matrix, player, e.isRepair(), e.getInventory(), false, true);
+            ItemStack result = craftManager.preCheckRecipe(matrix, player, e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
                 e.getInventory().setResult(result);
                 return;

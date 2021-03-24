@@ -10,10 +10,10 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
+import me.wolfyscript.customcrafting.gui.*;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
-import me.wolfyscript.customcrafting.handlers.InventoryHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -71,8 +71,8 @@ public class CustomCrafting extends JavaPlugin {
     private final Patreon patreon;
     private final ChatUtils chatUtils;
     //The main WolfyUtilities instance
-    private WolfyUtilities api;
-    private InventoryHandler inventoryHandler;
+    private final WolfyUtilities api;
+    private final Chat chat;
     private CraftManager craftManager;
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
@@ -86,6 +86,12 @@ public class CustomCrafting extends JavaPlugin {
         super();
         instance = this;
         currentVersion = instance.getDescription().getVersion();
+
+        api = WolfyUtilities.get(this, false);
+        this.chat = api.getChat();
+        this.chat.setIN_GAME_PREFIX("§7[§3CC§7] ");
+        this.chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
+        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
 
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon(this);
@@ -109,6 +115,58 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
         Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
         CustomPlayerData.register(new CCPlayerData.Provider());
+    }
+
+    @Override
+    public void onEnable() {
+        this.api.initialize();
+        writeBanner();
+        writePatreonCredits();
+        getLogger().info("------------------------------------------------------------------------");
+
+        configHandler = new ConfigHandler(this);
+        if (configHandler.getConfig().isDatabaseEnabled()) {
+            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
+        }
+        configHandler.loadDefaults();
+        dataHandler = new DataHandler(this);
+        craftManager = new CraftManager(this);
+
+        getLogger().info("------------------------------------------------------------------------");
+        registerListeners();
+        registerCommands();
+        registerInventories();
+
+        cauldrons = new Cauldrons(this);
+        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
+            chat.sendConsoleMessage("$msg.startup.placeholder$");
+            new PlaceHolder(this).register();
+        }
+        //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
+        if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
+            loadRecipesAndItems();
+        }
+        //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
+        if (!patreon.isPatreon()) {
+            checkUpdate(null);
+        }
+        //Load Metrics
+        Metrics metrics = new Metrics(this, 3211);
+        metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
+        metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
+        getLogger().info("------------------------------------------------------------------------");
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            configHandler.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cauldrons.endAutoSaveTask();
+        cauldrons.save();
+        getDataHandler().onSave();
     }
 
     private void writeBanner() {
@@ -151,7 +209,6 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new CraftListener(this), this);
         pM.registerEvents(new FurnaceListener(this), this);
         pM.registerEvents(new AnvilListener(this), this);
-        //getServer().getPluginManager().registerEvents(new EnchantListener(), this);
         pM.registerEvents(new CauldronListener(this), this);
         pM.registerEvents(new EliteWorkbenchListener(api), this);
         pM.registerEvents(new GrindStoneListener(this), this);
@@ -177,63 +234,17 @@ public class CustomCrafting extends JavaPlugin {
         }
     }
 
-    @Override
-    public void onEnable() {
-        api = WolfyUtilities.get(this); //Must be initialized here, because it registers Events!
-        Chat chat = api.getChat();
-        chat.setIN_GAME_PREFIX("§7[§3CC§7] ");
-        chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
-        api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
-
-        writeBanner();
-        writePatreonCredits();
-        getLogger().info("------------------------------------------------------------------------");
-
-        configHandler = new ConfigHandler(this);
-        if (configHandler.getConfig().isDatabaseEnabled()) {
-            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
-        }
-        configHandler.loadDefaults();
-        dataHandler = new DataHandler(this);
-        craftManager = new CraftManager(this);
-        inventoryHandler = new InventoryHandler(this);
-
-        getLogger().info("------------------------------------------------------------------------");
-        registerListeners();
-        registerCommands();
-
-        inventoryHandler.init();
-
-        cauldrons = new Cauldrons(this);
-        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
-            chat.sendConsoleMessage("$msg.startup.placeholder$");
-            new PlaceHolder(this).register();
-        }
-        //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
-        if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
-            loadRecipesAndItems();
-        }
-        //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
-        if (!patreon.isPatreon()) {
-            checkUpdate(null);
-        }
-        //Load Metrics
-        Metrics metrics = new Metrics(this, 3211);
-        metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
-        metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
-        getLogger().info("------------------------------------------------------------------------");
-    }
-
-    @Override
-    public void onDisable() {
-        try {
-            configHandler.save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cauldrons.endAutoSaveTask();
-        cauldrons.save();
-        getDataHandler().onSave();
+    private void registerInventories() {
+        InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
+        api.getChat().sendConsoleMessage("$msg.startup.inventories$");
+        invAPI.registerCluster(new MainCluster(invAPI, this));
+        invAPI.registerCluster(new RecipeCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new RecipeBookCluster(invAPI, this));
+        invAPI.registerCluster(new EliteCraftingCluster(invAPI, this));
+        invAPI.registerCluster(new ItemCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
     }
 
     public void loadRecipesAndItems() {
@@ -265,11 +276,7 @@ public class CustomCrafting extends JavaPlugin {
         return dataBaseHandler;
     }
 
-    public InventoryHandler getInventoryHandler() {
-        return inventoryHandler;
-    }
-
-    public CraftManager getRecipeUtils() {
+    public CraftManager getCraftManager() {
         return craftManager;
     }
 
@@ -286,7 +293,6 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public void checkUpdate(@Nullable Player player) {
-        Chat chat = api.getChat();
         new Thread(() -> {
             try {
                 HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();

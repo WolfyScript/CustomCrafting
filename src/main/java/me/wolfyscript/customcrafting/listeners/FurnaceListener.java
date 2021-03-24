@@ -41,21 +41,15 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() != null && invs.contains(event.getClickedInventory().getType())) {
-            if (event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
-                Material material = Material.FURNACE;
-                Location location = event.getInventory().getLocation();
-                if (location != null) {
-                    material = location.getBlock().getType();
-                }
-                if (event.getCursor() == null) return;
-                Optional<CustomItem> fuelItem = Registry.CUSTOM_ITEMS.values().parallelStream().filter(customItem -> customItem.getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
-                if (fuelItem.isPresent()) {
-                    if (fuelItem.get().getAllowedBlocks().contains(material)) {
-                        InventoryUtils.calculateClickedSlot(event);
-                    } else {
-                        event.setCancelled(true);
-                    }
+        if (event.getClickedInventory() != null && invs.contains(event.getClickedInventory().getType()) && event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
+            Location location = event.getInventory().getLocation();
+            if (event.getCursor() == null) return;
+            Optional<CustomItem> fuelItem = Registry.CUSTOM_ITEMS.values().parallelStream().filter(customItem -> customItem.getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
+            if (fuelItem.isPresent()) {
+                if (fuelItem.get().getAllowedBlocks().contains(location != null ? location.getBlock().getType() : Material.FURNACE)) {
+                    InventoryUtils.calculateClickedSlot(event);
+                } else {
+                    event.setCancelled(true);
                 }
             }
         }
@@ -65,15 +59,11 @@ public class FurnaceListener implements Listener {
     public void onBurn(FurnaceBurnEvent event) {
         ItemStack input = event.getFuel();
         for (CustomItem customItem : Registry.CUSTOM_ITEMS.values()) {
-            if (customItem.getBurnTime() > 0) {
-                if (customItem.isSimilar(input)) {
-                    if (customItem.getAllowedBlocks().contains(event.getBlock().getType())) {
-                        event.setCancelled(false);
-                        event.setBurning(true);
-                        event.setBurnTime(customItem.getBurnTime());
-                        break;
-                    }
-                }
+            if (customItem.getBurnTime() > 0 && customItem.isSimilar(input) && customItem.getAllowedBlocks().contains(event.getBlock().getType())) {
+                event.setCancelled(false);
+                event.setBurning(true);
+                event.setBurnTime(customItem.getBurnTime());
+                break;
             }
         }
     }
@@ -97,7 +87,7 @@ public class FurnaceListener implements Listener {
         List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult()).stream().filter(recipe -> type.isInstance(recipe) && recipe.getResult().isSimilar(event.getResult())).collect(Collectors.toList());
         for (Recipe recipe : recipes) {
             if (!(recipe instanceof Keyed)) continue;
-            NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) recipe).getKey());
+            NamespacedKey namespacedKey = NamespacedKey.fromBukkit(((Keyed) recipe).getKey());
             if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
                 event.setCancelled(true);
                 continue;
@@ -107,7 +97,7 @@ public class FurnaceListener implements Listener {
                 if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                     event.setCancelled(false);
                     if (customRecipe.getResult().size() > 1) {
-                        CustomItem item = customRecipe.getResult().getItem().orElse(new CustomItem(Material.AIR));
+                        CustomItem item = customRecipe.getResult().getItem(new ItemStack[0]).orElse(new CustomItem(Material.AIR));
                         if (currentResultItem == null) {
                             event.setResult(item.create());
                             break;
@@ -128,17 +118,16 @@ public class FurnaceListener implements Listener {
     }
 
     private boolean isRecipeValid(Material furnaceType, CustomRecipe<?, ?> recipe) {
-        if (recipe instanceof CustomCookingRecipe) {
-            switch (furnaceType) {
-                case BLAST_FURNACE:
-                    return recipe instanceof CustomBlastRecipe;
-                case SMOKER:
-                    return recipe instanceof CustomSmokerRecipe;
-                case FURNACE:
-                    return recipe instanceof CustomFurnaceRecipe;
-            }
+        switch (furnaceType) {
+            case BLAST_FURNACE:
+                return recipe instanceof CustomBlastRecipe;
+            case SMOKER:
+                return recipe instanceof CustomSmokerRecipe;
+            case FURNACE:
+                return recipe instanceof CustomFurnaceRecipe;
+            default:
+                return false;
         }
-        return false;
     }
 
 

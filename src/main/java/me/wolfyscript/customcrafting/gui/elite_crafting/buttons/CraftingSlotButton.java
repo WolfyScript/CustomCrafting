@@ -22,7 +22,7 @@ public class CraftingSlotButton extends ItemInputButton<CCCache> {
                         itemSlot = startSlot + i + (i / gridSize) * (9 - gridSize);
                         eliteWorkbench.getContents()[i] = inventory.getItem(itemSlot);
                     }
-                    ItemStack result = customCrafting.getRecipeUtils().preCheckRecipe(eliteWorkbench.getContents(), player, false, inventory, true, eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes());
+                    ItemStack result = customCrafting.getCraftManager().preCheckRecipe(eliteWorkbench.getContents(), player, inventory, true, eliteWorkbench.getEliteWorkbenchData().isAdvancedRecipes());
                     eliteWorkbench.setResult(result);
                 }, null,
                 (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
