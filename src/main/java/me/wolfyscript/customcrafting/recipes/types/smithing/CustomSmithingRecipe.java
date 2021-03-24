@@ -55,6 +55,20 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
         return Types.SMITHING;
     }
 
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        if (slot == 0) {
+            setBase(ingredient);
+        } else {
+            setAddition(ingredient);
+        }
+    }
+
+    @Override
+    public Ingredient getIngredient(int slot) {
+        return slot == 0 ? getBase() : getAddition();
+    }
+
     public Ingredient getAddition() {
         return addition;
     }

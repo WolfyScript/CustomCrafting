@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -52,6 +53,16 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
     Result<T> getResult();
 
     void setResult(Result<T> result);
+
+    /**
+     * Used to set Ingredient from cache of the RecipeCreator
+     *
+     * @param slot       The slot of the ingredient in the recipe.
+     * @param ingredient The ingredient to set
+     */
+    void setIngredient(int slot, Ingredient ingredient);
+
+    Ingredient getIngredient(int slot);
 
     RecipePriority getPriority();
 

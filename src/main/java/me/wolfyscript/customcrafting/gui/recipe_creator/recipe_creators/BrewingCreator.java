@@ -421,6 +421,6 @@ public class BrewingCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        return !cache.getBrewingRecipe().getIngredients().isEmpty();
+        return !cache.getBrewingRecipe().getIngredient().isEmpty();
     }
 }

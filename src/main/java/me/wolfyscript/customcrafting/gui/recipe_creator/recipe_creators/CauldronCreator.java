@@ -233,6 +233,6 @@ public class CauldronCreator extends RecipeCreator {
     @Override
     public boolean validToSave(CCCache cache) {
         CauldronRecipe config = cache.getCauldronRecipe();
-        return !config.getIngredients().isEmpty() && !config.getResult().isEmpty();
+        return !config.getIngredient().isEmpty() && !config.getResult().isEmpty();
     }
 }

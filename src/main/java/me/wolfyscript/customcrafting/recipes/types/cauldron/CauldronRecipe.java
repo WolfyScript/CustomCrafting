@@ -71,7 +71,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, NoneResultTarge
     public CauldronRecipe(CauldronRecipe cauldronRecipe) {
         super(cauldronRecipe);
         this.result = cauldronRecipe.getResult();
-        this.ingredients = cauldronRecipe.getIngredients();
+        this.ingredients = cauldronRecipe.getIngredient();
         this.dropItems = cauldronRecipe.dropItems();
         this.xp = cauldronRecipe.getXp();
         this.cookingTime = cauldronRecipe.getCookingTime();
@@ -121,12 +121,12 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, NoneResultTarge
         this.xp = xp;
     }
 
-    public Ingredient getIngredients() {
-        return ingredients;
+    public Ingredient getIngredient() {
+        return getIngredient(0);
     }
 
-    public void setIngredients(Ingredient ingredients) {
-        this.ingredients = ingredients;
+    public void setIngredient(Ingredient ingredients) {
+        setIngredient(0, ingredients);
     }
 
     public boolean dropItems() {
@@ -139,7 +139,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, NoneResultTarge
 
     public List<Item> checkRecipe(List<Item> items) {
         List<Item> validItems = new ArrayList<>();
-        for (CustomItem customItem : getIngredients().getChoices()) {
+        for (CustomItem customItem : getIngredient().getChoices()) {
             for (Item item : items) {
                 if (customItem.isSimilar(item.getItemStack(), isExactMeta()) && customItem.getAmount() == item.getItemStack().getAmount()) {
                     validItems.add(item);
@@ -150,7 +150,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, NoneResultTarge
         if (validItems.size() >= ingredients.size()) {
             return validItems;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public CustomItem getHandItem() {
@@ -164,6 +164,16 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, NoneResultTarge
     @Override
     public RecipeType<CauldronRecipe> getRecipeType() {
         return Types.CAULDRON;
+    }
+
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        this.ingredients = ingredient;
+    }
+
+    @Override
+    public Ingredient getIngredient(int slot) {
+        return this.ingredients;
     }
 
     @Override
@@ -189,7 +199,7 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, NoneResultTarge
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        Ingredient ingredients = getIngredients();
+        Ingredient ingredients = getIngredient();
         int invSlot;
         for (int i = 0; i < 6; i++) {
             invSlot = 10 + i + (i / 3) * 6;

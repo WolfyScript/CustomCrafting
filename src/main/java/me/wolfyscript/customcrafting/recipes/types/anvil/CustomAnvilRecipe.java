@@ -123,27 +123,11 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
     }
 
     public Ingredient getInputLeft() {
-        return getInput(0);
-    }
-
-    public void setInputLeft(Ingredient inputLeft) {
-        ingredients.put(0, inputLeft);
+        return getIngredient(0);
     }
 
     public Ingredient getInputRight() {
-        return getInput(1);
-    }
-
-    public void setInputRight(Ingredient inputRight) {
-        ingredients.put(1, inputRight);
-    }
-
-    public void setInput(int slot, Ingredient input) {
-        ingredients.put(slot, input);
-    }
-
-    public Ingredient getInput(int slot) {
-        return ingredients.get(slot);
+        return getIngredient(1);
     }
 
     public boolean hasInputLeft() {
@@ -197,6 +181,16 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
     @Override
     public RecipeType<CustomAnvilRecipe> getRecipeType() {
         return Types.ANVIL;
+    }
+
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        ingredients.put(slot, ingredient);
+    }
+
+    @Override
+    public Ingredient getIngredient(int slot) {
+        return ingredients.get(slot);
     }
 
     @Override

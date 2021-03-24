@@ -55,6 +55,20 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultT
         return Types.GRINDSTONE;
     }
 
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        if (slot == 0) {
+            setInputTop(ingredient);
+        } else {
+            setInputBottom(ingredient);
+        }
+    }
+
+    @Override
+    public Ingredient getIngredient(int slot) {
+        return slot == 0 ? getInputTop() : getInputBottom();
+    }
+
     public Ingredient getInputTop() {
         return inputTop;
     }

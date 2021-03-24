@@ -64,7 +64,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public Ingredient getIngredients(int slot) {
+    public Ingredient getIngredient(int slot) {
         return getIngredients(LETTERS[slot]);
     }
 
@@ -74,7 +74,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void setIngredients(char key, Ingredient ingredients) {
+    public void setIngredient(char key, Ingredient ingredients) {
         if (ingredients == null) {
             this.ingredients.remove(key);
         } else {
@@ -84,8 +84,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     }
 
     @Override
-    public void setIngredients(int slot, Ingredient ingredients) {
-        setIngredients(LETTERS[slot], ingredients);
+    public void setIngredient(int slot, Ingredient ingredients) {
+        setIngredient(LETTERS[slot], ingredients);
     }
 
     @Override
@@ -103,7 +103,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         if (!getIngredients().isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < bookSquaredGrid; i++) {
-                Ingredient ingredient = getIngredients(i);
+                Ingredient ingredient = getIngredient(i);
                 if (ingredient != null) {
                     ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
                 }

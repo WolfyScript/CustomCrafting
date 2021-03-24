@@ -65,8 +65,18 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         return this.source;
     }
 
-    public void setSource(Ingredient source) {
-        this.source = source;
+    @Override
+    public Ingredient getIngredient(int slot) {
+        return this.source;
+    }
+
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        this.source = ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        setIngredient(0, ingredient);
     }
 
     public void setCookingTime(int cookingTime) {

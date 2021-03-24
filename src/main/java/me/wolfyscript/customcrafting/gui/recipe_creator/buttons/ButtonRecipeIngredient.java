@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.IngredientMenu;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -16,7 +15,7 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
 
     public ButtonRecipeIngredient(int recipeSlot) {
         super("recipe.ingredient_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
-            Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
+            Ingredient ingredient = cache.getRecipe().getIngredient(recipeSlot);
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 cache.getIngredientData().setSlot(recipeSlot);
                 if (ingredient != null) {
@@ -31,7 +30,7 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             }
             return ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
-            Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
+            Ingredient ingredient = cache.getRecipe().getIngredient(recipeSlot);
             if (ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty()) {
                 return;
             }
@@ -40,11 +39,11 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             }
             if (ingredient == null) {
                 ingredient = new Ingredient();
-                IngredientMenu.setIngredient(cache, ingredient, recipeSlot);
+                cache.getRecipe().setIngredient(recipeSlot, ingredient);
             }
             ingredient.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Ingredient ingredient = IngredientMenu.getIngredient(cache, recipeSlot);
+            Ingredient ingredient = cache.getRecipe().getIngredient(recipeSlot);
             return ingredient != null ? ingredient.getItemStack() : new ItemStack(Material.AIR);
         }));
     }

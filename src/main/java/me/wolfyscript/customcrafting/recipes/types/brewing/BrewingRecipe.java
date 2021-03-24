@@ -122,7 +122,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
 
     public BrewingRecipe(BrewingRecipe brewingRecipe) {
         super(brewingRecipe);
-        this.ingredients = brewingRecipe.getIngredients();
+        this.ingredients = brewingRecipe.getIngredient();
         this.fuelCost = brewingRecipe.getFuelCost();
         this.brewTime = brewingRecipe.getBrewTime();
 
@@ -144,6 +144,32 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
         return Types.BREWING_STAND;
     }
 
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        this.ingredients = ingredient;
+    }
+
+    @Override
+    public Ingredient getIngredient(int slot) {
+        return this.ingredients;
+    }
+
+    public Ingredient getIngredient() {
+        return getIngredient(0);
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        setIngredient(0, ingredient);
+    }
+
+    public Ingredient getAllowedItems() {
+        return allowedItems;
+    }
+
+    public void setAllowedItems(Ingredient allowedItems) {
+        this.allowedItems = allowedItems;
+    }
+
     public int getFuelCost() {
         return fuelCost;
     }
@@ -158,22 +184,6 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
 
     public void setBrewTime(int brewTime) {
         this.brewTime = brewTime;
-    }
-
-    public Ingredient getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(Ingredient ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public Ingredient getAllowedItems() {
-        return allowedItems;
-    }
-
-    public void setAllowedItems(Ingredient allowedItems) {
-        this.allowedItems = allowedItems;
     }
 
     public int getDurationChange() {
@@ -323,14 +333,14 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
             if (getAllowedItems().isEmpty()) {
                 return Collections.singletonList(placeHolderPotion);
             }
-            return getIngredients().getChoices();
+            return getIngredient().getChoices();
         }
         return this.getResult().getChoices();
     }
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_3")).setVariants(guiHandler, getIngredients());
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_3")).setVariants(guiHandler, getIngredient());
         if (!getAllowedItems().isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_0")).setVariants(guiHandler, getAllowedItems());
         } else {

@@ -2561,7 +2561,13 @@
           "add_tag_list": {
             "name": "&6&lAdd Tag &8[&7List&8]",
             "lore": [
-              "&7Add Tag from List"
+              "&7Add Tag from GUI List"
+            ]
+          },
+          "add_tag_chat": {
+            "name": "&6&lAdd Tag &8[&7Chat&8]",
+            "lore": [
+              "&7Add Tag via Chat input"
             ]
           },
           "tag_container": {

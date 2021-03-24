@@ -49,12 +49,7 @@ public interface ICraftingRecipe {
         return getIngredients().get(key);
     }
 
-    void setIngredients(int slot, Ingredient ingredients);
-
-    void setIngredients(char key, Ingredient ingredients);
-
-    @Nullable
-    Ingredient getIngredients(int slot);
+    void setIngredient(char key, Ingredient ingredients);
 
     Map<Character, Ingredient> getIngredients();
 

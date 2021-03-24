@@ -109,7 +109,7 @@ public class BrewingStandListener implements Listener {
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
                             Registry.RECIPES.getAvailable(Types.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
-                                Optional<CustomItem> optional = recipe.getIngredients().check(ingredient, recipe.isExactMeta());
+                                Optional<CustomItem> optional = recipe.getIngredient().check(ingredient, recipe.isExactMeta());
                                 if (optional.isPresent()) {
                                     //Ingredient is valid
                                     //Checking for valid item in the bottom 3 slots of the brewing inventory
