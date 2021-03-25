@@ -135,7 +135,6 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
         this.effectRemovals = brewingRecipe.getEffectRemovals();
         this.effectAdditions = brewingRecipe.getEffectAdditions();
         this.effectUpgrades = brewingRecipe.getEffectUpgrades();
-        this.result = brewingRecipe.getResult();
         this.requiredEffects = brewingRecipe.getRequiredEffects();
     }
 

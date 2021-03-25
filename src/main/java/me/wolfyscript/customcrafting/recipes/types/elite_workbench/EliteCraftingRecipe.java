@@ -12,19 +12,19 @@ import java.io.IOException;
 
 public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRecipe> {
 
-    public EliteCraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
+    protected EliteCraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.bookGridSize = 6;
         this.bookSquaredGrid = 36;
     }
 
-    public EliteCraftingRecipe() {
+    protected EliteCraftingRecipe() {
         super();
         this.bookGridSize = 6;
         this.bookSquaredGrid = 36;
     }
 
-    public EliteCraftingRecipe(EliteCraftingRecipe eliteCraftingRecipe) {
+    protected EliteCraftingRecipe(EliteCraftingRecipe eliteCraftingRecipe) {
         super(eliteCraftingRecipe);
         this.bookGridSize = 6;
         this.bookSquaredGrid = 36;

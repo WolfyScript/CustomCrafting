@@ -81,6 +81,8 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
 
     void setHidden(boolean hidden);
 
+    C clone();
+
     /**
      * This method saves the Recipe into the File or the Database.
      * It can also send a confirmation message to the player if the player is not null.
@@ -147,8 +149,6 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
     default boolean delete() {
         return delete(null);
     }
-
-    C clone();
 
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
 

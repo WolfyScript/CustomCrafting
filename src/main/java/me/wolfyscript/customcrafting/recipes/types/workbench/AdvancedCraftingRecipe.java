@@ -14,17 +14,17 @@ public abstract class AdvancedCraftingRecipe extends CraftingRecipe<AdvancedCraf
 
     private boolean vanillaRecipe;
 
-    public AdvancedCraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
+    protected AdvancedCraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.vanillaRecipe = node.path("vanillaRecipe").asBoolean(false);
     }
 
-    public AdvancedCraftingRecipe() {
+    protected AdvancedCraftingRecipe() {
         super();
         this.vanillaRecipe = false;
     }
 
-    public AdvancedCraftingRecipe(AdvancedCraftingRecipe advancedCraftingRecipe) {
+    protected AdvancedCraftingRecipe(AdvancedCraftingRecipe advancedCraftingRecipe) {
         super(advancedCraftingRecipe);
         this.vanillaRecipe = advancedCraftingRecipe.allowVanillaRecipe();
     }

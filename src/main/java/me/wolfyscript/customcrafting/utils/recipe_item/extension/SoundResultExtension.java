@@ -24,6 +24,18 @@ public class SoundResultExtension extends ResultExtension {
         super(new NamespacedKey("customcrafting", "sound"));
     }
 
+    public SoundResultExtension(SoundResultExtension extension) {
+        super(extension);
+        this.sound = extension.sound;
+        this.volume = extension.volume;
+        this.pitch = extension.pitch;
+        this.soundCategory = extension.soundCategory;
+        this.playForPlayer = extension.playForPlayer;
+        this.playForNearPlayer = extension.playForNearPlayer;
+        this.playForNearWorkstation = extension.playForNearWorkstation;
+        this.playOnBlock = extension.playOnBlock;
+    }
+
     public SoundResultExtension(Sound sound) {
         this();
         this.sound = sound;
@@ -68,6 +80,11 @@ public class SoundResultExtension extends ResultExtension {
         if (playForPlayer && sound != null) {
             player.playSound(location, sound, soundCategory, volume, pitch);
         }
+    }
+
+    @Override
+    public ResultExtension clone() {
+        return new SoundResultExtension(this);
     }
 
     public Sound getSound() {

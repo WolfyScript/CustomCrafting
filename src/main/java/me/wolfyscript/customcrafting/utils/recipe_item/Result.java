@@ -32,6 +32,12 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         this.extensions = new ArrayList<>();
     }
 
+    public Result(Result<T> result) {
+        super(result);
+        this.extensions = result.extensions;
+        this.target = result.target;
+    }
+
     public Result(Material... materials) {
         super(materials);
         this.extensions = new ArrayList<>();
@@ -55,6 +61,11 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     public Result(List<APIReference> references, Set<NamespacedKey> tags) {
         super(references, tags);
         this.extensions = new ArrayList<>();
+    }
+
+    @Override
+    public Result<T> clone() {
+        return new Result<>(this);
     }
 
     public void setTarget(T target) {

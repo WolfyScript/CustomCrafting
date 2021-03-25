@@ -37,8 +37,17 @@ public abstract class ResultExtension implements Keyed {
     @JsonProperty(value = "inner_radius")
     protected Vector innerRadius = new Vector(0, 0, 0);
 
-    private ResultExtension() {
+    protected ResultExtension() {
         this.namespacedKey = null;
+    }
+
+    protected ResultExtension(ResultExtension extension) {
+        this.namespacedKey = extension.namespacedKey;
+        this.icon = extension.icon;
+        this.title = extension.title;
+        this.description = extension.description;
+        this.outerRadius = extension.outerRadius;
+        this.innerRadius = extension.innerRadius;
     }
 
     protected ResultExtension(NamespacedKey namespacedKey) {
@@ -47,7 +56,7 @@ public abstract class ResultExtension implements Keyed {
         this.description = Arrays.asList("&7" + namespacedKey.toString(), "");
     }
 
-    public ResultExtension(NamespacedKey namespacedKey, Material icon, String title, List<String> description) {
+    protected ResultExtension(NamespacedKey namespacedKey, Material icon, String title, List<String> description) {
         this(namespacedKey);
         this.icon = icon;
         this.title = title;
@@ -100,6 +109,8 @@ public abstract class ResultExtension implements Keyed {
             onPlayer(player, location);
         }
     }
+
+    public abstract ResultExtension clone();
 
     @Override
     public NamespacedKey getNamespacedKey() {

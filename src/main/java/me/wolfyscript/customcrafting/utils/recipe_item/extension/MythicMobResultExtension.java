@@ -23,6 +23,13 @@ public class MythicMobResultExtension extends ResultExtension {
         super(new NamespacedKey("customcrafting", "mythicmobs/mob_spawn"));
     }
 
+    public MythicMobResultExtension(MythicMobResultExtension extension) {
+        super(extension);
+        this.mobName = extension.mobName;
+        this.mobLevel = extension.mobLevel;
+        this.offset = extension.offset;
+    }
+
     public MythicMobResultExtension(String mobName, int mobLevel) {
         this();
         this.mobName = mobName;
@@ -49,6 +56,11 @@ public class MythicMobResultExtension extends ResultExtension {
     @Override
     public void onPlayer(@NotNull Player player, Location location) {
 
+    }
+
+    @Override
+    public MythicMobResultExtension clone() {
+        return new MythicMobResultExtension(this);
     }
 
     protected void spawnMob(Location origin) {

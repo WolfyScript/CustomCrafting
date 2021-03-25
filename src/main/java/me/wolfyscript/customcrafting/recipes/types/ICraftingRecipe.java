@@ -14,7 +14,6 @@ import java.util.Map;
 public interface ICraftingRecipe {
 
     boolean isShapeless();
-    void setShapeless(boolean shapeless);
 
     CraftingData check(List<List<ItemStack>> matrix);
 

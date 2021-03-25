@@ -9,7 +9,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.FixedResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -38,28 +37,29 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
     private float exp;
     private int cookingTime;
 
-    public CustomCookingRecipe(NamespacedKey namespacedKey, JsonNode node) {
+    protected CustomCookingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         this.exp = node.path("exp").floatValue();
         this.cookingTime = node.path("cooking_time").asInt();
         this.source = ItemLoader.loadIngredient(node.path("source"));
     }
 
-    public CustomCookingRecipe() {
+    protected CustomCookingRecipe() {
         super();
-        this.result = new Result<>();
         this.source = new Ingredient();
         this.exp = 0;
         this.cookingTime = 80;
     }
 
-    public CustomCookingRecipe(CustomCookingRecipe<?, ?> customCookingRecipe) {
+    protected CustomCookingRecipe(CustomCookingRecipe<C, T> customCookingRecipe) {
         super(customCookingRecipe);
-        this.result = customCookingRecipe.getResult();
-        this.source = customCookingRecipe.getSource();
-        this.exp = customCookingRecipe.getExp();
-        this.cookingTime = customCookingRecipe.getCookingTime();
+        this.source = customCookingRecipe.source;
+        this.exp = customCookingRecipe.exp;
+        this.cookingTime = customCookingRecipe.cookingTime;
     }
+
+    @Override
+    public abstract C clone();
 
     public Ingredient getSource() {
         return this.source;

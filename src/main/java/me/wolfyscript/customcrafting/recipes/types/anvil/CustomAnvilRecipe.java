@@ -63,7 +63,6 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
     public CustomAnvilRecipe(CustomAnvilRecipe recipe) {
         super(recipe);
         this.ingredients = recipe.ingredients;
-        this.result = recipe.result;
         this.mode = recipe.getMode();
         this.durability = recipe.durability;
         this.repairCost = recipe.repairCost;

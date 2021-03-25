@@ -19,7 +19,8 @@ import java.io.IOException;
 public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends ResultTarget> implements ICustomRecipe<C, T> {
 
     protected NamespacedKey namespacedKey;
-    protected boolean exactMeta, hidden;
+    protected boolean exactMeta;
+    protected boolean hidden;
 
     protected RecipePriority priority;
     protected Conditions conditions;
@@ -28,7 +29,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
     protected ObjectMapper mapper;
     protected Result<T> result;
 
-    public CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
+    protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = namespacedKey;
@@ -48,7 +49,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
         }
     }
 
-    public CustomRecipe() {
+    protected CustomRecipe() {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = null;
@@ -61,17 +62,21 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
         this.hidden = false;
     }
 
-    public CustomRecipe(CustomRecipe<?, ?> craftingRecipe) {
+    protected CustomRecipe(CustomRecipe<C, T> craftingRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
-        this.namespacedKey = craftingRecipe.getNamespacedKey();
+        this.namespacedKey = craftingRecipe.namespacedKey;
 
-        this.group = craftingRecipe.getGroup();
-        this.priority = craftingRecipe.getPriority();
-        this.exactMeta = craftingRecipe.isExactMeta();
-        this.conditions = craftingRecipe.getConditions();
-        this.hidden = craftingRecipe.isHidden();
+        this.group = craftingRecipe.group;
+        this.priority = craftingRecipe.priority;
+        this.exactMeta = craftingRecipe.exactMeta;
+        this.conditions = craftingRecipe.conditions;
+        this.hidden = craftingRecipe.hidden;
+        this.result = craftingRecipe.result.clone();
     }
+
+    @Override
+    public abstract C clone();
 
     @Override
     public WolfyUtilities getAPI() {
@@ -152,9 +157,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
     public void setResult(Result<T> result) {
         this.result = result;
     }
-
-    @Override
-    abstract public C clone();
 
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {

@@ -44,7 +44,6 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultT
 
     public GrindstoneRecipe(GrindstoneRecipe grindstoneRecipe) {
         super(grindstoneRecipe);
-        this.result = grindstoneRecipe.getResult();
         this.inputBottom = grindstoneRecipe.getInputBottom();
         this.inputTop = grindstoneRecipe.getInputTop();
         this.xp = grindstoneRecipe.getXp();

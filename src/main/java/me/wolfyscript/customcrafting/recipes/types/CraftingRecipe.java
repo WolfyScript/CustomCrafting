@@ -30,7 +30,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     protected static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
     protected boolean shapeless;
-    protected Map<Character, Ingredient> ingredients;
+    private Map<Character, Ingredient> ingredients;
 
     protected List<Ingredient> items;
 
@@ -45,15 +45,17 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         setIngredients(ingredients);
     }
 
-    public CraftingRecipe() {
+    protected CraftingRecipe() {
         super();
         this.ingredients = new HashMap<>();
     }
 
-    public CraftingRecipe(CraftingRecipe<?> craftingRecipe) {
+    protected CraftingRecipe(CraftingRecipe<C> craftingRecipe) {
         super(craftingRecipe);
-        this.result = craftingRecipe.getResult();
-        this.ingredients = craftingRecipe.getIngredients();
+        this.bookGridSize = craftingRecipe.bookGridSize;
+        this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
+        this.shapeless = craftingRecipe.shapeless;
+        this.ingredients = craftingRecipe.ingredients;
     }
 
     @Override
@@ -89,11 +91,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     @Override
     public boolean isShapeless() {
         return shapeless;
-    }
-
-    @Override
-    public void setShapeless(boolean shapeless) {
-        this.shapeless = shapeless;
     }
 
     @Override

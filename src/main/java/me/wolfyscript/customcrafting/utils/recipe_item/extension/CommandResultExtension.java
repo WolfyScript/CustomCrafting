@@ -25,6 +25,14 @@ public class CommandResultExtension extends ResultExtension {
         super(new NamespacedKey("customcrafting", "command"));
     }
 
+    public CommandResultExtension(CommandResultExtension extension) {
+        super(extension);
+        this.consoleCommands = extension.consoleCommands;
+        this.playerCommands = extension.playerCommands;
+        this.nearPlayer = extension.nearPlayer;
+        this.nearWorkstation = extension.nearWorkstation;
+    }
+
     public CommandResultExtension(List<String> consoleCommands, List<String> playerCommands, boolean nearPlayer, boolean nearWorkstation) {
         this();
         this.consoleCommands = consoleCommands;
@@ -48,6 +56,11 @@ public class CommandResultExtension extends ResultExtension {
     @Override
     public void onPlayer(@NotNull Player player, Location location) {
         executeCommands(player);
+    }
+
+    @Override
+    public CommandResultExtension clone() {
+        return new CommandResultExtension(this);
     }
 
     protected void executeCommands(Player player) {

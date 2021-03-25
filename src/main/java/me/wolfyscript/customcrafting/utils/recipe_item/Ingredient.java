@@ -16,6 +16,10 @@ public class Ingredient extends RecipeItemStack {
         super();
     }
 
+    public Ingredient(Ingredient ingredient) {
+        super(ingredient);
+    }
+
     public Ingredient(Material... materials) {
         super(materials);
     }
@@ -34,6 +38,11 @@ public class Ingredient extends RecipeItemStack {
 
     public Ingredient(List<APIReference> references, Set<NamespacedKey> tags) {
         super(references, tags);
+    }
+
+    @Override
+    public Ingredient clone() {
+        return new Ingredient(this);
     }
 
     public boolean test(ItemStack itemStack, boolean exactMatch) {

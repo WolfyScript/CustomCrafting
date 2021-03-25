@@ -29,27 +29,34 @@ public abstract class RecipeItemStack {
     private List<APIReference> items;
     private Set<NamespacedKey> tags;
 
-    public RecipeItemStack() {
+    protected RecipeItemStack() {
         this(new ArrayList<>(), new LinkedHashSet<>());
     }
 
-    public RecipeItemStack(Material... materials) {
+    protected RecipeItemStack(RecipeItemStack recipeItemStack) {
+        this.choices = new ArrayList<>();
+        this.items = new ArrayList<>(recipeItemStack.items);
+        this.tags = new LinkedHashSet<>(recipeItemStack.tags);
+        buildChoices();
+    }
+
+    protected RecipeItemStack(Material... materials) {
         this(Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList()), new LinkedHashSet<>());
     }
 
-    public RecipeItemStack(ItemStack... items) {
+    protected RecipeItemStack(ItemStack... items) {
         this(Arrays.stream(items).map(VanillaRef::new).collect(Collectors.toList()), new LinkedHashSet<>());
     }
 
-    public RecipeItemStack(NamespacedKey... tags) {
+    protected RecipeItemStack(NamespacedKey... tags) {
         this(new ArrayList<>(), new LinkedHashSet<>(Arrays.asList(tags)));
     }
 
-    public RecipeItemStack(APIReference... references) {
+    protected RecipeItemStack(APIReference... references) {
         this(Arrays.asList(references), new LinkedHashSet<>());
     }
 
-    public RecipeItemStack(List<APIReference> references, Set<NamespacedKey> tags) {
+    protected RecipeItemStack(List<APIReference> references, Set<NamespacedKey> tags) {
         this.choices = new ArrayList<>();
         this.items = references;
         this.tags = tags;
@@ -172,4 +179,6 @@ public abstract class RecipeItemStack {
                 ", tags=" + tags +
                 '}';
     }
+
+    public abstract RecipeItemStack clone();
 }
