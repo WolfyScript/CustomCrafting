@@ -71,6 +71,16 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     }
 
     @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        this.source = ingredient;
+    }
+
+    @Override
+    public Ingredient getIngredient(int slot) {
+        return this.source;
+    }
+
+    @Override
     public CustomStonecutterRecipe clone() {
         return new CustomStonecutterRecipe(this);
     }
@@ -83,7 +93,6 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        //TODO STONECUTTER
         NamespacedKey glass = new NamespacedKey("none", "glass_green");
         event.setButton(20, new NamespacedKey("recipe_book", "ingredient.container_20"));
         event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));

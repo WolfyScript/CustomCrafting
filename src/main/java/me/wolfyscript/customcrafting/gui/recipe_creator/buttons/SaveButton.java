@@ -16,6 +16,12 @@ import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SaveButton extends ActionButton<CCCache> {
 
@@ -27,10 +33,24 @@ public class SaveButton extends ActionButton<CCCache> {
                 CustomCrafting customCrafting = recipeCreator.getCustomCrafting();
                 if (recipeCreator.validToSave(cache)) {
                     if (saveAs) {
+                        guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                            List<String> results = new ArrayList<>();
+                            if (args.length > 0) {
+                                if (args.length == 1) {
+                                    results.add("<namespace>");
+                                    StringUtil.copyPartialMatches(args[0], Registry.RECIPES.namespaces(), results);
+                                } else if (args.length == 2) {
+                                    results.add("<key>");
+                                    StringUtil.copyPartialMatches(args[1], Registry.RECIPES.get(args[0]).stream().filter(recipe -> recipe.getRecipeType().equals(cache.getRecipeType())).map(recipe -> recipe.getNamespacedKey().getKey()).collect(Collectors.toList()), results);
+                                }
+                            }
+                            Collections.sort(results);
+                            return results;
+                        });
                         recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                             NamespacedKey namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
                             if (namespacedKey != null) {
-                                ICustomRecipe<?,?> recipe = cache.getRecipe();
+                                ICustomRecipe<?, ?> recipe = cache.getRecipe();
                                 recipe.setNamespacedKey(namespacedKey);
                                 return saveRecipe(cache, recipe, player1, api, guiHandler, customCrafting);
                             }
@@ -63,7 +83,7 @@ public class SaveButton extends ActionButton<CCCache> {
         } catch (Exception ex) {
             api.getChat().sendKey(player, guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "loading.error", new Pair<>("%REC%", recipe.getNamespacedKey().toString()));
             ex.printStackTrace();
-            return true;
+            return false;
         }
         Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openPreviousWindow("none", 2));
         return true;
