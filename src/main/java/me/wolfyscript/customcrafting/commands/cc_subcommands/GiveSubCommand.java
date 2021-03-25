@@ -81,7 +81,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                         ItemStack itemStack = customItem.create(amount);
                         if (InventoryUtils.hasInventorySpace(target, itemStack)) {
                             target.getInventory().addItem(itemStack);
-                        } else if (dropItems) {
+                        } else if (dropItems && target.getLocation().getWorld() != null) {
                             target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
                         } else {
                             if (sender instanceof Player) {

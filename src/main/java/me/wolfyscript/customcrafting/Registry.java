@@ -62,10 +62,15 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             remove(namespacedKey);
             super.register(namespacedKey, value);
             if (value instanceof ICustomVanillaRecipe) {
-                Bukkit.addRecipe(((ICustomVanillaRecipe<?>) value).getVanillaRecipe());
+                try {
+                    Bukkit.addRecipe(((ICustomVanillaRecipe<?>) value).getVanillaRecipe());
+                } catch (IllegalArgumentException ex) {
+                    CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey.toString(), ex.getMessage()));
+                }
             }
         }
 
+        @Override
         public void register(ICustomRecipe<?, ?> value) {
             this.register(value.getNamespacedKey(), value);
         }

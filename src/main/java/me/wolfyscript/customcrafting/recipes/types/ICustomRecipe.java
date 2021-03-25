@@ -61,6 +61,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
      * @param ingredient The ingredient to set
      */
     void setIngredient(int slot, Ingredient ingredient);
+    //Preconditions.checkArgument(ingredient != null && !ingredient.isEmpty(), "Ingredient cannot be null & requires at least one choice!");
 
     Ingredient getIngredient(int slot);
 

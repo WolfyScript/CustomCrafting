@@ -31,7 +31,6 @@ import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
-import me.wolfyscript.utilities.util.world.WorldUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -49,7 +48,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class CustomCrafting extends JavaPlugin {
 
@@ -97,10 +95,6 @@ public class CustomCrafting extends JavaPlugin {
         this.patreon = new Patreon(this);
     }
 
-    public static CustomCrafting inst() {
-        return instance;
-    }
-
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
@@ -115,6 +109,22 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
         Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
         CustomPlayerData.register(new CCPlayerData.Provider());
+    }
+
+    public static CustomCrafting inst() {
+        return instance;
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            configHandler.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cauldrons.endAutoSaveTask();
+        cauldrons.save();
+        getDataHandler().onSave();
     }
 
     @Override
@@ -144,7 +154,7 @@ public class CustomCrafting extends JavaPlugin {
         }
         //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
         if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
-            loadRecipesAndItems();
+            dataHandler.loadRecipesAndItems();
         }
         //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
         if (!patreon.isPatreon()) {
@@ -155,18 +165,6 @@ public class CustomCrafting extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
         getLogger().info("------------------------------------------------------------------------");
-    }
-
-    @Override
-    public void onDisable() {
-        try {
-            configHandler.save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cauldrons.endAutoSaveTask();
-        cauldrons.save();
-        getDataHandler().onSave();
     }
 
     private void writeBanner() {
@@ -247,13 +245,37 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
     }
 
-    public void loadRecipesAndItems() {
-        if (!configHandler.getConfig().getDisabledRecipes().isEmpty()) {
-            dataHandler.getDisabledRecipes().addAll(configHandler.getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
-        }
-        dataHandler.load(true);
-        dataHandler.indexRecipeItems();
-        WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
+    public void checkUpdate(@Nullable Player player) {
+        new Thread(() -> {
+            try {
+                HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
+                con.setReadTimeout(2000);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                String version = bufferedReader.readLine();
+
+                String[] vNew = version.split("\\.");
+                String[] vOld = currentVersion.split("\\.");
+
+                for (int i = 0; i < vNew.length; i++) {
+                    int v1 = Integer.parseInt(vNew[i]);
+                    int v2 = Integer.parseInt(vOld[i]);
+                    if (v2 > v1) {
+                        outdated = false;
+                        return;
+                    } else if (v1 > v2) {
+                        outdated = true;
+                        chat.sendConsoleWarning("$msg.startup.outdated$");
+                        if (player != null) {
+                            chat.sendMessage(player, "$msg.player.outdated.msg$");
+                            chat.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
+                        }
+                        return;
+                    }
+                }
+            } catch (Exception ex) {
+                chat.sendConsoleWarning("$msg.startup.update_check_fail$");
+            }
+        }).start();
     }
 
     public ConfigHandler getConfigHandler() {
@@ -290,39 +312,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public Patreon getPatreon() {
         return patreon;
-    }
-
-    public void checkUpdate(@Nullable Player player) {
-        new Thread(() -> {
-            try {
-                HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
-                con.setReadTimeout(2000);
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String version = bufferedReader.readLine();
-
-                String[] vNew = version.split("\\.");
-                String[] vOld = currentVersion.split("\\.");
-
-                for (int i = 0; i < vNew.length; i++) {
-                    int v1 = Integer.parseInt(vNew[i]);
-                    int v2 = Integer.parseInt(vOld[i]);
-                    if (v2 > v1) {
-                        outdated = false;
-                        return;
-                    } else if (v1 > v2) {
-                        outdated = true;
-                        chat.sendConsoleWarning("$msg.startup.outdated$");
-                        if (player != null) {
-                            chat.sendMessage(player, "$msg.player.outdated.msg$");
-                            chat.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
-                        }
-                        return;
-                    }
-                }
-            } catch (Exception ex) {
-                chat.sendConsoleWarning("$msg.startup.update_check_fail$");
-            }
-        }).start();
     }
 
     public boolean isOutdated() {

@@ -8,7 +8,6 @@ import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCrafting
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -43,12 +42,11 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
         //Get Ingredients
         Map<Character, Ingredient> ingredients = new TreeMap<>();
         node.path("ingredients").fields().forEachRemaining(entry -> ingredients.put(entry.getKey().charAt(0), ItemLoader.loadIngredient(entry.getValue())));
-        this.ingredients = ingredients;
+        setIngredients(ingredients);
     }
 
     public CraftingRecipe() {
         super();
-        this.result = new Result<>();
         this.ingredients = new HashMap<>();
     }
 
@@ -70,12 +68,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
 
     @Override
     public void setIngredients(Map<Character, Ingredient> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o));
     }
 
     @Override
     public void setIngredient(char key, Ingredient ingredients) {
-        if (ingredients == null) {
+        if (ingredients == null || ingredients.isEmpty()) {
             this.ingredients.remove(key);
         } else {
             ingredients.buildChoices();

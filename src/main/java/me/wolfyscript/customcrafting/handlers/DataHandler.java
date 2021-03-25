@@ -20,6 +20,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
+import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
@@ -88,6 +89,15 @@ public class DataHandler {
                 mainConfig.reload();
             }
         }
+    }
+
+    public void loadRecipesAndItems() {
+        if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
+            getDisabledRecipes().addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
+        }
+        load(true);
+        indexRecipeItems();
+        WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
     private void loadDataBase() {

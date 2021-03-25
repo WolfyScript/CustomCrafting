@@ -18,30 +18,21 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             Ingredient ingredient = cache.getRecipe().getIngredient(recipeSlot);
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 cache.getIngredientData().setSlot(recipeSlot);
-                if (ingredient != null) {
-                    cache.getIngredientData().setIngredient(ingredient);
-                    cache.getIngredientData().setNew(false);
-                } else {
-                    cache.getIngredientData().setIngredient(new Ingredient());
-                    cache.getIngredientData().setNew(true);
-                }
+                cache.getIngredientData().setIngredient(ingredient != null ? ingredient : new Ingredient());
                 guiHandler.openWindow("ingredient");
                 return true;
             }
             return ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
             Ingredient ingredient = cache.getRecipe().getIngredient(recipeSlot);
-            if (ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty()) {
-                return;
-            }
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
+            if ((ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty()) || event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
                 return;
             }
             if (ingredient == null) {
                 ingredient = new Ingredient();
-                cache.getRecipe().setIngredient(recipeSlot, ingredient);
             }
             ingredient.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+            cache.getRecipe().setIngredient(recipeSlot, ingredient);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Ingredient ingredient = cache.getRecipe().getIngredient(recipeSlot);
             return ingredient != null ? ingredient.getItemStack() : new ItemStack(Material.AIR);

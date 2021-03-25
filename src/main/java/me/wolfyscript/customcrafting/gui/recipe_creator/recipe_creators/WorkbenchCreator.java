@@ -115,6 +115,6 @@ public class WorkbenchCreator extends RecipeCreator {
     @Override
     public boolean validToSave(CCCache cache) {
         AdvancedCraftingRecipe workbench = cache.getAdvancedCraftingRecipe();
-        return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
+        return workbench.getIngredients() != null && !workbench.getIngredients().isEmpty() && !workbench.getResult().isEmpty();
     }
 }

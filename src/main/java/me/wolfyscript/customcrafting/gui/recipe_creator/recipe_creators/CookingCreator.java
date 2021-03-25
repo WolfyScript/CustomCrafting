@@ -94,7 +94,8 @@ public class CookingCreator extends RecipeCreator {
             case FURNACE:
                 CustomCookingRecipe<?, ?> furnace = cache.getCookingRecipe();
                 return !furnace.getSource().isEmpty() && !furnace.getResult().isEmpty();
+            default:
+                return false;
         }
-        return false;
     }
 }

@@ -44,7 +44,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
 
         //Sets the result of the recipe if one exists in the config
         if (node.has("result")) {
-            setResult(ItemLoader.loadResult(node.path("result")));
+            this.result = ItemLoader.loadResult(node.path("result"));
         }
     }
 
@@ -52,6 +52,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = null;
+        this.result = new Result<>();
 
         this.group = "";
         this.priority = RecipePriority.NORMAL;

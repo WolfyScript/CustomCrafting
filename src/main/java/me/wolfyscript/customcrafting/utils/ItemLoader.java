@@ -22,12 +22,15 @@ import java.util.List;
 
 public class ItemLoader {
 
+    private ItemLoader() {
+    }
+
     public static Ingredient loadIngredient(JsonNode node) {
         final Ingredient ingredient;
         if (node.isArray()) {
             ingredient = new Ingredient();
             node.elements().forEachRemaining(item -> ingredient.getItems().add(JacksonUtil.getObjectMapper().convertValue(item, APIReference.class)));
-        }else{
+        } else {
             ingredient = JacksonUtil.getObjectMapper().convertValue(node, Ingredient.class);
         }
         if (ingredient != null) {

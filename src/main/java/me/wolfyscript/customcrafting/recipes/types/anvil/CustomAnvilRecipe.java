@@ -93,9 +93,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
     }
 
     private void writeInput(int slot, JsonGenerator gen) throws IOException {
-        gen.writeArrayFieldStart("input_" + (slot == 0 ? "left" : "right"));
-        gen.writeObject(this.ingredients.get(slot));
-        gen.writeEndArray();
+        gen.writeObjectField("input_" + (slot == 0 ? "left" : "right"), this.ingredients.get(slot));
     }
 
     public int getDurability() {

@@ -8,21 +8,11 @@ import java.util.List;
 
 public class IngredientData {
 
-    private boolean isNew;
     private int slot;
     private Ingredient ingredient;
 
     public IngredientData() {
         this.ingredient = null;
-        this.isNew = false;
-    }
-
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
     }
 
     public int getSlot() {

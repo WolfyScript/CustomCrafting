@@ -24,9 +24,7 @@ public class IngredientMenu extends CCWindow {
             registerButton(new ButtonContainerItemIngredient(i));
         }
         registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
-            if (cache.getIngredientData().isNew()) {
-                cache.getRecipe().setIngredient(cache.getIngredientData().getSlot(), cache.getIngredientData().getIngredient());
-            }
+            cache.getRecipe().setIngredient(cache.getIngredientData().getSlot(), cache.getIngredientData().getIngredient());
             guiHandler.openPreviousWindow();
             return true;
         })));
