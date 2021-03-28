@@ -9,7 +9,7 @@ public abstract class CCCluster extends GuiCluster<CCCache> {
 
     protected CustomCrafting customCrafting;
 
-    public CCCluster(InventoryAPI<CCCache> inventoryAPI, String id, CustomCrafting customCrafting) {
+    protected CCCluster(InventoryAPI<CCCache> inventoryAPI, String id, CustomCrafting customCrafting) {
         super(inventoryAPI, id);
         this.customCrafting = customCrafting;
     }
