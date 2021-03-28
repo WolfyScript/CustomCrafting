@@ -35,7 +35,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
         this.namespacedKey = namespacedKey;
         //Get fields from JsonNode
         this.group = node.path("group").asText("");
-        this.priority = RecipePriority.valueOf(node.path("priority").asText("NORMAL"));
+        this.priority = mapper.convertValue(node.path("priority").asText("NORMAL"), RecipePriority.class);
         this.exactMeta = node.path("exactItemMeta").asBoolean(true);
         this.conditions = mapper.convertValue(node.path("conditions"), Conditions.class);
         if (this.conditions == null) {
