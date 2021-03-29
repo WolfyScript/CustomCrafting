@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -113,7 +114,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     public StonecuttingRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !getSource().isEmpty()) {
             RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).collect(Collectors.toList()));
-            return new StonecuttingRecipe(namespacedKey.toBukkit(), getResult().getItemStack(), choice);
+            return new StonecuttingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), choice);
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.furnace;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -24,7 +25,7 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe
     @Override
     public FurnaceRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            return new FurnaceRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            return new FurnaceRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }

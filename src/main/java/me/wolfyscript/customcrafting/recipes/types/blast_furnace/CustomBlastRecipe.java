@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.blast_furnace;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -24,7 +25,7 @@ public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, Bl
     @Override
     public BlastingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            return new BlastingRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            return new BlastingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }

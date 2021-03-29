@@ -22,7 +22,7 @@ public class SettingsSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        WolfyUtilities api = CustomCrafting.inst().getApi();
+        WolfyUtilities api = customCrafting.getApi();
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.settings")) {

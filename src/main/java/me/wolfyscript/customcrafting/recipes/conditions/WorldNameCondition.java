@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -24,13 +23,12 @@ public class WorldNameCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
         if (data.getBlock() != null) {
-            World world = data.getBlock().getLocation().getWorld();
-            return worldNames.contains(world.getName());
+            return worldNames.contains(data.getBlock().getLocation().getWorld().getName());
         }
         return false;
     }

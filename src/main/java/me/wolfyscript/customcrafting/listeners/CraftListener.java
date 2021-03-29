@@ -68,8 +68,7 @@ public class CraftListener implements Listener {
                 event.setResult(Event.Result.DENY);
                 ItemStack[] matrix = inventory.getMatrix();
                 craftManager.consumeRecipe(resultItem, matrix, event);
-                //TODO: Items still bug a bit when crafting.
-                //((Player) event.getWhoClicked()).updateInventory(); //This helps, but the bug is not gone completely. Assumption: The crafting logic of vanilla minecraft is called afterwards and bugs the items, because there is no actual recipe registered.
+                ((Player) event.getWhoClicked()).updateInventory(); //This helps, but the bug is not gone completely. Assumption: The crafting logic of vanilla minecraft is called afterwards and bugs the items, because there is no actual recipe registered.
                 Bukkit.getScheduler().runTask(customCrafting, () -> inventory.setMatrix(matrix)); // Setting the matrix 1 tick later overrides the bugged items. Setting it directly will also cause the newly set items to bug.
                 craftManager.remove(event.getWhoClicked().getUniqueId());
             }

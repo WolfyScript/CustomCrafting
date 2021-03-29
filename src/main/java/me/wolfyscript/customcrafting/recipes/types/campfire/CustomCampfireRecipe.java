@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.campfire;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -24,7 +25,7 @@ public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireReci
     @Override
     public CampfireRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            return new CampfireRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            return new CampfireRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }

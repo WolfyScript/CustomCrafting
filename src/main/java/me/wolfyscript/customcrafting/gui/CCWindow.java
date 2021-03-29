@@ -27,9 +27,9 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
-        NamespacedKey white = new NamespacedKey("none", store.isDarkMode() ? "glass_gray" : "glass_white");
-        NamespacedKey gray = new NamespacedKey("none", store.isDarkMode() ? "glass_black" : "glass_gray");
+        NamespacedKey gray = store.getDarkBackground();
         if (getSize() > 9) {
+            NamespacedKey white = store.getLightBackground();
             for (int i = 0; i < 9; i++) {
                 update.setButton(i, white);
             }

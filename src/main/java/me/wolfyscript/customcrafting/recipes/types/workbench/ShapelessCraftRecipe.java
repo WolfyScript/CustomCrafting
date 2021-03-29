@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -14,6 +15,7 @@ import org.bukkit.inventory.ShapelessRecipe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements IShapelessCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
@@ -36,7 +38,7 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
     @Override
     public CraftingData check(List<List<ItemStack>> matrix) {
         List<Character> usedKeys = new ArrayList<>();
-        HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
+        Map<Vec2d, CustomItem> foundItems = new HashMap<>();
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.get(i).size(); j++) {
                 CustomItem item = checkIngredient(getIngredients(), usedKeys, matrix.get(i).get(j), isExactMeta());
@@ -55,15 +57,13 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
 
     @Override
     public ShapelessRecipe getVanillaRecipe() {
-        if (!allowVanillaRecipe()) {
-            if (!getResult().isEmpty()) {
-                ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack());
-                for (Ingredient value : getIngredients().values()) {
-                    shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
-                }
-                shapelessRecipe.setGroup(getGroup());
-                return shapelessRecipe;
+        if (!allowVanillaRecipe() && !getResult().isEmpty()) {
+            ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
+            for (Ingredient value : getIngredients().values()) {
+                shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
             }
+            shapelessRecipe.setGroup(getGroup());
+            return shapelessRecipe;
         }
         return null;
     }

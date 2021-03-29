@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
@@ -39,10 +39,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
 
     protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        //Get Ingredients
-        Map<Character, Ingredient> ingredients = new TreeMap<>();
-        node.path("ingredients").fields().forEachRemaining(entry -> ingredients.put(entry.getKey().charAt(0), ItemLoader.loadIngredient(entry.getValue())));
-        setIngredients(ingredients);
+        setIngredients(Streams.stream(node.path("ingredients").fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue()))));
     }
 
     protected CraftingRecipe() {

@@ -20,7 +20,7 @@ public class WorldTimeCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
         long currentTime = data.getBlock().getWorld().getTime();
         switch (option) {
             case IGNORE:

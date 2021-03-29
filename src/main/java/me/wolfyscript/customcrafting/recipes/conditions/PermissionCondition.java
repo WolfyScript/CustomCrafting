@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -35,11 +34,9 @@ public class PermissionCondition extends Condition {
         if (recipe instanceof CustomCookingRecipe && data.getPlayer() == null) {
             return true;
         }
-        Player player = data.getPlayer();
         if (option.equals(Conditions.Option.IGNORE)) return true;
-        if (player == null) return false;
-        String permissionString = permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey());
-        return CustomCrafting.inst().getApi().getPermissions().hasPermission(player, permissionString);
+        if (data.getPlayer() == null) return false;
+        return CustomCrafting.inst().getApi().getPermissions().hasPermission(data.getPlayer(), permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey()));
     }
 
     @Override

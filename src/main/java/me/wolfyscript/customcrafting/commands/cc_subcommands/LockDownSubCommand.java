@@ -20,7 +20,7 @@ public class LockDownSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
-        WolfyUtilities api = CustomCrafting.inst().getApi();
+        WolfyUtilities api = customCrafting.getApi();
         if (ChatUtils.checkPerm(sender, "customcrafting.cmd.lockdown")) {
             customCrafting.getConfigHandler().getConfig().toggleLockDown();
             if (sender instanceof Player) {

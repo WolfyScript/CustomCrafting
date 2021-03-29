@@ -36,7 +36,7 @@ public class MainMenu extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        event.setButton(8, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
+        event.setButton(8, data.getLightBackground());
 
         DataHandler dataHandler = customCrafting.getDataHandler();
         Categories categories = dataHandler.getCategories();

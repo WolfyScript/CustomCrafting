@@ -72,11 +72,11 @@ public class CookingCreator extends RecipeCreator {
 
         update.setButton(3, "hidden");
         update.setButton(5, "recipe_creator", "conditions");
-        update.setButton(20, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
+        update.setButton(20, data.getLightBackground());
         update.setButton(11, "recipe.ingredient_0");
         update.setButton(24, "recipe.result");
-        update.setButton(10, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
-        update.setButton(12, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
+        update.setButton(10, data.getLightBackground());
+        update.setButton(12, data.getLightBackground());
         update.setButton(22, "xp");
         update.setButton(29, "cooking_time");
 

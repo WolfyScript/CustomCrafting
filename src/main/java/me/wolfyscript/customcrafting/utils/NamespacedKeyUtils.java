@@ -13,7 +13,6 @@ public class NamespacedKeyUtils {
 
     public static final String NAMESPACE = "customcrafting";
 
-
     public static NamespacedKey fromInternal(NamespacedKey internalKey) {
         if (internalKey == null) return null;
         return new NamespacedKey(CustomCrafting.inst(), internalKey.toString("/"));

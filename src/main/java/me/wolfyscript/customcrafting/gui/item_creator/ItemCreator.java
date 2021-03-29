@@ -749,7 +749,7 @@ public class ItemCreator extends CCWindow {
         event.setButton(13, "item_input");
 
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        me.wolfyscript.utilities.util.NamespacedKey gray = new me.wolfyscript.utilities.util.NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white");
+        me.wolfyscript.utilities.util.NamespacedKey gray = data.getLightBackground();
         event.setButton(4, gray);
         event.setButton(12, gray);
         event.setButton(14, gray);

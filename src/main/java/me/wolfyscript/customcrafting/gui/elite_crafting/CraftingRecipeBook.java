@@ -151,10 +151,10 @@ public class CraftingRecipeBook extends CCWindow {
         } else {
             List<ICustomRecipe<?,?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
-                event.setButton(i, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
+                event.setButton(i, data.getLightBackground());
             }
             for (int i = 36; i < 45; i++) {
-                event.setButton(i, "none", data.isDarkMode() ? "glass_gray" : "glass_white");
+                event.setButton(i, data.getLightBackground());
             }
             event.setButton(0, "back");
             int maxPages = recipes.size();

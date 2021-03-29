@@ -59,6 +59,8 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
     public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_workbench");
 
+    private static final String CONSOLE_SEPERATOR = "------------------------------------------------------------------------";
+
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 3;
 
@@ -95,6 +97,10 @@ public class CustomCrafting extends JavaPlugin {
         this.patreon = new Patreon(this);
     }
 
+    public static CustomCrafting inst() {
+        return instance;
+    }
+
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
@@ -109,10 +115,6 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
         Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
         CustomPlayerData.register(new CCPlayerData.Provider());
-    }
-
-    public static CustomCrafting inst() {
-        return instance;
     }
 
     @Override
@@ -132,7 +134,7 @@ public class CustomCrafting extends JavaPlugin {
         this.api.initialize();
         writeBanner();
         writePatreonCredits();
-        getLogger().info("------------------------------------------------------------------------");
+        writeSeparator();
 
         configHandler = new ConfigHandler(this);
         if (configHandler.getConfig().isDatabaseEnabled()) {
@@ -142,7 +144,7 @@ public class CustomCrafting extends JavaPlugin {
         dataHandler = new DataHandler(this);
         craftManager = new CraftManager(this);
 
-        getLogger().info("------------------------------------------------------------------------");
+        writeSeparator();
         registerListeners();
         registerCommands();
         registerInventories();
@@ -164,7 +166,7 @@ public class CustomCrafting extends JavaPlugin {
         Metrics metrics = new Metrics(this, 3211);
         metrics.addCustomChart(new Metrics.SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new Metrics.SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
-        getLogger().info("------------------------------------------------------------------------");
+        writeSeparator();
     }
 
     private void writeBanner() {
@@ -173,6 +175,10 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
         getLogger().info(() -> "    v" + currentVersion + " " + (patreon.isPatreon() ? "Patreon" : "Free"));
         getLogger().info(" ");
+    }
+
+    public void writeSeparator() {
+        getLogger().info(CONSOLE_SEPERATOR);
     }
 
     private void writePatreonCredits() {

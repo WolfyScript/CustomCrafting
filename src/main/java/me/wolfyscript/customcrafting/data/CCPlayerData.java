@@ -34,6 +34,14 @@ public class CCPlayerData extends CustomPlayerData {
         return darkMode;
     }
 
+    public NamespacedKey getDarkBackground() {
+        return new NamespacedKey("none", isDarkMode() ? "glass_black" : "glass_gray");
+    }
+
+    public NamespacedKey getLightBackground() {
+        return new NamespacedKey("none", isDarkMode() ? "glass_gray" : "glass_white");
+    }
+
     public void setDarkMode(boolean darkMode) {
         this.darkMode = darkMode;
     }

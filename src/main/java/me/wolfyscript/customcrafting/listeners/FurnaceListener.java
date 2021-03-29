@@ -7,12 +7,13 @@ import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.nms.inventory.RecipeType;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,12 +24,14 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FurnaceListener implements Listener {
 
@@ -73,43 +76,44 @@ public class FurnaceListener implements Listener {
         Furnace furnace = (Furnace) event.getBlock().getState();
         FurnaceInventory inventory = furnace.getInventory();
         ItemStack currentResultItem = furnace.getInventory().getResult();
-        final Class<? extends Recipe> type;
+        final RecipeType type;
         switch (furnace.getType()) {
             case BLAST_FURNACE:
-                type = BlastingRecipe.class;
+                type = RecipeType.BLASTING;
                 break;
             case SMOKER:
-                type = SmokingRecipe.class;
+                type = RecipeType.SMOKING;
                 break;
             default:
-                type = FurnaceRecipe.class;
+                type = RecipeType.SMELTING;
         }
-        List<Recipe> recipes = Bukkit.getRecipesFor(event.getResult()).stream().filter(recipe -> type.isInstance(recipe) && recipe.getResult().isSimilar(event.getResult())).collect(Collectors.toList());
-        for (Recipe recipe : recipes) {
-            if (!(recipe instanceof Keyed)) continue;
-            NamespacedKey namespacedKey = NamespacedKey.fromBukkit(((Keyed) recipe).getKey());
-            if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
-                event.setCancelled(true);
-                continue;
-            }
-            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) me.wolfyscript.customcrafting.Registry.RECIPES.get(namespacedKey);
-            if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
-                if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
-                    event.setCancelled(false);
-                    if (customRecipe.getResult().size() > 1) {
-                        CustomItem item = customRecipe.getResult().getItem(new ItemStack[0]).orElse(new CustomItem(Material.AIR));
-                        if (currentResultItem == null) {
-                            event.setResult(item.create());
+        Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(type);
+        while (recipeIterator.hasNext()) {
+            Recipe recipe = recipeIterator.next();
+            if (recipe instanceof Keyed && recipe.getResult().isSimilar(event.getResult())) {
+                NamespacedKey namespacedKey = NamespacedKey.fromBukkit(((Keyed) recipe).getKey());
+                if (!customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
+                    CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) me.wolfyscript.customcrafting.Registry.RECIPES.get(NamespacedKeyUtils.toInternal(namespacedKey));
+                    if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
+                        if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
+                            event.setCancelled(false);
+                            if (customRecipe.getResult().size() > 1) {
+                                CustomItem item = customRecipe.getResult().getItem(new ItemStack[0]).orElse(new CustomItem(Material.AIR));
+                                if (currentResultItem != null) {
+                                    int nextAmount = currentResultItem.getAmount() + item.getAmount();
+                                    if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
+                                        inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                                        currentResultItem.setAmount(nextAmount);
+                                    }
+                                    event.setCancelled(true);
+                                } else {
+                                    event.setResult(item.create());
+                                }
+                            }
                             break;
-                        }
-                        int nextAmount = currentResultItem.getAmount() + item.getAmount();
-                        if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
-                            inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                            currentResultItem.setAmount(nextAmount);
                         }
                         event.setCancelled(true);
                     }
-                    break;
                 } else {
                     event.setCancelled(true);
                 }

@@ -4,14 +4,14 @@ import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class CraftingData {
 
     CraftingRecipe<?> recipe;
-    HashMap<Vec2d, CustomItem> foundItems;
+    Map<Vec2d, CustomItem> foundItems;
 
-    public CraftingData(CraftingRecipe<?> recipe, HashMap<Vec2d, CustomItem> foundItems) {
+    public CraftingData(CraftingRecipe<?> recipe, Map<Vec2d, CustomItem> foundItems) {
         this.recipe = recipe;
         this.foundItems = foundItems;
     }
@@ -20,7 +20,7 @@ public class CraftingData {
         return recipe;
     }
 
-    public HashMap<Vec2d, CustomItem> getFoundItems() {
+    public Map<Vec2d, CustomItem> getFoundItems() {
         return foundItems;
     }
 }

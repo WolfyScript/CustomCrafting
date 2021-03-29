@@ -120,7 +120,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
             }
         }
         event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
-        event.setButton(20, new NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white"));
+        event.setButton(20, data.getLightBackground());
         event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
         event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
 
@@ -128,7 +128,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
             AtomicInteger i = new AtomicInteger();
             book.setTimerTask(Bukkit.getScheduler().runTaskTimerAsynchronously(event.getGuiHandler().getApi().getPlugin(), () -> {
                 if (i.get() == 0) {
-                    NamespacedKey glass = new NamespacedKey("none", data.isDarkMode() ? "glass_black" : "glass_gray");
+                    NamespacedKey glass = data.getDarkBackground();
                     event.setButton(23, glass);
                     event.setButton(22, glass);
                     event.setButton(21, glass);

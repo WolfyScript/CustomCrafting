@@ -217,7 +217,7 @@ public class DataHandler {
     }
 
     public List<String> getBukkitNamespacedKeys() {
-        return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.of(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
+        return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
     }
 
     private int gridSize(ItemStack[] ingredients) {

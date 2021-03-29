@@ -32,7 +32,7 @@ public class CommandRecipe extends IndexCommand {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String s, @NotNull String[] args) {
         if (args.length == 0 && sender instanceof Player) {
-            WolfyUtilities api = CustomCrafting.inst().getApi();
+            WolfyUtilities api = customCrafting.getApi();
             Player p = (Player) sender;
             InventoryAPI<?> invAPI = api.getInventoryAPI();
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.recipes")) {

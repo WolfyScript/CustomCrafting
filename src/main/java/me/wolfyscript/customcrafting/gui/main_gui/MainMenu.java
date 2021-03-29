@@ -115,7 +115,7 @@ public class MainMenu extends CCWindow {
             }
         }
         for (int i = 37; i < 44; i++) {
-            event.setButton(i, new NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white"));
+            event.setButton(i, data.getLightBackground());
         }
 
         event.setButton(36, "item_editor");

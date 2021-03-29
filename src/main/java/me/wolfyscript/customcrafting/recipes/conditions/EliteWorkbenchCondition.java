@@ -30,7 +30,7 @@ public class EliteWorkbenchCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?,?> recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
@@ -38,10 +38,7 @@ public class EliteWorkbenchCondition extends Condition {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
                 if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-                    if (eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey())) {
-                        EliteWorkbenchData eliteWorkbenchData = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
-                        return eliteWorkbenchData.isEnabled();
-                    }
+                    return eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled();
                 }
             }
             return false;
@@ -62,7 +59,7 @@ public class EliteWorkbenchCondition extends Condition {
     public void readFromJson(JsonNode node) {
         JsonNode array = node.has("elite_crafting_tables") ? node.get("elite_crafting_tables") : node.get("elite_workbenches");
         array.elements().forEachRemaining(element -> {
-            if(element.isValueNode()){
+            if (element.isValueNode()) {
                 addEliteWorkbenches(NamespacedKey.of(element.asText()));
             }
         });

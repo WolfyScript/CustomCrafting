@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.smoker;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -34,7 +35,7 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, 
     @Override
     public SmokingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            return new SmokingRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            return new SmokingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
         }
         return null;
     }

@@ -24,8 +24,6 @@ public class ExperienceCondition extends Condition {
         if(data.getPlayer() != null){
             int currentExp = data.getPlayer().getLevel();
             switch (option) {
-                case IGNORE:
-                    return true;
                 case EXACT:
                     return currentExp == expLevel;
                 case LOWER:
@@ -38,6 +36,8 @@ public class ExperienceCondition extends Condition {
                     return currentExp >= expLevel;
                 case HIGHER_LOWER:
                     return currentExp < expLevel || currentExp > expLevel;
+                default:
+                    return true;
             }
         }
         return true;

@@ -87,7 +87,7 @@ public class CustomItemList extends CCWindow {
                 NamespacedKey namespacedKey = customItems.get(i).getNamespacedKey();
                 String id = "item_" + namespacedKey.toString().replace(":", "__");
                 if (!hasButton(id)) {
-                    CustomItemSelectButton btn = new CustomItemSelectButton(namespacedKey);
+                    CustomItemSelectButton btn = new CustomItemSelectButton(customCrafting, namespacedKey);
                     registerButton(btn);
                 }
                 update.setButton(s, id);

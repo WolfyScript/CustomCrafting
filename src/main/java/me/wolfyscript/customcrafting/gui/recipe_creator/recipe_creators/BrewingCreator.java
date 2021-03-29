@@ -366,7 +366,7 @@ public class BrewingCreator extends RecipeCreator {
         update.setButton(20, "amplifier_change");
         update.setButton(29, "effect_color");
         update.setButton(38, "reset_effects");
-        NamespacedKey gray = new NamespacedKey("none", data.isDarkMode() ? "glass_gray" : "glass_white");
+        NamespacedKey gray = data.getLightBackground();
         update.setButton(12, gray);
         update.setButton(21, gray);
         update.setButton(30, gray);

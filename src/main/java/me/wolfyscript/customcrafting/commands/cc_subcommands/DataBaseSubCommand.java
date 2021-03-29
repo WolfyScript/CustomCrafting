@@ -29,12 +29,12 @@ public class DataBaseSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         if (sender instanceof Player) {
-            WolfyUtilities api = CustomCrafting.inst().getApi();
+            WolfyUtilities api = customCrafting.getApi();
             Player p = (Player) sender;
             Chat chat = api.getChat();
             //give <player> <namespace:key> [amount]
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
-                if (!CustomCrafting.inst().hasDataBaseHandler()) {
+                if (!customCrafting.hasDataBaseHandler()) {
                     chat.sendMessage(p, "&4No Database found!");
                     return true;
                 }
@@ -43,7 +43,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                         case "export_recipes":
                             chat.sendMessage(p, "Exporting recipes to Database...");
                             new Thread(() -> {
-                                DataBaseHandler dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
+                                DataBaseHandler dataBaseHandler = customCrafting.getDataBaseHandler();
                                 me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(dataBaseHandler::updateRecipe);
                                 chat.sendConsoleMessage("Successfully exported recipes to database");
                             }).start();
@@ -51,11 +51,13 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                         case "export_items":
                             chat.sendMessage(p, "Exporting custom items to Database...");
                             new Thread(() -> {
-                                DataBaseHandler dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
-                                Registry.CUSTOM_ITEMS.forEach((item) -> dataBaseHandler.updateItem(item.getNamespacedKey(), item));
+                                DataBaseHandler dataBaseHandler = customCrafting.getDataBaseHandler();
+                                Registry.CUSTOM_ITEMS.forEach(item -> dataBaseHandler.updateItem(item.getNamespacedKey(), item));
                                 chat.sendConsoleMessage("Successfully exported custom items to database");
                             }).start();
                             break;
+                        default:
+                            //No option
                     }
                 }
             }

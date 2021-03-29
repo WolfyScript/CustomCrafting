@@ -62,17 +62,17 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
         this.hidden = false;
     }
 
-    protected CustomRecipe(CustomRecipe<C, T> craftingRecipe) {
+    protected CustomRecipe(CustomRecipe<C, T> customRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
-        this.namespacedKey = craftingRecipe.namespacedKey;
+        this.namespacedKey = customRecipe.namespacedKey;
 
-        this.group = craftingRecipe.group;
-        this.priority = craftingRecipe.priority;
-        this.exactMeta = craftingRecipe.exactMeta;
-        this.conditions = craftingRecipe.conditions;
-        this.hidden = craftingRecipe.hidden;
-        this.result = craftingRecipe.result.clone();
+        this.group = customRecipe.group;
+        this.priority = customRecipe.priority;
+        this.exactMeta = customRecipe.exactMeta;
+        this.conditions = customRecipe.conditions;
+        this.hidden = customRecipe.hidden;
+        this.result = customRecipe.result.clone();
     }
 
     @Override

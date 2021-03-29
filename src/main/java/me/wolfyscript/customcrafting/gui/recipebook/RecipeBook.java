@@ -114,7 +114,7 @@ public class RecipeBook extends CCWindow {
         DataHandler dataHandler = customCrafting.getDataHandler();
         Player player = event.getPlayer();
         CCPlayerData playerStore = PlayerUtil.getStore(player);
-        NamespacedKey grayBtnKey = new NamespacedKey("none", playerStore.isDarkMode() ? "glass_gray" : "glass_white");
+        NamespacedKey grayBtnKey = playerStore.getLightBackground();
 
         KnowledgeBook knowledgeBook = event.getGuiHandler().getCustomCache().getKnowledgeBook();
 

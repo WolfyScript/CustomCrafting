@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -204,10 +205,8 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         }
         this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
         this.shapeMirrorVertical = new String[]{"   ", "   ", "   "};
-        int j = 0;
-        for (int i = shape.length - 1; i > 0; i--) {
+        for (int i = shape.length - 1, j = 0; i > 0; i--, j++) {
             this.shapeMirrorVertical[j] = shape[i];
-            j++;
         }
         this.shapeMirrorVertical = RecipeUtil.formatShape(this.shapeMirrorVertical).toArray(new String[0]);
         this.shapeMirrorHorizontal = this.shape.clone();
@@ -234,14 +233,12 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
 
     @Override
     public ShapedRecipe getVanillaRecipe() {
-        if (!allowVanillaRecipe()) {
-            if (!getResult().isEmpty() && this.width > 0) {
-                ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(), getResult().getItemStack());
-                recipe.shape(shape);
-                getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
-                recipe.setGroup(getGroup());
-                return recipe;
-            }
+        if (!allowVanillaRecipe() && !getResult().isEmpty() && this.width > 0) {
+            ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
+            recipe.shape(shape);
+            getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
+            recipe.setGroup(getGroup());
+            return recipe;
         }
         return null;
     }

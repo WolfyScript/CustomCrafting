@@ -40,7 +40,7 @@ public class GiveSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        WolfyUtilities api = CustomCrafting.inst().getApi();
+        WolfyUtilities api = customCrafting.getApi();
         if (args.length >= 2) {
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
                 Player target = Bukkit.getPlayer(args[0]);
@@ -136,7 +136,8 @@ public class GiveSubCommand extends AbstractSubCommand {
                 case 4:
                     //Drop Items
                     StringUtil.copyPartialMatches(strings[3], Arrays.asList("true", "false"), results);
-
+                default:
+                    //No option
             }
         }
         Collections.sort(results);

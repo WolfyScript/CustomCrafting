@@ -22,14 +22,14 @@ import org.bukkit.inventory.ItemStack;
 
 public class CustomItemSelectButton extends ActionButton<CCCache> {
 
-    public CustomItemSelectButton(NamespacedKey namespacedKey) {
+    public CustomItemSelectButton(CustomCrafting customCrafting, NamespacedKey namespacedKey) {
         super("item_" + namespacedKey.toString().replace(":", "__"), new ButtonState<>("custom_item_error", Material.STONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (!Registry.CUSTOM_ITEMS.has(namespacedKey) || ItemUtils.isAirOrNull(Registry.CUSTOM_ITEMS.get(namespacedKey))) {
                 return true;
             }
-            WolfyUtilities api = CustomCrafting.inst().getApi();
+            WolfyUtilities api = customCrafting.getApi();
             CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
-            if(event instanceof InventoryClickEvent){
+            if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).isRightClick()) {
                     items.setItem(items.isRecipeItem(), customItem);
                     api.getInventoryAPI().getGuiWindow(new NamespacedKey("none", "item_editor")).sendMessage(player, "item_editable");
