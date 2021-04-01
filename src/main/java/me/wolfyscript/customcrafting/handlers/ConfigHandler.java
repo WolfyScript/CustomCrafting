@@ -36,7 +36,6 @@ public class ConfigHandler {
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities api;
-    private final ConfigAPI configAPI;
     private final LanguageAPI languageAPI;
     private final MainConfig mainConfig;
     private RecipeBookConfig recipeBookConfig;
@@ -44,7 +43,7 @@ public class ConfigHandler {
     public ConfigHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
         this.customCrafting = customCrafting;
-        this.configAPI = api.getConfigAPI();
+        ConfigAPI configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
 
         File oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");//Makes sure that if a config with the old name already exists, it's renamed to the new config name.
