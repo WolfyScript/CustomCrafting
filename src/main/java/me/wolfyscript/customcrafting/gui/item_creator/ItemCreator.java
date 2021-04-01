@@ -675,12 +675,11 @@ public class ItemCreator extends CCWindow {
         //Advanced Knowledgebook Settings
         registerButton(new OptionButton(Material.KNOWLEDGE_BOOK, "knowledge_book"));
         {
-            me.wolfyscript.utilities.util.NamespacedKey knowledgeBook = new me.wolfyscript.utilities.util.NamespacedKey("customcrafting","knowledge_book");
             registerButton(new ToggleButton<>("knowledge_book.toggle", new ButtonState<>("knowledge_book.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                ((RecipeBookData) items.getItem().getCustomData(knowledgeBook)).setEnabled(false);
+                ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(false);
                 return true;
             }), new ButtonState<>("knowledge_book.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-                ((RecipeBookData) items.getItem().getCustomData(knowledgeBook)).setEnabled(true);
+                ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
                 return true;
             })));
         }

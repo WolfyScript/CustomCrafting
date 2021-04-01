@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
-import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
@@ -23,7 +22,6 @@ import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
 
 import java.io.File;
@@ -41,7 +39,6 @@ public class DataHandler {
     private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 
-    private final Map<Category, Map<Category, List<ICustomRecipe<?,?>>>> indexedCategoryRecipes;
 
     private final MainConfig mainConfig;
     private final WolfyUtilities api;
@@ -53,9 +50,8 @@ public class DataHandler {
         this.chat = api.getChat();
         this.mainConfig = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
-        this.categories = customCrafting.getConfigHandler().getRecipeBook().getCategories();
+        this.categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
         this.objectMapper = JacksonUtil.getObjectMapper();
-        this.indexedCategoryRecipes = new HashMap<>();
     }
 
     public void load(boolean update) {
@@ -96,7 +92,7 @@ public class DataHandler {
             getDisabledRecipes().addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
         }
         load(true);
-        indexRecipeItems();
+        categories.indexCategories();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
@@ -168,34 +164,6 @@ public class DataHandler {
     public void onSave() {
         customCrafting.getConfigHandler().getConfig().setDisabledRecipes(disabledRecipes);
         customCrafting.getConfigHandler().getConfig().save();
-    }
-
-    public List<ICustomRecipe<?,?>> getIndexedRecipeItems(Player player, Category mainCategory, Category switchCategory) {
-        return Registry.RECIPES.getAvailable(indexedCategoryRecipes.getOrDefault(mainCategory, new HashMap<>()).getOrDefault(switchCategory, new ArrayList<>()), player);
-    }
-
-    /**
-     * Indexes the recipes for all the available categories.
-     * <p>
-     * If there are already indexed recipes they will be cleared and re-indexed.
-     */
-    public void indexRecipeItems() {
-        chat.sendConsoleMessage("Indexing Recipes for Recipe Book...");
-        indexedCategoryRecipes.clear();
-        for (Category mainCategory : categories.getMainCategories().values()) {
-            Map<Category, List<ICustomRecipe<?,?>>> indexSwitchCategories = new HashMap<>();
-            for (Category switchCategory : categories.getSwitchCategories().values()) {
-                indexSwitchCategories.put(switchCategory, Registry.RECIPES.getAvailable().parallelStream().filter(recipe -> {
-                    if (switchCategory == null) return true;
-                    List<CustomItem> items = recipe.getRecipeBookItems();
-                    if (mainCategory != null && !mainCategory.isValid(recipe) && items.parallelStream().noneMatch(customItem -> mainCategory.isValid(customItem.getItemStack().getType()))) {
-                        return false;
-                    }
-                    return switchCategory.isValid(recipe) || items.parallelStream().anyMatch(customItem -> switchCategory.isValid(customItem.getItemStack().getType()));
-                }).collect(Collectors.toList()));
-            }
-            indexedCategoryRecipes.put(mainCategory, indexSwitchCategories);
-        }
     }
 
     //DISABLED RECIPES AND GET ALL RECIPES

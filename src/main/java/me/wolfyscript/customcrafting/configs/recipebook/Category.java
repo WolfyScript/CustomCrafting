@@ -1,131 +1,70 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonInclude;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
-import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Category {
+@JsonPropertyOrder({"id", "icon", "name", "description", "auto"})
+public class Category extends CategorySettings {
 
-    private String id = "";
-    private Material icon;
-    private String name;
-    private List<String> description;
-
-    private List<NamespacedKey> recipes;
-    private List<Material> materials;
-    @JsonAlias({"itemCategories"})
-    private List<CreativeModeTab> creativeModeTabs;
+    protected final List<RecipeContainer> containers;
+    private final Map<CategoryFilter, List<RecipeContainer>> indexedFilters = new HashMap<>();
+    private boolean auto;
 
     public Category() {
-        this.name = "";
-        this.icon = Material.CHEST;
-        this.description = new ArrayList<>();
-        this.recipes = new ArrayList<>();
-        this.creativeModeTabs = new ArrayList<>();
-        this.materials = new ArrayList<>();
+        super();
+        this.containers = new ArrayList<>();
+        this.auto = recipes.isEmpty() && namespaces.isEmpty();
     }
 
     public Category(Category category) {
-        this.name = category.name;
-        this.icon = category.getIcon();
-        this.description = new ArrayList<>(category.getDescription());
-        this.recipes = new ArrayList<>(category.getRecipes());
-        this.creativeModeTabs = new ArrayList<>(category.getCreativeModeTabs());
-        this.materials = new ArrayList<>(category.getMaterials());
+        super(category);
+        this.auto = category.auto;
+        this.containers = new ArrayList<>();
     }
 
-    @JsonGetter
-    public String getId() {
-        return id;
-    }
-
-    @JsonSetter
-    void setId(String id) {
-        this.id = id;
-    }
-
-    @JsonGetter
-    public Material getIcon() {
-        return icon;
-    }
-
-    @JsonSetter
-    public void setIcon(Material icon) {
-        this.icon = icon;
-    }
-
-    @JsonGetter
-    public String getName() {
-        return name;
-    }
-
-    @JsonSetter
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @JsonGetter
-    public List<String> getDescription() {
-        return description;
-    }
-
-    @JsonSetter
-    public void setDescription(List<String> description) {
-        this.description = description;
-    }
-
-    @JsonGetter
-    public List<NamespacedKey> getRecipes() {
-        return recipes;
-    }
-
-    @JsonSetter
-    public void setRecipes(List<NamespacedKey> recipes) {
-        this.recipes = recipes;
-    }
-
-    @JsonGetter
-    public List<Material> getMaterials() {
-        return materials;
-    }
-
-    @JsonSetter
-    public void setMaterials(List<Material> materials) {
-        this.materials = materials;
-    }
-
-    @JsonGetter
-    public List<CreativeModeTab> getCreativeModeTabs() {
-        return creativeModeTabs;
-    }
-
-    @JsonSetter
-    public void setCreativeModeTabs(List<CreativeModeTab> itemCategories) {
-        this.creativeModeTabs = itemCategories;
-    }
-
-    public boolean isValid(ICustomRecipe<?,?> recipe) {
-        if (recipes.isEmpty()) return false;
-        return recipes.contains(recipe.getNamespacedKey());
-    }
-
-    public boolean isValid(Material material) {
-        if (creativeModeTabs.stream().anyMatch(itemCategory -> {
-            if (itemCategory.equals(CreativeModeTab.SEARCH)) return true;
-            return itemCategory.isValid(material);
-        })) {
-            return true;
+    public void index() {
+        if (auto) {
+            this.namespaces.addAll(Registry.RECIPES.namespaces());
         }
-        return materials.contains(material);
+        containers.clear();
+        List<RecipeContainer> recipeContainers = new ArrayList<>();
+        recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).collect(Collectors.toList()));
+        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> Registry.RECIPES.get(s).stream().map(RecipeContainer::new)).collect(Collectors.toList()));
+        recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
+            ICustomRecipe<?, ?> recipe = Registry.RECIPES.get(namespacedKey);
+            return recipe == null ? null : new RecipeContainer(recipe);
+        }).filter(Objects::nonNull).collect(Collectors.toList()));
+        containers.addAll(recipeContainers.stream().distinct().sorted().collect(Collectors.toList()));
     }
 
+    public void indexFilters(CategoryFilter filter) {
+        indexedFilters.put(filter, containers.stream().filter(filter::filter).collect(Collectors.toList()));
+    }
+
+    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {
+        return indexedFilters.getOrDefault(filter, new ArrayList<>()).stream().filter(container -> container.canView(player)).collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    public Map<CategoryFilter, List<RecipeContainer>> getIndexedFilters() {
+        return indexedFilters;
+    }
+
+    @JsonGetter("auto")
+    public boolean isAuto() {
+        return auto;
+    }
+
+    @JsonSetter("auto")
+    public void setAuto(boolean auto) {
+        this.auto = auto;
+    }
 }

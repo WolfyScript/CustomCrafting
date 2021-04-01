@@ -11,6 +11,9 @@ import org.bukkit.block.Block;
 
 public class NamespacedKeyUtils {
 
+    private NamespacedKeyUtils() {
+    }
+
     public static final String NAMESPACE = "customcrafting";
 
     public static NamespacedKey fromInternal(NamespacedKey internalKey) {

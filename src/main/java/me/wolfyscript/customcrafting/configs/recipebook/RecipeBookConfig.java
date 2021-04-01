@@ -7,9 +7,9 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonI
 import java.io.File;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeBook extends JsonConfig<Categories> {
+public class RecipeBookConfig extends JsonConfig<Categories> {
 
-    public RecipeBook(CustomCrafting customCrafting) {
+    public RecipeBookConfig(CustomCrafting customCrafting) {
         super(new File(customCrafting.getDataFolder(), "recipe_book.json"), Categories.class);
     }
 

@@ -2,7 +2,9 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
+import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
+import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -19,7 +21,7 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
     public SaveCategoryButton(boolean saveAs, CustomCrafting customCrafting) {
         super(saveAs ? "save_as" : "save", new ButtonState<>("recipe_book_editor", saveAs ? "save_as" : "save", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             RecipeBookEditor recipeBookEditor = cache.getRecipeBookEditor();
-            RecipeBook recipeBook = customCrafting.getConfigHandler().getRecipeBook();
+            RecipeBookConfig recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
             GuiWindow<CCCache> guiWindow = inventory.getWindow();
             WolfyUtilities api = guiHandler.getApi();
 
@@ -49,15 +51,15 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
         }));
     }
 
-    private static boolean saveRecipe(RecipeBookEditor recipeBookEditor, RecipeBook recipeBook, WolfyUtilities api, Player player) {
-        Category category = recipeBookEditor.getCategory();
+    private static boolean saveRecipe(RecipeBookEditor recipeBookEditor, RecipeBookConfig recipeBook, WolfyUtilities api, Player player) {
+        CategorySettings category = recipeBookEditor.getCategory();
         if (category.getIcon() == null) {
             return false;
         }
-        if (recipeBookEditor.isSwitchCategories()) {
-            recipeBook.getCategories().registerSwitchCategory(recipeBookEditor.getCategoryID(), category);
+        if (category instanceof CategoryFilter) {
+            recipeBook.getCategories().registerFilter(recipeBookEditor.getCategoryID(), (CategoryFilter) category);
         } else {
-            recipeBook.getCategories().registerMainCategory(recipeBookEditor.getCategoryID(), category);
+            recipeBook.getCategories().registerCategory(recipeBookEditor.getCategoryID(), (Category) category);
         }
         recipeBookEditor.setCategory(null);
         recipeBookEditor.setCategoryID("");

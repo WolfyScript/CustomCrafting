@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -18,7 +18,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtili
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.util.Registry;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.particles.ParticleAnimation;
 import me.wolfyscript.utilities.util.particles.ParticleEffect;
 import me.wolfyscript.utilities.util.particles.ParticleLocation;
@@ -40,7 +39,7 @@ public class ConfigHandler {
     private final ConfigAPI configAPI;
     private final LanguageAPI languageAPI;
     private final MainConfig mainConfig;
-    private RecipeBook recipeBook;
+    private RecipeBookConfig recipeBookConfig;
 
     public ConfigHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
@@ -111,11 +110,16 @@ public class ConfigHandler {
         }
 
         //Loading RecipeBook
+        File oldRecipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book_old.json");
         File recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
+        if (!oldRecipeBookFile.exists() && recipeBookFile.exists() && !recipeBookFile.renameTo(oldRecipeBookFile)) {
+            customCrafting.getLogger().severe("Couldn't backup old recipe_book.json! Trying to load and migrate old data!");
+            customCrafting.getLogger().severe("If that fails, delete the recipe_book.json and restart the server!");
+        }
         if (!recipeBookFile.exists()) {
             customCrafting.saveResource("recipe_book.json", false);
         }
-        this.recipeBook = new RecipeBook(customCrafting);
+        this.recipeBookConfig = new RecipeBookConfig(customCrafting);
     }
 
     public void loadLang() {
@@ -138,7 +142,7 @@ public class ConfigHandler {
     }
 
     public void save() throws IOException {
-        JacksonUtil.getObjectWriter(getConfig().isPrettyPrinting()).writeValue(new File(customCrafting.getDataFolder(), "recipe_book.json"), recipeBook);
+        recipeBookConfig.save(getConfig().isPrettyPrinting());
         getConfig().save();
     }
 
@@ -146,7 +150,7 @@ public class ConfigHandler {
         return mainConfig;
     }
 
-    public RecipeBook getRecipeBook() {
-        return recipeBook;
+    public RecipeBookConfig getRecipeBookConfig() {
+        return recipeBookConfig;
     }
 }

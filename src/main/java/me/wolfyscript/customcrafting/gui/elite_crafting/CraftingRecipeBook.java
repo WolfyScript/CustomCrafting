@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
@@ -83,7 +83,7 @@ public class CraftingRecipeBook extends CCWindow {
         EliteWorkbench eliteWorkbenchData = cache.getEliteWorkbench();
         KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
 
-        Category category = ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("item_category")).getCategory(guiHandler);
+        CategorySettings category = ((ItemCategoryButton) api.getInventoryAPI().getGuiCluster("recipe_book").getButton("item_category")).getFilter(guiHandler);
         if (knowledgeBook.getSubFolder() == 0) {
             event.setButton(0, "back");
             event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
@@ -120,7 +120,7 @@ public class CraftingRecipeBook extends CCWindow {
                     while (recipeIterator.hasNext()) {
                         ICustomRecipe<?,?> recipe = recipeIterator.next();
                         Result<?> result = recipe.getResult();
-                        if (!category.isValid(recipe) && result.getChoices().stream().noneMatch(customItem -> category.isValid(customItem.getItemStack().getType()))) {
+                        if (!category.isValid(recipe)) {
                             recipeIterator.remove();
                         }
                     }

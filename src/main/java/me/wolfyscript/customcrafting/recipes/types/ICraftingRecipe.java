@@ -15,7 +15,7 @@ public interface ICraftingRecipe {
 
     boolean isShapeless();
 
-    CraftingData check(List<List<ItemStack>> matrix);
+    CraftingData check(ItemStack[] matrix, List<List<ItemStack>> ingredients);
 
     default void removeMatrix(List<List<ItemStack>> ingredientsInput, Inventory inventory, int totalAmount, CraftingData craftingData) {
         for (Map.Entry<Vec2d, CustomItem> entry : craftingData.getFoundItems().entrySet()) {

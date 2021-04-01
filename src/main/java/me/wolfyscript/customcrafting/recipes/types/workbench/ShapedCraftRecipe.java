@@ -122,53 +122,53 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     }
 
     @Override
-    public CraftingData check(List<List<ItemStack>> matrix) {
-        CraftingData craftingData = checkShape(matrix, getShape());
+    public CraftingData check(ItemStack[] matrix, List<List<ItemStack>> ingredients) {
+        CraftingData craftingData = checkShape(matrix, ingredients, getShape());
         if (craftingData != null) {
             return craftingData;
         }
         if (mirrorHorizontal()) {
-            craftingData = checkShape(matrix, getShapeMirrorHorizontal());
+            craftingData = checkShape(matrix, ingredients, getShapeMirrorHorizontal());
             if (craftingData != null) {
                 return craftingData;
             }
         }
         if (mirrorVertical()) {
-            craftingData = checkShape(matrix, getShapeMirrorVertical());
+            craftingData = checkShape(matrix, ingredients, getShapeMirrorVertical());
             if (craftingData != null) {
                 return craftingData;
             }
         }
         if (mirrorHorizontal() && mirrorVertical() && mirrorRotation()) {
-            craftingData = checkShape(matrix, getShapeRotated());
+            craftingData = checkShape(matrix, ingredients, getShapeRotated());
             return craftingData;
         }
         return null;
     }
 
-    private CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape) {
-        List<Character> containedKeys = new ArrayList<>();
-        HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
-        if (getIngredients() == null || getIngredients().isEmpty()) {
+    private CraftingData checkShape(ItemStack[] ingredients, List<List<ItemStack>> matrix, String[] shape) {
+        if (getIngredients() == null || getIngredients().isEmpty() || matrix.size() != height || matrix.get(0).size() != width)
             return null;
-        }
-        for (int c = 0; c < matrix.size(); c++) {
-            for (int r = 0; r < matrix.get(c).size(); r++) {
-                if ((matrix.get(c).get(r) != null && c < shape.length && r < shape[c].length() && shape[c].charAt(r) != ' ')) {
-                    Ingredient ingredient = getIngredients(shape[c].charAt(r));
-                    if (ingredient == null) return null;
-                    Optional<CustomItem> item = ingredient.check(matrix.get(c).get(r), isExactMeta());
-                    if (!item.isPresent()) {
-                        return null;
+        List<Character> containedKeys = new ArrayList<>();
+        Map<Vec2d, CustomItem> foundItems = new HashMap<>();
+        for (int column = 0; column < matrix.size(); column++) {
+            for (int row = 0; row < matrix.get(column).size(); row++) {
+                ItemStack targetItem = matrix.get(column).get(row);
+                char key = shape[column].charAt(row);
+                if ((targetItem == null && key != ' ') || (targetItem != null && key == ' ')) return null;
+                if (targetItem != null) {
+                    Ingredient ingredient = getIngredients(key);
+                    if (ingredient != null) {
+                        Optional<CustomItem> item = ingredient.check(targetItem, isExactMeta());
+                        if (item.isPresent()) {
+                            foundItems.put(new Vec2d(row, column), item.get());
+                            containedKeys.add(key);
+                        }
                     }
-                    foundItems.put(new Vec2d(r, c), item.get());
-                    containedKeys.add(shape[c].charAt(r));
-                } else if (!(matrix.get(c).get(r) == null && (c >= shape.length || r >= shape[c].length() || shape[c].charAt(r) == ' '))) {
-                    return null;
                 }
             }
         }
-        return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems) : null;
+        return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, ingredients) : null;
     }
 
     @Override

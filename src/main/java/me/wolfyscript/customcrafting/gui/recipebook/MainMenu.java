@@ -22,7 +22,7 @@ public class MainMenu extends CCWindow {
         DataHandler dataHandler = customCrafting.getDataHandler();
         Categories categories = dataHandler.getCategories();
 
-        for (String categoryId : categories.getSortedMainCategories()) {
+        for (String categoryId : categories.getSortedCategories()) {
             registerButton(new MainCategoryButton(categoryId, customCrafting));
         }
     }
@@ -42,7 +42,7 @@ public class MainMenu extends CCWindow {
         Categories categories = dataHandler.getCategories();
 
         int slot = 0;
-        for (String categoryId : categories.getSortedMainCategories()) {
+        for (String categoryId : categories.getSortedCategories()) {
             event.setButton(slot, "main_category." + categoryId);
             slot++;
         }

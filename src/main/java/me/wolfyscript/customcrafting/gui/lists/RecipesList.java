@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.lists;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.lists.buttons.RecipeListContainerButton;
@@ -75,7 +75,7 @@ public class RecipesList extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
-        Category category = ((ItemCategoryButton) guiHandler.getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getCategory(guiHandler);
+        CategorySettings category = ((ItemCategoryButton) guiHandler.getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getFilter(guiHandler);
         int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
         event.setButton(0, "back");
         //event.setButton(4, "recipe_book", "item_category");

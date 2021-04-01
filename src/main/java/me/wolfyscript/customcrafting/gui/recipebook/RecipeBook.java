@@ -2,6 +2,8 @@ package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
@@ -13,7 +15,6 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -28,12 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class RecipeBook extends CCWindow {
 
@@ -119,55 +115,36 @@ public class RecipeBook extends CCWindow {
         KnowledgeBook knowledgeBook = event.getGuiHandler().getCustomCache().getKnowledgeBook();
 
         Category category = knowledgeBook.getCategory();
-        Category switchCategory = ((ItemCategoryButton) event.getGuiHandler().getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getCategory(event.getGuiHandler());
+        CategoryFilter filter = ((ItemCategoryButton) event.getGuiHandler().getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getFilter(event.getGuiHandler());
 
         for (int i = 1; i < 9; i++) {
             event.setButton(i, grayBtnKey);
         }
         if (knowledgeBook.getSubFolder() == 0) {
-            if (dataHandler.getCategories().getSortedMainCategories().size() > 1) {
+            if (dataHandler.getCategories().getSortedCategories().size() > 1) {
                 event.setButton(0, "back");
             }
             event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
-            if (knowledgeBook.getRecipeItems(switchCategory) != null) {
-                if (knowledgeBook.getRecipeItems(switchCategory).isEmpty()) {
-                    knowledgeBook.setRecipeItems(switchCategory, null);
-                    Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
-                        List<CustomItem> cachedItems = dataHandler.getIndexedRecipeItems(player, category, switchCategory).parallelStream()
-                                .map(ICustomRecipe::getRecipeBookItems).flatMap(Collection::stream).collect((Supplier<ArrayList<CustomItem>>) ArrayList::new,
-                                        (customItems, itemToAdd) -> {
-                                            if(customItems.parallelStream().noneMatch(item -> item.getItemStack().isSimilar(itemToAdd.getItemStack()))){
-                                                customItems.add(itemToAdd);
-                                            }
-                                        },
-                                        (customItems, otherItems) -> customItems.addAll(otherItems.stream().filter(item -> customItems.parallelStream().noneMatch(customItem -> customItem.getItemStack().isSimilar(item.getItemStack()))).collect(Collectors.toList())));
-                        cachedItems.sort(Comparator.comparing(o -> o.getItemStack().getType()));
-                        knowledgeBook.setRecipeItems(switchCategory, !cachedItems.isEmpty() ? cachedItems : null);
-                        event.getGuiHandler().openWindow(this);
-                    });
-                    return;
-                }
-                List<CustomItem> recipeItems = new ArrayList<>(knowledgeBook.getRecipeItems(switchCategory));
-                int maxPages = recipeItems.size() / 45 + (recipeItems.size() % 45 > 0 ? 1 : 0);
-                if (knowledgeBook.getPage() >= maxPages) {
-                    knowledgeBook.setPage(0);
-                }
-                if (knowledgeBook.getPage() != 0) {
-                    event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
-                }
-                if (knowledgeBook.getPage() + 1 < maxPages) {
-                    event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
-                }
-                for (int item = 0, i = 45 * knowledgeBook.getPage(); item < 45 && i < recipeItems.size(); i++, item++) {
-                    RecipeBookContainerButton button = (RecipeBookContainerButton) getButton("recipe_book.container_" + item);
-                    if (button != null) {
-                        button.setRecipeItem(event.getGuiHandler(), recipeItems.get(i));
-                        event.setButton(9 + item, button);
-                    }
+            List<RecipeContainer> containers = category.getRecipeList(player, filter);
+            int maxPages = containers.size() / 45 + (containers.size() % 45 > 0 ? 1 : 0);
+            if (knowledgeBook.getPage() >= maxPages) {
+                knowledgeBook.setPage(0);
+            }
+            if (knowledgeBook.getPage() != 0) {
+                event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
+            }
+            if (knowledgeBook.getPage() + 1 < maxPages) {
+                event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
+            }
+            for (int item = 0, i = 45 * knowledgeBook.getPage(); item < 45 && i < containers.size(); i++, item++) {
+                RecipeBookContainerButton button = (RecipeBookContainerButton) getButton("recipe_book.container_" + item);
+                if (button != null) {
+                    button.setRecipeContainer(event.getGuiHandler(), containers.get(i));
+                    event.setButton(9 + item, button);
                 }
             }
         } else {
-            List<ICustomRecipe<?,?>> recipes = knowledgeBook.getSubFolderRecipes();
+            List<ICustomRecipe<?, ?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, grayBtnKey);
             }
@@ -178,10 +155,9 @@ public class RecipeBook extends CCWindow {
             if (knowledgeBook.getSubFolderPage() >= maxPages) {
                 knowledgeBook.setSubFolderPage(0);
             }
-
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
                 NamespacedKey backToList = new NamespacedKey("recipe_book", "back_to_list");
-                ICustomRecipe<?,?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+                ICustomRecipe<?, ?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
                 customRecipe.renderMenu(this, event);
                 if (customRecipe.getRecipeType().equals(Types.ELITE_WORKBENCH)) {
                     if (knowledgeBook.getSubFolderPage() > 0) {

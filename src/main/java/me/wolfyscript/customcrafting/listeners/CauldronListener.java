@@ -119,7 +119,7 @@ public class CauldronListener implements Listener {
                 .filter(entry -> entry.getKey().getWorld().equals(itemDrop.getLocation().getWorld()) && entry.getKey().clone().add(0.5, 0.4, 0.5).distance(itemDrop.getLocation()) <= 0.4)
                 .forEach(entry -> {
                     Location loc = entry.getKey();
-                    List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, entity -> entity instanceof Item).stream().map(entity -> (Item) entity).collect(Collectors.toList());
+                    List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, entity -> entity instanceof Item).stream().map(Item.class::cast).collect(Collectors.toList());
                     if (!items.isEmpty()) {
                         int level = ((Levelled) loc.getBlock().getBlockData()).getLevel();
                         List<Cauldron> cauldronEntryValue = entry.getValue();

@@ -53,18 +53,12 @@ database:
 crafting_table:
   enable: true            # If the advanced crafting table is enabled or not.
   reset: true             # If the crafting table item should be reset on each server start. This means the config is replaced with a new version.
-  craft_sound: # Sound when crafting an custom recipe! Currently not implemented (yet)!
-    enable: false
-    sound: "block.lava.extinguish"
 
 recipe_book:
   reset: true             # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
 
 recipes:
-  mc_registry: ENABLED    # CC will register crafting recipes into minecraft to prevent issues when crafting.
-    # ENABLED: Recipes are registered
-  # LIMITED: Recipes are registered, but players cannot see them in the vanilla recipe book
-  # DISABLED: No recipes are registered. This might cause some issues. Only Disable if you encounter this issue: https://bugs.mojang.com/browse/MC-185901
+  limited: true           # This limits the recipes that are registered! They will not be displayed in the vanilla recipe book if enabled. To prevent this issue (https://bugs.mojang.com/browse/MC-185901) this setting should not be changed!
   brewing: false          # Toggle the Brewing Recipes. They are off by default to prevent possible duplication issues
   lockdown: false         # Used to block any kind of custom recipe. If enabled no one will be able to craft any custom recipe anymore.
   pretty_printing: true   # If the configs like items or recipes should be saved using formatting or just one continuous String.

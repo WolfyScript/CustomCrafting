@@ -98,7 +98,7 @@ public class FurnaceListener implements Listener {
                         if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                             event.setCancelled(false);
                             if (customRecipe.getResult().size() > 1) {
-                                CustomItem item = customRecipe.getResult().getItem(new ItemStack[0]).orElse(new CustomItem(Material.AIR));
+                                CustomItem item = customRecipe.getResult().get(new ItemStack[0]).getItem().orElse(new CustomItem(Material.AIR));
                                 if (currentResultItem != null) {
                                     int nextAmount = currentResultItem.getAmount() + item.getAmount();
                                     if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {

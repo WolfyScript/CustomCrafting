@@ -34,12 +34,12 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
     }
 
     @Override
-    public CraftingData check(List<List<ItemStack>> matrix) {
+    public CraftingData check(ItemStack[] matrix, List<List<ItemStack>> ingredients) {
         List<Character> usedKeys = new ArrayList<>();
         HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
-        for (int i = 0; i < matrix.size(); i++) {
-            for (int j = 0; j < matrix.get(i).size(); j++) {
-                ItemStack itemStack = matrix.get(i).get(j);
+        for (int i = 0; i < ingredients.size(); i++) {
+            for (int j = 0; j < ingredients.get(i).size(); j++) {
+                ItemStack itemStack = ingredients.get(i).get(j);
                 if (itemStack == null) continue;
                 CustomItem item = checkIngredient(getIngredients(), usedKeys, itemStack, isExactMeta());
                 if (item != null) {
@@ -48,7 +48,7 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
             }
         }
         if (usedKeys.containsAll(getIngredients().keySet())) {
-            return new CraftingData(this, foundItems);
+            return new CraftingData(this, foundItems, matrix);
         }
         return null;
     }

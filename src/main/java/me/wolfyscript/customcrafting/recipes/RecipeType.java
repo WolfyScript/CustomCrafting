@@ -9,7 +9,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
-public class RecipeType<C extends ICustomRecipe<?,?>> {
+public class RecipeType<C extends ICustomRecipe<?, ?>> {
 
     /**
      * This is the RecipeType object.
@@ -19,11 +19,11 @@ public class RecipeType<C extends ICustomRecipe<?,?>> {
     private final Class<C> clazz;
     private final Types.Type type;
 
-    public RecipeType(Types.Type type, Class<C> clazz){
+    public RecipeType(Types.Type type, Class<C> clazz) {
         this(type, clazz, type.toString().toLowerCase(Locale.ROOT));
     }
 
-    public RecipeType(Types.Type type, Class<C> clazz, String creatorID){
+    public RecipeType(Types.Type type, Class<C> clazz, String creatorID) {
         this.type = type;
         this.clazz = clazz;
         this.id = type.toString().toLowerCase(Locale.ROOT);
@@ -84,14 +84,9 @@ public class RecipeType<C extends ICustomRecipe<?,?>> {
         }
 
         @Override
-        public C getInstance(NamespacedKey namespacedKey, JsonNode node){
-            try {
-                Class<? extends C> recipeClass = node.path("shapeless").asBoolean() ? shapelessClass : shapedClass;
-                return recipeClass.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-            return null;
+        public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+            Class<? extends C> recipeClass = node.path("shapeless").asBoolean() ? shapelessClass : shapedClass;
+            return recipeClass.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
         }
 
         @Override

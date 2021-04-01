@@ -37,7 +37,7 @@ public class CommandRecipe extends IndexCommand {
             InventoryAPI<?> invAPI = api.getInventoryAPI();
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.recipes")) {
                 Categories categories = customCrafting.getDataHandler().getCategories();
-                if (categories.getSortedMainCategories().size() > 1) {
+                if (categories.getSortedCategories().size() > 1) {
                     invAPI.openCluster(p, "recipe_book");
                 } else {
                     invAPI.openGui(p, new NamespacedKey("recipe_book", "recipe_book"));

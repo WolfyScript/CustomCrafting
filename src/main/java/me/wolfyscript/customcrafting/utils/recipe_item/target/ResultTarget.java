@@ -1,9 +1,6 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target;
 
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.RandomCollection;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -32,12 +29,9 @@ public abstract class ResultTarget {
         this.cases = cases;
     }
 
-    public abstract Optional<RandomCollection<CustomItem>> check(@Nullable Player player, ItemStack[] ingredients);
-
-    public abstract Optional<Result<NoneResultTarget>> get(@Nullable Player player, ItemStack[] ingredients);
+    public abstract Optional<Result<NoneResultTarget>> get(@Nullable ItemStack[] ingredients);
 
     protected Optional<Result<NoneResultTarget>> check(ItemStack itemStack) {
-        if (ItemUtils.isAirOrNull(itemStack)) return Optional.empty();
         return cases.stream().map(targetCase -> targetCase.check(itemStack)).filter(Optional::isPresent).findFirst().orElse(Optional.empty());
     }
 

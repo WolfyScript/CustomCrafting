@@ -168,56 +168,53 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
     }
 
     @Override
-    public CraftingData check(List<List<ItemStack>> matrix) {
-        CraftingData craftingData = checkShape(matrix, getShape());
+    public CraftingData check(ItemStack[] matrix, List<List<ItemStack>> ingredients) {
+        CraftingData craftingData = checkShape(matrix, ingredients, getShape());
         if (craftingData != null) {
             return craftingData;
         }
         if (mirrorHorizontal()) {
-            craftingData = checkShape(matrix, getShapeMirrorHorizontal());
+            craftingData = checkShape(matrix, ingredients, getShapeMirrorHorizontal());
             if (craftingData != null) {
                 return craftingData;
             }
         }
         if (mirrorVertical()) {
-            craftingData = checkShape(matrix, getShapeMirrorVertical());
+            craftingData = checkShape(matrix, ingredients, getShapeMirrorVertical());
             if (craftingData != null) {
                 return craftingData;
             }
         }
         if (mirrorHorizontal() && mirrorVertical() && mirrorRotation()) {
-            craftingData = checkShape(matrix, getShapeRotated());
+            craftingData = checkShape(matrix, ingredients, getShapeRotated());
             return craftingData;
         }
         return null;
     }
 
-    private CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape) {
-        List<Character> containedKeys = new ArrayList<>();
-        HashMap<Vec2d, CustomItem> foundItems = new HashMap<>();
-        if (getIngredients() == null || getIngredients().isEmpty()) {
+    private CraftingData checkShape(ItemStack[] ingredients, List<List<ItemStack>> matrix, String[] shape) {
+        if (getIngredients() == null || getIngredients().isEmpty() || matrix.size() != height || matrix.get(0).size() != width)
             return null;
-        }
-        for (int i = 0; i < matrix.size(); i++) {
-            for (int j = 0; j < matrix.get(i).size(); j++) {
-                if ((matrix.get(i).get(j) != null && i < shape.length && j < shape[i].length() && shape[i].charAt(j) != ' ')) {
-                    Ingredient ingredient = getIngredients(shape[i].charAt(j));
-                    if(ingredient == null) return null;
-                    Optional<CustomItem> item = ingredient.check(matrix.get(i).get(j), isExactMeta());
-                    if (!item.isPresent()) {
-                        return null;
+        List<Character> containedKeys = new ArrayList<>();
+        Map<Vec2d, CustomItem> foundItems = new HashMap<>();
+        for (int column = 0; column < matrix.size(); column++) {
+            for (int row = 0; row < matrix.get(column).size(); row++) {
+                ItemStack targetItem = matrix.get(column).get(row);
+                char key = shape[column].charAt(row);
+                if ((targetItem == null && key != ' ') || (targetItem != null && key == ' ')) return null;
+                if (targetItem != null) {
+                    Ingredient ingredient = getIngredients(key);
+                    if (ingredient != null) {
+                        Optional<CustomItem> item = ingredient.check(targetItem, isExactMeta());
+                        if (item.isPresent()) {
+                            foundItems.put(new Vec2d(row, column), item.get());
+                            containedKeys.add(key);
+                        }
                     }
-                    foundItems.put(new Vec2d(j, i), item.get());
-                    containedKeys.add(shape[i].charAt(j));
-                } else if (!(matrix.get(i).get(j) == null && (i >= shape.length || j >= shape[i].length() || shape[i].charAt(j) == ' '))) {
-                    return null;
                 }
             }
         }
-        if (containedKeys.containsAll(getIngredients().keySet())) {
-            return new CraftingData(this, foundItems);
-        }
-        return null;
+        return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, ingredients) : null;
     }
 
     @Override

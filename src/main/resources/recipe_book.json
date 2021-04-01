@@ -1,6 +1,8 @@
 {
   "main": {
     "sort": [
+      "default",
+      "customcrafting"
     ],
     "options": [
       {
@@ -10,9 +12,10 @@
         "description": [
           "&7Contains all the recipes available"
         ],
-        "itemCategories": [
-          "SEARCH"
-        ]
+        "auto": true,
+        "groups": [],
+        "namespaces": [],
+        "recipes": []
       },
       {
         "id": "customcrafting",
@@ -21,18 +24,27 @@
         "description": [
           "&7Contains CustomCrafting`s special recipes"
         ],
-        "recipes": [
-          "customcrafting:advanced_crafting_table",
-          "customcrafting:recipe_book"
-        ]
+        "auto": false,
+        "groups": [],
+        "namespaces": [
+          "customcrafting"
+        ],
+        "recipes": []
       }
     ]
   },
-  "elite_workbench": {
-  },
   "switch": {
     "sort": [
-      "search"
+      "search",
+      "brewing",
+      "building_blocks",
+      "decorations",
+      "combat",
+      "tools",
+      "redstone",
+      "food",
+      "transportation",
+      "misc"
     ],
     "options": [
       {
@@ -42,9 +54,28 @@
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "BREWING"
-        ]
+        ],
+        "materials": []
+      },
+      {
+        "id": "search",
+        "icon": "COMPASS",
+        "name": "$knowledgebook.category.search.name$",
+        "description": [
+          "$knowledgebook.category_navigation$"
+        ],
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
+          "SEARCH"
+        ],
+        "materials": []
       },
       {
         "id": "building_blocks",
@@ -53,97 +84,118 @@
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "BUILDING_BLOCKS"
-        ]
+        ],
+        "materials": []
       },
       {
         "id": "decorations",
-        "name": "$knowledgebook.category.decorations.name$",
         "icon": "PEONY",
+        "name": "$knowledgebook.category.decorations.name$",
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "DECORATIONS"
-        ]
+        ],
+        "materials": []
       },
       {
         "id": "combat",
-        "name": "$knowledgebook.category.combat.name$",
         "icon": "GOLDEN_SWORD",
+        "name": "$knowledgebook.category.combat.name$",
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "COMBAT"
-        ]
+        ],
+        "materials": []
       },
       {
         "id": "tools",
-        "name": "$knowledgebook.category.tools.name$",
         "icon": "IRON_AXE",
+        "name": "$knowledgebook.category.tools.name$",
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "TOOLS"
-        ]
+        ],
+        "materials": []
       },
       {
         "id": "redstone",
-        "name": "$knowledgebook.category.redstone.name$",
         "icon": "REDSTONE",
+        "name": "$knowledgebook.category.redstone.name$",
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "REDSTONE"
-        ]
+        ],
+        "materials": []
       },
       {
         "id": "food",
-        "name": "$knowledgebook.category.food.name$",
         "icon": "APPLE",
+        "name": "$knowledgebook.category.food.name$",
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "FOOD"
-        ]
+        ],
+        "materials": []
       },
       {
         "id": "transportation",
-        "name": "$knowledgebook.category.transportation.name$",
         "icon": "POWERED_RAIL",
+        "name": "$knowledgebook.category.transportation.name$",
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "TRANSPORTATION"
-        ]
+        ],
+        "materials": []
       },
       {
         "id": "misc",
-        "name": "$knowledgebook.category.misc.name$",
         "icon": "LAVA_BUCKET",
+        "name": "$knowledgebook.category.misc.name$",
         "description": [
           "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
+        "groups": [],
+        "namespaces": [],
+        "recipes": [],
+        "creativeModeTabs": [
           "MISC"
-        ]
-      },
-      {
-        "id": "search",
-        "name": "$knowledgebook.category.search.name$",
-        "icon": "COMPASS",
-        "description": [
-          "$knowledgebook.category_navigation$"
         ],
-        "itemCategories": [
-          "SEARCH"
-        ]
+        "materials": []
       }
     ]
   }

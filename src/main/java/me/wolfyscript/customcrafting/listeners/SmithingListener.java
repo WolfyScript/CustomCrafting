@@ -78,7 +78,7 @@ public class SmithingListener implements Listener {
 
             HashMap<NamespacedKey, CustomItem> preCraftedItem = preCraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
             if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
-                result = recipe.getResult().getItem(player, new ItemStack[]{base, addition}).orElse(new CustomItem(Material.AIR));
+                result = recipe.getResult().get(new ItemStack[]{base, addition}).getItem(player).orElse(new CustomItem(Material.AIR));
                 preCraftedItem.put(recipe.getNamespacedKey(), result);
                 preCraftedItems.put(player.getUniqueId(), preCraftedItem);
             } else {

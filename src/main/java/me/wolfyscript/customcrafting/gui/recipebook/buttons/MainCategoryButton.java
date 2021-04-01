@@ -10,13 +10,11 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonType;
-import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 
@@ -31,22 +29,13 @@ public class MainCategoryButton extends Button<CCCache> {
         super("main_category." + categoryId, ButtonType.NORMAL);
         this.customCrafting = customCrafting;
         this.categories = customCrafting.getDataHandler().getCategories();
-        this.category = categories.getMainCategory(categoryId);
+        this.category = categories.getCategory(categoryId);
     }
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         if (category != null) {
-            ItemStack categoryItem = new ItemStack(category.getIcon());
-            ItemMeta itemMeta = categoryItem.getItemMeta();
-
-            LanguageAPI languageAPI = WolfyUtilities.get(customCrafting).getLanguageAPI();
-
-            itemMeta.setDisplayName(languageAPI.replaceColoredKeys(category.getName()));
-            itemMeta.setLore(languageAPI.replaceColoredKeys(category.getDescription()));
-
-            categoryItem.setItemMeta(itemMeta);
-            inventory.setItem(slot, categoryItem);
+            inventory.setItem(slot, category.createItemStack(customCrafting));
         }
     }
 

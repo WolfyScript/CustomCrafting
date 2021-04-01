@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -11,6 +11,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -23,6 +24,7 @@ import java.util.List;
 public class RecipeBookContainerButton extends Button<CCCache> {
 
     private final HashMap<GuiHandler<?>, CustomItem> recipes = new HashMap<>();
+    private final HashMap<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
     private final CustomCrafting customCrafting;
 
     public RecipeBookContainerButton(int slot, CustomCrafting customCrafting) {
@@ -32,6 +34,7 @@ public class RecipeBookContainerButton extends Button<CCCache> {
 
     @Override
     public void init(GuiWindow guiWindow) {
+
     }
 
     @Override
@@ -52,8 +55,8 @@ public class RecipeBookContainerButton extends Button<CCCache> {
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
         KnowledgeBook book = cache.getKnowledgeBook();
-        CustomItem customItem = getRecipeItem(guiHandler);
-        List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
+        CustomItem customItem = new CustomItem(Material.AIR);
+        List<ICustomRecipe<?, ?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
         if (!recipes.isEmpty()) {
             book.setSubFolderPage(0);
             book.addResearchItem(customItem);
@@ -65,14 +68,18 @@ public class RecipeBookContainerButton extends Button<CCCache> {
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        inventory.setItem(slot, getRecipeItem(guiHandler).create(1));
-    }
-
-    public CustomItem getRecipeItem(GuiHandler<CCCache> guiHandler) {
-        return recipes.getOrDefault(guiHandler, null);
+        inventory.setItem(slot, getRecipeContainer(guiHandler).getDisplayItem());
     }
 
     public void setRecipeItem(GuiHandler<CCCache> guiHandler, CustomItem item) {
         recipes.put(guiHandler, item);
+    }
+
+    public RecipeContainer getRecipeContainer(GuiHandler<CCCache> guiHandler) {
+        return containers.getOrDefault(guiHandler, null);
+    }
+
+    public void setRecipeContainer(GuiHandler<CCCache> guiHandler, RecipeContainer item) {
+        containers.put(guiHandler, item);
     }
 }

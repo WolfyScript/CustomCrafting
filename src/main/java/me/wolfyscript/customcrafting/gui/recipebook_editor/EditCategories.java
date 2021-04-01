@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.recipebook.Category;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBook;
+import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
+import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -37,7 +37,7 @@ public class EditCategories extends CCWindow {
             return true;
         })));
         registerButton(new ActionButton<>("add_category", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeBookEditor().setCategory(new Category());
+            cache.getRecipeBookEditor().setCategory(new CategorySettings());
             cache.getRecipeBookEditor().setCategoryID("");
             guiHandler.openWindow("category");
             return true;
@@ -56,13 +56,13 @@ public class EditCategories extends CCWindow {
         GuiHandler<CCCache> guiHandler = update.getGuiHandler();
         CCCache cache = guiHandler.getCustomCache();
         RecipeBookEditor recipeBookEditor = cache.getRecipeBookEditor();
-        RecipeBook recipeBook = customCrafting.getConfigHandler().getRecipeBook();
+        RecipeBookConfig recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
         update.setButton(0, "back");
         update.setButton(45, "previous");
         update.setButton(49, "add_category");
         update.setButton(53, "next");
 
-        List<String> categories = recipeBookEditor.isSwitchCategories() ? recipeBook.getCategories().getSortedSwitchCategories() : recipeBook.getCategories().getSortedMainCategories();
+        List<String> categories = recipeBookEditor.isSwitchCategories() ? recipeBook.getCategories().getSortedFilters() : recipeBook.getCategories().getSortedCategories();
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
             String categoryID = categories.get(i);
             registerButton(new CategoryButton(categoryID, customCrafting));

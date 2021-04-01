@@ -147,7 +147,7 @@ public class BrewingStandListener implements Listener {
                             nmsBrewingStand.setFuelLevel(fuelLevel - 1);
                             final CustomItem finalIngredient = firstEntry.getValue();
                             //Set the tick multiplier that is used for the progress bar
-                            int multiplier = -1; //* (400 / firstEntry.getKey().getBrewTime());
+                            int multiplier = -1;
 
                             if (brewingStand.getFuelLevel() > 0) {
                                 AtomicInteger tick = new AtomicInteger(400);
@@ -188,7 +188,7 @@ public class BrewingStandListener implements Listener {
                                                                 if (potionMeta != null) {
                                                                     if (!recipe.getResult().isEmpty()) {
                                                                         //Result available. Replace the items with a random result from the list. (Percentages of items are used)
-                                                                        Optional<CustomItem> item = recipe.getResult().getItem(player, new ItemStack[]{ingredient});
+                                                                        Optional<CustomItem> item = recipe.getResult().get(new ItemStack[]{ingredient}).getItem(player);
                                                                         if (item.isPresent()) {
                                                                             brewerInventory.setItem(i, item.get().create());
                                                                         }

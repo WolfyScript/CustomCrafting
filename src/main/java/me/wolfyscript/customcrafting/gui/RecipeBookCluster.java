@@ -34,7 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.CookingRecipe;
 
 import java.util.ArrayList;
 
@@ -72,7 +71,7 @@ public class RecipeBookCluster extends CCCluster {
                         if (book.getSubFolderRecipes().isEmpty()) {
                             book.setSubFolderRecipes(item, Registry.RECIPES.get(item));
                         }
-                        if (book.getSubFolderRecipes().size() > 0) {
+                        if (!book.getSubFolderRecipes().isEmpty()) {
                             book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
                         }
                         return true;
@@ -108,11 +107,11 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>("cooking.icon", Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
             RecipeType<?> recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
-            CookingRecipe<?> cookingRecipe = ((CustomCookingRecipe<?, ?>) knowledgeBook.getCurrentRecipe()).getVanillaRecipe();
+            CustomCookingRecipe<?, ?> cookingRecipe = ((CustomCookingRecipe<?, ?>) knowledgeBook.getCurrentRecipe());
             itemStack.setType(Material.matchMaterial(recipeType.name()));
             hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
             hashMap.put("%time%", cookingRecipe.getCookingTime());
-            hashMap.put("%xp%", cookingRecipe.getExperience());
+            hashMap.put("%xp%", cookingRecipe.getExp());
             return itemStack;
         }));
         registerButton(new DummyButton<>("furnace", Material.FURNACE));

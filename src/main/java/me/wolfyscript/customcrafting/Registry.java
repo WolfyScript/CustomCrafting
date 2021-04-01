@@ -43,7 +43,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
      */
     class RecipeRegistry extends me.wolfyscript.utilities.util.Registry.SimpleRegistry<ICustomRecipe<?, ?>> {
 
-        public RecipeRegistry() {
+        private RecipeRegistry() {
         }
 
         public boolean has(NamespacedKey namespacedKey) {
@@ -82,8 +82,8 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         /**
          * Returns a List of all recipes contained in the namespace.
          *
-         * @param namespace
-         * @return
+         * @param namespace The namespace to get recipes from.
+         * @return The recipes contained in the namespace.
          */
         public List<ICustomRecipe<?, ?>> get(String namespace) {
             return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
@@ -91,6 +91,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
 
         /**
          * Get all the Recipes from this group
+         *
+         * @param group The group to get recipes from.
+         * @return The recipes contained in the group.
          */
         public List<ICustomRecipe<?, ?>> getGroup(String group) {
             return Registry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
@@ -117,7 +120,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * Get all the recipes that are available.
          * Recipes that are hidden or disabled are not included.
          *
-         * @return
+         * @return The recipes that are available and are not hidden or disabled.
          */
         public List<ICustomRecipe<?, ?>> getAvailable() {
             return getAvailable(values().parallelStream());
@@ -127,8 +130,8 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * Similar to {@link #getAvailable()} only includes the visible and enabled recipes, but also takes the player into account.
          * Recipes that the player has no permission to view are not included.
          *
-         * @param player
-         * @return
+         * @param player The player to get the recipes for.
+         * @return The recipes that are available and the player has permission to view.
          */
         public List<ICustomRecipe<?, ?>> getAvailable(Player player) {
             return getAvailable(getAvailable(), player);
@@ -157,7 +160,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return recipes.filter(recipe -> !recipe.isHidden() && !CustomCrafting.inst().getDataHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 
-        synchronized public <T extends ICustomRecipe<?, ?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
+        public synchronized <T extends ICustomRecipe<?, ?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
             return recipes.stream().filter(recipe -> recipe.getConditions().getByID("permission") == null || recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 
@@ -181,7 +184,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
-
         public int size() {
             return this.map.size();
         }
@@ -189,23 +191,23 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         private void removeBukkitRecipe(NamespacedKey namespacedKey) {
             if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
                 Bukkit.removeRecipe(namespacedKey.toBukkit());
-            } else {
-                Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-                boolean inject = false;
-                while (recipeIterator.hasNext()) {
-                    Recipe recipe = recipeIterator.next();
-                    if (((Keyed) recipe).getKey().toString().equals(namespacedKey.toString())) {
-                        if (!inject) {
-                            inject = true;
-                        }
-                        recipeIterator.remove();
+                return;
+            }
+            Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+            boolean inject = false;
+            while (recipeIterator.hasNext()) {
+                Recipe recipe = recipeIterator.next();
+                if (((Keyed) recipe).getKey().toString().equals(namespacedKey.toString())) {
+                    if (!inject) {
+                        inject = true;
                     }
+                    recipeIterator.remove();
                 }
-                if (inject) {
-                    Bukkit.resetRecipes();
-                    while (recipeIterator.hasNext()) {
-                        Bukkit.addRecipe(recipeIterator.next());
-                    }
+            }
+            if (inject) {
+                Bukkit.resetRecipes();
+                while (recipeIterator.hasNext()) {
+                    Bukkit.addRecipe(recipeIterator.next());
                 }
             }
         }

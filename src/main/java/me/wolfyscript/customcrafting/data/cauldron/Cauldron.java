@@ -23,7 +23,7 @@ public class Cauldron implements Listener {
         this.recipe = event.getRecipe();
 
         Player player = event.getPlayer();
-        this.result = recipe.getResult().getItem(player, null).orElse(new CustomItem(Material.AIR));
+        this.result = recipe.getResult().get(null).getItem(player).orElse(new CustomItem(Material.AIR));
 
         this.dropItems = event.dropItems();
         this.cookingTime = event.getCookingTime();

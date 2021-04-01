@@ -2,21 +2,19 @@ package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
-import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonType;
-import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -37,18 +35,9 @@ public class ItemCategoryButton extends Button<CCCache> {
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        Category category = categories.getSwitchCategory(categoryMap.getOrDefault(guiHandler, 0));
+        CategoryFilter category = categories.getFilter(categoryMap.getOrDefault(guiHandler, 0));
         if (category != null) {
-            ItemStack categoryItem = new ItemStack(category.getIcon());
-            ItemMeta itemMeta = categoryItem.getItemMeta();
-
-            LanguageAPI languageAPI = WolfyUtilities.get(customCrafting).getLanguageAPI();
-
-            itemMeta.setDisplayName(languageAPI.replaceColoredKeys(category.getName()));
-            itemMeta.setLore(languageAPI.replaceColoredKeys(category.getDescription()));
-
-            categoryItem.setItemMeta(itemMeta);
-            inventory.setItem(slot, categoryItem);
+            inventory.setItem(slot, category.createItemStack(customCrafting));
         }
     }
 
@@ -75,10 +64,10 @@ public class ItemCategoryButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         if (event instanceof InventoryClickEvent) {
-            if (!categories.getSortedSwitchCategories().isEmpty()) {
+            if (!categories.getSortedFilters().isEmpty()) {
                 int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
                 if (((InventoryClickEvent) event).isLeftClick()) {
-                    if (currentIndex < categories.getSortedSwitchCategories().size() - 1) {
+                    if (currentIndex < categories.getSortedFilters().size() - 1) {
                         categoryMap.put(guiHandler, currentIndex + 1);
                     } else {
                         categoryMap.put(guiHandler, 0);
@@ -87,7 +76,7 @@ public class ItemCategoryButton extends Button<CCCache> {
                     if (currentIndex > 0) {
                         categoryMap.put(guiHandler, currentIndex - 1);
                     } else {
-                        categoryMap.put(guiHandler, categories.getSortedSwitchCategories().size() - 1);
+                        categoryMap.put(guiHandler, categories.getSortedFilters().size() - 1);
                     }
                 }
             }
@@ -96,7 +85,7 @@ public class ItemCategoryButton extends Button<CCCache> {
     }
 
     @Nullable
-    public Category getCategory(GuiHandler<CCCache> guiHandler) {
-        return categories.getSwitchCategory(categoryMap.getOrDefault(guiHandler, 0));
+    public CategoryFilter getFilter(GuiHandler<CCCache> guiHandler) {
+        return categories.getFilter(categoryMap.getOrDefault(guiHandler, 0));
     }
 }

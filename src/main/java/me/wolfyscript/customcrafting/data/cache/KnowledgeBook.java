@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -17,15 +18,15 @@ import java.util.Map;
 public class KnowledgeBook {
 
     private final CustomCrafting customCrafting;
-    private final Map<Category, List<CustomItem>> cachedEliteCategoryItems;
+    private final Map<CategorySettings, List<CustomItem>> cachedEliteCategoryItems;
     private Category category;
     private WorkbenchFilter workbenchFilter;
 
     private BukkitTask timerTask;
     private HashMap<Integer, Integer> timerTimings;
     private int page, subFolderPage;
-    private final Map<Category, Map<Category, List<CustomItem>>> cachedCategoryItems;
-    private Map<CustomItem, List<ICustomRecipe<?,?>>> cachedSubFolderRecipes;
+    private final Map<CategorySettings, Map<CategorySettings, List<CustomItem>>> cachedCategoryItems;
+    private Map<CustomItem, List<ICustomRecipe<?, ?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
 
     public KnowledgeBook() {
@@ -136,22 +137,22 @@ public class KnowledgeBook {
         return getResearchItems().get(0);
     }
 
-    synchronized public List<CustomItem> getRecipeItems(Category switchCategory) {
-        Map<Category, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
+    synchronized public List<CustomItem> getRecipeItems(CategorySettings switchCategory) {
+        Map<CategorySettings, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
         return cachedItems.getOrDefault(switchCategory, new ArrayList<>());
     }
 
-    synchronized public void setRecipeItems(Category switchCategory, List<CustomItem> recipeItems) {
-        Map<Category, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
+    synchronized public void setRecipeItems(CategorySettings switchCategory, List<CustomItem> recipeItems) {
+        Map<CategorySettings, List<CustomItem>> cachedItems = cachedCategoryItems.getOrDefault(category, new HashMap<>());
         cachedItems.put(switchCategory, recipeItems);
         this.cachedCategoryItems.put(category, cachedItems);
     }
 
-    public List<CustomItem> getEliteRecipeItems(Category switchCategory) {
+    public List<CustomItem> getEliteRecipeItems(CategorySettings switchCategory) {
         return cachedEliteCategoryItems.getOrDefault(switchCategory, new ArrayList<>());
     }
 
-    public void setEliteRecipeItems(Category switchCategory, List<CustomItem> recipeItems) {
+    public void setEliteRecipeItems(CategorySettings switchCategory, List<CustomItem> recipeItems) {
         this.cachedEliteCategoryItems.put(switchCategory, recipeItems);
     }
 

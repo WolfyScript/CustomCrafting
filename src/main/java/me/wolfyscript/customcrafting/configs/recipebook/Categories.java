@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonParser;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
@@ -21,97 +22,102 @@ import java.util.Map;
 @JsonDeserialize(using = Categories.Deserializer.class)
 public class Categories {
 
-    private List<String> sortedMainCategories;
-    private List<String> sortedSwitchCategories;
+    private final Map<String, Category> categoryMap = new HashMap<>();
+    private final Map<String, CategoryFilter> filters = new HashMap<>();
+    private List<String> sortedCategories;
+    private List<String> sortedFilters;
 
-    private final HashMap<String, Category> mainCategories = new HashMap<>();
-    private final HashMap<String, Category> switchCategories = new HashMap<>();
-
-    public Categories(List<String> sortedMainCategories, List<String> sortedSwitchCategories) {
-        this.sortedSwitchCategories = sortedSwitchCategories;
-        this.sortedMainCategories = sortedMainCategories;
+    public Categories(List<String> sortedCategories, List<String> sortedFilters) {
+        this.sortedFilters = sortedFilters;
+        this.sortedCategories = sortedCategories;
     }
 
     public Categories() {
-        this.sortedSwitchCategories = new ArrayList<>();
-        this.sortedMainCategories = new ArrayList<>();
+        this.sortedFilters = new ArrayList<>();
+        this.sortedCategories = new ArrayList<>();
     }
 
-    public void registerMainCategory(String key, Category category) {
+    public void registerCategory(String key, Category category) {
         category.setId(key);
-        if (!sortedMainCategories.contains(key)) {
-            sortedMainCategories.add(key);
+        if (!sortedCategories.contains(key)) {
+            sortedCategories.add(key);
         }
-        mainCategories.put(key, category);
+        categoryMap.put(key, category);
     }
 
-    public void registerSwitchCategory(String key, Category category) {
+    public void registerFilter(String key, CategoryFilter category) {
         category.setId(key);
-        if (!sortedSwitchCategories.contains(key)) {
-            sortedSwitchCategories.add(key);
+        if (!sortedFilters.contains(key)) {
+            sortedFilters.add(key);
         }
-        switchCategories.put(key, category);
+        filters.put(key, category);
     }
 
-    public void removeSwitchCategory(String key) {
-        sortedSwitchCategories.remove(key);
-        switchCategories.remove(key);
+    public void removeFilter(String key) {
+        sortedFilters.remove(key);
+        filters.remove(key);
     }
 
-    public void removeMainCategory(String key) {
-        sortedMainCategories.remove(key);
-        mainCategories.remove(key);
+    public void removeCategory(String key) {
+        sortedCategories.remove(key);
+        categoryMap.remove(key);
     }
 
-    public Category getSwitchCategory(String key) {
-        return switchCategories.get(key);
+    public CategoryFilter getFilter(String key) {
+        return filters.get(key);
     }
 
-    public Category getSwitchCategory(int index) {
-        if (getSortedSwitchCategories().isEmpty()) return null;
-        return getSwitchCategory(getSortedSwitchCategories().get(index));
+    public CategoryFilter getFilter(int index) {
+        if (getSortedFilters().isEmpty()) return null;
+        return getFilter(getSortedFilters().get(index));
     }
 
-    public List<String> getSortedMainCategories() {
-        return sortedMainCategories;
+    public Category getCategory(String key) {
+        return categoryMap.get(key);
     }
 
-    public void setSortedMainCategories(List<String> sortedMainCategories) {
-        this.sortedMainCategories = sortedMainCategories;
+    public Category getCategory(int index) {
+        if (getSortedCategories().isEmpty()) return null;
+        return getCategory(getSortedCategories().get(index));
     }
 
-    public Category getMainCategory(String key) {
-        return mainCategories.get(key);
+    public List<String> getSortedFilters() {
+        return sortedFilters;
     }
 
-    public Category getMainCategory(int index) {
-        if (getSortedMainCategories().isEmpty()) return null;
-        return getMainCategory(getSortedMainCategories().get(index));
+    public void setSortedFilters(List<String> sortedSwitchCategories) {
+        this.sortedFilters = sortedSwitchCategories;
     }
 
-    public HashMap<String, Category> getMainCategories() {
-        return mainCategories;
+    public List<String> getSortedCategories() {
+        return sortedCategories;
     }
 
-    public HashMap<String, Category> getSwitchCategories() {
-        return switchCategories;
+    public void setSortedCategories(List<String> sortedMainCategories) {
+        this.sortedCategories = sortedMainCategories;
     }
 
-    public List<String> getSortedSwitchCategories() {
-        return sortedSwitchCategories;
+    public Map<String, Category> getCategories() {
+        return categoryMap;
     }
 
-    public void setSortedSwitchCategories(List<String> sortedSwitchCategories) {
-        this.sortedSwitchCategories = sortedSwitchCategories;
+    public Map<String, CategoryFilter> getFilters() {
+        return filters;
+    }
+
+    public void indexCategories() {
+        CustomCrafting.inst().getApi().getChat().sendConsoleMessage("Indexing Recipe Book...");
+        this.categoryMap.values().forEach(Category::index);
+        this.filters.values().forEach(filter -> this.categoryMap.values().forEach(category -> category.indexFilters(filter)));
     }
 
     @Override
     public String toString() {
         return "Categories{" +
-                "sortedMainCategories=" + sortedMainCategories +
-                ", sortedSwitchCategories=" + sortedSwitchCategories +
-                ", mainCategories=" + mainCategories +
-                ", switchCategories=" + switchCategories +
+                "sortedMainCategories=" + sortedCategories +
+                ", sortedSwitchCategories=" + sortedFilters +
+                ", mainCategories=" + categoryMap +
+                ", switchCategories=" + filters +
                 '}';
     }
 
@@ -132,12 +138,12 @@ public class Categories {
                 gen.writeObjectFieldStart("main");
                 {
                     gen.writeArrayFieldStart("sort");
-                    for (String sortedMainCategory : categories.getSortedMainCategories()) {
+                    for (String sortedMainCategory : categories.getSortedCategories()) {
                         gen.writeString(sortedMainCategory);
                     }
                     gen.writeEndArray();
                     gen.writeArrayFieldStart("options");
-                    for (Map.Entry<String, Category> entry : categories.mainCategories.entrySet()) {
+                    for (Map.Entry<String, Category> entry : categories.categoryMap.entrySet()) {
                         gen.writeObject(entry.getValue());
                     }
                     gen.writeEndArray();
@@ -147,12 +153,12 @@ public class Categories {
                 gen.writeObjectFieldStart("switch");
                 {
                     gen.writeArrayFieldStart("sort");
-                    for (String sortedSwitchCategory : categories.getSortedSwitchCategories()) {
+                    for (String sortedSwitchCategory : categories.getSortedFilters()) {
                         gen.writeString(sortedSwitchCategory);
                     }
                     gen.writeEndArray();
                     gen.writeArrayFieldStart("options");
-                    for (Map.Entry<String, Category> entry : categories.switchCategories.entrySet()) {
+                    for (Map.Entry<String, CategoryFilter> entry : categories.filters.entrySet()) {
                         gen.writeObject(entry.getValue());
                     }
                     gen.writeEndArray();
@@ -187,10 +193,10 @@ public class Categories {
                     JsonNode sortedMain = mainCategories.path("sort");
                     sortedMain.elements().forEachRemaining(element -> sortedMainList.add(element.asText()));
                 }
-                categories.setSortedMainCategories(sortedMainList);
+                categories.setSortedCategories(sortedMainList);
                 mainCategories.path("options").elements().forEachRemaining(element -> {
                     Category category = JacksonUtil.getObjectMapper().convertValue(element, Category.class);
-                    categories.registerMainCategory(category.getId(), category);
+                    categories.registerCategory(category.getId(), category);
                 });
             }
             if (node.has("switch")) {
@@ -200,10 +206,10 @@ public class Categories {
                     JsonNode sortedSwitch = switchCategories.path("sort");
                     sortedSwitch.elements().forEachRemaining(jsonElement -> sortedSwitchList.add(jsonElement.asText()));
                 }
-                categories.setSortedSwitchCategories(sortedSwitchList);
+                categories.setSortedFilters(sortedSwitchList);
                 switchCategories.path("options").elements().forEachRemaining(element -> {
-                    Category category = JacksonUtil.getObjectMapper().convertValue(element, Category.class);
-                    categories.registerSwitchCategory(category.getId(), category);
+                    CategoryFilter category = JacksonUtil.getObjectMapper().convertValue(element, CategoryFilter.class);
+                    categories.registerFilter(category.getId(), category);
                 });
             }
             return categories;
