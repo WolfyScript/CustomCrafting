@@ -103,6 +103,7 @@ public class WorkbenchCreator extends RecipeCreator {
 
         update.setButton(1, "hidden");
         update.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
+        update.setButton(4, new NamespacedKey("recipe_creator", "group"));
         update.setButton(5, "exact_meta");
         update.setButton(7, "priority");
 

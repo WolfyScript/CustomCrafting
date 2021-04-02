@@ -4,16 +4,16 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import org.bukkit.Material;
 
 public class EliteWorkbenchCreator extends RecipeCreator {
 
@@ -25,13 +25,15 @@ public class EliteWorkbenchCreator extends RecipeCreator {
     public void onInit() {
         super.onInit();
 
-        registerButton(new ExactMetaButton());
-        registerButton(new PriorityButton());
-
         for (int i = 0; i < 37; i++) {
             registerButton(new ButtonRecipeIngredient(i));
         }
         registerButton(new ButtonRecipeResult());
+
+        registerButton(new ActionButton<>("settings", Material.REDSTONE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            guiHandler.openWindow("elite_workbench_settings");
+            return true;
+        }));
 
         registerButton(new ToggleButton<>("workbench.shapeless", false, new ButtonState<>("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
             cache.setCustomRecipe(new ShapedEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
@@ -77,8 +79,6 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
 
         ((ToggleButton<CCCache>) getButton("workbench.shapeless")).setState(update.getGuiHandler(), workbench.isShapeless());
-        ((ToggleButton<CCCache>) getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
-        ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
 
         if (!workbench.isShapeless()) {
             ((ToggleButton<CCCache>) getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedEliteCraftRecipe) workbench).mirrorHorizontal());
@@ -88,8 +88,8 @@ public class EliteWorkbenchCreator extends RecipeCreator {
             if (((ShapedEliteCraftRecipe) workbench).mirrorHorizontal() && ((ShapedEliteCraftRecipe) workbench).mirrorVertical()) {
                 update.setButton(33, "workbench.mirrorRotation");
             }
-            update.setButton(34, "workbench.mirrorHorizontal");
-            update.setButton(35, "workbench.mirrorVertical");
+            update.setButton(42, "workbench.mirrorHorizontal");
+            update.setButton(51, "workbench.mirrorVertical");
         }
 
         int slot;
@@ -100,10 +100,7 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         update.setButton(25, "recipe.result");
         update.setButton(24, "workbench.shapeless");
 
-        update.setButton(42, "hidden");
-        update.setButton(43, "recipe_creator", "conditions");
-        update.setButton(44, "exact_meta");
-        update.setButton(51, "priority");
+        update.setButton(44, "settings");
 
         if(workbench.hasNamespacedKey()){
             update.setButton(52, "save");

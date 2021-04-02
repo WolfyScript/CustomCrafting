@@ -34,12 +34,9 @@ import java.util.List;
 
 public class RecipeBook extends CCWindow {
 
-    private final BukkitTask tickTask, recipeContainerTimer;
-
     public RecipeBook(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "recipe_book", 54, customCrafting);
-
-        tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        BukkitTask tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
                 Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
                 if (btn instanceof IngredientContainerButton) {
@@ -52,7 +49,7 @@ public class RecipeBook extends CCWindow {
                 }
             }
         }, 1, 30);
-        recipeContainerTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        BukkitTask recipeContainerTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 45; i++) {
                 Button<CCCache> mainContainerBtn = cluster.getButton("recipe_book.container_" + i);
                 if (mainContainerBtn instanceof RecipeBookContainerButton) {

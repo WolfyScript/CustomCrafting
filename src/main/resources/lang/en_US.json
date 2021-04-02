@@ -1864,6 +1864,13 @@
             "&7Tags are a collection of Items,",
             "&7that can make creation a lot easier."
           ]
+        },
+        "group": {
+          "name": "&6&lRecipe Group",
+          "lore": [
+            "&7Group: &e%group%"
+          ],
+          "message": "&eType in the group name!"
         }
       },
       "global_messages": {
@@ -2031,6 +2038,19 @@
           "&eShift&7+&eRight click &7on Result or Ingredients will ",
           "&7allow you to edit the item/s"
         ],
+        "items": {
+          "settings": {
+            "name": "&6&lSettings",
+            "lore": [
+              "&7Open the settings like priority,",
+              "&7conditions, meta, and more"
+            ]
+          }
+        }
+      },
+      "elite_workbench_settings": {
+        "gui_name": "&4&lCreator &7[&8Elite Workbench&7]",
+        "gui_help": [],
         "items": {
         }
       },
