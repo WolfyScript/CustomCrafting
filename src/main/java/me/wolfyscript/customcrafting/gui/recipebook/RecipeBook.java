@@ -25,6 +25,7 @@ import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.scheduler.BukkitTask;
@@ -33,16 +34,29 @@ import java.util.List;
 
 public class RecipeBook extends CCWindow {
 
-    private final BukkitTask tickTask;
+    private final BukkitTask tickTask, recipeContainerTimer;
 
     public RecipeBook(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "recipe_book", 54, customCrafting);
 
         tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
-            for (int i = 0; i < 36; i++) {
+            for (int i = 0; i < 37; i++) {
                 Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
                 if (btn instanceof IngredientContainerButton) {
                     IngredientContainerButton cBtn = (IngredientContainerButton) btn;
+                    cBtn.getTasks().forEach(runnable -> {
+                        if (runnable != null) {
+                            Bukkit.getScheduler().runTask(customCrafting, runnable);
+                        }
+                    });
+                }
+            }
+        }, 1, 30);
+        recipeContainerTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+            for (int i = 0; i < 45; i++) {
+                Button<CCCache> mainContainerBtn = cluster.getButton("recipe_book.container_" + i);
+                if (mainContainerBtn instanceof RecipeBookContainerButton) {
+                    RecipeBookContainerButton cBtn = (RecipeBookContainerButton) mainContainerBtn;
                     cBtn.getTasks().forEach(runnable -> {
                         if (runnable != null) {
                             Bukkit.getScheduler().runTask(customCrafting, runnable);
@@ -55,13 +69,11 @@ public class RecipeBook extends CCWindow {
 
     @Override
     public void onInit() {
-        for (int i = 0; i < 45; i++) {
-            registerButton(new RecipeBookContainerButton(i, customCrafting));
-        }
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back_bottom", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
+            RecipeBookContainerButton.resetButtons(guiHandler);
             guiHandler.openPreviousWindow();
             return true;
         })));
@@ -111,39 +123,39 @@ public class RecipeBook extends CCWindow {
         Player player = event.getPlayer();
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         NamespacedKey grayBtnKey = playerStore.getLightBackground();
-
         KnowledgeBook knowledgeBook = event.getGuiHandler().getCustomCache().getKnowledgeBook();
-
         Category category = knowledgeBook.getCategory();
         CategoryFilter filter = ((ItemCategoryButton) event.getGuiHandler().getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getFilter(event.getGuiHandler());
-
-        for (int i = 1; i < 9; i++) {
-            event.setButton(i, grayBtnKey);
-        }
         if (knowledgeBook.getSubFolder() == 0) {
-            if (dataHandler.getCategories().getSortedCategories().size() > 1) {
-                event.setButton(0, "back");
+            for (int i = 1; i < 9; i++) {
+                event.setButton(i, playerStore.getDarkBackground());
             }
-            event.setButton(4, new NamespacedKey("recipe_book", "item_category"));
             List<RecipeContainer> containers = category.getRecipeList(player, filter);
             int maxPages = containers.size() / 45 + (containers.size() % 45 > 0 ? 1 : 0);
             if (knowledgeBook.getPage() >= maxPages) {
                 knowledgeBook.setPage(0);
             }
-            if (knowledgeBook.getPage() != 0) {
-                event.setButton(2, new NamespacedKey("recipe_book", "previous_page"));
-            }
-            if (knowledgeBook.getPage() + 1 < maxPages) {
-                event.setButton(6, new NamespacedKey("recipe_book", "next_page"));
-            }
             for (int item = 0, i = 45 * knowledgeBook.getPage(); item < 45 && i < containers.size(); i++, item++) {
-                RecipeBookContainerButton button = (RecipeBookContainerButton) getButton("recipe_book.container_" + item);
+                RecipeBookContainerButton button = (RecipeBookContainerButton) getCluster().getButton("recipe_book.container_" + item);
                 if (button != null) {
                     button.setRecipeContainer(event.getGuiHandler(), containers.get(i));
-                    event.setButton(9 + item, button);
+                    event.setButton(item, "recipe_book", "recipe_book.container_" + item);
                 }
             }
+            if (dataHandler.getCategories().getSortedCategories().size() > 1) {
+                event.setButton(45, "back");
+            }
+            if (knowledgeBook.getPage() != 0) {
+                event.setButton(47, new NamespacedKey("recipe_book", "previous_page"));
+            }
+            event.setButton(49, new NamespacedKey("recipe_book", "item_category"));
+            if (knowledgeBook.getPage() + 1 < maxPages) {
+                event.setButton(51, new NamespacedKey("recipe_book", "next_page"));
+            }
         } else {
+            for (int i = 1; i < 9; i++) {
+                event.setButton(i, grayBtnKey);
+            }
             List<ICustomRecipe<?, ?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, grayBtnKey);
@@ -171,9 +183,7 @@ public class RecipeBook extends CCWindow {
                     if (knowledgeBook.getSubFolderPage() > 0) {
                         event.setButton(48, "previous_recipe");
                     }
-
                     event.setButton(49, backToList);
-
                     if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
                         event.setButton(50, "next_recipe");
                     }
@@ -184,12 +194,8 @@ public class RecipeBook extends CCWindow {
 
     @Override
     public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
-        for (int i = 0; i < 36; i++) {
-            Button<CCCache> btn = this.getCluster().getButton("ingredient.container_" + i);
-            if (btn instanceof IngredientContainerButton) {
-                ((IngredientContainerButton) btn).removeTask(guiHandler);
-            }
-        }
+        IngredientContainerButton.resetButtons(guiHandler);
+        RecipeBookContainerButton.resetButtons(guiHandler);
         return super.onClose(guiHandler, guiInventory, transaction);
     }
 }

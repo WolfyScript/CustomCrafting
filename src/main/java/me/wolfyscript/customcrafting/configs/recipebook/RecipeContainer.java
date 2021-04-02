@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,14 +11,14 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
     private final List<ICustomRecipe<?, ?>> cachedRecipes;
+    private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
+    private final Map<UUID, List<ItemStack>> cachedPlayerItemStacks = new HashMap<>();
 
     private final String group;
     private final NamespacedKey recipe;
@@ -41,7 +42,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public List<ICustomRecipe<?, ?>> getRecipes(Player player) {
-        return Registry.RECIPES.getAvailable(cachedRecipes, player);
+        return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 
     public boolean canView(Player player) {
@@ -66,6 +67,10 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
 
     public ItemStack getDisplayItem() {
         return cachedRecipes.isEmpty() ? new ItemStack(Material.STONE) : cachedRecipes.get(0).getRecipeBookItems().get(0).create();
+    }
+
+    public List<ItemStack> getDisplayItems(Player player) {
+        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream().flatMap(recipe1 -> recipe1.getRecipeBookItems().stream()).map(CustomItem::create).distinct().collect(Collectors.toList()));
     }
 
     @Override

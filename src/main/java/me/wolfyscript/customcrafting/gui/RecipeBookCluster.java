@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.MainMenu;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
@@ -50,11 +51,13 @@ public class RecipeBookCluster extends CCCluster {
         setEntry(new NamespacedKey("recipe_book", "main_menu"));
         registerButton(new ItemCategoryButton(customCrafting));
         registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
+            RecipeBookContainerButton.resetButtons(guiHandler);
             KnowledgeBook book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() + 1);
             return true;
         }));
         registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
+            RecipeBookContainerButton.resetButtons(guiHandler);
             KnowledgeBook book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
@@ -148,12 +151,15 @@ public class RecipeBookCluster extends CCCluster {
             hashMap.put("%value%", cookingRecipe.getAmplifierChange());
             return itemStack;
         }));
-        for (int i = 0; i < 54; i++) {
+        for (int i = 0; i < 37; i++) {
             registerButton(new IngredientContainerButton(i));
+        }
+        for (int i = 0; i < 45; i++) {
+            registerButton(new RecipeBookContainerButton(i));
         }
 
         registerButton(new DummyButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?,?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            ICustomRecipe<?, ?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", ((WorldTimeCondition) recipe.getConditions().getByID("world_time")).getTime());
 
             if (recipe.getConditions().getByID("world_time").getOption().equals(Conditions.Option.EXACT)) {

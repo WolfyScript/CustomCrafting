@@ -27,9 +27,7 @@ public class IngredientContainerButton extends Button<CCCache> {
 
     private final HashMap<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
     private final HashMap<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
-
     private final HashMap<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, Runnable> tasksQueue = new HashMap<>();
 
     public IngredientContainerButton(int slot) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
@@ -51,9 +49,7 @@ public class IngredientContainerButton extends Button<CCCache> {
             Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
             if (btn != null) {
                 IngredientContainerButton button = (IngredientContainerButton) btn;
-                if (button.getTask(guiHandler) != null) {
-                    button.setTask(guiHandler, null);
-                }
+                button.removeTask(guiHandler);
                 button.removeVariants(guiHandler);
                 button.setTiming(guiHandler, 0);
             }
@@ -79,15 +75,7 @@ public class IngredientContainerButton extends Button<CCCache> {
             if (!customItem.equals(book.getResearchItem())) {
                 List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
-                    GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
-                    for (int i = 0; i < 36; i++) {
-                        IngredientContainerButton button = (IngredientContainerButton) cluster.getButton("ingredient.container_" + i);
-                        if (button.getTask(guiHandler) != null) {
-                            button.removeTask(guiHandler);
-                        }
-                        button.removeVariants(guiHandler);
-                        button.setTiming(guiHandler, 0);
-                    }
+                    resetButtons(guiHandler);
                     book.stopTimerTask();
                     book.setSubFolderPage(0);
                     book.addResearchItem(customItem);
@@ -103,17 +91,17 @@ public class IngredientContainerButton extends Button<CCCache> {
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         List<CustomItem> variants = getVariantsMap(guiHandler);
         inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
-        if (getTask(guiHandler) == null) {
-            setTask(guiHandler, () -> {
-                if (player != null && slot < inventory.getSize()) {
-                    if (!variants.isEmpty()) {
+        if (variants.size() > 1) {
+            synchronized (tasks) {
+                tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
+                    if (player != null && slot < inventory.getSize() && !variants.isEmpty()) {
                         int variant = getTiming(guiHandler);
                         variant = ++variant < variants.size() ? variant : 0;
                         guiInventory.setItem(slot, variants.get(variant).create());
                         setTiming(guiHandler, variant);
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -154,21 +142,9 @@ public class IngredientContainerButton extends Button<CCCache> {
         this.variantsMap.put(guiHandler, variants);
     }
 
-    public void setTask(GuiHandler<CCCache> guiHandler, Runnable task) {
-        synchronized (tasks) {
-            tasks.put(guiHandler, task);
-        }
-    }
-
     public void removeTask(GuiHandler<CCCache> guiHandler) {
         synchronized (tasks) {
             tasks.remove(guiHandler);
-        }
-    }
-
-    public Runnable getTask(GuiHandler<CCCache> guiHandler) {
-        synchronized (tasks) {
-            return tasks.get(guiHandler);
         }
     }
 
@@ -176,9 +152,5 @@ public class IngredientContainerButton extends Button<CCCache> {
         synchronized (tasks) {
             return tasks.values();
         }
-    }
-
-    public void updateTasks() {
-        tasks.putAll(tasksQueue);
     }
 }

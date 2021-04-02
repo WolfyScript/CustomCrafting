@@ -37,7 +37,6 @@ public class ReloadSubCommand extends AbstractSubCommand {
                     InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
                     Bukkit.getOnlinePlayers().forEach(player -> {
                         GuiHandler<CCCache> guiHandler = invAPI.getGuiHandler(player);
-                        guiHandler.getCustomCache().getKnowledgeBook().resetCachedCategoryItems();
                         guiHandler.getCustomCache().getKnowledgeBook().setCachedSubFolderRecipes(new HashMap<>());
                         guiHandler.getCustomCache().getKnowledgeBook().setResearchItems(new ArrayList<>());
                     });

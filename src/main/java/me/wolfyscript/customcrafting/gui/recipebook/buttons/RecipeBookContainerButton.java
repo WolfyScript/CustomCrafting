@@ -1,12 +1,12 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
@@ -18,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,11 +26,23 @@ public class RecipeBookContainerButton extends Button<CCCache> {
 
     private final HashMap<GuiHandler<?>, CustomItem> recipes = new HashMap<>();
     private final HashMap<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
-    private final CustomCrafting customCrafting;
+    private final HashMap<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
 
-    public RecipeBookContainerButton(int slot, CustomCrafting customCrafting) {
+    public RecipeBookContainerButton(int slot) {
         super("recipe_book.container_" + slot, null);
-        this.customCrafting = customCrafting;
+    }
+
+    public static void resetButtons(GuiHandler<CCCache> guiHandler) {
+        GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
+        for (int i = 0; i < 54; i++) {
+            Button<CCCache> btn = cluster.getButton("recipe_book.container_" + i);
+            if (btn != null) {
+                RecipeBookContainerButton button = (RecipeBookContainerButton) btn;
+                button.removeTask(guiHandler);
+                button.setTiming(guiHandler, 0);
+            }
+        }
     }
 
     @Override
@@ -62,13 +75,27 @@ public class RecipeBookContainerButton extends Button<CCCache> {
             book.addResearchItem(customItem);
             book.setSubFolderRecipes(customItem, recipes);
             book.applyRecipeToButtons(guiHandler, recipes.get(0));
+            resetButtons(guiHandler);
         }
         return true;
     }
 
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
-        inventory.setItem(slot, getRecipeContainer(guiHandler).getDisplayItem());
+        List<ItemStack> itemStacks = getRecipeContainer(guiHandler).getDisplayItems(player);
+        inventory.setItem(slot, itemStacks.isEmpty() ? new ItemStack(Material.STONE) : itemStacks.get(getTiming(guiHandler)));
+        if (itemStacks.size() > 1) {
+            synchronized (tasks) {
+                tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
+                    if (slot < inventory.getSize() && !itemStacks.isEmpty()) {
+                        int variant = getTiming(guiHandler);
+                        variant = ++variant < itemStacks.size() ? variant : 0;
+                        guiInventory.setItem(slot, itemStacks.get(variant));
+                        setTiming(guiHandler, variant);
+                    }
+                });
+            }
+        }
     }
 
     public void setRecipeItem(GuiHandler<CCCache> guiHandler, CustomItem item) {
@@ -81,5 +108,25 @@ public class RecipeBookContainerButton extends Button<CCCache> {
 
     public void setRecipeContainer(GuiHandler<CCCache> guiHandler, RecipeContainer item) {
         containers.put(guiHandler, item);
+    }
+
+    public void setTiming(GuiHandler<CCCache> guiHandler, int timing) {
+        timings.put(guiHandler, timing);
+    }
+
+    public int getTiming(GuiHandler<CCCache> guiHandler) {
+        return timings.getOrDefault(guiHandler, 0);
+    }
+
+    public void removeTask(GuiHandler<CCCache> guiHandler) {
+        synchronized (tasks) {
+            tasks.remove(guiHandler);
+        }
+    }
+
+    public Collection<Runnable> getTasks() {
+        synchronized (tasks) {
+            return tasks.values();
+        }
     }
 }
