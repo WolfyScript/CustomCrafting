@@ -79,6 +79,10 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
         }
 
+        public List<String> groups() {
+            return values().parallelStream().map(ICustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList());
+        }
+
         /**
          * Returns a List of all recipes contained in the namespace.
          *
