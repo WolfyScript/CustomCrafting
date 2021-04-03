@@ -6,7 +6,9 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingOptionButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -41,9 +43,6 @@ public class BrewingCreator extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
-        registerButton(new ExactMetaButton());
-        registerButton(new PriorityButton());
 
         registerButton(new DummyButton<>("brewing_stand", Material.BREWING_STAND));
         registerButton(new ButtonRecipeIngredient(0));
@@ -349,12 +348,13 @@ public class BrewingCreator extends RecipeCreator {
         BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
         BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
 
-        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), brewingRecipe.isHidden());
+        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), brewingRecipe.isHidden());
+        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(update.getGuiHandler(), brewingRecipe.isExactMeta());
 
-        update.setButton(1, "hidden");
+        update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
-        update.setButton(5, "priority");
-        update.setButton(7, "exact_meta");
+        update.setButton(5, RecipeCreatorCluster.PRIORITY);
+        update.setButton(7, RecipeCreatorCluster.EXACT_META);
 
         update.setButton(9, "recipe.ingredient_0");
         update.setButton(10, "brewing_stand");

@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.TagSettingsCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.TagContainerButton;
 import me.wolfyscript.customcrafting.utils.recipe_item.RecipeItemStack;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -22,12 +23,10 @@ public class TagSettings extends CCWindow {
 
     @Override
     public void onInit() {
-
         registerButton(new ActionButton<>("add_tag_list", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             guiHandler.openWindow("tag_list");
             return true;
         }));
-
         registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             int page = cache.getTagSettingsCache().getListPage();
             cache.getTagSettingsCache().setListPage(++page);
@@ -40,7 +39,6 @@ public class TagSettings extends CCWindow {
             }
             return true;
         }));
-
     }
 
     @Override
@@ -52,7 +50,7 @@ public class TagSettings extends CCWindow {
         super.onUpdateAsync(update);
         TagSettingsCache tagsCache = update.getGuiHandler().getCustomCache().getTagSettingsCache();
         RecipeItemStack recipeItemStack = tagsCache.getRecipeItemStack();
-        update.setButton(0, "none", "back");
+        update.setButton(0, MainCluster.BACK);
         if (recipeItemStack != null) {
             NamespacedKey[] tags = recipeItemStack.getTags().toArray(new NamespacedKey[0]);
 

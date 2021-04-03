@@ -25,13 +25,15 @@ import java.util.List;
 
 public class ConditionsMenu extends CCWindow {
 
+    private static final String BACK = "back";
+
     public ConditionsMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "conditions", 45, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK, new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openPreviousWindow();
             return true;
         })));
@@ -159,7 +161,7 @@ public class ConditionsMenu extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();
-        event.setButton(0, "back");
+        event.setButton(0, BACK);
 
         List<String> values = new ArrayList<>();
         values.add("conditions.world_time");

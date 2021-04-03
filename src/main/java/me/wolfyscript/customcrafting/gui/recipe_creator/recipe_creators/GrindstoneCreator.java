@@ -5,8 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -24,9 +22,6 @@ public class GrindstoneCreator extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
-        registerButton(new ExactMetaButton());
-        registerButton(new PriorityButton());
 
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
@@ -61,12 +56,13 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
-        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
+        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
+        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(update.getGuiHandler(), grindstoneRecipe.isExactMeta());
 
-        update.setButton(1, "hidden");
+        update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
-        update.setButton(5, "priority");
-        update.setButton(7, "exact_meta");
+        update.setButton(5, RecipeCreatorCluster.PRIORITY);
+        update.setButton(7, RecipeCreatorCluster.EXACT_META);
 
         update.setButton(11, "recipe.ingredient_0");
         update.setButton(20, "grindstone");
@@ -75,7 +71,7 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(23, "xp");
         update.setButton(25, "recipe.result");
 
-        if(grindstoneRecipe.hasNamespacedKey()){
+        if (grindstoneRecipe.hasNamespacedKey()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }
         update.setButton(44, RecipeCreatorCluster.SAVE_AS);

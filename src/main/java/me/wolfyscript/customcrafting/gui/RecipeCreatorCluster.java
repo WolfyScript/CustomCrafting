@@ -4,6 +4,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.*;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
@@ -32,6 +35,9 @@ public class RecipeCreatorCluster extends CCCluster {
     public static final NamespacedKey TAGS = new NamespacedKey("recipe_creator", "tags");
     public static final NamespacedKey SAVE = new NamespacedKey("recipe_creator", "save");
     public static final NamespacedKey SAVE_AS = new NamespacedKey("recipe_creator", "save_as");
+    public static final NamespacedKey PRIORITY = new NamespacedKey("recipe_creator", "priority");
+    public static final NamespacedKey EXACT_META = new NamespacedKey("recipe_creator", "exact_meta");
+    public static final NamespacedKey HIDDEN = new NamespacedKey("recipe_creator", "hidden");
 
     public RecipeCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, "recipe_creator", customCrafting);
@@ -76,7 +82,13 @@ public class RecipeCreatorCluster extends CCCluster {
             }
             return false;
         }));
+        registerButton(new ExactMetaButton());
+        registerButton(new PriorityButton());
+        registerButton(new HiddenButton());
+        registerSaveButtons();
+    }
 
+    private void registerSaveButtons() {
         registerButton(new ActionButton<>(SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             if (guiHandler.getWindow() instanceof RecipeCreator) {
                 RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getWindow();
@@ -123,11 +135,8 @@ public class RecipeCreatorCluster extends CCCluster {
                     api.getChat().sendKey(player, "recipe_creator", "save.empty");
                 }
             }
-
             return true;
         }));
-
-
     }
 
     private boolean saveRecipe(CCCache cache, ICustomRecipe<?, ?> recipe, Player player, WolfyUtilities api, GuiHandler<CCCache> guiHandler, CustomCrafting customCrafting) {

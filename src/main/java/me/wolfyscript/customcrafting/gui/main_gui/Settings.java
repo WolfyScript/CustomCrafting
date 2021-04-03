@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -157,7 +158,7 @@ public class Settings extends CCWindow {
         ((ToggleButton<CCCache>) getButton("debug")).setState(event.getGuiHandler(), !api.hasDebuggingMode());
         ((ToggleButton<CCCache>) getButton("creator.reset_after_save")).setState(event.getGuiHandler(), !customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave());
 
-        event.setButton(0, "none", "back");
+        event.setButton(0, MainCluster.BACK);
 
         if (ChatUtils.checkPerm(player, "customcrafting.cmd.lockdown")) {
             event.setButton(9, "lockdown");

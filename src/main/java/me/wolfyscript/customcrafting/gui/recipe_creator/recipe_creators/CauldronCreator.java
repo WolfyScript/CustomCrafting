@@ -5,8 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -33,9 +31,6 @@ public class CauldronCreator extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
-        registerButton(new ExactMetaButton());
-        registerButton(new PriorityButton());
 
         registerButton(new DummyButton<>("cauldron", Material.CAULDRON));
 
@@ -202,12 +197,12 @@ public class CauldronCreator extends RecipeCreator {
         ((ToggleButton<CCCache>) getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.needsFire());
         ((ToggleButton<CCCache>) getButton("water")).setState(update.getGuiHandler(), cauldronRecipe.needsWater());
         ((ToggleButton<CCCache>) getButton("dropItems")).setState(update.getGuiHandler(), cauldronRecipe.dropItems());
-        ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), cauldronRecipe.isHidden());
+        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), cauldronRecipe.isHidden());
 
-        update.setButton(1, "hidden");
+        update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
-        update.setButton(5, "priority");
-        update.setButton(7, "exact_meta");
+        update.setButton(5, RecipeCreatorCluster.PRIORITY);
+        update.setButton(7, RecipeCreatorCluster.EXACT_META);
         update.setButton(11, "recipe.ingredient_0");
         update.setButton(13, "cookingTime");
 

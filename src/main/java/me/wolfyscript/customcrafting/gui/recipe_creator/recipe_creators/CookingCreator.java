@@ -63,15 +63,15 @@ public class CookingCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate update) {
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, BACK);
-        CCCache cache = (CCCache) update.getGuiHandler().getCustomCache();
-        ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
+        CCCache cache = update.getGuiHandler().getCustomCache();
+        ((ToggleButton) getCluster().getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
 
         CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
 
-        update.setButton(3, "hidden");
+        update.setButton(3, RecipeCreatorCluster.HIDDEN);
         update.setButton(5, RecipeCreatorCluster.CONDITIONS);
         update.setButton(20, data.getLightBackground());
         update.setButton(11, "recipe.ingredient_0");

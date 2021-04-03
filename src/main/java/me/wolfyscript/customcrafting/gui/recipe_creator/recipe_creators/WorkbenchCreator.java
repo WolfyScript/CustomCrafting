@@ -5,8 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
@@ -26,9 +24,6 @@ public class WorkbenchCreator extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
-        registerButton(new ExactMetaButton());
-        registerButton(new PriorityButton());
 
         for (int i = 0; i < 9; i++) {
             registerButton(new ButtonRecipeIngredient(i));
@@ -80,8 +75,8 @@ public class WorkbenchCreator extends RecipeCreator {
         CraftingRecipe<?> craftingRecipe = cache.getAdvancedCraftingRecipe();
 
         ((ToggleButton<CCCache>) getButton("workbench.shapeless")).setState(update.getGuiHandler(), craftingRecipe.isShapeless());
-        ((ToggleButton<CCCache>) getButton("exact_meta")).setState(update.getGuiHandler(), craftingRecipe.isExactMeta());
-        ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), craftingRecipe.isHidden());
+        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(update.getGuiHandler(), craftingRecipe.isExactMeta());
+        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), craftingRecipe.isHidden());
 
         if (!craftingRecipe.isShapeless()) {
             ((ToggleButton<CCCache>) getButton("workbench.mirrorHorizontal")).setState(update.getGuiHandler(), ((ShapedCraftRecipe) craftingRecipe).mirrorHorizontal());
@@ -101,13 +96,13 @@ public class WorkbenchCreator extends RecipeCreator {
         update.setButton(22, "workbench.shapeless");
         update.setButton(24, "recipe.result");
 
-        update.setButton(1, "hidden");
+        update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
-        update.setButton(5, "exact_meta");
-        update.setButton(7, "priority");
+        update.setButton(5, RecipeCreatorCluster.EXACT_META);
+        update.setButton(7, RecipeCreatorCluster.PRIORITY);
 
         update.setButton(42, RecipeCreatorCluster.GROUP);
-        if(craftingRecipe.hasNamespacedKey()){
+        if (craftingRecipe.hasNamespacedKey()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }
         update.setButton(44, RecipeCreatorCluster.SAVE_AS);

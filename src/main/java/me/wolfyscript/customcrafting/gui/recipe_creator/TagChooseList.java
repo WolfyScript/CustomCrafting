@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.TagSettingsCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.TagChooseButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -70,7 +71,7 @@ public class TagChooseList extends CCWindow {
             registerButton(button);
             update.setButton(invSlot, button);
         }
-        update.setButton(49, "none", "back_bottom");
+        update.setButton(49, MainCluster.BACK_BOTTOM);
 
         if (page > 0) {
             update.setButton(48, "previous_page");

@@ -32,9 +32,9 @@ public class StonecutterCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getStonecutterRecipe().isHidden());
+        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getStonecutterRecipe().isHidden());
         update.setButton(0, BACK);
-        update.setButton(4, "hidden");
+        update.setButton(4, RecipeCreatorCluster.HIDDEN);
         update.setButton(20, "recipe.ingredient_0");
         update.setButton(24, "stonecutter.result");
 

@@ -15,10 +15,23 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 public class MainCluster extends CCCluster {
+
+    public static final NamespacedKey BACK = new NamespacedKey("none", "back");
+    public static final NamespacedKey BACK_BOTTOM = new NamespacedKey("none", "back_bottom");
+    public static final NamespacedKey GUI_HELP = new NamespacedKey("none", "gui_help");
+
+    public static final NamespacedKey GLASS_GRAY = new NamespacedKey("none", "glass_gray");
+    public static final NamespacedKey GLASS_WHITE = new NamespacedKey("none", "glass_white");
+    public static final NamespacedKey GLASS_BLACK = new NamespacedKey("none", "glass_black");
+    public static final NamespacedKey GLASS_RED = new NamespacedKey("none", "glass_red");
+    public static final NamespacedKey GLASS_GREEN = new NamespacedKey("none", "glass_green");
+    public static final NamespacedKey GLASS_PURPLE = new NamespacedKey("none", "glass_purple");
+    public static final NamespacedKey GLASS_PINK = new NamespacedKey("none", "glass_pink");
 
     public MainCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, "none", customCrafting);
@@ -26,27 +39,27 @@ public class MainCluster extends CCCluster {
 
     @Override
     public void onInit() {
-        registerButton(new DummyButton<>("glass_gray", new ButtonState<>("background", Material.GRAY_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("glass_black", new ButtonState<>("background", Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("glass_red", new ButtonState<>("background", Material.RED_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_GRAY.getKey(), new ButtonState<>("background", Material.GRAY_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_BLACK.getKey(), new ButtonState<>("background", Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_RED.getKey(), new ButtonState<>("background", Material.RED_STAINED_GLASS_PANE)));
 
-        registerButton(new DummyButton<>("glass_white", new ButtonState<>("background", Material.WHITE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("glass_green", new ButtonState<>("background", Material.GREEN_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("glass_purple", new ButtonState<>("background", Material.PURPLE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("glass_pink", new ButtonState<>("background", Material.PINK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_WHITE.getKey(), new ButtonState<>("background", Material.WHITE_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_GREEN.getKey(), new ButtonState<>("background", Material.GREEN_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_PURPLE.getKey(), new ButtonState<>("background", Material.PURPLE_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_PINK.getKey(), new ButtonState<>("background", Material.PINK_STAINED_GLASS_PANE)));
 
-        registerButton(new ToggleButton<>("gui_help", true, new ButtonState<>("gui_help_off", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ToggleButton<>(GUI_HELP.getKey(), true, new ButtonState<>("gui_help_off", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.setHelpEnabled(true);
             return true;
         }), new ButtonState<>("gui_help_on", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.setHelpEnabled(false);
             return true;
         })));
-        registerButton(new ActionButton<>("back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK.getKey(), PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openPreviousWindow();
             return true;
         }));
-        registerButton(new ActionButton<>("back_bottom", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK_BOTTOM.getKey(), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openPreviousWindow();
             return true;
         }));

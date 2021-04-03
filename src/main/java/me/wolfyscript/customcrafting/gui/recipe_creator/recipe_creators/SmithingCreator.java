@@ -5,8 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -21,9 +19,6 @@ public class SmithingCreator extends RecipeCreator {
     @Override
     public void onInit() {
         super.onInit();
-
-        registerButton(new ExactMetaButton());
-        registerButton(new PriorityButton());
 
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
@@ -41,12 +36,12 @@ public class SmithingCreator extends RecipeCreator {
         CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, BACK);
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
-        ((ToggleButton<CCCache>) getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
-        ((ToggleButton<CCCache>) getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
-        event.setButton(1, "hidden");
+        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
+        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
+        event.setButton(1, RecipeCreatorCluster.HIDDEN);
         event.setButton(3, RecipeCreatorCluster.CONDITIONS);
-        event.setButton(5, "priority");
-        event.setButton(7, "exact_meta");
+        event.setButton(5, RecipeCreatorCluster.PRIORITY);
+        event.setButton(7, RecipeCreatorCluster.EXACT_META);
         event.setButton(19, "recipe.ingredient_0");
         event.setButton(22, "recipe.ingredient_1");
         event.setButton(25, "recipe.result");

@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -23,7 +22,6 @@ public abstract class RecipeCreator extends CCWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new HiddenButton());
     }
 
     public abstract boolean validToSave(CCCache cache);
