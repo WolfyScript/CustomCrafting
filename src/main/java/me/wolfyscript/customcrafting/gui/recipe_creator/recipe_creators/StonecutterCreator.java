@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
@@ -32,15 +33,15 @@ public class StonecutterCreator extends RecipeCreator {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getStonecutterRecipe().isHidden());
-        update.setButton(0, "back");
+        update.setButton(0, BACK);
         update.setButton(4, "hidden");
         update.setButton(20, "recipe.ingredient_0");
         update.setButton(24, "stonecutter.result");
 
         if (update.getGuiHandler().getCustomCache().getStonecutterRecipe().hasNamespacedKey()) {
-            update.setButton(43, "save");
+            update.setButton(43, RecipeCreatorCluster.SAVE);
         }
-        update.setButton(44, "save_as");
+        update.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

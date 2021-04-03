@@ -1868,7 +1868,9 @@
         "group": {
           "name": "&6&lRecipe Group",
           "lore": [
-            "&7Group: &e%group%"
+            "&7Group: &e%group%",
+            "&7Recipes with the same group are",
+            "&7grouped together in the recipe book."
           ],
           "message": "&eType in the group name!"
         }

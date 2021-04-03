@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
@@ -57,13 +58,13 @@ public class GrindstoneCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, "back");
+        update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
 
         update.setButton(1, "hidden");
-        update.setButton(3, "recipe_creator", "conditions");
+        update.setButton(3, RecipeCreatorCluster.CONDITIONS);
         update.setButton(5, "priority");
         update.setButton(7, "exact_meta");
 
@@ -75,9 +76,9 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(25, "recipe.result");
 
         if(grindstoneRecipe.hasNamespacedKey()){
-            update.setButton(43, "save");
+            update.setButton(43, RecipeCreatorCluster.SAVE);
         }
-        update.setButton(44, "save_as");
+        update.setButton(44, RecipeCreatorCluster.SAVE_AS);
 
     }
 

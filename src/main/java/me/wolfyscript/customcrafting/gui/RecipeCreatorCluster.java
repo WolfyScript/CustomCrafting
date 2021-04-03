@@ -1,15 +1,37 @@
 package me.wolfyscript.customcrafting.gui;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.*;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecipeCreatorCluster extends CCCluster {
+
+    public static final NamespacedKey CONDITIONS = new NamespacedKey("recipe_creator", "conditions");
+    public static final NamespacedKey GROUP = new NamespacedKey("recipe_creator", "group");
+    public static final NamespacedKey TAGS = new NamespacedKey("recipe_creator", "tags");
+    public static final NamespacedKey SAVE = new NamespacedKey("recipe_creator", "save");
+    public static final NamespacedKey SAVE_AS = new NamespacedKey("recipe_creator", "save_as");
 
     public RecipeCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, "recipe_creator", customCrafting);
@@ -35,17 +57,17 @@ public class RecipeCreatorCluster extends CCCluster {
         registerGuiWindow(new TagSettings(this, customCrafting));
         registerGuiWindow(new TagChooseList(this, customCrafting));
 
-        registerButton(new ActionButton<>("conditions", Material.CYAN_CONCRETE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(CONDITIONS.getKey(), Material.CYAN_CONCRETE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openWindow("conditions");
             return true;
         }));
 
-        registerButton(new ActionButton<>("tags", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        registerButton(new ActionButton<>(TAGS.getKey(), Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             guiHandler.openWindow("tag_settings");
             return true;
         }));
 
-        registerButton(new ChatInputButton<>("group", Material.BOOKSHELF, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+        registerButton(new ChatInputButton<>(GROUP.getKey(), Material.BOOKSHELF, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             values.put("%group%", cache.getRecipe().getGroup());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -54,5 +76,79 @@ public class RecipeCreatorCluster extends CCCluster {
             }
             return false;
         }));
+
+        registerButton(new ActionButton<>(SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            if (guiHandler.getWindow() instanceof RecipeCreator) {
+                RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getWindow();
+                WolfyUtilities api = guiHandler.getApi();
+                CustomCrafting customCrafting = recipeCreator.getCustomCrafting();
+                if (recipeCreator.validToSave(cache)) {
+                    return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, customCrafting);
+                } else {
+                    api.getChat().sendKey(player, "recipe_creator", "save.empty");
+                }
+            }
+            return true;
+        }));
+        registerButton(new ActionButton<>(SAVE_AS.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            if (guiHandler.getWindow() instanceof RecipeCreator) {
+                RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getWindow();
+                WolfyUtilities api = guiHandler.getApi();
+                CustomCrafting customCrafting = recipeCreator.getCustomCrafting();
+                if (recipeCreator.validToSave(cache)) {
+                    guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                        List<String> results = new ArrayList<>();
+                        if (args.length > 0) {
+                            if (args.length == 1) {
+                                results.add("<namespace>");
+                                StringUtil.copyPartialMatches(args[0], Registry.RECIPES.namespaces(), results);
+                            } else if (args.length == 2) {
+                                results.add("<key>");
+                                StringUtil.copyPartialMatches(args[1], Registry.RECIPES.get(args[0]).stream().filter(recipe -> recipe.getRecipeType().equals(cache.getRecipeType())).map(recipe -> recipe.getNamespacedKey().getKey()).collect(Collectors.toList()), results);
+                            }
+                        }
+                        Collections.sort(results);
+                        return results;
+                    });
+                    recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                        NamespacedKey namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
+                        if (namespacedKey != null) {
+                            ICustomRecipe<?, ?> recipe = cache.getRecipe();
+                            recipe.setNamespacedKey(namespacedKey);
+                            return saveRecipe(cache, recipe, player1, api, guiHandler, customCrafting);
+                        }
+                        return true;
+                    });
+                } else {
+                    api.getChat().sendKey(player, "recipe_creator", "save.empty");
+                }
+            }
+
+            return true;
+        }));
+
+
+    }
+
+    private boolean saveRecipe(CCCache cache, ICustomRecipe<?, ?> recipe, Player player, WolfyUtilities api, GuiHandler<CCCache> guiHandler, CustomCrafting customCrafting) {
+        if (!recipe.save(player)) {
+            return true;
+        }
+        try {
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                if (recipe instanceof IShapedCraftingRecipe) {
+                    ((IShapedCraftingRecipe) recipe).constructShape();
+                }
+                Registry.RECIPES.register(recipe);
+                api.getChat().sendKey(player, "recipe_creator", "loading.success");
+                if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) cache.resetRecipe();
+            });
+        } catch (Exception ex) {
+            api.getChat().sendKey(player, this, "loading.error", new Pair<>("%REC%", recipe.getNamespacedKey().toString()));
+            ex.printStackTrace();
+            return false;
+        }
+        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openPreviousWindow("none", 2));
+        return true;
     }
 }

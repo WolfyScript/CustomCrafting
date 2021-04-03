@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
@@ -38,12 +39,12 @@ public class SmithingCreator extends RecipeCreator {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();
-        event.setButton(0, "back");
+        event.setButton(0, BACK);
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
         ((ToggleButton<CCCache>) getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
         ((ToggleButton<CCCache>) getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
         event.setButton(1, "hidden");
-        event.setButton(3, "recipe_creator", "conditions");
+        event.setButton(3, RecipeCreatorCluster.CONDITIONS);
         event.setButton(5, "priority");
         event.setButton(7, "exact_meta");
         event.setButton(19, "recipe.ingredient_0");
@@ -51,9 +52,9 @@ public class SmithingCreator extends RecipeCreator {
         event.setButton(25, "recipe.result");
 
         if (smithingRecipe.hasNamespacedKey()) {
-            event.setButton(43, "save");
+            event.setButton(43, RecipeCreatorCluster.SAVE);
         }
-        event.setButton(44, "save_as");
+        event.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

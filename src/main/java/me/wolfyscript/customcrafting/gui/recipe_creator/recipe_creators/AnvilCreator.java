@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
@@ -13,7 +14,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -123,12 +123,12 @@ public class AnvilCreator extends RecipeCreator {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();
-        event.setButton(0, "back");
+        event.setButton(0, BACK);
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
         ((ToggleButton<CCCache>) getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());
         ((ToggleButton<CCCache>) getButton("hidden")).setState(event.getGuiHandler(), anvilRecipe.isHidden());
         event.setButton(1, "hidden");
-        event.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
+        event.setButton(3, RecipeCreatorCluster.CONDITIONS);
         event.setButton(5, "priority");
         event.setButton(7, "exact_meta");
         event.setButton(19, "recipe.ingredient_0");
@@ -149,9 +149,9 @@ public class AnvilCreator extends RecipeCreator {
         event.setButton(42, "repair_mode");
 
         if(anvilRecipe.hasNamespacedKey()){
-            event.setButton(43, "save");
+            event.setButton(43, RecipeCreatorCluster.SAVE);
         }
-        event.setButton(44, "save_as");
+        event.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -64,14 +65,14 @@ public class CookingCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate update) {
         super.onUpdateAsync(update);
-        update.setButton(0, "back");
+        update.setButton(0, BACK);
         CCCache cache = (CCCache) update.getGuiHandler().getCustomCache();
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
 
         CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
 
         update.setButton(3, "hidden");
-        update.setButton(5, "recipe_creator", "conditions");
+        update.setButton(5, RecipeCreatorCluster.CONDITIONS);
         update.setButton(20, data.getLightBackground());
         update.setButton(11, "recipe.ingredient_0");
         update.setButton(24, "recipe.result");
@@ -81,9 +82,9 @@ public class CookingCreator extends RecipeCreator {
         update.setButton(29, "cooking_time");
 
         if (cache.getCookingRecipe().hasNamespacedKey()) {
-            update.setButton(43, "save");
+            update.setButton(43, RecipeCreatorCluster.SAVE);
         }
-        update.setButton(44, "save_as");
+        update.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
     public boolean validToSave(CCCache cache) {

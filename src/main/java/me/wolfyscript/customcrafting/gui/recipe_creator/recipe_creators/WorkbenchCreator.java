@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
@@ -14,7 +15,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
 public class WorkbenchCreator extends RecipeCreator {
@@ -75,7 +75,7 @@ public class WorkbenchCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, "back");
+        update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         CraftingRecipe<?> craftingRecipe = cache.getAdvancedCraftingRecipe();
 
@@ -102,15 +102,15 @@ public class WorkbenchCreator extends RecipeCreator {
         update.setButton(24, "recipe.result");
 
         update.setButton(1, "hidden");
-        update.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
-        update.setButton(4, new NamespacedKey("recipe_creator", "group"));
+        update.setButton(3, RecipeCreatorCluster.CONDITIONS);
         update.setButton(5, "exact_meta");
         update.setButton(7, "priority");
 
+        update.setButton(42, RecipeCreatorCluster.GROUP);
         if(craftingRecipe.hasNamespacedKey()){
-            update.setButton(43, "save");
+            update.setButton(43, RecipeCreatorCluster.SAVE);
         }
-        update.setButton(44, "save_as");
+        update.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

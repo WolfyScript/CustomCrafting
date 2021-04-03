@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
@@ -74,7 +75,7 @@ public class EliteWorkbenchCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(6, "back");
+        update.setButton(6, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
 
@@ -103,9 +104,9 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         update.setButton(44, "settings");
 
         if(workbench.hasNamespacedKey()){
-            update.setButton(52, "save");
+            update.setButton(52, RecipeCreatorCluster.SAVE);
         }
-        update.setButton(53, "save_as");
+        update.setButton(53, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

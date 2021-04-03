@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.*;
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
@@ -343,7 +344,7 @@ public class BrewingCreator extends RecipeCreator {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
-        update.setButton(0, "back");
+        update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
         BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
@@ -351,7 +352,7 @@ public class BrewingCreator extends RecipeCreator {
         ((ToggleButton) getButton("hidden")).setState(update.getGuiHandler(), brewingRecipe.isHidden());
 
         update.setButton(1, "hidden");
-        update.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
+        update.setButton(3, RecipeCreatorCluster.CONDITIONS);
         update.setButton(5, "priority");
         update.setButton(7, "exact_meta");
 
@@ -414,9 +415,9 @@ public class BrewingCreator extends RecipeCreator {
         //Result Items
 
         if (brewingRecipe.hasNamespacedKey()) {
-            update.setButton(52, "save");
+            update.setButton(52, RecipeCreatorCluster.SAVE);
         }
-        update.setButton(53, "save_as");
+        update.setButton(53, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

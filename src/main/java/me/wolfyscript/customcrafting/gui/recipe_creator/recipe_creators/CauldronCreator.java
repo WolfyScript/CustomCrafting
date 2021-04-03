@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
@@ -195,7 +196,7 @@ public class CauldronCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, "back");
+        update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         CauldronRecipe cauldronRecipe = cache.getCauldronRecipe();
         ((ToggleButton<CCCache>) getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.needsFire());
@@ -204,7 +205,7 @@ public class CauldronCreator extends RecipeCreator {
         ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), cauldronRecipe.isHidden());
 
         update.setButton(1, "hidden");
-        update.setButton(3, new NamespacedKey("recipe_creator", "conditions"));
+        update.setButton(3, RecipeCreatorCluster.CONDITIONS);
         update.setButton(5, "priority");
         update.setButton(7, "exact_meta");
         update.setButton(11, "recipe.ingredient_0");
@@ -225,9 +226,9 @@ public class CauldronCreator extends RecipeCreator {
         }
 
         if(cauldronRecipe.hasNamespacedKey()){
-            update.setButton(43, "save");
+            update.setButton(43, RecipeCreatorCluster.SAVE);
         }
-        update.setButton(44, "save_as");
+        update.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

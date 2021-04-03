@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
@@ -28,15 +29,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 
 public class RecipeBook extends CCWindow {
 
+    private static final String NEXT_RECIPE = "next_recipe";
+    private static final String PREVIOUS_RECIPE = "previous_recipe";
+
     public RecipeBook(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "recipe_book", 54, customCrafting);
-        BukkitTask tickTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
                 Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
                 if (btn instanceof IngredientContainerButton) {
@@ -49,7 +52,7 @@ public class RecipeBook extends CCWindow {
                 }
             }
         }, 1, 30);
-        BukkitTask recipeContainerTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 45; i++) {
                 Button<CCCache> mainContainerBtn = cluster.getButton("recipe_book.container_" + i);
                 if (mainContainerBtn instanceof RecipeBookContainerButton) {
@@ -61,7 +64,7 @@ public class RecipeBook extends CCWindow {
                     });
                 }
             }
-        }, 1, 30);
+        }, 1, 20);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class RecipeBook extends CCWindow {
             return true;
         })));
 
-        registerButton(new ActionButton<>("next_recipe", new ButtonState<>("next_recipe", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(NEXT_RECIPE, new ButtonState<>(NEXT_RECIPE, PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
             KnowledgeBook book = cache.getKnowledgeBook();
             book.stopTimerTask();
             IngredientContainerButton.resetButtons(guiHandler);
@@ -124,7 +127,7 @@ public class RecipeBook extends CCWindow {
         Category category = knowledgeBook.getCategory();
         CategoryFilter filter = ((ItemCategoryButton) event.getGuiHandler().getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getFilter(event.getGuiHandler());
         if (knowledgeBook.getSubFolder() == 0) {
-            for (int i = 1; i < 9; i++) {
+            for (int i = 0; i < 9; i++) {
                 event.setButton(i, playerStore.getDarkBackground());
             }
             List<RecipeContainer> containers = category.getRecipeList(player, filter);
@@ -143,11 +146,11 @@ public class RecipeBook extends CCWindow {
                 event.setButton(45, "back");
             }
             if (knowledgeBook.getPage() != 0) {
-                event.setButton(47, new NamespacedKey("recipe_book", "previous_page"));
+                event.setButton(47, RecipeBookCluster.PREVIOUS_PAGE);
             }
-            event.setButton(49, new NamespacedKey("recipe_book", "item_category"));
+            event.setButton(49, RecipeBookCluster.ITEM_CATEGORY);
             if (knowledgeBook.getPage() + 1 < maxPages) {
-                event.setButton(51, new NamespacedKey("recipe_book", "next_page"));
+                event.setButton(51, RecipeBookCluster.NEXT_PAGE);
             }
         } else {
             for (int i = 1; i < 9; i++) {
@@ -165,24 +168,23 @@ public class RecipeBook extends CCWindow {
                 knowledgeBook.setSubFolderPage(0);
             }
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
-                NamespacedKey backToList = new NamespacedKey("recipe_book", "back_to_list");
                 ICustomRecipe<?, ?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
                 customRecipe.renderMenu(this, event);
                 if (customRecipe.getRecipeType().equals(Types.ELITE_WORKBENCH)) {
                     if (knowledgeBook.getSubFolderPage() > 0) {
-                        event.setButton(51, "previous_recipe");
+                        event.setButton(51, PREVIOUS_RECIPE);
                     }
-                    event.setButton(52, backToList);
+                    event.setButton(52, RecipeBookCluster.BACK_TO_LIST);
                     if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
-                        event.setButton(53, "next_recipe");
+                        event.setButton(53, NEXT_RECIPE);
                     }
                 } else {
                     if (knowledgeBook.getSubFolderPage() > 0) {
-                        event.setButton(48, "previous_recipe");
+                        event.setButton(48, PREVIOUS_RECIPE);
                     }
-                    event.setButton(49, backToList);
+                    event.setButton(49, RecipeBookCluster.BACK_TO_LIST);
                     if (knowledgeBook.getSubFolderPage() + 1 < recipes.size()) {
-                        event.setButton(50, "next_recipe");
+                        event.setButton(50, NEXT_RECIPE);
                     }
                 }
             }

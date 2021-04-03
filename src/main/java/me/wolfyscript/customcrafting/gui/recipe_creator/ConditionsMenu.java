@@ -181,6 +181,9 @@ public class ConditionsMenu extends CCWindow {
             case GRINDSTONE:
                 values.add("conditions.permission");
                 values.add("conditions.player_experience");
+                break;
+            default:
+                //No special conditions
         }
         int item = 9;
         for (int i = 0; i < values.size() && item < 45; i++) {

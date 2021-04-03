@@ -42,7 +42,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public List<ICustomRecipe<?, ?>> getRecipes(Player player) {
-        return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
+        return Registry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 
     public boolean canView(Player player) {

@@ -40,6 +40,12 @@ import java.util.ArrayList;
 
 public class RecipeBookCluster extends CCCluster {
 
+    public static final NamespacedKey BACK_TO_LIST = new NamespacedKey("recipe_book", "back_to_list");
+    public static final NamespacedKey NEXT_PAGE = new NamespacedKey("recipe_book", "next_page");
+    public static final NamespacedKey PREVIOUS_PAGE = new NamespacedKey("recipe_book", "previous_page");
+    public static final NamespacedKey ITEM_CATEGORY = new NamespacedKey("recipe_book", "item_category");
+    public static final NamespacedKey PERMISSION = new NamespacedKey("recipe_book", "permission");
+
     public RecipeBookCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, "recipe_book", customCrafting);
     }
@@ -49,20 +55,21 @@ public class RecipeBookCluster extends CCCluster {
         registerGuiWindow(new RecipeBook(this, customCrafting));
         registerGuiWindow(new MainMenu(this, customCrafting));
         setEntry(new NamespacedKey("recipe_book", "main_menu"));
+
         registerButton(new ItemCategoryButton(customCrafting));
-        registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(NEXT_PAGE.getKey(), PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
             RecipeBookContainerButton.resetButtons(guiHandler);
             KnowledgeBook book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() + 1);
             return true;
         }));
-        registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(PREVIOUS_PAGE.getKey(), PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
             RecipeBookContainerButton.resetButtons(guiHandler);
             KnowledgeBook book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
         }));
-        registerButton(new ActionButton<>("back_to_list", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK_TO_LIST.getKey(), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent) {
                 KnowledgeBook book = cache.getKnowledgeBook();
                 book.stopTimerTask();
@@ -86,7 +93,7 @@ public class RecipeBookCluster extends CCCluster {
             return true;
         }));
 
-        registerButton(new ToggleButton<>("permission", new ButtonState<>("permission.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true), new ButtonState<>("permission.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true)));
+        registerButton(new ToggleButton<>(PERMISSION.getKey(), new ButtonState<>("permission.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true), new ButtonState<>("permission.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true)));
         registerButton(new MultipleChoiceButton<>("workbench.filter_button", new ButtonState<>("workbench.filter_button.all", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ADVANCED);
             return true;
@@ -157,7 +164,10 @@ public class RecipeBookCluster extends CCCluster {
         for (int i = 0; i < 45; i++) {
             registerButton(new RecipeBookContainerButton(i));
         }
+        registerConditionDisplays();
+    }
 
+    private void registerConditionDisplays() {
         registerButton(new DummyButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             ICustomRecipe<?, ?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", ((WorldTimeCondition) recipe.getConditions().getByID("world_time")).getTime());

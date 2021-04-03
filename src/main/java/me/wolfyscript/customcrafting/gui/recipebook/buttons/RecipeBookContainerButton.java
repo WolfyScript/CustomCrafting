@@ -83,7 +83,8 @@ public class RecipeBookContainerButton extends Button<CCCache> {
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         List<ItemStack> itemStacks = getRecipeContainer(guiHandler).getDisplayItems(player);
-        inventory.setItem(slot, itemStacks.isEmpty() ? new ItemStack(Material.STONE) : itemStacks.get(getTiming(guiHandler)));
+        int timing = getTiming(guiHandler);
+        inventory.setItem(slot, timing < itemStacks.size() ? itemStacks.get(getTiming(guiHandler)) : new ItemStack(Material.STONE));
         if (itemStacks.size() > 1) {
             synchronized (tasks) {
                 tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {

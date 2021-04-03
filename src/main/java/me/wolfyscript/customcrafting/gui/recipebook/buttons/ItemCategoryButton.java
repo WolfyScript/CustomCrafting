@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -27,7 +28,7 @@ public class ItemCategoryButton extends Button<CCCache> {
     private final HashMap<GuiHandler<CCCache>, Integer> categoryMap;
 
     public ItemCategoryButton(CustomCrafting customCrafting) {
-        super("item_category", ButtonType.NORMAL);
+        super(RecipeBookCluster.ITEM_CATEGORY.getKey(), ButtonType.NORMAL);
         this.customCrafting = customCrafting;
         this.categories = customCrafting.getDataHandler().getCategories();
         this.categoryMap = new HashMap<>();

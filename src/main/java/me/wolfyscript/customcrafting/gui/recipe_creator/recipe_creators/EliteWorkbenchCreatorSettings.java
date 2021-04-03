@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
@@ -25,7 +26,7 @@ public class EliteWorkbenchCreatorSettings extends RecipeCreator {
 
     @Override
     public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-
+        //We want to render it Async!
     }
 
     @Override
@@ -38,10 +39,11 @@ public class EliteWorkbenchCreatorSettings extends RecipeCreator {
         ((ToggleButton<CCCache>) getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
         ((ToggleButton<CCCache>) getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
 
-        update.setButton(10, "hidden");
-        update.setButton(12, "recipe_creator", "conditions");
-        update.setButton(14, "exact_meta");
-        update.setButton(16, "priority");
+        update.setButton(9, "hidden");
+        update.setButton(11, RecipeCreatorCluster.GROUP);
+        update.setButton(13, RecipeCreatorCluster.CONDITIONS);
+        update.setButton(15, "exact_meta");
+        update.setButton(17, "priority");
     }
 
     @Override
