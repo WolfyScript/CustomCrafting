@@ -32,12 +32,15 @@ public class Category extends CategorySettings {
 
     public void index() {
         if (auto) {
+            this.namespaces.clear();
+            this.groups.clear();
             this.namespaces.addAll(Registry.RECIPES.namespaces());
+            this.groups.addAll(Registry.RECIPES.groups());
         }
         containers.clear();
         List<RecipeContainer> recipeContainers = new ArrayList<>();
         recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).collect(Collectors.toList()));
-        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> Registry.RECIPES.get(s).stream().map(RecipeContainer::new)).collect(Collectors.toList()));
+        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> Registry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).collect(Collectors.toList()));
         recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
             ICustomRecipe<?, ?> recipe = Registry.RECIPES.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(recipe);
