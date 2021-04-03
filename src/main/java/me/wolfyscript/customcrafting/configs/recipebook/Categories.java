@@ -134,37 +134,14 @@ public class Categories {
         @Override
         public void serialize(Categories categories, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
             gen.writeStartObject();
-            {
-                gen.writeObjectFieldStart("main");
-                {
-                    gen.writeArrayFieldStart("sort");
-                    for (String sortedMainCategory : categories.getSortedCategories()) {
-                        gen.writeString(sortedMainCategory);
-                    }
-                    gen.writeEndArray();
-                    gen.writeArrayFieldStart("options");
-                    for (Map.Entry<String, Category> entry : categories.categoryMap.entrySet()) {
-                        gen.writeObject(entry.getValue());
-                    }
-                    gen.writeEndArray();
-                }
-                gen.writeEndObject();
-
-                gen.writeObjectFieldStart("switch");
-                {
-                    gen.writeArrayFieldStart("sort");
-                    for (String sortedSwitchCategory : categories.getSortedFilters()) {
-                        gen.writeString(sortedSwitchCategory);
-                    }
-                    gen.writeEndArray();
-                    gen.writeArrayFieldStart("options");
-                    for (Map.Entry<String, CategoryFilter> entry : categories.filters.entrySet()) {
-                        gen.writeObject(entry.getValue());
-                    }
-                    gen.writeEndArray();
-                }
-                gen.writeEndObject();
-            }
+            gen.writeObjectFieldStart("main");
+            gen.writeObjectField("sort", categories.getSortedCategories());
+            gen.writeObjectField("options", categories.categoryMap.values());
+            gen.writeEndObject();
+            gen.writeObjectFieldStart("filters");
+            gen.writeObjectField("sort", categories.getSortedFilters());
+            gen.writeObjectField("options", categories.filters.values());
+            gen.writeEndObject();
             gen.writeEndObject();
         }
     }
@@ -182,9 +159,6 @@ public class Categories {
         @Override
         public Categories deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             JsonNode node = jsonParser.readValueAsTree();
-            if (node.has("categories")) {
-                node = node.path("categories");
-            }
             Categories categories = new Categories();
             if (node.has("main")) {
                 JsonNode mainCategories = node.path("main");
@@ -199,8 +173,8 @@ public class Categories {
                     categories.registerCategory(category.getId(), category);
                 });
             }
-            if (node.has("switch")) {
-                JsonNode switchCategories = node.path("switch");
+            if (node.has("filters")) {
+                JsonNode switchCategories = node.path("filters");
                 ArrayList<String> sortedSwitchList = new ArrayList<>();
                 if (switchCategories.has("sort")) {
                     JsonNode sortedSwitch = switchCategories.path("sort");

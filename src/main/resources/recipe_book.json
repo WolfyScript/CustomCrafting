@@ -33,7 +33,7 @@
       }
     ]
   },
-  "switch": {
+  "filters": {
     "sort": [
       "search",
       "brewing",
