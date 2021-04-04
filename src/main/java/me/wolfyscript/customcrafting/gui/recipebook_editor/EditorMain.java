@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -23,13 +22,13 @@ public class EditorMain extends CCWindow {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton<>("switch_categories", Material.COMPASS, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().getRecipeBookEditor().setSwitchCategories(true);
+        registerButton(new ActionButton<>("filters", Material.COMPASS, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.getCustomCache().getRecipeBookEditor().setFilters(true);
             guiHandler.openWindow("categories");
             return true;
         }));
-        registerButton(new ActionButton<>("main_categories", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().getRecipeBookEditor().setSwitchCategories(false);
+        registerButton(new ActionButton<>("categories", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.getCustomCache().getRecipeBookEditor().setFilters(false);
             guiHandler.openWindow("categories");
             return true;
         }));
@@ -43,11 +42,9 @@ public class EditorMain extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        GuiHandler<CCCache> guiHandler = update.getGuiHandler();
-        CCCache cache = guiHandler.getCustomCache();
         update.setButton(0, "back");
-        update.setButton(20, "main_categories");
-        update.setButton(24, "switch_categories");
+        update.setButton(20, "categories");
+        update.setButton(24, "filters");
 
 
     }

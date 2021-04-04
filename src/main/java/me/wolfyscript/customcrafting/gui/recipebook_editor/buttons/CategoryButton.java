@@ -22,7 +22,7 @@ public class CategoryButton extends ActionButton<CCCache> {
                 if(event instanceof InventoryClickEvent){
                     if (((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                         //Delete Category
-                        if (recipeBookEditor.isSwitchCategories()) {
+                        if (recipeBookEditor.isFilters()) {
                             recipeBook.getCategories().removeFilter(categoryID);
                         } else {
                             recipeBook.getCategories().removeCategory(categoryID);
@@ -31,14 +31,15 @@ public class CategoryButton extends ActionButton<CCCache> {
                     }
                     if (((InventoryClickEvent) event).isLeftClick()) {
                         //Edit Category
-                        CategorySettings category = recipeBookEditor.isSwitchCategories() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
+                        CategorySettings category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
                         recipeBookEditor.setCategoryID(categoryID);
                         if (category instanceof CategoryFilter) {
-                            recipeBookEditor.setCategory(new CategoryFilter((CategoryFilter) category));
+                            recipeBookEditor.setFilter(new CategoryFilter((CategoryFilter) category));
+                            guiHandler.openWindow("filter");
                         } else {
                             recipeBookEditor.setCategory(new Category((Category) category));
+                            guiHandler.openWindow("category");
                         }
-                        guiHandler.openWindow("category");
                         return true;
                     }
                 }
@@ -47,7 +48,7 @@ public class CategoryButton extends ActionButton<CCCache> {
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             RecipeBookEditor recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
             RecipeBookConfig recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-            CategorySettings category = recipeBookEditor.isSwitchCategories() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
+            CategorySettings category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
             itemStack.setType(category.getIcon());
             values.put("%name%", category.getName());
             values.put("%description%", category.getDescription());

@@ -19,47 +19,49 @@
       ]
     }
   },
-  "knowledgebook": {
-    "category_navigation": [
+  "recipe_book": {
+    "filter_navigation": [
       "&7[&a左键点击&7] 下一个",
       "&7[&a右键点击&7] 上一个"
     ],
     "category": {
       "main": {
-        "name": "&6配方"
+        "name": "&6&l配方"
       },
       "customcrafting": {
-        "name": "&6CustomCrafting"
-      },
+        "name": "&6&lCustomCrafting"
+      }
+    },
+    "filter": {
       "brewing": {
-        "name": "&6酿造"
+        "name": "&6&l酿造"
       },
       "building_blocks": {
-        "name": "&6建筑方块"
+        "name": "&6&l建筑方块"
       },
       "decorations": {
-        "name": "&6装饰方块"
+        "name": "&6&l装饰方块"
       },
       "combat": {
-        "name": "&6战斗"
+        "name": "&6&l战斗"
       },
       "tools": {
-        "name": "&6工具"
+        "name": "&6&l工具"
       },
       "redstone": {
-        "name": "&6红石"
+        "name": "&6&l红石"
       },
       "food": {
-        "name": "&6食物"
+        "name": "&6&l食物"
       },
       "transportation": {
-        "name": "&6交通运输"
+        "name": "&6&l交通运输"
       },
       "misc": {
-        "name": "&6杂项"
+        "name": "&6&l杂项"
       },
       "search": {
-        "name": "&6搜索"
+        "name": "&6&l搜索"
       }
     }
   },

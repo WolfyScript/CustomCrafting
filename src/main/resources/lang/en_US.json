@@ -19,47 +19,49 @@
       ]
     }
   },
-  "knowledgebook": {
-    "category_navigation": [
+  "recipe_book": {
+    "filter_navigation": [
       "&7[&aLeft Click&7] Next category",
       "&7[&aRight Click&7] Previous category"
     ],
     "category": {
       "main": {
-        "name": "&6Recipes"
+        "name": "&6&lRecipes"
       },
       "customcrafting": {
-        "name": "&6CustomCrafting"
-      },
+        "name": "&6&lCustomCrafting"
+      }
+    },
+    "filter": {
       "brewing": {
-        "name": "&6Brewing"
+        "name": "&6&lBrewing"
       },
       "building_blocks": {
-        "name": "&6Building Blocks"
+        "name": "&6&lBuilding Blocks"
       },
       "decorations": {
-        "name": "&6Decorations"
+        "name": "&6&lDecorations"
       },
       "combat": {
-        "name": "&6Combat"
+        "name": "&6&lCombat"
       },
       "tools": {
-        "name": "&6Tools"
+        "name": "&6&lTools"
       },
       "redstone": {
-        "name": "&6Redstone"
+        "name": "&6&lRedstone"
       },
       "food": {
-        "name": "&6Food"
+        "name": "&6&lFood"
       },
       "transportation": {
-        "name": "&6Transportation"
+        "name": "&6&lTransportation"
       },
       "misc": {
-        "name": "&6Misc"
+        "name": "&6&lMisc"
       },
       "search": {
-        "name": "&6Browse"
+        "name": "&6&lBrowse"
       }
     }
   },
@@ -254,7 +256,7 @@
             ]
           },
           "recipe_book_editor": {
-            "name": "&6Recipe Book &8[&7Beta&8]",
+            "name": "&6Recipe Book &8[&7Update coming Soon&8]",
             "lore": [
               "&eConfigure the Recipe Book.",
               "&eCreate Categories and set up which",
@@ -2852,7 +2854,7 @@
         }
       },
       "recipe_book": {
-        "gui_name": "&8&lRecipe knowledge Book",
+        "gui_name": "&8&lRecipe Book",
         "items": {
           "next_recipe": {
             "name": "&7&l» Next",
@@ -2885,33 +2887,58 @@
             "&cThe ID must be lowercase alphanumeric!",
             "&c(a-z 0-9 _ -)"
           ]
+        },
+        "name": {
+          "name": "&6Name: &r%name%",
+          "lore": [
+          ],
+          "message": "&eType in the Name. You can use && for formatting codes."
+        },
+        "description": {
+          "add": {
+            "name": "&6Add Description Line",
+            "lore": [
+              "&eDescription: ",
+              "%description%"
+            ],
+            "message": "&eType in the Description. You can use && for formatting codes."
+          },
+          "remove": {
+            "name": "&6Remove Description"
+          }
+        },
+        "recipes": {
+          "name": "&6Configure Recipes",
+          "lore": [
+            "&eConfigured Recipes:",
+            "%recipes%"
+          ]
         }
       },
       "global_messages": {
         "save": {
-          "input": "&eType in the id of the Category. Must be alphanumeric lowercase! [a-z0-9/._-]",
-          "error": "&cCheck the Category for missing icon!",
-          "success": "&aCategory was saved successfully!"
+          "input": "&eType in the key! Must be alphanumeric lowercase! [a-z0-9/._-]",
+          "error": "&cCheck for missing icon!",
+          "success": "&aSaved successfully!"
         }
       },
       "editor_main": {
         "gui_name": "&8&lRecipe Book &7[&8Editor&7]",
         "items": {
-          "switch_categories": {
-            "name": "&6Switch Categories",
+          "filters": {
+            "name": "&6&lFilters",
             "lore": [
-              "&eThese Categories act like a switch.",
-              "&eThey are present on top of each ",
-              "&eMain Category and you can switch",
-              "&ebetween them via a click."
+              "&eThe Filters are present on top of ",
+              "&eeach Category and you can cycle",
+              "&ethrough them by clicking on them."
             ]
           },
-          "main_categories": {
-            "name": "&6Main Categories",
+          "categories": {
+            "name": "&6Categories",
             "lore": [
-              "&eThese Categories are displayed on the",
+              "&eCategories are displayed on the",
               "&eMain Menu of the Recipe Book.",
-              "&eIf there is only one Main Category available",
+              "&eIf there is only one Category available",
               "&ethe Gui will directly open the one Category",
               "&ewithout showing the Main Menu!"
             ]
@@ -2948,32 +2975,34 @@
       "category": {
         "gui_name": "&8&lRecipe Book &7[&8Edit Category&7]",
         "items": {
-          "name": {
-            "name": "&6Name: &r%name%",
-            "lore": [
-            ],
-            "message": "&eType in the Name. You can use && for formatting codes."
-          },
-          "description": {
-            "add": {
-              "name": "&6Add Description Line",
+          "auto": {
+            "enabled": {
+              "name": "&6&lAUTO",
               "lore": [
-                "&eDescription: ",
-                "%description%"
-              ],
-              "message": "&eType in the Description. You can use && for formatting codes."
+                "&7All available Recipes and groups",
+                "&7will be added automatically to this",
+                "&7category. Recipes that have a group",
+                "&7are only displayed in that group!",
+                "&cRecipes and Groups that are manually",
+                "&cadded will be ignored!"
+              ]
             },
-            "remove": {
-              "name": "&6Remove Description"
+            "disabled": {
+              "name": "&6&lManually",
+              "lore": [
+                "&7Recipes, Namespaces and Groups",
+                "&7need to be added manually",
+                "&cIf a group is not contained in",
+                "&cthe category the recipes will",
+                "&cbe displayed separately!"
+              ]
             }
-          },
-          "recipes": {
-            "name": "&6Configure Recipes",
-            "lore": [
-              "&eConfigured Recipes:",
-              "%recipes%"
-            ]
           }
+        }
+      },
+      "filter": {
+        "gui_name": "&8&lRecipe Book &7[&8Edit Filter&7]",
+        "items": {
         }
       }
     },

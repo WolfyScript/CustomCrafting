@@ -19,47 +19,49 @@
       ]
     }
   },
-  "knowledgebook": {
-    "category_navigation": [
+  "recipe_book": {
+    "filter_navigation": [
       "&7[&aLinksklick&7] Nächste Kategorie",
       "&7[&aRechtsklick&7] Vorherige Kategorie"
     ],
     "category": {
       "main": {
-        "name": "&6Rezepte"
+        "name": "&6&lRezepte"
       },
       "customcrafting": {
-        "name": "&6CustomCrafting"
-      },
+        "name": "&6&lCustomCrafting"
+      }
+    },
+    "filter": {
       "brewing": {
-        "name": "&6Brauen"
+        "name": "&6&lBrauen"
       },
       "building_blocks": {
-        "name": "&6Baublöcke"
+        "name": "&6&lBaublöcke"
       },
       "decorations": {
-        "name": "&6Dekorationen"
+        "name": "&6&lDekorationen"
       },
       "combat": {
-        "name": "&6Kampf"
+        "name": "&6&lKampf"
       },
       "tools": {
-        "name": "&6Werkzeuge"
+        "name": "&6&lWerkzeuge"
       },
       "redstone": {
-        "name": "&6Redstone"
+        "name": "&6&lRedstone"
       },
       "food": {
-        "name": "&6Essen"
+        "name": "&6&lEssen"
       },
       "transportation": {
-        "name": "&6Transport"
+        "name": "&6&lTransport"
       },
       "misc": {
-        "name": "&6Sonstiges"
+        "name": "&6&lSonstiges"
       },
       "search": {
-        "name": "&6Durchsuche"
+        "name": "&6&lDurchsuchen"
       }
     }
   },
@@ -2787,6 +2789,32 @@
             "&cDie ID darf nur aus Kleinbuchstaben und Nummern",
             "&cbzw. den folgenden Zeichen [a-z 0-9 _ -] bestehen!"
           ]
+        },
+        "name": {
+          "name": "&6Name: &r%name%",
+          "lore": [
+          ],
+          "message": "&eGebe den Namen ein. Du kannst && verwenden um Codes zu formatieren."
+        },
+        "description": {
+          "add": {
+            "name": "&6Füge Beschreibungszeile hinzu",
+            "lore": [
+              "&eBeschreibung: ",
+              "%description%"
+            ],
+            "message": "&eGebe die Beschreibung ein. Du kannst && verwenden um Codes zu formatieren."
+          },
+          "remove": {
+            "name": "&6Entferne Beschreibung"
+          }
+        },
+        "recipes": {
+          "name": "&6Konfiguriere Rezepte",
+          "lore": [
+            "&eKonfigurierte Rezepte:",
+            "%recipes%"
+          ]
         }
       },
       "global_messages": {
@@ -2849,31 +2877,28 @@
       "category": {
         "gui_name": "&8&lRezeptbuch &7[&8Editiere Kategorie&7]",
         "items": {
-          "name": {
-            "name": "&6Name: &r%name%",
-            "lore": [
-            ],
-            "message": "&eGebe den Namen ein. Du kannst && verwenden um Codes zu formatieren."
-          },
-          "description": {
-            "add": {
-              "name": "&6Füge Beschreibungszeile hinzu",
+          "auto": {
+            "enabled": {
+              "name": "&6&lAUTO",
               "lore": [
-                "&eBeschreibung: ",
-                "%description%"
-              ],
-              "message": "&eGebe die Beschreibung ein. Du kannst && verwenden um Codes zu formatieren."
+                "&7Alle verfügbaren Rezepte und Gruppen",
+                "&7werden automatisch zu dieser Kategorie",
+                "&7hinzugefügt. Rezepte mit einer Gruppe",
+                "&7werden nur in dieser Gruppe angezeigt!",
+                "&cRezepte und Gruppen, die manuell",
+                "&chinzugefügt sind, werden ignoriert!"
+              ]
             },
-            "remove": {
-              "name": "&6Entferne Beschreibung"
+            "disabled": {
+              "name": "&6&lManuell",
+              "lore": [
+                "&7Rezepte, Namespaces and Gruppen",
+                "&7müssen manuell hinzugefügt werden.",
+                "&cWenn Gruppen nicht in der Kategorie",
+                "&cvorhanden sind, werden diese",
+                "&cRezepte einzeln angezeigt!"
+              ]
             }
-          },
-          "recipes": {
-            "name": "&6Konfiguriere Rezepte",
-            "lore": [
-              "&eKonfigurierte Rezepte:",
-              "%recipes%"
-            ]
           }
         }
       }

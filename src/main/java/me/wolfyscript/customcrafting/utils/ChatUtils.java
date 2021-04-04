@@ -65,7 +65,7 @@ public class ChatUtils {
     }
 
     public static void sendCategoryDescription(Player player) {
-        List<String> description = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeBookEditor().getCategory().getDescription();
+        List<String> description = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeBookEditor().getCategorySetting().getDescription();
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }

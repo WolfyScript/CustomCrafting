@@ -8,7 +8,7 @@
       {
         "id": "default",
         "icon": "CRAFTING_TABLE",
-        "name": "$knowledgebook.category.main.name$",
+        "name": "$recipe_book.category.main.name$",
         "description": [
           "&7Contains all the recipes available"
         ],
@@ -20,7 +20,7 @@
       {
         "id": "customcrafting",
         "icon": "CRAFTING_TABLE",
-        "name": "$knowledgebook.category.customcrafting.name$",
+        "name": "$recipe_book.category.customcrafting.name$",
         "description": [
           "&7Contains CustomCrafting`s special recipes"
         ],
@@ -50,9 +50,9 @@
       {
         "id": "brewing",
         "icon": "GLASS_BOTTLE",
-        "name": "$knowledgebook.category.brewing.name$",
+        "name": "$recipe_book.filter.brewing.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -65,9 +65,9 @@
       {
         "id": "search",
         "icon": "COMPASS",
-        "name": "$knowledgebook.category.search.name$",
+        "name": "$recipe_book.filter.search.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -80,9 +80,9 @@
       {
         "id": "building_blocks",
         "icon": "BRICKS",
-        "name": "$knowledgebook.category.building_blocks.name$",
+        "name": "$recipe_book.filter.building_blocks.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -95,9 +95,9 @@
       {
         "id": "decorations",
         "icon": "PEONY",
-        "name": "$knowledgebook.category.decorations.name$",
+        "name": "$recipe_book.filter.decorations.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -110,9 +110,9 @@
       {
         "id": "combat",
         "icon": "GOLDEN_SWORD",
-        "name": "$knowledgebook.category.combat.name$",
+        "name": "$recipe_book.filter.combat.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -125,9 +125,9 @@
       {
         "id": "tools",
         "icon": "IRON_AXE",
-        "name": "$knowledgebook.category.tools.name$",
+        "name": "$recipe_book.filter.tools.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -140,9 +140,9 @@
       {
         "id": "redstone",
         "icon": "REDSTONE",
-        "name": "$knowledgebook.category.redstone.name$",
+        "name": "$recipe_book.filter.redstone.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -155,9 +155,9 @@
       {
         "id": "food",
         "icon": "APPLE",
-        "name": "$knowledgebook.category.food.name$",
+        "name": "$recipe_book.filter.food.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -170,9 +170,9 @@
       {
         "id": "transportation",
         "icon": "POWERED_RAIL",
-        "name": "$knowledgebook.category.transportation.name$",
+        "name": "$recipe_book.filter.transportation.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],
@@ -185,9 +185,9 @@
       {
         "id": "misc",
         "icon": "LAVA_BUCKET",
-        "name": "$knowledgebook.category.misc.name$",
+        "name": "$recipe_book.filter.misc.name$",
         "description": [
-          "$knowledgebook.category_navigation$"
+          "$recipe_book.filter_navigation$"
         ],
         "groups": [],
         "namespaces": [],

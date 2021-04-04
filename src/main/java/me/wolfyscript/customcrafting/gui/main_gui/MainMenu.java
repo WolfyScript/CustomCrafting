@@ -58,7 +58,7 @@ public class MainMenu extends CCWindow {
             return true;
         }));
         registerButton(new ActionButton<>("recipe_book_editor", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.openCluster("recipe_book_editor");
+            //guiHandler.openCluster("recipe_book_editor");
             return true;
         }));
     }

@@ -1,5 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache;
 
+import me.wolfyscript.customcrafting.configs.recipebook.Category;
+import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 
 import java.util.regex.Pattern;
@@ -10,7 +12,8 @@ public class RecipeBookEditor {
     private boolean switchCategories;
 
     private String categoryID;
-    private CategorySettings category;
+    private Category category;
+    private CategoryFilter categoryFilter;
 
     public RecipeBookEditor() {
         this.categoryID = "";
@@ -22,12 +25,20 @@ public class RecipeBookEditor {
         return categoryID;
     }
 
-    public CategorySettings getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(CategorySettings category) {
+    public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public CategoryFilter getFilter() {
+        return categoryFilter;
+    }
+
+    public void setFilter(CategoryFilter categoryFilter) {
+        this.categoryFilter = categoryFilter;
     }
 
     public boolean setCategoryID(String categoryID) {
@@ -38,12 +49,16 @@ public class RecipeBookEditor {
         return false;
     }
 
-    public boolean isSwitchCategories() {
+    public boolean isFilters() {
         return switchCategories;
     }
 
-    public void setSwitchCategories(boolean switchCategories) {
+    public void setFilters(boolean switchCategories) {
         this.switchCategories = switchCategories;
+    }
+
+    public CategorySettings getCategorySetting() {
+        return isFilters() ? getFilter() : getCategory();
     }
 
     public boolean hasCategoryID() {
