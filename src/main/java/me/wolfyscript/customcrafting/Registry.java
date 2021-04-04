@@ -194,7 +194,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
 
         private void removeBukkitRecipe(NamespacedKey namespacedKey) {
             if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-                Bukkit.removeRecipe(namespacedKey.toBukkit());
+                Bukkit.removeRecipe(namespacedKey.toBukkit(CustomCrafting.inst()));
                 return;
             }
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();

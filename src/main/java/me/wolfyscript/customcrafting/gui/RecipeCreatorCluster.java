@@ -93,12 +93,10 @@ public class RecipeCreatorCluster extends CCCluster {
             if (guiHandler.getWindow() instanceof RecipeCreator) {
                 RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getWindow();
                 WolfyUtilities api = guiHandler.getApi();
-                CustomCrafting customCrafting = recipeCreator.getCustomCrafting();
                 if (recipeCreator.validToSave(cache)) {
-                    return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, customCrafting);
-                } else {
-                    api.getChat().sendKey(player, "recipe_creator", "save.empty");
+                    return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, recipeCreator.getCustomCrafting());
                 }
+                api.getChat().sendKey(player, "recipe_creator", "save.empty");
             }
             return true;
         }));
@@ -157,7 +155,7 @@ public class RecipeCreatorCluster extends CCCluster {
             ex.printStackTrace();
             return false;
         }
-        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openPreviousWindow("none", 2));
+        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openCluster("none"));
         return true;
     }
 }
