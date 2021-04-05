@@ -2908,10 +2908,30 @@
           }
         },
         "recipes": {
-          "name": "&6Configure Recipes",
+          "name": "&6&lRecipes",
           "lore": [
+            "&7[&aLeft Click&7] Add Recipe",
+            "&7[&aRight Click&7] Remove Recipe",
             "&eConfigured Recipes:",
             "%recipes%"
+          ]
+        },
+        "namespaces": {
+          "name": "&6&lNamespaces",
+          "lore": [
+            "&7[&aLeft Click&7] Add Namespace",
+            "&7[&aRight Click&7] Remove Namespace",
+            "&eConfigured Namespaces:",
+            "%namespaces%"
+          ]
+        },
+        "groups": {
+          "name": "&6&lGroups",
+          "lore": [
+            "&7[&aLeft Click&7] Add Group",
+            "&7[&aRight Click&7] Remove Group",
+            "&eConfigured Groups:",
+            "%groups%"
           ]
         }
       },
@@ -2963,10 +2983,31 @@
           "next": {
             "name": "&7Next Page"
           },
-          "add_category": {
+          "add": {
             "name": "&6Add Category",
             "lore": [
               "&eConfigure a new Category for",
+              "&ethe Recipe Book"
+            ]
+          }
+        }
+      },
+      "filters": {
+        "gui_name": "&8&lRecipe Book &7[&8Edit Filters&7]",
+        "items": {
+          "filter": {
+            "name": "%name%",
+            "lore": [
+              "%description%",
+              "&7--------------------",
+              "&7[&aLeft Click&7] &eEdit Filter",
+              "&7[&cShift + Right Click&7] &cDelete Filter"
+            ]
+          },
+          "add": {
+            "name": "&6Add Filter",
+            "lore": [
+              "&eConfigure a new Filter for",
               "&ethe Recipe Book"
             ]
           }

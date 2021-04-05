@@ -12,40 +12,37 @@ import org.bukkit.Material;
 
 public class EditorMain extends CCWindow {
 
+    private static final String BACK = "back";
+    private static final String FILTERS = "filters";
+    private static final String CATEGORIES = "categories";
+
     public EditorMain(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "editor_main", 54, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK, new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openCluster("none");
             return true;
         })));
-        registerButton(new ActionButton<>("filters", Material.COMPASS, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(FILTERS, Material.COMPASS, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(true);
-            guiHandler.openWindow("categories");
+            guiHandler.openWindow(FILTERS);
             return true;
         }));
-        registerButton(new ActionButton<>("categories", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(CATEGORIES, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipeBookEditor().setFilters(false);
-            guiHandler.openWindow("categories");
+            guiHandler.openWindow(CATEGORIES);
             return true;
         }));
-    }
-
-    @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, "back");
-        update.setButton(20, "categories");
-        update.setButton(24, "filters");
-
-
+        update.setButton(0, BACK);
+        update.setButton(20, CATEGORIES);
+        update.setButton(24, FILTERS);
     }
 }

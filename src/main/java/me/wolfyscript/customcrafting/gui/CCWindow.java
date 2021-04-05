@@ -25,6 +25,11 @@ public abstract class CCWindow extends GuiWindow<CCCache> {
     }
 
     @Override
+    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
+        //No need to update sync here.
+    }
+
+    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         CCPlayerData store = PlayerUtil.getStore(update.getPlayer());
         NamespacedKey gray = store.getDarkBackground();

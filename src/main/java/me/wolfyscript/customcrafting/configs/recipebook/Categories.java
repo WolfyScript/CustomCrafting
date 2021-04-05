@@ -114,10 +114,10 @@ public class Categories {
     @Override
     public String toString() {
         return "Categories{" +
-                "sortedMainCategories=" + sortedCategories +
-                ", sortedSwitchCategories=" + sortedFilters +
-                ", mainCategories=" + categoryMap +
-                ", switchCategories=" + filters +
+                "sortedCategories=" + sortedCategories +
+                ", sortedFilters=" + sortedFilters +
+                ", categories=" + categoryMap +
+                ", filters=" + filters +
                 '}';
     }
 
@@ -134,7 +134,7 @@ public class Categories {
         @Override
         public void serialize(Categories categories, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
             gen.writeStartObject();
-            gen.writeObjectFieldStart("main");
+            gen.writeObjectFieldStart("categories");
             gen.writeObjectField("sort", categories.getSortedCategories());
             gen.writeObjectField("options", categories.categoryMap.values());
             gen.writeEndObject();
@@ -160,8 +160,8 @@ public class Categories {
         public Categories deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             JsonNode node = jsonParser.readValueAsTree();
             Categories categories = new Categories();
-            if (node.has("main")) {
-                JsonNode mainCategories = node.path("main");
+            if (node.has("categories")) {
+                JsonNode mainCategories = node.path("categories");
                 ArrayList<String> sortedMainList = new ArrayList<>();
                 if (mainCategories.has("sort")) {
                     JsonNode sortedMain = mainCategories.path("sort");

@@ -22,6 +22,8 @@ import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends CCWindow {
 
+    private static final String SETTINGS = "settings";
+
     public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
     }
@@ -53,12 +55,12 @@ public class MainMenu extends CCWindow {
             return true;
         }));
 
-        registerButton(new ActionButton<>("settings", PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.openWindow("settings");
+        registerButton(new ActionButton<>(SETTINGS, PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openWindow(SETTINGS);
             return true;
         }));
         registerButton(new ActionButton<>("recipe_book_editor", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            //guiHandler.openCluster("recipe_book_editor");
+            guiHandler.openCluster("recipe_book_editor");
             return true;
         }));
     }
@@ -72,7 +74,7 @@ public class MainMenu extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        event.setButton(0, "settings");
+        event.setButton(0, SETTINGS);
         event.setButton(8, new NamespacedKey("none", "gui_help"));
 
         event.setButton(4, new NamespacedKey("none", "patreon"));

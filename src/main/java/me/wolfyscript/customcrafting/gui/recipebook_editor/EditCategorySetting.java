@@ -32,7 +32,7 @@ public abstract class EditCategorySetting extends CCWindow {
         update.setButton(13, RecipeBookEditorCluster.ICON);
         update.setButton(15, RecipeBookEditorCluster.DESCRIPTION_ADD);
         update.setButton(16, RecipeBookEditorCluster.DESCRIPTION_REMOVE);
-        update.setButton(29, RecipeBookEditorCluster.RECIPES);
+
 
         if (update.getGuiHandler().getCustomCache().getRecipeBookEditor().hasCategoryID()) {
             update.setButton(52, "save");
