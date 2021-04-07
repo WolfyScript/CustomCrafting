@@ -120,7 +120,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     public RandomCollection<CustomItem> getRandomChoices(@Nullable Player player) {
-        return (player == null ? getChoices() : getChoices(player)).parallelStream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
+        return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
     }
 
     public Result<?> get(ItemStack[] ingredients) {
@@ -132,7 +132,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     public Optional<CustomItem> getItem(@Nullable Player player) {
-        CustomItem item = cachedItems.getOrDefault(player == null ? null : player.getUniqueId(), getRandomChoices(player).next());
+        CustomItem item = cachedItems.computeIfAbsent(player == null ? null : player.getUniqueId(), uuid -> getRandomChoices(player).next());
         addCachedItem(player, item);
         return Optional.ofNullable(item);
     }
