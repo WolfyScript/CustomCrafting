@@ -14,6 +14,7 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -72,15 +73,18 @@ public class RecipeCreatorCluster extends CCCluster {
             guiHandler.openWindow("tag_settings");
             return true;
         }));
-
-        registerButton(new ChatInputButton<>(GROUP.getKey(), Material.BOOKSHELF, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+        registerButton(new ChatInputButton<>(GROUP.getKey(), new ButtonState<>(GROUP.getKey(), Material.BOOKSHELF, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             values.put("%group%", cache.getRecipe().getGroup());
             return itemStack;
-        }, (guiHandler, player, s, args) -> {
+        }), (guiHandler, player, s, args) -> {
             if (args.length > 0) {
                 guiHandler.getCustomCache().getRecipe().setGroup(args[0]);
             }
             return false;
+        }, (guiHandler, player, args) -> {
+            List<String> results = new ArrayList<>();
+            StringUtil.copyPartialMatches(args[0], Registry.RECIPES.groups(), results);
+            return results;
         }));
         registerButton(new ExactMetaButton());
         registerButton(new PriorityButton());
