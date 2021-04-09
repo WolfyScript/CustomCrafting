@@ -43,15 +43,26 @@ public class IngredientContainerButton extends Button<CCCache> {
         //NOT NEEDED
     }
 
-    public static void resetButtons(GuiHandler<CCCache> guiHandler) {
+    public static void removeTasks(GuiHandler<CCCache> guiHandler) {
         GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 54; i++) {
             Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
             if (btn != null) {
                 IngredientContainerButton button = (IngredientContainerButton) btn;
                 button.removeTask(guiHandler);
-                button.removeVariants(guiHandler);
                 button.setTiming(guiHandler, 0);
+            }
+        }
+    }
+
+    public static void resetButtons(GuiHandler<CCCache> guiHandler) {
+        removeTasks(guiHandler);
+        GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
+        for (int i = 0; i < 54; i++) {
+            Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
+            if (btn != null) {
+                IngredientContainerButton button = (IngredientContainerButton) btn;
+                button.removeVariants(guiHandler);
             }
         }
     }

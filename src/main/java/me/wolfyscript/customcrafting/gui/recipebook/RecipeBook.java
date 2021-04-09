@@ -193,7 +193,7 @@ public class RecipeBook extends CCWindow {
 
     @Override
     public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
-        IngredientContainerButton.resetButtons(guiHandler);
+        IngredientContainerButton.removeTasks(guiHandler);
         RecipeBookContainerButton.resetButtons(guiHandler);
         return super.onClose(guiHandler, guiInventory, transaction);
     }

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.logging.Level;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result<T extends ResultTarget> extends RecipeItemStack {
@@ -99,7 +100,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
                             resultExtensions.add(extension);
                             continue;
                         }
-                        CustomCrafting.inst().getLogger().warning(String.format("Failed to load Result Extension '%s'", key.toString()));
+                        CustomCrafting.inst().getLogger().log(Level.WARNING, "Failed to load Result Extension {0}'", key);
                     }
                 }
             }

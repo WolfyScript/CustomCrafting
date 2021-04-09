@@ -1860,7 +1860,7 @@
           }
         },
         "tags": {
-          "name": "&6&lTags &8[&7WIP&8]",
+          "name": "&6&lTags",
           "lore": [
             "&7Allows you to configure Tags.",
             "&7Tags are a collection of Items,",
@@ -2571,7 +2571,7 @@
             ]
           },
           "extensions": {
-            "name": "&6&lExtensions &8[&7WIP&8]",
+            "name": "&6&lExtensions &8[&7Config Only&8]",
             "lore": [
               "&7Execute extensions on crafting, smelting & more.",
               "&7They can be commands, mob spawning, sound, etc."
