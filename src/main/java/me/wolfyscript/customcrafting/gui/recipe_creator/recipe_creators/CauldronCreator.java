@@ -220,6 +220,7 @@ public class CauldronCreator extends RecipeCreator {
             update.setButton(33, "handItem_container");
         }
 
+        update.setButton(42, RecipeCreatorCluster.GROUP);
         if(cauldronRecipe.hasNamespacedKey()){
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }

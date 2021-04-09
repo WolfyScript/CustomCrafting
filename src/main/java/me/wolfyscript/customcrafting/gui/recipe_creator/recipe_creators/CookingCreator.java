@@ -81,6 +81,7 @@ public class CookingCreator extends RecipeCreator {
         update.setButton(22, "xp");
         update.setButton(29, "cooking_time");
 
+        update.setButton(42, RecipeCreatorCluster.GROUP);
         if (cache.getCookingRecipe().hasNamespacedKey()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }

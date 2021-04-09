@@ -71,6 +71,7 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(23, "xp");
         update.setButton(25, "recipe.result");
 
+        update.setButton(42, RecipeCreatorCluster.GROUP);
         if (grindstoneRecipe.hasNamespacedKey()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }

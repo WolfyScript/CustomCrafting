@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 public class AnvilCreator extends RecipeCreator {
 
     public AnvilCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "anvil", 45, customCrafting);
+        super(cluster, "anvil", 54, customCrafting);
     }
 
     @Override
@@ -143,10 +143,11 @@ public class AnvilCreator extends RecipeCreator {
         event.setButton(41, "repair_cost");
         event.setButton(42, "repair_mode");
 
+        event.setButton(51, RecipeCreatorCluster.GROUP);
         if(anvilRecipe.hasNamespacedKey()){
-            event.setButton(43, RecipeCreatorCluster.SAVE);
+            event.setButton(52, RecipeCreatorCluster.SAVE);
         }
-        event.setButton(44, RecipeCreatorCluster.SAVE_AS);
+        event.setButton(53, RecipeCreatorCluster.SAVE_AS);
     }
 
     @Override

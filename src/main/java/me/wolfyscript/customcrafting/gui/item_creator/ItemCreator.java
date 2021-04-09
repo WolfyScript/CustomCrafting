@@ -15,7 +15,6 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.meta.MetaSettings;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.MythicMobsRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.OraxenRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
@@ -50,8 +49,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class ItemCreator extends CCWindow {
-
-    private static final MetaSettings dummyMetaSettings = new MetaSettings();
 
     public ItemCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
@@ -298,7 +295,7 @@ public class ItemCreator extends CCWindow {
         registerButton(new OptionButton(Material.PLAYER_HEAD, "player_head"));
         {
             registerButton(new ItemInputButton<>("player_head.texture.input", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, i, event) -> {
-                if(event instanceof InventoryClickEvent){
+                if (event instanceof InventoryClickEvent) {
                     return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);
                 }
                 return true;

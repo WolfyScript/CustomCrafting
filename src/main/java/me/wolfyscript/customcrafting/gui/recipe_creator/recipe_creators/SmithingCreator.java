@@ -46,6 +46,7 @@ public class SmithingCreator extends RecipeCreator {
         event.setButton(22, "recipe.ingredient_1");
         event.setButton(25, "recipe.result");
 
+        event.setButton(42, RecipeCreatorCluster.GROUP);
         if (smithingRecipe.hasNamespacedKey()) {
             event.setButton(43, RecipeCreatorCluster.SAVE);
         }
