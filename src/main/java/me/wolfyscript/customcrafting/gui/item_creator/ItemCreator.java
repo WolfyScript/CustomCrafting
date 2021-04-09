@@ -50,6 +50,8 @@ import java.util.UUID;
 
 public class ItemCreator extends CCWindow {
 
+    private static final String UNBREAKABLE = "unbreakable";
+
     public ItemCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
     }
@@ -83,7 +85,6 @@ public class ItemCreator extends CCWindow {
                     //*/
                     //---------------------------------------
                     items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
-                    ((ToggleButton<CCCache>) guiHandler.getWindow().getButton("unbreakable")).setState(guiHandler, !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable());
                 }, null,
                 (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
 
@@ -353,12 +354,15 @@ public class ItemCreator extends CCWindow {
         }
 
         //Unbreakable Setting
-        registerButton(new ToggleButton<>("unbreakable", new ButtonState<>("unbreakable.enabled", Material.BEDROCK, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ToggleButton<>(UNBREAKABLE, update -> {
+            CustomItem item = update.getGuiHandler().getCustomCache().getItems().getItem();
+            return !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable();
+        }, new ButtonState<>(UNBREAKABLE + ".enabled", Material.BEDROCK, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             ItemMeta itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(false);
             items.getItem().setItemMeta(itemMeta);
             return true;
-        }), new ButtonState<>("unbreakable.disabled", Material.GLASS, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        }), new ButtonState<>(UNBREAKABLE + ".disabled", Material.GLASS, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             ItemMeta itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(true);
             items.getItem().setItemMeta(itemMeta);
@@ -470,7 +474,7 @@ public class ItemCreator extends CCWindow {
             }));
             registerButton(new DummyButton<>("consume.durability_cost.disabled", Material.DROPPER));
 
-            registerButton(new ToggleButton<>("consume.consume_item", new ButtonState<>("consume.consume_item.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ToggleButton<>("consume.consume_item", update -> update.getGuiHandler().getCustomCache().getItems().getItem().isConsumed(), new ButtonState<>("consume.consume_item.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 items.getItem().setConsumed(false);
                 return true;
             }), new ButtonState<>("consume.consume_item.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -764,8 +768,7 @@ public class ItemCreator extends CCWindow {
             options.add("enchantments.option");
             options.add("flags.option");
             options.add("attribute.option");
-            if (items.getItem() != null && !item.getType().equals(Material.AIR)) {
-                ((ToggleButton<CCCache>) getButton("unbreakable")).setState(event.getGuiHandler(), item.getItemMeta().isUnbreakable());
+            if (!ItemUtils.isAirOrNull(items.getItem())) {
                 options.add("unbreakable");
             }
             options.add("repair_cost.option");
@@ -848,12 +851,6 @@ public class ItemCreator extends CCWindow {
                     event.setButton(45, "meta_ignore.wolfyutilities.lore");
                     break;
                 case "flags":
-                    ((ToggleButton<CCCache>) getButton("flags.attributes")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ATTRIBUTES));
-                    ((ToggleButton<CCCache>) getButton("flags.unbreakable")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_UNBREAKABLE));
-                    ((ToggleButton<CCCache>) getButton("flags.destroys")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_DESTROYS));
-                    ((ToggleButton<CCCache>) getButton("flags.placed_on")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_PLACED_ON));
-                    ((ToggleButton<CCCache>) getButton("flags.potion_effects")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS));
-                    ((ToggleButton<CCCache>) getButton("flags.enchants")).setState(guiHandler, item.getItemMeta().hasItemFlag(ItemFlag.HIDE_ENCHANTS));
                     event.setButton(37, "flags.attributes");
                     event.setButton(39, "flags.unbreakable");
                     event.setButton(41, "flags.destroys");
@@ -906,9 +903,6 @@ public class ItemCreator extends CCWindow {
                 case "fuel":
                     event.setButton(39, "fuel.burn_time.set");
                     event.setButton(41, "fuel.burn_time.reset");
-                    ((ToggleButton<CCCache>) getButton("fuel.furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.FURNACE));
-                    ((ToggleButton<CCCache>) getButton("fuel.blast_furnace")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.BLAST_FURNACE));
-                    ((ToggleButton<CCCache>) getButton("fuel.smoker")).setState(event.getGuiHandler(), customItem.getAllowedBlocks().contains(Material.SMOKER));
                     event.setButton(47, "fuel.furnace");
                     event.setButton(49, "fuel.blast_furnace");
                     event.setButton(51, "fuel.smoker");
@@ -919,7 +913,6 @@ public class ItemCreator extends CCWindow {
                     event.setButton(45, "meta_ignore.wolfyutilities.customModelData");
                     break;
                 case "consume":
-                    ((ToggleButton<CCCache>) getButton("consume.consume_item")).setState(event.getGuiHandler(), customItem.isConsumed());
                     event.setButton(31, "consume.consume_item");
                     event.setButton(38, "consume.replacement");
                     event.setButton(39, items.getItem().hasReplacement() ? "consume.replacement.enabled" : "consume.replacement.disabled");
@@ -965,10 +958,6 @@ public class ItemCreator extends CCWindow {
                     event.setButton(40, "knowledge_book.toggle");
                     break;
                 case "armor_slots":
-                    ((ToggleButton<CCCache>) getButton("armor_slots.head")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.HEAD));
-                    ((ToggleButton<CCCache>) getButton("armor_slots.chest")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.CHEST));
-                    ((ToggleButton<CCCache>) getButton("armor_slots.legs")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.LEGS));
-                    ((ToggleButton<CCCache>) getButton("armor_slots.feet")).setState(event.getGuiHandler(), customItem.hasEquipmentSlot(EquipmentSlot.FEET));
                     event.setButton(37, "armor_slots.head");
                     event.setButton(39, "armor_slots.chest");
                     event.setButton(41, "armor_slots.legs");

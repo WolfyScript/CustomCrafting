@@ -11,7 +11,6 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import org.bukkit.Material;
 
 public class CookingCreator extends RecipeCreator {
@@ -67,7 +66,6 @@ public class CookingCreator extends RecipeCreator {
         super.onUpdateAsync(update);
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
-        ((ToggleButton) getCluster().getButton("hidden")).setState(update.getGuiHandler(), cache.getCookingRecipe().isHidden());
 
         CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
 
