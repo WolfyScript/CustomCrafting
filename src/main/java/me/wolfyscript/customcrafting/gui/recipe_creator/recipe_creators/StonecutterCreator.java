@@ -36,7 +36,7 @@ public class StonecutterCreator extends RecipeCreator {
         update.setButton(0, BACK);
         update.setButton(4, RecipeCreatorCluster.HIDDEN);
         update.setButton(20, "recipe.ingredient_0");
-        update.setButton(24, "stonecutter.result");
+        update.setButton(24, "recipe.result");
 
         if (update.getGuiHandler().getCustomCache().getStonecutterRecipe().hasNamespacedKey()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
