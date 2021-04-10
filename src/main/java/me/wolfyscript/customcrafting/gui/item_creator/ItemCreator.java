@@ -51,6 +51,12 @@ import java.util.UUID;
 public class ItemCreator extends CCWindow {
 
     private static final String UNBREAKABLE = "unbreakable";
+    private static final String BACK = "back";
+    private static final String SAVE_ITEM = "save_item";
+    private static final String APPLY_ITEM = "apply_item";
+    private static final String ITEM_INPUT = "item_input";
+    private static final String PAGE_NEXT = "page_next";
+    private static final String PAGE_PREVIOUS = "page_previous";
 
     public ItemCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
@@ -58,37 +64,20 @@ public class ItemCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"),
-                (cache, guiHandler, player, inventory, i, event) -> {
-                    if (cache.getItems().isRecipeItem()) {
-                        guiHandler.openCluster("recipe_creator");
-                    } else {
-                        guiHandler.openCluster("none");
-                    }
-                    return true;
-                })));
-        registerButton(new ItemInputButton<>("item_input", new ButtonState<>("", Material.AIR,
-                (cache, guiHandler, player, inventory, slot, event) -> false,
-                (cache, guiHandler, player, inventory, item, slot, event) -> {
-                    Items items = cache.getItems();
-                    //-------------TODO: Experimental
-                    /*
-                    if (event.getAction().name().startsWith("PICKUP") || event.getAction().equals(InventoryAction.COLLECT_TO_CURSOR) || event.getAction().equals(InventoryAction.CLONE_STACK)) {
-                        ItemStack cursor = event.getView().getCursor();
-                        if (!ItemUtils.isAirOrNull(cursor) && items.isSaved()) {
-                            CustomItem customItem = CustomItems.getCustomItem(items.getNamespacedKey());
-                            if (!ItemUtils.isAirOrNull(customItem)) {
-                                event.getView().setCursor(customItem.create(cursor.getAmount()));
-                            }
-                        }
-                    }
-                    //*/
-                    //---------------------------------------
-                    items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
-                }, null,
-                (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
+        registerButton(new ActionButton<>(BACK, new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, i, event) -> {
+            if (cache.getItems().isRecipeItem()) {
+                guiHandler.openCluster("recipe_creator");
+            } else {
+                guiHandler.openCluster("none");
+            }
+            return true;
+        })));
+        registerButton(new ItemInputButton<>(ITEM_INPUT, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> false, (cache, guiHandler, player, inventory, item, slot, event) -> {
+            Items items = cache.getItems();
+            items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
+        }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
 
-        registerButton(new ActionButton<>("save_item", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
             Items items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
@@ -114,7 +103,7 @@ public class ItemCreator extends CCWindow {
             return true;
         }));
 
-        registerButton(new ActionButton<>("apply_item", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>(APPLY_ITEM, Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 CustomItem customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
@@ -127,11 +116,11 @@ public class ItemCreator extends CCWindow {
             return true;
         }));
 
-        registerButton(new ActionButton<>("page_next", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>(PAGE_NEXT, PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.setPage(items.getPage() + 1);
             return true;
         }));
-        registerButton(new ActionButton<>("page_previous", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>(PAGE_PREVIOUS, PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (items.getPage() > 0) {
                 items.setPage(items.getPage() - 1);
             }
@@ -354,8 +343,8 @@ public class ItemCreator extends CCWindow {
         }
 
         //Unbreakable Setting
-        registerButton(new ToggleButton<>(UNBREAKABLE, update -> {
-            CustomItem item = update.getGuiHandler().getCustomCache().getItems().getItem();
+        registerButton(new ToggleButton<>(UNBREAKABLE, (cache, guiHandler, player, guiInventory, i) -> {
+            CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable();
         }, new ButtonState<>(UNBREAKABLE + ".enabled", Material.BEDROCK, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             ItemMeta itemMeta = items.getItem().getItemMeta();
@@ -474,7 +463,7 @@ public class ItemCreator extends CCWindow {
             }));
             registerButton(new DummyButton<>("consume.durability_cost.disabled", Material.DROPPER));
 
-            registerButton(new ToggleButton<>("consume.consume_item", update -> update.getGuiHandler().getCustomCache().getItems().getItem().isConsumed(), new ButtonState<>("consume.consume_item.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ToggleButton<>("consume.consume_item", (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isConsumed(), new ButtonState<>("consume.consume_item.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 items.getItem().setConsumed(false);
                 return true;
             }), new ButtonState<>("consume.consume_item.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -640,7 +629,7 @@ public class ItemCreator extends CCWindow {
                 cache.setSubSetting("particle_effects");
                 return true;
             }));
-            registerButton(new MultipleChoiceButton<>("elite_workbench.grid_size",
+            registerButton(new MultipleChoiceButton<>("elite_workbench.grid_size", (cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).getGridSize() - 3,
                     new ButtonState<>("elite_workbench.grid_size.size_3", PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                         ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).setGridSize(4);
                         return true;
@@ -657,14 +646,14 @@ public class ItemCreator extends CCWindow {
                         ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).setGridSize(3);
                         return true;
                     })));
-            registerButton(new ToggleButton<>("elite_workbench.toggle", new ButtonState<>("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ToggleButton<>("elite_workbench.toggle", (cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled(), new ButtonState<>("elite_workbench.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).setEnabled(false);
                 return true;
             }), new ButtonState<>("elite_workbench.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).setEnabled(true);
                 return true;
             })));
-            registerButton(new ToggleButton<>("elite_workbench.advanced_recipes", new ButtonState<>("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ToggleButton<>("elite_workbench.advanced_recipes", (cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isAdvancedRecipes(), new ButtonState<>("elite_workbench.advanced_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).setAdvancedRecipes(false);
                 return true;
             }), new ButtonState<>("elite_workbench.advanced_recipes.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -676,7 +665,7 @@ public class ItemCreator extends CCWindow {
         //Advanced Knowledgebook Settings
         registerButton(new OptionButton(Material.KNOWLEDGE_BOOK, "knowledge_book"));
         {
-            registerButton(new ToggleButton<>("knowledge_book.toggle", new ButtonState<>("knowledge_book.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ToggleButton<>("knowledge_book.toggle", (cache, guiHandler, player, guiInventory, i) -> ((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).isEnabled(), new ButtonState<>("knowledge_book.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(false);
                 return true;
             }), new ButtonState<>("knowledge_book.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -713,7 +702,7 @@ public class ItemCreator extends CCWindow {
 
         registerButton(new OptionButton(Material.GRASS_BLOCK, "vanilla"));
         {
-            registerButton(new ToggleButton<>("vanilla.block_recipes", new ButtonState<>("vanilla.block_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ToggleButton<>("vanilla.block_recipes", (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes(), new ButtonState<>("vanilla.block_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 items.getItem().setBlockVanillaRecipes(false);
                 return true;
             }), new ButtonState<>("vanilla.block_recipes.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -745,8 +734,8 @@ public class ItemCreator extends CCWindow {
         CustomItem customItem = items.getItem();
         ItemStack item = customItem.create();
 
-        event.setButton(0, "back");
-        event.setButton(13, "item_input");
+        event.setButton(0, BACK);
+        event.setButton(13, ITEM_INPUT);
 
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         me.wolfyscript.utilities.util.NamespacedKey gray = data.getLightBackground();
@@ -756,9 +745,9 @@ public class ItemCreator extends CCWindow {
         event.setButton(22, gray);
 
         if (items.isRecipeItem()) {
-            event.setButton(2, "apply_item");
+            event.setButton(2, APPLY_ITEM);
         }
-        event.setButton(3, "save_item");
+        event.setButton(3, SAVE_ITEM);
 
         List<String> options = new ArrayList<>();
         if (customItem.getApiReference() instanceof VanillaRef) {
@@ -810,10 +799,10 @@ public class ItemCreator extends CCWindow {
             items.setPage(maxPages - 1);
         }
         if (items.getPage() > 0) {
-            event.setButton(5, "page_previous");
+            event.setButton(5, PAGE_PREVIOUS);
         }
         if (items.getPage() + 1 < maxPages) {
-            event.setButton(5, "page_next");
+            event.setButton(5, PAGE_NEXT);
         }
 
         int slot = 9;
@@ -943,18 +932,13 @@ public class ItemCreator extends CCWindow {
                     event.setButton(41, "rarity.reset");
                     break;
                 case "elite_workbench":
-                    if (item.getType().isBlock()) {
-                        ((MultipleChoiceButton<CCCache>) getButton("elite_workbench.grid_size")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).getGridSize() - 3);
-                        ((ToggleButton<CCCache>) getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled());
-                        ((ToggleButton<CCCache>) getButton("elite_workbench.advanced_recipes")).setState(event.getGuiHandler(), ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isAdvancedRecipes());
-                        event.setButton(37, "elite_workbench.particles");
-                        event.setButton(39, "elite_workbench.grid_size");
-                        event.setButton(41, "elite_workbench.toggle");
-                        event.setButton(43, "elite_workbench.advanced_recipes");
-                    }
+                    if (!item.getType().isBlock()) break;
+                    event.setButton(37, "elite_workbench.particles");
+                    event.setButton(39, "elite_workbench.grid_size");
+                    event.setButton(41, "elite_workbench.toggle");
+                    event.setButton(43, "elite_workbench.advanced_recipes");
                     break;
                 case "knowledge_book":
-                    ((ToggleButton<CCCache>) getButton("elite_workbench.toggle")).setState(event.getGuiHandler(), ((RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK)).isEnabled());
                     event.setButton(40, "knowledge_book.toggle");
                     break;
                 case "armor_slots":
@@ -981,12 +965,12 @@ public class ItemCreator extends CCWindow {
                     event.setButton(52, "particle_effects.block.input");
                     break;
                 case "vanilla":
-                    ((ToggleButton<CCCache>) getButton("vanilla.block_recipes")).setState(event.getGuiHandler(), customItem.isBlockVanillaRecipes());
                     event.setButton(38, "vanilla.block_recipes");
-                    if (item.getType().isBlock()) {
-                        event.setButton(40, "vanilla.block_placement");
-                    }
-
+                    if (!item.getType().isBlock()) break;
+                    event.setButton(40, "vanilla.block_placement");
+                    break;
+                default:
+                    //NONE selected
             }
             if (cache.getSubSetting().startsWith("attribute.generic") || cache.getSubSetting().startsWith("attribute.horse") || cache.getSubSetting().startsWith("attribute.zombie")) {
                 event.setButton(36, "attribute.slot_head");

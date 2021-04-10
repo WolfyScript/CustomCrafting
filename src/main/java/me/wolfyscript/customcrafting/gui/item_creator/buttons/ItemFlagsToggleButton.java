@@ -11,8 +11,8 @@ import org.bukkit.inventory.ItemFlag;
 public class ItemFlagsToggleButton extends ToggleButton<CCCache> {
 
     public ItemFlagsToggleButton(String flagId, ItemFlag itemFlag, Material material) {
-        super("flags." + flagId, update -> {
-            CustomItem item = update.getGuiHandler().getCustomCache().getItems().getItem();
+        super("flags." + flagId, (cache, guiHandler, player, guiInventory, i) -> {
+            CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().hasItemFlag(itemFlag);
         }, new ButtonState<>("flags." + flagId + ".enabled", material, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getItems().getItem().removeItemFlags(itemFlag);

@@ -17,8 +17,8 @@ import java.util.Locale;
 public class ArmorSlotToggleButton extends ToggleButton<CCCache> {
 
     public ArmorSlotToggleButton(EquipmentSlot slot, Material material) {
-        super("armor_slots." + slot.toString().toLowerCase(Locale.ROOT), update -> {
-            CustomItem item = update.getGuiHandler().getCustomCache().getItems().getItem();
+        super("armor_slots." + slot.toString().toLowerCase(Locale.ROOT), (cache, guiHandler, player, guiInventory, i) -> {
+            CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.hasEquipmentSlot(slot);
         }, new ButtonState<>("armor_slots." + slot.toString().toLowerCase(Locale.ROOT) + ".enabled", new ItemBuilder(material).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().removeEquipmentSlots(slot);
