@@ -2,13 +2,11 @@ package me.wolfyscript.customcrafting.data.cache;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
-import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +16,9 @@ import java.util.Map;
 public class KnowledgeBook {
 
     private final CustomCrafting customCrafting;
-    private final Map<CategorySettings, List<CustomItem>> cachedEliteCategoryItems;
+    private EliteWorkbench eliteCraftingTable;
     private Category category;
-    private WorkbenchFilter workbenchFilter;
 
-    private BukkitTask timerTask;
-    private Map<Integer, Integer> timerTimings;
     private int page, subFolderPage;
     private Map<CustomItem, List<ICustomRecipe<?, ?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
@@ -34,26 +29,8 @@ public class KnowledgeBook {
         this.subFolderPage = 0;
         this.category = null;
         this.researchItems = new ArrayList<>();
-        this.timerTask = null;
-        this.timerTimings = new HashMap<>();
-        workbenchFilter = WorkbenchFilter.ALL;
-        this.cachedEliteCategoryItems = new HashMap<>();
         this.cachedSubFolderRecipes = new HashMap<>();
-    }
-
-    public BukkitTask getTimerTask() {
-        return timerTask;
-    }
-
-    public void setTimerTask(BukkitTask task) {
-        this.timerTask = task;
-    }
-
-    public void stopTimerTask() {
-        if (timerTask != null) {
-            timerTask.cancel();
-            timerTimings = new HashMap<>();
-        }
+        this.eliteCraftingTable = null;
     }
 
     public ICustomRecipe<?, ?> getCurrentRecipe() {
@@ -61,6 +38,18 @@ public class KnowledgeBook {
             return getSubFolderRecipes().get(getSubFolderPage());
         }
         return null;
+    }
+
+    public EliteWorkbench getEliteCraftingTable() {
+        return eliteCraftingTable;
+    }
+
+    public void setEliteCraftingTable(EliteWorkbench eliteCraftingTable) {
+        this.eliteCraftingTable = eliteCraftingTable;
+    }
+
+    public boolean hasEliteCraftingTable() {
+        return getEliteCraftingTable() != null;
     }
 
     public int getPage() {
@@ -81,14 +70,6 @@ public class KnowledgeBook {
 
     public Map<Character, ArrayList<CustomItem>> getIngredients() {
         return new HashMap<>();
-    }
-
-    public WorkbenchFilter getWorkbenchFilter() {
-        return workbenchFilter;
-    }
-
-    public void setWorkbenchFilter(WorkbenchFilter workbenchFilter) {
-        this.workbenchFilter = workbenchFilter;
     }
 
     public int getSubFolder() {
@@ -131,37 +112,11 @@ public class KnowledgeBook {
         return getResearchItems().get(0);
     }
 
-    public List<CustomItem> getEliteRecipeItems(CategorySettings switchCategory) {
-        return cachedEliteCategoryItems.getOrDefault(switchCategory, new ArrayList<>());
-    }
-
-    public void setEliteRecipeItems(CategorySettings switchCategory, List<CustomItem> recipeItems) {
-        this.cachedEliteCategoryItems.put(switchCategory, recipeItems);
-    }
-
-    public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, ICustomRecipe<?,?> recipe) {
+    public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, ICustomRecipe<?, ?> recipe) {
         recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
     }
 
-    public void setCachedSubFolderRecipes(Map<CustomItem, List<ICustomRecipe<?,?>>> cachedSubFolderRecipes) {
+    public void setCachedSubFolderRecipes(Map<CustomItem, List<ICustomRecipe<?, ?>>> cachedSubFolderRecipes) {
         this.cachedSubFolderRecipes = cachedSubFolderRecipes;
-    }
-
-    public enum WorkbenchFilter {
-        ALL,
-        ADVANCED,
-        NORMAL;
-
-        public static WorkbenchFilter next(WorkbenchFilter filter) {
-            switch (filter) {
-                case ALL:
-                    return ADVANCED;
-                case ADVANCED:
-                    return NORMAL;
-                case NORMAL:
-                    return ALL;
-            }
-            return filter;
-        }
     }
 }

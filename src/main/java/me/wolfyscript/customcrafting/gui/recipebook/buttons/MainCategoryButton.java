@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
@@ -45,7 +45,7 @@ public class MainCategoryButton extends Button<CCCache> {
     }
 
     @Override
-    public void init(String s, WolfyUtilities wolfyUtilities) {
+    public void init(GuiCluster<CCCache> guiCluster) {
 
     }
 

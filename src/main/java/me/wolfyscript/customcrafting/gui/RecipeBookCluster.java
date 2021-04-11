@@ -24,16 +24,13 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.ArrayList;
@@ -72,7 +69,6 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new ActionButton<>(BACK_TO_LIST.getKey(), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent) {
                 KnowledgeBook book = cache.getKnowledgeBook();
-                book.stopTimerTask();
                 IngredientContainerButton.resetButtons(guiHandler);
                 if (((InventoryClickEvent) event).isLeftClick()) {
                     book.removePreviousResearchItem();
@@ -94,16 +90,6 @@ public class RecipeBookCluster extends CCCluster {
         }));
 
         registerButton(new ToggleButton<>(PERMISSION.getKey(), new ButtonState<>("permission.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true), new ButtonState<>("permission.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true)));
-        registerButton(new MultipleChoiceButton<>("workbench.filter_button", new ButtonState<>("workbench.filter_button.all", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ADVANCED);
-            return true;
-        }), new ButtonState<>("workbench.filter_button.advanced", new ItemBuilder(Material.CRAFTING_TABLE).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create(), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.NORMAL);
-            return true;
-        }), new ButtonState<>("workbench.filter_button.normal", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getKnowledgeBook().setWorkbenchFilter(KnowledgeBook.WorkbenchFilter.ALL);
-            return true;
-        })));
         registerButton(new DummyButton<>("workbench.shapeless_on", Material.CRAFTING_TABLE));
         registerButton(new DummyButton<>("workbench.shapeless_off", Material.CRAFTING_TABLE));
 

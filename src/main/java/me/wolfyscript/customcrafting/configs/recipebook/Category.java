@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -54,6 +55,13 @@ public class Category extends CategorySettings {
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {
         return indexedFilters.getOrDefault(filter, new ArrayList<>()).stream().filter(container -> container.canView(player)).collect(Collectors.toList());
+    }
+
+    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, EliteWorkbench cache) {
+        if (cache != null) {
+            return indexedFilters.getOrDefault(filter, new ArrayList<>()).stream().filter(container -> container.canView(player) && container.isValid(cache)).collect(Collectors.toList());
+        }
+        return getRecipeList(player, filter);
     }
 
     @JsonIgnore

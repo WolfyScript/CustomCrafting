@@ -3,8 +3,8 @@ package me.wolfyscript.customcrafting.gui.elite_crafting;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
+import me.wolfyscript.customcrafting.gui.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.CraftingSlotButton;
-import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.ResultSlotButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -20,12 +20,10 @@ public class CraftingWindow5 extends CraftingWindow {
 
     @Override
     public void onInit() {
+        super.onInit();
         for (int i = 0; i < 25; i++) {
             registerButton(new CraftingSlotButton(i, customCrafting));
         }
-        registerButton(new ResultSlotButton(customCrafting));
-        //registerButton(new DummyButton<>("texture_light", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9005)));
-        //registerButton(new DummyButton<>("texture_dark", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE, 9015)));
         registerButton(new DummyButton<>("texture_dark", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE)));
         registerButton(new DummyButton<>("texture_light", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE)));
     }
@@ -41,13 +39,13 @@ public class CraftingWindow5 extends CraftingWindow {
             eliteWorkbench.setContents(new ItemStack[25]);
         }
 
-        event.setButton(18, "crafting", "recipe_book");
+        event.setButton(18, EliteCraftingCluster.RECIPE_BOOK);
         int slot;
         for (int i = 0; i < 25; i++) {
             slot = getGridX() + i + (i / 5) * 4;
             event.setButton(slot, "crafting.slot_" + i);
         }
-        event.setButton(25, "result_slot");
+        event.setButton(25, RESULT);
     }
 
     @Override

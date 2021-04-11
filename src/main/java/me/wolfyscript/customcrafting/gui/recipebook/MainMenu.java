@@ -5,16 +5,22 @@ import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.MainCategoryButton;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import org.bukkit.Material;
 
 public class MainMenu extends CCWindow {
 
+    private static final String BACK_BOTTOM = "back_bottom";
+
     public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "main_menu", 18, customCrafting);
+        super(cluster, "main_menu", 27, customCrafting);
     }
 
     @Override
@@ -25,11 +31,15 @@ public class MainMenu extends CCWindow {
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new MainCategoryButton(categoryId, customCrafting));
         }
-    }
-
-    @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-
+        registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>("none", BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+            if (cache.getKnowledgeBook().hasEliteCraftingTable()) {
+                guiHandler.openCluster(EliteCraftingCluster.KEY);
+            } else {
+                guiHandler.close();
+            }
+            cache.getKnowledgeBook().setEliteCraftingTable(null);
+            return true;
+        })));
     }
 
     @Override
@@ -46,5 +56,7 @@ public class MainMenu extends CCWindow {
             event.setButton(slot, "main_category." + categoryId);
             slot++;
         }
+
+        event.setButton(22, BACK_BOTTOM);
     }
 }

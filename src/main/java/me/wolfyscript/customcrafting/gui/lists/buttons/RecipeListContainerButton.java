@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
@@ -48,8 +49,8 @@ public class RecipeListContainerButton extends Button<CCCache> {
     }
 
     @Override
-    public void init(String s, WolfyUtilities wolfyUtilities) {
-        //NOT NEEDED
+    public void init(GuiCluster<CCCache> guiCluster) {
+
     }
 
     @Override
@@ -130,11 +131,11 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 ItemBuilder itemB;
                 if (ItemUtils.isAirOrNull(recipe.getResult())) {
                     itemB = new ItemBuilder(Material.STONE);
-                    itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + ((Keyed) recipe).getKey().toString());
+                    itemB.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + ((Keyed) recipe).getKey());
                 } else {
                     itemB = new ItemBuilder(recipe.getResult());
                 }
-                itemB.addLoreLine("§8" + ((Keyed) recipe).getKey().toString());
+                itemB.addLoreLine("§8" + ((Keyed) recipe).getKey());
                 if (customCrafting.getDataHandler().getDisabledRecipes().contains(me.wolfyscript.utilities.util.NamespacedKey.of(((Keyed) recipe).getKey()))) {
                     itemB.addLoreLine(ChatColor.translateAlternateColorCodes('&', CustomCrafting.inst().getApi().getLanguageAPI().replaceKeys("$inventories.none.recipe_list.items.lores.disabled$")));
                 } else {

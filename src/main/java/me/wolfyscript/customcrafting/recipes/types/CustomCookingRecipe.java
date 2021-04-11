@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
@@ -19,16 +18,12 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CookingRecipe;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T extends CookingRecipe<?>> extends CustomRecipe<C, FixedResultTarget> implements ICustomVanillaRecipe<T> {
@@ -109,7 +104,6 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        KnowledgeBook book = event.getGuiHandler().getCustomCache().getKnowledgeBook();
         List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
@@ -123,32 +117,6 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T
         event.setButton(20, data.getLightBackground());
         event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
         event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
-
-        if (book.getTimerTask() == null) {
-            AtomicInteger i = new AtomicInteger();
-            book.setTimerTask(Bukkit.getScheduler().runTaskTimerAsynchronously(event.getGuiHandler().getApi().getPlugin(), () -> {
-                if (i.get() == 0) {
-                    NamespacedKey glass = data.getDarkBackground();
-                    event.setButton(23, glass);
-                    event.setButton(22, glass);
-                    event.setButton(21, glass);
-                } else if (i.get() == 1) {
-                    event.setItem(21, new ItemStack(Material.YELLOW_CONCRETE));
-                } else if (i.get() == 2) {
-                    event.setItem(21, new ItemStack(Material.ORANGE_CONCRETE));
-                    event.setItem(22, new ItemStack(Material.YELLOW_CONCRETE));
-                } else {
-                    event.setItem(21, new ItemStack(Material.RED_CONCRETE_POWDER));
-                    event.setItem(22, new ItemStack(Material.ORANGE_CONCRETE));
-                    event.setItem(23, new ItemStack(Material.YELLOW_CONCRETE));
-                }
-                if (i.get() < 3) {
-                    i.getAndIncrement();
-                } else {
-                    i.set(0);
-                }
-            }, 1, 4));
-        }
     }
 
     @Override

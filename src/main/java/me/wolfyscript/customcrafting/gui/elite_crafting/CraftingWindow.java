@@ -4,12 +4,12 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.ResultSlotButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
@@ -17,9 +17,16 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class CraftingWindow extends CCWindow {
 
-    public CraftingWindow(GuiCluster<CCCache> cluster, String namespace, int size, CustomCrafting customCrafting) {
+    protected static final String RESULT = "result_slot";
+
+    protected CraftingWindow(GuiCluster<CCCache> cluster, String namespace, int size, CustomCrafting customCrafting) {
         super(cluster, namespace, size, customCrafting);
         setForceSyncUpdate(true);
+    }
+
+    @Override
+    public void onInit() {
+        registerButton(new ResultSlotButton(customCrafting));
     }
 
     @Override
@@ -29,10 +36,9 @@ public abstract class CraftingWindow extends CCWindow {
 
     @Override
     public void onUpdateSync(GuiUpdate<CCCache> event) {
-        for (int i = 0; i < getSize() - 1; i++) {
-            event.setButton(i, new NamespacedKey("none", "glass_black"));
+        for (int i = 0; i < getSize(); i++) {
+            event.setButton(i, MainCluster.GLASS_BLACK);
         }
-        event.setButton(getSize() - 1, PlayerUtil.getStore(event.getPlayer()).isDarkMode() ? "texture_dark" : "texture_light");
     }
 
     public abstract int getGridX();

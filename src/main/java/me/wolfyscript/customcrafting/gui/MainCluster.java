@@ -21,32 +21,35 @@ import org.bukkit.Material;
 
 public class MainCluster extends CCCluster {
 
-    public static final NamespacedKey BACK = new NamespacedKey("none", "back");
-    public static final NamespacedKey BACK_BOTTOM = new NamespacedKey("none", "back_bottom");
-    public static final NamespacedKey GUI_HELP = new NamespacedKey("none", "gui_help");
+    public static final String KEY = "none";
 
-    public static final NamespacedKey GLASS_GRAY = new NamespacedKey("none", "glass_gray");
-    public static final NamespacedKey GLASS_WHITE = new NamespacedKey("none", "glass_white");
-    public static final NamespacedKey GLASS_BLACK = new NamespacedKey("none", "glass_black");
-    public static final NamespacedKey GLASS_RED = new NamespacedKey("none", "glass_red");
-    public static final NamespacedKey GLASS_GREEN = new NamespacedKey("none", "glass_green");
-    public static final NamespacedKey GLASS_PURPLE = new NamespacedKey("none", "glass_purple");
-    public static final NamespacedKey GLASS_PINK = new NamespacedKey("none", "glass_pink");
+    public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
+    public static final NamespacedKey BACK_BOTTOM = new NamespacedKey(KEY, "back_bottom");
+    public static final NamespacedKey GUI_HELP = new NamespacedKey(KEY, "gui_help");
+    public static final NamespacedKey GLASS_GRAY = new NamespacedKey(KEY, "glass_gray");
+    public static final NamespacedKey GLASS_WHITE = new NamespacedKey(KEY, "glass_white");
+    public static final NamespacedKey GLASS_BLACK = new NamespacedKey(KEY, "glass_black");
+    public static final NamespacedKey GLASS_RED = new NamespacedKey(KEY, "glass_red");
+    public static final NamespacedKey GLASS_GREEN = new NamespacedKey(KEY, "glass_green");
+    public static final NamespacedKey GLASS_PURPLE = new NamespacedKey(KEY, "glass_purple");
+    public static final NamespacedKey GLASS_PINK = new NamespacedKey(KEY, "glass_pink");
+    private static final String BACKGROUND = "background";
+
 
     public MainCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
-        super(inventoryAPI, "none", customCrafting);
+        super(inventoryAPI, KEY, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new DummyButton<>(GLASS_GRAY.getKey(), new ButtonState<>("background", Material.GRAY_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_BLACK.getKey(), new ButtonState<>("background", Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_RED.getKey(), new ButtonState<>("background", Material.RED_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_GRAY.getKey(), new ButtonState<>(BACKGROUND, Material.GRAY_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_BLACK.getKey(), new ButtonState<>(BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_RED.getKey(), new ButtonState<>(BACKGROUND, Material.RED_STAINED_GLASS_PANE)));
 
-        registerButton(new DummyButton<>(GLASS_WHITE.getKey(), new ButtonState<>("background", Material.WHITE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_GREEN.getKey(), new ButtonState<>("background", Material.GREEN_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_PURPLE.getKey(), new ButtonState<>("background", Material.PURPLE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_PINK.getKey(), new ButtonState<>("background", Material.PINK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_WHITE.getKey(), new ButtonState<>(BACKGROUND, Material.WHITE_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_GREEN.getKey(), new ButtonState<>(BACKGROUND, Material.GREEN_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_PURPLE.getKey(), new ButtonState<>(BACKGROUND, Material.PURPLE_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_PINK.getKey(), new ButtonState<>(BACKGROUND, Material.PINK_STAINED_GLASS_PANE)));
 
         registerButton(new ToggleButton<>(GUI_HELP.getKey(), true, new ButtonState<>("gui_help_off", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.setHelpEnabled(true);

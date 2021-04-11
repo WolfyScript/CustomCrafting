@@ -1,8 +1,14 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
+import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -59,6 +65,28 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
 
     public boolean isValid(Set<Material> materials) {
         return materials.isEmpty() || cachedRecipes.parallelStream().anyMatch(recipe1 -> recipe1.getResult().getChoices().parallelStream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
+    }
+
+    public boolean isValid(EliteWorkbench cache) {
+        EliteWorkbenchData data = cache.getEliteWorkbenchData();
+        return cachedRecipes.parallelStream().anyMatch(recipe -> {
+            if (recipe instanceof CraftingRecipe && (recipe instanceof EliteCraftingRecipe || data.isAdvancedRecipes())) {
+                if (recipe instanceof EliteCraftingRecipe) {
+                    EliteWorkbenchCondition condition = recipe.getConditions().getEliteCraftingTableCondition();
+                    if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
+                        return false;
+                    }
+                    if (((EliteCraftingRecipe) recipe).isShapeless()) {
+                        return ((EliteCraftingRecipe) recipe).getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
+                    } else {
+                        ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) recipe;
+                        return recipe1.getHeight() <= cache.getCurrentGridSize() && recipe1.getWidth() <= cache.getCurrentGridSize();
+                    }
+                }
+                return true;
+            }
+            return false;
+        });
     }
 
     public String getValue() {

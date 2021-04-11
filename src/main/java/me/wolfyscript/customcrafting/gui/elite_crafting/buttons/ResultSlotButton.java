@@ -20,34 +20,32 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
     public ResultSlotButton(CustomCrafting customCrafting) {
         super("result_slot", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
-            if (event instanceof InventoryClickEvent) {
-                if (inventory.getWindow() instanceof CraftingWindow) {
-                    InventoryClickEvent clickEvent = (InventoryClickEvent) event;
-                    if (clickEvent.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getView().getBottomInventory().equals(clickEvent.getClickedInventory())) {
-                        ItemStack itemStack = clickEvent.getCurrentItem().clone();
-                        if (!InventoryUtils.hasInventorySpace(eliteWorkbench.getContents(), itemStack)) {
-                            return true;
-                        }
-                        for (int i = 0; i < eliteWorkbench.getCurrentGridSize() * eliteWorkbench.getCurrentGridSize(); i++) {
-                            ItemStack item = eliteWorkbench.getContents()[i];
-                            if (item == null) {
-                                eliteWorkbench.getContents()[i] = itemStack;
+            if (event instanceof InventoryClickEvent && inventory.getWindow() instanceof CraftingWindow) {
+                InventoryClickEvent clickEvent = (InventoryClickEvent) event;
+                if (clickEvent.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) && event.getView().getBottomInventory().equals(clickEvent.getClickedInventory())) {
+                    ItemStack itemStack = clickEvent.getCurrentItem().clone();
+                    if (!InventoryUtils.hasInventorySpace(eliteWorkbench.getContents(), itemStack)) {
+                        return true;
+                    }
+                    for (int i = 0; i < eliteWorkbench.getCurrentGridSize() * eliteWorkbench.getCurrentGridSize(); i++) {
+                        ItemStack item = eliteWorkbench.getContents()[i];
+                        if (item == null) {
+                            eliteWorkbench.getContents()[i] = itemStack;
+                            break;
+                        } else if (item.isSimilar(itemStack) || itemStack.isSimilar(item)) {
+                            if (item.getAmount() + itemStack.getAmount() <= itemStack.getMaxStackSize()) {
+                                eliteWorkbench.getContents()[i].setAmount(item.getAmount() + itemStack.getAmount());
                                 break;
-                            } else if (item.isSimilar(itemStack) || itemStack.isSimilar(item)) {
-                                if (item.getAmount() + itemStack.getAmount() <= itemStack.getMaxStackSize()) {
-                                    eliteWorkbench.getContents()[i].setAmount(item.getAmount() + itemStack.getAmount());
-                                    break;
-                                }
                             }
                         }
-                        return false;
-                    } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK)) {
-                        if (eliteWorkbench.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
-                            if (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult())) {
-                                customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
-                                eliteWorkbench.setResult(null);
-                                customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
-                            }
+                    }
+                    return false;
+                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK)) {
+                    if (eliteWorkbench.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
+                        if (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult())) {
+                            customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
+                            eliteWorkbench.setResult(null);
+                            customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
                         }
                     }
                 }

@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.RecipeItemStack;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -39,8 +38,8 @@ public class IngredientContainerButton extends Button<CCCache> {
     }
 
     @Override
-    public void init(String s, WolfyUtilities wolfyUtilities) {
-        //NOT NEEDED
+    public void init(GuiCluster<CCCache> guiCluster) {
+
     }
 
     public static void removeTasks(GuiHandler<CCCache> guiHandler) {
@@ -87,7 +86,6 @@ public class IngredientContainerButton extends Button<CCCache> {
                 List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
-                    book.stopTimerTask();
                     book.setSubFolderPage(0);
                     book.addResearchItem(customItem);
                     book.setSubFolderRecipes(customItem, recipes);
