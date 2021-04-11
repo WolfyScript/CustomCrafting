@@ -26,22 +26,20 @@ public class SaveSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = customCrafting.getApi();
-        if (sender instanceof Player) {
-            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
-                Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> {
-                    api.getChat().sendConsoleMessage("Saving item: " + entry.getKey().toString());
-                    ItemLoader.saveItem(entry.getKey(), entry.getValue());
-                });
-                Registry.RECIPES.values().forEach(recipe -> {
-                    api.getChat().sendConsoleMessage("Saving recipe: " + recipe.getNamespacedKey().toString());
-                    recipe.save();
-                });
-                sender.sendMessage("§eAll recipes are resaved! See the console log for errors.");
-                sender.sendMessage("§cNotice that some recipes must be recreated due incompatibility! These are: ");
-                sender.sendMessage("§c- recipes that caused errors when saving (their config is corrupted from now on)");
-                sender.sendMessage("§c- recipes that don't work when the server is restarted");
-                sender.sendMessage("§eYou can get or ask for further information on the discord!");
-            }
+        if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
+            Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> {
+                api.getChat().sendConsoleMessage("Saving item: " + entry.getKey().toString());
+                ItemLoader.saveItem(entry.getKey(), entry.getValue());
+            });
+            Registry.RECIPES.values().forEach(recipe -> {
+                api.getChat().sendConsoleMessage("Saving recipe: " + recipe.getNamespacedKey().toString());
+                recipe.save();
+            });
+            sender.sendMessage("§eAll recipes are resaved! See the console log for errors.");
+            sender.sendMessage("§cNotice that some recipes must be recreated due incompatibility! These are: ");
+            sender.sendMessage("§c- recipes that caused errors when saving (their config is corrupted from now on)");
+            sender.sendMessage("§c- recipes that don't work when the server is restarted");
+            sender.sendMessage("§eYou can get or ask for further information on the discord!");
         }
         return true;
     }

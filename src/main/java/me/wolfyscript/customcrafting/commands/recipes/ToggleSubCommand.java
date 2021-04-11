@@ -24,22 +24,18 @@ public class ToggleSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player) {
-            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle")) {
-                if (args.length > 0) {
-                    String id = args[0];
-                    if (!id.isEmpty() && id.contains(":")) {
-                        me.wolfyscript.utilities.util.NamespacedKey namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
-                        if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
-                            sender.sendMessage("Enabled recipe " + id);
-                            customCrafting.getDataHandler().getDisabledRecipes().remove(namespacedKey);
-                        } else {
-                            sender.sendMessage("Disabled recipe " + id);
-                            customCrafting.getDataHandler().getDisabledRecipes().add(namespacedKey);
-                            if (namespacedKey != null) {
-                                Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(namespacedKey.toBukkit(customCrafting)));
-                            }
-                        }
+        if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle") && args.length > 0) {
+            String id = args[0];
+            if (!id.isEmpty() && id.contains(":")) {
+                me.wolfyscript.utilities.util.NamespacedKey namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
+                if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
+                    sender.sendMessage("Enabled recipe " + id);
+                    customCrafting.getDataHandler().getDisabledRecipes().remove(namespacedKey);
+                } else {
+                    sender.sendMessage("Disabled recipe " + id);
+                    customCrafting.getDataHandler().getDisabledRecipes().add(namespacedKey);
+                    if (namespacedKey != null) {
+                        Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(namespacedKey.toBukkit(customCrafting)));
                     }
                 }
             }

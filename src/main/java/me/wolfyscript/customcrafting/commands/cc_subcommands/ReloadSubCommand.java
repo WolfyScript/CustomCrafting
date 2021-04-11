@@ -42,7 +42,6 @@ public class ReloadSubCommand extends AbstractSubCommand {
                     });
                     //Reload Recipes
                     DataHandler dataHandler = customCrafting.getDataHandler();
-                    dataHandler.saveData();
                     dataHandler.load(false);
                     dataHandler.getCategories().indexCategories();
                     api.getChat().sendMessage(p, "&aReload Complete");

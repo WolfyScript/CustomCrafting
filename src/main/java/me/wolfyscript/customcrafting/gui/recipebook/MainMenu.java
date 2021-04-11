@@ -6,10 +6,10 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.EliteCraftingCluster;
+import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.MainCategoryButton;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -19,8 +19,8 @@ public class MainMenu extends CCWindow {
 
     private static final String BACK_BOTTOM = "back_bottom";
 
-    public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "main_menu", 27, customCrafting);
+    public MainMenu(RecipeBookCluster cluster, CustomCrafting customCrafting) {
+        super(cluster, RecipeBookCluster.MAIN_MENU.getKey(), 27, customCrafting);
     }
 
     @Override

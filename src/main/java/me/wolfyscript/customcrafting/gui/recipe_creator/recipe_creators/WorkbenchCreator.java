@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
@@ -32,32 +33,32 @@ public class WorkbenchCreator extends RecipeCreator {
         registerButton(new ButtonRecipeResult());
 
         registerButton(new ToggleButton<>("workbench.shapeless", false, new ButtonState<>("recipe_creator", "workbench.shapeless.enabled", PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().setCustomRecipe(new ShapedCraftRecipe(guiHandler.getCustomCache().getAdvancedCraftingRecipe()));
+            guiHandler.getCustomCache().setCustomRecipe(new ShapedCraftRecipe(guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)));
             return true;
         }), new ButtonState<>("recipe_creator", "workbench.shapeless.disabled", PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().setCustomRecipe(new ShapelessCraftRecipe(guiHandler.getCustomCache().getAdvancedCraftingRecipe()));
+            guiHandler.getCustomCache().setCustomRecipe(new ShapelessCraftRecipe(guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)));
             return true;
         })));
 
         registerButton(new ToggleButton<>("workbench.mirrorHorizontal", false, new ButtonState<>("recipe_creator", "workbench.mirrorHorizontal.enabled", PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (cache, guiHandler, player, inventory, slot, event) -> {
-            ((ShapedCraftRecipe) guiHandler.getCustomCache().getAdvancedCraftingRecipe()).setMirrorHorizontal(false);
+            ((ShapedCraftRecipe) guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)).setMirrorHorizontal(false);
             return true;
         }), new ButtonState<>("recipe_creator", "workbench.mirrorHorizontal.disabled", PlayerHeadUtils.getViaURL("956a3618459e43b287b22b7e235ec699594546c6fcd6dc84bfca4cf30ab9311"), (cache, guiHandler, player, inventory, slot, event) -> {
-            ((ShapedCraftRecipe) guiHandler.getCustomCache().getAdvancedCraftingRecipe()).setMirrorHorizontal(true);
+            ((ShapedCraftRecipe) guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)).setMirrorHorizontal(true);
             return true;
         })));
         registerButton(new ToggleButton<>("workbench.mirrorVertical", false, new ButtonState<>("recipe_creator", "workbench.mirrorVertical.enabled", PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (cache, guiHandler, player, inventory, slot, event) -> {
-            ((ShapedCraftRecipe) guiHandler.getCustomCache().getAdvancedCraftingRecipe()).setMirrorVertical(false);
+            ((ShapedCraftRecipe) guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)).setMirrorVertical(false);
             return true;
         }), new ButtonState<>("recipe_creator", "workbench.mirrorVertical.disabled", PlayerHeadUtils.getViaURL("882faf9a584c4d676d730b23f8942bb997fa3dad46d4f65e288c39eb471ce7"), (cache, guiHandler, player, inventory, slot, event) -> {
-            ((ShapedCraftRecipe) guiHandler.getCustomCache().getAdvancedCraftingRecipe()).setMirrorVertical(true);
+            ((ShapedCraftRecipe) guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)).setMirrorVertical(true);
             return true;
         })));
         registerButton(new ToggleButton<>("workbench.mirrorRotation", false, new ButtonState<>("recipe_creator", "workbench.mirrorRotation.enabled", PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (cache, guiHandler, player, inventory, slot, event) -> {
-            ((ShapedCraftRecipe) guiHandler.getCustomCache().getAdvancedCraftingRecipe()).setMirrorRotation(false);
+            ((ShapedCraftRecipe) guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)).setMirrorRotation(false);
             return true;
         }), new ButtonState<>("recipe_creator", "workbench.mirrorRotation.disabled", PlayerHeadUtils.getViaURL("e887cc388c8dcfcf1ba8aa5c3c102dce9cf7b1b63e786b34d4f1c3796d3e9d61"), (cache, guiHandler, player, inventory, slot, event) -> {
-            ((ShapedCraftRecipe) guiHandler.getCustomCache().getAdvancedCraftingRecipe()).setMirrorRotation(true);
+            ((ShapedCraftRecipe) guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)).setMirrorRotation(true);
             return true;
         })));
     }
@@ -72,7 +73,7 @@ public class WorkbenchCreator extends RecipeCreator {
         super.onUpdateAsync(update);
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
-        CraftingRecipe<?> craftingRecipe = cache.getAdvancedCraftingRecipe();
+        CraftingRecipe<?> craftingRecipe = cache.getRecipe(Types.WORKBENCH);
 
         ((ToggleButton<CCCache>) getButton("workbench.shapeless")).setState(update.getGuiHandler(), craftingRecipe.isShapeless());
         ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(update.getGuiHandler(), craftingRecipe.isExactMeta());
@@ -110,7 +111,7 @@ public class WorkbenchCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        AdvancedCraftingRecipe workbench = cache.getAdvancedCraftingRecipe();
+        AdvancedCraftingRecipe workbench = cache.getRecipe(Types.WORKBENCH);
         return workbench.getIngredients() != null && !workbench.getIngredients().isEmpty() && !workbench.getResult().isEmpty();
     }
 }

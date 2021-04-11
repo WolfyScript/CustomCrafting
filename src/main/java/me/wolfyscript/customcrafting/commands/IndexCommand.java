@@ -54,7 +54,7 @@ public abstract class IndexCommand extends Command {
         return results;
     }
 
-    public HashMap<String, AbstractSubCommand> getSubCommands() {
+    public Map<String, AbstractSubCommand> getSubCommands() {
         return subCommands;
     }
 

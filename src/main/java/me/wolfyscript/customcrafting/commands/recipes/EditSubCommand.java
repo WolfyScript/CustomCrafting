@@ -34,18 +34,16 @@ public class EditSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             WolfyUtilities api = customCrafting.getApi();
             Player player = (Player) sender;
-            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit")) {
-                if (args.length > 0) {
-                    ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
-                    if (customRecipe != null) {
-                        GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
-                        guiHandler.getCustomCache().setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
-                        if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
-                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("none", "recipe_creator")), 1);
-                        }
-                    } else {
-                        api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
+            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit") && args.length > 0) {
+                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
+                if (customRecipe != null) {
+                    GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
+                    guiHandler.getCustomCache().setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
+                    if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("none", "recipe_creator")), 1);
                     }
+                } else {
+                    api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
                 }
             }
         }

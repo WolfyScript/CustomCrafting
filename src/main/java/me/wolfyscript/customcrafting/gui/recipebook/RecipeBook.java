@@ -16,7 +16,6 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
-import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
@@ -38,8 +37,8 @@ public class RecipeBook extends CCWindow {
     private static final String NEXT_RECIPE = "next_recipe";
     private static final String PREVIOUS_RECIPE = "previous_recipe";
 
-    public RecipeBook(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "recipe_book", 54, customCrafting);
+    public RecipeBook(RecipeBookCluster cluster, CustomCrafting customCrafting) {
+        super(cluster, RecipeBookCluster.RECIPE_BOOK.getKey(), 54, customCrafting);
         Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
                 Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);

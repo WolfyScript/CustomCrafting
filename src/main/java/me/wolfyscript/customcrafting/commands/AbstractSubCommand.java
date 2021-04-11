@@ -13,7 +13,7 @@ public abstract class AbstractSubCommand {
     private final String label;
     private final List<String> alias;
 
-    public AbstractSubCommand(String label, List<String> alias, CustomCrafting customCrafting){
+    protected AbstractSubCommand(String label, List<String> alias, CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.label = label;
         this.alias = alias;

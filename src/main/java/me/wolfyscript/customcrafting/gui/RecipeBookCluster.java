@@ -37,21 +37,26 @@ import java.util.ArrayList;
 
 public class RecipeBookCluster extends CCCluster {
 
-    public static final NamespacedKey BACK_TO_LIST = new NamespacedKey("recipe_book", "back_to_list");
-    public static final NamespacedKey NEXT_PAGE = new NamespacedKey("recipe_book", "next_page");
-    public static final NamespacedKey PREVIOUS_PAGE = new NamespacedKey("recipe_book", "previous_page");
-    public static final NamespacedKey ITEM_CATEGORY = new NamespacedKey("recipe_book", "item_category");
-    public static final NamespacedKey PERMISSION = new NamespacedKey("recipe_book", "permission");
+    public static final String KEY = "recipe_book";
+
+    public static final NamespacedKey MAIN_MENU = new NamespacedKey(KEY, "main_menu");
+    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(KEY, "recipe_book");
+
+    public static final NamespacedKey BACK_TO_LIST = new NamespacedKey(KEY, "back_to_list");
+    public static final NamespacedKey NEXT_PAGE = new NamespacedKey(KEY, "next_page");
+    public static final NamespacedKey PREVIOUS_PAGE = new NamespacedKey(KEY, "previous_page");
+    public static final NamespacedKey ITEM_CATEGORY = new NamespacedKey(KEY, "item_category");
+    public static final NamespacedKey PERMISSION = new NamespacedKey(KEY, "permission");
 
     public RecipeBookCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
-        super(inventoryAPI, "recipe_book", customCrafting);
+        super(inventoryAPI, KEY, customCrafting);
     }
 
     @Override
     public void onInit() {
         registerGuiWindow(new RecipeBook(this, customCrafting));
         registerGuiWindow(new MainMenu(this, customCrafting));
-        setEntry(new NamespacedKey("recipe_book", "main_menu"));
+        setEntry(MAIN_MENU);
 
         registerButton(new ItemCategoryButton(customCrafting));
         registerButton(new ActionButton<>(NEXT_PAGE.getKey(), PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
@@ -90,6 +95,18 @@ public class RecipeBookCluster extends CCCluster {
         }));
 
         registerButton(new ToggleButton<>(PERMISSION.getKey(), new ButtonState<>("permission.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true), new ButtonState<>("permission.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> true)));
+
+        registerRecipeIcons();
+        for (int i = 0; i < 37; i++) {
+            registerButton(new IngredientContainerButton(i));
+        }
+        for (int i = 0; i < 45; i++) {
+            registerButton(new RecipeBookContainerButton(i));
+        }
+        registerConditionDisplays();
+    }
+
+    private void registerRecipeIcons() {
         registerButton(new DummyButton<>("workbench.shapeless_on", Material.CRAFTING_TABLE));
         registerButton(new DummyButton<>("workbench.shapeless_off", Material.CRAFTING_TABLE));
 
@@ -144,13 +161,6 @@ public class RecipeBookCluster extends CCCluster {
             hashMap.put("%value%", cookingRecipe.getAmplifierChange());
             return itemStack;
         }));
-        for (int i = 0; i < 37; i++) {
-            registerButton(new IngredientContainerButton(i));
-        }
-        for (int i = 0; i < 45; i++) {
-            registerButton(new RecipeBookContainerButton(i));
-        }
-        registerConditionDisplays();
     }
 
     private void registerConditionDisplays() {

@@ -245,28 +245,12 @@ public class CCCache extends CustomCache {
         return getRecipe(Types.ELITE_WORKBENCH);
     }
 
-    public CustomBlastRecipe getBlastRecipe() {
-        return getRecipe(Types.BLAST_FURNACE);
-    }
-
-    public CustomCampfireRecipe getCampfireRecipe() {
-        return getRecipe(Types.CAMPFIRE);
-    }
-
     public CauldronRecipe getCauldronRecipe() {
         return getRecipe(Types.CAULDRON);
     }
 
-    public CustomSmokerRecipe getSmokerRecipe() {
-        return getRecipe(Types.SMOKER);
-    }
-
     public CustomStonecutterRecipe getStonecutterRecipe() {
         return getRecipe(Types.STONECUTTER);
-    }
-
-    public CustomFurnaceRecipe getFurnaceRecipe() {
-        return getRecipe(Types.FURNACE);
     }
 
     public GrindstoneRecipe getGrindstoneRecipe() {
