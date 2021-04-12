@@ -16,6 +16,7 @@ public abstract class EditCategorySetting extends CCWindow {
     @Override
     public void onInit() {
 
+
     }
 
     @Override
@@ -33,10 +34,9 @@ public abstract class EditCategorySetting extends CCWindow {
         update.setButton(15, RecipeBookEditorCluster.DESCRIPTION_ADD);
         update.setButton(16, RecipeBookEditorCluster.DESCRIPTION_REMOVE);
 
-
         if (update.getGuiHandler().getCustomCache().getRecipeBookEditor().hasCategoryID()) {
-            update.setButton(52, "save");
+            update.setButton(52, RecipeBookEditorCluster.SAVE);
         }
-        update.setButton(53, "save_as");
+        update.setButton(53, RecipeBookEditorCluster.SAVE_AS);
     }
 }

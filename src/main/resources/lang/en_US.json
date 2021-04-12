@@ -256,7 +256,7 @@
             ]
           },
           "recipe_book_editor": {
-            "name": "&6Recipe Book &8[&7Update coming Soon&8]",
+            "name": "&6Recipe Book &8[&7Beta&8]",
             "lore": [
               "&eConfigure the Recipe Book.",
               "&eCreate Categories and set up which",
@@ -2876,14 +2876,14 @@
         "save": {
           "name": "&3Save",
           "lore": [
-            "&7Save the Category with the current ID."
+            "&7Save with the current key."
           ]
         },
         "save_as": {
           "name": "&6Save As...",
           "lore": [
-            "&7Save the Category with a new ID.",
-            "&7ID: &e<category_id>",
+            "&7Save with a new key.",
+            "&7Input: &e<category_key>",
             "&cThe ID must be lowercase alphanumeric!",
             "&c(a-z 0-9 _ -)"
           ]
@@ -2961,6 +2961,22 @@
               "&eIf there is only one Category available",
               "&ethe Gui will directly open the one Category",
               "&ewithout showing the Main Menu!"
+            ]
+          },
+          "cancel": {
+            "name": "&c&lCancel",
+            "lore": [
+              "&7Reverts changes made to the Recipe Book!",
+              "&cIf you don't revert the changes before",
+              "&cserver stop they will be applied instead!"
+            ]
+          },
+          "save": {
+            "name": "&6&lSave",
+            "lore": [
+              "&7Save Recipe Book settings to the config!",
+              "&7To load and apply the changes you need",
+              "&7to run: &e/cc reload"
             ]
           }
         }

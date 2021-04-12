@@ -6,18 +6,15 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ReloadSubCommand extends AbstractSubCommand {
@@ -32,16 +29,17 @@ public class ReloadSubCommand extends AbstractSubCommand {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-                api.getChat().sendMessage(p, "&eReloading Items and Recipes!");
                 if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
                     InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
-                    Bukkit.getOnlinePlayers().forEach(player -> {
-                        GuiHandler<CCCache> guiHandler = invAPI.getGuiHandler(player);
-                        guiHandler.getCustomCache().getKnowledgeBook().setCachedSubFolderRecipes(new HashMap<>());
-                        guiHandler.getCustomCache().getKnowledgeBook().setResearchItems(new ArrayList<>());
-                    });
-                    //Reload Recipes
+                    api.getChat().sendMessage(p, "&eReloading Inventories and Languages!");
+                    customCrafting.getApi().getLanguageAPI().unregisterLanguages();
+                    customCrafting.getConfigHandler().loadLang();
+                    invAPI.reset();
+                    api.getChat().sendMessage(p, "&aReloaded GUIs and languages");
+                    api.getChat().sendMessage(p, "&eReloading Items and Recipes!");
+                    customCrafting.getConfigHandler().loadRecipeBookConfig();
                     DataHandler dataHandler = customCrafting.getDataHandler();
+                    dataHandler.initCategories();
                     dataHandler.load(false);
                     dataHandler.getCategories().indexCategories();
                     api.getChat().sendMessage(p, "&aReload Complete");

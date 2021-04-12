@@ -35,7 +35,7 @@ public class DataHandler {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
-    private final Categories categories;
+    private Categories categories;
     private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 
@@ -50,8 +50,12 @@ public class DataHandler {
         this.chat = api.getChat();
         this.mainConfig = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
-        this.categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
+        initCategories();
         this.objectMapper = JacksonUtil.getObjectMapper();
+    }
+
+    public void initCategories() {
+        this.categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
     }
 
     public void load(boolean update) {
@@ -144,7 +148,7 @@ public class DataHandler {
             try {
                 Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
             } catch (IOException e) {
-                customCrafting.getLogger().severe(String.format("Could not load item '%s': %s", namespacedKey.toString(), e.getMessage()));
+                customCrafting.getLogger().severe(String.format("Could not load item '%s': %s", namespacedKey, e.getMessage()));
             }
         }
     }
@@ -156,7 +160,7 @@ public class DataHandler {
             try {
                 Registry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                customCrafting.getLogger().severe(String.format("Could not load recipe '%s': %s", namespacedKey.toString(), e.getMessage()));
+                customCrafting.getLogger().severe(String.format("Could not load recipe '%s': %s", namespacedKey, e.getMessage()));
             }
         }
     }

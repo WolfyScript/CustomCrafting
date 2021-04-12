@@ -108,7 +108,10 @@ public class ConfigHandler {
             workbenchCraft.save();
         }
 
-        //Loading RecipeBook
+        loadRecipeBookConfig();
+    }
+
+    public void loadRecipeBookConfig() {
         File oldRecipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book_old.json");
         File recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
         if (!oldRecipeBookFile.exists() && recipeBookFile.exists() && !recipeBookFile.renameTo(oldRecipeBookFile)) {

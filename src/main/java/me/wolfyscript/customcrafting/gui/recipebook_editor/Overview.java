@@ -34,8 +34,8 @@ public abstract class Overview extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, MainCluster.BACK);
-        update.setButton(45, PREVIOUS);
-        update.setButton(53, NEXT);
+        update.setButton(47, PREVIOUS);
+        update.setButton(51, NEXT);
 
 
     }
