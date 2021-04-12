@@ -147,8 +147,7 @@ public class RecipeBookEditorCluster extends CCCluster {
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 0) {
                         String namespace = args[0];
-                        if (namespace == null && !namespace.isEmpty()) {
-                            wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
+                        if (namespace == null || namespace.isEmpty()) {
                             return true;
                         }
                         if (remove) {
@@ -180,8 +179,7 @@ public class RecipeBookEditorCluster extends CCCluster {
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 0) {
                         String group = args[0];
-                        if (group == null && !group.isEmpty()) {
-                            wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
+                        if (group == null || group.isEmpty()) {
                             return true;
                         }
                         if (remove) {
