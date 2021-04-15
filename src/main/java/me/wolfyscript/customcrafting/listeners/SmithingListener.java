@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smithing.SmithingData;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -34,8 +35,6 @@ import java.util.stream.Stream;
 public class SmithingListener implements Listener {
 
     private final HashMap<UUID, SmithingData> preCraftedRecipes = new HashMap<>();
-    private final HashMap<UUID, HashMap<NamespacedKey, CustomItem>> preCraftedItems = new HashMap<>();
-
     private final CustomCrafting customCrafting;
 
     public SmithingListener(CustomCrafting customCrafting) {
@@ -58,41 +57,24 @@ public class SmithingListener implements Listener {
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
         for (CustomSmithingRecipe recipe : Registry.RECIPES.getAvailable(Types.SMITHING, player)) {
-            if (!recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
-                continue;
+            if (recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
+                Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isExactMeta());
+                if (optionalBase.isPresent()) {
+                    Optional<CustomItem> optionalAddition = recipe.getAddition().check(addition, recipe.isExactMeta());
+                    if (optionalAddition.isPresent()) {
+                        //Recipe is valid
+                        assert base != null;
+                        assert addition != null;
+                        Result<?> result = recipe.getResult().get(new ItemStack[]{base, addition});
+                        preCraftedRecipes.put(player.getUniqueId(), new SmithingData(recipe, result, optionalBase.get(), optionalAddition.get()));
+                        //Progress result
+                        ItemStack endResult = result.getItem(player).orElse(new CustomItem(Material.AIR)).create();
+                        endResult.addUnsafeEnchantments(base.getEnchantments());
+                        event.setResult(endResult);
+                        break;
+                    }
+                }
             }
-            Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isExactMeta());
-            if (!optionalBase.isPresent()) {
-                continue;
-            }
-            Optional<CustomItem> optionalAddition = recipe.getAddition().check(addition, recipe.isExactMeta());
-            if (!optionalAddition.isPresent()) {
-                continue;
-            }
-            //Recipe is valid
-            preCraftedRecipes.put(player.getUniqueId(), new SmithingData(recipe, optionalBase.get(), optionalAddition.get()));
-            assert base != null;
-            assert addition != null;
-
-            CustomItem result;
-
-            HashMap<NamespacedKey, CustomItem> preCraftedItem = preCraftedItems.getOrDefault(player.getUniqueId(), new HashMap<>());
-            if (preCraftedItem.get(recipe.getNamespacedKey()) == null) {
-                result = recipe.getResult().get(new ItemStack[]{base, addition}).getItem(player).orElse(new CustomItem(Material.AIR));
-                preCraftedItem.put(recipe.getNamespacedKey(), result);
-                preCraftedItems.put(player.getUniqueId(), preCraftedItem);
-            } else {
-                result = preCraftedItem.get(recipe.getNamespacedKey());
-            }
-
-            if (result != null) {
-                //Progress result
-                ItemStack endResult = result.create();
-                endResult.addUnsafeEnchantments(base.getEnchantments());
-
-                event.setResult(endResult);
-            }
-            break;
         }
     }
 
@@ -103,13 +85,12 @@ public class SmithingListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         InventoryAction action = event.getAction();
         Inventory inventory = event.getClickedInventory();
-        if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(inventory.getItem(2)) && action.equals(InventoryAction.NOTHING)) {
+        if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(event.getCurrentItem()) && action.equals(InventoryAction.NOTHING)) {
             //Take out item!
             if (preCraftedRecipes.get(player.getUniqueId()) == null) {
                 //Vanilla Recipe
                 return;
             }
-
             ItemStack resultStack = event.getCurrentItem().clone();
             if (event.isShiftClick()) {
                 if (InventoryUtils.hasInventorySpace(player, resultStack)) {
@@ -121,7 +102,6 @@ public class SmithingListener implements Listener {
             } else {
                 event.getView().setCursor(resultStack);
             }
-
             final ItemStack baseItem = Objects.requireNonNull(inventory.getItem(0)).clone();
             final ItemStack additionItem = Objects.requireNonNull(inventory.getItem(1)).clone();
 
@@ -129,6 +109,7 @@ public class SmithingListener implements Listener {
                 SmithingData smithingData = preCraftedRecipes.get(player.getUniqueId());
                 CustomItem base = smithingData.getBase();
                 CustomItem addition = smithingData.getAddition();
+                smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
 
                 base.consumeItem(baseItem, 1, inventory);
                 inventory.setItem(0, baseItem);
