@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.extension;
 
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
@@ -26,9 +27,12 @@ import java.util.stream.Collectors;
 @JsonPropertyOrder(value = {"key", "outer_radius", "inner_radius"})
 public abstract class ResultExtension implements Keyed {
 
-    protected Material icon = Material.CHAIN_COMMAND_BLOCK;
-    protected String title = "&6&lExtension";
-    protected List<String> description;
+    protected @JsonIgnore
+    Material icon = Material.CHAIN_COMMAND_BLOCK;
+    protected @JsonIgnore
+    String title = "&6&lExtension";
+    protected @JsonIgnore
+    List<String> description;
 
     @JsonProperty(value = "key")
     private final NamespacedKey namespacedKey;

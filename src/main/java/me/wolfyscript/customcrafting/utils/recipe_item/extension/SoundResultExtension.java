@@ -15,10 +15,10 @@ public class SoundResultExtension extends ResultExtension {
     private float volume = 1.0F;
     private float pitch = 1.0F;
     private SoundCategory soundCategory = SoundCategory.BLOCKS;
-    private boolean playForPlayer = false;
-    private boolean playForNearPlayer = false;
-    private boolean playForNearWorkstation = false;
-    private boolean playOnBlock = true;
+    private boolean forPlayer = false;
+    private boolean nearPlayer = false;
+    private boolean nearWorkstation = false;
+    private boolean onBlock = true;
 
     public SoundResultExtension() {
         super(new NamespacedKey("customcrafting", "sound"));
@@ -30,10 +30,10 @@ public class SoundResultExtension extends ResultExtension {
         this.volume = extension.volume;
         this.pitch = extension.pitch;
         this.soundCategory = extension.soundCategory;
-        this.playForPlayer = extension.playForPlayer;
-        this.playForNearPlayer = extension.playForNearPlayer;
-        this.playForNearWorkstation = extension.playForNearWorkstation;
-        this.playOnBlock = extension.playOnBlock;
+        this.forPlayer = extension.forPlayer;
+        this.nearPlayer = extension.nearPlayer;
+        this.nearWorkstation = extension.nearWorkstation;
+        this.onBlock = extension.onBlock;
     }
 
     public SoundResultExtension(Sound sound) {
@@ -49,35 +49,35 @@ public class SoundResultExtension extends ResultExtension {
         this.soundCategory = soundCategory;
     }
 
-    public SoundResultExtension(Sound sound, float volume, float pitch, SoundCategory soundCategory, boolean playForPlayer, boolean playForNearPlayer, boolean playForNearWorkstation, boolean playOnBlock) {
+    public SoundResultExtension(Sound sound, float volume, float pitch, SoundCategory soundCategory, boolean forPlayer, boolean nearPlayer, boolean nearWorkstation, boolean onBlock) {
         this();
         this.sound = sound;
         this.volume = volume;
         this.pitch = pitch;
         this.soundCategory = soundCategory;
-        this.playForPlayer = playForPlayer;
-        this.playForNearPlayer = playForNearPlayer;
-        this.playForNearWorkstation = playForNearWorkstation;
-        this.playOnBlock = playOnBlock;
+        this.forPlayer = forPlayer;
+        this.nearPlayer = nearPlayer;
+        this.nearWorkstation = nearWorkstation;
+        this.onBlock = onBlock;
     }
 
     @Override
     public void onWorkstation(Block block, @Nullable Player player) {
-        if (playOnBlock && sound != null) {
+        if (onBlock && sound != null) {
             block.getWorld().playSound(block.getLocation(), sound, soundCategory, volume, pitch);
         }
     }
 
     @Override
     public void onLocation(Location location, @Nullable Player player) {
-        if (sound != null && ((player != null && playForNearPlayer) || playForNearWorkstation)) {
+        if (sound != null && ((player != null && nearPlayer) || nearWorkstation)) {
             getEntitiesInRange(Player.class, location, outerRadius, innerRadius).forEach(player1 -> player1.playSound(location, sound, soundCategory, volume, pitch));
         }
     }
 
     @Override
     public void onPlayer(@NotNull Player player, Location location) {
-        if (playForPlayer && sound != null) {
+        if (forPlayer && sound != null) {
             player.playSound(location, sound, soundCategory, volume, pitch);
         }
     }
@@ -119,35 +119,35 @@ public class SoundResultExtension extends ResultExtension {
         this.soundCategory = soundCategory;
     }
 
-    public boolean isPlayForPlayer() {
-        return playForPlayer;
+    public boolean isForPlayer() {
+        return forPlayer;
     }
 
-    public void setPlayForPlayer(boolean playForPlayer) {
-        this.playForPlayer = playForPlayer;
+    public void setForPlayer(boolean forPlayer) {
+        this.forPlayer = forPlayer;
     }
 
-    public boolean isPlayForNearPlayer() {
-        return playForNearPlayer;
+    public boolean isNearPlayer() {
+        return nearPlayer;
     }
 
-    public void setPlayForNearPlayer(boolean playForNearPlayer) {
-        this.playForNearPlayer = playForNearPlayer;
+    public void setNearPlayer(boolean nearPlayer) {
+        this.nearPlayer = nearPlayer;
     }
 
-    public boolean isPlayForNearWorkstation() {
-        return playForNearWorkstation;
+    public boolean isNearWorkstation() {
+        return nearWorkstation;
     }
 
-    public void setPlayForNearWorkstation(boolean playForNearWorkstation) {
-        this.playForNearWorkstation = playForNearWorkstation;
+    public void setNearWorkstation(boolean nearWorkstation) {
+        this.nearWorkstation = nearWorkstation;
     }
 
-    public boolean isPlayOnBlock() {
-        return playOnBlock;
+    public boolean isOnBlock() {
+        return onBlock;
     }
 
-    public void setPlayOnBlock(boolean playOnBlock) {
-        this.playOnBlock = playOnBlock;
+    public void setOnBlock(boolean onBlock) {
+        this.onBlock = onBlock;
     }
 }
