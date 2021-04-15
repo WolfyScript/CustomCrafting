@@ -7,6 +7,7 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneData;
 import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
@@ -27,7 +28,6 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -78,7 +78,9 @@ public class GrindStoneListener implements Listener {
                     ExperienceOrb orb = (ExperienceOrb) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
                     orb.setExperience(grindstoneData.getRecipe().getXp());
                 }
-
+                if (grindstoneData.getResult().isPresent()) {
+                    grindstoneData.getResult().get().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
+                }
                 preCraftedRecipes.remove(player.getUniqueId());
                 Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), 0, player, event.getView());
                 GrindstoneRecipe foundRecipe = checkResult.getValue().getRecipe();
@@ -188,23 +190,18 @@ public class GrindStoneListener implements Listener {
         if (!event.getInventory().getType().equals(InventoryType.GRINDSTONE)) return;
         if (event.getInventorySlots().isEmpty()) return;
         event.setCancelled(true);
-
-        //TODO: DRAG ITEMS INTO GRINDSTONE!
-
     }
 
     public Pair<CustomItem, GrindstoneData> checkRecipe(ItemStack item, ItemStack itemOther, int slot, Player player, InventoryView inventoryView) {
         AtomicReference<CustomItem> finalInputTop = new AtomicReference<>();
         AtomicReference<CustomItem> finalInputBottom = new AtomicReference<>();
 
-        List<GrindstoneRecipe> allowedRecipes = Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList());
-
         preCraftedRecipes.remove(player.getUniqueId());
 
         GrindstoneRecipe foundRecipe = null;
         boolean validItem = false;
 
-        for (GrindstoneRecipe grindstoneRecipe : allowedRecipes) {
+        for (GrindstoneRecipe grindstoneRecipe : Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList())) {
             Ingredient input = grindstoneRecipe.getInputBottom();
             Ingredient otherInput = grindstoneRecipe.getInputTop();
             if (slot == 0) {
@@ -220,7 +217,7 @@ public class GrindStoneListener implements Listener {
                 //Another item exists in the other slot! Check if current and other item are a valid recipe
                 Optional<CustomItem> optionalOther = otherInput.check(itemOther, grindstoneRecipe.isExactMeta());
                 if (!optionalOther.isPresent()) {
-                    //Other exiting Item is invalid!
+                    //Other existing Item is invalid!
                     continue;
                 }
                 if (slot == 0) {
@@ -242,13 +239,13 @@ public class GrindStoneListener implements Listener {
             foundRecipe = grindstoneRecipe;
             break;
         }
-
-        GrindstoneData grindstoneData = new GrindstoneData(foundRecipe, validItem, finalInputTop.get(), finalInputBottom.get());
-        CustomItem result = new CustomItem(Material.AIR);
+        Result<?> result = null;
+        CustomItem resultItem = new CustomItem(Material.AIR);
         if (foundRecipe != null) {
-            result = foundRecipe.getResult().get(inventoryView.getTopInventory().getStorageContents()).getItem(player).orElse(new CustomItem(Material.AIR));
+            result = foundRecipe.getResult().get(inventoryView.getTopInventory().getStorageContents());
+            resultItem = result.getItem(player).orElse(new CustomItem(Material.AIR));
         }
-        return new Pair<>(result, grindstoneData);
+        return new Pair<>(resultItem, new GrindstoneData(foundRecipe, Optional.ofNullable(result), validItem, finalInputTop.get(), finalInputBottom.get()));
     }
 
     private boolean isTool(Material material) {
