@@ -101,7 +101,6 @@ public class RecipeBookEditorCluster extends CCCluster {
         }));
         registerButton(new ActionButton<>(RECIPES.getKey(), Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
-            customCrafting.getChatUtils().sendRecipeList(player, new ArrayList<>(Registry.RECIPES.values()));
             if (event instanceof InventoryClickEvent) {
                 boolean remove = ((InventoryClickEvent) event).isRightClick();
                 List<String> recipeKeys = Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList());

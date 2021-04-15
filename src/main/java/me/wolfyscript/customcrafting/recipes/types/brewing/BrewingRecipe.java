@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.brewing;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
@@ -393,11 +394,11 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(12, new NamespacedKey("recipe_book", "ingredient.container_3"));
         event.setButton(20, new NamespacedKey("recipe_book", "brewing.icon"));
-        event.setButton(21, new NamespacedKey("none", "glass_green"));
+        event.setButton(21, MainCluster.GLASS_GREEN);
 
         event.setButton(30, new NamespacedKey("recipe_book", "ingredient.container_0"));
-        event.setButton(31, new NamespacedKey("none", "glass_green"));
-        event.setButton(32, new NamespacedKey("none", "glass_green"));
+        event.setButton(31, MainCluster.GLASS_GREEN);
+        event.setButton(32, MainCluster.GLASS_GREEN);
         event.setButton(33, new NamespacedKey("recipe_book", "ingredient.container_1"));
 
 

@@ -78,7 +78,6 @@ public class RecipesList extends CCWindow {
         CategorySettings category = ((ItemCategoryButton) guiHandler.getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getFilter(guiHandler);
         int currentPage = pages.getOrDefault(event.getGuiHandler(), 0);
         event.setButton(0, "back");
-        //event.setButton(4, "recipe_book", "item_category");
 
         String namespace = namespaces.getOrDefault(guiHandler, "");
         if (namespace.isEmpty()) {

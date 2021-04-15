@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.stonecutter;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
@@ -94,7 +95,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        NamespacedKey glass = new NamespacedKey("none", "glass_green");
+        NamespacedKey glass = MainCluster.GLASS_GREEN;
         event.setButton(20, new NamespacedKey("recipe_book", "ingredient.container_20"));
         event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
         event.setButton(29, glass);

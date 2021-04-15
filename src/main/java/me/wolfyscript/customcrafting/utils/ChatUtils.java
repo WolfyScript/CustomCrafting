@@ -1,17 +1,14 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.CommandSender;
@@ -177,51 +174,5 @@ public class ChatUtils {
             ex.getCause().printStackTrace();
         }
         api.getChat().sendConsoleMessage("------------------[StackTrace]-------------------");
-    }
-
-    public void sendRecipeListExpanded(Player player) {
-        sendRecipeList(player, Registry.RECIPES.get(((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getRecipeType()));
-        api.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "input");
-    }
-
-    public void sendRecipeList(Player player, List<? extends ICustomRecipe<?,?>> customRecipes) {
-        CCCache cache = (CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache();
-        for (int i = 0; i < 20; i++) {
-            player.sendMessage(" ");
-        }
-        int currentPage = cache.getChatLists().getCurrentPageRecipes();
-        int maxPages = ((customRecipes.size() % 15) > 0 ? 1 : 0) + customRecipes.size() / 15;
-
-        api.getChat().sendActionMessage(player, new ClickData("[&3« Back&7]", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(wolfyUtilities.getPlugin(), () -> wolfyUtilities.getInventoryAPI().getGuiHandler(player1).openCluster()), true),
-                new ClickData("                   &7&lRecipes         ", null),
-                new ClickData("&7[&e&l«&7]", (wolfyUtilities, p) -> {
-                    if (currentPage > 1) {
-                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() - 1);
-                        sendRecipeListExpanded(p);
-                    }
-                }),
-                new ClickData(" &e" + currentPage + "§7/§6" + maxPages + "", null),
-                new ClickData(" &7[&e&l»&7]", (wolfyUtilities, p) -> {
-                    if (currentPage < maxPages) {
-                        cache.getChatLists().setCurrentPageRecipes(cache.getChatLists().getCurrentPageRecipes() + 1);
-                        sendRecipeListExpanded(p);
-                    }
-                }));
-        api.getChat().sendMessage(player, "&8-------------------------------------------------");
-
-        for (int i = (currentPage - 1) * 15; i < (currentPage - 1) * 15 + 15; i++) {
-            if (i < customRecipes.size()) {
-                ICustomRecipe<?,?> recipe = customRecipes.get(i);
-                ClickEvent commandSuggest = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, recipe.getNamespacedKey().getNamespace() + " " + recipe.getNamespacedKey().getKey());
-                if (recipe.getResult().isEmpty()) {
-                    api.getChat().sendActionMessage(player, new ClickData(" - §7[§c!§7] §c", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§cFailed to load result item!")));
-                } else {
-                    api.getChat().sendActionMessage(player, new ClickData(" - ", null), new ClickData(recipe.getNamespacedKey().toString(), null, commandSuggest, new HoverEvent(recipe.getResult().getItemStack())));
-                }
-            } else {
-                api.getChat().sendMessage(player, "");
-            }
-        }
-        api.getChat().sendMessage(player, "&8-------------------------------------------------");
     }
 }

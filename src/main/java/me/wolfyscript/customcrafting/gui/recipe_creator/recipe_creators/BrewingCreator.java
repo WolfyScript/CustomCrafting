@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
+import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingOptionButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
@@ -155,16 +156,16 @@ public class BrewingCreator extends RecipeCreator {
                     brewingRecipe.getEffectRemovals().add(potionEffectType);
                 }
             });
-            potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            potionEffectCache.setOpenedFrom(RecipeCreatorCluster.KEY, "brewing_stand");
+            guiHandler.openWindow(PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION);
             return true;
         }));
         registerButton(new ActionButton<>("effect_removals.remove_type", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectRemovals().remove(potionEffectType));
-            potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            potionEffectCache.setOpenedFrom(RecipeCreatorCluster.KEY, "brewing_stand");
+            guiHandler.openWindow(PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION);
             return true;
         }));
 
@@ -187,7 +188,7 @@ public class BrewingCreator extends RecipeCreator {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> cache1.getBrewingGUICache().setPotionEffectAddition(potionEffect));
             potionEffectCache.setRecipePotionEffect(true);
-            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_creator"));
+            guiHandler.openWindow(PotionCreatorCluster.POTION_CREATOR);
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {
             ItemStack itemStack = new ItemStack(Material.POTION);
@@ -231,8 +232,8 @@ public class BrewingCreator extends RecipeCreator {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectAdditions().remove(potionEffectType));
-            potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            potionEffectCache.setOpenedFrom(RecipeCreatorCluster.KEY, "brewing_stand");
+            guiHandler.openWindow(PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION);
             return true;
         }));
 
@@ -261,8 +262,8 @@ public class BrewingCreator extends RecipeCreator {
                     guiCache.setUpgradePotionEffectType(potionEffectType);
                 }
             });
-            potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            potionEffectCache.setOpenedFrom(RecipeCreatorCluster.KEY, "brewing_stand");
+            guiHandler.openWindow(PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION);
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, unused, i, b) -> {
             ItemStack itemStack = new ItemStack(Material.POTION);
@@ -323,8 +324,8 @@ public class BrewingCreator extends RecipeCreator {
             BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectUpgrades().remove(potionEffectType));
-            potionEffectCache.setOpenedFrom("recipe_creator", "brewing_stand");
-            guiHandler.openWindow(new NamespacedKey("potion_creator", "potion_effect_type_selection"));
+            potionEffectCache.setOpenedFrom(RecipeCreatorCluster.KEY, "brewing_stand");
+            guiHandler.openWindow(PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION);
             return true;
         }));
 

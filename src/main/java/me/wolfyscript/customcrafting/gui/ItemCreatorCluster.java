@@ -7,8 +7,10 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 
 public class ItemCreatorCluster extends CCCluster {
 
+    public static final String KEY = "item_creator";
+
     public ItemCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
-        super(inventoryAPI, "item_creator", customCrafting);
+        super(inventoryAPI, KEY, customCrafting);
     }
 
     @Override

@@ -31,17 +31,19 @@ import java.util.stream.Collectors;
 
 public class RecipeCreatorCluster extends CCCluster {
 
-    public static final NamespacedKey CONDITIONS = new NamespacedKey("recipe_creator", "conditions");
-    public static final NamespacedKey GROUP = new NamespacedKey("recipe_creator", "group");
-    public static final NamespacedKey TAGS = new NamespacedKey("recipe_creator", "tags");
-    public static final NamespacedKey SAVE = new NamespacedKey("recipe_creator", "save");
-    public static final NamespacedKey SAVE_AS = new NamespacedKey("recipe_creator", "save_as");
-    public static final NamespacedKey PRIORITY = new NamespacedKey("recipe_creator", "priority");
-    public static final NamespacedKey EXACT_META = new NamespacedKey("recipe_creator", "exact_meta");
-    public static final NamespacedKey HIDDEN = new NamespacedKey("recipe_creator", "hidden");
+    public static final String KEY = "recipe_creator";
+
+    public static final NamespacedKey CONDITIONS = new NamespacedKey(KEY, "conditions");
+    public static final NamespacedKey GROUP = new NamespacedKey(KEY, "group");
+    public static final NamespacedKey TAGS = new NamespacedKey(KEY, "tags");
+    public static final NamespacedKey SAVE = new NamespacedKey(KEY, "save");
+    public static final NamespacedKey SAVE_AS = new NamespacedKey(KEY, "save_as");
+    public static final NamespacedKey PRIORITY = new NamespacedKey(KEY, "priority");
+    public static final NamespacedKey EXACT_META = new NamespacedKey(KEY, "exact_meta");
+    public static final NamespacedKey HIDDEN = new NamespacedKey(KEY, "hidden");
 
     public RecipeCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
-        super(inventoryAPI, "recipe_creator", customCrafting);
+        super(inventoryAPI, KEY, customCrafting);
     }
 
     @Override
@@ -100,7 +102,7 @@ public class RecipeCreatorCluster extends CCCluster {
                 if (recipeCreator.validToSave(cache)) {
                     return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, recipeCreator.getCustomCrafting());
                 }
-                api.getChat().sendKey(player, "recipe_creator", "save.empty");
+                api.getChat().sendKey(player, KEY, "save.empty");
             }
             return true;
         }));
@@ -124,7 +126,7 @@ public class RecipeCreatorCluster extends CCCluster {
                         Collections.sort(results);
                         return results;
                     });
-                    recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_creator"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
+                    recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster(KEY), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                         NamespacedKey namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
                         if (namespacedKey != null) {
                             ICustomRecipe<?, ?> recipe = cache.getRecipe();
@@ -134,7 +136,7 @@ public class RecipeCreatorCluster extends CCCluster {
                         return true;
                     });
                 } else {
-                    api.getChat().sendKey(player, "recipe_creator", "save.empty");
+                    api.getChat().sendKey(player, KEY, "save.empty");
                 }
             }
             return true;
@@ -151,7 +153,7 @@ public class RecipeCreatorCluster extends CCCluster {
                     ((IShapedCraftingRecipe) recipe).constructShape();
                 }
                 Registry.RECIPES.register(recipe);
-                api.getChat().sendKey(player, "recipe_creator", "loading.success");
+                api.getChat().sendKey(player, KEY, "loading.success");
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) cache.resetRecipe();
             });
         } catch (Exception ex) {

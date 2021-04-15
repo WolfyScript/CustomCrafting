@@ -3,15 +3,13 @@ package me.wolfyscript.customcrafting.gui.main_gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.gui.*;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
@@ -21,6 +19,29 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends CCWindow {
+
+    private static final String WORKBENCH = Types.WORKBENCH.getId();
+    private static final String FURNACE = Types.FURNACE.getId();
+    private static final String ANVIL = Types.ANVIL.getId();
+    private static final String BLAST_FURNACE = Types.BLAST_FURNACE.getId();
+    private static final String SMOKER = Types.SMOKER.getId();
+    private static final String CAMPFIRE = Types.CAMPFIRE.getId();
+    private static final String STONECUTTER = Types.STONECUTTER.getId();
+    private static final String GRINDSTONE = Types.GRINDSTONE.getId();
+    private static final String BREWING_STAND = Types.BREWING_STAND.getId();
+    private static final String ELITE_WORKBENCH = Types.ELITE_WORKBENCH.getId();
+    private static final String CAULDRON = Types.CAULDRON.getId();
+    private static final String SMITHING;
+    private static final String ITEM_EDITOR = "item_editor";
+    private static final String RECIPE_BOOK_EDITOR = "recipe_book_editor";
+
+    static {
+        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
+            SMITHING = Types.SMITHING.getId();
+        } else {
+            SMITHING = "smithing";
+        }
+    }
 
     private static final String SETTINGS = "settings";
 
@@ -46,12 +67,12 @@ public class MainMenu extends CCWindow {
             registerButton(new RecipeTypeButton(Types.SMITHING, Material.SMITHING_TABLE));
         }
 
-        registerButton(new ActionButton<>("item_editor", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(ITEM_EDITOR, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
             cache.getItems().setNamespacedKey(null);
-            guiHandler.openCluster("item_creator");
+            guiHandler.openCluster(ItemCreatorCluster.KEY);
             return true;
         }));
 
@@ -59,8 +80,8 @@ public class MainMenu extends CCWindow {
             guiHandler.openWindow(SETTINGS);
             return true;
         }));
-        registerButton(new ActionButton<>("recipe_book_editor", Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.openCluster("recipe_book_editor");
+        registerButton(new ActionButton<>(RECIPE_BOOK_EDITOR, Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openCluster(RecipeBookEditorCluster.KEY);
             return true;
         }));
     }
@@ -75,54 +96,54 @@ public class MainMenu extends CCWindow {
         super.onUpdateAsync(event);
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         event.setButton(0, SETTINGS);
-        event.setButton(8, new NamespacedKey("none", "gui_help"));
+        event.setButton(8, MainCluster.GUI_HELP);
 
-        event.setButton(4, new NamespacedKey("none", "patreon"));
-        event.setButton(48, new NamespacedKey("none", "instagram"));
-        event.setButton(49, new NamespacedKey("none", "youtube"));
-        event.setButton(50, new NamespacedKey("none", "discord"));
+        event.setButton(4, MainCluster.PATREON);
+        event.setButton(48, MainCluster.INSTAGRAM);
+        event.setButton(49, MainCluster.YOUTUBE);
+        event.setButton(50, MainCluster.DISCORD);
 
-        event.setButton(10, "workbench");
-        event.setButton(12, "furnace");
-        event.setButton(14, "anvil");
-        event.setButton(16, "cauldron");
+        event.setButton(10, WORKBENCH);
+        event.setButton(12, FURNACE);
+        event.setButton(14, ANVIL);
+        event.setButton(16, CAULDRON);
 
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
-            event.setButton(19, "blast_furnace");
-            event.setButton(21, "smoker");
-            event.setButton(23, "campfire");
-            event.setButton(25, "stonecutter");
+            event.setButton(19, BLAST_FURNACE);
+            event.setButton(21, SMOKER);
+            event.setButton(23, CAMPFIRE);
+            event.setButton(25, STONECUTTER);
             if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-                event.setButton(28, "grindstone");
-                event.setButton(30, "brewing_stand");
-                event.setButton(32, "elite_workbench");
-                event.setButton(34, "smithing");
+                event.setButton(28, GRINDSTONE);
+                event.setButton(30, BREWING_STAND);
+                event.setButton(32, ELITE_WORKBENCH);
+                event.setButton(34, SMITHING);
             } else {
-                event.setButton(29, "grindstone");
-                event.setButton(31, "elite_workbench");
-                event.setButton(33, "smithing");
+                event.setButton(29, GRINDSTONE);
+                event.setButton(31, ELITE_WORKBENCH);
+                event.setButton(33, SMITHING);
             }
         } else {
-            event.setButton(20, "blast_furnace");
-            event.setButton(22, "smoker");
-            event.setButton(24, "campfire");
-            event.setButton(28, "stonecutter");
+            event.setButton(20, BLAST_FURNACE);
+            event.setButton(22, SMOKER);
+            event.setButton(24, CAMPFIRE);
+            event.setButton(28, STONECUTTER);
             if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-                event.setButton(30, "grindstone");
-                event.setButton(32, "brewing_stand");
-                event.setButton(34, "elite_workbench");
+                event.setButton(30, GRINDSTONE);
+                event.setButton(32, BREWING_STAND);
+                event.setButton(34, ELITE_WORKBENCH);
             } else {
-                event.setButton(29, "grindstone");
-                event.setButton(33, "elite_workbench");
+                event.setButton(29, GRINDSTONE);
+                event.setButton(33, ELITE_WORKBENCH);
             }
         }
         for (int i = 37; i < 44; i++) {
             event.setButton(i, data.getLightBackground());
         }
 
-        event.setButton(36, "item_editor");
-        event.setButton(44, new NamespacedKey("none", "recipe_list"));
-        event.setButton(45, new NamespacedKey("none", "item_list"));
-        event.setButton(53, "recipe_book_editor");
+        event.setButton(36, ITEM_EDITOR);
+        event.setButton(44, MainCluster.RECIPE_LIST);
+        event.setButton(45, MainCluster.ITEM_LIST);
+        event.setButton(53, RECIPE_BOOK_EDITOR);
     }
 }

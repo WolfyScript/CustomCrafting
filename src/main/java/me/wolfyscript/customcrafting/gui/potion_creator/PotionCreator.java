@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -25,7 +26,7 @@ import java.util.Locale;
 public class PotionCreator extends CCWindow {
 
     public PotionCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "potion_creator", 54, customCrafting);
+        super(cluster, PotionCreatorCluster.POTION_CREATOR.getKey(), 54, customCrafting);
     }
 
     @Override

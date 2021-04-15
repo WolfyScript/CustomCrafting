@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
 import me.wolfyscript.customcrafting.gui.potion_creator.buttons.PotionEffectTypeSelectButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -16,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 public class PotionEffectTypeSelection extends CCWindow {
 
     public PotionEffectTypeSelection(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "potion_effect_type_selection", 54, customCrafting);
+        super(cluster, PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION.getKey(), 54, customCrafting);
     }
 
     @Override
