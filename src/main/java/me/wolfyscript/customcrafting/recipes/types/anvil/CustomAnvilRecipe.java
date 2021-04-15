@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -21,7 +20,10 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResultTarget> {
 
@@ -35,35 +37,30 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
     private RepairCostMode repairCostMode;
     private int durability;
 
-    private HashMap<Integer, Ingredient> ingredients;
+    private Ingredient base;
+    private Ingredient addition;
 
     public CustomAnvilRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.ingredients = new HashMap<>();
+        JsonNode modeNode = node.path("mode");
+        this.durability = modeNode.path("durability").asInt(0);
+        this.mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
+        this.result = ItemLoader.loadResult(modeNode.path("result"));
+        readInput(node);
         this.blockEnchant = node.path("block_enchant").asBoolean(false);
         this.blockRename = node.path("block_rename").asBoolean(false);
         this.blockRepair = node.path("block_repair").asBoolean(false);
-        {
-            JsonNode repairNode = node.path("repair_cost");
-            this.repairCost = repairNode.path("amount").asInt(1);
-            this.applyRepairCost = repairNode.path("apply_to_result").asBoolean(true);
-            this.repairCostMode = RepairCostMode.valueOf(repairNode.path("mode").asText("NONE"));
-        }
-        this.ingredients = new HashMap<>();
-        {
-            JsonNode modeNode = node.path("mode");
-            this.mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
-            this.durability = modeNode.path("durability").asInt(0);
-            this.result = ItemLoader.loadResult(modeNode.path("result"));
-        }
-        readInput(0, node);
-        readInput(1, node);
+        JsonNode repairNode = node.path("repair_cost");
+        this.repairCost = repairNode.path("amount").asInt(1);
+        this.applyRepairCost = repairNode.path("apply_to_result").asBoolean(true);
+        this.repairCostMode = RepairCostMode.valueOf(repairNode.path("mode").asText("NONE"));
     }
 
     public CustomAnvilRecipe(CustomAnvilRecipe recipe) {
         super(recipe);
-        this.ingredients = recipe.ingredients;
         this.mode = recipe.getMode();
+        this.base = recipe.base.clone();
+        this.addition = recipe.addition.clone();
         this.durability = recipe.durability;
         this.repairCost = recipe.repairCost;
         this.applyRepairCost = recipe.applyRepairCost;
@@ -75,9 +72,9 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
 
     public CustomAnvilRecipe() {
         super();
-        this.ingredients = new HashMap<>();
-        this.result = new Result<>();
         this.mode = Mode.RESULT;
+        this.base = new Ingredient();
+        this.addition = new Ingredient();
         this.durability = 0;
         this.repairCost = 1;
         this.applyRepairCost = false;
@@ -87,12 +84,14 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
         this.blockRepair = false;
     }
 
-    private void readInput(int slot, JsonNode node) {
-        this.ingredients.put(slot, ItemLoader.loadIngredient(node.path("input_" + (slot == 0 ? "left" : "right"))));
-    }
-
-    private void writeInput(int slot, JsonGenerator gen) throws IOException {
-        gen.writeObjectField("input_" + (slot == 0 ? "left" : "right"), this.ingredients.get(slot));
+    private void readInput(JsonNode node) {
+        if (node.has("input_left") || node.has("input_right")) {
+            this.base = ItemLoader.loadIngredient(node.path("input_left"));
+            this.addition = ItemLoader.loadIngredient(node.path("input_right"));
+        } else {
+            this.base = ItemLoader.loadIngredient(node.path("base"));
+            this.addition = ItemLoader.loadIngredient(node.path("addition"));
+        }
     }
 
     public int getDurability() {
@@ -182,12 +181,16 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
-        ingredients.put(slot, ingredient);
+        if (slot == 0) {
+            this.base = ingredient;
+        } else {
+            this.addition = ingredient;
+        }
     }
 
     @Override
     public Ingredient getIngredient(int slot) {
-        return ingredients.get(slot);
+        return slot == 0 ? this.base : this.addition;
     }
 
     @Override
@@ -215,8 +218,8 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
             gen.writeObjectField("result", result);
             gen.writeEndObject();
         }
-        writeInput(0, gen);
-        writeInput(1, gen);
+        gen.writeObjectField("base", this.base);
+        gen.writeObjectField("addition", this.addition);
     }
 
     @Override
@@ -234,7 +237,7 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
             ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, getResult());
         } else if (getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, inputLeft);
-        }else{
+        } else {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
         }
     }
