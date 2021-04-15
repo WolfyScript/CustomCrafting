@@ -35,8 +35,9 @@ public class ItemLoader {
         }
         if (ingredient != null) {
             ingredient.buildChoices();
+            return ingredient;
         }
-        return ingredient;
+        return new Ingredient();
     }
 
     public static <T extends ResultTarget> Result<T> loadResult(JsonNode node) {
