@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastReci
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.inventory.RecipeType;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -95,10 +96,13 @@ public class FurnaceListener implements Listener {
                 if (!customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
                     CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) me.wolfyscript.customcrafting.Registry.RECIPES.get(NamespacedKeyUtils.toInternal(namespacedKey));
                     if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
+                        assert customRecipe != null;
                         if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
                             event.setCancelled(false);
-                            if (customRecipe.getResult().size() > 1) {
-                                CustomItem item = customRecipe.getResult().get(new ItemStack[0]).getItem().orElse(new CustomItem(Material.AIR));
+                            Result<?> result = customRecipe.getResult().get(new ItemStack[0]);
+                            result.executeExtensions(event.getBlock().getLocation(), true, null);
+                            if (result.size() > 1) {
+                                CustomItem item = result.getItem().orElse(new CustomItem(Material.AIR));
                                 if (currentResultItem != null) {
                                     int nextAmount = currentResultItem.getAmount() + item.getAmount();
                                     if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
