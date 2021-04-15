@@ -89,8 +89,8 @@ public class CustomCrafting extends JavaPlugin {
 
         api = WolfyUtilities.get(this, false);
         this.chat = api.getChat();
-        this.chat.setIN_GAME_PREFIX("§7[§3CC§7] ");
-        this.chat.setCONSOLE_PREFIX("§7[§3CC§7] ");
+        this.chat.setInGamePrefix("§7[§3CC§7] ");
+        this.chat.setConsolePrefix("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
 
         this.chatUtils = new ChatUtils(this);

@@ -62,7 +62,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
 
     public BrewingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
+        this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
         this.result = ItemLoader.loadResult(node.path("results"));
         this.fuelCost = node.path("fuel_cost").asInt(1);
         this.brewTime = node.path("brew_time").asInt(80);
