@@ -49,7 +49,7 @@ public class CommandResultExtension extends ResultExtension {
     @Override
     public void onLocation(Location location, @Nullable Player player) {
         if ((player != null && nearPlayer) || nearWorkstation) {
-            getEntitiesInRange(Player.class, location, outerRadius, innerRadius).forEach(this::executeCommands);
+            getEntitiesInRange(Player.class, location, getOuterRadius(), getInnerRadius()).forEach(this::executeCommands);
         }
     }
 

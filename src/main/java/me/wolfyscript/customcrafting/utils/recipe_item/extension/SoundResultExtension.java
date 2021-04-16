@@ -71,7 +71,7 @@ public class SoundResultExtension extends ResultExtension {
     @Override
     public void onLocation(Location location, @Nullable Player player) {
         if (sound != null && ((player != null && nearPlayer) || nearWorkstation)) {
-            getEntitiesInRange(Player.class, location, outerRadius, innerRadius).forEach(player1 -> player1.playSound(location, sound, soundCategory, volume, pitch));
+            getEntitiesInRange(Player.class, location, getOuterRadius(), getInnerRadius()).forEach(player1 -> player1.playSound(location, sound, soundCategory, volume, pitch));
         }
     }
 

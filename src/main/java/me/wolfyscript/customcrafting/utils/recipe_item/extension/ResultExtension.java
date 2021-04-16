@@ -122,7 +122,7 @@ public abstract class ResultExtension implements Keyed {
     }
 
     public Vector getInnerRadius() {
-        return innerRadius;
+        return innerRadius.clone();
     }
 
     public void setInnerRadius(Vector innerRadius) {
@@ -130,7 +130,7 @@ public abstract class ResultExtension implements Keyed {
     }
 
     public Vector getOuterRadius() {
-        return outerRadius;
+        return outerRadius.clone();
     }
 
     public void setOuterRadius(Vector outerRadius) {
