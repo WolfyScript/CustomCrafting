@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonParser;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @JsonSerialize(using = Categories.Serializer.class)
 @JsonDeserialize(using = Categories.Deserializer.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Categories {
 
     private final Map<String, Category> categoryMap = new HashMap<>();

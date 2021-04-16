@@ -102,7 +102,8 @@ public class ConfigHandler {
             /*
             result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
             result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
-            result.addExtension(new MythicMobResultExtension("MobName", 10));
+            MythicMobResultExtension extension = new MythicMobResultExtension("SkeletalKnight", 1);
+            result.addExtension(extension);
              */
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();

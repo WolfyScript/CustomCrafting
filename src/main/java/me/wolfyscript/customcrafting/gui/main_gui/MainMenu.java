@@ -32,8 +32,6 @@ public class MainMenu extends CCWindow {
     private static final String ELITE_WORKBENCH = Types.ELITE_WORKBENCH.getId();
     private static final String CAULDRON = Types.CAULDRON.getId();
     private static final String SMITHING;
-    private static final String ITEM_EDITOR = "item_editor";
-    private static final String RECIPE_BOOK_EDITOR = "recipe_book_editor";
 
     static {
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
@@ -44,6 +42,9 @@ public class MainMenu extends CCWindow {
     }
 
     private static final String SETTINGS = "settings";
+
+    private static final String RECIPE_BOOK_EDITOR = "recipe_book_editor";
+    private static final String ITEM_EDITOR = "item_editor";
 
     public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
