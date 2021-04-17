@@ -20,11 +20,6 @@ public abstract class EditCategorySetting extends CCWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-        //No need to update it sync.
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
 

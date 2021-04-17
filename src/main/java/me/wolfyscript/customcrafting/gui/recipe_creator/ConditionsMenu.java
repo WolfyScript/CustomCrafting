@@ -153,11 +153,6 @@ public class ConditionsMenu extends CCWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();

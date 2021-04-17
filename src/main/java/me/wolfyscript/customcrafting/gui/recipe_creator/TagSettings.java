@@ -42,10 +42,6 @@ public class TagSettings extends CCWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         TagSettingsCache tagsCache = update.getGuiHandler().getCustomCache().getTagSettingsCache();

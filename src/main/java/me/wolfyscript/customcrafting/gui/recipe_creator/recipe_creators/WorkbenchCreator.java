@@ -64,11 +64,6 @@ public class WorkbenchCreator extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, BACK);

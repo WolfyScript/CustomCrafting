@@ -26,11 +26,6 @@ public abstract class Overview extends CCWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-        //No need to update sync
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, MainCluster.BACK);

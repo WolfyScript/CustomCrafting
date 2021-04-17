@@ -16,11 +16,6 @@ public class EliteWorkbenchCreatorSettings extends RecipeCreator {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-        //We want to render it Async!
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, MainCluster.BACK);

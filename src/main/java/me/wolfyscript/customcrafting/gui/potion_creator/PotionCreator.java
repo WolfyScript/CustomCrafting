@@ -133,11 +133,6 @@ public class PotionCreator extends CCWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         GuiHandler<CCCache> guiHandler = update.getGuiHandler();

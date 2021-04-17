@@ -44,9 +44,4 @@ public class IngredientMenu extends CCWindow {
         }
         update.setButton(49, "tags");
     }
-
-    @Override
-    public void onUpdateSync(GuiUpdate<CCCache> update) {
-
-    }
 }

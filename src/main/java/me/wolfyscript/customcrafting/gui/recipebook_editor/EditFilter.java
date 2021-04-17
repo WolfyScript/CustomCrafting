@@ -13,13 +13,6 @@ public class EditFilter extends EditCategorySetting {
     }
 
     @Override
-    public void onInit() {
-        super.onInit();
-
-
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(29, RecipeBookEditorCluster.RECIPES);

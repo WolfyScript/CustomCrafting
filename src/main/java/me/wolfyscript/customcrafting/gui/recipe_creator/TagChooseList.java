@@ -52,10 +52,6 @@ public class TagChooseList extends CCWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         CCCache cache = update.getGuiHandler().getCustomCache();

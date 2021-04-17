@@ -721,11 +721,6 @@ public class ItemCreator extends CCWindow {
     }
 
     @Override
-    public void onUpdateSync(GuiUpdate<CCCache> guiUpdate) {
-
-    }
-
-    @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
