@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 public class CustomItemSelectButton extends ActionButton<CCCache> {
 
     public CustomItemSelectButton(CustomCrafting customCrafting, NamespacedKey namespacedKey) {
-        super("item_" + namespacedKey.toString().replace(":", "__"), new ButtonState<>("custom_item_error", Material.STONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        super("item_" + namespacedKey.toString("__"), new ButtonState<>("custom_item_error", Material.STONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (!Registry.CUSTOM_ITEMS.has(namespacedKey) || ItemUtils.isAirOrNull(Registry.CUSTOM_ITEMS.get(namespacedKey))) {
                 return true;
             }
@@ -63,13 +63,13 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
             if (!ItemUtils.isAirOrNull(customItem)) {
                 ItemBuilder itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");
-                itemB.addLoreLine("§8" + namespacedKey.toString());
+                itemB.addLoreLine("§8" + namespacedKey);
                 CustomCrafting.inst().getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(ChatColor.convert(s)));
                 return itemB.create();
             }
             ItemBuilder itemB = new ItemBuilder(itemStack);
             itemB.addLoreLine("");
-            itemB.addLoreLine("§8" + namespacedKey.toString());
+            itemB.addLoreLine("§8" + namespacedKey);
             itemB.addLoreLine("§c");
             return itemB.create();
         }));

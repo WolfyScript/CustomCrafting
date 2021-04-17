@@ -11,7 +11,6 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -72,9 +71,11 @@ public class CustomItemList extends CCWindow {
             page = items.getListPage(maxPages);
 
             for (int i = 45 * page, item = 9; item < 54 && i < namespaceList.size(); i++, item++) {
-                Button<CCCache> btn = new ItemNamespaceButton(namespaceList.get(i));
-                registerButton(btn);
-                update.setButton(item, btn);
+                String btnID = "namespace_" + namespaceList.get(i);
+                if (!hasButton("namespace_" + namespaceList.get(i))) {
+                    registerButton(new ItemNamespaceButton(namespaceList.get(i)));
+                }
+                update.setButton(item, btnID);
             }
         } else {
             List<CustomItem> customItems = Registry.CUSTOM_ITEMS.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && namespace.equals(NamespacedKeyUtils.getInternalNamespace(entry.getKey()))).map(Map.Entry::getValue).collect(Collectors.toList());
@@ -83,10 +84,9 @@ public class CustomItemList extends CCWindow {
 
             for (int i = items.getListPage() * 45, s = 9; i < customItems.size() && s < 54; i++, s++) {
                 NamespacedKey namespacedKey = customItems.get(i).getNamespacedKey();
-                String id = "item_" + namespacedKey.toString().replace(":", "__");
+                String id = "item_" + namespacedKey.toString("__");
                 if (!hasButton(id)) {
-                    CustomItemSelectButton btn = new CustomItemSelectButton(customCrafting, namespacedKey);
-                    registerButton(btn);
+                    registerButton(new CustomItemSelectButton(customCrafting, namespacedKey));
                 }
                 update.setButton(s, id);
             }

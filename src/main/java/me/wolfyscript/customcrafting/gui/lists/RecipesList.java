@@ -87,10 +87,10 @@ public class RecipesList extends CCWindow {
             maxPages = recipeList.getMaxPages(namespaceList.size());
             page = recipeList.getPage(maxPages);
 
-            for (int i = 45 * page, item = 9; item < 54 && i < namespaceList.size(); i++, item++) {
-                RecipeListNamespaceButton button = (RecipeListNamespaceButton) getButton("recipe_list.namespace_" + item);
+            for (int i = 45 * page, slot = 0; slot < 45 && i < namespaceList.size(); i++, slot++) {
+                RecipeListNamespaceButton button = (RecipeListNamespaceButton) getButton("recipe_list.namespace_" + slot);
                 button.setNamespace(guiHandler, namespaceList.get(i));
-                event.setButton(item, button);
+                event.setButton(9 + slot, button);
             }
         } else {
             if (namespace.equalsIgnoreCase("minecraft")) {
@@ -98,20 +98,20 @@ public class RecipesList extends CCWindow {
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
 
-                for (int i = 45 * page, item = 0; item < 45 && i < recipes.size(); i++, item++) {
-                    RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
+                for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
+                    RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + slot);
                     button.setRecipe(event.getGuiHandler(), recipes.get(i));
-                    event.setButton(9 + item, button);
+                    event.setButton(9 + slot, button);
                 }
             } else {
                 List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
 
-                for (int i = 45 * page, item = 9; item < 54 && i < recipes.size(); i++, item++) {
-                    RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + item);
+                for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
+                    RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + slot);
                     button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));
-                    event.setButton(item, button);
+                    event.setButton(9 + slot, button);
                 }
             }
         }
