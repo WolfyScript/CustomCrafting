@@ -38,7 +38,7 @@ public class CCCache extends CustomCache {
     private Setting setting;
 
     //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
-    private final HashMap<RecipeType<?>, ICustomRecipe<?,?>> recipes = new HashMap<>();
+    private final HashMap<RecipeType<?>, ICustomRecipe<?, ?>> recipes = new HashMap<>();
 
     private final CustomCrafting customCrafting;
     private String subSetting;
@@ -46,6 +46,8 @@ public class CCCache extends CustomCache {
     private final RecipeBookEditor recipeBookEditor = new RecipeBookEditor();
 
     private final Items items = new Items();
+    private final RecipeList recipeList = new RecipeList();
+
     private final PotionEffects potionEffectCache = new PotionEffects();
     private final KnowledgeBook knowledgeBook = new KnowledgeBook();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
@@ -116,6 +118,10 @@ public class CCCache extends CustomCache {
 
     public Items getItems() {
         return items;
+    }
+
+    public RecipeList getRecipeList() {
+        return recipeList;
     }
 
     public PotionEffects getPotionEffectCache() {

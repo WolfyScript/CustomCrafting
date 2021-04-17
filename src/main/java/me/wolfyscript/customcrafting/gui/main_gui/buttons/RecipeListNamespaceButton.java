@@ -37,8 +37,8 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                 InventoryClickEvent clickEvent = (InventoryClickEvent) event;
                 if (!clickEvent.isShiftClick()) {
                     if (guiWindow instanceof RecipesList) {
-                        ((RecipesList) guiWindow).getRecipeNamespaces().put(guiHandler, namespace);
-                        ((RecipesList) guiWindow).setPage(guiHandler, 0);
+                        cache.getRecipeList().setNamespace(namespace);
+                        cache.getRecipeList().setPage(0);
                     }
                 } else {
                     if (namespace.equalsIgnoreCase("minecraft")) {

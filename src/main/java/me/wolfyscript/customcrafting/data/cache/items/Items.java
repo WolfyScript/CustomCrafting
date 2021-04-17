@@ -191,6 +191,13 @@ public class Items implements Serializable {
         return listPage;
     }
 
+    public int getListPage(int maxPages) {
+        if (listPage > maxPages) {
+            this.listPage = maxPages;
+        }
+        return this.listPage;
+    }
+
     public void setListPage(int listPage) {
         this.listPage = listPage;
     }

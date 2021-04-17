@@ -40,11 +40,7 @@ public class CustomItemList extends CCWindow {
             return true;
         })));
         registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            int page = cache.getItems().getListPage();
-            int maxPages = Registry.CUSTOM_ITEMS.keySet().size() / 45 + Registry.CUSTOM_ITEMS.keySet().size() % 45 > 0 ? 1 : 0;
-            if (page < maxPages) {
-                items.setListPage(++page);
-            }
+            items.setListPage(cache.getItems().getListPage() + 1);
             return true;
         }));
         registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -67,23 +63,25 @@ public class CustomItemList extends CCWindow {
         update.setButton(0, "back");
         CCCache cache = update.getGuiHandler().getCustomCache();
         Items items = cache.getItems();
-        int page = items.getListPage();
-        int maxPages = Registry.CUSTOM_ITEMS.keySet().size() / 45 + (Registry.CUSTOM_ITEMS.keySet().size() % 45 > 0 ? 1 : 0);
-        if (page > maxPages) {
-            items.setListPage(maxPages);
-        }
+        int maxPages;
+        int page;
         String namespace = items.getListNamespace();
         if (namespace == null) {
             List<String> namespaceList = Registry.CUSTOM_ITEMS.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().filter(Objects::nonNull).sorted(String::compareToIgnoreCase).collect(Collectors.toList());
-            maxPages = namespaceList.size() / 45;
-            for (int i = 45 * page, item = 0; item < 45 && i < namespaceList.size(); i++, item++) {
+            maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
+            page = items.getListPage(maxPages);
+
+            for (int i = 45 * page, item = 9; item < 54 && i < namespaceList.size(); i++, item++) {
                 Button<CCCache> btn = new ItemNamespaceButton(namespaceList.get(i));
                 registerButton(btn);
-                update.setButton(9 + item, btn);
+                update.setButton(item, btn);
             }
         } else {
             List<CustomItem> customItems = Registry.CUSTOM_ITEMS.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && namespace.equals(NamespacedKeyUtils.getInternalNamespace(entry.getKey()))).map(Map.Entry::getValue).collect(Collectors.toList());
-            for (int i = items.getListPage() * 45, s = 9; i < customItems.size() && s < 45; i++, s++) {
+            maxPages = customItems.size() / 45 + (customItems.size() % 45 > 0 ? 1 : 0);
+            page = items.getListPage(maxPages);
+
+            for (int i = items.getListPage() * 45, s = 9; i < customItems.size() && s < 54; i++, s++) {
                 NamespacedKey namespacedKey = customItems.get(i).getNamespacedKey();
                 String id = "item_" + namespacedKey.toString().replace(":", "__");
                 if (!hasButton(id)) {
