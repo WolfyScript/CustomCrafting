@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -21,7 +21,7 @@ public class ButtonContainerItemIngredient extends ActionButton<CCCache> {
                 if (!ItemUtils.isAirOrNull(inventory.getItem(invSlot))) {
                     cache.getItems().setVariant(ingredSlot, CustomItem.getReferenceByItemStack(inventory.getItem(invSlot)));
                     cache.setApplyItem(APPLY_ITEM);
-                    guiHandler.openWindow(new NamespacedKey("none", "item_editor"));
+                    guiHandler.openWindow(MainCluster.ITEM_EDITOR);
                 }
                 return true;
             }

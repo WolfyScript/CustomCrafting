@@ -2,11 +2,11 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -15,7 +15,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -42,7 +41,7 @@ public class CauldronCreator extends RecipeCreator {
                     if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                         cache.getItems().setItem(true, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
                         cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronRecipe().setHandItem(items.getItem()));
-                        guiHandler.openWindow(new NamespacedKey("none", "item_editor"));
+                        guiHandler.openWindow(MainCluster.ITEM_EDITOR);
                     }
                 });
                 return true;
@@ -127,60 +126,6 @@ public class CauldronCreator extends RecipeCreator {
             guiHandler.getCustomCache().getCauldronRecipe().setWaterLevel(waterLvl);
             return false;
         }));
-
-        if (WolfyUtilities.hasMythicMobs()) {
-            /*
-            registerButton(new ActionButton<>("mythicMob", Material.WITHER_SKELETON_SKULL, (cache, guiHandler, player, inventory, slot, event) -> {
-                if(event instanceof InventoryClickEvent){
-                    if (((InventoryClickEvent) event).getClick().isLeftClick()) {
-                        openChat("mythicMob", guiHandler, (guiHandler1, player1, s, args) -> {
-                            if (args.length > 1) {
-                                CauldronRecipe recipe = guiHandler.getCustomCache().getCauldronRecipe();
-                                MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(args[0]);
-                                if (mythicMob != null) {
-                                    int level = 1;
-                                    try {
-                                        level = Integer.parseInt(args[1]);
-                                    } catch (NumberFormatException e) {
-                                        api.getChat().sendMessage(player, "$msg.gui.recipe_creator.valid_number$");
-                                        return true;
-                                    }
-                                    double modX = recipe.getMythicMobMod().getX();
-                                    double modY = recipe.getMythicMobMod().getY();
-                                    double modZ = recipe.getMythicMobMod().getZ();
-                                    if (args.length >= 5) {
-                                        try {
-                                            modX = Double.parseDouble(args[2]);
-                                            modY = Double.parseDouble(args[3]);
-                                            modZ = Double.parseDouble(args[4]);
-                                        } catch (NumberFormatException e) {
-                                            api.getChat().sendMessage(player, "$msg.gui.recipe_creator.valid_number$");
-                                            return true;
-                                        }
-                                    }
-                                    recipe.setMythicMob(args[0], level, modX, modY, modZ);
-                                    guiHandler.openCluster();
-                                    return false;
-                                }
-                            }
-                            guiHandler.openCluster();
-                            return true;
-                        });
-                    } else {
-                        guiHandler.getCustomCache().getCauldronRecipe().setMythicMob("<none>", 0, 0, 0.5, 0);
-                    }
-                }
-                return true;
-            }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-                hashMap.put("%mob.name%", guiHandler.getCustomCache().getCauldronRecipe().getMythicMobName());
-                hashMap.put("%mob.level%", guiHandler.getCustomCache().getCauldronRecipe().getMythicMobLevel());
-                hashMap.put("%mob.modX%", guiHandler.getCustomCache().getCauldronRecipe().getMythicMobMod().getX());
-                hashMap.put("%mob.modY%", guiHandler.getCustomCache().getCauldronRecipe().getMythicMobMod().getY());
-                hashMap.put("%mob.modZ%", guiHandler.getCustomCache().getCauldronRecipe().getMythicMobMod().getZ());
-                return itemStack;
-            }));
-             //*/
-        }
     }
 
     @Override

@@ -23,6 +23,7 @@ public class MainCluster extends CCCluster {
 
     public static final String KEY = "none";
 
+    //Button keys
     public static final NamespacedKey BACK = new NamespacedKey(KEY, "back");
     public static final NamespacedKey BACK_BOTTOM = new NamespacedKey(KEY, "back_bottom");
     public static final NamespacedKey GUI_HELP = new NamespacedKey(KEY, "gui_help");
@@ -37,10 +38,13 @@ public class MainCluster extends CCCluster {
     public static final NamespacedKey INSTAGRAM = new NamespacedKey(KEY, "instagram");
     public static final NamespacedKey YOUTUBE = new NamespacedKey(KEY, "youtube");
     public static final NamespacedKey DISCORD = new NamespacedKey(KEY, "discord");
+    //Both Button and Window keys
     public static final NamespacedKey RECIPE_LIST = new NamespacedKey(KEY, "recipe_list");
+    //Window keys
+    public static final NamespacedKey ITEM_EDITOR = new NamespacedKey(KEY, "item_editor");
     public static final NamespacedKey ITEM_LIST = new NamespacedKey(KEY, "item_list");
-
     private static final String BACKGROUND = "background";
+    //Message keys
 
     public MainCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
@@ -91,11 +95,11 @@ public class MainCluster extends CCCluster {
         }));
         registerButton(new ActionButton<>(RECIPE_LIST.getKey(), Material.WRITTEN_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().setSetting(Setting.RECIPE_LIST);
-            guiHandler.openWindow("recipe_list");
+            guiHandler.openWindow(RECIPE_LIST.getKey());
             return true;
         }));
         registerButton(new ActionButton<>(ITEM_LIST.getKey(), Material.BOOKSHELF, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.openWindow("item_list");
+            guiHandler.openWindow(ITEM_LIST.getKey());
             return true;
         }));
 

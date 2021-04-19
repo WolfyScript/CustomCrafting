@@ -9,16 +9,14 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.MythicMobsRef;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.OraxenRef;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.*;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -57,6 +55,11 @@ public class ItemCreator extends CCWindow {
     private static final String ITEM_INPUT = "item_input";
     private static final String PAGE_NEXT = "page_next";
     private static final String PAGE_PREVIOUS = "page_previous";
+
+    private static final String REFERENCE_WOLFYUTILITIES = "reference.wolfyutilities";
+    private static final String REFERENCE_ORAXEN = "reference.oraxen";
+    private static final String REFERENCE_ITEMSADDER = "reference.itemsadder";
+    private static final String REFERENCE_MYTHICMOBS = "reference.mythicmobs";
 
     public ItemCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
@@ -127,14 +130,19 @@ public class ItemCreator extends CCWindow {
             return true;
         }));
 
-        registerButton(new DummyButton<>("reference.wolfyutilities", Material.CRAFTING_TABLE, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+        registerButton(new DummyButton<>(REFERENCE_WOLFYUTILITIES, Material.CRAFTING_TABLE, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
             hashMap.put("%item_key%", ((WolfyUtilitiesRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getNamespacedKey().toString());
             return itemStack;
         }));
-        registerButton(new DummyButton<>("reference.oraxen", Material.DIAMOND, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+        registerButton(new DummyButton<>(REFERENCE_ORAXEN, Material.DIAMOND, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
             hashMap.put("%item_key%", ((OraxenRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID());
             return itemStack;
         }));
+        registerButton(new DummyButton<>(REFERENCE_ITEMSADDER, Material.GRASS_BLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> {
+            hashMap.put("%item_key%", ((ItemsAdderRef) guiHandler.getCustomCache().getItems().getItem().getApiReference()).getItemID());
+            return itemStack;
+        }));
+        registerButton(new DummyButton<>(REFERENCE_MYTHICMOBS, Material.WITHER_SKELETON_SKULL));
 
         //DISPLAY NAME SETTINGS
         registerButton(new OptionButton(Material.NAME_TAG, "display_name"));
@@ -163,7 +171,7 @@ public class ItemCreator extends CCWindow {
                     if (enchantment != null) {
                         guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
                     } else {
-                        api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
+                        sendMessage(player, "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
                         return true;
                     }
                 } else {
@@ -177,7 +185,7 @@ public class ItemCreator extends CCWindow {
                 if (enchantment != null) {
                     guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
                 } else {
-                    api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("none", "item_creator"), "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
+                    sendMessage(player, "enchant.invalid_enchant", new Pair<>("%ENCHANT%", args[0]));
                     return true;
                 }
                 return false;
@@ -242,7 +250,7 @@ public class ItemCreator extends CCWindow {
                 try {
                     guiHandler.getCustomCache().getItems().setAttribAmount(Double.parseDouble(args[0]));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendKey(player, new me.wolfyscript.utilities.util.NamespacedKey("item_creator", "main_menu"), "attribute.amount.error");
+                    sendMessage(player, "attribute.amount.error");
                     return true;
                 }
                 return false;
@@ -324,7 +332,7 @@ public class ItemCreator extends CCWindow {
                     items.getItem().setItemMeta(itemMeta);
                 });
                 cache.getPotionEffectCache().setRecipePotionEffect(false);
-                guiHandler.openWindow(new me.wolfyscript.utilities.util.NamespacedKey("potion_creator", "potion_creator"));
+                guiHandler.openWindow(PotionCreatorCluster.POTION_CREATOR);
                 return true;
             }));
             registerButton(new ActionButton<>("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -337,7 +345,7 @@ public class ItemCreator extends CCWindow {
                     items.getItem().setItemMeta(itemMeta);
                 });
                 potionEffectCache.setOpenedFrom("item_creator", "main_menu");
-                guiHandler.openWindow(new me.wolfyscript.utilities.util.NamespacedKey("potion_creator", "potion_effect_type_selection"));
+                guiHandler.openWindow(PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION);
                 return true;
             }));
         }
@@ -370,9 +378,9 @@ public class ItemCreator extends CCWindow {
                     int value = Integer.parseInt(s);
                     ((Damageable) itemMeta).setDamage(value);
                     guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                    api.getChat().sendKey(player, getNamespacedKey(), "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    sendMessage(player, "damage.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendKey(player, getNamespacedKey(), "damage.invalid_value", new Pair<>("%VALUE%", s));
+                    sendMessage(player, "damage.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -396,9 +404,9 @@ public class ItemCreator extends CCWindow {
                     int value = Integer.parseInt(s);
                     ((Repairable) itemMeta).setRepairCost(value);
                     guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                    api.getChat().sendKey(player, getNamespacedKey(), "repair.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    sendMessage(player, "repair.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendKey(player, getNamespacedKey(), "repair.invalid_value", new Pair<>("%VALUE%", s));
+                    sendMessage(player, "repair.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -429,9 +437,9 @@ public class ItemCreator extends CCWindow {
                     int value = Integer.parseInt(s);
                     itemMeta.setCustomModelData(value);
                     guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
-                    api.getChat().sendKey(player, getNamespacedKey(), "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    sendMessage(player, "custom_model_data.success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendKey(player, getNamespacedKey(), "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
+                    sendMessage(player, "custom_model_data.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -454,9 +462,9 @@ public class ItemCreator extends CCWindow {
                 try {
                     int value = Integer.parseInt(s);
                     guiHandler.getCustomCache().getItems().getItem().setDurabilityCost(value);
-                    api.getChat().sendKey(player, getNamespacedKey(), "consume.valid", new Pair<>("%VALUE%", String.valueOf(value)));
+                    sendMessage(player, "consume.valid", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendKey(player, getNamespacedKey(), "consume.invalid", new Pair<>("%VALUE%", s));
+                    sendMessage(player, "consume.invalid", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -497,9 +505,9 @@ public class ItemCreator extends CCWindow {
                 try {
                     int value = Integer.parseInt(s);
                     guiHandler.getCustomCache().getItems().getItem().setBurnTime(value);
-                    api.getChat().sendKey(player, getNamespacedKey(), "fuel.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
+                    sendMessage(player, "fuel.value_success", new Pair<>("%VALUE%", String.valueOf(value)));
                 } catch (NumberFormatException e) {
-                    api.getChat().sendKey(player, getNamespacedKey(), "fuel.invalid_value", new Pair<>("%VALUE%", s));
+                    sendMessage(player, "fuel.invalid_value", new Pair<>("%VALUE%", s));
                     return true;
                 }
                 return false;
@@ -765,11 +773,13 @@ public class ItemCreator extends CCWindow {
             }
         } else {
             if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-                event.setButton(5, "reference.wolfyutilites");
+                event.setButton(5, REFERENCE_WOLFYUTILITIES);
             } else if (customItem.getApiReference() instanceof OraxenRef) {
-                event.setButton(5, "reference.oraxen");
+                event.setButton(5, REFERENCE_ORAXEN);
+            } else if (customItem.getApiReference() instanceof ItemsAdderRef) {
+                event.setButton(5, REFERENCE_ITEMSADDER);
             } else if (customItem.getApiReference() instanceof MythicMobsRef) {
-                event.setButton(5, "reference.mythicmobs");
+                event.setButton(5, REFERENCE_MYTHICMOBS);
             }
         }
         options.add("fuel.option");

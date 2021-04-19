@@ -720,7 +720,7 @@
               "lore": [
                 "&7This item was created with Oraxen",
                 "&7and is linked to &e%item_key%&7!",
-                "&6To edit the item use Oraxen!"
+                "&eTo edit the item use Oraxen!"
               ]
             },
             "itemsadder": {
@@ -728,7 +728,14 @@
               "lore": [
                 "&7This item was created with ItemsAdder",
                 "&7and is linked to &e%item_key%&7!",
-                "&6To edit the item use ItemsAdder!"
+                "&eTo edit the item use ItemsAdder!"
+              ]
+            },
+            "mythicmobs": {
+              "name": "&l&6MythicMobs",
+              "lore": [
+                "&7This item was created with MythicMobs",
+                "&eTo edit the item use MythicMobs!"
               ]
             }
           },
