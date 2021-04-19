@@ -3,9 +3,12 @@ package me.wolfyscript.customcrafting.gui.lists.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -16,6 +19,7 @@ import me.wolfyscript.utilities.util.chat.ChatColor;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -31,9 +35,17 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
             CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).isRightClick()) {
-                    items.setItem(items.isRecipeItem(), customItem);
-                    api.getInventoryAPI().getGuiWindow(new NamespacedKey("none", "item_editor")).sendMessage(player, "item_editable");
-                    guiHandler.openWindow(new NamespacedKey("item_creator", "main_menu"));
+                    if (((InventoryClickEvent) event).isShiftClick()) {
+                        api.getChat().sendKey(player, MainCluster.ITEM_LIST, "delete.confirm", new Pair<>("%item%", customItem.getNamespacedKey().toString()));
+                        api.getChat().sendActionMessage(player, new ClickData("$inventories.none.item_list.messages.delete.confirmed$", (wolfyUtilities, player1) -> {
+                            guiHandler.openCluster();
+                            Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> ItemLoader.deleteItem(namespacedKey, player));
+                        }), new ClickData("$inventories.none.item_list.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler.openCluster()));
+                    } else {
+                        items.setItem(items.isRecipeItem(), customItem);
+                        api.getInventoryAPI().getGuiWindow(new NamespacedKey("none", "item_editor")).sendMessage(player, "item_editable");
+                        guiHandler.openWindow(new NamespacedKey("item_creator", "main_menu"));
+                    }
                 } else if (((InventoryClickEvent) event).isLeftClick()) {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                         cache.applyItem(customItem);
