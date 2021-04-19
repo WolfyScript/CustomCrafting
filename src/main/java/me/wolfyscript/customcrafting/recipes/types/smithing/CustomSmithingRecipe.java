@@ -107,8 +107,6 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(0, "back");
-
         event.setButton(19, new NamespacedKey("recipe_book", "ingredient.container_10"));
         event.setButton(21, new NamespacedKey("recipe_book", "ingredient.container_13"));
         event.setButton(23, new NamespacedKey("recipe_book", "smithing"));
