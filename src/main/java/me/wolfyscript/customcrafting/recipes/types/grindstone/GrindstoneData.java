@@ -8,12 +8,12 @@ import java.util.Optional;
 public class GrindstoneData {
 
     private final GrindstoneRecipe recipe;
-    private final Optional<Result<?>> result;
+    private final Result<?> result;
     private final CustomItem inputTop;
     private final CustomItem inputBottom;
     private final boolean validItem;
 
-    public GrindstoneData(GrindstoneRecipe recipe, Optional<Result<?>> result, boolean validItem, CustomItem inputTop, CustomItem inputBottom) {
+    public GrindstoneData(GrindstoneRecipe recipe, Result<?> result, boolean validItem, CustomItem inputTop, CustomItem inputBottom) {
         this.recipe = recipe;
         this.result = result;
         this.validItem = validItem;
@@ -34,7 +34,7 @@ public class GrindstoneData {
     }
 
     public Optional<Result<?>> getResult() {
-        return result;
+        return Optional.ofNullable(result);
     }
 
     public boolean isValidItem() {

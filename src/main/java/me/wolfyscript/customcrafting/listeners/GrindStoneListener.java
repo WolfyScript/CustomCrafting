@@ -9,8 +9,8 @@ import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
+import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,13 +30,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class GrindStoneListener implements Listener {
 
     private static final HashMap<UUID, GrindstoneData> preCraftedRecipes = new HashMap<>();
-    private static final HashMap<UUID, HashMap<NamespacedKey, CustomItem>> precraftedItems = new HashMap<>();
     private final CustomCrafting customCrafting;
 
     public GrindStoneListener(CustomCrafting customCrafting) {
@@ -57,31 +55,58 @@ public class GrindStoneListener implements Listener {
                 //Vanilla Recipe
                 return;
             }
+            event.setCancelled(true);
+            GrindstoneData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
+
+            //Result taken out and placed on cursor or into the inventory.
+            ItemStack result = event.getCurrentItem();
+            ItemStack cursor = event.getCursor();
+
+            if (event.isShiftClick()) {
+                if (InventoryUtils.hasInventorySpace(player, result)) {
+                    player.getInventory().addItem(result);
+                } else {
+                    return;
+                }
+            } else if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.getAmount() + result.getAmount() <= cursor.getMaxStackSize())) {
+                if (ItemUtils.isAirOrNull(cursor)) {
+                    event.setCursor(result);
+                } else {
+                    cursor.setAmount(cursor.getAmount() + result.getAmount());
+                }
+            } else {
+                return;
+            }
+
+            if (grindstoneData.getRecipe().getXp() > 0) { //Spawn xp
+                ExperienceOrb orb = (ExperienceOrb) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
+                orb.setExperience(grindstoneData.getRecipe().getXp());
+            }
+            if (grindstoneData.getResult().isPresent()) { //Check if there is a Result available & execute extensions
+                grindstoneData.getResult().get().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
+            }
+
             //Custom Recipe
             final ItemStack itemTop = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
             final ItemStack itemBottom = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
 
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                GrindstoneData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
-                CustomItem inputTop = grindstoneData.getInputTop();
-                CustomItem inputBottom = grindstoneData.getInputBottom();
-                if (inputTop != null) {
-                    inputTop.consumeItem(itemTop, 1, inventory);
-                    inventory.setItem(0, itemTop);
-                }
-                if (inputBottom != null) {
-                    inputBottom.consumeItem(itemBottom, 1, inventory);
-                    inventory.setItem(1, itemBottom);
-                }
+            CustomItem inputTop = grindstoneData.getInputTop();
+            CustomItem inputBottom = grindstoneData.getInputBottom();
+            if (inputTop != null) {
+                inputTop.consumeItem(itemTop, 1, inventory);
+                inventory.setItem(0, itemTop);
+            }
+            if (inputBottom != null) {
+                inputBottom.consumeItem(itemBottom, 1, inventory);
+                inventory.setItem(1, itemBottom);
+            }
+            player.updateInventory();
 
-                if (grindstoneData.getRecipe().getXp() > 0) {
-                    ExperienceOrb orb = (ExperienceOrb) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EXPERIENCE_ORB);
-                    orb.setExperience(grindstoneData.getRecipe().getXp());
-                }
-                if (grindstoneData.getResult().isPresent()) {
-                    grindstoneData.getResult().get().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-                }
-                preCraftedRecipes.remove(player.getUniqueId());
+            //Remove crafted recipe.
+            preCraftedRecipes.remove(player.getUniqueId());
+
+            //Check for new recipe!
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
                 Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), 0, player, event.getView());
                 GrindstoneRecipe foundRecipe = checkResult.getValue().getRecipe();
                 if (foundRecipe == null) {
@@ -110,14 +135,11 @@ public class GrindStoneListener implements Listener {
                 return;
             }
 
-            event.setCancelled(true);
-
             ItemStack calculatedCursor = cursor;
             ItemStack calculatedCurrentItem = currentItem;
 
             //Place item when the item is valid
-            if (event.getClickedInventory() == null) return;
-            if (event.getClickedInventory().getType() != InventoryType.GRINDSTONE) return;
+            event.setCancelled(true);
             if (event.isRightClick()) {
                 //Dropping one item or pick up half
                 if (event.getAction().equals(InventoryAction.PICKUP_HALF) || event.getAction().equals(InventoryAction.PICKUP_SOME)) {
@@ -129,15 +151,11 @@ public class GrindStoneListener implements Listener {
                     calculatedCurrentItem.setAmount(1);
                     calculatedCursor = cursor.clone();
                     calculatedCursor.setAmount(cursor.getAmount() - 1);
-                } else if (currentItem.isSimilar(cursor)) {
-                    if (currentItem.getAmount() < currentItem.getMaxStackSize()) {
-                        if (cursor.getAmount() > 0) {
-                            calculatedCurrentItem = currentItem.clone();
-                            calculatedCurrentItem.setAmount(currentItem.getAmount() + 1);
-                            calculatedCursor = cursor.clone();
-                            calculatedCursor.setAmount(cursor.getAmount() - 1);
-                        }
-                    }
+                } else if (currentItem.isSimilar(cursor) && currentItem.getAmount() < currentItem.getMaxStackSize() && cursor.getAmount() > 0) {
+                    calculatedCurrentItem = currentItem.clone();
+                    calculatedCurrentItem.setAmount(currentItem.getAmount() + 1);
+                    calculatedCursor = cursor.clone();
+                    calculatedCursor.setAmount(cursor.getAmount() - 1);
                 }
             } else {
                 //Placing an item
@@ -164,15 +182,12 @@ public class GrindStoneListener implements Listener {
             }
 
             Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(calculatedCurrentItem, inventory.getItem(event.getSlot() == 0 ? 1 : 0), event.getSlot(), player, event.getView());
-
             boolean validItem = checkResult.getValue().isValidItem();
             GrindstoneRecipe foundRecipe = checkResult.getValue().getRecipe();
-
             if (validItem) {
                 event.setCurrentItem(calculatedCurrentItem);
                 event.getWhoClicked().setItemOnCursor(calculatedCursor);
             }
-
             if (foundRecipe == null) {
                 if (ItemUtils.isAirOrNull(cursor) || allowedInGrindstone(cursor.getType())) {
                     event.setCancelled(false);
@@ -193,8 +208,8 @@ public class GrindStoneListener implements Listener {
     }
 
     public Pair<CustomItem, GrindstoneData> checkRecipe(ItemStack item, ItemStack itemOther, int slot, Player player, InventoryView inventoryView) {
-        AtomicReference<CustomItem> finalInputTop = new AtomicReference<>();
-        AtomicReference<CustomItem> finalInputBottom = new AtomicReference<>();
+        CustomItem finalInputTop = null;
+        CustomItem finalInputBottom = null;
 
         preCraftedRecipes.remove(player.getUniqueId());
 
@@ -202,12 +217,8 @@ public class GrindStoneListener implements Listener {
         boolean validItem = false;
 
         for (GrindstoneRecipe grindstoneRecipe : Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.getConditions().checkConditions(grindstoneRecipe, new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList())) {
-            Ingredient input = grindstoneRecipe.getInputBottom();
-            Ingredient otherInput = grindstoneRecipe.getInputTop();
-            if (slot == 0) {
-                input = grindstoneRecipe.getInputTop();
-                otherInput = grindstoneRecipe.getInputBottom();
-            }
+            Ingredient input = slot == 0 ? grindstoneRecipe.getInputTop() : grindstoneRecipe.getInputBottom();
+            Ingredient otherInput = slot == 0 ? grindstoneRecipe.getInputBottom() : grindstoneRecipe.getInputTop();
             Optional<CustomItem> optional = input.check(item, grindstoneRecipe.isExactMeta());
             if (!optional.isPresent()) {
                 //Item is invalid! Go to next recipe!
@@ -221,9 +232,9 @@ public class GrindStoneListener implements Listener {
                     continue;
                 }
                 if (slot == 0) {
-                    finalInputBottom.set(optionalOther.get());
+                    finalInputBottom = optionalOther.get();
                 } else {
-                    finalInputTop.set(optionalOther.get());
+                    finalInputTop = optionalOther.get();
                 }
             } else if (!otherInput.isEmpty()) { //Other slot is empty! check if current item is in a recipe
                 //Recipe has other input! This recipe is not yet valid!
@@ -232,9 +243,9 @@ public class GrindStoneListener implements Listener {
             }
             validItem = true;
             if (slot == 0) {
-                finalInputTop.set(optional.get());
+                finalInputTop = optional.get();
             } else {
-                finalInputBottom.set(optional.get());
+                finalInputBottom = optional.get();
             }
             foundRecipe = grindstoneRecipe;
             break;
@@ -245,7 +256,7 @@ public class GrindStoneListener implements Listener {
             result = foundRecipe.getResult().get(inventoryView.getTopInventory().getStorageContents());
             resultItem = result.getItem(player).orElse(new CustomItem(Material.AIR));
         }
-        return new Pair<>(resultItem, new GrindstoneData(foundRecipe, Optional.ofNullable(result), validItem, finalInputTop.get(), finalInputBottom.get()));
+        return new Pair<>(resultItem, new GrindstoneData(foundRecipe, result, validItem, finalInputTop, finalInputBottom));
     }
 
     private boolean isTool(Material material) {
