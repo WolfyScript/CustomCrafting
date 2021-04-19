@@ -105,20 +105,18 @@ public class SmithingListener implements Listener {
             final ItemStack baseItem = Objects.requireNonNull(inventory.getItem(0)).clone();
             final ItemStack additionItem = Objects.requireNonNull(inventory.getItem(1)).clone();
 
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                SmithingData smithingData = preCraftedRecipes.get(player.getUniqueId());
-                CustomItem base = smithingData.getBase();
-                CustomItem addition = smithingData.getAddition();
-                smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
+            SmithingData smithingData = preCraftedRecipes.get(player.getUniqueId());
+            CustomItem base = smithingData.getBase();
+            CustomItem addition = smithingData.getAddition();
+            smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
 
-                base.consumeItem(baseItem, 1, inventory);
-                inventory.setItem(0, baseItem);
+            base.consumeItem(baseItem, 1, inventory);
+            inventory.setItem(0, baseItem);
 
-                addition.consumeItem(additionItem, 1, inventory);
-                inventory.setItem(1, additionItem);
+            addition.consumeItem(additionItem, 1, inventory);
+            inventory.setItem(1, additionItem);
 
-                preCraftedRecipes.remove(player.getUniqueId());
-            });
+            preCraftedRecipes.remove(player.getUniqueId());
         }
 
 
