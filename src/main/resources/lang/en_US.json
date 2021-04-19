@@ -264,15 +264,17 @@
             ]
           },
           "workbench": {
-            "name": "&6Workbench Recipe",
-            "help": [
-              "&7Create workbench recipes."
+            "name": "&6Crafting Table Recipe",
+            "lore": [
+              "&7Create Normal and Advanced",
+              "&7Crafting Table Recipes."
             ]
           },
           "elite_workbench": {
-            "name": "&6Elite Workbench &8[&7Beta&8]",
-            "help": [
-              ""
+            "name": "&6Elite Crafting Table &8[&7Beta&8]",
+            "lore": [
+              "&7Create Elite Crafting Table Recipes",
+              "&7with a up to 6x6 crafting grid."
             ]
           },
           "anvil": {
@@ -307,7 +309,7 @@
           },
           "cauldron": {
             "name": "&6Cauldron",
-            "help": [
+            "lore": [
               "&7Create cauldron recipes to brew/cook",
               "&7items inside of the cauldron!"
             ]
@@ -367,70 +369,16 @@
       "item_editor": {
         "gui_name": "&0&lItem Editor",
         "items": {
-          "load_item": {
-            "name": "&6Load",
-            "help": [
-              "&7Load a existing Item"
-            ]
-          },
           "create_item": {
             "name": "&6Create",
             "help": [
               "&7Create a custom Item"
             ]
-          },
-          "edit_item": {
-            "name": "&7Edit",
-            "help": [
-              "&7Edit a existing Item"
-            ]
-          },
-          "delete_item": {
-            "name": "&4Delete",
-            "help": [
-              "&7Delete a custom Item"
-            ]
           }
         },
         "messages": {
-          "input": "&eType in the namespace and key of the item! &6[namespace] [key]",
-          "error": "&cThis item does not exist or is not loaded!",
           "item_applied": "&aItem successfully applied to recipe!",
-          "item_editable": "&aThis item can now be edited!",
-          "no_name": "&cYou need to type in the item name!"
-        }
-      },
-      "recipe_editor": {
-        "gui_name": "&4&lRecipe Editor",
-        "items": {
-          "create_recipe": {
-            "name": "&6Create Recipe",
-            "help": [
-              "&7Create your own recipe"
-            ]
-          },
-          "edit_recipe": {
-            "name": "&7Edit Recipe",
-            "help": [
-              "&7Edit a existing recipe"
-            ]
-          },
-          "delete_recipe": {
-            "name": "&4Delete Recipe",
-            "help": [
-              "&7Delete a existing recipe"
-            ]
-          }
-        },
-        "messages": {
-          "not_existing": "&cThe recipe &6%recipe% &cdoesn't exist!",
-          "input": "&eType in the namespace and key! &6[namespace] [key]",
-          "invalid_recipe": "&cThis recipe is not a %recipe_type%!",
-          "delete": {
-            "confirm": "&eDo you really want to delete &6%recipe%?",
-            "confirmed": "&7[&aYES&7]  ",
-            "declined": "&7[&cNO&7]"
-          }
+          "item_editable": "&aThis item can now be edited!"
         }
       },
       "recipe_list": {
@@ -462,6 +410,14 @@
           "next_page": {
             "name": "&2Next Page",
             "help": []
+          }
+        },
+        "messages": {
+          "invalid_recipe": "&cThis recipe is not from type %recipe_type%!",
+          "delete": {
+            "confirm": "&eDo you really want to delete &6%recipe%&e?",
+            "confirmed": "&7[&aYES&7]  ",
+            "declined": "&7[&cNO&7]"
           }
         }
       },
@@ -620,9 +576,10 @@
           "custom_item": {
             "lore": [
               "",
-              "&7[&aRight Click&7]&e Edit Item using the ItemCreator",
-              "&7[&aLeft Click&7]&e Give a single Item",
-              "&7[&aShift-Left Click&7]&e Give Full Stack of Item"
+              "&7[&aRight-Click&7]&e Edit Item using the ItemCreator",
+              "&7[&cShift Right-Click&7]&c Delete Item",
+              "&7[&aLeft-Click&7]&e Give a single Item",
+              "&7[&aShift Left-Click&7]&e Give Full Stack of Item"
             ]
           },
           "custom_item_error": {
@@ -634,6 +591,13 @@
               "",
               "&7[&aClick&7] View Items of this namespace"
             ]
+          }
+        },
+        "messages": {
+          "delete": {
+            "confirm": "&eDo you really want to delete &6%item%&e?",
+            "confirmed": "&7[&aYES&7]  ",
+            "declined": "&7[&cNO&7]"
           }
         }
       }

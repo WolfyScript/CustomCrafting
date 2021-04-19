@@ -41,7 +41,7 @@ public class ChatUtils {
             if (sender instanceof Player) {
                 api.getChat().sendMessage((Player) sender, "$msg.denied_perm$", new Pair<>("%PERM%", perm));
             } else {
-                sender.sendMessage(api.getChat().getCONSOLE_PREFIX() + api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+                sender.sendMessage(api.getChat().getConsolePrefix() + api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
             }
         }
         return false;
