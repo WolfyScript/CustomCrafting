@@ -90,7 +90,6 @@ public class CustomCrafting extends JavaPlugin {
         api = WolfyUtilities.get(this, false);
         this.chat = api.getChat();
         this.chat.setInGamePrefix("§7[§3CC§7] ");
-        this.chat.setConsolePrefix("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
 
         this.chatUtils = new ChatUtils(this);
@@ -151,7 +150,7 @@ public class CustomCrafting extends JavaPlugin {
 
         cauldrons = new Cauldrons(this);
         if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
-            chat.sendConsoleMessage("$msg.startup.placeholder$");
+            api.getConsole().info("$msg.startup.placeholder$");
             new PlaceHolder(this).register();
         }
         //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
@@ -240,7 +239,7 @@ public class CustomCrafting extends JavaPlugin {
 
     private void registerInventories() {
         InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
-        api.getChat().sendConsoleMessage("$msg.startup.inventories$");
+        api.getConsole().info("$msg.startup.inventories$");
         invAPI.registerCluster(new MainCluster(invAPI, this));
         invAPI.registerCluster(new RecipeCreatorCluster(invAPI, this));
         invAPI.registerCluster(new RecipeBookCluster(invAPI, this));
@@ -270,7 +269,7 @@ public class CustomCrafting extends JavaPlugin {
                         return;
                     } else if (v1 > v2) {
                         outdated = true;
-                        chat.sendConsoleWarning("$msg.startup.outdated$");
+                        api.getConsole().warn("$msg.startup.outdated$");
                         if (player != null) {
                             chat.sendMessage(player, "$msg.player.outdated.msg$");
                             chat.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
@@ -279,7 +278,7 @@ public class CustomCrafting extends JavaPlugin {
                     }
                 }
             } catch (Exception ex) {
-                chat.sendConsoleWarning("$msg.startup.update_check_fail$");
+                api.getConsole().warn("$msg.startup.update_check_fail$");
             }
         }).start();
     }

@@ -108,7 +108,7 @@ public class Categories {
     }
 
     public void indexCategories() {
-        CustomCrafting.inst().getApi().getChat().sendConsoleMessage("Indexing Recipe Book...");
+        CustomCrafting.inst().getApi().getConsole().info("Indexing Recipe Book...");
         this.categoryMap.values().forEach(Category::index);
         this.filters.values().forEach(filter -> this.categoryMap.values().forEach(category -> category.indexFilters(filter)));
     }

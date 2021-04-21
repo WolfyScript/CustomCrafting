@@ -41,7 +41,7 @@ public class ChatUtils {
             if (sender instanceof Player) {
                 api.getChat().sendMessage((Player) sender, "$msg.denied_perm$", new Pair<>("%PERM%", perm));
             } else {
-                sender.sendMessage(api.getChat().getConsolePrefix() + api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
+                api.getConsole().severe(api.getLanguageAPI().replaceKeys("$msg.denied_perm$").replace("%PERM%", perm).replace("&", "§"));
             }
         }
         return false;
@@ -158,21 +158,21 @@ public class ChatUtils {
     }
 
     public static void sendRecipeItemLoadingError(String namespace, String key, String type, Exception ex) {
-        api.getChat().sendConsoleMessage("-------------------------------------------------");
-        api.getChat().sendConsoleMessage("Error loading Contents for: " + namespace + ":" + key);
-        api.getChat().sendConsoleMessage("    Type: " + type);
-        api.getChat().sendConsoleMessage("    Message: " + ex.getMessage());
+        api.getConsole().severe("-------------------------------------------------");
+        api.getConsole().severe("Error loading Contents for: " + namespace + ":" + key);
+        api.getConsole().severe("    Type: " + type);
+        api.getConsole().severe("    Message: " + ex.getMessage());
         if (ex.getCause() != null) {
-            api.getChat().sendConsoleMessage("    Cause: " + ex.getCause().getMessage());
+            api.getConsole().severe("    Cause: " + ex.getCause().getMessage());
         }
-        api.getChat().sendConsoleMessage("You should check the config for empty settings ");
-        api.getChat().sendConsoleMessage("e.g. No set Result or Source Item!");
-        api.getChat().sendConsoleMessage("------------------[StackTrace]-------------------");
+        api.getConsole().severe("You should check the config for empty settings ");
+        api.getConsole().severe("e.g. No set Result or Source Item!");
+        api.getConsole().severe("------------------[StackTrace]-------------------");
         ex.printStackTrace();
         if (ex.getCause() != null) {
-            api.getChat().sendConsoleMessage("Caused StackTrace: ");
+            api.getConsole().severe("Caused StackTrace: ");
             ex.getCause().printStackTrace();
         }
-        api.getChat().sendConsoleMessage("------------------[StackTrace]-------------------");
+        api.getConsole().severe("------------------[StackTrace]-------------------");
     }
 }

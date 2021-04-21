@@ -28,11 +28,11 @@ public class SaveSubCommand extends AbstractSubCommand {
         WolfyUtilities api = customCrafting.getApi();
         if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
             Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> {
-                api.getChat().sendConsoleMessage("Saving item: " + entry.getKey().toString());
+                api.getConsole().info("Saving item: " + entry.getKey().toString());
                 ItemLoader.saveItem(entry.getKey(), entry.getValue());
             });
             Registry.RECIPES.values().forEach(recipe -> {
-                api.getChat().sendConsoleMessage("Saving recipe: " + recipe.getNamespacedKey().toString());
+                api.getConsole().info("Saving recipe: " + recipe.getNamespacedKey().toString());
                 recipe.save();
             });
             sender.sendMessage("§eAll recipes are resaved! See the console log for errors.");

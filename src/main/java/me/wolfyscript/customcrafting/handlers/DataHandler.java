@@ -11,7 +11,6 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,12 +41,10 @@ public class DataHandler {
 
     private final MainConfig mainConfig;
     private final WolfyUtilities api;
-    private final Chat chat;
     private final ObjectMapper objectMapper;
 
     public DataHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
-        this.chat = api.getChat();
         this.mainConfig = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
         initCategories();
@@ -59,7 +56,7 @@ public class DataHandler {
     }
 
     public void load(boolean update) {
-        chat.sendConsoleMessage("$msg.startup.recipes.title$");
+        api.getConsole().info("$msg.startup.recipes.title$");
         if (CustomCrafting.inst().hasDataBaseHandler()) {
             if (mainConfig.isLocalStorageEnabled()) {
                 if (mainConfig.isLocalStorageBeforeDatabase()) {
@@ -79,11 +76,11 @@ public class DataHandler {
             int lastBukkitVersion = mainConfig.getInt("data.bukkit_version");
             int lastVersion = mainConfig.getInt("data.version");
             if (lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION) {
-                chat.sendConsoleMessage("[ Converting Items & Recipes to the latest Bukkit and Config format ]");
+                api.getConsole().info("[ Converting Items & Recipes to the latest Bukkit and Config format ]");
                 saveData();
-                chat.sendConsoleMessage("Loading Items & Recipes from updated configs...");
+                api.getConsole().info("Loading Items & Recipes from updated configs...");
                 load(false);
-                chat.sendConsoleMessage("[ Conversion of Item & Recipes complete! ]");
+                api.getConsole().info("[ Conversion of Item & Recipes complete! ]");
                 mainConfig.set("data.version", CustomCrafting.CONFIG_VERSION);
                 mainConfig.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
                 mainConfig.reload();
@@ -102,10 +99,10 @@ public class DataHandler {
 
     private void loadDataBase() {
         DataBaseHandler dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
-        chat.sendConsoleMessage("- - - - [Database Storage] - - - -");
+        api.getConsole().info("- - - - [Database Storage] - - - -");
         try {
             dataBaseHandler.loadItems();
-            chat.sendConsoleMessage("");
+            api.getConsole().info("");
             dataBaseHandler.loadRecipes();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,11 +110,11 @@ public class DataHandler {
     }
 
     private void loadConfigs() {
-        chat.sendConsoleMessage("- - - - [Local Storage] - - - -");
+        api.getConsole().info("- - - - [Local Storage] - - - -");
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
             for (String dir : dirs) {
-                chat.sendConsoleMessage("> " + dir);
+                api.getConsole().info("> " + dir);
                 loadItems(dir);
             }
             for (String dir : dirs) {
@@ -125,12 +122,12 @@ public class DataHandler {
                     loadRecipe(dir, type);
                 }
             }
-            chat.sendConsoleMessage("");
+            api.getConsole().info("");
         }
     }
 
     public void saveData() {
-        chat.sendConsoleMessage("Saving Items & Recipes");
+        api.getConsole().info("Saving Items & Recipes");
         Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> ItemLoader.saveItem(entry.getKey(), entry.getValue()));
         me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(ICustomRecipe::save);
     }

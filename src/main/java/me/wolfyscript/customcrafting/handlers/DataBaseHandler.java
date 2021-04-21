@@ -55,7 +55,7 @@ public class DataBaseHandler extends SQLDataBase {
     }
 
     public void loadRecipes() throws SQLException {
-        chat.sendConsoleMessage("$msg.startup.recipes.recipes$");
+        api.getConsole().info("$msg.startup.recipes.recipes$");
         PreparedStatement recipesQuery = open().prepareStatement("SELECT * FROM customcrafting_recipes");
         ResultSet resultSet = recipesQuery.executeQuery();
         if (resultSet == null) {
@@ -69,7 +69,7 @@ public class DataBaseHandler extends SQLDataBase {
             if (recipe != null) {
                 me.wolfyscript.customcrafting.Registry.RECIPES.register(recipe);
             } else {
-                chat.sendConsoleMessage("Error loading recipe \"" + namespacedKey.toString() + "\". Couldn't find recipe in DataBase!");
+                api.getConsole().info("Error loading recipe \"" + namespacedKey + "\". Couldn't find recipe in DataBase!");
             }
         }
         recipesQuery.close();
@@ -77,7 +77,7 @@ public class DataBaseHandler extends SQLDataBase {
     }
 
     public void loadItems() throws SQLException {
-        chat.sendConsoleMessage("$msg.startup.recipes.items$");
+        api.getConsole().info("$msg.startup.recipes.items$");
         PreparedStatement itemsQuery = open().prepareStatement("SELECT * FROM customcrafting_items");
         ResultSet resultSet = itemsQuery.executeQuery();
         if (resultSet == null) return;
@@ -89,10 +89,10 @@ public class DataBaseHandler extends SQLDataBase {
                 try {
                     Registry.CUSTOM_ITEMS.register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                 } catch (JsonProcessingException e) {
-                    chat.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
+                    api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                 }
             } else {
-                chat.sendConsoleMessage("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacedkey or data!");
+                api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacedkey or data!");
             }
         }
         itemsQuery.close();

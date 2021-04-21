@@ -45,7 +45,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                             new Thread(() -> {
                                 DataBaseHandler dataBaseHandler = customCrafting.getDataBaseHandler();
                                 me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(dataBaseHandler::updateRecipe);
-                                chat.sendConsoleMessage("Successfully exported recipes to database");
+                                api.getConsole().fine("Successfully exported recipes to database");
                             }).start();
                             break;
                         case "export_items":
@@ -53,7 +53,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                             new Thread(() -> {
                                 DataBaseHandler dataBaseHandler = customCrafting.getDataBaseHandler();
                                 Registry.CUSTOM_ITEMS.forEach(item -> dataBaseHandler.updateItem(item.getNamespacedKey(), item));
-                                chat.sendConsoleMessage("Successfully exported custom items to database");
+                                api.getConsole().fine("Successfully exported custom items to database");
                             }).start();
                             break;
                         default:

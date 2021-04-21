@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class GiveSubCommand extends AbstractSubCommand {
@@ -49,7 +50,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                     if (sender instanceof Player) {
                         api.getChat().sendMessage((Player) sender, "$commands.give.player_offline$", playerValue);
                     } else {
-                        api.getChat().sendConsoleMessage("$commands.give.player_offline$", args[0]);
+                        api.getConsole().log(Level.INFO, "$commands.give.player_offline$", args[0]);
                     }
                     return true;
                 }
@@ -64,7 +65,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                         if (sender instanceof Player) {
                             api.getChat().sendMessage((Player) sender, "$commands.give.invalid_amount$");
                         } else {
-                            api.getChat().sendConsoleMessage("$commands.give.invalid_amount$");
+                            api.getConsole().info("$commands.give.invalid_amount$");
                         }
                         return true;
                     }
@@ -87,7 +88,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                             if (sender instanceof Player) {
                                 api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
                             } else {
-                                api.getChat().sendConsoleMessage("$commands.give.no_inv_space$", args[1]);
+                                api.getConsole().log(Level.INFO, "$commands.give.no_inv_space$", args[1]);
                             }
                             return true;
                         }
@@ -95,13 +96,13 @@ public class GiveSubCommand extends AbstractSubCommand {
                             if (sender instanceof Player) {
                                 api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
                             } else {
-                                api.getChat().sendConsoleMessage("$commands.give.success_amount$", args[2], args[1], args[0]);
+                                api.getConsole().log(Level.INFO, "$commands.give.success_amount$", args[2], args[1], args[0]);
                             }
                         } else {
                             if (sender instanceof Player) {
                                 api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
                             } else {
-                                api.getChat().sendConsoleMessage("$commands.give.success$", args[1], args[0]);
+                                api.getConsole().log(Level.INFO, "$commands.give.success$", args[1], args[0]);
                             }
                         }
                         return true;
@@ -110,7 +111,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 if (sender instanceof Player) {
                     api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
                 } else {
-                    api.getChat().sendConsoleMessage("$commands.give.invalid_item$", args[1]);
+                    api.getConsole().log(Level.INFO, "$commands.give.invalid_item$", args[1]);
                 }
             }
         }
