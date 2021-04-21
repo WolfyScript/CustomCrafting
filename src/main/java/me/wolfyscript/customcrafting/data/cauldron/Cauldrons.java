@@ -160,18 +160,16 @@ public class Cauldrons {
                 return new Location(world, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
             }
         } catch (IllegalArgumentException e) {
-            api.getChat().sendConsoleWarning("Couldn't find world " + args[0]);
+            api.getConsole().warn("Couldn't find world " + args[0]);
         }
         return null;
     }
 
     public void save() {
-        try {
-            if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
-                api.getChat().sendConsoleMessage("Saving Cauldrons");
-            }
-            FileOutputStream fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
-            BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos);
+        if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
+            api.getConsole().info("Saving Cauldrons");
+        }
+        try (FileOutputStream fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"); BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos)) {
             Hashtable<String, List<String>> saveMap = new Hashtable<>();
             synchronized (cauldrons) {
                 cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {
@@ -182,36 +180,27 @@ public class Cauldrons {
                 });
             }
             oos.writeObject(saveMap);
-            oos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void load() {
-        api.getChat().sendConsoleMessage("Loading Cauldrons");
+        api.getConsole().info("Loading Cauldrons");
         File file = new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
         if (file.exists()) {
-            FileInputStream fis;
-            try {
-                fis = new FileInputStream(file);
-                BukkitObjectInputStream ois = new BukkitObjectInputStream(fis);
-                try {
-                    Object object = ois.readObject();
-                    this.cauldrons.clear();
-                    Map<String, List<String>> loadMap = (Map<String, List<String>>) object;
-                    for (Map.Entry<String, List<String>> entry : loadMap.entrySet()) {
-                        Location location = stringToLocation(entry.getKey());
-                        if (location != null) {
-                            this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(Cauldron::fromString).filter(Objects::nonNull).collect(Collectors.toList()));
-                        }
+            try (FileInputStream fis = new FileInputStream(file); BukkitObjectInputStream ois = new BukkitObjectInputStream(fis)) {
+                Object object = ois.readObject();
+                this.cauldrons.clear();
+                Map<String, List<String>> loadMap = (Map<String, List<String>>) object;
+                for (Map.Entry<String, List<String>> entry : loadMap.entrySet()) {
+                    Location location = stringToLocation(entry.getKey());
+                    if (location != null) {
+                        this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(Cauldron::fromString).filter(Objects::nonNull).collect(Collectors.toList()));
                     }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
-                ois.close();
-            } catch (IOException e) {
-                api.getChat().sendConsoleWarning("Couldn't load cauldrons. No data found");
+            } catch (IOException | ClassNotFoundException e) {
+                api.getConsole().warn("Couldn't load cauldrons. No data found");
             }
         }
     }
