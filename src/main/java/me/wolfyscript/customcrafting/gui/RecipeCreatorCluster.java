@@ -33,6 +33,7 @@ public class RecipeCreatorCluster extends CCCluster {
 
     public static final String KEY = "recipe_creator";
 
+    //Buttons
     public static final NamespacedKey CONDITIONS = new NamespacedKey(KEY, "conditions");
     public static final NamespacedKey GROUP = new NamespacedKey(KEY, "group");
     public static final NamespacedKey TAGS = new NamespacedKey(KEY, "tags");
@@ -41,6 +42,25 @@ public class RecipeCreatorCluster extends CCCluster {
     public static final NamespacedKey PRIORITY = new NamespacedKey(KEY, "priority");
     public static final NamespacedKey EXACT_META = new NamespacedKey(KEY, "exact_meta");
     public static final NamespacedKey HIDDEN = new NamespacedKey(KEY, "hidden");
+    public static final String SHAPELESS = "workbench.shapeless";
+    public static final String MIRROR_VERTICAL = "workbench.mirror_vertical";
+    public static final String MIRROR_HORIZONTAL = "workbench.mirror_horizontal";
+    public static final String MIRROR_ROTATION = "workbench.mirror_rotation";
+    //Language Keys
+    private static final String ENABLED = ".enabled";
+    public static final NamespacedKey EXACT_META_ENABLED = new NamespacedKey(KEY, EXACT_META.getKey() + ENABLED);
+    public static final NamespacedKey HIDDEN_ENABLED = new NamespacedKey(KEY, HIDDEN.getKey() + ENABLED);
+    public static final NamespacedKey SHAPELESS_ENABLED = new NamespacedKey(KEY, SHAPELESS + ENABLED);
+    public static final NamespacedKey MIRROR_VERTICAL_ENABLED = new NamespacedKey(KEY, MIRROR_VERTICAL + ENABLED);
+    public static final NamespacedKey MIRROR_HORIZONTAL_ENABLED = new NamespacedKey(KEY, MIRROR_HORIZONTAL + ENABLED);
+    public static final NamespacedKey MIRROR_ROTATION_ENABLED = new NamespacedKey(KEY, MIRROR_ROTATION + ENABLED);
+    private static final String DISABLED = ".disabled";
+    public static final NamespacedKey EXACT_META_DISABLED = new NamespacedKey(KEY, EXACT_META.getKey() + DISABLED);
+    public static final NamespacedKey HIDDEN_DISABLED = new NamespacedKey(KEY, HIDDEN.getKey() + DISABLED);
+    public static final NamespacedKey SHAPELESS_DISABLED = new NamespacedKey(KEY, SHAPELESS + DISABLED);
+    public static final NamespacedKey MIRROR_VERTICAL_DISABLED = new NamespacedKey(KEY, MIRROR_VERTICAL + DISABLED);
+    public static final NamespacedKey MIRROR_HORIZONTAL_DISABLED = new NamespacedKey(KEY, MIRROR_HORIZONTAL + DISABLED);
+    public static final NamespacedKey MIRROR_ROTATION_DISABLED = new NamespacedKey(KEY, MIRROR_ROTATION + DISABLED);
 
     public RecipeCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);

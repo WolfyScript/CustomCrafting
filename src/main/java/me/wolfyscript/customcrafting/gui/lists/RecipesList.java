@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeList;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.lists.buttons.RecipeListContainerButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListNamespaceButton;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -31,7 +32,7 @@ public class RecipesList extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>("back", new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeList().setPage(0);
             for (int i = 0; i < 45; i++) {
                 RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + i);

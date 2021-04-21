@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 
 public class EliteWorkbenchCreatorSettings extends RecipeCreator {
 
@@ -21,9 +20,6 @@ public class EliteWorkbenchCreatorSettings extends RecipeCreator {
         update.setButton(0, MainCluster.BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
-
-        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(update.getGuiHandler(), workbench.isExactMeta());
-        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), workbench.isHidden());
 
         update.setButton(9, RecipeCreatorCluster.HIDDEN);
         update.setButton(11, RecipeCreatorCluster.GROUP);

@@ -1674,7 +1674,7 @@
               ]
             }
           },
-          "mirrorHorizontal": {
+          "mirror_horizontal": {
             "enabled": {
               "name": "&a水平镜像",
               "lore": [
@@ -1690,7 +1690,7 @@
               ]
             }
           },
-          "mirrorVertical": {
+          "mirror_vertical": {
             "enabled": {
               "name": "&a垂直镜像",
               "lore": [
@@ -1706,7 +1706,7 @@
               ]
             }
           },
-          "mirrorRotation": {
+          "mirror_rotation": {
             "disabled": {
               "name": "&c旋转配方",
               "lore": [

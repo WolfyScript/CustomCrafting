@@ -15,6 +15,9 @@ import org.bukkit.Material;
 
 public class CookingCreator extends RecipeCreator {
 
+    public static final String XP = "xp";
+    public static final String COOKING_TIME = "cooking_time";
+
     public CookingCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "cooking", 45, customCrafting);
     }
@@ -26,7 +29,7 @@ public class CookingCreator extends RecipeCreator {
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeResult());
 
-        registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton<>(XP, Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%XP%", guiHandler.getCustomCache().getCookingRecipe().getExp());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -40,7 +43,7 @@ public class CookingCreator extends RecipeCreator {
             guiHandler.getCustomCache().getCookingRecipe().setExp(xp);
             return false;
         }));
-        registerButton(new ChatInputButton<>("cooking_time", Material.COAL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+        registerButton(new ChatInputButton<>(COOKING_TIME, Material.COAL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             hashMap.put("%TIME%", guiHandler.getCustomCache().getCookingRecipe().getCookingTime());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
@@ -71,8 +74,8 @@ public class CookingCreator extends RecipeCreator {
         update.setButton(24, "recipe.result");
         update.setButton(10, data.getLightBackground());
         update.setButton(12, data.getLightBackground());
-        update.setButton(22, "xp");
-        update.setButton(29, "cooking_time");
+        update.setButton(22, XP);
+        update.setButton(29, COOKING_TIME);
 
         update.setButton(42, RecipeCreatorCluster.GROUP);
         if (cache.getCookingRecipe().hasNamespacedKey()) {

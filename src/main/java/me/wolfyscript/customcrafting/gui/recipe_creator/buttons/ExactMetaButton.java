@@ -9,10 +9,10 @@ import org.bukkit.Material;
 public class ExactMetaButton extends ToggleButton<CCCache> {
 
     public ExactMetaButton() {
-        super(RecipeCreatorCluster.EXACT_META.getKey(), new ButtonState<>(RecipeCreatorCluster.EXACT_META.getNamespace(), "exact_meta.enabled", Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
+        super(RecipeCreatorCluster.EXACT_META.getKey(), (cache, guiHandler, player, guiInventory, i) -> cache.getRecipe().isExactMeta(), new ButtonState<>(RecipeCreatorCluster.EXACT_META_ENABLED, Material.GREEN_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipe().setExactMeta(false);
             return true;
-        }), new ButtonState<>(RecipeCreatorCluster.EXACT_META.getNamespace(), "exact_meta.disabled", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
+        }), new ButtonState<>(RecipeCreatorCluster.EXACT_META_DISABLED, Material.RED_CONCRETE, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getRecipe().setExactMeta(true);
             return true;
         }));

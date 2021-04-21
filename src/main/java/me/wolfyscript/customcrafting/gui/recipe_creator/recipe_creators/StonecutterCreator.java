@@ -8,7 +8,6 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResu
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 
 public class StonecutterCreator extends RecipeCreator {
 
@@ -27,7 +26,6 @@ public class StonecutterCreator extends RecipeCreator {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), update.getGuiHandler().getCustomCache().getStonecutterRecipe().isHidden());
         update.setButton(0, BACK);
         update.setButton(4, RecipeCreatorCluster.HIDDEN);
         update.setButton(20, "recipe.ingredient_0");

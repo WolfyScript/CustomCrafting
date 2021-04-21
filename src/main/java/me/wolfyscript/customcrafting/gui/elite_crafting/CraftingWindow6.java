@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.EliteCraftingCluster;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.CraftingSlotButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -24,8 +25,8 @@ public class CraftingWindow6 extends CraftingWindow {
         for (int i = 0; i < 36; i++) {
             registerButton(new CraftingSlotButton(i, customCrafting));
         }
-        registerButton(new DummyButton<>("texture_light", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("texture_dark", new ButtonState<>("none", "background", Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>("texture_light", new ButtonState<>(MainCluster.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>("texture_dark", new ButtonState<>(MainCluster.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
     }
 
     @Override

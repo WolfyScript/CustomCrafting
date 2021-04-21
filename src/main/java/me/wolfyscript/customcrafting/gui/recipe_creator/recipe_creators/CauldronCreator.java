@@ -137,7 +137,6 @@ public class CauldronCreator extends RecipeCreator {
         ((ToggleButton<CCCache>) getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.needsFire());
         ((ToggleButton<CCCache>) getButton("water")).setState(update.getGuiHandler(), cauldronRecipe.needsWater());
         ((ToggleButton<CCCache>) getButton("dropItems")).setState(update.getGuiHandler(), cauldronRecipe.dropItems());
-        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), cauldronRecipe.isHidden());
 
         update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);

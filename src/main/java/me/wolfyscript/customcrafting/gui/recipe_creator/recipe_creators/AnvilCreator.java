@@ -115,8 +115,6 @@ public class AnvilCreator extends RecipeCreator {
         CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, BACK);
         CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
-        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(event.getGuiHandler(), anvilRecipe.isExactMeta());
-        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(event.getGuiHandler(), anvilRecipe.isHidden());
         event.setButton(1, RecipeCreatorCluster.HIDDEN);
         event.setButton(3, RecipeCreatorCluster.CONDITIONS);
         event.setButton(5, RecipeCreatorCluster.PRIORITY);

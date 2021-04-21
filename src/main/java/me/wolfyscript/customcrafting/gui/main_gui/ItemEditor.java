@@ -22,7 +22,7 @@ public class ItemEditor extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>("back", new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                 guiHandler.openCluster(RecipeCreatorCluster.KEY);
             } else {

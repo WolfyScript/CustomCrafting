@@ -8,7 +8,6 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResu
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 
 public class SmithingCreator extends RecipeCreator {
 
@@ -31,8 +30,6 @@ public class SmithingCreator extends RecipeCreator {
         CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, BACK);
         CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
-        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(event.getGuiHandler(), smithingRecipe.isExactMeta());
-        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(event.getGuiHandler(), smithingRecipe.isHidden());
         event.setButton(1, RecipeCreatorCluster.HIDDEN);
         event.setButton(3, RecipeCreatorCluster.CONDITIONS);
         event.setButton(5, RecipeCreatorCluster.PRIORITY);

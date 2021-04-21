@@ -343,9 +343,6 @@ public class BrewingCreator extends RecipeCreator {
         BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
         BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
 
-        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), brewingRecipe.isHidden());
-        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(update.getGuiHandler(), brewingRecipe.isExactMeta());
-
         update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
         update.setButton(5, RecipeCreatorCluster.PRIORITY);

@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.EliteCraftingCluster;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.MainCategoryButton;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
@@ -31,7 +32,7 @@ public class MainMenu extends CCWindow {
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new MainCategoryButton(categoryId, customCrafting));
         }
-        registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>("none", BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>(MainCluster.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (cache.getKnowledgeBook().hasEliteCraftingTable()) {
                 guiHandler.openCluster(EliteCraftingCluster.KEY);
             } else {

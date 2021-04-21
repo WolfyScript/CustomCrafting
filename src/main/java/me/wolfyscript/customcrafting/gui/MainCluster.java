@@ -38,12 +38,16 @@ public class MainCluster extends CCCluster {
     public static final NamespacedKey INSTAGRAM = new NamespacedKey(KEY, "instagram");
     public static final NamespacedKey YOUTUBE = new NamespacedKey(KEY, "youtube");
     public static final NamespacedKey DISCORD = new NamespacedKey(KEY, "discord");
+
+    //Language keys
+    public static final NamespacedKey BACKGROUND = new NamespacedKey(KEY, "background");
+
     //Both Button and Window keys
     public static final NamespacedKey RECIPE_LIST = new NamespacedKey(KEY, "recipe_list");
+
     //Window keys
     public static final NamespacedKey ITEM_EDITOR = new NamespacedKey(KEY, "item_editor");
     public static final NamespacedKey ITEM_LIST = new NamespacedKey(KEY, "item_list");
-    private static final String BACKGROUND = "background";
     //Message keys
 
     public MainCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
@@ -52,14 +56,14 @@ public class MainCluster extends CCCluster {
 
     @Override
     public void onInit() {
-        registerButton(new DummyButton<>(GLASS_GRAY.getKey(), new ButtonState<>(BACKGROUND, Material.GRAY_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_BLACK.getKey(), new ButtonState<>(BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_RED.getKey(), new ButtonState<>(BACKGROUND, Material.RED_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_GRAY.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.GRAY_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_BLACK.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_RED.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.RED_STAINED_GLASS_PANE)));
 
-        registerButton(new DummyButton<>(GLASS_WHITE.getKey(), new ButtonState<>(BACKGROUND, Material.WHITE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_GREEN.getKey(), new ButtonState<>(BACKGROUND, Material.GREEN_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_PURPLE.getKey(), new ButtonState<>(BACKGROUND, Material.PURPLE_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>(GLASS_PINK.getKey(), new ButtonState<>(BACKGROUND, Material.PINK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_WHITE.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.WHITE_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_GREEN.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.GREEN_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_PURPLE.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.PURPLE_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>(GLASS_PINK.getKey(), new ButtonState<>(BACKGROUND.getKey(), Material.PINK_STAINED_GLASS_PANE)));
 
         registerButton(new ToggleButton<>(GUI_HELP.getKey(), true, new ButtonState<>("gui_help_off", PlayerHeadUtils.getViaValue("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGVlZjc4ZWRkNDdhNzI1ZmJmOGMyN2JiNmE3N2Q3ZTE1ZThlYmFjZDY1Yzc3ODgxZWM5ZWJmNzY4NmY3YzgifX19"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.setHelpEnabled(true);

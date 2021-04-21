@@ -9,6 +9,7 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
+import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -67,7 +68,7 @@ public class ItemCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(BACK, new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>(BACK, new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, i, event) -> {
             if (cache.getItems().isRecipeItem()) {
                 guiHandler.openCluster("recipe_creator");
             } else {
@@ -292,12 +293,12 @@ public class ItemCreator extends CCWindow {
         //PLAYER_HEAD SETTINGS
         registerButton(new OptionButton(Material.PLAYER_HEAD, "player_head"));
         {
-            registerButton(new ItemInputButton<>("player_head.texture.input", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ItemInputButton<>("player_head.texture.input", Material.AIR, (cache, guiHandler, player, inventory, i, event) -> {
                 if (event instanceof InventoryClickEvent) {
                     return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);
                 }
                 return true;
-            })));
+            }));
             registerButton(new ActionButton<>("player_head.texture.apply", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 if (inventory.getItem(38) != null && inventory.getItem(38).getType().equals(Material.PLAYER_HEAD)) {
                     items.getItem().setPlayerHeadValue(new ItemBuilder(inventory.getItem(38)).getPlayerHeadValue());
@@ -482,7 +483,7 @@ public class ItemCreator extends CCWindow {
             registerButton(new DummyButton<>("consume.replacement.enabled", Material.GREEN_CONCRETE));
             registerButton(new DummyButton<>("consume.replacement.disabled", Material.RED_CONCRETE));
 
-            registerButton(new ItemInputButton<>("consume.replacement", new ButtonState<>("", Material.AIR, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, slot, event) -> {
+            registerButton(new ItemInputButton<>("consume.replacement", Material.AIR, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, slot, event) -> {
                 Bukkit.getScheduler().runTask(customCrafting, () -> {
                     ItemStack replacement = inventory.getItem(slot);
                     if (replacement != null) {
@@ -492,7 +493,7 @@ public class ItemCreator extends CCWindow {
                     }
                 });
                 return false;
-            }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().hasReplacement() ? CustomItem.with(cache.getItems().getItem().getReplacement()).create() : new ItemStack(Material.AIR))));
+            }, (hashMap, cache, guiHandler, player, inventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().hasReplacement() ? CustomItem.with(cache.getItems().getItem().getReplacement()).create() : new ItemStack(Material.AIR)));
         }
 
         //FUEL Settings
@@ -524,10 +525,10 @@ public class ItemCreator extends CCWindow {
         //CUSTOM_DURABILITY_COST Settings
         registerButton(new OptionButton(Material.DIAMOND_SWORD, "custom_durability"));
         {
-            registerButton(new ActionButton<>("custom_durability.remove", new ButtonState<>("custom_durability.remove", Material.RED_CONCRETE_POWDER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            registerButton(new ActionButton<>("custom_durability.remove", Material.RED_CONCRETE_POWDER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                 items.getItem().removeCustomDurability();
                 return true;
-            })));
+            }));
             registerButton(new ChatInputButton<>("custom_durability.set_durability", Material.GREEN_CONCRETE, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
                 values.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getCustomDurability());
                 return itemStack;

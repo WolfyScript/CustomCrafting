@@ -55,7 +55,7 @@ public class RecipeBookEditorCluster extends CCCluster {
         registerGuiWindow(new EditCategory(this, customCrafting));
         registerGuiWindow(new EditFilter(this, customCrafting));
 
-        registerButton(new ActionButton<>(BACK.getKey(), new ButtonState<>("none", "back", PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK.getKey(), new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             cache.getRecipeBookEditor().setFilter(null);
             cache.getRecipeBookEditor().setCategory(null);
             cache.getRecipeBookEditor().setCategoryID("");

@@ -10,7 +10,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import org.bukkit.Material;
 
 public class GrindstoneCreator extends RecipeCreator {
@@ -51,8 +50,6 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
         GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
-        ((ToggleButton<CCCache>) getCluster().getButton("hidden")).setState(update.getGuiHandler(), grindstoneRecipe.isHidden());
-        ((ToggleButton<CCCache>) getCluster().getButton("exact_meta")).setState(update.getGuiHandler(), grindstoneRecipe.isExactMeta());
 
         update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
