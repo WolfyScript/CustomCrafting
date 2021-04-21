@@ -1,9 +1,6 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.extension;
 
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAutoDetect;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -24,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonPropertyOrder(value = {"key", "outer_radius", "inner_radius"})
+@JsonPropertyOrder(value = {"key", "outerRadius", "innerRadius"})
 public abstract class ResultExtension implements Keyed {
 
     protected @JsonIgnore
@@ -36,9 +33,9 @@ public abstract class ResultExtension implements Keyed {
 
     @JsonProperty(value = "key")
     private final NamespacedKey namespacedKey;
-    @JsonProperty(value = "outer_radius")
+    @JsonAlias(value = "outer_radius")
     protected Vector outerRadius = new Vector(0, 0, 0);
-    @JsonProperty(value = "inner_radius")
+    @JsonAlias(value = "inner_radius")
     protected Vector innerRadius = new Vector(0, 0, 0);
 
     protected ResultExtension() {
