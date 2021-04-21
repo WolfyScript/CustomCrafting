@@ -1807,7 +1807,7 @@
               ]
             }
           },
-          "mirrorHorizontal": {
+          "mirror_horizontal": {
             "enabled": {
               "name": "&aHorizontal Gespiegelt",
               "lore": [
@@ -1823,7 +1823,7 @@
               ]
             }
           },
-          "mirrorVertical": {
+          "mirror_vertical": {
             "enabled": {
               "name": "&aVertikal Gespiegelt",
               "lore": [
@@ -1839,7 +1839,7 @@
               ]
             }
           },
-          "mirrorRotation": {
+          "mirror_rotation": {
             "disabled": {
               "name": "&cRotiertes Rezept",
               "lore": [

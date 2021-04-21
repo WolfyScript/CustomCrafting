@@ -1781,7 +1781,7 @@
               ]
             }
           },
-          "mirrorHorizontal": {
+          "mirror_horizontal": {
             "enabled": {
               "name": "&aMirror Horizontal",
               "lore": [
@@ -1797,7 +1797,7 @@
               ]
             }
           },
-          "mirrorVertical": {
+          "mirror_vertical": {
             "enabled": {
               "name": "&aMirror Vertical",
               "lore": [
@@ -1813,7 +1813,7 @@
               ]
             }
           },
-          "mirrorRotation": {
+          "mirror_rotation": {
             "disabled": {
               "name": "&cRotate Recipe",
               "lore": [
