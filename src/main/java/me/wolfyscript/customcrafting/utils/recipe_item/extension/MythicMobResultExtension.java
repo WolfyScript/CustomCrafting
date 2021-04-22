@@ -4,7 +4,6 @@ import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -13,13 +12,10 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class MythicMobResultExtension extends ResultExtension {
-
-    private final @JsonIgnore
-    Random random = new Random();
 
     private String mobName;
     private int mobLevel;
@@ -71,14 +67,15 @@ public class MythicMobResultExtension extends ResultExtension {
 
     protected void spawnMob(Location origin) {
         if (WolfyUtilities.hasMythicMobs()) {
+            ThreadLocalRandom random = ThreadLocalRandom.current();
             MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(mobName);
 
             Vector innerRange = getInnerRadius();
             Vector outerRange = getOuterRadius();
 
-            double x = (random.nextBoolean() ? 1 : -1) * nextDouble(innerRange.getX(), outerRange.getX());
-            double y = (random.nextBoolean() ? 1 : -1) * nextDouble(innerRange.getY(), outerRange.getY());
-            double z = (random.nextBoolean() ? 1 : -1) * nextDouble(innerRange.getZ(), outerRange.getZ());
+            double x = (random.nextBoolean() ? 1 : -1) * random.nextDouble(innerRange.getX(), outerRange.getX());
+            double y = (random.nextBoolean() ? 1 : -1) * random.nextDouble(innerRange.getY(), outerRange.getY());
+            double z = (random.nextBoolean() ? 1 : -1) * random.nextDouble(innerRange.getZ(), outerRange.getZ());
 
             origin.add(x, y, z);
 
@@ -87,13 +84,5 @@ public class MythicMobResultExtension extends ResultExtension {
                 mythicMob.spawn(BukkitAdapter.adapt(origin), mobLevel);
             }
         }
-    }
-
-    private double nextDouble(double origin, double bound) {
-        double r = random.nextDouble();
-        r = r * (bound - origin) + origin;
-        if (r >= bound) // correct for rounding
-            r = Math.nextDown(bound);
-        return r;
     }
 }

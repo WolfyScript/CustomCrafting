@@ -59,7 +59,7 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
     public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_workbench");
 
-    private static final String CONSOLE_SEPERATOR = "------------------------------------------------------------------------";
+    private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
 
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 3;
@@ -177,7 +177,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     public void writeSeparator() {
-        getLogger().info(CONSOLE_SEPERATOR);
+        getLogger().info(CONSOLE_SEPARATOR);
     }
 
     private void writePatreonCredits() {
