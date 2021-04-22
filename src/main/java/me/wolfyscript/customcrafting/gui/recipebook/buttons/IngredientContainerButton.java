@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
@@ -13,6 +14,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonType;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -101,16 +103,21 @@ public class IngredientContainerButton extends Button<CCCache> {
         List<CustomItem> variants = getVariantsMap(guiHandler);
         inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
         if (variants.size() > 1) {
-            synchronized (tasks) {
-                tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
-                    if (player != null && slot < inventory.getSize() && !variants.isEmpty()) {
-                        int variant = getTiming(guiHandler);
-                        variant = ++variant < variants.size() ? variant : 0;
-                        guiInventory.setItem(slot, variants.get(variant).create());
-                        setTiming(guiHandler, variant);
+            final int openedPage = guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage();
+            Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> {
+                if (openedPage == guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage()) {
+                    synchronized (tasks) {
+                        tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
+                            if (player != null && slot < inventory.getSize() && !variants.isEmpty()) {
+                                int variant = getTiming(guiHandler);
+                                variant = ++variant < variants.size() ? variant : 0;
+                                guiInventory.setItem(slot, variants.get(variant).create());
+                                setTiming(guiHandler, variant);
+                            }
+                        });
                     }
-                });
-            }
+                }
+            }, 30);
         }
     }
 
