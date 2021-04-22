@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
@@ -10,6 +11,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryInteractEvent;
@@ -85,17 +87,23 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         List<ItemStack> itemStacks = getRecipeContainer(guiHandler).getDisplayItems(player);
         int timing = getTiming(guiHandler);
         inventory.setItem(slot, timing < itemStacks.size() ? itemStacks.get(getTiming(guiHandler)) : new ItemStack(Material.STONE));
+        final int openedPage = guiHandler.getCustomCache().getKnowledgeBook().getPage();
         if (itemStacks.size() > 1) {
-            synchronized (tasks) {
-                tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
-                    if (slot < inventory.getSize() && !itemStacks.isEmpty()) {
-                        int variant = getTiming(guiHandler);
-                        variant = ++variant < itemStacks.size() ? variant : 0;
-                        guiInventory.setItem(slot, itemStacks.get(variant));
-                        setTiming(guiHandler, variant);
+            Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> {
+                if (openedPage == guiHandler.getCustomCache().getKnowledgeBook().getPage()) {
+                    synchronized (tasks) {
+                        tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
+                            if (slot < inventory.getSize() && !itemStacks.isEmpty()) {
+                                int variant = getTiming(guiHandler);
+                                variant = ++variant < itemStacks.size() ? variant : 0;
+                                guiInventory.setItem(slot, itemStacks.get(variant));
+                                setTiming(guiHandler, variant);
+                            }
+                        });
                     }
-                });
-            }
+                }
+            }, 20);
+
         }
     }
 
