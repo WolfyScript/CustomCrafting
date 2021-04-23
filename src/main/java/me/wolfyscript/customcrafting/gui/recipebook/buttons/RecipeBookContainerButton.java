@@ -90,7 +90,7 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         final int openedPage = guiHandler.getCustomCache().getKnowledgeBook().getPage();
         if (itemStacks.size() > 1) {
             Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> {
-                if (openedPage == guiHandler.getCustomCache().getKnowledgeBook().getPage()) {
+                if (guiHandler.getCustomCache().getKnowledgeBook().getSubFolder() == 0 && openedPage == guiHandler.getCustomCache().getKnowledgeBook().getPage()) {
                     synchronized (tasks) {
                         tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
                             if (slot < inventory.getSize() && !itemStacks.isEmpty()) {

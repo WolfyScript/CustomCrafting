@@ -105,7 +105,7 @@ public class IngredientContainerButton extends Button<CCCache> {
         if (variants.size() > 1) {
             final int openedPage = guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage();
             Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> {
-                if (openedPage == guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage()) {
+                if (guiHandler.getCustomCache().getKnowledgeBook().getSubFolder() != 0 && openedPage == guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage()) {
                     synchronized (tasks) {
                         tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
                             if (player != null && slot < inventory.getSize() && !variants.isEmpty()) {
