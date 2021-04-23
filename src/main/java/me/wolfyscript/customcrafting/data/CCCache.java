@@ -155,7 +155,6 @@ public class CCCache extends CustomCache {
     public void applyItem(CustomItem customItem) {
         if (applyItem != null) {
             applyItem.applyItem(getItems(), this, customItem);
-            applyItem = null;
         }
     }
 

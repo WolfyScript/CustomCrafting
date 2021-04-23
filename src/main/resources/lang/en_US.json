@@ -366,21 +366,6 @@
           }
         }
       },
-      "item_editor": {
-        "gui_name": "&0&lItem Editor",
-        "items": {
-          "create_item": {
-            "name": "&6Create",
-            "help": [
-              "&7Create a custom Item"
-            ]
-          }
-        },
-        "messages": {
-          "item_applied": "&aItem successfully applied to recipe!",
-          "item_editable": "&aThis item can now be edited!"
-        }
-      },
       "recipe_list": {
         "gui_name": "&8&lRecipe List",
         "gui_help": [
@@ -2548,6 +2533,21 @@
               "&7They can be commands, mob spawning, sound, etc."
             ]
           }
+        }
+      },
+      "item_editor": {
+        "gui_name": "&0&lItem Editor",
+        "items": {
+          "create_item": {
+            "name": "&6Create",
+            "help": [
+              "&7Create a custom Item"
+            ]
+          }
+        },
+        "messages": {
+          "item_applied": "&aItem successfully applied to recipe!",
+          "item_editable": "&aThis item can now be edited!"
         }
       },
       "tag_settings": {

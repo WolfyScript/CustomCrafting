@@ -6,6 +6,7 @@ public enum Setting {
 
     MAIN_MENU,
     RECIPE_LIST,
+    ITEM_LIST,
     ITEMS,
     RECIPE_CREATOR;
 

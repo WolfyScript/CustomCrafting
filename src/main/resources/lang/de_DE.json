@@ -361,42 +361,6 @@
           }
         }
       },
-      "item_editor": {
-        "gui_name": "&0&lItem Editor",
-        "items": {
-          "load_item": {
-            "name": "&6Lade",
-            "help": [
-              "&7Lade ein bestehendes Item"
-            ]
-          },
-          "create_item": {
-            "name": "&6Erstelle",
-            "help": [
-              "&7Erstelle ein Custom Item"
-            ]
-          },
-          "edit_item": {
-            "name": "&7Editiere",
-            "help": [
-              "&7Editiere ein bestehendes Item"
-            ]
-          },
-          "delete_item": {
-            "name": "&4Lösche",
-            "help": [
-              "&7Lösche ein bestehendes Item"
-            ]
-          }
-        },
-        "messages": {
-          "input": "&eGebe den Ordnernamen und Itemnamen des Items ein! &6[Ordnername] [Itemname]",
-          "error": "&cDieses Item existiert nicht oder ist nicht geladen!",
-          "item_applied": "&aHinzufügung des Items geglückt!",
-          "item_editable": "&aDieses Item kann jetzt editiert werden!",
-          "no_name": "&cDu musst einen gültigen Itemnamen eingeben!"
-        }
-      },
       "recipe_editor": {
         "gui_name": "&4&lRezept Editor",
         "items": {
@@ -2523,6 +2487,21 @@
           "&7Tipp:",
           "&eShift &7+ &eRechtsklick &7öffnet den ItemEditor"
         ]
+      },
+      "item_editor": {
+        "gui_name": "&0&lItem Editor",
+        "items": {
+          "create_item": {
+            "name": "&6Erstelle",
+            "help": [
+              "&7Erstelle ein Custom Item"
+            ]
+          }
+        },
+        "messages": {
+          "item_applied": "&aHinzufügung des Items geglückt!",
+          "item_editable": "&aDieses Item kann jetzt editiert werden!"
+        }
       }
     },
     "recipe_book": {

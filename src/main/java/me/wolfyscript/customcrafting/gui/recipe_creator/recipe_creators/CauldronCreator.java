@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
@@ -41,7 +40,7 @@ public class CauldronCreator extends RecipeCreator {
                     if (inventory.getItem(slot) != null && !inventory.getItem(slot).getType().equals(Material.AIR)) {
                         cache.getItems().setItem(true, CustomItem.getReferenceByItemStack(inventory.getItem(slot)));
                         cache.setApplyItem((items, cache1, customItem) -> cache1.getCauldronRecipe().setHandItem(items.getItem()));
-                        guiHandler.openWindow(MainCluster.ITEM_EDITOR);
+                        guiHandler.openWindow(RecipeCreatorCluster.ITEM_EDITOR);
                     }
                 });
                 return true;

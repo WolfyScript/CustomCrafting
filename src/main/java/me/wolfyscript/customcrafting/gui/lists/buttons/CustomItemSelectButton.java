@@ -3,7 +3,9 @@ package me.wolfyscript.customcrafting.gui.lists.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
+import me.wolfyscript.customcrafting.gui.ItemCreatorCluster;
 import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -43,15 +45,15 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                         }), new ClickData("$inventories.none.item_list.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler.openCluster()));
                     } else {
                         items.setItem(items.isRecipeItem(), customItem);
-                        api.getInventoryAPI().getGuiWindow(new NamespacedKey("none", "item_editor")).sendMessage(player, "item_editable");
-                        guiHandler.openWindow(new NamespacedKey("item_creator", "main_menu"));
+                        api.getInventoryAPI().getGuiWindow(RecipeCreatorCluster.ITEM_EDITOR).sendMessage(player, "item_editable");
+                        guiHandler.openWindow(ItemCreatorCluster.MAIN_MENU);
                     }
                 } else if (((InventoryClickEvent) event).isLeftClick()) {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                         cache.applyItem(customItem);
-                        items.setRecipeItem(false);
-                        api.getInventoryAPI().getGuiWindow(MainCluster.ITEM_EDITOR).sendMessage(player, "item_applied");
-                        guiHandler.openCluster("recipe_creator");
+                        api.getInventoryAPI().getGuiWindow(RecipeCreatorCluster.ITEM_EDITOR).sendMessage(player, "item_applied");
+                        guiHandler.getClusterHistory().get(guiHandler.getCluster()).remove(guiHandler.getClusterHistory().size() - 1);
+                        guiHandler.openCluster(RecipeCreatorCluster.KEY);
                     } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
                         ItemStack itemStack = customItem.create();
                         int amount = ((InventoryClickEvent) event).isShiftClick() ? itemStack.getMaxStackSize() : 1;

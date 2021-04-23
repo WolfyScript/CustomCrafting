@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.lists.CustomItemList;
 import me.wolfyscript.customcrafting.gui.lists.RecipesList;
-import me.wolfyscript.customcrafting.gui.main_gui.ItemEditor;
 import me.wolfyscript.customcrafting.gui.main_gui.MainMenu;
 import me.wolfyscript.customcrafting.gui.main_gui.PatronsMenu;
 import me.wolfyscript.customcrafting.gui.main_gui.Settings;
@@ -46,7 +45,6 @@ public class MainCluster extends CCCluster {
     public static final NamespacedKey RECIPE_LIST = new NamespacedKey(KEY, "recipe_list");
 
     //Window keys
-    public static final NamespacedKey ITEM_EDITOR = new NamespacedKey(KEY, "item_editor");
     public static final NamespacedKey ITEM_LIST = new NamespacedKey(KEY, "item_list");
     //Message keys
 
@@ -103,12 +101,12 @@ public class MainCluster extends CCCluster {
             return true;
         }));
         registerButton(new ActionButton<>(ITEM_LIST.getKey(), Material.BOOKSHELF, (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.getCustomCache().setSetting(Setting.ITEM_LIST);
             guiHandler.openWindow(ITEM_LIST.getKey());
             return true;
         }));
 
         registerGuiWindow(new MainMenu(this, customCrafting));
-        registerGuiWindow(new ItemEditor(this, customCrafting));
         registerGuiWindow(new CustomItemList(this, customCrafting));
         registerGuiWindow(new RecipesList(this, customCrafting));
         registerGuiWindow(new Settings(this, customCrafting));

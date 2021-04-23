@@ -6,6 +6,8 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
+import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.lists.buttons.CustomItemSelectButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.ItemNamespaceButton;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -34,6 +36,9 @@ public class CustomItemList extends CCWindow {
         registerButton(new ActionButton<>("back", new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (items.getListNamespace() != null) {
                 items.setListNamespace(null);
+            } else if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
+                guiHandler.getClusterHistory().get(guiHandler.getCluster()).remove(guiHandler.getClusterHistory().size() - 1);
+                guiHandler.openCluster(RecipeCreatorCluster.KEY);
             } else {
                 guiHandler.openPreviousWindow();
             }

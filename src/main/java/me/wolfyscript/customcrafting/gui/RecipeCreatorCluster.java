@@ -62,6 +62,9 @@ public class RecipeCreatorCluster extends CCCluster {
     public static final NamespacedKey MIRROR_HORIZONTAL_DISABLED = new NamespacedKey(KEY, MIRROR_HORIZONTAL + DISABLED);
     public static final NamespacedKey MIRROR_ROTATION_DISABLED = new NamespacedKey(KEY, MIRROR_ROTATION + DISABLED);
 
+    //Window keys
+    public static final NamespacedKey ITEM_EDITOR = new NamespacedKey(KEY, "item_editor");
+
     public RecipeCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
     }
@@ -85,6 +88,7 @@ public class RecipeCreatorCluster extends CCCluster {
         //Tags
         registerGuiWindow(new TagSettings(this, customCrafting));
         registerGuiWindow(new TagChooseList(this, customCrafting));
+        registerGuiWindow(new ItemEditor(this, customCrafting));
 
         registerButton(new ActionButton<>(CONDITIONS.getKey(), Material.CYAN_CONCRETE_POWDER, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openWindow("conditions");

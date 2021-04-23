@@ -334,42 +334,6 @@
           }
         }
       },
-      "item_editor": {
-        "gui_name": "&0&l物品编辑器",
-        "items": {
-          "load_item": {
-            "name": "&6加载物品",
-            "help": [
-              "&7从已保存的物品中选择物品编辑"
-            ]
-          },
-          "create_item": {
-            "name": "&6创建",
-            "help": [
-              "&7创建一个新的自定义物品"
-            ]
-          },
-          "edit_item": {
-            "name": "&7编辑",
-            "help": [
-              "&7从背包中选择物品编辑"
-            ]
-          },
-          "delete_item": {
-            "name": "&4删除",
-            "help": [
-              "&7删除已保存的物品"
-            ]
-          }
-        },
-        "messages": {
-          "input": "&e输入文件夹和项目名称!&6如: example item",
-          "error": "&c此配方不存在或未加载!",
-          "item_applied": "&a配方成功应用!",
-          "item_editable": "&a现在可以编辑此配方!",
-          "no_name": "&c您需要输入配方名称!"
-        }
-      },
       "recipe_editor": {
         "gui_name": "&4&l配方编辑器",
         "items": {
@@ -2188,6 +2152,21 @@
           "&7提示:",
           "&eShift&7+&e右键点击&7会打开物品编辑器"
         ]
+      },
+      "item_editor": {
+        "gui_name": "&0&l物品编辑器",
+        "items": {
+          "create_item": {
+            "name": "&6创建",
+            "help": [
+              "&7创建一个新的自定义物品"
+            ]
+          }
+        },
+        "messages": {
+          "item_applied": "&a配方成功应用!",
+          "item_editable": "&a现在可以编辑此配方!"
+        }
       }
     },
     "recipe_book": {
