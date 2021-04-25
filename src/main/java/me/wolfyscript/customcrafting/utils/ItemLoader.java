@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class ItemLoader {
 
@@ -60,10 +59,6 @@ public class ItemLoader {
         return new Result<>();
     }
 
-    public static void loadToList(JsonNode node, List<CustomItem> items) {
-        items.add(load(node));
-    }
-
     public static CustomItem load(JsonNode node) {
         return load(JacksonUtil.getObjectMapper().convertValue(node, APIReference.class));
     }
@@ -72,6 +67,10 @@ public class ItemLoader {
         CustomItem customItem = CustomItem.of(reference);
         if (customItem == null && reference instanceof WolfyUtilitiesRef) {
             customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(((WolfyUtilitiesRef) reference).getNamespacedKey()));
+        }
+        if (customItem != null && customItem.hasNamespacedKey()) {
+            customItem = customItem.clone();
+            customItem.setAmount(reference.getAmount());
         }
         return customItem;
     }
