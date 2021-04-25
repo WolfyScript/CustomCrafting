@@ -17,6 +17,7 @@ import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +31,7 @@ public class DataBaseHandler extends SQLDataBase {
     private final LanguageAPI languageAPI;
     private final MainConfig mainConfig;
 
-    public DataBaseHandler(WolfyUtilities api, MainConfig mainConfig, CustomCrafting customCrafting) {
+    public DataBaseHandler(WolfyUtilities api, MainConfig mainConfig, CustomCrafting customCrafting) throws SQLException {
         super(api, mainConfig.getDatabaseHost(), mainConfig.getDatabaseSchema(), mainConfig.getDatabaseUsername(), mainConfig.getDatabasePassword(), mainConfig.getDatabasePort());
         this.api = WolfyUtilities.get(customCrafting);
         this.chat = api.getChat();
@@ -41,12 +42,12 @@ public class DataBaseHandler extends SQLDataBase {
         init();
     }
 
-    public void init() {
-        try {
-            PreparedStatement itemsTable = open().prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_items(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));");
+    public void init() throws SQLException {
+        try (Connection connection = open()) {
+            PreparedStatement itemsTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_items(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));");
             itemsTable.executeUpdate();
             itemsTable.close();
-            PreparedStatement recipesTable = open().prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_recipes(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rType TINYTEXT null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));");
+            PreparedStatement recipesTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_recipes(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rType TINYTEXT null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));");
             recipesTable.executeUpdate();
             recipesTable.close();
         } catch (SQLException e) {
