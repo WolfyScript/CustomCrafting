@@ -52,24 +52,33 @@ public class CraftListener implements Listener {
         CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
         if (event.getSlot() == 0) {
             ItemStack resultItem = inventory.getResult();
-            if (ItemUtils.isAirOrNull(resultItem) || (!ItemUtils.isAirOrNull(event.getCursor()) && !event.getCursor().isSimilar(resultItem) && !event.isShiftClick())) {
+            ItemStack cursor = event.getCursor();
+            if (ItemUtils.isAirOrNull(resultItem) || (!ItemUtils.isAirOrNull(cursor) && !cursor.isSimilar(resultItem) && !event.isShiftClick())) {
                 event.setCancelled(true);
                 return;
             }
             if (craftManager.has(event.getWhoClicked().getUniqueId())) {
                 event.setCancelled(true);
-                ItemStack[] matrix = inventory.getMatrix();
-                craftManager.consumeRecipe(resultItem, matrix, event);
-                inventory.setMatrix(matrix); // Setting the matrix 1 tick later overrides the bugged items. Setting it directly will also cause the newly set items to bug.
-                ((Player) event.getWhoClicked()).updateInventory(); //This helps, but the bug is not gone completely. Assumption: The crafting logic of vanilla minecraft is called afterwards and bugs the items, because there is no actual recipe registered.
-                craftManager.remove(event.getWhoClicked().getUniqueId());
+                if (event.isShiftClick() || ItemUtils.isAirOrNull(cursor) || cursor.getAmount() + resultItem.getAmount() <= cursor.getMaxStackSize()) {
+                    ItemStack[] matrix = inventory.getMatrix();
+                    craftManager.consumeRecipe(resultItem, matrix, event);
+                    inventory.setMatrix(matrix);
+                    ((Player) event.getWhoClicked()).updateInventory();
+                    inventory.setResult(new ItemStack(Material.AIR));
+                    callPreCraftEvent(inventory, event);
+                }
             }
         } else if ((event.getAction().equals(InventoryAction.PLACE_ALL) || event.getAction().equals(InventoryAction.PLACE_ONE) || event.getAction().equals(InventoryAction.PLACE_SOME)) && inventory.getItem(event.getSlot()) != null) {
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(inventory, event.getView(), false);
-                Bukkit.getPluginManager().callEvent(event1);
-            });
+            callPreCraftEvent(inventory, event);
         }
+    }
+
+    public void callPreCraftEvent(CraftingInventory inventory, InventoryClickEvent event) {
+        Bukkit.getScheduler().runTask(customCrafting, () -> {
+            PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(inventory, event.getView(), false);
+            Bukkit.getPluginManager().callEvent(event1);
+            ((Player) event.getWhoClicked()).updateInventory();
+        });
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
