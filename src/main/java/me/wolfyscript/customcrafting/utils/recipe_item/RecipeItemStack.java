@@ -147,14 +147,14 @@ public abstract class RecipeItemStack {
      */
     @JsonIgnore
     public ItemStack getItemStack() {
-        if (!getItems().isEmpty()) {
-            return CustomItem.with(getItems().get(0)).create();
+        if (!getChoices().isEmpty()) {
+            return getChoices().get(0).create();
         } else if (!getTags().isEmpty()) {
             Optional<NamespacedKey> tag = getTags().stream().findFirst();
             if (tag.isPresent()) {
                 ItemBuilder itemBuilder = new ItemBuilder(Material.NAME_TAG);
                 itemBuilder.setDisplayName("§6§lTag");
-                itemBuilder.addLoreLine("§7" + tag.get().toString());
+                itemBuilder.addLoreLine("§7" + tag.get());
                 return itemBuilder.create();
             }
         }
