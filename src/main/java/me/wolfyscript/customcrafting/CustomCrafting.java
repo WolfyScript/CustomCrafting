@@ -46,6 +46,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -137,7 +138,11 @@ public class CustomCrafting extends JavaPlugin {
 
         configHandler = new ConfigHandler(this);
         if (configHandler.getConfig().isDatabaseEnabled()) {
-            dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
+            try {
+                dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
         configHandler.loadDefaults();
         dataHandler = new DataHandler(this);
