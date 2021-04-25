@@ -21,6 +21,11 @@ public class CauldronData extends CustomData implements Cloneable {
         this.enabled = false;
     }
 
+    protected CauldronData(CauldronData cauldronData) {
+        super(cauldronData);
+        this.enabled = cauldronData.enabled;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -46,6 +51,11 @@ public class CauldronData extends CustomData implements Cloneable {
         if (!super.equals(o)) return false;
         CauldronData that = (CauldronData) o;
         return enabled == that.enabled;
+    }
+
+    @Override
+    public CauldronData clone() {
+        return new CauldronData(this);
     }
 
     @Override

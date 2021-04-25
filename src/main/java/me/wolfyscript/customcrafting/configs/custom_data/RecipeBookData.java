@@ -21,6 +21,11 @@ public class RecipeBookData extends CustomData implements Cloneable {
         this.enabled = false;
     }
 
+    protected RecipeBookData(RecipeBookData recipeBookData) {
+        super(recipeBookData);
+        this.enabled = recipeBookData.enabled;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -46,6 +51,11 @@ public class RecipeBookData extends CustomData implements Cloneable {
         if (!super.equals(o)) return false;
         RecipeBookData that = (RecipeBookData) o;
         return enabled == that.enabled;
+    }
+
+    @Override
+    public RecipeBookData clone() {
+        return new RecipeBookData(this);
     }
 
     @Override

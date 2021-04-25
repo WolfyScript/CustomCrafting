@@ -28,6 +28,13 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
         this.keepItems = false;
     }
 
+    protected EliteWorkbenchData(EliteWorkbenchData eliteWorkbenchData) {
+        super(eliteWorkbenchData);
+        this.enabled = eliteWorkbenchData.enabled;
+        this.gridSize = eliteWorkbenchData.gridSize;
+        this.allowHoppers = eliteWorkbenchData.allowHoppers;
+        this.keepItems = eliteWorkbenchData.keepItems;
+    }
 
     public boolean isEnabled() {
         return enabled;
@@ -105,12 +112,7 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
 
     @Override
     public EliteWorkbenchData clone() {
-        try {
-            return (EliteWorkbenchData) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new EliteWorkbenchData(this);
     }
 
     public static class Provider extends CustomData.Provider<EliteWorkbenchData> {
