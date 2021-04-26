@@ -31,8 +31,17 @@ public class PatronsMenu extends CCWindow {
         registerButton(new ActionButton<>("patreon", PlayerHeadUtils.getViaURL("5693b66a595f78af3f51f4efa4c13375b1b958e6f4c507a47c4fe565cc275"), (cache, guiHandler, player, inventory, slot, event) -> {
             api.getBookUtil().openBook(player, false,
                     new ClickData[]{
-                            new ClickData("&8[&cBecome a Patron&8]\n\n\n\n\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"), new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")),
-                            new ClickData("\n&8[&cBack&8]\n", null, new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Back to Patreon Menu"), new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cc")),
+                            new ClickData(
+                                    "&8[&cBecome a Patron&8]\n\n\n\n\n",
+                                    null,
+                                    new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Goto WolfyScript's Patreon"),
+                                    new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/wolfyscript")
+                            ),
+                            new ClickData(
+                                    "\n&8[&cBack&8]\n",
+                                    null,
+                                    new HoverEvent(HoverEvent.Action.SHOW_TEXT, "§7Back to Patreon Menu"),
+                                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cc")),
                     }
             );
             return true;
