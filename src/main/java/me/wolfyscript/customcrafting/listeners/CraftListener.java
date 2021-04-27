@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -125,7 +124,7 @@ public class CraftListener implements Listener {
             NamespacedKey key = NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(event.getRecipe()));
             if (!customCrafting.getDataHandler().getDisabledRecipes().contains(key)) {
                 ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(key);
-                if (customRecipe instanceof CraftingRecipe && (customCrafting.getConfigHandler().getConfig().isMCLimited() || customRecipe.isHidden() || (customRecipe.getConditions().getByID("permission") != null && !customRecipe.getConditions().getByID("permission").check(customRecipe, new Conditions.Data(event.getPlayer(), null, null))))) {
+                if (customRecipe instanceof CraftingRecipe) {
                     event.setCancelled(true);
                 }
             } else {

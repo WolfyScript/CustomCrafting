@@ -149,10 +149,6 @@ public class MainConfig extends YamlConfiguration {
         return getString("database.password");
     }
 
-    public boolean isMCLimited() {
-        return getBoolean("recipes.limited", true);
-    }
-
     public boolean isBrewingRecipes() {
         return getBoolean("recipes.brewing");
     }
