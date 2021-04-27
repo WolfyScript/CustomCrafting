@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -27,6 +28,16 @@ public class PlayerListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         WolfyUtilities api = CustomCrafting.inst().getApi();
+
+        if (customCrafting.getConfigHandler().getConfig().updateOldCustomItems()) {
+            ItemStack[] contents = player.getInventory().getContents();
+            if (contents.length > 0) {
+                for (ItemStack stack : contents) {
+                    ItemLoader.updateItem(stack);
+                }
+            }
+        }
+
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (customCrafting.isOutdated()) {
                 api.getChat().sendMessage(player, "$msg.player.outdated.msg$");

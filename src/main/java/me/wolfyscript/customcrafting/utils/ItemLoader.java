@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
@@ -14,12 +15,18 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 
 public class ItemLoader {
+
+    private static final org.bukkit.NamespacedKey customItemContainerKey = new org.bukkit.NamespacedKey(WolfyUtilities.getWUPlugin(), "custom_item");
 
     private ItemLoader() {
     }
@@ -121,6 +128,24 @@ public class ItemLoader {
             }
         }
         return false;
+    }
+
+    public static void updateItem(ItemStack stack) {
+        if (stack != null && stack.hasItemMeta()) {
+            ItemMeta itemMeta = stack.getItemMeta();
+            if (itemMeta != null && !itemMeta.getPersistentDataContainer().isEmpty()) {
+                PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+                if (container.has(customItemContainerKey, PersistentDataType.STRING)) {
+                    me.wolfyscript.utilities.util.NamespacedKey itemKey = me.wolfyscript.utilities.util.NamespacedKey.of(container.get(customItemContainerKey, PersistentDataType.STRING));
+                    if (itemKey != null && !Registry.CUSTOM_ITEMS.has(itemKey)) {
+                        me.wolfyscript.utilities.util.NamespacedKey updatedKey = NamespacedKeyUtils.fromInternal(itemKey);
+                        if (Registry.CUSTOM_ITEMS.has(updatedKey)) {
+                            container.set(customItemContainerKey, PersistentDataType.STRING, updatedKey.toString());
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

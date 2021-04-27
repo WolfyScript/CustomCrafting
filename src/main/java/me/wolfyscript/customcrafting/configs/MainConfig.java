@@ -33,6 +33,10 @@ public class MainConfig extends YamlConfiguration {
         set("language", lang);
     }
 
+    public boolean updateOldCustomItems() {
+        return getBoolean("custom_items.update", false);
+    }
+
     public boolean isResetCreatorAfterSave() {
         return getBoolean("creator.reset_after_save");
     }

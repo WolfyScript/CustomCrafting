@@ -57,6 +57,9 @@ crafting_table:
 recipe_book:
   reset: true             # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
 
+custom_items:
+  update: true            # Use this option if you have saved CustomItems and your players got them in their inventory. Each time a Player joins the server it will try to update the CustomItems.
+
 recipes:
   limited: true           # This limits the recipes that are registered! They will not be displayed in the vanilla recipe book if enabled. To prevent this issue (https://bugs.mojang.com/browse/MC-185901) this setting should not be changed!
   brewing: false          # Toggle the Brewing Recipes. They are off by default to prevent possible duplication issues
