@@ -9,6 +9,9 @@ import java.util.UUID;
 
 public class PlayerUtil {
 
+    private PlayerUtil() {
+    }
+
     public static final NamespacedKey CC_DATA = new NamespacedKey("customcrafting", "data");
 
     public static CCPlayerData getStore(Player player) {

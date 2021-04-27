@@ -147,7 +147,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     }
 
     private CraftingData checkShape(ItemStack[] ingredients, List<List<ItemStack>> matrix, String[] shape) {
-        if (getIngredients() == null || getIngredients().isEmpty() || matrix.size() != height || matrix.get(0).size() != width)
+        if (getIngredients() == null || getIngredients().isEmpty() || matrix.size() != shape.length || matrix.get(0).size() != shape[0].length())
             return null;
         List<Character> containedKeys = new ArrayList<>();
         Map<Vec2d, CustomItem> foundItems = new HashMap<>();
