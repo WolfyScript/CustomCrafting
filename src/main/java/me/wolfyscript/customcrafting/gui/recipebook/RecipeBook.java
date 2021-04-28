@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -30,6 +29,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeBook extends CCWindow {
@@ -116,14 +116,12 @@ public class RecipeBook extends CCWindow {
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         NamespacedKey grayBtnKey = playerStore.getLightBackground();
         KnowledgeBook knowledgeBook = event.getGuiHandler().getCustomCache().getKnowledgeBook();
-        Category category = knowledgeBook.getCategory();
         CategoryFilter filter = ((ItemCategoryButton) event.getGuiHandler().getInvAPI().getGuiCluster("recipe_book").getButton("item_category")).getFilter(event.getGuiHandler());
         if (knowledgeBook.getSubFolder() == 0) {
             for (int i = 0; i < 9; i++) {
                 event.setButton(i, playerStore.getDarkBackground());
             }
-            List<RecipeContainer> containers = category.getRecipeList(player, filter, knowledgeBook.getEliteCraftingTable());
-
+            List<RecipeContainer> containers = knowledgeBook.getCategory() != null ? knowledgeBook.getCategory().getRecipeList(player, filter, knowledgeBook.getEliteCraftingTable()) : new ArrayList<>();
             int maxPages = containers.size() / 45 + (containers.size() % 45 > 0 ? 1 : 0);
             if (knowledgeBook.getPage() >= maxPages) {
                 knowledgeBook.setPage(0);
