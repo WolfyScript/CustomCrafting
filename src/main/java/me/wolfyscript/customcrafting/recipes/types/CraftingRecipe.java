@@ -32,8 +32,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends Custom
     protected boolean shapeless;
     private Map<Character, Ingredient> ingredients;
 
-    protected List<Ingredient> items;
-
     protected int bookGridSize = 3;
     protected int bookSquaredGrid = 9;
 

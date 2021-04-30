@@ -57,8 +57,6 @@ public abstract class Condition {
     }
 
     /**
-     *
-     *
      * @param gen the current JsonGenerator
      * @throws IOException
      */

@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.item_creator.buttons;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.utilities.api.inventory.custom_items.ParticleContent;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.Registry;
@@ -29,8 +28,7 @@ public class ParticleEffectSelectButton extends ActionButton<CCCache> {
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Items items = guiHandler.getCustomCache().getItems();
-            ParticleContent ParticleContent = items.getItem().getParticleContent();
-            ParticleEffect particleEffect = Registry.PARTICLE_EFFECTS.get(ParticleContent.getParticleEffect(action));
+            ParticleEffect particleEffect = Registry.PARTICLE_EFFECTS.get(items.getItem().getParticleContent().getParticleEffect(action));
             if (particleEffect != null) {
                 itemStack.setType(particleEffect.getIcon());
                 hashMap.put("%effect_name%", particleEffect.getName());

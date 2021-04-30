@@ -55,49 +55,55 @@ public class DataBaseHandler extends SQLDataBase {
         }
     }
 
-    public void loadRecipes() throws SQLException {
+    public void loadRecipes() {
         api.getConsole().info("$msg.startup.recipes.recipes$");
-        PreparedStatement recipesQuery = open().prepareStatement("SELECT * FROM customcrafting_recipes");
-        ResultSet resultSet = recipesQuery.executeQuery();
-        if (resultSet == null) {
-            return;
-        }
-        while (resultSet.next()) {
-            String namespace = resultSet.getString("rNamespace");
-            String key = resultSet.getString("rKey");
-            NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
-            ICustomRecipe<?,?> recipe = getRecipe(namespacedKey);
-            if (recipe != null) {
-                me.wolfyscript.customcrafting.Registry.RECIPES.register(recipe);
-            } else {
-                api.getConsole().info("Error loading recipe \"" + namespacedKey + "\". Couldn't find recipe in DataBase!");
+        try (PreparedStatement recipesQuery = open().prepareStatement("SELECT * FROM customcrafting_recipes")) {
+            ResultSet resultSet = recipesQuery.executeQuery();
+            if (resultSet == null) {
+                return;
             }
+            while (resultSet.next()) {
+                String namespace = resultSet.getString("rNamespace");
+                String key = resultSet.getString("rKey");
+                NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
+                ICustomRecipe<?, ?> recipe = getRecipe(namespacedKey);
+                if (recipe != null) {
+                    me.wolfyscript.customcrafting.Registry.RECIPES.register(recipe);
+                } else {
+                    api.getConsole().info("Error loading recipe \"" + namespacedKey + "\". Couldn't find recipe in DataBase!");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            close();
         }
-        recipesQuery.close();
-        close();
     }
 
-    public void loadItems() throws SQLException {
+    public void loadItems() {
         api.getConsole().info("$msg.startup.recipes.items$");
-        PreparedStatement itemsQuery = open().prepareStatement("SELECT * FROM customcrafting_items");
-        ResultSet resultSet = itemsQuery.executeQuery();
-        if (resultSet == null) return;
-        while (resultSet.next()) {
-            String namespace = resultSet.getString("rNamespace");
-            String key = resultSet.getString("rKey");
-            String data = resultSet.getString("rData");
-            if (namespace != null && key != null && data != null && !data.equals("{}")) {
-                try {
-                    Registry.CUSTOM_ITEMS.register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
-                } catch (JsonProcessingException e) {
-                    api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
+        try (PreparedStatement itemsQuery = open().prepareStatement("SELECT * FROM customcrafting_items")) {
+            ResultSet resultSet = itemsQuery.executeQuery();
+            if (resultSet == null) return;
+            while (resultSet.next()) {
+                String namespace = resultSet.getString("rNamespace");
+                String key = resultSet.getString("rKey");
+                String data = resultSet.getString("rData");
+                if (namespace != null && key != null && data != null && !data.equals("{}")) {
+                    try {
+                        Registry.CUSTOM_ITEMS.register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                    } catch (JsonProcessingException e) {
+                        api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
+                    }
+                } else {
+                    api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacedkey or data!");
                 }
-            } else {
-                api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacedkey or data!");
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            close();
         }
-        itemsQuery.close();
-        close();
     }
 
     public boolean hasRecipe(NamespacedKey namespacedKey) {

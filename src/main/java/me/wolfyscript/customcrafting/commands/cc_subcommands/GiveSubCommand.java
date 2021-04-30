@@ -42,77 +42,75 @@ public class GiveSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = customCrafting.getApi();
-        if (args.length >= 2) {
-            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
-                Player target = Bukkit.getPlayer(args[0]);
-                Pair<String, String> playerValue = new Pair<>("%PLAYER%", args[0]);
-                if (target == null) {
+        if (args.length >= 2 && ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
+            Player target = Bukkit.getPlayer(args[0]);
+            Pair<String, String> playerValue = new Pair<>("%PLAYER%", args[0]);
+            if (target == null) {
+                if (sender instanceof Player) {
+                    api.getChat().sendMessage((Player) sender, "$commands.give.player_offline$", playerValue);
+                } else {
+                    api.getConsole().log(Level.INFO, "$commands.give.player_offline$", args[0]);
+                }
+                return true;
+            }
+            NamespacedKey namespacedKey = NamespacedKey.of(args[1]);
+            Pair<String, String> itemValue = new Pair<>("%ITEM%", args[1]);
+            //not required values ---------------------------------------
+            int amount = 1;
+            if (args.length > 2) {
+                try {
+                    amount = Integer.parseInt(args[2]);
+                } catch (NumberFormatException ex) {
                     if (sender instanceof Player) {
-                        api.getChat().sendMessage((Player) sender, "$commands.give.player_offline$", playerValue);
+                        api.getChat().sendMessage((Player) sender, "$commands.give.invalid_amount$");
                     } else {
-                        api.getConsole().log(Level.INFO, "$commands.give.player_offline$", args[0]);
+                        api.getConsole().info("$commands.give.invalid_amount$");
                     }
                     return true;
                 }
-                NamespacedKey namespacedKey = NamespacedKey.of(args[1]);
-                Pair<String, String> itemValue = new Pair<>("%ITEM%", args[1]);
-                //not required values ---------------------------------------
-                int amount = 1;
-                if (args.length > 2) {
-                    try {
-                        amount = Integer.parseInt(args[2]);
-                    } catch (NumberFormatException ex) {
+            }
+            Pair<String, String> amountValue = new Pair<>("%AMOUNT%", String.valueOf(amount));
+            boolean dropItems = true;
+            if (args.length > 3) {
+                dropItems = Boolean.parseBoolean(args[3]);
+            }
+            //------------------------------------------------------------
+            if (namespacedKey != null) {
+                CustomItem customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
+                if (customItem != null) {
+                    ItemStack itemStack = customItem.create(amount);
+                    if (InventoryUtils.hasInventorySpace(target, itemStack)) {
+                        target.getInventory().addItem(itemStack);
+                    } else if (dropItems && target.getLocation().getWorld() != null) {
+                        target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
+                    } else {
                         if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.invalid_amount$");
+                            api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
                         } else {
-                            api.getConsole().info("$commands.give.invalid_amount$");
+                            api.getConsole().log(Level.INFO, "$commands.give.no_inv_space$", args[1]);
                         }
                         return true;
                     }
-                }
-                Pair<String, String> amountValue = new Pair<>("%AMOUNT%", String.valueOf(amount));
-                boolean dropItems = true;
-                if (args.length > 3) {
-                    dropItems = Boolean.parseBoolean(args[3]);
-                }
-                //------------------------------------------------------------
-                if (namespacedKey != null) {
-                    CustomItem customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
-                    if (customItem != null) {
-                        ItemStack itemStack = customItem.create(amount);
-                        if (InventoryUtils.hasInventorySpace(target, itemStack)) {
-                            target.getInventory().addItem(itemStack);
-                        } else if (dropItems && target.getLocation().getWorld() != null) {
-                            target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
+                    if (amount > 1) {
+                        if (sender instanceof Player) {
+                            api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
                         } else {
-                            if (sender instanceof Player) {
-                                api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
-                            } else {
-                                api.getConsole().log(Level.INFO, "$commands.give.no_inv_space$", args[1]);
-                            }
-                            return true;
+                            api.getConsole().log(Level.INFO, "$commands.give.success_amount$", args[2], args[1], args[0]);
                         }
-                        if (amount > 1) {
-                            if (sender instanceof Player) {
-                                api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
-                            } else {
-                                api.getConsole().log(Level.INFO, "$commands.give.success_amount$", args[2], args[1], args[0]);
-                            }
+                    } else {
+                        if (sender instanceof Player) {
+                            api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
                         } else {
-                            if (sender instanceof Player) {
-                                api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
-                            } else {
-                                api.getConsole().log(Level.INFO, "$commands.give.success$", args[1], args[0]);
-                            }
+                            api.getConsole().log(Level.INFO, "$commands.give.success$", args[1], args[0]);
                         }
-                        return true;
                     }
+                    return true;
                 }
-                if (sender instanceof Player) {
-                    api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
-                } else {
-                    api.getConsole().log(Level.INFO, "$commands.give.invalid_item$", args[1]);
-                }
+            }
+            if (sender instanceof Player) {
+                api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
+            } else {
+                api.getConsole().log(Level.INFO, "$commands.give.invalid_item$", args[1]);
             }
         }
         return true;

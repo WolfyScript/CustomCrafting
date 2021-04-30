@@ -26,7 +26,6 @@ import org.bukkit.inventory.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -100,13 +99,9 @@ public class DataHandler {
     private void loadDataBase() {
         DataBaseHandler dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
         api.getConsole().info("- - - - [Database Storage] - - - -");
-        try {
-            dataBaseHandler.loadItems();
-            api.getConsole().info("");
-            dataBaseHandler.loadRecipes();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        dataBaseHandler.loadItems();
+        api.getConsole().info("");
+        dataBaseHandler.loadRecipes();
     }
 
     private void loadConfigs() {
@@ -118,7 +113,7 @@ public class DataHandler {
                 loadItems(dir);
             }
             for (String dir : dirs) {
-                for (RecipeType<? extends ICustomRecipe<?,?>> type : Types.values()) {
+                for (RecipeType<? extends ICustomRecipe<?, ?>> type : Types.values()) {
                     loadRecipe(dir, type);
                 }
             }
@@ -150,7 +145,7 @@ public class DataHandler {
         }
     }
 
-    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?,?>> type) {
+    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?, ?>> type) {
         for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
             String name = file.getName();
             NamespacedKey namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
@@ -236,9 +231,9 @@ public class DataHandler {
         }
     }
 
-    public boolean loadRecipeIntoCache(ICustomRecipe<?,?> recipe, GuiHandler<CCCache> guiHandler) {
+    public boolean loadRecipeIntoCache(ICustomRecipe<?, ?> recipe, GuiHandler<CCCache> guiHandler) {
         if (guiHandler.getCustomCache().getRecipeType().equals(recipe.getRecipeType())) {
-            ICustomRecipe<?,?> recipeCopy = recipe.clone();
+            ICustomRecipe<?, ?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
             guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
             return true;

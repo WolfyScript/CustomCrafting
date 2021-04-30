@@ -34,6 +34,7 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
         this.gridSize = eliteWorkbenchData.gridSize;
         this.allowHoppers = eliteWorkbenchData.allowHoppers;
         this.keepItems = eliteWorkbenchData.keepItems;
+        this.advancedRecipes = eliteWorkbenchData.advancedRecipes;
     }
 
     public boolean isEnabled() {

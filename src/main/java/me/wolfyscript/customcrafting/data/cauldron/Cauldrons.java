@@ -31,7 +31,7 @@ public class Cauldrons {
     private final Random random = new Random();
 
     //Hashmap of all the locations of the valid cauldrons. The Key is the Location. The Value is the current active recipe, which is going to be saved on server shutdown.
-    private final Map<Location, List<Cauldron>> cauldrons = new Hashtable<>();
+    private final Map<Location, List<Cauldron>> cauldrons = new HashMap<>();
 
     public Cauldrons(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
@@ -126,9 +126,7 @@ public class Cauldrons {
 
     public void addCauldron(Location location) {
         synchronized (cauldrons) {
-            if (!cauldrons.containsKey(location)) {
-                cauldrons.put(location, new ArrayList<>());
-            }
+            cauldrons.computeIfAbsent(location, l -> new ArrayList<>());
         }
     }
 
@@ -170,7 +168,7 @@ public class Cauldrons {
             api.getConsole().info("Saving Cauldrons");
         }
         try (FileOutputStream fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"); BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos)) {
-            Hashtable<String, List<String>> saveMap = new Hashtable<>();
+            Map<String, List<String>> saveMap = new HashMap<>();
             synchronized (cauldrons) {
                 cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {
                     String loc = locationToString(entry.getKey());

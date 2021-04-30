@@ -58,7 +58,6 @@ public class CustomCrafting extends JavaPlugin {
     public static final NamespacedKey CAULDRON = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
     //Used for backwards compatibility
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
-    public static final NamespacedKey ELITE_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_workbench");
 
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
 

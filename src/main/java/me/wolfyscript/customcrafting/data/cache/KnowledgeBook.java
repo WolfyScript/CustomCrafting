@@ -19,7 +19,8 @@ public class KnowledgeBook {
     private EliteWorkbench eliteCraftingTable;
     private Category category;
 
-    private int page, subFolderPage;
+    private int page;
+    private int subFolderPage;
     private Map<CustomItem, List<ICustomRecipe<?, ?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
 

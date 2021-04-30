@@ -40,6 +40,7 @@ public class CategorySettings {
     }
 
     public CategorySettings(CategorySettings category) {
+        this.id = category.id;
         this.name = category.name;
         this.icon = category.getIcon();
         this.groups = new HashSet<>(category.groups);

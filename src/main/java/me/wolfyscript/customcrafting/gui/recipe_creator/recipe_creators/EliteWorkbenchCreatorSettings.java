@@ -18,9 +18,6 @@ public class EliteWorkbenchCreatorSettings extends RecipeCreator {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, MainCluster.BACK);
-        CCCache cache = update.getGuiHandler().getCustomCache();
-        EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
-
         update.setButton(9, RecipeCreatorCluster.HIDDEN);
         update.setButton(11, RecipeCreatorCluster.GROUP);
         update.setButton(13, RecipeCreatorCluster.CONDITIONS);
