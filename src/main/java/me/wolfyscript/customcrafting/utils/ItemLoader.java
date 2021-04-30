@@ -8,6 +8,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
+import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
@@ -35,7 +36,12 @@ public class ItemLoader {
         final Ingredient ingredient;
         if (node.isArray()) {
             ingredient = new Ingredient();
-            node.elements().forEachRemaining(item -> ingredient.getItems().add(JacksonUtil.getObjectMapper().convertValue(item, APIReference.class)));
+            node.elements().forEachRemaining(item -> {
+                APIReference reference = loadAndConvertCorruptReference(item);
+                if (reference != null) {
+                    ingredient.getItems().add(reference);
+                }
+            });
         } else {
             ingredient = JacksonUtil.getObjectMapper().convertValue(node, Ingredient.class);
         }
@@ -47,23 +53,53 @@ public class ItemLoader {
     }
 
     public static <T extends ResultTarget> Result<T> loadResult(JsonNode node) {
+        final Result<T> result;
         if (node.isArray()) {
-            Result<T> result = new Result<>();
+            result = new Result<>();
             node.elements().forEachRemaining(item -> {
-                APIReference reference = JacksonUtil.getObjectMapper().convertValue(item, APIReference.class);
+                APIReference reference = loadAndConvertCorruptReference(item);
                 if (reference != null) {
                     result.getItems().add(reference);
                 }
             });
-            result.buildChoices();
-            return result;
+        } else {
+            result = JacksonUtil.getObjectMapper().convertValue(node, new TypeReference<Result<T>>() {
+            });
         }
-        Result<T> result = JacksonUtil.getObjectMapper().convertValue(node, new TypeReference<Result<T>>() {});
         if (result != null) {
             result.buildChoices();
             return result;
         }
         return new Result<>();
+    }
+
+    private static APIReference loadAndConvertCorruptReference(JsonNode itemNode) {
+        APIReference reference = JacksonUtil.getObjectMapper().convertValue(itemNode, APIReference.class);
+        if (CustomCrafting.inst().getConfigHandler().getConfig().getDataVersion() < CustomCrafting.CONFIG_VERSION && reference != null) {
+            if (reference instanceof VanillaRef) {
+                //Check for possible APIReference that could be used!
+                CustomItem customItem = CustomItem.getReferenceByItemStack(reference.getLinkedItem());
+                if (customItem != null && !(customItem.getApiReference() instanceof VanillaRef)) {
+                    //Another APIReference type was found!
+                    APIReference updatedReference = customItem.getApiReference();
+                    updatedReference.setAmount(reference.getAmount());
+                    reference = updatedReference;
+                }
+            }
+            //Update NamespacedKey of old WolfyUtilityReference
+            if (reference instanceof WolfyUtilitiesRef) {
+                NamespacedKey oldNamespacedKey = ((WolfyUtilitiesRef) reference).getNamespacedKey();
+                if (!oldNamespacedKey.getKey().contains("/") && !Registry.CUSTOM_ITEMS.has(oldNamespacedKey)) {
+                    NamespacedKey namespacedKey = NamespacedKeyUtils.fromInternal(((WolfyUtilitiesRef) reference).getNamespacedKey());
+                    if (Registry.CUSTOM_ITEMS.has(namespacedKey)) {
+                        WolfyUtilitiesRef wuRef = new WolfyUtilitiesRef(namespacedKey);
+                        wuRef.setAmount(reference.getAmount());
+                        return wuRef;
+                    }
+                }
+            }
+        }
+        return reference;
     }
 
     public static CustomItem load(JsonNode node) {
@@ -72,9 +108,6 @@ public class ItemLoader {
 
     public static CustomItem load(APIReference reference) {
         CustomItem customItem = CustomItem.of(reference);
-        if (customItem == null && reference instanceof WolfyUtilitiesRef) {
-            customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(((WolfyUtilitiesRef) reference).getNamespacedKey()));
-        }
         if (customItem != null && customItem.hasNamespacedKey()) {
             customItem = customItem.clone();
             customItem.setAmount(reference.getAmount());
@@ -98,17 +131,17 @@ public class ItemLoader {
                     e.printStackTrace();
                 }
             }
-            me.wolfyscript.customcrafting.Registry.CUSTOM_ITEMS.register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
+            Registry.CUSTOM_ITEMS.register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
         }
     }
 
     public static boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            if (!me.wolfyscript.customcrafting.Registry.CUSTOM_ITEMS.has(namespacedKey)) {
+            if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
                 if (player != null) CustomCrafting.inst().getApi().getChat().sendMessage(player, "error");
                 return false;
             }
-            me.wolfyscript.customcrafting.Registry.CUSTOM_ITEMS.remove(namespacedKey);
+            Registry.CUSTOM_ITEMS.remove(namespacedKey);
             System.gc();
             NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
             if (CustomCrafting.inst().hasDataBaseHandler()) {
@@ -136,9 +169,9 @@ public class ItemLoader {
             if (itemMeta != null && !itemMeta.getPersistentDataContainer().isEmpty()) {
                 PersistentDataContainer container = itemMeta.getPersistentDataContainer();
                 if (container.has(customItemContainerKey, PersistentDataType.STRING)) {
-                    me.wolfyscript.utilities.util.NamespacedKey itemKey = me.wolfyscript.utilities.util.NamespacedKey.of(container.get(customItemContainerKey, PersistentDataType.STRING));
+                    NamespacedKey itemKey = NamespacedKey.of(container.get(customItemContainerKey, PersistentDataType.STRING));
                     if (itemKey != null && !Registry.CUSTOM_ITEMS.has(itemKey)) {
-                        me.wolfyscript.utilities.util.NamespacedKey updatedKey = NamespacedKeyUtils.fromInternal(itemKey);
+                        NamespacedKey updatedKey = NamespacedKeyUtils.fromInternal(itemKey);
                         if (Registry.CUSTOM_ITEMS.has(updatedKey)) {
                             container.set(customItemContainerKey, PersistentDataType.STRING, updatedKey.toString());
                         }
@@ -147,5 +180,6 @@ public class ItemLoader {
             }
         }
     }
+
 
 }

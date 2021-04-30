@@ -33,6 +33,14 @@ public class MainConfig extends YamlConfiguration {
         set("language", lang);
     }
 
+    public int getDataVersion() {
+        return getInt("data.version");
+    }
+
+    public void setDataVersion(int version) {
+        set("data.version", version);
+    }
+
     public boolean updateOldCustomItems() {
         return getBoolean("custom_items.update", false);
     }
