@@ -93,7 +93,7 @@ public abstract class RecipeItemStack {
 
     public void buildChoices() {
         this.choices.clear();
-        this.choices.addAll(items.stream().map(ItemLoader::load).collect(Collectors.toSet()));
+        this.choices.addAll(items.stream().map(ItemLoader::load).filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toSet()));
         this.tags.stream().map(namespacedKey -> {
             if (namespacedKey.getNamespace().equals("minecraft")) {
                 Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(namespacedKey.getKey()), Material.class);
