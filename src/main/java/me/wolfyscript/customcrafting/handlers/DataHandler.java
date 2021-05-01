@@ -9,6 +9,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -22,6 +23,7 @@ import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
 
 import java.io.File;
@@ -167,6 +169,57 @@ public class DataHandler {
 
     public Set<NamespacedKey> getDisabledRecipes() {
         return disabledRecipes;
+    }
+
+    public boolean isRecipeDisabled(ICustomRecipe<?, ?> recipe) {
+        return disabledRecipes.contains(recipe.getNamespacedKey());
+    }
+
+    public void toggleRecipe(ICustomRecipe<?, ?> recipe) {
+        if (isRecipeDisabled(recipe)) {
+            enableRecipe(recipe);
+        } else {
+            disableRecipe(recipe);
+        }
+    }
+
+    public void disableRecipe(ICustomRecipe<?, ?> recipe) {
+        NamespacedKey namespacedKey = recipe.getNamespacedKey();
+        disabledRecipes.add(namespacedKey);
+        if (recipe instanceof ICustomVanillaRecipe<?>) {
+            disableBukkitRecipe(namespacedKey.toBukkit(customCrafting));
+        }
+    }
+
+    public void enableRecipe(ICustomRecipe<?, ?> recipe) {
+        NamespacedKey namespacedKey = recipe.getNamespacedKey();
+        if (recipe instanceof ICustomVanillaRecipe) {
+            enableBukkitRecipe(namespacedKey.toBukkit(customCrafting));
+        }
+        disabledRecipes.remove(namespacedKey);
+    }
+
+    public boolean isBukkitRecipeDisabled(org.bukkit.NamespacedKey namespacedKey) {
+        return disabledRecipes.contains(NamespacedKey.fromBukkit(namespacedKey));
+    }
+
+    public void toggleBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
+        if (isBukkitRecipeDisabled(namespacedKey)) {
+            enableBukkitRecipe(namespacedKey);
+        } else {
+            disableBukkitRecipe(namespacedKey);
+        }
+    }
+
+    public void disableBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
+        disabledRecipes.add(NamespacedKey.fromBukkit(namespacedKey));
+        for (Player player1 : Bukkit.getOnlinePlayers()) {
+            player1.undiscoverRecipe(namespacedKey);
+        }
+    }
+
+    public void enableBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
+        disabledRecipes.remove(NamespacedKey.fromBukkit(namespacedKey));
     }
 
     public List<Recipe> getMinecraftRecipes() {

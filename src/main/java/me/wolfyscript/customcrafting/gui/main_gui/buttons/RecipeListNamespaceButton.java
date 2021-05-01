@@ -4,12 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.lists.RecipesList;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -41,28 +40,25 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                         cache.getRecipeList().setPage(0);
                     }
                 } else {
+                    DataHandler dataHandler = customCrafting.getDataHandler();
                     if (namespace.equalsIgnoreCase("minecraft")) {
                         if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
                             for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    customCrafting.getDataHandler().getDisabledRecipes().add(NamespacedKey.fromBukkit(((Keyed) recipe).getKey()));
+                                    dataHandler.disableBukkitRecipe(((Keyed) recipe).getKey());
                                 }
                             }
                         } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                             for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    customCrafting.getDataHandler().getDisabledRecipes().remove(NamespacedKey.fromBukkit(((Keyed) recipe).getKey()));
+                                    dataHandler.enableBukkitRecipe(((Keyed) recipe).getKey());
                                 }
                             }
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
-                        for (ICustomRecipe<?, ?> recipe : Registry.RECIPES.get(namespace)) {
-                            customCrafting.getDataHandler().getDisabledRecipes().add(recipe.getNamespacedKey());
-                        }
+                        Registry.RECIPES.get(namespace).forEach(dataHandler::disableRecipe);
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                        for (ICustomRecipe<?, ?> recipe : Registry.RECIPES.get(namespace)) {
-                            customCrafting.getDataHandler().getDisabledRecipes().remove(recipe.getNamespacedKey());
-                        }
+                        Registry.RECIPES.get(namespace).forEach(dataHandler::enableRecipe);
                     }
                 }
             }

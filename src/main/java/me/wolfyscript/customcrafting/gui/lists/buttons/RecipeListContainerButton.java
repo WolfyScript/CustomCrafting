@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -32,7 +31,6 @@ import org.bukkit.inventory.Recipe;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Set;
 
 public class RecipeListContainerButton extends Button<CCCache> {
 
@@ -70,7 +68,6 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
-        NamespacedKey namespacedKey = getCustomRecipe(guiHandler) != null ? getCustomRecipe(guiHandler).getNamespacedKey() : NamespacedKey.fromBukkit(((Keyed) getRecipe(guiHandler)).getKey());
         if(event instanceof InventoryClickEvent) {
             ICustomRecipe<?, ?> customRecipe = getCustomRecipe(guiHandler);
             if (((InventoryClickEvent) event).isShiftClick() && customRecipe != null) {
@@ -90,20 +87,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     }), new ClickData("$inventories.none.recipe_list.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler.openCluster()));
                 }
             } else {
-                if (namespacedKey != null) {
-                    Set<NamespacedKey> disabled = customCrafting.getDataHandler().getDisabledRecipes();
-                    if (disabled.contains(namespacedKey)) {
-                        if (customRecipe instanceof ICustomVanillaRecipe) {
-                            disabled.remove(NamespacedKey.fromBukkit(namespacedKey.toBukkit(customCrafting)));
-                        }
-                        disabled.remove(namespacedKey);
-                    } else {
-                        disabled.add(namespacedKey);
-                        disabled.add(NamespacedKey.fromBukkit(namespacedKey.toBukkit(customCrafting)));
-                        for (Player player1 : Bukkit.getOnlinePlayers()) {
-                            player1.undiscoverRecipe(namespacedKey.toBukkit(CustomCrafting.inst()));
-                        }
-                    }
+                if (customRecipe != null) {
+                    customCrafting.getDataHandler().toggleRecipe(customRecipe);
+                } else {
+                    customCrafting.getDataHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
                 }
             }
         }
@@ -120,7 +107,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
                 itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
-                if (customCrafting.getDataHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())) {
+                if (customCrafting.getDataHandler().isRecipeDisabled(recipe)) {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.disabled$"));
                 } else {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.enabled$"));
@@ -142,7 +129,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB = new ItemBuilder(recipe.getResult());
                 }
                 itemB.addLoreLine("§8" + ((Keyed) recipe).getKey());
-                if (customCrafting.getDataHandler().getDisabledRecipes().contains(NamespacedKey.fromBukkit(((Keyed) recipe).getKey()))) {
+                if (customCrafting.getDataHandler().isBukkitRecipeDisabled(((Keyed) recipe).getKey())) {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.disabled$"));
                 } else {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.enabled$"));
