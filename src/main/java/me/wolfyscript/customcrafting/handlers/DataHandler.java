@@ -15,6 +15,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
@@ -216,16 +217,15 @@ public class DataHandler {
             iterator.remove();
         }
         if (!items.isEmpty()) {
-            isColumnOccupied(items, -1);
+            isColumnOccupied(items, 0);
             isColumnOccupied(items, items.get(0).size());
         }
         return items;
     }
 
     private void isColumnOccupied(List<List<ItemStack>> items, int column) {
-        int columnToCheck = column <= -1 ? 0 : --column;
-        if (!items.isEmpty() && columnToCheck >= 0 && columnToCheck < items.get(0).size()) {
-            if (items.parallelStream().anyMatch(item -> item.get(columnToCheck) != null)) return;
+        int columnToCheck = Math.max(0, --column);
+        if (!items.isEmpty() && columnToCheck < items.get(0).size() && items.parallelStream().allMatch(item -> ItemUtils.isAirOrNull(item.get(columnToCheck)))) {
             items.forEach(item -> item.remove(columnToCheck));
             isColumnOccupied(items, columnToCheck);
         }
