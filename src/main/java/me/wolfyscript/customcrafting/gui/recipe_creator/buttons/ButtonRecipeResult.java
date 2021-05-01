@@ -31,7 +31,6 @@ public class ButtonRecipeResult extends ItemInputButton<CCCache> {
             result.buildChoices();
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Result<?> result = cache.getRecipe().getResult();
-
             return result != null ? result.getItemStack() : ItemUtils.AIR;
         }));
     }

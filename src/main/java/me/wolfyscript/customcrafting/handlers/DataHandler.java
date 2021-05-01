@@ -123,8 +123,8 @@ public class DataHandler {
 
     public void saveData() {
         api.getConsole().info("Saving Items & Recipes");
-        Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> ItemLoader.saveItem(entry.getKey(), entry.getValue()));
-        me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(ICustomRecipe::save);
+        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> ItemLoader.saveItem(entry.getKey(), entry.getValue()));
+        Registry.RECIPES.values().forEach(ICustomRecipe::save);
     }
 
     private File[] getFiles(String subFolder, String type) {
@@ -138,7 +138,7 @@ public class DataHandler {
             String name = file.getName();
             NamespacedKey namespacedKey = new NamespacedKey(customCrafting, subFolder + "/" + name.substring(0, name.lastIndexOf(".")));
             try {
-                Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
+                me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
             } catch (IOException e) {
                 customCrafting.getLogger().severe(String.format("Could not load item '%s': %s", namespacedKey, e.getMessage()));
             }

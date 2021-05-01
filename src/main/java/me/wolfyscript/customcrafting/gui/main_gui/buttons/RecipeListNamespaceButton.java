@@ -45,14 +45,13 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                         if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
                             for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    NamespacedKey namespacedKey = NamespacedKey.of(((Keyed) recipe).getKey());
-                                    customCrafting.getDataHandler().getDisabledRecipes().add(namespacedKey);
+                                    customCrafting.getDataHandler().getDisabledRecipes().add(NamespacedKey.fromBukkit(((Keyed) recipe).getKey()));
                                 }
                             }
                         } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                             for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
                                 if (recipe instanceof Keyed) {
-                                    customCrafting.getDataHandler().getDisabledRecipes().remove(NamespacedKey.of(((Keyed) recipe).getKey()));
+                                    customCrafting.getDataHandler().getDisabledRecipes().remove(NamespacedKey.fromBukkit(((Keyed) recipe).getKey()));
                                 }
                             }
                         }
