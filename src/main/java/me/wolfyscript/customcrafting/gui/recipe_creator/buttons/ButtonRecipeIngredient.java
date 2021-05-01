@@ -32,6 +32,7 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
                 ingredient = new Ingredient();
             }
             ingredient.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+            ingredient.buildChoices();
             cache.getRecipe().setIngredient(recipeSlot, ingredient);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Ingredient ingredient = cache.getRecipe().getIngredient(recipeSlot);
