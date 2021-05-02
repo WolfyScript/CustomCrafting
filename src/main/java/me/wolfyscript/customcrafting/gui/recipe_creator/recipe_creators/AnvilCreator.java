@@ -142,7 +142,7 @@ public class AnvilCreator extends RecipeCreator {
         event.setButton(37, BLOCK_RENAME);
         event.setButton(38, BLOCK_REPAIR);
         event.setButton(40, REPAIR_APPLY);
-        event.setButton(41, REPAIR_APPLY);
+        event.setButton(41, REPAIR_COST);
         event.setButton(42, REPAIR_MODE);
 
         event.setButton(51, RecipeCreatorCluster.GROUP);
