@@ -82,7 +82,6 @@ public class RecipesList extends CCWindow {
             namespaceList.sort(String::compareToIgnoreCase);
             maxPages = recipeList.getMaxPages(namespaceList.size());
             page = recipeList.getPage(maxPages);
-
             for (int i = 45 * page, slot = 0; slot < 45 && i < namespaceList.size(); i++, slot++) {
                 RecipeListNamespaceButton button = (RecipeListNamespaceButton) getButton("recipe_list.namespace_" + slot);
                 button.setNamespace(guiHandler, namespaceList.get(i));
@@ -93,7 +92,6 @@ public class RecipesList extends CCWindow {
                 List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
-
                 for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
                     RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + slot);
                     button.setRecipe(event.getGuiHandler(), recipes.get(i));
@@ -103,7 +101,6 @@ public class RecipesList extends CCWindow {
                 List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
-
                 for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
                     RecipeListContainerButton button = (RecipeListContainerButton) getButton("recipe_list.container_" + slot);
                     button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));

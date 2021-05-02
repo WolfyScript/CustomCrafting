@@ -1705,11 +1705,11 @@
           "help": [
             "&7Setzt die Priorität von diesem Rezept!",
             "&7Prioritäten: ",
-            "&9NIEDRIGSTE&7: wird zuerst betrachtet",
+            "&9NIEDRIGSTE&7: wird als letztes überprüft",
             "&bNIEDRIG&7",
             "&3NORMAL&7: Normale Priorität",
             "&cHOCH&7",
-            "&4HÖCHSTEN&7: wird als letztes betrachtet"
+            "&4HÖCHSTEN&7: wird zuerst überprüft"
           ]
         },
         "conditions": {

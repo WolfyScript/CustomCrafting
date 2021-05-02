@@ -2,11 +2,11 @@ package me.wolfyscript.customcrafting.recipes;
 
 public enum RecipePriority {
 
-    LOWEST(-2),
-    LOW(-1),
+    HIGHEST(-2),
+    HIGH(-1),
     NORMAL(0),
-    HIGH(1),
-    HIGHEST(2);
+    LOW(1),
+    LOWEST(2);
 
     int order;
 

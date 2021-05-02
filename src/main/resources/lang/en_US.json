@@ -1697,14 +1697,14 @@
         },
         "priority": {
           "name": "&3Priority:&7 %PRI%",
-          "help": [
+          "lore": [
             "&7Sets the priority of this recipe!",
             "&7Priorities: ",
-            "&9LOWEST&7: will be checked first",
+            "&9LOWEST&7: checked last",
             "&bLOW&7",
             "&3NORMAL&7: normal priority",
             "&cHIGH&7",
-            "&4HIGHEST&7: will be checked last"
+            "&4HIGHEST&7: checked first"
           ]
         },
         "conditions": {
