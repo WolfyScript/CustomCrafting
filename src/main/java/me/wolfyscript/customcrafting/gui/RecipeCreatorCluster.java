@@ -22,6 +22,7 @@ import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
@@ -99,7 +100,13 @@ public class RecipeCreatorCluster extends CCCluster {
             guiHandler.openWindow("tag_settings");
             return true;
         }));
-        registerButton(new ChatInputButton<>(GROUP.getKey(), new ButtonState<>(GROUP.getKey(), Material.BOOKSHELF, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+        registerButton(new ChatInputButton<>(GROUP.getKey(), new ButtonState<>(GROUP.getKey(), Material.BOOKSHELF, (cache, guiHandler, player, guiInventory, i, event) -> {
+            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().isRightClick()) {
+                guiHandler.getCustomCache().getRecipe().setGroup("");
+                return false;
+            }
+            return true;
+        }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             values.put("%group%", cache.getRecipe().getGroup());
             return itemStack;
         }), (guiHandler, player, s, args) -> {

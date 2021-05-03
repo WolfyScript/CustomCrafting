@@ -1828,7 +1828,9 @@
           "lore": [
             "&7Group: &e%group%",
             "&7Recipes with the same group are",
-            "&7grouped together in the recipe book."
+            "&7grouped together in the recipe book.",
+            "&7[&aLeft-Click&7] &eInput Group",
+            "&7[&aRight-Click&7] &eReset Group"
           ],
           "message": "&eType in the group name!"
         }
