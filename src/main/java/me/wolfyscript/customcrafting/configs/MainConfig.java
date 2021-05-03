@@ -42,7 +42,7 @@ public class MainConfig extends YamlConfiguration {
     }
 
     public boolean updateOldCustomItems() {
-        return getBoolean("custom_items.update", false);
+        return getBoolean("custom_items.update", true);
     }
 
     public boolean isResetCreatorAfterSave() {
