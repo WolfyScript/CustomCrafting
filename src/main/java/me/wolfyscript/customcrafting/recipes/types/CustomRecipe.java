@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
@@ -16,7 +17,7 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 
-public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends ResultTarget> implements ICustomRecipe<C, T> {
+public abstract class CustomRecipe<C extends CustomRecipe<C, T>, T extends ResultTarget> implements ICustomRecipe<C, T> {
 
     protected NamespacedKey namespacedKey;
     protected boolean exactMeta;
@@ -44,7 +45,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<?, ?>, T extends Resul
         this.hidden = node.path("hidden").asBoolean(false);
 
         //Sets the result of the recipe if one exists in the config
-        if (node.has("result")) {
+        if (node.has("result") && !(this instanceof CustomStonecutterRecipe)) {
             this.result = ItemLoader.loadResult(node.path("result"));
         }
     }
