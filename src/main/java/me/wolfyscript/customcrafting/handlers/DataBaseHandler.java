@@ -43,15 +43,14 @@ public class DataBaseHandler extends SQLDataBase {
     }
 
     public void init() throws SQLException {
-        try (Connection connection = open()) {
-            PreparedStatement itemsTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_items(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));");
-            itemsTable.executeUpdate();
-            itemsTable.close();
-            PreparedStatement recipesTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_recipes(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rType TINYTEXT null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));");
-            recipesTable.executeUpdate();
-            recipesTable.close();
+        try {
+            Connection connection = open();
+            executeUpdate(connection.prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_items(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));"));
+            executeUpdate(connection.prepareStatement("CREATE TABLE IF NOT EXISTS customcrafting_recipes(rNamespace VARCHAR(255) null, rKey VARCHAR(255) null, rType TINYTEXT null, rData LONGTEXT null, constraint customcrafting_items_namespacekey UNIQUE (rNamespace, rKey));"));
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
