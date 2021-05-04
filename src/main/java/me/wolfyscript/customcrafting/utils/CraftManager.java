@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -34,6 +35,16 @@ public class CraftManager {
         this.dataHandler = customCrafting.getDataHandler();
     }
 
+    /**
+     * Checks for a possible {@link CraftingRecipe} and returns the result ItemStack of the {@link CraftingRecipe} that is valid.
+     *
+     * @param matrix    The matrix of the crafting grid.
+     * @param player    The player that executed the craft.
+     * @param inventory The inventory this craft was called from.
+     * @param elite     If the workstation is an Elite Crafting Table.
+     * @param advanced  If the workstation is an Advanced Crafting Table.
+     * @return The result ItemStack of the valid {@link CraftingRecipe}.
+     */
     public ItemStack preCheckRecipe(ItemStack[] matrix, Player player, Inventory inventory, boolean elite, boolean advanced) {
         remove(player.getUniqueId());
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
@@ -44,6 +55,19 @@ public class CraftManager {
         return Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, matrix, ingredients, player, targetBlock, inventory, dataHandler)).filter(Objects::nonNull).findFirst().map(CustomItem::create).orElse(null);
     }
 
+    /**
+     * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
+     *
+     * @param recipe      The {@link CraftingRecipe} to check.
+     * @param matrix      The matrix of the crafting grid.
+     * @param ingredients The ingredients of the matrix without surrounding empty columns/rows (via {@link DataHandler#getIngredients(ItemStack[])}).
+     * @param player      The player that crafts it.
+     * @param block       The block of the workstation or players inventory.
+     * @param inventory   The inventory of the workstation or player.
+     * @param dataHandler The {@link DataHandler} from {@link CustomCrafting#getDataHandler()}
+     * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
+     */
+    @Nullable
     public CustomItem checkRecipe(CraftingRecipe<?> recipe, ItemStack[] matrix, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory, DataHandler dataHandler) {
         if (!dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey())) {
             CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix, ingredients) : null;
@@ -61,6 +85,13 @@ public class CraftManager {
         return null; //No longer call Event if recipe is disabled or invalid!
     }
 
+    /**
+     * Consumes the active Recipe from the matrix and sets the correct item to the cursor.
+     *
+     * @param result The result {@link ItemStack} from the inventory.
+     * @param matrix The matrix of the crafting grid. <strong>The {@link ItemStack}s of the matrix will be edited directly! It will not add new instances!</strong>
+     * @param event  The {@link InventoryClickEvent} that caused this click.
+     */
     public void consumeRecipe(ItemStack result, ItemStack[] matrix, InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
         if (inventory != null && !ItemUtils.isAirOrNull(result) && has(event.getWhoClicked().getUniqueId())) {
@@ -122,10 +153,19 @@ public class CraftManager {
         preCraftedRecipes.put(uuid, craftingData);
     }
 
+    /**
+     * Removes the active CustomRecipe of the specified player.
+     *
+     * @param uuid The UUID of the player.
+     */
     public void remove(UUID uuid) {
         preCraftedRecipes.remove(uuid);
     }
 
+    /**
+     * @param uuid The uuid of the player.
+     * @return If the player has an active CustomRecipe.
+     */
     public boolean has(UUID uuid) {
         return preCraftedRecipes.containsKey(uuid);
     }
