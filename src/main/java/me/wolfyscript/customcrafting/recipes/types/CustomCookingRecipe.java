@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<?, ?>, T extends CookingRecipe<?>> extends CustomRecipe<C, FixedResultTarget> implements ICustomVanillaRecipe<T> {
+public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<C, T>, T extends CookingRecipe<?>> extends CustomRecipe<C, FixedResultTarget> implements ICustomVanillaRecipe<T> {
 
     private Ingredient source;
     private float exp;

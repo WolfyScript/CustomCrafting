@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class CraftingRecipe<C extends CraftingRecipe<?>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
+public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
 
     protected static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
