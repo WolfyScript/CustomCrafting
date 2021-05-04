@@ -42,7 +42,9 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     public CustomStonecutterRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.result = new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class));
+        if (node.has("result")) {
+            this.result = node.path("result").has("custom_amount") ? new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class)) : ItemLoader.loadResult(node.path("result"));
+        }
         this.source = ItemLoader.loadIngredient(node.path("source"));
     }
 
@@ -63,7 +65,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField("result", result.getItems().get(0));
+        gen.writeObjectField("result", this.result);
         gen.writeObjectField("source", this.source);
     }
 
@@ -115,7 +117,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     public StonecuttingRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !getSource().isEmpty()) {
             RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).collect(Collectors.toList()));
-            return new StonecuttingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), choice);
+            return new StonecuttingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getChoices().get(0).create(), choice);
         }
         return null;
     }
