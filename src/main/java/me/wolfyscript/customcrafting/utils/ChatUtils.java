@@ -56,7 +56,6 @@ public class ChatUtils {
         return null;
     }
 
-
     public static NamespacedKey getNamespacedKey(Player player, String s, String[] args) {
         return NamespacedKeyUtils.fromInternal(getInternalNamespacedKey(player, s, args));
     }

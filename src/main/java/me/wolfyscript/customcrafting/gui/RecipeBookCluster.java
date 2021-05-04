@@ -48,6 +48,14 @@ public class RecipeBookCluster extends CCCluster {
     public static final NamespacedKey ITEM_CATEGORY = new NamespacedKey(KEY, "item_category");
     public static final NamespacedKey PERMISSION = new NamespacedKey(KEY, "permission");
 
+    public static final NamespacedKey STONECUTTER = new NamespacedKey(RecipeBookCluster.KEY, "stonecutter");
+    public static final NamespacedKey FURNACE = new NamespacedKey(RecipeBookCluster.KEY, "furnace");
+    public static final NamespacedKey BLAST_FURNACE = new NamespacedKey(RecipeBookCluster.KEY, "blast_furnace");
+    public static final NamespacedKey CAMPFIRE = new NamespacedKey(RecipeBookCluster.KEY, "campfire");
+    public static final NamespacedKey GRINDSTONE = new NamespacedKey(RecipeBookCluster.KEY, "grindstone");
+    public static final NamespacedKey SMOKER = new NamespacedKey(RecipeBookCluster.KEY, "smoker");
+    public static final NamespacedKey SMITHING = new NamespacedKey(RecipeBookCluster.KEY, "smithing");
+
     public RecipeBookCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
     }
@@ -127,15 +135,14 @@ public class RecipeBookCluster extends CCCluster {
             hashMap.put("%xp%", cookingRecipe.getExp());
             return itemStack;
         }));
-        registerButton(new DummyButton<>("furnace", Material.FURNACE));
-        registerButton(new DummyButton<>("stonecutter", Material.STONECUTTER));
-        registerButton(new DummyButton<>("blast_furnace", Material.BLAST_FURNACE));
-        registerButton(new DummyButton<>("campfire", Material.CAMPFIRE));
-        registerButton(new DummyButton<>("blast_furnace", Material.BLAST_FURNACE));
-        registerButton(new DummyButton<>("grindstone", Material.GRINDSTONE));
-        registerButton(new DummyButton<>("smoker", Material.SMOKER));
+        registerButton(new DummyButton<>(FURNACE.getKey(), Material.FURNACE));
+        registerButton(new DummyButton<>(STONECUTTER.getKey(), Material.STONECUTTER));
+        registerButton(new DummyButton<>(BLAST_FURNACE.getKey(), Material.BLAST_FURNACE));
+        registerButton(new DummyButton<>(CAMPFIRE.getKey(), Material.CAMPFIRE));
+        registerButton(new DummyButton<>(GRINDSTONE.getKey(), Material.GRINDSTONE));
+        registerButton(new DummyButton<>(SMOKER.getKey(), Material.SMOKER));
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
-            registerButton(new DummyButton<>("smithing", Material.SMITHING_TABLE));
+            registerButton(new DummyButton<>(SMITHING.getKey(), Material.SMITHING_TABLE));
         }
         registerButton(new DummyButton<>("cauldron.water.disabled", Material.CAULDRON));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>("cauldron.water.enabled", PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
