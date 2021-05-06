@@ -24,7 +24,7 @@ public class AdvancedWorkbenchCondition extends Condition {
         if (recipe instanceof CraftingRecipe) {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
-                return customItem != null && (customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE) || customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_WORKBENCH));
+                return customItem != null && (customItem.getNamespacedKey().equals(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE) || customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_WORKBENCH));
             }
             return false;
         }

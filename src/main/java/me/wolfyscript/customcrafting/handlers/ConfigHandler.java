@@ -98,7 +98,7 @@ public class ConfigHandler {
             workbenchCraft.setIngredient('E', new Ingredient(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredient('H', new Ingredient(Material.GLOWSTONE_DUST));
             Result<SlotResultTarget> result = workbenchCraft.getResult();
-            result.put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.ADVANCED_CRAFTING_TABLE))));
+            result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE)));
             /*
             result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
             result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));

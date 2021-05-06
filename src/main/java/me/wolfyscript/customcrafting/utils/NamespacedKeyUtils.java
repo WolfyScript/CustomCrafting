@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.utils;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
@@ -18,7 +17,7 @@ public class NamespacedKeyUtils {
 
     public static NamespacedKey fromInternal(NamespacedKey internalKey) {
         if (internalKey == null) return null;
-        return new NamespacedKey(CustomCrafting.inst(), internalKey.toString("/"));
+        return new NamespacedKey(NAMESPACE, internalKey.toString("/"));
     }
 
     public static NamespacedKey toInternal(NamespacedKey namespacedKey) {
