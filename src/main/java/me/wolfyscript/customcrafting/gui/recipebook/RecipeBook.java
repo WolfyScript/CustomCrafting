@@ -177,6 +177,7 @@ public class RecipeBook extends CCWindow {
     public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
         IngredientContainerButton.removeTasks(guiHandler);
         RecipeBookContainerButton.resetButtons(guiHandler);
+        guiHandler.getCustomCache().getKnowledgeBook().setEliteCraftingTable(null);
         return super.onClose(guiHandler, guiInventory, transaction);
     }
 }

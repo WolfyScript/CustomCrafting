@@ -9,7 +9,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 public class CraftingWindow3 extends CraftingWindow {
 
     public CraftingWindow3(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "crafting_grid3", 45, customCrafting, 3);
+        super(cluster, "crafting_grid3", 27, customCrafting, 3);
     }
 
     @Override
