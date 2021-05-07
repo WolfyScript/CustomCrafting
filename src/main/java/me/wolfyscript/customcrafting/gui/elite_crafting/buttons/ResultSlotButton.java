@@ -40,13 +40,11 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
                         }
                     }
                     return false;
-                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK)) {
-                    if (eliteWorkbench.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
-                        if (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult())) {
-                            customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
-                            eliteWorkbench.setResult(null);
-                            customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
-                        }
+                } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && eliteWorkbench.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
+                    if (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult())) {
+                        customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
+                        eliteWorkbench.setResult(null);
+                        customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
                     }
                 }
             }
@@ -54,11 +52,6 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
         }, (cache, guiHandler, player, inventory, itemStack, slot, event) -> {
             EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
             if (inventory.getWindow() instanceof CraftingWindow) {
-                CraftingWindow craftingWindow = (CraftingWindow) inventory.getWindow();
-                for (int i = 0; i < eliteWorkbench.getContents().length; i++) {
-                    int invSlot = craftingWindow.getGridX() + i + (i / eliteWorkbench.getCurrentGridSize()) * (9 - eliteWorkbench.getCurrentGridSize());
-                    inventory.setItem(invSlot, eliteWorkbench.getContents()[i]);
-                }
                 eliteWorkbench.setResult(null);
             }
         }, (cache, guiHandler, player, inventory, itemStack, slot, b) -> {
