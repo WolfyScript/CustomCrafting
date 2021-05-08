@@ -43,8 +43,8 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                             guiHandler.openCluster();
                             Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> ItemLoader.deleteItem(namespacedKey, player));
                         }), new ClickData("$inventories.none.item_list.messages.delete.declined$", (wolfyUtilities, player2) -> guiHandler.openCluster()));
-                    } else {
-                        items.setItem(items.isRecipeItem(), customItem);
+                    } else if (customItem != null) {
+                        items.setItem(items.isRecipeItem(), customItem.clone());
                         api.getInventoryAPI().getGuiWindow(RecipeCreatorCluster.ITEM_EDITOR).sendMessage(player, "item_editable");
                         guiHandler.openWindow(ItemCreatorCluster.MAIN_MENU);
                     }

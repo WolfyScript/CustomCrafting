@@ -112,6 +112,17 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     }
 
     @Override
+    public String toString() {
+        return "EliteWorkbenchData{" +
+                "advancedRecipes=" + advancedRecipes +
+                ", enabled=" + enabled +
+                ", allowHoppers=" + allowHoppers +
+                ", keepItems=" + keepItems +
+                ", gridSize=" + gridSize +
+                "} " + super.toString();
+    }
+
+    @Override
     public EliteWorkbenchData clone() {
         return new EliteWorkbenchData(this);
     }
