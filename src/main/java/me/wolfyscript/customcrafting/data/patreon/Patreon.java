@@ -40,6 +40,7 @@ public class Patreon {
         addPatron(new Patron("carreb", Tier.WOLFRAM));
         addPatron(new Patron("Mr_Mint_", Tier.WOLFRAM));
         addPatron(new Patron("Xander Corcoran", Tier.WOLFRAM));
+        addPatron(new Patron("Daniel Jagielczuk", Tier.WOLFRAM));
         //addPatron(new Patron("Vincent Fournier"));
         //addPatron(new Patron("Inec Ackerr", Tier.WOLFRAM));
         //addPatron(new Patron("ValentineDesigns"));
