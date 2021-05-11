@@ -54,7 +54,7 @@ public class PatronsMenu extends CCWindow {
         event.setButton(0, "back");
         List<Patron> patronList = customCrafting.getPatreon().getPatronList();
 
-        for (int i = 0, j = 9; i < patronList.size() && j < getSize(); i++, j += 2) {
+        for (int i = 0, j = 9; i < patronList.size() && j < getSize(); i++, j += 1) {
             event.setItem(j, patronList.get(i).getHead());
         }
     }

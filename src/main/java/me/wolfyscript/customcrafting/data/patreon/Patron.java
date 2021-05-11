@@ -49,15 +49,15 @@ public class Patron {
     }
 
     public Patron(String name, String uuid, Patreon.Tier tier) {
-        this(name, uuid, new ItemStack(Material.CREEPER_HEAD), tier);
+        this(name, uuid, new ItemStack(Material.PLAYER_HEAD), tier);
     }
 
     public Patron(String name, Patreon.Tier tier) {
-        this(name, "", new ItemStack(Material.CREEPER_HEAD), tier);
+        this(name, "", new ItemStack(Material.PLAYER_HEAD), tier);
     }
 
     public Patron(String name) {
-        this(name, "", new ItemStack(Material.CREEPER_HEAD), Patreon.Tier.WOLFRAM);
+        this(name, "", new ItemStack(Material.PLAYER_HEAD), Patreon.Tier.WOLFRAM);
     }
 
     public ItemStack getHead() {
