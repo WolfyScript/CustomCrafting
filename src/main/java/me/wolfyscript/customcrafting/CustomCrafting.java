@@ -312,6 +312,14 @@ public class CustomCrafting extends JavaPlugin {
         return craftManager;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getCraftManager()}
+     */
+    @Deprecated
+    public CraftManager getRecipeUtils() {
+        return craftManager;
+    }
+
     public ChatUtils getChatUtils() {
         return chatUtils;
     }
