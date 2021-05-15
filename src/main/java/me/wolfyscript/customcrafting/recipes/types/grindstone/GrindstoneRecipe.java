@@ -125,11 +125,5 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultT
         event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
         event.setButton(29, new NamespacedKey("recipe_book", "ingredient.container_29"));
         event.setButton(30, glass);
-
-        ItemStack whiteGlass = event.getInventory().getItem(53);
-        ItemMeta itemMeta = whiteGlass.getItemMeta();
-        itemMeta.setCustomModelData(9008);
-        whiteGlass.setItemMeta(itemMeta);
-        event.setItem(53, whiteGlass);
     }
 }
