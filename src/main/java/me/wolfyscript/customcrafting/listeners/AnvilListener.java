@@ -86,11 +86,12 @@ public class AnvilListener implements Listener {
             } else if (!ItemUtils.isAirOrNull(event.getResult())) {
                 //Either none or durability mode is set.
                 result = new CustomItem(event.getResult());
-                if (result.create().hasItemMeta()) {
+                ItemStack resultStack = result.create();
+                if (resultStack.hasItemMeta()) {
                     //Further recipe options to block features.
-                    if (recipe.isBlockEnchant() && result.create().hasItemMeta() && result.getItemMeta().hasEnchants()) {
+                    if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && result.getItemMeta().hasEnchants()) {
                         //Block Enchants
-                        for (Enchantment enchantment : result.create().getEnchantments().keySet()) {
+                        for (Enchantment enchantment : resultStack.getEnchantments().keySet()) {
                             result.removeEnchantment(enchantment);
                         }
                         if (inputLeft != null) {
