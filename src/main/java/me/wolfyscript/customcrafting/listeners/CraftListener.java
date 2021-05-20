@@ -4,9 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -121,15 +119,7 @@ public class CraftListener implements Listener {
     @EventHandler
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
         if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            NamespacedKey key = NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(event.getRecipe()));
-            if (!customCrafting.getDataHandler().getDisabledRecipes().contains(key)) {
-                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(key);
-                if (customRecipe instanceof CraftingRecipe) {
-                    event.setCancelled(true);
-                }
-            } else {
-                event.setCancelled(true);
-            }
+            event.setCancelled(true);
         }
     }
 }
