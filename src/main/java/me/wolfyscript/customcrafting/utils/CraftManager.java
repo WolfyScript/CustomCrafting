@@ -5,7 +5,9 @@ import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
+import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.conditions.TimeDelayCondition;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -101,6 +103,7 @@ public class CraftManager {
                 Result<?> recipeResult = craftingData.getResult();
                 Player player = (Player) event.getWhoClicked();
                 editStatistics(player, inventory, recipe);
+                setPlayerCraftTime(player, recipe);
                 recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
                 calculateClick(player, event, craftingData, recipe, matrix, recipeResult, result);
             }
@@ -120,6 +123,13 @@ public class CraftManager {
                 playerStore.increaseNormalCrafts(1);
             }
         });
+    }
+
+    private void setPlayerCraftTime(Player player, CraftingRecipe<?> recipe) {
+        Condition condition = recipe.getConditions().getByID("time_delay");
+        if (condition instanceof TimeDelayCondition && condition.getOption().equals(Conditions.Option.EXACT)) {
+            ((TimeDelayCondition) condition).setPlayerCraftTime(player);
+        }
     }
 
     private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, ItemStack[] matrix, Result<?> recipeResult, ItemStack result) {

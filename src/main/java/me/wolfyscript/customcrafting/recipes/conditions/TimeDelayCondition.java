@@ -20,14 +20,15 @@ public class TimeDelayCondition extends Condition {
     public TimeDelayCondition() {
         super("time_delay");
         setOption(Conditions.Option.IGNORE);
-        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
+        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
     }
 
     @Override
     public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
         Player player = data.getPlayer();
         if (player != null) {
-            boolean valid = checkDelay(System.currentTimeMillis() - playerCraftTimeMap.getOrDefault(player.getUniqueId(), 0L));
+            long timeSince = System.currentTimeMillis() - playerCraftTimeMap.getOrDefault(player.getUniqueId(), 0L);
+            boolean valid = checkDelay(timeSince);
             if (valid) {
                 playerCraftTimeMap.remove(player.getUniqueId());
             }
@@ -49,12 +50,16 @@ public class TimeDelayCondition extends Condition {
 
     @Override
     public void readFromJson(JsonNode node) {
-        this.delay = node.get("delay").asInt();
+        this.delay = node.path("delay").asInt();
     }
 
     @Override
     public void writeJson(@NotNull JsonGenerator gen) throws IOException {
         gen.writeNumberField("delay", delay);
+    }
+
+    public void setPlayerCraftTime(Player player) {
+        playerCraftTimeMap.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
     public long getDelay() {
