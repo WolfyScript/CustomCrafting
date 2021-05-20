@@ -35,7 +35,7 @@ public class Conditions extends HashMap<String, Condition> {
         addCondition(new WeatherCondition());
         addCondition(new ExperienceCondition());
         addCondition(new WorldBiomeCondition());
-        addCondition(new TimeDelayCondition());
+        addCondition(new CraftDelayCondition());
     }
 
     public boolean checkConditions(ICustomRecipe<?,?> customRecipe, Data data) {

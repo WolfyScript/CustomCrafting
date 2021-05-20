@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class TimeDelayCondition extends Condition {
+public class CraftDelayCondition extends Condition {
 
     private final HashMap<UUID, Long> playerCraftTimeMap = new HashMap<>();
     long delay = 0;
 
-    public TimeDelayCondition() {
-        super("time_delay");
+    public CraftDelayCondition() {
+        super("craft_delay");
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
     }

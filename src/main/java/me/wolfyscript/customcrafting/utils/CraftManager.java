@@ -7,7 +7,7 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.conditions.TimeDelayCondition;
+import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -126,9 +126,9 @@ public class CraftManager {
     }
 
     private void setPlayerCraftTime(Player player, CraftingRecipe<?> recipe) {
-        Condition condition = recipe.getConditions().getByID("time_delay");
-        if (condition instanceof TimeDelayCondition && condition.getOption().equals(Conditions.Option.EXACT)) {
-            ((TimeDelayCondition) condition).setPlayerCraftTime(player);
+        Condition condition = recipe.getConditions().getByID("craft_delay");
+        if (condition instanceof CraftDelayCondition && condition.getOption().equals(Conditions.Option.EXACT)) {
+            ((CraftDelayCondition) condition).setPlayerCraftTime(player);
         }
     }
 
