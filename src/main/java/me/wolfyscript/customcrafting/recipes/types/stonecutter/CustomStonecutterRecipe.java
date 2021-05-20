@@ -108,10 +108,12 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
         event.setButton(33, glass);
 
         ItemStack whiteGlass = event.getInventory().getItem(53);
-        ItemMeta itemMeta = whiteGlass.getItemMeta();
-        itemMeta.setCustomModelData(9007);
-        whiteGlass.setItemMeta(itemMeta);
-        event.setItem(53, whiteGlass);
+        if (whiteGlass != null) {
+            ItemMeta itemMeta = whiteGlass.getItemMeta();
+            itemMeta.setCustomModelData(9007);
+            whiteGlass.setItemMeta(itemMeta);
+            event.setItem(53, whiteGlass);
+        }
     }
 
     @Override

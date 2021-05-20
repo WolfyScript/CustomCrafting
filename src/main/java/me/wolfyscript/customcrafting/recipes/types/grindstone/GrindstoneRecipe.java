@@ -18,8 +18,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 
@@ -116,14 +114,13 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultT
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        NamespacedKey glass = MainCluster.GLASS_GREEN;
         event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
-        event.setButton(12, glass);
-        event.setButton(21, glass);
+        event.setButton(12, MainCluster.GLASS_GREEN);
+        event.setButton(21, MainCluster.GLASS_GREEN);
         event.setButton(22, new NamespacedKey("recipe_book", "grindstone"));
-        event.setButton(23, glass);
+        event.setButton(23, MainCluster.GLASS_GREEN);
         event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
         event.setButton(29, new NamespacedKey("recipe_book", "ingredient.container_29"));
-        event.setButton(30, glass);
+        event.setButton(30, MainCluster.GLASS_GREEN);
     }
 }
