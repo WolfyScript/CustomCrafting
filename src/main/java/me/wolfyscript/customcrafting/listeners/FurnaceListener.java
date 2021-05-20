@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
@@ -96,29 +97,32 @@ public class FurnaceListener implements Listener {
                 if (!customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
                     NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
                     if (me.wolfyscript.customcrafting.Registry.RECIPES.has(internalKey)) {
-                        CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) me.wolfyscript.customcrafting.Registry.RECIPES.get(internalKey);
-                        if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
-                            assert customRecipe != null;
-                            if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
-                                event.setCancelled(false);
-                                Result<?> result = customRecipe.getResult().get(new ItemStack[0]);
-                                result.executeExtensions(event.getBlock().getLocation(), true, null);
-                                if (result.size() > 1) {
-                                    CustomItem item = result.getItem().orElse(new CustomItem(Material.AIR));
-                                    if (currentResultItem != null) {
-                                        int nextAmount = currentResultItem.getAmount() + item.getAmount();
-                                        if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
-                                            inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                                            currentResultItem.setAmount(nextAmount);
+                        ICustomRecipe<?, ?> iCustomRecipe = me.wolfyscript.customcrafting.Registry.RECIPES.get(internalKey);
+                        if (iCustomRecipe instanceof CustomCookingRecipe) {
+                            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) me.wolfyscript.customcrafting.Registry.RECIPES.get(internalKey);
+                            if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
+                                assert customRecipe != null;
+                                if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
+                                    event.setCancelled(false);
+                                    Result<?> result = customRecipe.getResult().get(new ItemStack[0]);
+                                    result.executeExtensions(event.getBlock().getLocation(), true, null);
+                                    if (result.size() > 1) {
+                                        CustomItem item = result.getItem().orElse(new CustomItem(Material.AIR));
+                                        if (currentResultItem != null) {
+                                            int nextAmount = currentResultItem.getAmount() + item.getAmount();
+                                            if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
+                                                inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                                                currentResultItem.setAmount(nextAmount);
+                                            }
+                                            event.setCancelled(true);
+                                        } else {
+                                            event.setResult(item.create());
                                         }
-                                        event.setCancelled(true);
-                                    } else {
-                                        event.setResult(item.create());
                                     }
+                                    break;
                                 }
-                                break;
+                                event.setCancelled(true);
                             }
-                            event.setCancelled(true);
                         }
                     }
                 } else {
