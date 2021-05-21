@@ -3,11 +3,7 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -98,31 +94,28 @@ public class FurnaceListener implements Listener {
                     NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
                     if (me.wolfyscript.customcrafting.Registry.RECIPES.has(internalKey)) {
                         ICustomRecipe<?, ?> iCustomRecipe = me.wolfyscript.customcrafting.Registry.RECIPES.get(internalKey);
-                        if (iCustomRecipe instanceof CustomCookingRecipe) {
-                            CustomCookingRecipe<?, ?> customRecipe = (CustomCookingRecipe<?, ?>) me.wolfyscript.customcrafting.Registry.RECIPES.get(internalKey);
-                            if (isRecipeValid(event.getBlock().getType(), customRecipe)) {
-                                assert customRecipe != null;
-                                if (customRecipe.getConditions().checkConditions(customRecipe, new Conditions.Data(null, event.getBlock(), null))) {
-                                    event.setCancelled(false);
-                                    Result<?> result = customRecipe.getResult().get(new ItemStack[0]);
-                                    result.executeExtensions(event.getBlock().getLocation(), true, null);
-                                    if (result.size() > 1) {
-                                        CustomItem item = result.getItem().orElse(new CustomItem(Material.AIR));
-                                        if (currentResultItem != null) {
-                                            int nextAmount = currentResultItem.getAmount() + item.getAmount();
-                                            if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
-                                                inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                                                currentResultItem.setAmount(nextAmount);
-                                            }
-                                            event.setCancelled(true);
-                                        } else {
-                                            event.setResult(item.create());
+                        if (iCustomRecipe instanceof CustomCookingRecipe && ((CustomCookingRecipe<?, ?>) iCustomRecipe).validType(event.getBlock().getType())) {
+                            CustomCookingRecipe<?, ?> cookingRecipe = (CustomCookingRecipe<?, ?>) iCustomRecipe;
+                            if (cookingRecipe.checkConditions(new Conditions.Data(null, event.getBlock(), null))) {
+                                event.setCancelled(false);
+                                Result<?> result = cookingRecipe.getResult().get(new ItemStack[0]);
+                                result.executeExtensions(event.getBlock().getLocation(), true, null);
+                                if (result.size() > 1) {
+                                    CustomItem item = result.getItem().orElse(new CustomItem(Material.AIR));
+                                    if (currentResultItem != null) {
+                                        int nextAmount = currentResultItem.getAmount() + item.getAmount();
+                                        if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
+                                            inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                                            currentResultItem.setAmount(nextAmount);
                                         }
+                                        event.setCancelled(true);
+                                    } else {
+                                        event.setResult(item.create());
                                     }
-                                    break;
                                 }
-                                event.setCancelled(true);
+                                break;
                             }
+                            event.setCancelled(true);
                         }
                     }
                 } else {
@@ -131,19 +124,4 @@ public class FurnaceListener implements Listener {
             }
         }
     }
-
-    private boolean isRecipeValid(Material furnaceType, CustomRecipe<?, ?> recipe) {
-        switch (furnaceType) {
-            case BLAST_FURNACE:
-                return recipe instanceof CustomBlastRecipe;
-            case SMOKER:
-                return recipe instanceof CustomSmokerRecipe;
-            case FURNACE:
-                return recipe instanceof CustomFurnaceRecipe;
-            default:
-                return false;
-        }
-    }
-
-
 }

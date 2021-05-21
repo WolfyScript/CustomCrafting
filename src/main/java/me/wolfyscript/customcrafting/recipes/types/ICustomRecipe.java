@@ -61,7 +61,6 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
      * @param ingredient The ingredient to set
      */
     void setIngredient(int slot, Ingredient ingredient);
-    //Preconditions.checkArgument(ingredient != null && !ingredient.isEmpty(), "Ingredient cannot be null & requires at least one choice!");
 
     Ingredient getIngredient(int slot);
 
@@ -76,6 +75,10 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
     Conditions getConditions();
 
     void setConditions(Conditions conditions);
+
+    default boolean checkConditions(Conditions.Data data) {
+        return getConditions().checkConditions(this, data);
+    }
 
     boolean isHidden();
 

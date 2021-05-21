@@ -57,7 +57,7 @@ public class SmithingListener implements Listener {
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
         for (CustomSmithingRecipe recipe : Registry.RECIPES.getAvailable(Types.SMITHING, player)) {
-            if (recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
+            if (recipe.checkConditions(new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
                 Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isExactMeta());
                 if (optionalBase.isPresent()) {
                     Optional<CustomItem> optionalAddition = recipe.getAddition().check(addition, recipe.isExactMeta());

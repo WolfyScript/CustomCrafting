@@ -5,7 +5,9 @@ import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
+import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -70,7 +72,7 @@ public class CraftManager {
     @Nullable
     public CustomItem checkRecipe(CraftingRecipe<?> recipe, ItemStack[] matrix, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory, DataHandler dataHandler) {
         if (!dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey())) {
-            CraftingData craftingData = recipe.getConditions().checkConditions(recipe, new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix, ingredients) : null;
+            CraftingData craftingData = recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix, ingredients) : null;
             if (craftingData != null) {
                 CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
@@ -101,6 +103,7 @@ public class CraftManager {
                 Result<?> recipeResult = craftingData.getResult();
                 Player player = (Player) event.getWhoClicked();
                 editStatistics(player, inventory, recipe);
+                setPlayerCraftTime(player, recipe);
                 recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
                 calculateClick(player, event, craftingData, recipe, matrix, recipeResult, result);
             }
@@ -120,6 +123,13 @@ public class CraftManager {
                 playerStore.increaseNormalCrafts(1);
             }
         });
+    }
+
+    private void setPlayerCraftTime(Player player, CraftingRecipe<?> recipe) {
+        Condition condition = recipe.getConditions().getByID("craft_delay");
+        if (condition instanceof CraftDelayCondition && condition.getOption().equals(Conditions.Option.EXACT)) {
+            ((CraftDelayCondition) condition).setPlayerCraftTime(player);
+        }
     }
 
     private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, ItemStack[] matrix, Result<?> recipeResult, ItemStack result) {

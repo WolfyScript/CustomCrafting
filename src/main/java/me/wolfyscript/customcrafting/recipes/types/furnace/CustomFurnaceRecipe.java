@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.inventory.FurnaceRecipe;
 
 public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe, FurnaceRecipe> {
@@ -38,5 +39,10 @@ public class CustomFurnaceRecipe extends CustomCookingRecipe<CustomFurnaceRecipe
     @Override
     public CustomFurnaceRecipe clone() {
         return new CustomFurnaceRecipe(this);
+    }
+
+    @Override
+    public boolean validType(Material material) {
+        return material.equals(Material.FURNACE);
     }
 }
