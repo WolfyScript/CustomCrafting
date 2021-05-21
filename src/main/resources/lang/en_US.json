@@ -809,50 +809,58 @@
             },
             "enchants": {
               "enabled": {
-                "name": "&aHide Enchants"
+                "name": "&a&lHide Enchants"
               },
               "disabled": {
-                "name": "&cHide Enchants"
+                "name": "&c&lHide Enchants"
               }
             },
             "attributes": {
               "enabled": {
-                "name": "&aHide Attributes"
+                "name": "&a&lHide Attributes"
               },
               "disabled": {
-                "name": "&cHide Attributes"
+                "name": "&c&lHide Attributes"
               }
             },
             "unbreakable": {
               "enabled": {
-                "name": "&aHide Unbreakable"
+                "name": "&a&lHide Unbreakable"
               },
               "disabled": {
-                "name": "&cHide Unbreakable"
+                "name": "&c&lHide Unbreakable"
               }
             },
             "destroys": {
               "enabled": {
-                "name": "&aHide Destroys"
+                "name": "&a&lHide Destroys"
               },
               "disabled": {
-                "name": "&cHide Destroys"
+                "name": "&c&lHide Destroys"
               }
             },
             "placed_on": {
               "enabled": {
-                "name": "&aHide Placed On"
+                "name": "&a&lHide Placed On"
               },
               "disabled": {
-                "name": "&cHide Placed On"
+                "name": "&c&lHide Placed On"
               }
             },
             "potion_effects": {
               "enabled": {
-                "name": "&aHide Potions"
+                "name": "&a&lHide Potions"
               },
               "disabled": {
-                "name": "&cHide Potions"
+                "name": "&c&lHide Potions"
+              }
+            },
+            "dye": {
+              "enabled": {
+                "name": "&a&lHide Dye"
+              },
+              "disabled": {
+                "name": "&c&lHide Dye"
               }
             }
           },
