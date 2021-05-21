@@ -23,8 +23,6 @@ public class WorldTimeCondition extends Condition {
     public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
         long currentTime = data.getBlock().getWorld().getTime();
         switch (option) {
-            case IGNORE:
-                return true;
             case EXACT:
                 return currentTime == time;
             case LOWER:
@@ -37,8 +35,9 @@ public class WorldTimeCondition extends Condition {
                 return currentTime >= time;
             case HIGHER_LOWER:
                 return currentTime < time || currentTime > time;
+            default:
+                return true;
         }
-        return true;
     }
 
     @Override
