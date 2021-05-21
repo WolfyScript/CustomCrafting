@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.inventory.SmokingRecipe;
 
 public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, SmokingRecipe> {
@@ -30,6 +31,11 @@ public class CustomSmokerRecipe extends CustomCookingRecipe<CustomSmokerRecipe, 
     @Override
     public CustomSmokerRecipe clone() {
         return new CustomSmokerRecipe(this);
+    }
+
+    @Override
+    public boolean validType(Material material) {
+        return material.equals(Material.SMOKER);
     }
 
     @Override

@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.inventory.CampfireRecipe;
 
 public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireRecipe, CampfireRecipe> {
@@ -38,5 +39,10 @@ public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireReci
     @Override
     public CustomCampfireRecipe clone() {
         return new CustomCampfireRecipe(this);
+    }
+
+    @Override
+    public boolean validType(Material material) {
+        return material.equals(Material.CAMPFIRE);
     }
 }

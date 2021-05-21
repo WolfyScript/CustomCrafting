@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.inventory.BlastingRecipe;
 
 public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, BlastingRecipe> {
@@ -38,5 +39,10 @@ public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, Bl
     @Override
     public CustomBlastRecipe clone() {
         return new CustomBlastRecipe(this);
+    }
+
+    @Override
+    public boolean validType(Material material) {
+        return material.equals(Material.BLAST_FURNACE);
     }
 }

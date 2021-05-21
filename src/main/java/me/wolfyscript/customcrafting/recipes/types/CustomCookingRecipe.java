@@ -18,6 +18,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
@@ -55,6 +56,12 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<C, T>, T
 
     @Override
     public abstract C clone();
+
+    /**
+     * @param material The type of the block.
+     * @return if the recipe can be used inside that type of block!
+     */
+    public abstract boolean validType(Material material);
 
     public Ingredient getSource() {
         return this.source;
