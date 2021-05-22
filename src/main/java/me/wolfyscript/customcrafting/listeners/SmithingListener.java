@@ -16,6 +16,7 @@ import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,7 +42,7 @@ public class SmithingListener implements Listener {
         this.customCrafting = customCrafting;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepare(PrepareSmithingEvent event) {
         SmithingInventory inv = event.getInventory();
         Player player = (Player) event.getView().getPlayer();
@@ -78,7 +79,7 @@ public class SmithingListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTakeOutItem(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (!event.getClickedInventory().getType().equals(InventoryType.SMITHING)) return;
