@@ -104,7 +104,6 @@ public class ItemCreator extends CCWindow {
             Items items = cache.getItems();
             items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
         }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
-
         registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
             Items items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
