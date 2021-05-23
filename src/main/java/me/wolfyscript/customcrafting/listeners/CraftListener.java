@@ -43,7 +43,7 @@ public class CraftListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
         if (!(event.getClickedInventory() instanceof CraftingInventory)) return;
         CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
