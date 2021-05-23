@@ -33,11 +33,13 @@ public interface ICraftingRecipe {
         for (Map.Entry<Vec2d, CustomItem> entry : craftingData.getFoundItems().entrySet()) {
             Vec2d vec = entry.getKey();
             CustomItem item = entry.getValue();
-            ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
-            if (item != null && input != null) {
-                int possible = input.getAmount() / item.getAmount();
-                if (possible < totalAmount || totalAmount == -1)
-                    totalAmount = possible;
+            if (matrix.size() > vec.y && matrix.get((int) vec.y).size() > vec.x) {
+                ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
+                if (item != null && input != null) {
+                    int possible = input.getAmount() / item.getAmount();
+                    if (possible < totalAmount || totalAmount == -1)
+                        totalAmount = possible;
+                }
             }
         }
         return totalAmount;
