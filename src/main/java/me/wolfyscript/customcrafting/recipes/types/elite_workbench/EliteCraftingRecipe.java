@@ -3,12 +3,8 @@ package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-
-import java.io.IOException;
 
 public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRecipe> {
 
@@ -33,10 +29,5 @@ public abstract class EliteCraftingRecipe extends CraftingRecipe<EliteCraftingRe
     @Override
     public RecipeType<EliteCraftingRecipe> getRecipeType() {
         return Types.ELITE_WORKBENCH;
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
     }
 }
