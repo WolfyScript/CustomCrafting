@@ -31,18 +31,20 @@ public class ReloadSubCommand extends AbstractSubCommand {
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
                 if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
                     InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
-                    api.getChat().sendMessage(p, "&eReloading Inventories and Languages!");
+                    api.getChat().sendMessage(p, "&eReloading Languages!");
                     customCrafting.getApi().getLanguageAPI().unregisterLanguages();
                     customCrafting.getConfigHandler().loadLang();
-                    invAPI.reset();
-                    api.getChat().sendMessage(p, "&aReloaded GUIs and languages");
-                    api.getChat().sendMessage(p, "&eReloading Items and Recipes!");
+                    api.getChat().sendMessage(p, "  - &aComplete");
+                    api.getChat().sendMessage(p, "&eReloading Recipes/Items!");
                     customCrafting.getConfigHandler().loadRecipeBookConfig();
                     DataHandler dataHandler = customCrafting.getDataHandler();
                     dataHandler.initCategories();
                     dataHandler.load(false);
-                    dataHandler.getCategories().indexCategories();
-                    api.getChat().sendMessage(p, "&aReload Complete");
+                    dataHandler.getCategories().index();
+                    api.getChat().sendMessage(p, "  - &aComplete");
+                    api.getChat().sendMessage(p, "&eReloading GUIs");
+                    invAPI.reset();
+                    api.getChat().sendMessage(p, "  - &aComplete");
                     return true;
                 }
                 api.getChat().sendMessage(p, "&cThis command is only available in 1.15+");
