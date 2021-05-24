@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
     private final List<ICustomRecipe<?, ?>> cachedRecipes;
-    private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
+    //private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
     private final Map<UUID, List<ItemStack>> cachedPlayerItemStacks = new HashMap<>();
 
     private final String group;
@@ -47,12 +47,22 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         this.cachedRecipes = Collections.singletonList(recipe);
     }
 
+    /**
+     * @param player The player to get the recipes for.
+     * @return The recipes of this container the player has access to.
+     */
     public List<ICustomRecipe<?, ?>> getRecipes(Player player) {
         return Registry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 
+    /**
+     * Checks if a player can view at least one recipe of this container.
+     *
+     * @param player The player to check.
+     * @return True if the player can view the container.
+     */
     public boolean canView(Player player) {
-        return cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getConditions().getByID("permission") == null || recipe1.getConditions().getByID("permission").check(recipe1, new Conditions.Data(player, null, null)));
+        return cachedRecipes.stream().anyMatch(recipe1 -> !recipe1.isHidden() && !recipe1.isDisabled() && recipe1.checkCondition("permission", new Conditions.Data(player)));
     }
 
     public @Nullable String getGroup() {
