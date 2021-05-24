@@ -38,7 +38,15 @@ public class Conditions extends HashMap<String, Condition> {
         addCondition(new CraftDelayCondition());
     }
 
-    public boolean checkConditions(ICustomRecipe<?,?> customRecipe, Data data) {
+    public boolean check(String id, ICustomRecipe<?, ?> customRecipe, Data data) {
+        Condition condition = getByID(id);
+        if (condition != null) {
+            return condition.check(customRecipe, data);
+        }
+        return true;
+    }
+
+    public boolean checkConditions(ICustomRecipe<?, ?> customRecipe, Data data) {
         for (Condition condition : values()) {
             if (!condition.check(customRecipe, data)) {
                 return false;
@@ -91,6 +99,14 @@ public class Conditions extends HashMap<String, Condition> {
             this.player = player;
             this.block = block;
             this.inventoryView = inventoryView;
+        }
+
+        public Data(Player player, Block block) {
+            this(player, block, null);
+        }
+
+        public Data(Player player) {
+            this(player, null, null);
         }
 
         @Nullable
