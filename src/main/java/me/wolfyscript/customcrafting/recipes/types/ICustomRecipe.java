@@ -76,8 +76,26 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
 
     void setConditions(Conditions conditions);
 
+    /**
+     * Checks all the conditions of the recipe against specified data.
+     *
+     * @param data The data to check the conditions against.
+     * @return True if the conditions are met.
+     */
     default boolean checkConditions(Conditions.Data data) {
         return getConditions().checkConditions(this, data);
+    }
+
+    /**
+     * Checks a specific condition of this recipe against the specified data.
+     * If the condition does not exist, it will return true.
+     *
+     * @param id   The id of the Condition.
+     * @param data The data to check the condition against.
+     * @return True if condition is valid or non existent.
+     */
+    default boolean checkCondition(String id, Conditions.Data data) {
+        return getConditions().check(id, this, data);
     }
 
     boolean isHidden();
