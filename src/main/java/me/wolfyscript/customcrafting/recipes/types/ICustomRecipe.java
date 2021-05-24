@@ -128,15 +128,11 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
                 e.printStackTrace();
                 return false;
             }
-            if (player != null) {
-                getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
-                getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
-            }
+            getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
+            getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
             return true;
         }
-        if (player != null) {
-            getAPI().getChat().sendMessage(player, "&c" + "Missing NamespacedKey!");
-        }
+        getAPI().getChat().sendMessage(player, "&c" + "Missing NamespacedKey!");
         return false;
     }
 
@@ -149,25 +145,22 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
             Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> Registry.RECIPES.remove(getNamespacedKey()));
             if (CustomCrafting.inst().hasDataBaseHandler()) {
                 CustomCrafting.inst().getDataBaseHandler().removeRecipe(getNamespacedKey().getNamespace(), getNamespacedKey().getKey());
-                player.sendMessage("§aRecipe deleted!");
+                getAPI().getChat().sendMessage(player, "§aRecipe deleted!");
                 return true;
             } else {
                 File file = new File(DataHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
                 System.gc();
                 if (file.delete()) {
-                    if (player != null) getAPI().getChat().sendMessage(player, "&aRecipe deleted!");
+                    getAPI().getChat().sendMessage(player, "&aRecipe deleted!");
                     return true;
                 } else {
                     file.deleteOnExit();
-                    if (player != null)
-                        getAPI().getChat().sendMessage(player, "&cCouldn't delete recipe on runtime! File is being deleted on restart!");
+                    getAPI().getChat().sendMessage(player, "&cCouldn't delete recipe on runtime! File is being deleted on restart!");
                 }
             }
             return false;
         }
-        if (player != null) {
-            getAPI().getChat().sendMessage(player, "&c" + "Missing NamespacedKey!");
-        }
+        getAPI().getChat().sendMessage(player, "&c" + "Missing NamespacedKey!");
         return false;
     }
 
