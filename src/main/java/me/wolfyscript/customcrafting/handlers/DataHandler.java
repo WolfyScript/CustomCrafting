@@ -95,7 +95,7 @@ public class DataHandler {
             getDisabledRecipes().addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
         }
         load(true);
-        categories.indexCategories();
+        categories.index();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 

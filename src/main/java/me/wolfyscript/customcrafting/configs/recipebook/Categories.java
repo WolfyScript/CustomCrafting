@@ -107,10 +107,12 @@ public class Categories {
         return filters;
     }
 
-    public void indexCategories() {
+    public void index() {
         CustomCrafting.inst().getApi().getConsole().info("Indexing Recipe Book...");
-        this.categoryMap.values().forEach(Category::index);
-        this.filters.values().forEach(filter -> this.categoryMap.values().forEach(category -> category.indexFilters(filter)));
+        this.categoryMap.values().forEach(category -> {
+            category.index();
+            this.filters.values().forEach(category::indexFilters);
+        });
     }
 
     @Override

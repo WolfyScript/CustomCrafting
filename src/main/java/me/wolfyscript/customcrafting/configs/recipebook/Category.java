@@ -54,14 +54,18 @@ public class Category extends CategorySettings {
     }
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {
-        return indexedFilters.getOrDefault(filter, new ArrayList<>()).stream().filter(container -> container.canView(player)).collect(Collectors.toList());
+        return getContainers(filter).stream().filter(container -> container.canView(player)).collect(Collectors.toList());
     }
 
-    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, EliteWorkbench cache) {
-        if (cache != null) {
-            return indexedFilters.getOrDefault(filter, new ArrayList<>()).stream().filter(container -> container.canView(player) && container.isValid(cache)).collect(Collectors.toList());
+    public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, EliteWorkbench eliteWorkbench) {
+        if (eliteWorkbench != null) {
+            return getContainers(filter).stream().filter(container -> container.canView(player) && container.isValid(eliteWorkbench)).collect(Collectors.toList());
         }
         return getRecipeList(player, filter);
+    }
+
+    private List<RecipeContainer> getContainers(CategoryFilter filter) {
+        return indexedFilters.getOrDefault(filter, new ArrayList<>());
     }
 
     @JsonIgnore

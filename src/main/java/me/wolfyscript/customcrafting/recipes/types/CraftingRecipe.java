@@ -113,9 +113,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
                     event.setButton(i, glass);
                 }
             }
-            if (getConditions().getByID("permission").getOption().equals(Conditions.Option.EXACT)) {
-                //TODO display for admins
-            }
             List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("advanced_workbench") && !condition.getId().equals("permission")).collect(Collectors.toList());
             int startSlot = 9 / (conditions.size() + 1);
             int slot = 0;

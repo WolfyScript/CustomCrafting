@@ -71,7 +71,7 @@ public class CraftManager {
      */
     @Nullable
     public CustomItem checkRecipe(CraftingRecipe<?> recipe, ItemStack[] matrix, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory, DataHandler dataHandler) {
-        if (!dataHandler.getDisabledRecipes().contains(recipe.getNamespacedKey())) {
+        if (!recipe.isDisabled()) {
             CraftingData craftingData = recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix, ingredients) : null;
             if (craftingData != null) {
                 CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);

@@ -160,12 +160,19 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return getAvailable(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
         }
 
-        private <T extends ICustomRecipe<?, ?>> List<T> getAvailable(Stream<T> recipes) {
-            return recipes.filter(recipe -> !recipe.isHidden() && !CustomCrafting.inst().getDataHandler().getDisabledRecipes().contains(recipe.getNamespacedKey())).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
+        public synchronized <T extends ICustomRecipe<?, ?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
+            return getAvailable(recipes.stream().filter(recipe -> recipe.checkCondition("permission", new Conditions.Data(player))));
         }
 
-        public synchronized <T extends ICustomRecipe<?, ?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
-            return recipes.stream().filter(recipe -> recipe.getConditions().getByID("permission") == null || recipe.getConditions().getByID("permission").check(recipe, new Conditions.Data(player, null, null))).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
+        /**
+         * Filters the Recipes stream from disabled or hidden recipes, and sorts the list according to the {@link me.wolfyscript.customcrafting.recipes.RecipePriority}!
+         *
+         * @param recipes The Stream of Recipes to filter.
+         * @param <T>     The type of the {@link ICustomRecipe}
+         * @return A filtered {@link List} containing only visible and enabled recipes.
+         */
+        private <T extends ICustomRecipe<?, ?>> List<T> getAvailable(Stream<T> recipes) {
+            return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 
         public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
