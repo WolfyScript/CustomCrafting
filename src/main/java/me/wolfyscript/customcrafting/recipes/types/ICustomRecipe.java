@@ -102,6 +102,10 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
 
     void setHidden(boolean hidden);
 
+    default boolean isDisabled() {
+        return CustomCrafting.inst().getDataHandler().getDisabledRecipes().contains(getNamespacedKey());
+    }
+
     C clone();
 
     /**
