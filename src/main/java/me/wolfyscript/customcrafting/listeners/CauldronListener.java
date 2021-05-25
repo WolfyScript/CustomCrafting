@@ -114,44 +114,49 @@ public class CauldronListener implements Listener {
         Player player = event.getPlayer();
         Item itemDrop = event.getItemDrop();
         Cauldrons cauldrons = CustomCrafting.inst().getCauldrons();
-        Bukkit.getScheduler().runTaskLater(api.getPlugin(), () -> cauldrons.getCauldrons().entrySet().stream()
-                .filter(entry -> entry.getKey().getWorld() != null)
-                .filter(entry -> entry.getKey().getWorld().equals(itemDrop.getLocation().getWorld()) && entry.getKey().clone().add(0.5, 0.4, 0.5).distance(itemDrop.getLocation()) <= 0.4)
-                .forEach(entry -> {
-                    Location loc = entry.getKey();
-                    List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).collect(Collectors.toList());
-                    if (!items.isEmpty()) {
-                        int level = ((Levelled) loc.getBlock().getBlockData()).getLevel();
-                        List<Cauldron> cauldronEntryValue = entry.getValue();
-                        //Check for new possible Recipes
-                        List<CauldronRecipe> recipes = Registry.RECIPES.get(Types.CAULDRON);
-                        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-                        for (CauldronRecipe recipe : recipes) {
-                            if (cauldronEntryValue.isEmpty() || cauldronEntryValue.get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {
-                                if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || cauldrons.isCustomCauldronLit(loc.getBlock()))) {
-                                    List<Item> validItems = recipe.checkRecipe(items);
-                                    if (!validItems.isEmpty()) {
-                                        //Do something with the items! e.g. consume!
-                                        CauldronPreCookEvent cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player);
-                                        Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
-                                        if (!cauldronPreCookEvent.isCancelled()) {
-                                            synchronized (cauldrons.getCauldrons()) {
-                                                cauldronEntryValue.add(new Cauldron(cauldronPreCookEvent));
-                                            }
-                                            for (int i = 0; i < recipe.getIngredient().size() && i < validItems.size(); i++) {
-                                                Item itemEntity = validItems.get(i);
-                                                ItemStack itemStack = itemEntity.getItemStack();
-                                                CustomItem customItem = recipe.getIngredient().getChoices().get(i);
-                                                customItem.consumeItem(itemStack, customItem.getAmount(), itemEntity.getLocation().clone().add(0.0, 0.5, 0.0));
+        Bukkit.getScheduler().runTaskLater(api.getPlugin(),
+                () -> {
+                    if (cauldrons != null && cauldrons.getCauldrons() != null) {
+                        cauldrons.getCauldrons().entrySet().stream()
+                                .filter(entry -> entry.getKey().getWorld() != null)
+                                .filter(entry -> entry.getKey().getWorld().equals(itemDrop.getLocation().getWorld()) && entry.getKey().clone().add(0.5, 0.4, 0.5).distance(itemDrop.getLocation()) <= 0.4)
+                                .forEach(entry -> {
+                                    Location loc = entry.getKey();
+                                    List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).collect(Collectors.toList());
+                                    if (!items.isEmpty()) {
+                                        int level = ((Levelled) loc.getBlock().getBlockData()).getLevel();
+                                        List<Cauldron> cauldronEntryValue = entry.getValue();
+                                        //Check for new possible Recipes
+                                        List<CauldronRecipe> recipes = Registry.RECIPES.get(Types.CAULDRON);
+                                        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
+                                        for (CauldronRecipe recipe : recipes) {
+                                            if (cauldronEntryValue.isEmpty() || cauldronEntryValue.get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {
+                                                if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || cauldrons.isCustomCauldronLit(loc.getBlock()))) {
+                                                    List<Item> validItems = recipe.checkRecipe(items);
+                                                    if (!validItems.isEmpty()) {
+                                                        //Do something with the items! e.g. consume!
+                                                        CauldronPreCookEvent cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player);
+                                                        Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
+                                                        if (!cauldronPreCookEvent.isCancelled()) {
+                                                            synchronized (cauldrons.getCauldrons()) {
+                                                                cauldronEntryValue.add(new Cauldron(cauldronPreCookEvent));
+                                                            }
+                                                            for (int i = 0; i < recipe.getIngredient().size() && i < validItems.size(); i++) {
+                                                                Item itemEntity = validItems.get(i);
+                                                                ItemStack itemStack = itemEntity.getItemStack();
+                                                                CustomItem customItem = recipe.getIngredient().getChoices().get(i);
+                                                                customItem.consumeItem(itemStack, customItem.getAmount(), itemEntity.getLocation().clone().add(0.0, 0.5, 0.0));
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                }
                                             }
                                         }
-                                        break;
                                     }
-                                }
-                            }
-                        }
+                                });
                     }
-                }), 20
+                }, 20
         );
     }
 }
