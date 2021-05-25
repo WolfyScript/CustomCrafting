@@ -12,6 +12,7 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -25,6 +26,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class CustomItemSelectButton extends ActionButton<CCCache> {
 
@@ -52,7 +55,8 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                         cache.applyItem(customItem);
                         api.getInventoryAPI().getGuiWindow(RecipeCreatorCluster.ITEM_EDITOR).sendMessage(player, "item_applied");
-                        guiHandler.getClusterHistory().get(guiHandler.getCluster()).remove(guiHandler.getClusterHistory().size() - 1);
+                        List<? extends GuiWindow<?>> history = guiHandler.getClusterHistory().get(guiHandler.getCluster());
+                        history.remove(history.size() - 1);
                         guiHandler.openCluster(RecipeCreatorCluster.KEY);
                     } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
                         ItemStack itemStack = customItem.create();

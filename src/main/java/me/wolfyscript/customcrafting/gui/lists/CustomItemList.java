@@ -14,6 +14,7 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -37,7 +38,8 @@ public class CustomItemList extends CCWindow {
             if (items.getListNamespace() != null) {
                 items.setListNamespace(null);
             } else if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
-                guiHandler.getClusterHistory().get(guiHandler.getCluster()).remove(guiHandler.getClusterHistory().size() - 1);
+                List<? extends GuiWindow<?>> history = guiHandler.getClusterHistory().get(guiHandler.getCluster());
+                history.remove(history.size() - 1);
                 guiHandler.openCluster(RecipeCreatorCluster.KEY);
             } else {
                 guiHandler.openPreviousWindow();
