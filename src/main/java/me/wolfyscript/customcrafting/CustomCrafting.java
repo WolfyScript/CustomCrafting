@@ -101,6 +101,11 @@ public class CustomCrafting extends JavaPlugin {
         return instance;
     }
 
+    @Deprecated
+    public static CustomCrafting getInst() {
+        return inst();
+    }
+
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
