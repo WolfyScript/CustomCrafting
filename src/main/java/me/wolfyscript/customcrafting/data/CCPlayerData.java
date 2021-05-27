@@ -82,11 +82,11 @@ public class CCPlayerData extends CustomPlayerData {
         this.normalCrafts += increase;
     }
 
-    public int getRecipeCrafts(NamespacedKey recipeKey) {
+    public synchronized int getRecipeCrafts(NamespacedKey recipeKey) {
         return crafts.getOrDefault(recipeKey, 0);
     }
 
-    public void increaseRecipeCrafts(NamespacedKey recipeKey, int increase) {
+    public synchronized void increaseRecipeCrafts(NamespacedKey recipeKey, int increase) {
         crafts.put(recipeKey, getRecipeCrafts(recipeKey) + increase);
     }
 

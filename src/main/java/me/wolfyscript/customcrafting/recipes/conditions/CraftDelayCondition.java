@@ -50,7 +50,7 @@ public class CraftDelayCondition extends Condition {
 
     @Override
     public void readFromJson(JsonNode node) {
-        this.delay = node.path("delay").asInt();
+        this.delay = node.path("delay").asLong();
     }
 
     @Override
