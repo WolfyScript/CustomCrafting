@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
@@ -112,23 +111,21 @@ public class CraftManager {
     }
 
     private void editStatistics(Player player, Inventory inventory, CraftingRecipe<?> recipe) {
-        Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
-            CCPlayerData playerStore = PlayerUtil.getStore(player);
-            playerStore.increaseRecipeCrafts(recipe.getNamespacedKey(), 1);
-            playerStore.increaseTotalCrafts(1);
-            CustomItem customItem = NamespacedKeyUtils.getCustomItem(inventory.getLocation());
-            if (customItem != null && customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE)) {
-                playerStore.increaseAdvancedCrafts(1);
-            } else {
-                playerStore.increaseNormalCrafts(1);
-            }
-        });
+        CCPlayerData playerStore = PlayerUtil.getStore(player);
+        playerStore.increaseRecipeCrafts(recipe.getNamespacedKey(), 1);
+        playerStore.increaseTotalCrafts(1);
+        CustomItem customItem = NamespacedKeyUtils.getCustomItem(inventory.getLocation());
+        if (customItem != null && customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE)) {
+            playerStore.increaseAdvancedCrafts(1);
+        } else {
+            playerStore.increaseNormalCrafts(1);
+        }
     }
 
     private void setPlayerCraftTime(Player player, CraftingRecipe<?> recipe) {
-        Condition condition = recipe.getConditions().getByID("craft_delay");
-        if (condition instanceof CraftDelayCondition && condition.getOption().equals(Conditions.Option.EXACT)) {
-            ((CraftDelayCondition) condition).setPlayerCraftTime(player);
+        CraftDelayCondition condition = recipe.getConditions().getByType(CraftDelayCondition.class);
+        if (condition != null && condition.getOption().equals(Conditions.Option.EXACT)) {
+            condition.setPlayerCraftTime(player);
         }
     }
 

@@ -17,7 +17,7 @@ public class CraftLimitCondition extends Condition {
     long limit = 0;
 
     public CraftLimitCondition() {
-        super("craft_delay");
+        super("craft_limit");
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.LOWER_EXACT, Conditions.Option.LOWER);
     }

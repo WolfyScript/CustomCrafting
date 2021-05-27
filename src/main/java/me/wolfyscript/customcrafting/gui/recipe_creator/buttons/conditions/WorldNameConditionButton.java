@@ -23,7 +23,7 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
             if (event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
-                    conditions.getByID("world_name").toggleOption();
+                    conditions.getByType(WorldNameCondition.class).toggleOption();
                     recipeConfig.setConditions(conditions);
                 } else if (!((InventoryClickEvent) event).isShiftClick()) {
                     //CONFIGURE ELITE WORKBENCHES
@@ -34,27 +34,27 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
                                 window.sendMessage(player1, "missing_world");
                                 return true;
                             }
-                            WorldNameCondition condition = (WorldNameCondition) conditions.getByID("world_name");
+                            WorldNameCondition condition = conditions.getByType(WorldNameCondition.class);
                             if (condition.getWorldNames().contains(s)) {
                                 window.sendMessage(player1, "already_existing");
                                 return true;
                             }
-                            ((WorldNameCondition) conditions.getByID("world_name")).addWorldName(s);
+                            conditions.getByType(WorldNameCondition.class).addWorldName(s);
                             recipeConfig.setConditions(conditions);
                             return false;
                         }
                         return true;
                     });
-                }else{
-                    if (((WorldNameCondition) conditions.getByID("world_name")).getWorldNames().size() > 0) {
-                        ((WorldNameCondition) conditions.getByID("world_name")).getWorldNames().remove(((WorldNameCondition) conditions.getByID("world_name")).getWorldNames().size() - 1);
+                }else {
+                    if (!conditions.getByType(WorldNameCondition.class).getWorldNames().isEmpty()) {
+                        conditions.getByType(WorldNameCondition.class).getWorldNames().remove(conditions.getByType(WorldNameCondition.class).getWorldNames().size() - 1);
                         recipeConfig.setConditions(conditions);
                     }
                 }
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
-            WorldNameCondition condition = (WorldNameCondition) guiHandler.getCustomCache().getRecipe().getConditions().getByID("world_name");
+            WorldNameCondition condition = guiHandler.getCustomCache().getRecipe().getConditions().getByType(WorldNameCondition.class);
             hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.inst().getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getWorldNames().size()) {

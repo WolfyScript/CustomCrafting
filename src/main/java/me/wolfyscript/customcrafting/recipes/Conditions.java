@@ -36,6 +36,7 @@ public class Conditions extends HashMap<String, Condition> {
         addCondition(new ExperienceCondition());
         addCondition(new WorldBiomeCondition());
         addCondition(new CraftDelayCondition());
+        addCondition(new CraftLimitCondition());
     }
 
     public boolean check(String id, ICustomRecipe<?, ?> customRecipe, Data data) {
@@ -61,6 +62,15 @@ public class Conditions extends HashMap<String, Condition> {
 
     public Condition getByID(String id) {
         return get(id);
+    }
+
+    public <C extends Condition> C getByID(String id, Class<C> type) {
+        Condition condition = getByID(id);
+        return type.isInstance(condition) ? type.cast(condition) : null;
+    }
+
+    public <C extends Condition> C getByType(Class<C> type) {
+        return values().stream().filter(type::isInstance).map(type::cast).findFirst().orElse(null);
     }
 
     public void updateCondition(Condition condition) {

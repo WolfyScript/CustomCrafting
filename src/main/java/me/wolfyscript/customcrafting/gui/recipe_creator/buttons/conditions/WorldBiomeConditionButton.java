@@ -24,7 +24,7 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
             if(event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
-                    conditions.getByID("world_biome").toggleOption();
+                    conditions.getByType(WorldBiomeCondition.class).toggleOption();
                     recipeConfig.setConditions(conditions);
                 } else if (!((InventoryClickEvent) event).isShiftClick()) {
                     //CONFIGURE ELITE WORKBENCHES
@@ -32,12 +32,12 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
                         if (!s.isEmpty()) {
                             try {
                                 Biome biome = Biome.valueOf(s.toUpperCase(Locale.ROOT));
-                                WorldBiomeCondition condition = (WorldBiomeCondition) conditions.getByID("world_biome");
+                                WorldBiomeCondition condition = conditions.getByType(WorldBiomeCondition.class);
                                 if (condition.getBiomes().contains(biome.toString())) {
                                     window.sendMessage(player1, "already_existing");
                                     return true;
                                 }
-                                ((WorldBiomeCondition) conditions.getByID("world_biome")).addBiome(biome.toString());
+                                conditions.getByType(WorldBiomeCondition.class).addBiome(biome.toString());
                                 recipeConfig.setConditions(conditions);
                                 return false;
                             } catch (IllegalArgumentException ex) {
@@ -47,8 +47,8 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
                         return true;
                     });
                 } else {
-                    if (((WorldBiomeCondition) conditions.getByID("world_biome")).getBiomes().size() > 0) {
-                        ((WorldBiomeCondition) conditions.getByID("world_biome")).getBiomes().remove(((WorldBiomeCondition) conditions.getByID("world_biome")).getBiomes().size() - 1);
+                    if (conditions.getByType(WorldBiomeCondition.class).getBiomes().size() > 0) {
+                        conditions.getByType(WorldBiomeCondition.class).getBiomes().remove(conditions.getByType(WorldBiomeCondition.class).getBiomes().size() - 1);
                         recipeConfig.setConditions(conditions);
                     }
                 }
@@ -56,7 +56,7 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
 
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, b) -> {
-            WorldBiomeCondition condition = (WorldBiomeCondition) guiHandler.getCustomCache().getRecipe().getConditions().getByID("world_biome");
+            WorldBiomeCondition condition = guiHandler.getCustomCache().getRecipe().getConditions().getByType(WorldBiomeCondition.class);
             hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.inst().getApi()));
             for (int i = 0; i < 4; i++) {
                 if (i < condition.getBiomes().size()) {
