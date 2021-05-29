@@ -65,7 +65,7 @@ public abstract class Condition {
     }
 
     public void readFromJson(JsonNode node){
-        //Not every Condition needs this method as they just extend this clas with no extra variables!
+        //Not every Condition needs this method as they just extend this class with no extra variables!
     }
 
     public ItemStack getIconEnabled() {

@@ -226,6 +226,7 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new EliteWorkbenchListener(api), this);
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(api, this), this);
+        pM.registerEvents(new RecipeBookListener(), this);
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
             pM.registerEvents(new SmithingListener(this), this);
         }
