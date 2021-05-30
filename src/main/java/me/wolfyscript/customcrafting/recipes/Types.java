@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Constants for recipe types. They contain the information which class the recipe is from and the creator id, etc.
+ */
 public class Types {
 
     static final Set<RecipeType<? extends ICustomRecipe<?, ?>>> values = new HashSet<>();
@@ -30,9 +33,6 @@ public class Types {
         WORKBENCH, ELITE_WORKBENCH, ANVIL, FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE, STONECUTTER, CAULDRON, GRINDSTONE, BREWING_STAND, SMITHING
     }
 
-    /**
-     * Constants for recipe types. They contain the information which class the recipe is from and the creator id, etc.
-     */
     public static final RecipeType.CraftingRecipeType<AdvancedCraftingRecipe, ShapelessCraftRecipe, ShapedCraftRecipe> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, AdvancedCraftingRecipe.class, ShapelessCraftRecipe.class, ShapedCraftRecipe.class);
     public static final RecipeType.CraftingRecipeType<EliteCraftingRecipe, ShapelessEliteCraftRecipe, ShapedEliteCraftRecipe> ELITE_WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.ELITE_WORKBENCH, EliteCraftingRecipe.class, ShapelessEliteCraftRecipe.class, ShapedEliteCraftRecipe.class);
     public static final RecipeType.CookingRecipeType<CustomFurnaceRecipe> FURNACE = new RecipeType.CookingRecipeType<>(Type.FURNACE, CustomFurnaceRecipe.class);

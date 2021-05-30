@@ -159,6 +159,12 @@ public class CraftManager {
         }
     }
 
+    /**
+     * Sets the current active {@link CraftingData} for the player.
+     *
+     * @param uuid         The {@link UUID} of the player.
+     * @param craftingData The {@link CraftingData} of the latest check.
+     */
     public void put(UUID uuid, CraftingData craftingData) {
         preCraftedRecipes.put(uuid, craftingData);
     }
@@ -179,7 +185,6 @@ public class CraftManager {
     public boolean has(UUID uuid) {
         return preCraftedRecipes.containsKey(uuid);
     }
-
 
     /**
      * @return The old deprecated RecipeUtils!

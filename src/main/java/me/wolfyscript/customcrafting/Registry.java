@@ -75,10 +75,16 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             this.register(value.getNamespacedKey(), value);
         }
 
+        /**
+         * @return A list of all available namespaces.
+         */
         public List<String> namespaces() {
             return keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
         }
 
+        /**
+         * @return A list of all available groups.
+         */
         public List<String> groups() {
             return values().parallelStream().map(ICustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList());
         }
@@ -111,6 +117,11 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
+        /**
+         * @param type The type of the recipe.
+         * @param <T>  The type passed via the {@link RecipeType}
+         * @return A list including the {@link ICustomRecipe}s of the specified {@link RecipeType}
+         */
         public <T extends ICustomRecipe<?, ?>> List<T> get(RecipeType<T> type) {
             return get(type.getClazz());
         }
@@ -141,10 +152,25 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return getAvailable(getAvailable(), player);
         }
 
+        /**
+         * Same as {@link #get(RecipeType)}, but only includes the visible and enabled recipes.
+         *
+         * @param type The type of the recipe.
+         * @param <T>  The type passed via the {@link RecipeType}
+         * @return A list only including the {@link ICustomRecipe}s of the specified {@link RecipeType}, which are enabled and visible.
+         */
         public <T extends ICustomRecipe<?, ?>> List<T> getAvailable(RecipeType<T> type) {
             return getAvailable(get(type.getClazz()).parallelStream());
         }
 
+        /**
+         * Same as {@link #getAvailable(RecipeType)}, but additionally only includes recipes the player has permission to view.
+         *
+         * @param type   The type of the recipe.
+         * @param <T>    The type passed via the {@link RecipeType}
+         * @param player The player to get the recipes for.
+         * @return A list only including the {@link ICustomRecipe}s of the specified {@link RecipeType}, which are enabled, visible and the Player has permission to view.
+         */
         public <T extends ICustomRecipe<?, ?>> List<T> getAvailable(RecipeType<T> type, Player player) {
             return getAvailable(getAvailable(type), player);
         }
