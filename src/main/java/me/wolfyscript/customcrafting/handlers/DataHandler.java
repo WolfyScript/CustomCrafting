@@ -165,18 +165,25 @@ public class DataHandler {
         customCrafting.getConfigHandler().getConfig().save();
     }
 
-    //DISABLED RECIPES AND GET ALL RECIPES
-
+    /**
+     * @return A list of recipes that are disabled.
+     */
     public Set<NamespacedKey> getDisabledRecipes() {
         return disabledRecipes;
     }
 
+    /**
+     * @param recipe The recipe to check.
+     * @return if the recipe is disabled.
+     * @deprecated Replaced by {@link ICustomRecipe#isDisabled()}
+     */
+    @Deprecated
     public boolean isRecipeDisabled(ICustomRecipe<?, ?> recipe) {
         return disabledRecipes.contains(recipe.getNamespacedKey());
     }
 
     public void toggleRecipe(ICustomRecipe<?, ?> recipe) {
-        if (isRecipeDisabled(recipe)) {
+        if (recipe.isDisabled()) {
             enableRecipe(recipe);
         } else {
             disableRecipe(recipe);
@@ -284,6 +291,13 @@ public class DataHandler {
         }
     }
 
+    /**
+     * Loads a recipe copy into the {@link CCCache} of the {@link GuiHandler}.
+     *
+     * @param recipe     The recipe to load.
+     * @param guiHandler The {@link GuiHandler} to load into.
+     * @return If the recipe was successfully loaded into cache.
+     */
     public boolean loadRecipeIntoCache(ICustomRecipe<?, ?> recipe, GuiHandler<CCCache> guiHandler) {
         if (guiHandler.getCustomCache().getRecipeType().equals(recipe.getRecipeType())) {
             ICustomRecipe<?, ?> recipeCopy = recipe.clone();

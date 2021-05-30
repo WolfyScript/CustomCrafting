@@ -107,7 +107,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }
                 itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
-                if (customCrafting.getDataHandler().isRecipeDisabled(recipe)) {
+                if (recipe.isDisabled()) {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.disabled$"));
                 } else {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.enabled$"));

@@ -102,6 +102,9 @@ public class CustomCrafting extends JavaPlugin {
         return instance;
     }
 
+    /**
+     * @deprecated Replaced by {@link #inst()}
+     */
     @Deprecated
     public static CustomCrafting getInst() {
         return inst();
