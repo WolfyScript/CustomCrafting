@@ -19,6 +19,7 @@ import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.utils.RecipeUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
@@ -322,8 +323,8 @@ public class CustomCrafting extends JavaPlugin {
      * @deprecated Replaced with {@link #getCraftManager()}
      */
     @Deprecated
-    public CraftManager getRecipeUtils() {
-        return craftManager;
+    public RecipeUtils getRecipeUtils() {
+        return craftManager.getRecipeUtils();
     }
 
     public ChatUtils getChatUtils() {

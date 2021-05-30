@@ -27,6 +27,8 @@ import java.util.*;
 
 public class CraftManager {
 
+    private final RecipeUtils recipeUtils;
+
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final CustomCrafting customCrafting;
     private final DataHandler dataHandler;
@@ -34,6 +36,7 @@ public class CraftManager {
     public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.dataHandler = customCrafting.getDataHandler();
+        this.recipeUtils = new RecipeUtils(this);
     }
 
     /**
@@ -175,5 +178,14 @@ public class CraftManager {
      */
     public boolean has(UUID uuid) {
         return preCraftedRecipes.containsKey(uuid);
+    }
+
+
+    /**
+     * @return The old deprecated RecipeUtils!
+     */
+    @Deprecated
+    public RecipeUtils getRecipeUtils() {
+        return recipeUtils;
     }
 }
