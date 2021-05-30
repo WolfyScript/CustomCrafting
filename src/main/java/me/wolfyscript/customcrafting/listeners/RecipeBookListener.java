@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Objects;
+
 public class RecipeBookListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -15,17 +17,8 @@ public class RecipeBookListener implements Listener {
         Inventory inventory = event.getInventory();
         if (inventory instanceof GUIInventory) {
             GUIInventory<?> inventory1 = (GUIInventory<?>) inventory;
-            if (inventory1.getWindow().getNamespacedKey().equals(RecipeBookCluster.RECIPE_BOOK)) {
-                switch (event.getAction()) {
-                    case DROP_ALL_CURSOR:
-                    case DROP_ALL_SLOT:
-                    case DROP_ONE_CURSOR:
-                    case DROP_ONE_SLOT:
-                        event.setCancelled(true);
-                        break;
-                    default:
-                        //Nothing
-                }
+            if (inventory1.getWindow().getNamespacedKey().equals(RecipeBookCluster.RECIPE_BOOK) && Objects.equals(event.getClickedInventory(), event.getView().getBottomInventory())) {
+                event.setCancelled(true);
             }
         }
     }
