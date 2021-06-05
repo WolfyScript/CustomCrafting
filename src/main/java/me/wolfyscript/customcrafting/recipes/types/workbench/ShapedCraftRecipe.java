@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
@@ -183,7 +184,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         int index = 0;
         int row = 0;
         for (int i = 0; i < 9; i++) {
-            char ingrd = LETTERS[i];
+            char ingrd = LETTERS.charAt(i);
             Ingredient items = ingredients.get(ingrd);
             if (items == null || items.isEmpty()) {
                 if (shape[row] != null) {
@@ -229,6 +230,15 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         gen.writeBooleanField("vertical", this.mirrorVertical);
         gen.writeBooleanField("rotation", this.mirrorRotation);
         gen.writeEndObject();
+    }
+
+    @Override
+    public void writeToBuf(MCByteBuf byteBuf) {
+        super.writeToBuf(byteBuf);
+        byteBuf.writeVarInt(shape.length);
+        for (String s : shape) {
+            byteBuf.writeUtf(s, 3);
+        }
     }
 
     @Override

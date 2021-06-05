@@ -110,7 +110,7 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
         int index = 0;
         int row = 0;
         for (int i = 0; i < 36; i++) {
-            char ingrd = LETTERS[i];
+            char ingrd = LETTERS.charAt(i);
             Ingredient items = ingredients.get(ingrd);
             if (items == null || items.isEmpty()) {
                 if (shape[row] != null) {

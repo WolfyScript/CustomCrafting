@@ -16,6 +16,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -169,6 +170,8 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
     }
 
     void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException;
+
+    void writeToBuf(MCByteBuf byteBuf);
 
     default boolean findResultItem(ItemStack result) {
         return getResult().getChoices().parallelStream().anyMatch(customItem -> customItem.create().isSimilar(result));

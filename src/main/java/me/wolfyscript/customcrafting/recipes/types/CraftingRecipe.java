@@ -10,10 +10,12 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRec
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 
 public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
 
-    protected static final char[] LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+    protected static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     protected boolean shapeless;
     private Map<Character, Ingredient> ingredients;
@@ -60,7 +62,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
 
     @Override
     public Ingredient getIngredient(int slot) {
-        return getIngredients(LETTERS[slot]);
+        return getIngredients(LETTERS.charAt(slot));
     }
 
     @Override
@@ -80,7 +82,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
 
     @Override
     public void setIngredient(int slot, Ingredient ingredients) {
-        setIngredient(LETTERS[slot], ingredients);
+        setIngredient(LETTERS.charAt(slot), ingredients);
     }
 
     @Override
@@ -137,5 +139,21 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
         gen.writeBooleanField("shapeless", shapeless);
         gen.writeObjectField("result", result);
         gen.writeObjectField("ingredients", ingredients);
+    }
+
+    @Override
+    public void writeToBuf(MCByteBuf byteBuf) {
+        super.writeToBuf(byteBuf);
+        byteBuf.writeBoolean(shapeless);
+        byteBuf.writeInt(bookGridSize);
+        byteBuf.writeVarInt(ingredients.size());
+        ingredients.forEach((key, ingredient) -> {
+            byteBuf.writeInt(LETTERS.indexOf(key));
+            byteBuf.writeVarInt(ingredient.size());
+            for (CustomItem choice : ingredient.getChoices()) {
+                byteBuf.writeItemStack(choice.create());
+            }
+        });
+
     }
 }

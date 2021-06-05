@@ -8,6 +8,8 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
@@ -166,5 +168,16 @@ public abstract class CustomRecipe<C extends CustomRecipe<C, T>, T extends Resul
         gen.writeStringField("priority", priority.toString());
         gen.writeBooleanField("exactItemMeta", exactMeta);
         gen.writeObjectField("conditions", conditions);
+    }
+
+    @Override
+    public void writeToBuf(MCByteBuf byteBuf) {
+        byteBuf.writeUtf(namespacedKey.toString());
+        byteBuf.writeBoolean(exactMeta);
+        byteBuf.writeUtf(group);
+        byteBuf.writeVarInt(result.getChoices().size());
+        for (CustomItem choice : result.getChoices()) {
+            byteBuf.writeItemStack(choice.create());
+        }
     }
 }
