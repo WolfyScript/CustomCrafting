@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types.blast_furnace;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
@@ -34,6 +35,11 @@ public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, Bl
     @Override
     public RecipeType<CustomBlastRecipe> getRecipeType() {
         return Types.BLAST_FURNACE;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.BLAST_FURNACE;
     }
 
     @Override

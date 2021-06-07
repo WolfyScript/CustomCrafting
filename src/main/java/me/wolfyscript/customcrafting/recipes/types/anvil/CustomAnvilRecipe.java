@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types.anvil;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -178,6 +179,11 @@ public class CustomAnvilRecipe extends CustomRecipe<CustomAnvilRecipe, SlotResul
     @Override
     public RecipeType<CustomAnvilRecipe> getRecipeType() {
         return Types.ANVIL;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.ANVIL;
     }
 
     @Override

@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
@@ -46,6 +47,8 @@ public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTa
     void setNamespacedKey(NamespacedKey namespacedKey);
 
     RecipeType<C> getRecipeType();
+
+    RecipePacketType getPacketType();
 
     String getGroup();
 

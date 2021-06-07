@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -51,6 +52,11 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
             return new CraftingData(this, foundItems, matrix);
         }
         return null;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.ELITE_CRAFTING_SHAPELESS;
     }
 
     @Override

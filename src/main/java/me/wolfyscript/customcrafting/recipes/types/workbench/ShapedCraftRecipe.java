@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -170,6 +171,11 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
             }
         }
         return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, ingredients) : null;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.CRAFTING_SHAPED;
     }
 
     @Override

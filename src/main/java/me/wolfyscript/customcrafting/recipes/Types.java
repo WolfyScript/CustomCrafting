@@ -30,7 +30,18 @@ public class Types {
     static final Set<RecipeType<? extends ICustomRecipe<?, ?>>> values = new HashSet<>();
 
     public enum Type {
-        WORKBENCH, ELITE_WORKBENCH, ANVIL, FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE, STONECUTTER, CAULDRON, GRINDSTONE, BREWING_STAND, SMITHING
+        WORKBENCH,
+        ELITE_WORKBENCH,
+        ANVIL,
+        FURNACE,
+        BLAST_FURNACE,
+        SMOKER,
+        CAMPFIRE,
+        STONECUTTER,
+        CAULDRON,
+        GRINDSTONE,
+        BREWING_STAND,
+        SMITHING
     }
 
     public static final RecipeType.CraftingRecipeType<AdvancedCraftingRecipe, ShapelessCraftRecipe, ShapedCraftRecipe> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, AdvancedCraftingRecipe.class, ShapelessCraftRecipe.class, ShapedCraftRecipe.class);

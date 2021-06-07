@@ -172,6 +172,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C, T>, T extends Resul
 
     @Override
     public void writeToBuf(MCByteBuf byteBuf) {
+        byteBuf.writeUtf(getPacketType().name());
         byteBuf.writeUtf(namespacedKey.toString());
         byteBuf.writeBoolean(exactMeta);
         byteBuf.writeUtf(group);

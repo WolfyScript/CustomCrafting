@@ -15,6 +15,7 @@ import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.*;
+import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -83,6 +84,8 @@ public class CustomCrafting extends JavaPlugin {
     private Cauldrons cauldrons = null;
 
     private boolean outdated = false;
+    private final NetworkHandler networkHandler;
+
 
     public CustomCrafting() {
         super();
@@ -96,6 +99,7 @@ public class CustomCrafting extends JavaPlugin {
 
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon(this);
+        this.networkHandler = new NetworkHandler(api);
     }
 
     public static CustomCrafting inst() {
@@ -161,6 +165,7 @@ public class CustomCrafting extends JavaPlugin {
         registerListeners();
         registerCommands();
         registerInventories();
+        this.networkHandler.registerPackets();
 
         cauldrons = new Cauldrons(this);
         if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {

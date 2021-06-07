@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types.grindstone;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -51,6 +52,11 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultT
     @Override
     public RecipeType<GrindstoneRecipe> getRecipeType() {
         return Types.GRINDSTONE;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.GRINDSTONE;
     }
 
     @Override

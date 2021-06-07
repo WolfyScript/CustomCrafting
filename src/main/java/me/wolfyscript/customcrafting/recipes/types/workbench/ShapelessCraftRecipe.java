@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -48,6 +49,11 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
             }
         }
         return usedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, matrix) : null;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.CRAFTING_SHAPELESS;
     }
 
     @Override

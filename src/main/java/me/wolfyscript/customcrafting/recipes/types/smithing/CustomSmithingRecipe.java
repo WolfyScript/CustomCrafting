@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.types.smithing;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
@@ -53,6 +54,11 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
     @Override
     public RecipeType<CustomSmithingRecipe> getRecipeType() {
         return Types.SMITHING;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.SMITHING;
     }
 
     @Override

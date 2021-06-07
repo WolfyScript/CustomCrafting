@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
+import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -215,6 +216,11 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
             }
         }
         return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, ingredients) : null;
+    }
+
+    @Override
+    public RecipePacketType getPacketType() {
+        return RecipePacketType.ELITE_CRAFTING_SHAPED;
     }
 
     @Override
