@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
 import org.bukkit.Material;
@@ -61,5 +62,13 @@ public class CategoryFilter extends CategorySettings {
             return false;
         }
         return container.isValid(totalMaterials);
+    }
+
+    @Override
+    public void writeToByteBuf(MCByteBuf byteBuf) {
+        super.writeToByteBuf(byteBuf);
+        writeData(byteBuf);
+        writeStringArray(materials.stream().map(material -> material.getKey().toString()).collect(Collectors.toList()), byteBuf);
+
     }
 }

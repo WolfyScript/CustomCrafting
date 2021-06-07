@@ -99,7 +99,7 @@ public class CustomCrafting extends JavaPlugin {
 
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon(this);
-        this.networkHandler = new NetworkHandler(api);
+        this.networkHandler = new NetworkHandler(this, api);
     }
 
     public static CustomCrafting inst() {

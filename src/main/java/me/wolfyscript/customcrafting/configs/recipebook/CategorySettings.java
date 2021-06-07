@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -141,5 +143,21 @@ public class CategorySettings {
                 ", namespaces=" + namespaces +
                 ", recipes=" + recipes +
                 '}';
+    }
+
+    public void writeToByteBuf(MCByteBuf byteBuf) {
+        byteBuf.writeItemStack(new ItemStack(this.icon));
+        byteBuf.writeUtf(this.name);
+    }
+
+    protected void writeData(MCByteBuf byteBuf) {
+        writeStringArray(new ArrayList<>(this.groups), byteBuf);
+        writeStringArray(new ArrayList<>(this.namespaces), byteBuf);
+        writeStringArray(this.recipes.stream().map(NamespacedKey::toString).collect(Collectors.toList()), byteBuf);
+    }
+
+    protected void writeStringArray(List<String> values, MCByteBuf byteBuf) {
+        byteBuf.writeVarInt(values.size());
+        values.forEach(byteBuf::writeUtf);
     }
 }
