@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.data.patreon;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,6 +17,16 @@ import java.net.URL;
 import java.util.Collections;
 
 public class Patron {
+
+    private static final RandomCollection<ItemStack> HEADS = new RandomCollection<>();
+
+    static {
+        HEADS.add(1, PlayerHeadUtils.getViaURL("adc6429cfabacf211dd3db26c5ca7b5942dd82599fbb1d537cf72e4952e2c7b"));
+        HEADS.add(2, PlayerHeadUtils.getViaURL("deb41e309d82952f5f4a908bf168e848c8176e5f0487e576bc3219ed0644e6e7"));
+        HEADS.add(1, PlayerHeadUtils.getViaURL("15481d610ec06a543840f76b8cc9dc51fd80200a5fa894fdf4e9e301904af48e"));
+        HEADS.add(1, PlayerHeadUtils.getViaURL("d359537c15534f61c1cd886bc118774ed22280e7cdab6613870160aad4ca39"));
+        HEADS.add(1, PlayerHeadUtils.getViaURL("3d9d2c75785f1238987bb11a442972a86daec9662ac56bbfea2d83db962e1ac3"));
+    }
 
     private final String name;
     private ItemStack head;
@@ -53,11 +64,11 @@ public class Patron {
     }
 
     public Patron(String name, Patreon.Tier tier) {
-        this(name, "", new ItemStack(Material.PLAYER_HEAD), tier);
+        this(name, "", HEADS.next(), tier);
     }
 
     public Patron(String name) {
-        this(name, "", new ItemStack(Material.PLAYER_HEAD), Patreon.Tier.WOLFRAM);
+        this(name, "", HEADS.next(), Patreon.Tier.WOLFRAM);
     }
 
     public ItemStack getHead() {

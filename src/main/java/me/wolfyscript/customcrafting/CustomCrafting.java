@@ -315,6 +315,9 @@ public class CustomCrafting extends JavaPlugin {
         return dataHandler;
     }
 
+    /**
+     * @deprecated Replaced with {@link #getDataHandler()}
+     */
     @Deprecated
     public DataHandler getRecipeHandler() {
         return getDataHandler();
