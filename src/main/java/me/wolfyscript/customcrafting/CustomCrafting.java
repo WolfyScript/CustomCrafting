@@ -54,6 +54,8 @@ import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
+    private static final boolean development = false;
+
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
     public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
     public static final NamespacedKey ELITE_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
@@ -165,7 +167,9 @@ public class CustomCrafting extends JavaPlugin {
         registerListeners();
         registerCommands();
         registerInventories();
-        this.networkHandler.registerPackets();
+        if (development) {
+            this.networkHandler.registerPackets();
+        }
 
         cauldrons = new Cauldrons(this);
         if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
