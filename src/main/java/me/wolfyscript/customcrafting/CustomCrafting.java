@@ -315,6 +315,11 @@ public class CustomCrafting extends JavaPlugin {
         return dataHandler;
     }
 
+    @Deprecated
+    public DataHandler getRecipeHandler() {
+        return getDataHandler();
+    }
+
     public boolean hasDataBaseHandler() {
         return dataBaseHandler != null;
     }
