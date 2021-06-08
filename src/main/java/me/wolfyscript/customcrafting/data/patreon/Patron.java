@@ -64,11 +64,11 @@ public class Patron {
     }
 
     public Patron(String name, Patreon.Tier tier) {
-        this(name, "", HEADS.next(), tier);
+        this(name, "", HEADS.next().clone(), tier);
     }
 
     public Patron(String name) {
-        this(name, "", HEADS.next(), Patreon.Tier.WOLFRAM);
+        this(name, "", HEADS.next().clone(), Patreon.Tier.WOLFRAM);
     }
 
     public ItemStack getHead() {
