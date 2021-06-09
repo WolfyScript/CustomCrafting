@@ -17,8 +17,6 @@ import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,11 +86,11 @@ public class ItemLoader {
             }
             //Update NamespacedKey of old WolfyUtilityReference
             if (reference instanceof WolfyUtilitiesRef) {
-                NamespacedKey oldNamespacedKey = ((WolfyUtilitiesRef) reference).getNamespacedKey();
+                var oldNamespacedKey = ((WolfyUtilitiesRef) reference).getNamespacedKey();
                 if (!oldNamespacedKey.getKey().contains("/") && !Registry.CUSTOM_ITEMS.has(oldNamespacedKey)) {
-                    NamespacedKey namespacedKey = NamespacedKeyUtils.fromInternal(((WolfyUtilitiesRef) reference).getNamespacedKey());
+                    var namespacedKey = NamespacedKeyUtils.fromInternal(((WolfyUtilitiesRef) reference).getNamespacedKey());
                     if (Registry.CUSTOM_ITEMS.has(namespacedKey)) {
-                        WolfyUtilitiesRef wuRef = new WolfyUtilitiesRef(namespacedKey);
+                        var wuRef = new WolfyUtilitiesRef(namespacedKey);
                         wuRef.setAmount(reference.getAmount());
                         return wuRef;
                     }
@@ -107,7 +105,7 @@ public class ItemLoader {
     }
 
     public static CustomItem load(APIReference reference) {
-        CustomItem customItem = CustomItem.of(reference);
+        var customItem = CustomItem.of(reference);
         if (customItem != null && customItem.hasNamespacedKey()) {
             customItem = customItem.clone();
             customItem.setAmount(reference.getAmount());
@@ -117,12 +115,12 @@ public class ItemLoader {
 
     public static void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+            var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
             if (CustomCrafting.inst().hasDataBaseHandler()) {
                 CustomCrafting.inst().getDataBaseHandler().updateItem(internalKey, customItem);
             } else {
                 try {
-                    File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
+                    var file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
                     file.getParentFile().mkdirs();
                     if (file.exists() || file.createNewFile()) {
                         JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
@@ -143,12 +141,12 @@ public class ItemLoader {
             }
             Registry.CUSTOM_ITEMS.remove(namespacedKey);
             System.gc();
-            NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+            var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
             if (CustomCrafting.inst().hasDataBaseHandler()) {
                 CustomCrafting.inst().getDataBaseHandler().removeItem(internalKey);
                 return true;
             } else {
-                File file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
+                var file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
                 if (file.delete()) {
                     if (player != null)
                         CustomCrafting.inst().getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
@@ -165,13 +163,13 @@ public class ItemLoader {
 
     public static void updateItem(ItemStack stack) {
         if (stack != null && stack.hasItemMeta()) {
-            ItemMeta itemMeta = stack.getItemMeta();
+            var itemMeta = stack.getItemMeta();
             if (itemMeta != null && !itemMeta.getPersistentDataContainer().isEmpty()) {
-                PersistentDataContainer container = itemMeta.getPersistentDataContainer();
+                var container = itemMeta.getPersistentDataContainer();
                 if (container.has(customItemContainerKey, PersistentDataType.STRING)) {
-                    NamespacedKey itemKey = NamespacedKey.of(container.get(customItemContainerKey, PersistentDataType.STRING));
+                    var itemKey = NamespacedKey.of(container.get(customItemContainerKey, PersistentDataType.STRING));
                     if (itemKey != null && !Registry.CUSTOM_ITEMS.has(itemKey)) {
-                        NamespacedKey updatedKey = NamespacedKeyUtils.fromInternal(itemKey);
+                        var updatedKey = NamespacedKeyUtils.fromInternal(itemKey);
                         if (Registry.CUSTOM_ITEMS.has(updatedKey)) {
                             container.set(customItemContainerKey, PersistentDataType.STRING, updatedKey.toString());
                         }

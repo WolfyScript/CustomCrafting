@@ -65,7 +65,7 @@ public class Conditions extends HashMap<String, Condition> {
     }
 
     public <C extends Condition> C getByID(String id, Class<C> type) {
-        Condition condition = getByID(id);
+        var condition = getByID(id);
         return type.isInstance(condition) ? type.cast(condition) : null;
     }
 
@@ -183,13 +183,13 @@ public class Conditions extends HashMap<String, Condition> {
         @Override
         public Conditions deserialize(JsonParser p, DeserializationContext deserializationContext) throws IOException {
             JsonNode node = p.readValueAsTree();
-            Conditions conditions = new Conditions();
+            var conditions = new Conditions();
             if (node.isArray()) {
                 node.elements().forEachRemaining(element -> {
                     if (element.isObject()) {
                         String id = element.get("id").asText();
-                        Conditions.Option option = Conditions.Option.valueOf(element.get("option").asText());
-                        Condition condition = conditions.getByID(id);
+                        var option = Conditions.Option.valueOf(element.get("option").asText());
+                        var condition = conditions.getByID(id);
                         if (condition != null) {
                             condition.setOption(option);
                             condition.readFromJson(element);

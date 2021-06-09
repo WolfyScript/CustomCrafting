@@ -109,7 +109,7 @@ public class ItemCreator extends CCWindow {
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
-                    me.wolfyscript.utilities.util.NamespacedKey namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
+                    var namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
                     if (namespacedKey != null) {
                         CustomItem customItem = items.getItem();
                         if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
@@ -120,7 +120,7 @@ public class ItemCreator extends CCWindow {
                         items.setSaved(true);
                         items.setNamespacedKey(namespacedKey);
                         sendMessage(player, "save.success");
-                        me.wolfyscript.utilities.util.NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+                        var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
                         api.getChat().sendMessage(player1, "&6" + internalKey.getNamespace() + "/items/" + internalKey.getKey());
                         return false;
                     }
@@ -193,7 +193,7 @@ public class ItemCreator extends CCWindow {
         event.setButton(13, ITEM_INPUT);
 
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        me.wolfyscript.utilities.util.NamespacedKey gray = data.getLightBackground();
+        var gray = data.getLightBackground();
         event.setButton(4, gray);
         event.setButton(12, gray);
         event.setButton(14, gray);

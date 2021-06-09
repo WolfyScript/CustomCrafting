@@ -46,16 +46,12 @@ public class WeatherCondition extends Condition {
         Block block = data.getBlock();
         if (block != null) {
             World world = block.getWorld();
-            switch (weather) {
-                case NONE:
-                    return !world.isThundering() && !world.hasStorm();
-                case STORM:
-                    return world.hasStorm() && !world.isThundering();
-                case THUNDER:
-                    return world.isThundering() && !world.hasStorm();
-                case STORM_THUNDER:
-                    return world.isThundering() && world.hasStorm();
-            }
+            return switch (weather) {
+                case NONE -> !world.isThundering() && !world.hasStorm();
+                case STORM -> world.hasStorm() && !world.isThundering();
+                case THUNDER -> world.isThundering() && !world.hasStorm();
+                case STORM_THUNDER -> world.isThundering() && world.hasStorm();
+            };
         }
         return false;
     }

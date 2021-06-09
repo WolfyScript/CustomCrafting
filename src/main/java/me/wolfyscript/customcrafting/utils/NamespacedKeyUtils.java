@@ -50,7 +50,7 @@ public class NamespacedKeyUtils {
 
     public static CustomItem getCustomItem(BlockCustomItemStore store) {
         if (store != null) {
-            CustomItem customItem = store.getCustomItem();
+            var customItem = store.getCustomItem();
             if (customItem == null) {
                 customItem = Registry.CUSTOM_ITEMS.get(fromInternal(store.getCustomItemKey()));
             }

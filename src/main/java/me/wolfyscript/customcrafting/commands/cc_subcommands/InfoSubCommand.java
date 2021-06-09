@@ -20,11 +20,8 @@ public class InfoSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
-            if (ChatUtils.checkPerm(p, "customcrafting.cmd.info")) {
-                printInfo(p);
-            }
+        if (sender instanceof Player p && ChatUtils.checkPerm(p, "customcrafting.cmd.info")) {
+            printInfo(p);
         }
         return true;
     }

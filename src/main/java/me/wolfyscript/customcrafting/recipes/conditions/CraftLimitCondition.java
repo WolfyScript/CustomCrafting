@@ -29,16 +29,12 @@ public class CraftLimitCondition extends Condition {
             CCPlayerData playerStore = PlayerUtil.getStore(player);
             if (playerStore != null) {
                 long amount = playerStore.getRecipeCrafts(recipe.getNamespacedKey());
-                switch (option) {
-                    case IGNORE:
-                        return true;
-                    case LOWER_EXACT:
-                        return amount <= limit;
-                    case LOWER:
-                        return amount < limit;
-                    default:
-                        return false;
-                }
+                return switch (option) {
+                    case IGNORE -> true;
+                    case LOWER_EXACT -> amount <= limit;
+                    case LOWER -> amount < limit;
+                    default -> false;
+                };
             }
         }
         return true;

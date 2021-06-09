@@ -181,8 +181,7 @@ public class AnvilListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() instanceof AnvilInventory) {
-            AnvilInventory inventory = (AnvilInventory) event.getClickedInventory();
+        if (event.getClickedInventory() instanceof AnvilInventory inventory) {
             Player player = (Player) event.getWhoClicked();
             if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(event.getCurrentItem())) {
                 if (preCraftedRecipes.get(player.getUniqueId()) != null) {

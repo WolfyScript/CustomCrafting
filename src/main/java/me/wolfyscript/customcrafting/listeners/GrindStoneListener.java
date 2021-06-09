@@ -270,20 +270,10 @@ public class GrindStoneListener implements Listener {
         if (name.endsWith("BOOTS") || name.endsWith("HELMET") || name.endsWith("LEGGINGS") || name.endsWith("CHESTPLATE") || name.endsWith("_ON_A_STICK")) {
             return true;
         }
-        switch (material) {
-            case BOW:
-            case ENCHANTED_BOOK:
-            case CROSSBOW:
-            case TRIDENT:
-            case SHIELD:
-            case ELYTRA:
-            case FISHING_ROD:
-            case SHEARS:
-            case FLINT_AND_STEEL:
-                return true;
-            default:
-                return false;
-        }
+        return switch (material) {
+            case BOW, ENCHANTED_BOOK, CROSSBOW, TRIDENT, SHIELD, ELYTRA, FISHING_ROD, SHEARS, FLINT_AND_STEEL -> true;
+            default -> false;
+        };
     }
 
 }

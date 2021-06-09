@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.commands.recipes.DeleteSubCommand;
 import me.wolfyscript.customcrafting.commands.recipes.EditSubCommand;
 import me.wolfyscript.customcrafting.commands.recipes.SaveSubCommand;
 import me.wolfyscript.customcrafting.commands.recipes.ToggleSubCommand;
-import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -37,7 +36,7 @@ public class CommandRecipe extends IndexCommand {
             Player p = (Player) sender;
             InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.recipes")) {
-                Categories categories = customCrafting.getDataHandler().getCategories();
+                var categories = customCrafting.getDataHandler().getCategories();
                 if (categories.getSortedCategories().size() > 1) {
                     invAPI.openCluster(p, RecipeBookCluster.KEY);
                 } else if (!categories.getSortedCategories().isEmpty()) {

@@ -213,8 +213,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             final int itemsSize = items.size();
             final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
             return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {
-                if (recipe instanceof IShapedCraftingRecipe) {
-                    IShapedCraftingRecipe shapedRecipe = ((IShapedCraftingRecipe) recipe);
+                if (recipe instanceof IShapedCraftingRecipe shapedRecipe) {
                     return itemsSize > 0 && shapedRecipe.getHeight() > 0 && itemsSize == shapedRecipe.getHeight() && items0Size == shapedRecipe.getWidth();
                 }
                 return true;
@@ -231,9 +230,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                 return;
             }
             Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-            boolean inject = false;
+            var inject = false;
             while (recipeIterator.hasNext()) {
-                Recipe recipe = recipeIterator.next();
+                var recipe = recipeIterator.next();
                 if (((Keyed) recipe).getKey().toString().equals(namespacedKey.toString())) {
                     if (!inject) {
                         inject = true;

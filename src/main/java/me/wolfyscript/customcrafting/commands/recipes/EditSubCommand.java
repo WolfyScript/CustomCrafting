@@ -31,9 +31,8 @@ public class EditSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             WolfyUtilities api = customCrafting.getApi();
-            Player player = (Player) sender;
             if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit") && args.length > 0) {
                 ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
                 if (customRecipe != null) {

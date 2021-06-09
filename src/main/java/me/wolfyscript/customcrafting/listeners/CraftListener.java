@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -45,8 +44,7 @@ public class CraftListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onCraft(InventoryClickEvent event) {
-        if (!(event.getClickedInventory() instanceof CraftingInventory)) return;
-        CraftingInventory inventory = (CraftingInventory) event.getClickedInventory();
+        if (!(event.getClickedInventory() instanceof CraftingInventory inventory)) return;
         if (event.getSlot() == 0) {
             ItemStack resultItem = inventory.getResult();
             ItemStack cursor = event.getCursor();
@@ -72,7 +70,7 @@ public class CraftListener implements Listener {
 
     public void callPreCraftEvent(CraftingInventory inventory, InventoryClickEvent event) {
         Bukkit.getScheduler().runTask(customCrafting, () -> {
-            PrepareItemCraftEvent event1 = new PrepareItemCraftEvent(inventory, event.getView(), false);
+            var event1 = new PrepareItemCraftEvent(inventory, event.getView(), false);
             Bukkit.getPluginManager().callEvent(event1);
             ((Player) event.getWhoClicked()).updateInventory();
         });
@@ -80,9 +78,9 @@ public class CraftListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPreCraft(PrepareItemCraftEvent e) {
-        Player player = (Player) e.getView().getPlayer();
+        var player = (Player) e.getView().getPlayer();
         try {
-            DataHandler dataHandler = customCrafting.getDataHandler();
+            var dataHandler = customCrafting.getDataHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
             ItemStack result = craftManager.preCheckRecipe(matrix, player, e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
@@ -93,7 +91,7 @@ public class CraftListener implements Listener {
             if (!(e.getRecipe() instanceof Keyed)) return;
             //Vanilla Recipe is available.
             //Check for custom recipe that overrides the vanilla recipe
-            NamespacedKey namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
+            var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
             ICraftingRecipe recipe = Registry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey));
             if (dataHandler.getDisabledRecipes().contains(namespacedKey) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!

@@ -51,8 +51,7 @@ public class BrewingStandListener implements Listener {
 
     @EventHandler
     public void onInv(InventoryClickEvent event) {
-        if (event.getClickedInventory() instanceof BrewerInventory && customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-            BrewerInventory inventory = (BrewerInventory) event.getClickedInventory();
+        if (event.getClickedInventory() instanceof BrewerInventory inventory && customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
             Player player = (Player) event.getWhoClicked();
             Location location = inventory.getLocation();
 

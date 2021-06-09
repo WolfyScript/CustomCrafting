@@ -167,7 +167,7 @@ public class Cauldrons {
         if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
             api.getConsole().info("Saving Cauldrons");
         }
-        try (FileOutputStream fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"); BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos)) {
+        try (var fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"); BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos)) {
             Map<String, List<String>> saveMap = new HashMap<>();
             synchronized (cauldrons) {
                 cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {

@@ -110,6 +110,8 @@ public class PlaceHolder extends PlaceholderExpansion {
                                     return String.valueOf(recipe.checkCondition("permission", new Conditions.Data(Bukkit.getPlayer(p.getUniqueId()))));
                                 }
                             }
+                            break;
+                        default:
                     }
                 }
         }

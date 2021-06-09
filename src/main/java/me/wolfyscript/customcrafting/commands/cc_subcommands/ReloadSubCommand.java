@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -26,29 +25,26 @@ public class ReloadSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
         WolfyUtilities api = customCrafting.getApi();
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
-            if (ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
-                if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-                    InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
-                    api.getChat().sendMessage(p, "&eReloading Languages!");
-                    customCrafting.getApi().getLanguageAPI().unregisterLanguages();
-                    customCrafting.getConfigHandler().loadLang();
-                    api.getChat().sendMessage(p, "  - &aComplete");
-                    api.getChat().sendMessage(p, "&eReloading Recipes/Items!");
-                    customCrafting.getConfigHandler().loadRecipeBookConfig();
-                    DataHandler dataHandler = customCrafting.getDataHandler();
-                    dataHandler.initCategories();
-                    dataHandler.load(false);
-                    dataHandler.getCategories().index();
-                    api.getChat().sendMessage(p, "  - &aComplete");
-                    api.getChat().sendMessage(p, "&eReloading GUIs");
-                    invAPI.reset();
-                    api.getChat().sendMessage(p, "  - &aComplete");
-                    return true;
-                }
-                api.getChat().sendMessage(p, "&cThis command is only available in 1.15+");
+        if (sender instanceof Player p && ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
+            if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
+                InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
+                api.getChat().sendMessage(p, "&eReloading Languages!");
+                customCrafting.getApi().getLanguageAPI().unregisterLanguages();
+                customCrafting.getConfigHandler().loadLang();
+                api.getChat().sendMessage(p, "  - &aComplete");
+                api.getChat().sendMessage(p, "&eReloading Recipes/Items!");
+                customCrafting.getConfigHandler().loadRecipeBookConfig();
+                var dataHandler = customCrafting.getDataHandler();
+                dataHandler.initCategories();
+                dataHandler.load(false);
+                dataHandler.getCategories().index();
+                api.getChat().sendMessage(p, "  - &aComplete");
+                api.getChat().sendMessage(p, "&eReloading GUIs");
+                invAPI.reset();
+                api.getChat().sendMessage(p, "  - &aComplete");
+                return true;
             }
+            api.getChat().sendMessage(p, "&cThis command is only available in 1.15+");
         }
         return true;
     }

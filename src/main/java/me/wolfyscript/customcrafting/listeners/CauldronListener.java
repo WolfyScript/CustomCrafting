@@ -135,16 +135,16 @@ public class CauldronListener implements Listener {
                                                     List<Item> validItems = recipe.checkRecipe(items);
                                                     if (!validItems.isEmpty()) {
                                                         //Do something with the items! e.g. consume!
-                                                        CauldronPreCookEvent cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player);
+                                                        var cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player);
                                                         Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
                                                         if (!cauldronPreCookEvent.isCancelled()) {
                                                             synchronized (cauldrons.getCauldrons()) {
                                                                 cauldronEntryValue.add(new Cauldron(cauldronPreCookEvent));
                                                             }
                                                             for (int i = 0; i < recipe.getIngredient().size() && i < validItems.size(); i++) {
-                                                                Item itemEntity = validItems.get(i);
-                                                                ItemStack itemStack = itemEntity.getItemStack();
-                                                                CustomItem customItem = recipe.getIngredient().getChoices().get(i);
+                                                                var itemEntity = validItems.get(i);
+                                                                var itemStack = itemEntity.getItemStack();
+                                                                var customItem = recipe.getIngredient().getChoices().get(i);
                                                                 customItem.consumeItem(itemStack, customItem.getAmount(), itemEntity.getLocation().clone().add(0.0, 0.5, 0.0));
                                                             }
                                                         }

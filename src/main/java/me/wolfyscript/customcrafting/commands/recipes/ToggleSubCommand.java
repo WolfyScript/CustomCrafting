@@ -27,7 +27,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
         if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle") && args.length > 0) {
             String id = args[0];
             if (!id.isEmpty() && id.contains(":")) {
-                me.wolfyscript.utilities.util.NamespacedKey namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
+                var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
                 if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
                     sender.sendMessage("Enabled recipe " + id);
                     customCrafting.getDataHandler().getDisabledRecipes().remove(namespacedKey);

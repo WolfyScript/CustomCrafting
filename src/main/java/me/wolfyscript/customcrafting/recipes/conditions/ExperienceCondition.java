@@ -23,22 +23,15 @@ public class ExperienceCondition extends Condition {
     public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
         if (data.getPlayer() != null) {
             int currentExp = data.getPlayer().getLevel();
-            switch (option) {
-                case EXACT:
-                    return currentExp == expLevel;
-                case LOWER:
-                    return currentExp < expLevel;
-                case LOWER_EXACT:
-                    return currentExp <= expLevel;
-                case HIGHER:
-                    return currentExp > expLevel;
-                case HIGHER_EXACT:
-                    return currentExp >= expLevel;
-                case HIGHER_LOWER:
-                    return currentExp < expLevel || currentExp > expLevel;
-                default:
-                    return true;
-            }
+            return switch (option) {
+                case EXACT -> currentExp == expLevel;
+                case LOWER -> currentExp < expLevel;
+                case LOWER_EXACT -> currentExp <= expLevel;
+                case HIGHER -> currentExp > expLevel;
+                case HIGHER_EXACT -> currentExp >= expLevel;
+                case HIGHER_LOWER -> currentExp < expLevel || currentExp > expLevel;
+                default -> true;
+            };
         }
         return true;
     }

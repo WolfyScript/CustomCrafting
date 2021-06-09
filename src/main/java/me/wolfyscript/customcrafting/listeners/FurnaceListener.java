@@ -74,28 +74,21 @@ public class FurnaceListener implements Listener {
         Furnace furnace = (Furnace) event.getBlock().getState();
         FurnaceInventory inventory = furnace.getInventory();
         ItemStack currentResultItem = furnace.getInventory().getResult();
-        final RecipeType type;
-        switch (furnace.getType()) {
-            case BLAST_FURNACE:
-                type = RecipeType.BLASTING;
-                break;
-            case SMOKER:
-                type = RecipeType.SMOKING;
-                break;
-            default:
-                type = RecipeType.SMELTING;
-        }
+        final RecipeType type = switch (furnace.getType()) {
+            case BLAST_FURNACE -> RecipeType.BLASTING;
+            case SMOKER -> RecipeType.SMOKING;
+            default -> RecipeType.SMELTING;
+        };
         Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(type);
         while (recipeIterator.hasNext()) {
-            Recipe recipe = recipeIterator.next();
+            var recipe = recipeIterator.next();
             if (recipe instanceof Keyed && recipe.getResult().isSimilar(event.getResult())) {
-                NamespacedKey namespacedKey = NamespacedKey.fromBukkit(((Keyed) recipe).getKey());
+                var namespacedKey = NamespacedKey.fromBukkit(((Keyed) recipe).getKey());
                 if (!customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
-                    NamespacedKey internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+                    var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
                     if (me.wolfyscript.customcrafting.Registry.RECIPES.has(internalKey)) {
                         ICustomRecipe<?, ?> iCustomRecipe = me.wolfyscript.customcrafting.Registry.RECIPES.get(internalKey);
-                        if (iCustomRecipe instanceof CustomCookingRecipe && ((CustomCookingRecipe<?, ?>) iCustomRecipe).validType(event.getBlock().getType())) {
-                            CustomCookingRecipe<?, ?> cookingRecipe = (CustomCookingRecipe<?, ?>) iCustomRecipe;
+                        if (iCustomRecipe instanceof CustomCookingRecipe<?, ?> cookingRecipe && cookingRecipe.validType(event.getBlock().getType())) {
                             if (cookingRecipe.checkConditions(new Conditions.Data(null, event.getBlock(), null))) {
                                 event.setCancelled(false);
                                 Result<?> result = cookingRecipe.getResult().get(new ItemStack[0]);

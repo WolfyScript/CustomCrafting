@@ -22,22 +22,15 @@ public class WorldTimeCondition extends Condition {
     @Override
     public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
         long currentTime = data.getBlock().getWorld().getTime();
-        switch (option) {
-            case EXACT:
-                return currentTime == time;
-            case LOWER:
-                return currentTime < time;
-            case LOWER_EXACT:
-                return currentTime <= time;
-            case HIGHER:
-                return currentTime > time;
-            case HIGHER_EXACT:
-                return currentTime >= time;
-            case HIGHER_LOWER:
-                return currentTime < time || currentTime > time;
-            default:
-                return true;
-        }
+        return switch (option) {
+            case EXACT -> currentTime == time;
+            case LOWER -> currentTime < time;
+            case LOWER_EXACT -> currentTime <= time;
+            case HIGHER -> currentTime > time;
+            case HIGHER_EXACT -> currentTime >= time;
+            case HIGHER_LOWER -> currentTime < time || currentTime > time;
+            default -> true;
+        };
     }
 
     @Override

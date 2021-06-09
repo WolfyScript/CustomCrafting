@@ -38,14 +38,11 @@ public class CraftDelayCondition extends Condition {
     }
 
     private boolean checkDelay(long timeSinceLastCraft) {
-        switch (option) {
-            case IGNORE:
-                return true;
-            case EXACT:
-                return timeSinceLastCraft >= delay;
-            default:
-                return false;
-        }
+        return switch (option) {
+            case IGNORE -> true;
+            case EXACT -> timeSinceLastCraft >= delay;
+            default -> false;
+        };
     }
 
     @Override

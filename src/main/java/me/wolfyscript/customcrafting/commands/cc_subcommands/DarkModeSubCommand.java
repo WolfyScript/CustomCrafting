@@ -20,10 +20,9 @@ public class DarkModeSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] var4) {
-        WolfyUtilities api = customCrafting.getApi();
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             PlayerUtil.getStore(p).setDarkMode(!PlayerUtil.getStore(p).isDarkMode());
+            WolfyUtilities api = customCrafting.getApi();
             if (PlayerUtil.getStore(p).isDarkMode()) {
                 api.getChat().sendMessage(p, "$commands.darkmode.enabled$");
             } else {

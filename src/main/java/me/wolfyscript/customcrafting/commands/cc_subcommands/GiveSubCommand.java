@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.Registry;
@@ -13,7 +12,6 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +41,7 @@ public class GiveSubCommand extends AbstractSubCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = customCrafting.getApi();
         if (args.length >= 2 && ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
-            Player target = Bukkit.getPlayer(args[0]);
+            var target = Bukkit.getPlayer(args[0]);
             Pair<String, String> playerValue = new Pair<>("%PLAYER%", args[0]);
             if (target == null) {
                 if (sender instanceof Player) {
@@ -53,10 +51,10 @@ public class GiveSubCommand extends AbstractSubCommand {
                 }
                 return true;
             }
-            NamespacedKey namespacedKey = NamespacedKey.of(args[1]);
+            var namespacedKey = NamespacedKey.of(args[1]);
             Pair<String, String> itemValue = new Pair<>("%ITEM%", args[1]);
             //not required values ---------------------------------------
-            int amount = 1;
+            var amount = 1;
             if (args.length > 2) {
                 try {
                     amount = Integer.parseInt(args[2]);
@@ -70,15 +68,15 @@ public class GiveSubCommand extends AbstractSubCommand {
                 }
             }
             Pair<String, String> amountValue = new Pair<>("%AMOUNT%", String.valueOf(amount));
-            boolean dropItems = true;
+            var dropItems = true;
             if (args.length > 3) {
                 dropItems = Boolean.parseBoolean(args[3]);
             }
             //------------------------------------------------------------
             if (namespacedKey != null) {
-                CustomItem customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
+                var customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
                 if (customItem != null) {
-                    ItemStack itemStack = customItem.create(amount);
+                    var itemStack = customItem.create(amount);
                     if (InventoryUtils.hasInventorySpace(target, itemStack)) {
                         target.getInventory().addItem(itemStack);
                     } else if (dropItems && target.getLocation().getWorld() != null) {

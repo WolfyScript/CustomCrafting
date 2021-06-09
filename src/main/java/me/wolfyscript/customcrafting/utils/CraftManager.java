@@ -76,7 +76,7 @@ public class CraftManager {
         if (!recipe.isDisabled()) {
             CraftingData craftingData = recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix, ingredients) : null;
             if (craftingData != null) {
-                CustomPreCraftEvent customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);
+                var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                 if (!customPreCraftEvent.isCancelled()) {
                     Result<?> result = customPreCraftEvent.getResult().get(matrix);
@@ -99,11 +99,11 @@ public class CraftManager {
     public void consumeRecipe(ItemStack result, ItemStack[] matrix, InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
         if (inventory != null && !ItemUtils.isAirOrNull(result) && has(event.getWhoClicked().getUniqueId())) {
-            CraftingData craftingData = preCraftedRecipes.get(event.getWhoClicked().getUniqueId());
+            var craftingData = preCraftedRecipes.get(event.getWhoClicked().getUniqueId());
             CraftingRecipe<?> recipe = craftingData.getRecipe();
             if (recipe != null && !ItemUtils.isAirOrNull(result)) {
                 Result<?> recipeResult = craftingData.getResult();
-                Player player = (Player) event.getWhoClicked();
+                var player = (Player) event.getWhoClicked();
                 editStatistics(player, inventory, recipe);
                 setPlayerCraftTime(player, recipe);
                 recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
@@ -117,7 +117,7 @@ public class CraftManager {
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         playerStore.increaseRecipeCrafts(recipe.getNamespacedKey(), 1);
         playerStore.increaseTotalCrafts(1);
-        CustomItem customItem = NamespacedKeyUtils.getCustomItem(inventory.getLocation());
+        var customItem = NamespacedKeyUtils.getCustomItem(inventory.getLocation());
         if (customItem != null && customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_CRAFTING_TABLE)) {
             playerStore.increaseAdvancedCrafts(1);
         } else {

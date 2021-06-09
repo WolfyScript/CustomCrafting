@@ -2,10 +2,8 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
-import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.util.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,10 +26,9 @@ public class DataBaseSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player p) {
             WolfyUtilities api = customCrafting.getApi();
-            Player p = (Player) sender;
-            Chat chat = api.getChat();
+            var chat = api.getChat();
             //give <player> <namespace:key> [amount]
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
                 if (!customCrafting.hasDataBaseHandler()) {
@@ -43,7 +40,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                         case "export_recipes":
                             chat.sendMessage(p, "Exporting recipes to Database...");
                             new Thread(() -> {
-                                DataBaseHandler dataBaseHandler = customCrafting.getDataBaseHandler();
+                                var dataBaseHandler = customCrafting.getDataBaseHandler();
                                 me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(dataBaseHandler::updateRecipe);
                                 api.getConsole().fine("Successfully exported recipes to database");
                             }).start();
@@ -51,7 +48,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                         case "export_items":
                             chat.sendMessage(p, "Exporting custom items to Database...");
                             new Thread(() -> {
-                                DataBaseHandler dataBaseHandler = customCrafting.getDataBaseHandler();
+                                var dataBaseHandler = customCrafting.getDataBaseHandler();
                                 Registry.CUSTOM_ITEMS.forEach(item -> dataBaseHandler.updateItem(item.getNamespacedKey(), item));
                                 api.getConsole().fine("Successfully exported custom items to database");
                             }).start();

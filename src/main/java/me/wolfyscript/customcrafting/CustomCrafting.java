@@ -220,9 +220,7 @@ public class CustomCrafting extends JavaPlugin {
                 StringBuilder sB = new StringBuilder();
                 String name = patronList.get(i).getName();
                 sB.append("| ").append(name);
-                for (int j = 0; j < lengthColumn - name.length(); j++) {
-                    sB.append(" ");
-                }
+                sB.append(" ".repeat(Math.max(0, lengthColumn - name.length())));
                 if (i + 1 < patronList.size()) {
                     sB.append("| ").append(patronList.get(i + 1).getName());
                 }

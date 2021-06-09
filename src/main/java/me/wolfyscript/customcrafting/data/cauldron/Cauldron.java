@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public class Cauldron implements Listener {
@@ -22,7 +21,7 @@ public class Cauldron implements Listener {
     public Cauldron(CauldronPreCookEvent event) {
         this.recipe = event.getRecipe();
 
-        Player player = event.getPlayer();
+        var player = event.getPlayer();
         this.result = recipe.getResult().get(null).getItem(player).orElse(new CustomItem(Material.AIR));
 
         this.dropItems = event.dropItems();
