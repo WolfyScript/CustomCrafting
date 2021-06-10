@@ -47,9 +47,8 @@ public class CauldronData extends CustomData implements Cloneable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CauldronData)) return false;
+        if (!(o instanceof CauldronData that)) return false;
         if (!super.equals(o)) return false;
-        CauldronData that = (CauldronData) o;
         return enabled == that.enabled;
     }
 

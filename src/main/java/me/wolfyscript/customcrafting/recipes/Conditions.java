@@ -40,7 +40,7 @@ public class Conditions extends HashMap<String, Condition> {
     }
 
     public boolean check(String id, ICustomRecipe<?, ?> customRecipe, Data data) {
-        Condition condition = getByID(id);
+        var condition = getByID(id);
         if (condition != null) {
             return condition.check(customRecipe, data);
         }

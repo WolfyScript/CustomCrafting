@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
@@ -78,18 +77,18 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public boolean isValid(EliteWorkbench cache) {
-        EliteWorkbenchData data = cache.getEliteWorkbenchData();
-        return cachedRecipes.parallelStream().anyMatch(recipe -> {
-            if (recipe instanceof CraftingRecipe && (recipe instanceof EliteCraftingRecipe || data.isAdvancedRecipes())) {
-                if (recipe instanceof EliteCraftingRecipe) {
-                    EliteWorkbenchCondition condition = recipe.getConditions().getEliteCraftingTableCondition();
+        var data = cache.getEliteWorkbenchData();
+        return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
+            if (cachedRecipe instanceof CraftingRecipe && (cachedRecipe instanceof EliteCraftingRecipe || data.isAdvancedRecipes())) {
+                if (cachedRecipe instanceof EliteCraftingRecipe) {
+                    EliteWorkbenchCondition condition = cachedRecipe.getConditions().getEliteCraftingTableCondition();
                     if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;
                     }
-                    if (((EliteCraftingRecipe) recipe).isShapeless()) {
-                        return ((EliteCraftingRecipe) recipe).getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
+                    if (((EliteCraftingRecipe) cachedRecipe).isShapeless()) {
+                        return ((EliteCraftingRecipe) cachedRecipe).getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
-                        ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) recipe;
+                        ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) cachedRecipe;
                         return recipe1.getHeight() <= cache.getCurrentGridSize() && recipe1.getWidth() <= cache.getCurrentGridSize();
                     }
                 }

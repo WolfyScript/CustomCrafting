@@ -96,9 +96,8 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EliteWorkbenchData)) return false;
+        if (!(o instanceof EliteWorkbenchData that)) return false;
         if (!super.equals(o)) return false;
-        EliteWorkbenchData that = (EliteWorkbenchData) o;
         return advancedRecipes == that.advancedRecipes &&
                 enabled == that.enabled &&
                 allowHoppers == that.allowHoppers &&

@@ -133,6 +133,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 case 4:
                     //Drop Items
                     StringUtil.copyPartialMatches(strings[3], Arrays.asList("true", "false"), results);
+                    break;
                 default:
                     //No option
             }

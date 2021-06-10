@@ -47,9 +47,8 @@ public class RecipeBookData extends CustomData implements Cloneable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof RecipeBookData)) return false;
+        if (!(o instanceof RecipeBookData that)) return false;
         if (!super.equals(o)) return false;
-        RecipeBookData that = (RecipeBookData) o;
         return enabled == that.enabled;
     }
 

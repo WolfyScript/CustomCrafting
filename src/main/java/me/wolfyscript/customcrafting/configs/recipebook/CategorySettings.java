@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.language.LanguageAPI;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,7 +11,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonS
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -118,14 +116,11 @@ public class CategorySettings {
     }
 
     public ItemStack createItemStack(CustomCrafting customCrafting) {
-        ItemStack categoryItem = new ItemStack(getIcon());
-        ItemMeta itemMeta = categoryItem.getItemMeta();
-
-        LanguageAPI languageAPI = WolfyUtilities.get(customCrafting).getLanguageAPI();
-
+        var categoryItem = new ItemStack(getIcon());
+        var itemMeta = categoryItem.getItemMeta();
+        var languageAPI = WolfyUtilities.get(customCrafting).getLanguageAPI();
         itemMeta.setDisplayName(languageAPI.replaceColoredKeys(getName()));
         itemMeta.setLore(languageAPI.replaceColoredKeys(getDescription()));
-
         categoryItem.setItemMeta(itemMeta);
         return categoryItem;
     }

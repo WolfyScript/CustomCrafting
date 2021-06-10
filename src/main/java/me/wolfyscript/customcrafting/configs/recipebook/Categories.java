@@ -163,7 +163,7 @@ public class Categories {
         @Override
         public Categories deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
             JsonNode node = jsonParser.readValueAsTree();
-            Categories categories = new Categories();
+            var categories = new Categories();
             if (node.has("categories")) {
                 JsonNode mainCategories = node.path("categories");
                 ArrayList<String> sortedMainList = new ArrayList<>();
@@ -173,7 +173,7 @@ public class Categories {
                 }
                 categories.setSortedCategories(sortedMainList);
                 mainCategories.path("options").elements().forEachRemaining(element -> {
-                    Category category = JacksonUtil.getObjectMapper().convertValue(element, Category.class);
+                    var category = JacksonUtil.getObjectMapper().convertValue(element, Category.class);
                     categories.registerCategory(category.getId(), category);
                 });
             }
