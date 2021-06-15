@@ -55,7 +55,7 @@ import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
-    private static final boolean development = false;
+    private static final boolean DEVELOPMENT = true;
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
     public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
@@ -168,7 +168,7 @@ public class CustomCrafting extends JavaPlugin {
         registerListeners();
         registerCommands();
         registerInventories();
-        if (development) {
+        if (DEVELOPMENT) {
             this.networkHandler.registerPackets();
         }
 
