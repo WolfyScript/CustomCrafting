@@ -26,8 +26,10 @@ public class NetworkHandler {
     private static final NamespacedKey RECIPE_LIST_END = new NamespacedKey(KEY, "recipe_list_end"); //Sent when all recipes are transmitted.
 
     private static final NamespacedKey RECIPE_BOOK_SETTINGS = new NamespacedKey(KEY, "recipe_book_settings");
+    private static final NamespacedKey RECIPE_BOOK_SETTINGS_SIZE = new NamespacedKey(KEY, "recipe_book_settings_size");
     private static final NamespacedKey RECIPE_BOOK_CATEGORIES = new NamespacedKey(KEY, "recipe_book_categories");
     private static final NamespacedKey RECIPE_BOOK_FILTERS = new NamespacedKey(KEY, "recipe_book_filters");
+    private static final NamespacedKey RECIPE_BOOK_FILTERS_END = new NamespacedKey(KEY, "recipe_book_filters_end");
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities wolfyUtilities;
@@ -59,6 +61,7 @@ public class NetworkHandler {
         api.register(RECIPE_BOOK_SETTINGS);
         api.register(RECIPE_BOOK_CATEGORIES);
         api.register(RECIPE_BOOK_FILTERS);
+        api.register(RECIPE_BOOK_FILTERS_END);
     }
 
     public void sendRecipes(Player player) {
@@ -69,27 +72,11 @@ public class NetworkHandler {
         mcByteBuf.writeVarInt(recipes.size());
         api.send(RECIPE_LIST_SIZE, player, mcByteBuf);
 
-        //Send recipes and compact multiple into one packet
-        int recipesLeft = recipes.size();
-        MCByteBuf recipeBuf = null;
-        int recipesPerPacket = 0;
-        int i = 0;
+        //Send recipes
         for (ICustomRecipe<?, ?> recipe : recipes) {
-            if (recipeBuf == null) {
-                recipesPerPacket = Math.min(recipesLeft, 2); //Replace recipes per packet with config option
-                recipeBuf = networkUtil.buffer();
-                recipeBuf.writeVarInt(recipesPerPacket);
-            }
-            if (i < recipesPerPacket) {
-                recipe.writeToBuf(recipeBuf);
-                i++;
-                recipesLeft--;
-            } else {
-                api.send(RECIPE_LIST, player, recipeBuf);
-                recipeBuf = null;
-                recipesPerPacket = 0;
-                i = 0;
-            }
+            var recipeBuf = networkUtil.buffer();
+            recipe.writeToBuf(recipeBuf);
+            api.send(RECIPE_LIST, player, recipeBuf);
         }
 
         //Send end packet
@@ -97,8 +84,18 @@ public class NetworkHandler {
     }
 
     public void sendRecipeBookSettings(Player player) {
+        var categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
+        Map<String, CategoryFilter> filtersMap = categories.getFilters();
+        Map<String, Category> categoryMap = categories.getCategories();
+
+        MCByteBuf settingsBuf = networkUtil.buffer();
+        settingsBuf.writeVarInt(categoryMap.size());
+        writeNamespacedKeyList(categories.getSortedCategories(), settingsBuf);
+        settingsBuf.writeVarInt(filtersMap.size());
+        writeNamespacedKeyList(categories.getSortedFilters(), settingsBuf);
+        api.send(RECIPE_BOOK_SETTINGS, player, settingsBuf);
+
         MCByteBuf categoriesBuf = networkUtil.buffer();
-        Map<String, Category> categoryMap = customCrafting.getDataHandler().getCategories().getCategories();
         categoriesBuf.writeVarInt(categoryMap.size());
         categoryMap.forEach((key, category) -> {
             categoriesBuf.writeUtf(NamespacedKeyUtils.NAMESPACE + ":" + key);
@@ -106,13 +103,18 @@ public class NetworkHandler {
         });
         api.send(RECIPE_BOOK_CATEGORIES, player, categoriesBuf);
 
-        MCByteBuf filtersBuf = networkUtil.buffer();
-        Map<String, CategoryFilter> filtersMap = customCrafting.getDataHandler().getCategories().getFilters();
-        filtersBuf.writeVarInt(filtersMap.size());
+        //Sending recipe book filters (split them into single packets!)
         filtersMap.forEach((key, filter) -> {
+            MCByteBuf filtersBuf = networkUtil.buffer();
             filtersBuf.writeUtf(NamespacedKeyUtils.NAMESPACE + ":" + key);
             filter.writeToByteBuf(filtersBuf);
+            api.send(RECIPE_BOOK_FILTERS, player, filtersBuf);
         });
-        api.send(RECIPE_BOOK_FILTERS, player, filtersBuf);
+        api.send(RECIPE_BOOK_FILTERS_END, player);
+    }
+
+    protected void writeNamespacedKeyList(List<String> values, MCByteBuf byteBuf) {
+        byteBuf.writeVarInt(values.size());
+        values.forEach(s -> byteBuf.writeUtf(NamespacedKeyUtils.NAMESPACE + ":" + s));
     }
 }
