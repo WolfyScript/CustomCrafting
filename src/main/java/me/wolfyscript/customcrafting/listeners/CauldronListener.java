@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
-import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -15,10 +14,8 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,13 +43,13 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        if (block.getType().equals(Material.CAULDRON)) {
+        var block = event.getBlock();
+        if (isCauldron(block.getType())) {
             if (CustomCrafting.inst().getCauldrons().isCauldron(block.getLocation())) {
                 CustomCrafting.inst().getCauldrons().removeCauldron(block.getLocation());
             }
         } else if (block.getType().equals(Material.CAMPFIRE)) {
-            Location location = block.getLocation().add(0, 1, 0);
+            var location = block.getLocation().add(0, 1, 0);
             if (CustomCrafting.inst().getCauldrons().isCauldron(location)) {
                 CustomCrafting.inst().getCauldrons().removeCauldron(location);
             }
@@ -61,14 +58,14 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Block block = event.getBlock();
-        if (block.getType().equals(Material.CAULDRON)) {
+        var block = event.getBlock();
+        if (isCauldron(block.getType())) {
             if (block.getLocation().subtract(0, 1, 0).getBlock().getType().equals(Material.CAMPFIRE)) {
                 CustomCrafting.inst().getCauldrons().addCauldron(block.getLocation());
             }
         } else if (block.getType().equals(Material.CAMPFIRE)) {
-            Location location = block.getLocation().add(0, 1, 0);
-            if (location.getBlock().getType().equals(Material.CAULDRON)) {
+            var location = block.getLocation().add(0, 1, 0);
+            if (isCauldron(location.getBlock().getType())) {
                 CustomCrafting.inst().getCauldrons().addCauldron(location);
             }
         }
@@ -77,9 +74,9 @@ public class CauldronListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.CAULDRON)) {
-            Player player = event.getPlayer();
-            Block block = event.getClickedBlock();
-            Cauldrons cauldrons = CustomCrafting.inst().getCauldrons();
+            var player = event.getPlayer();
+            var block = event.getClickedBlock();
+            var cauldrons = CustomCrafting.inst().getCauldrons();
             if (cauldrons.isCauldron(block.getLocation())) {
                 for (Cauldron cauldron : cauldrons.getCauldrons().get(block.getLocation())) {
                     if (cauldron.isDone() && !cauldron.dropItems()) {
@@ -111,9 +108,9 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        Item itemDrop = event.getItemDrop();
-        Cauldrons cauldrons = CustomCrafting.inst().getCauldrons();
+        var player = event.getPlayer();
+        var itemDrop = event.getItemDrop();
+        var cauldrons = CustomCrafting.inst().getCauldrons();
         Bukkit.getScheduler().runTaskLater(api.getPlugin(),
                 () -> {
                     if (cauldrons != null && cauldrons.getCauldrons() != null) {
@@ -123,8 +120,8 @@ public class CauldronListener implements Listener {
                                 .forEach(entry -> {
                                     Location loc = entry.getKey();
                                     List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).collect(Collectors.toList());
-                                    if (!items.isEmpty()) {
-                                        int level = ((Levelled) loc.getBlock().getBlockData()).getLevel();
+                                    if (!items.isEmpty() && loc.getBlock().getBlockData() instanceof Levelled levelled) {
+                                        int level = levelled.getLevel();
                                         List<Cauldron> cauldronEntryValue = entry.getValue();
                                         //Check for new possible Recipes
                                         List<CauldronRecipe> recipes = Registry.RECIPES.get(Types.CAULDRON);
@@ -158,5 +155,9 @@ public class CauldronListener implements Listener {
                     }
                 }, 20
         );
+    }
+
+    private boolean isCauldron(Material type) {
+        return type.equals(Material.CAULDRON) || type.equals(Material.WATER_CAULDRON);
     }
 }
