@@ -49,9 +49,10 @@ public class Cauldrons {
             synchronized (cauldrons) {
                 cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null && entry.getKey().getWorld() != null && entry.getKey().getWorld().isChunkLoaded(entry.getKey().getBlockX() >> 4, entry.getKey().getBlockZ() >> 4) && entry.getKey().getBlock().getType().equals(Material.CAULDRON)).forEach(entry -> {
                     final Location loc = entry.getKey();
-                    final World world = loc.getWorld();
-                    final Block block = loc.getBlock();
-                    final Levelled levelled = (Levelled) block.getBlockData();
+                    final var world = loc.getWorld();
+                    final var block = loc.getBlock();
+                    final var levelled = (Levelled) block.getBlockData();
+
                     final boolean isLit = isCustomCauldronLit(block);
                     int level = levelled.getLevel();
                     if (spawnParticles && isLit && level > 0) {
@@ -61,14 +62,14 @@ public class Cauldrons {
                     if (entry.getValue().isEmpty()) return;
                     Iterator<Cauldron> cauldronItr = entry.getValue().iterator();
                     while (cauldronItr.hasNext()) {
-                        Cauldron cauldron = cauldronItr.next();
+                        var cauldron = cauldronItr.next();
                         CauldronRecipe recipe = cauldron.getRecipe();
                         if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || isLit)) {
                             Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
                                 if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {
                                     cauldron.setDone(true);
                                     Future<Boolean> checkCauldron = Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
-                                        CauldronCookEvent event = new CauldronCookEvent(cauldron);
+                                        var event = new CauldronCookEvent(cauldron);
                                         Bukkit.getPluginManager().callEvent(event);
                                         if (event.isCancelled()) {
                                             cauldron.setDone(false);

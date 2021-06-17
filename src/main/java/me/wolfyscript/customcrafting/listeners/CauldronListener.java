@@ -140,9 +140,8 @@ public class CauldronListener implements Listener {
                                                             }
                                                             for (int i = 0; i < recipe.getIngredient().size() && i < validItems.size(); i++) {
                                                                 var itemEntity = validItems.get(i);
-                                                                var itemStack = itemEntity.getItemStack();
                                                                 var customItem = recipe.getIngredient().getChoices().get(i);
-                                                                customItem.consumeItem(itemStack, customItem.getAmount(), itemEntity.getLocation().clone().add(0.0, 0.5, 0.0));
+                                                                customItem.consumeItem(itemEntity.getItemStack(), customItem.getAmount(), itemEntity.getLocation().add(0.0, 0.5, 0.0));
                                                             }
                                                         }
                                                         break;
