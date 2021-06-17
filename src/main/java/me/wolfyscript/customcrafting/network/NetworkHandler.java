@@ -76,7 +76,7 @@ public class NetworkHandler {
         int i = 0;
         for (ICustomRecipe<?, ?> recipe : recipes) {
             if (recipeBuf == null) {
-                recipesPerPacket = Math.min(recipesLeft, 4); //Replace recipes per packet with config option
+                recipesPerPacket = Math.min(recipesLeft, 2); //Replace recipes per packet with config option
                 recipeBuf = networkUtil.buffer();
                 recipeBuf.writeVarInt(recipesPerPacket);
             }

@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.wolfyscript.wolfyutilities</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.6.4.2</version>
+            <version>1.7.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -47,6 +47,13 @@
             <version>19.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.63.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Plugin dependencies -->
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
