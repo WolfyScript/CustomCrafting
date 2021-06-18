@@ -97,7 +97,7 @@ public class CraftManager {
      * @param event  The {@link InventoryClickEvent} that caused this click.
      */
     public void consumeRecipe(ItemStack result, ItemStack[] matrix, InventoryClickEvent event) {
-        Inventory inventory = event.getClickedInventory();
+        var inventory = event.getClickedInventory();
         if (inventory != null && !ItemUtils.isAirOrNull(result) && has(event.getWhoClicked().getUniqueId())) {
             var craftingData = preCraftedRecipes.get(event.getWhoClicked().getUniqueId());
             CraftingRecipe<?> recipe = craftingData.getRecipe();
