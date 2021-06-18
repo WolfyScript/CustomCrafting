@@ -5,6 +5,8 @@ import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.util.version.MinecraftVersions;
+import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -39,7 +41,7 @@ public class Cauldrons {
         load();
         autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), this::save, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
 
-        AtomicInteger particleTicker = new AtomicInteger(0);
+        var particleTicker = new AtomicInteger(0);
 
         Bukkit.getScheduler().runTaskTimer(api.getPlugin(), () -> {
             final boolean spawnParticles = particleTicker.incrementAndGet() >= 4;
@@ -47,14 +49,12 @@ public class Cauldrons {
                 particleTicker.set(0);
             }
             synchronized (cauldrons) {
-                cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null && entry.getKey().getWorld() != null && entry.getKey().getWorld().isChunkLoaded(entry.getKey().getBlockX() >> 4, entry.getKey().getBlockZ() >> 4) && entry.getKey().getBlock().getType().equals(Material.CAULDRON)).forEach(entry -> {
+                cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null && entry.getKey().getWorld() != null && entry.getKey().getWorld().isChunkLoaded(entry.getKey().getBlockX() >> 4, entry.getKey().getBlockZ() >> 4) && Cauldrons.isCauldron(entry.getKey().getBlock().getType())).forEach(entry -> {
                     final Location loc = entry.getKey();
                     final var world = loc.getWorld();
                     final var block = loc.getBlock();
-                    final var levelled = (Levelled) block.getBlockData();
-
+                    int level = block.getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
                     final boolean isLit = isCustomCauldronLit(block);
-                    int level = levelled.getLevel();
                     if (spawnParticles && isLit && level > 0) {
                         world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
                     }
@@ -64,7 +64,7 @@ public class Cauldrons {
                     while (cauldronItr.hasNext()) {
                         var cauldron = cauldronItr.next();
                         CauldronRecipe recipe = cauldron.getRecipe();
-                        if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || isLit)) {
+                        if (level >= recipe.getWaterLevel() && (block.getType().equals(Material.CAULDRON) || recipe.needsWater()) && (!recipe.needsFire() || isLit)) {
                             Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
                                 if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {
                                     cauldron.setDone(true);
@@ -75,10 +75,14 @@ public class Cauldrons {
                                             cauldron.setDone(false);
                                             cauldron.setPassedTicks(0);
                                         } else {
-                                            if (event.getRecipe().getWaterLevel() > 0) {
+                                            if (event.getRecipe().getWaterLevel() > 0 && block.getBlockData() instanceof Levelled levelled) {
                                                 int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
-                                                levelled.setLevel(Math.max(newLevel, 0));
-                                                loc.getBlock().setBlockData(levelled);
+                                                if (newLevel <= 0) {
+                                                    block.setType(Material.CAULDRON);
+                                                } else {
+                                                    levelled.setLevel(newLevel);
+                                                    loc.getBlock().setBlockData(levelled);
+                                                }
                                             }
                                             recipe.getResult().executeExtensions(loc.clone(), true, null);
                                             if (event.dropItems()) {
@@ -92,6 +96,7 @@ public class Cauldrons {
                                         cauldron.setForRemoval(checkCauldron.get());
                                     } catch (InterruptedException | ExecutionException e) {
                                         e.printStackTrace();
+                                        Thread.currentThread().interrupt();
                                     }
                                 } else {
                                     Bukkit.getScheduler().runTask(customCrafting, () -> {
@@ -113,6 +118,7 @@ public class Cauldrons {
                             }
                         }
                     }
+
                 });
             }
         }, 20, 1);
@@ -150,18 +156,8 @@ public class Cauldrons {
         return location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
     }
 
-    private Location stringToLocation(String loc) {
-        String[] args = loc.split(";");
-        try {
-            UUID uuid = UUID.fromString(args[0]);
-            World world = Bukkit.getWorld(uuid);
-            if (world != null) {
-                return new Location(world, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-            }
-        } catch (IllegalArgumentException e) {
-            api.getConsole().warn("Couldn't find world " + args[0]);
-        }
-        return null;
+    public static boolean isCauldron(Material type) {
+        return type.equals(Material.CAULDRON) || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17) && type.equals(Material.WATER_CAULDRON));
     }
 
     public void save() {
@@ -184,16 +180,34 @@ public class Cauldrons {
         }
     }
 
+    private Location stringToLocation(String loc) {
+        String[] args = loc.split(";");
+        try {
+            var uuid = UUID.fromString(args[0]);
+            var world = Bukkit.getWorld(uuid);
+            if (world != null) {
+                return new Location(world, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+            }
+        } catch (IllegalArgumentException e) {
+            api.getConsole().warn("Couldn't find world " + args[0]);
+        }
+        return null;
+    }
+
+    public void endAutoSaveTask() {
+        Bukkit.getScheduler().cancelTask(autosaveTask);
+    }
+
     public void load() {
         api.getConsole().info("Loading Cauldrons");
-        File file = new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
+        var file = new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
         if (file.exists()) {
-            try (FileInputStream fis = new FileInputStream(file); BukkitObjectInputStream ois = new BukkitObjectInputStream(fis)) {
-                Object object = ois.readObject();
+            try (var fis = new FileInputStream(file); BukkitObjectInputStream ois = new BukkitObjectInputStream(fis)) {
+                var object = ois.readObject();
                 this.cauldrons.clear();
                 Map<String, List<String>> loadMap = (Map<String, List<String>>) object;
                 for (Map.Entry<String, List<String>> entry : loadMap.entrySet()) {
-                    Location location = stringToLocation(entry.getKey());
+                    var location = stringToLocation(entry.getKey());
                     if (location != null) {
                         this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(Cauldron::fromString).filter(Objects::nonNull).collect(Collectors.toList()));
                     }
@@ -202,9 +216,5 @@ public class Cauldrons {
                 api.getConsole().warn("Couldn't load cauldrons. No data found");
             }
         }
-    }
-
-    public void endAutoSaveTask() {
-        Bukkit.getScheduler().cancelTask(autosaveTask);
     }
 }

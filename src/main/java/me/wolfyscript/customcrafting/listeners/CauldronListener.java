@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
+import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -44,7 +45,7 @@ public class CauldronListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         var block = event.getBlock();
-        if (isCauldron(block.getType())) {
+        if (Cauldrons.isCauldron(block.getType())) {
             if (CustomCrafting.inst().getCauldrons().isCauldron(block.getLocation())) {
                 CustomCrafting.inst().getCauldrons().removeCauldron(block.getLocation());
             }
@@ -59,13 +60,13 @@ public class CauldronListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         var block = event.getBlock();
-        if (isCauldron(block.getType())) {
+        if (Cauldrons.isCauldron(block.getType())) {
             if (block.getLocation().subtract(0, 1, 0).getBlock().getType().equals(Material.CAMPFIRE)) {
                 CustomCrafting.inst().getCauldrons().addCauldron(block.getLocation());
             }
         } else if (block.getType().equals(Material.CAMPFIRE)) {
             var location = block.getLocation().add(0, 1, 0);
-            if (isCauldron(location.getBlock().getType())) {
+            if (Cauldrons.isCauldron(location.getBlock().getType())) {
                 CustomCrafting.inst().getCauldrons().addCauldron(location);
             }
         }
@@ -154,9 +155,5 @@ public class CauldronListener implements Listener {
                     }
                 }, 20
         );
-    }
-
-    private boolean isCauldron(Material type) {
-        return type.equals(Material.CAULDRON) || type.equals(Material.WATER_CAULDRON);
     }
 }
