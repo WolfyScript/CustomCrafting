@@ -170,7 +170,7 @@ public class BrewingStandListener implements Listener {
                                                 List<Integer> processedSlots = new ArrayList<>();
                                                 for (BrewingRecipe recipe : activeBrewingStands.get(location).getValue().keySet()) {
                                                     if (processedSlots.size() >= 3) break;
-                                                    BrewerInventory brewerInventory = brewingStand.getInventory();
+                                                    var brewerInventory = brewingStand.getInventory();
                                                     finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());
                                                     for (int i = 0; i < 3; i++) {
                                                         if (processedSlots.contains(i)) {
@@ -183,7 +183,7 @@ public class BrewingStandListener implements Listener {
                                                                 //Input in that slot is valid, so marking slot as processed
                                                                 processedSlots.add(i);
                                                                 //Process the item in the slot
-                                                                PotionMeta potionMeta = (PotionMeta) inputItem.getItemMeta();
+                                                                var potionMeta = (PotionMeta) inputItem.getItemMeta();
                                                                 if (potionMeta != null) {
                                                                     if (!recipe.getResult().isEmpty()) {
                                                                         //Result available. Replace the items with a random result from the list. (Percentages of items are used)
