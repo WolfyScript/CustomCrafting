@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
-import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -18,7 +17,8 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
@@ -149,28 +149,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     }
 
     private CraftingData checkShape(ItemStack[] ingredients, List<List<ItemStack>> matrix, String[] shape) {
-        if (getIngredients() == null || getIngredients().isEmpty() || matrix.size() != shape.length || matrix.get(0).size() != shape[0].length())
-            return null;
-        List<Character> containedKeys = new ArrayList<>();
-        Map<Vec2d, CustomItem> foundItems = new HashMap<>();
-        for (int column = 0; column < matrix.size(); column++) {
-            for (int row = 0; row < matrix.get(column).size(); row++) {
-                ItemStack targetItem = matrix.get(column).get(row);
-                char key = shape[column].charAt(row);
-                if ((targetItem == null && key != ' ') || (targetItem != null && key == ' ')) return null;
-                if (targetItem != null) {
-                    Ingredient ingredient = getIngredients(key);
-                    if (ingredient != null) {
-                        Optional<CustomItem> item = ingredient.check(targetItem, isExactMeta());
-                        if (item.isPresent()) {
-                            foundItems.put(new Vec2d(row, column), item.get());
-                            containedKeys.add(key);
-                        }
-                    }
-                }
-            }
-        }
-        return containedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, ingredients) : null;
+        return checkShape(this, getIngredients(), isExactMeta(), ingredients, matrix, shape);
     }
 
     @Override
