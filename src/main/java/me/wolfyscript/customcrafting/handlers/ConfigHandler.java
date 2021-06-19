@@ -12,7 +12,6 @@ import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.config.ConfigAPI;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.language.Language;
@@ -43,10 +42,10 @@ public class ConfigHandler {
     public ConfigHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
         this.customCrafting = customCrafting;
-        ConfigAPI configAPI = api.getConfigAPI();
+        var configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
 
-        File oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");//Makes sure that if a config with the old name already exists, it's renamed to the new config name.
+        var oldConfigFile = new File(customCrafting.getDataFolder().getPath(), "main_config.yml");//Makes sure that if a config with the old name already exists, it's renamed to the new config name.
         if (oldConfigFile.exists() && !oldConfigFile.renameTo(new File(customCrafting.getDataFolder().getPath(), "config.yml"))) {
             customCrafting.getLogger().severe("Couldn't rename 'main_config.yml' to 'config.yml'!");
         }
@@ -59,16 +58,16 @@ public class ConfigHandler {
 
     public void loadDefaults() {
         if (!DataHandler.DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
-            File old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
+            var old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
             if (!old.renameTo(DataHandler.DATA_FOLDER)) {
                 customCrafting.getLogger().severe("Couldn't rename folder to the new required names!");
             }
         }
-        ParticleAnimation enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
+        var enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
         if (mainConfig.resetRecipeBook()) {
-            CustomItem knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
+            var knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
             knowledgeBook.setDisplayName(me.wolfyscript.utilities.util.chat.ChatColor.convert("&6Recipe Book"));
             knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
@@ -76,7 +75,7 @@ public class ConfigHandler {
             ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
             ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
-            ShapelessCraftRecipe knowledgeBookCraft = new ShapelessCraftRecipe();
+            var knowledgeBookCraft = new ShapelessCraftRecipe();
             knowledgeBookCraft.setIngredient('A', new Ingredient(Material.BOOK));
             knowledgeBookCraft.setIngredient('B', new Ingredient(Material.CRAFTING_TABLE));
             knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
@@ -84,7 +83,7 @@ public class ConfigHandler {
             knowledgeBookCraft.save();
         }
         if (mainConfig.resetAdvancedWorkbench()) {
-            CustomItem advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
+            var advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
             advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Crafting Table");
             advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Crafting Table for advanced recipes"));
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
@@ -92,7 +91,7 @@ public class ConfigHandler {
             advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, CustomCrafting.ADVANCED_CRAFTING_TABLE);
             ItemLoader.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
 
-            ShapedCraftRecipe workbenchCraft = new ShapedCraftRecipe();
+            var workbenchCraft = new ShapedCraftRecipe();
             workbenchCraft.setMirrorHorizontal(false);
             workbenchCraft.setIngredient('B', new Ingredient(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('E', new Ingredient(Material.CRAFTING_TABLE));
@@ -102,9 +101,9 @@ public class ConfigHandler {
             /*
             result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
             result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
-            MythicMobResultExtension extension = new MythicMobResultExtension("SkeletalKnight", 1);
+            var extension = new MythicMobResultExtension("SkeletalKnight", 1);
             result.addExtension(extension);
-             */
+            //*/
             workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }
@@ -113,8 +112,8 @@ public class ConfigHandler {
     }
 
     public void loadRecipeBookConfig() {
-        File oldRecipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book_old.json");
-        File recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
+        var oldRecipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book_old.json");
+        var recipeBookFile = new File(customCrafting.getDataFolder(), "recipe_book.json");
         if (!oldRecipeBookFile.exists() && recipeBookFile.exists() && !recipeBookFile.renameTo(oldRecipeBookFile)) {
             customCrafting.getLogger().severe("Couldn't backup old recipe_book.json! Trying to load and migrate old data!");
             customCrafting.getLogger().severe("If that fails, delete the recipe_book.json and restart the server!");
@@ -126,18 +125,18 @@ public class ConfigHandler {
     }
 
     public void loadLang() {
-        String chosenLang = mainConfig.getString("language");
+        var chosenLang = mainConfig.getString("language");
         customCrafting.saveResource("lang/en_US.json", true);
         customCrafting.saveResource("lang/de_DE.json", true);
         customCrafting.saveResource("lang/zh_CN.json", true);
 
-        Language fallBackLanguage = new Language(customCrafting, "en_US");
+        var fallBackLanguage = new Language(customCrafting, "en_US");
         languageAPI.registerLanguage(fallBackLanguage);
         customCrafting.getLogger().info(() -> "Loaded fallback language \"en_US\" v" + fallBackLanguage.getVersion() + " translated by " + String.join(", ", fallBackLanguage.getAuthors()));
 
-        File file = new File(customCrafting.getDataFolder(), "lang/" + chosenLang + ".json");
+        var file = new File(customCrafting.getDataFolder(), "lang/" + chosenLang + ".json");
         if (file.exists()) {
-            Language language = new Language(customCrafting, chosenLang);
+            var language = new Language(customCrafting, chosenLang);
             languageAPI.registerLanguage(language);
             languageAPI.setActiveLanguage(language);
             customCrafting.getLogger().info(() -> "Loaded active language \"" + chosenLang + "\" v" + language.getVersion() + " translated by " + String.join(", ", language.getAuthors()));
