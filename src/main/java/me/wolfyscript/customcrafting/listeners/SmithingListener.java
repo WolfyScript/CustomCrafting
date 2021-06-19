@@ -66,7 +66,7 @@ public class SmithingListener implements Listener {
                         //Recipe is valid
                         assert base != null;
                         assert addition != null;
-                        Result<?> result = recipe.getResult().get(new ItemStack[]{base, addition});
+                        Result<?> result = recipe.getResult();
                         preCraftedRecipes.put(player.getUniqueId(), new SmithingData(recipe, result, optionalBase.get(), optionalAddition.get()));
                         //Progress result
                         ItemStack endResult = result.getItem(player).orElse(new CustomItem(Material.AIR)).create();

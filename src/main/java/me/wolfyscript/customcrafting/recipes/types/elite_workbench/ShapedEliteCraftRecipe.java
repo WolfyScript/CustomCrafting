@@ -168,32 +168,32 @@ public class ShapedEliteCraftRecipe extends EliteCraftingRecipe implements IShap
     }
 
     @Override
-    public CraftingData check(ItemStack[] matrix, List<List<ItemStack>> ingredients) {
-        CraftingData craftingData = checkShape(matrix, ingredients, getShape());
+    public CraftingData check(List<List<ItemStack>> ingredients) {
+        CraftingData craftingData = checkShape(ingredients, getShape());
         if (craftingData != null) {
             return craftingData;
         }
         if (mirrorHorizontal()) {
-            craftingData = checkShape(matrix, ingredients, getShapeMirrorHorizontal());
+            craftingData = checkShape(ingredients, getShapeMirrorHorizontal());
             if (craftingData != null) {
                 return craftingData;
             }
         }
         if (mirrorVertical()) {
-            craftingData = checkShape(matrix, ingredients, getShapeMirrorVertical());
+            craftingData = checkShape(ingredients, getShapeMirrorVertical());
             if (craftingData != null) {
                 return craftingData;
             }
         }
         if (mirrorHorizontal() && mirrorVertical() && mirrorRotation()) {
-            craftingData = checkShape(matrix, ingredients, getShapeRotated());
+            craftingData = checkShape(ingredients, getShapeRotated());
             return craftingData;
         }
         return null;
     }
 
-    private CraftingData checkShape(ItemStack[] ingredients, List<List<ItemStack>> matrix, String[] shape) {
-        return checkShape(this, getIngredients(), isExactMeta(), ingredients, matrix, shape);
+    private CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape) {
+        return checkShape(this, getIngredients(), isExactMeta(), matrix, shape);
     }
 
     @Override

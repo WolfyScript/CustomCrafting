@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.utils.recipe_item;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.NoneResultTarget;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
@@ -126,14 +125,6 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
     }
 
-    public Result<?> get(ItemStack[] ingredients) {
-        Optional<Result<NoneResultTarget>> targetResult = target == null ? Optional.empty() : target.get(ingredients);
-        if (targetResult.isPresent()) {
-            return targetResult.get();
-        }
-        return this;
-    }
-
     public Optional<CustomItem> getItem(@Nullable Player player) {
         CustomItem item = cachedItems.computeIfAbsent(player == null ? null : player.getUniqueId(), uuid -> getRandomChoices(player).next());
         addCachedItem(player, item);
@@ -157,9 +148,6 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
 
     public void removeCachedItem(Player player) {
         if (player != null) {
-            if (target != null) {
-                target.clearCachedItems(player);
-            }
             cachedItems.remove(player.getUniqueId());
         }
     }

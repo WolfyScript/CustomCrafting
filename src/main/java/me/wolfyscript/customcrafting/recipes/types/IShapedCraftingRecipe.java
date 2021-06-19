@@ -36,17 +36,17 @@ public interface IShapedCraftingRecipe {
 
     void constructShape();
 
-    default CraftingData checkShape(CraftingRecipe<?> recipe, Map<Character, Ingredient> recipeIngredients, boolean exactMeta, ItemStack[] ingredients, List<List<ItemStack>> matrix, String[] shape) {
+    default CraftingData checkShape(CraftingRecipe<?> recipe, Map<Character, Ingredient> recipeIngredients, boolean exactMeta, List<List<ItemStack>> matrix, String[] shape) {
         if (recipeIngredients == null || recipeIngredients.isEmpty() || matrix.size() != shape.length || matrix.get(0).size() != shape[0].length()) {
             return null;
         }
         List<Character> containedKeys = new ArrayList<>();
         Map<Vec2d, CustomItem> foundItems = new HashMap<>();
         Map<Ingredient, Vec2d> mappedIngredients = new HashMap<>();
-        for (int column = 0; column < matrix.size(); column++) {
-            for (int row = 0; row < matrix.get(column).size(); row++) {
+        for (var column = 0; column < matrix.size(); column++) {
+            for (var row = 0; row < matrix.get(column).size(); row++) {
                 ItemStack targetItem = matrix.get(column).get(row);
-                char key = shape[column].charAt(row);
+                var key = shape[column].charAt(row);
                 if ((targetItem == null && key != ' ') || (targetItem != null && key == ' ')) return null;
                 if (targetItem != null) {
                     var ingredient = recipeIngredients.get(key);
@@ -62,7 +62,7 @@ public interface IShapedCraftingRecipe {
                 }
             }
         }
-        return containedKeys.containsAll(recipeIngredients.keySet()) ? new CraftingData(recipe, foundItems, mappedIngredients, ingredients) : null;
+        return containedKeys.containsAll(recipeIngredients.keySet()) ? new CraftingData(recipe, foundItems, mappedIngredients) : null;
 
 
     }

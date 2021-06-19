@@ -1,10 +1,5 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target;
 
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.Optional;
-
 public class SlotResultTarget extends ResultTarget {
 
     private int slot;
@@ -21,11 +16,5 @@ public class SlotResultTarget extends ResultTarget {
         this.slot = slot;
     }
 
-    @Override
-    public Optional<Result<NoneResultTarget>> get(ItemStack[] ingredients) {
-        if (ingredients != null && slot > -1 && slot < ingredients.length) {
-            return check(ingredients[slot]);
-        }
-        return Optional.empty();
-    }
+
 }

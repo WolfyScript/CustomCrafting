@@ -56,30 +56,28 @@ public class CraftManager {
         }
         List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
         Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
-        return Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, matrix, ingredients, player, targetBlock, inventory, dataHandler)).filter(Objects::nonNull).findFirst().map(CustomItem::create).orElse(null);
+        return Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().map(CustomItem::create).orElse(null);
     }
 
     /**
      * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
      *
      * @param recipe      The {@link CraftingRecipe} to check.
-     * @param matrix      The matrix of the crafting grid.
      * @param ingredients The ingredients of the matrix without surrounding empty columns/rows (via {@link DataHandler#getIngredients(ItemStack[])}).
      * @param player      The player that crafts it.
      * @param block       The block of the workstation or players inventory.
      * @param inventory   The inventory of the workstation or player.
-     * @param dataHandler The {@link DataHandler} from {@link CustomCrafting#getDataHandler()}
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
-    public CustomItem checkRecipe(CraftingRecipe<?> recipe, ItemStack[] matrix, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory, DataHandler dataHandler) {
+    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory) {
         if (!recipe.isDisabled()) {
-            CraftingData craftingData = recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(matrix, ingredients) : null;
+            CraftingData craftingData = recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(ingredients) : null;
             if (craftingData != null) {
                 var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                 if (!customPreCraftEvent.isCancelled()) {
-                    Result<?> result = customPreCraftEvent.getResult().get(matrix);
+                    Result<?> result = customPreCraftEvent.getResult();
                     craftingData.setResult(result);
                     put(player.getUniqueId(), craftingData);
                     return result.getItem(player).orElse(new CustomItem(Material.AIR));

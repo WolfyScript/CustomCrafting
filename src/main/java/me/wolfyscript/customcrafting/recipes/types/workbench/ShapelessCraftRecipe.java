@@ -37,7 +37,7 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
     }
 
     @Override
-    public CraftingData check(ItemStack[] matrix, List<List<ItemStack>> ingredients) {
+    public CraftingData check(List<List<ItemStack>> ingredients) {
         List<Character> usedKeys = new ArrayList<>();
         Map<Vec2d, CustomItem> foundItems = new HashMap<>();
         Map<Ingredient, Vec2d> mappedIngredients = new HashMap<>();
@@ -46,7 +46,7 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
                 checkIngredient(j, i, getIngredients(), usedKeys, foundItems, mappedIngredients, ingredients.get(i).get(j), isExactMeta());
             }
         }
-        return usedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, mappedIngredients, matrix) : null;
+        return usedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, mappedIngredients) : null;
     }
 
     @Override

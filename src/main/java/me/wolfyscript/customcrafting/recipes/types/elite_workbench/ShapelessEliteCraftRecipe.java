@@ -37,7 +37,7 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
     }
 
     @Override
-    public CraftingData check(ItemStack[] matrix, List<List<ItemStack>> ingredients) {
+    public CraftingData check(List<List<ItemStack>> ingredients) {
         List<Character> usedKeys = new ArrayList<>();
         Map<Vec2d, CustomItem> foundItems = new HashMap<>();
         Map<Ingredient, Vec2d> mappedIngredients = new HashMap<>();
@@ -47,7 +47,7 @@ public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IS
             }
         }
         if (usedKeys.containsAll(getIngredients().keySet())) {
-            return new CraftingData(this, foundItems, mappedIngredients, matrix);
+            return new CraftingData(this, foundItems, mappedIngredients);
         }
         return null;
     }

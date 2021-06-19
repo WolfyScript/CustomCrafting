@@ -81,7 +81,7 @@ public class AnvilListener implements Listener {
             //Set the result depending on what is configured!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                 //Recipe has a plain result set that we can use.
-                recipeResult = recipe.getResult().get(new ItemStack[]{inputLeft, inventory.getItem(1)});
+                recipeResult = recipe.getResult();
                 result = recipeResult.getItem(player).orElse(new CustomItem(Material.AIR));
             } else if (!ItemUtils.isAirOrNull(event.getResult())) {
                 //Either none or durability mode is set.

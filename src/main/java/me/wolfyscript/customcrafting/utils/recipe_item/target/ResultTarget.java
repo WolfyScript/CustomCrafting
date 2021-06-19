@@ -1,42 +1,50 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target;
 
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+
+import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class ResultTarget {
 
-    private List<TargetCase> cases;
+    private final List<MergeOption> mergeOptions;
 
     protected ResultTarget() {
-        this.cases = new ArrayList<>();
+        this.mergeOptions = new ArrayList<>();
     }
 
     protected ResultTarget(ResultTarget target) {
-        this.cases = target.cases;
+        this.mergeOptions = target.mergeOptions; //TODO: Clone correctly!
     }
 
-    public List<TargetCase> getCases() {
-        return cases;
+    /**
+     * Merges nbt from crafting recipes into the result. Only for Crafting recipes.
+     *
+     * @param craftingData
+     * @param player
+     * @param result
+     * @return
+     */
+    public ItemStack mergeCraftingData(CraftingData craftingData, Player player, CustomItem result) {
+        return null;
     }
 
-    public void setCases(List<TargetCase> cases) {
-        this.cases = cases;
+    /**
+     * Merges the nbt of other recipes, that usually have fixed slots.
+     *
+     * @param ingredients
+     * @param player
+     * @param result
+     * @return
+     */
+    public ItemStack mergeMisc(ItemStack[] ingredients, @Nullable Player player, CustomItem result) {
+        return null;
     }
 
-    public abstract Optional<Result<NoneResultTarget>> get(@Nullable ItemStack[] ingredients);
-
-    protected Optional<Result<NoneResultTarget>> check(ItemStack itemStack) {
-        return cases.stream().map(targetCase -> targetCase.check(itemStack)).filter(Optional::isPresent).findFirst().orElse(Optional.empty());
-    }
-
-    public void clearCachedItems(Player player) {
-        cases.parallelStream().forEach(targetCase -> targetCase.getResult().removeCachedItem(player));
-    }
 
 }

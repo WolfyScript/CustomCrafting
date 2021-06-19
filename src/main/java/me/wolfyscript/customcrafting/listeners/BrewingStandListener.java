@@ -187,7 +187,7 @@ public class BrewingStandListener implements Listener {
                                                                 if (potionMeta != null) {
                                                                     if (!recipe.getResult().isEmpty()) {
                                                                         //Result available. Replace the items with a random result from the list. (Percentages of items are used)
-                                                                        Optional<CustomItem> item = recipe.getResult().get(new ItemStack[]{ingredient}).getItem(player);
+                                                                        Optional<CustomItem> item = recipe.getResult().getItem(player);
                                                                         if (item.isPresent()) {
                                                                             brewerInventory.setItem(i, item.get().create());
                                                                         }

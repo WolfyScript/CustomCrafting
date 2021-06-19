@@ -43,10 +43,6 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
     private int fuelCost; //The fuel cost of recipe
     private int brewTime; //The brew time in ticks
 
-    /**
-     * TODO: Link settings to CustomItems to further customize specific items.
-     */
-
     //These options are for general changes made to the potions, if advanced features are not required or you want to edit all effects before editing them further in detail.
     private int durationChange; //added to the Duration. if <0 it will be subtracted
     private int amplifierChange; //added to the Amplifier. if <0 it will be subtracted
