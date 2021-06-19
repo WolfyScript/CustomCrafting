@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
-import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
@@ -13,10 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements IShapelessCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
@@ -38,15 +34,7 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
 
     @Override
     public CraftingData check(List<List<ItemStack>> ingredients) {
-        List<Character> usedKeys = new ArrayList<>();
-        Map<Vec2d, CustomItem> foundItems = new HashMap<>();
-        Map<Ingredient, Vec2d> mappedIngredients = new HashMap<>();
-        for (int i = 0; i < ingredients.size(); i++) {
-            for (int j = 0; j < ingredients.get(i).size(); j++) {
-                checkIngredient(j, i, getIngredients(), usedKeys, foundItems, mappedIngredients, ingredients.get(i).get(j), isExactMeta());
-            }
-        }
-        return usedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, foundItems, mappedIngredients) : null;
+        return check(this, getIngredients(), isExactMeta(), ingredients);
     }
 
     @Override
