@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.utils.recipe_item;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -10,7 +9,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonI
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RandomCollection;
 import org.bukkit.Bukkit;
@@ -22,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.logging.Level;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -88,25 +85,8 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     @JsonProperty("extensions")
-    private void setExtensions(List<JsonNode> extensionNodes) {
-        List<ResultExtension> resultExtensions = new ArrayList<>();
-        for (JsonNode node : extensionNodes) {
-            if (node.has("key")) {
-                var key = NamespacedKey.of(node.path("key").asText());
-                if (key != null) {
-                    ResultExtension.Provider<?> provider = Registry.RESULT_EXTENSIONS.get(key);
-                    if (provider != null) {
-                        ResultExtension extension = provider.parse(node);
-                        if (extension != null) {
-                            resultExtensions.add(extension);
-                            continue;
-                        }
-                        CustomCrafting.inst().getLogger().log(Level.WARNING, "Failed to load Result Extension {0}'", key);
-                    }
-                }
-            }
-        }
-        this.extensions = resultExtensions;
+    private void setExtensions(List<ResultExtension> extensions) {
+        this.extensions = extensions;
     }
 
     public void addExtension(ResultExtension extension) {

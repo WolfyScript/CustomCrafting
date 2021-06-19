@@ -35,7 +35,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
     /**
      * This Registry contains all the custom Result Extensions that can be saved to a Result.
      */
-    ResultExtensionRegistry RESULT_EXTENSIONS = new ResultExtensionRegistry();
+    SimpleRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleRegistry<>();
 
     /**
      * The custom Registry for the Recipes of CustomCrafting.
@@ -247,14 +247,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                 }
             }
         }
-    }
-
-    class ResultExtensionRegistry extends SimpleRegistry<ResultExtension.Provider<?>> {
-
-        public void register(ResultExtension value) {
-            super.register(new ResultExtension.Provider<>(value.getNamespacedKey(), value.getClass()));
-        }
-
     }
 
 }

@@ -1,10 +1,12 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.extension;
 
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.json.jackson.CustomTypeIdResolver;
+import me.wolfyscript.utilities.util.json.jackson.CustomTypeResolver;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@JsonTypeResolver(CustomTypeResolver.class)
+@JsonTypeIdResolver(CustomTypeIdResolver.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "key")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonPropertyOrder(value = {"key", "outerRadius", "innerRadius"})
 public abstract class ResultExtension implements Keyed {
@@ -37,7 +42,7 @@ public abstract class ResultExtension implements Keyed {
     @JsonAlias(value = "inner_radius")
     protected Vector innerRadius = new Vector(0, 0, 0);
 
-    protected ResultExtension() {
+    private ResultExtension() {
         this.namespacedKey = null;
     }
 
@@ -144,26 +149,6 @@ public abstract class ResultExtension implements Keyed {
             return outerEntities;
         }
         return new ArrayList<>();
-    }
-
-    public static class Provider<T extends ResultExtension> implements Keyed {
-
-        private final NamespacedKey namespacedKey;
-        private final Class<T> extensionClass;
-
-        public Provider(NamespacedKey namespacedKey, Class<T> extensionClass) {
-            this.namespacedKey = namespacedKey;
-            this.extensionClass = extensionClass;
-        }
-
-        public T parse(JsonNode node) {
-            return JacksonUtil.getObjectMapper().convertValue(node, extensionClass);
-        }
-
-        @Override
-        public NamespacedKey getNamespacedKey() {
-            return namespacedKey;
-        }
     }
 
 }
