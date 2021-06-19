@@ -143,7 +143,9 @@ public class DataHandler {
             try {
                 me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
             } catch (IOException e) {
-                customCrafting.getLogger().severe(String.format("Could not load item '%s': %s", namespacedKey, e.getMessage()));
+                customCrafting.getLogger().severe(String.format("Could not load item '%s':", namespacedKey));
+                e.printStackTrace();
+                customCrafting.getLogger().severe("----------------------");
             }
         }
     }
@@ -155,7 +157,9 @@ public class DataHandler {
             try {
                 Registry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                customCrafting.getLogger().severe(String.format("Could not load recipe '%s': %s", namespacedKey, e.getMessage()));
+                customCrafting.getLogger().severe(String.format("Could not load recipe '%s':", namespacedKey));
+                e.printStackTrace();
+                customCrafting.getLogger().severe("----------------------");
             }
         }
     }
