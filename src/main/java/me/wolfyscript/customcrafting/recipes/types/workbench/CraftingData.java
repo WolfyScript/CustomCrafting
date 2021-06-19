@@ -2,12 +2,11 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Contains all the data that is cached when a player crafts a recipe.
@@ -21,17 +20,11 @@ public class CraftingData {
 
     CraftingRecipe<?> recipe;
     Result<?> result;
-    Map<Vec2d, CustomItem> foundItems;
-    Map<Ingredient, Vec2d> mappedIngredients;
+    Map<Vec2d, IngredientData> ingredients;
 
-    public CraftingData(CraftingRecipe<?> recipe, Map<Vec2d, CustomItem> foundItems) {
-        this(recipe, foundItems, new HashMap<>());
-    }
-
-    public CraftingData(CraftingRecipe<?> recipe, Map<Vec2d, CustomItem> foundItems, Map<Ingredient, Vec2d> mappedIngredients) {
+    public CraftingData(CraftingRecipe<?> recipe, Map<Vec2d, IngredientData> ingredients) {
         this.recipe = recipe;
-        this.foundItems = foundItems;
-        this.mappedIngredients = mappedIngredients;
+        this.ingredients = ingredients;
         this.result = recipe.getResult();
     }
 
@@ -39,8 +32,13 @@ public class CraftingData {
         return recipe;
     }
 
+    /**
+     * @return the CustomItems found per slot.
+     * @deprecated Iterate over the entries of {@link #getIngredients()} directly!
+     */
+    @Deprecated
     public Map<Vec2d, CustomItem> getFoundItems() {
-        return foundItems;
+        return ingredients.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, val -> val.getValue().customItem()));
     }
 
     public Result<?> getResult() {
@@ -50,4 +48,9 @@ public class CraftingData {
     public void setResult(Result<?> result) {
         this.result = result;
     }
+
+    public Map<Vec2d, IngredientData> getIngredients() {
+        return ingredients;
+    }
+
 }
