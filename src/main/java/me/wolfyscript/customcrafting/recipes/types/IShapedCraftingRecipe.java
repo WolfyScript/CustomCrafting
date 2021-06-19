@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -41,8 +42,7 @@ public interface IShapedCraftingRecipe {
             return null;
         }
         List<Character> containedKeys = new ArrayList<>();
-        Map<Vec2d, CustomItem> foundItems = new HashMap<>();
-        Map<Ingredient, Vec2d> mappedIngredients = new HashMap<>();
+        Map<Vec2d, IngredientData> dataMap = new HashMap<>();
         for (var column = 0; column < matrix.size(); column++) {
             for (var row = 0; row < matrix.get(column).size(); row++) {
                 ItemStack targetItem = matrix.get(column).get(row);
@@ -53,18 +53,14 @@ public interface IShapedCraftingRecipe {
                     if (ingredient != null) {
                         Optional<CustomItem> item = ingredient.check(targetItem, exactMeta);
                         if (item.isPresent()) {
-                            var vec = new Vec2d(row, column);
-                            foundItems.put(vec, item.get());
-                            mappedIngredients.put(ingredient, vec);
+                            dataMap.put(new Vec2d(row, column), new IngredientData(ingredient, item.get(), targetItem));
                             containedKeys.add(key);
                         }
                     }
                 }
             }
         }
-        return containedKeys.containsAll(recipeIngredients.keySet()) ? new CraftingData(recipe, foundItems, mappedIngredients) : null;
-
-
+        return containedKeys.containsAll(recipeIngredients.keySet()) ? new CraftingData(recipe, dataMap) : null;
     }
 
 }
