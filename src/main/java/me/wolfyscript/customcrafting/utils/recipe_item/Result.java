@@ -92,7 +92,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         List<ResultExtension> resultExtensions = new ArrayList<>();
         for (JsonNode node : extensionNodes) {
             if (node.has("key")) {
-                NamespacedKey key = NamespacedKey.of(node.path("key").asText());
+                var key = NamespacedKey.of(node.path("key").asText());
                 if (key != null) {
                     ResultExtension.Provider<?> provider = Registry.RESULT_EXTENSIONS.get(key);
                     if (provider != null) {
