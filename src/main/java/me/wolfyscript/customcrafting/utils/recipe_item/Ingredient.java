@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.utils.recipe_item;
 
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,9 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public class Ingredient extends RecipeItemStack {
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private int id;
 
     public Ingredient() {
         super();
@@ -58,5 +54,4 @@ public class Ingredient extends RecipeItemStack {
         if (itemStack == null) return Optional.empty();
         return choices.stream().filter(customItem -> customItem.isSimilar(itemStack, exactMatch)).findFirst();
     }
-
 }
