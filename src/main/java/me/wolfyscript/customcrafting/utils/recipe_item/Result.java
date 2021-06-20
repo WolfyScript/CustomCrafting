@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.utils.recipe_item;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -102,13 +103,21 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     public RandomCollection<CustomItem> getRandomChoices(@Nullable Player player) {
-        return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem.clone())));
+        return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem)));
     }
 
     public Optional<CustomItem> getItem(@Nullable Player player) {
         CustomItem item = cachedItems.computeIfAbsent(player == null ? null : player.getUniqueId(), uuid -> getRandomChoices(player).next());
         addCachedItem(player, item);
         return Optional.ofNullable(item);
+    }
+
+    public ItemStack getItem(CraftingData data, Player player) {
+        var customItem = getItem(player).orElse(new CustomItem(Material.AIR));
+        if (target != null) {
+            return target.mergeCraftingData(data, player, customItem, customItem.create());
+        }
+        return customItem.create();
     }
 
     @JsonIgnore

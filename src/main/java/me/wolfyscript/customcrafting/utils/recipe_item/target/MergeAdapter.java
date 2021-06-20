@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target;
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,6 +14,7 @@ import me.wolfyscript.utilities.util.json.jackson.CustomTypeIdResolver;
 import me.wolfyscript.utilities.util.json.jackson.CustomTypeResolver;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 @JsonTypeResolver(CustomTypeResolver.class)
 @JsonTypeIdResolver(CustomTypeIdResolver.class)
@@ -51,13 +53,24 @@ public abstract class MergeAdapter implements Keyed {
 
     /**
      * Called when the data is merged inside of crafting recipes.
+     * <p>
+     * Crafting Recipes have no reliable positions of ingredients as they can be flipped or have no order at all!
+     * Therefore this separate method is used with additional data of Ingredient positions and content.
      *
      * @param player
      * @param craftingData
      * @param result
      * @return The
      */
-    public abstract ItemStack mergeCrafting(CraftingData craftingData, Player player, ItemStack result);
+    public abstract ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result);
+
+    /**
+     * @param player
+     * @param customResult
+     * @param result
+     * @return
+     */
+    public abstract ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result);
 
 
 }

@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.utils.recipe_item.target;
 
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -29,10 +30,10 @@ public abstract class ResultTarget {
      * @param result
      * @return
      */
-    public ItemStack mergeCraftingData(CraftingData craftingData, Player player, ItemStack result) {
+    public ItemStack mergeCraftingData(CraftingData craftingData, Player player, CustomItem customItemResult, ItemStack result) {
         var currentItem = result;
         for (MergeOption mergeOption : mergeOptions) {
-            currentItem = mergeOption.merge(craftingData, player, result);
+            currentItem = mergeOption.merge(craftingData, player, customItemResult, result);
         }
         return currentItem;
     }
