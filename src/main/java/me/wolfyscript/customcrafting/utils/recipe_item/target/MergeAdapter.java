@@ -54,22 +54,29 @@ public abstract class MergeAdapter implements Keyed {
 
     /**
      * Called when the data is merged inside of crafting recipes.
-     * <p>
+     * <br>
      * Crafting Recipes have no reliable positions of ingredients as they can be flipped or have no order at all!
      * Therefore this separate method is used with additional data of Ingredient positions and content.
      *
-     * @param player
-     * @param craftingData
-     * @param result
-     * @return The
+     * @param player       The player that crafted the item.
+     * @param craftingData The {@link CraftingData} containing all the info of the grid state.
+     * @param customResult The {@link CustomItem} of the crafted item.
+     * @param result       The actual manipulable result ItemStack. (Previous adapters might have already manipulated this item!)
+     * @return The manipulated {@link ItemStack} that should be passed to the next adapter or set as the end result.
      */
     public abstract ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result);
 
     /**
-     * @param player
-     * @param customResult
-     * @param result
-     * @return
+     * Called when the data is merged inside of recipes with fixed slots like Furnace, Smithing Table, etc.
+     * <p><strong>
+     * Not called for crafting recipes! Use {@link #mergeCrafting(CraftingData, Player, CustomItem, ItemStack)} for merging of Crafting Recipe items!
+     * </strong>
+     * </p>
+     *
+     * @param player       The player that has crafted the item. <strong>Might be null in case of the Furnace!</strong>
+     * @param customResult The {@link CustomItem} of the crafted item.
+     * @param result       The actual manipulable result {@link ItemStack}. (Previous adapters might have already manipulated this item!)
+     * @return The manipulated {@link ItemStack} that should be passed to the next adapter or set as the end result.
      */
     public abstract ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result);
 
