@@ -26,6 +26,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResult
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -136,6 +137,7 @@ public class CustomCrafting extends JavaPlugin {
         CustomPlayerData.register(new CCPlayerData.Provider());
 
         getLogger().info("Registering Result Merge Adapters");
+        Registry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
 
         CustomTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         CustomTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
