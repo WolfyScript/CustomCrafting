@@ -71,8 +71,8 @@ public class CraftManager {
      */
     @Nullable
     public ItemStack checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory) {
-        if (!recipe.isDisabled()) {
-            CraftingData craftingData = recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(ingredients) : null;
+        if (!recipe.isDisabled() && recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory()))) {
+            var craftingData = recipe.check(ingredients);
             if (craftingData != null) {
                 var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
