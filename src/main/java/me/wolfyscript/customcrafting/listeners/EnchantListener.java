@@ -19,7 +19,7 @@ public class EnchantListener implements Listener {
         for (int i = 0; i < offers.length; i++) {
             EnchantmentOffer offer = offers[i];
             if (offer != null) {
-                System.out.println("    " + offer.getEnchantment().toString());
+                System.out.println("    " + offer.getEnchantment());
             } else {
                 offers[i] = new EnchantmentOffer(Enchantment.PROTECTION_ENVIRONMENTAL, 2, 3);
             }

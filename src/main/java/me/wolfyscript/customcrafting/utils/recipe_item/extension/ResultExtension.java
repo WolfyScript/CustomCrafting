@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @JsonTypeResolver(CustomTypeResolver.class)
 @JsonTypeIdResolver(CustomTypeIdResolver.class)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "key")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "key")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonPropertyOrder(value = {"key", "outerRadius", "innerRadius"})
 public abstract class ResultExtension implements Keyed {
@@ -41,10 +41,6 @@ public abstract class ResultExtension implements Keyed {
     protected Vector outerRadius = new Vector(0, 0, 0);
     @JsonAlias(value = "inner_radius")
     protected Vector innerRadius = new Vector(0, 0, 0);
-
-    private ResultExtension() {
-        this.namespacedKey = null;
-    }
 
     protected ResultExtension(ResultExtension extension) {
         this.namespacedKey = extension.namespacedKey;

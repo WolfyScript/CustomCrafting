@@ -100,7 +100,7 @@ public class DataHandler {
     }
 
     private void loadDataBase() {
-        DataBaseHandler dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
+        var dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
         api.getConsole().info("- - - - [Database Storage] - - - -");
         dataBaseHandler.loadItems();
         api.getConsole().info("");
@@ -139,7 +139,7 @@ public class DataHandler {
     private void loadItems(String subFolder) {
         for (File file : getFiles(subFolder, "items")) {
             String name = file.getName();
-            NamespacedKey namespacedKey = new NamespacedKey(customCrafting, subFolder + "/" + name.substring(0, name.lastIndexOf(".")));
+            var namespacedKey = new NamespacedKey(customCrafting, subFolder + "/" + name.substring(0, name.lastIndexOf(".")));
             try {
                 me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
             } catch (IOException e) {
@@ -153,7 +153,7 @@ public class DataHandler {
     private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?, ?>> type) {
         for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
             String name = file.getName();
-            NamespacedKey namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
+            var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
             try {
                 Registry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
@@ -195,7 +195,7 @@ public class DataHandler {
     }
 
     public void disableRecipe(ICustomRecipe<?, ?> recipe) {
-        NamespacedKey namespacedKey = recipe.getNamespacedKey();
+        var namespacedKey = recipe.getNamespacedKey();
         disabledRecipes.add(namespacedKey);
         if (recipe instanceof ICustomVanillaRecipe<?>) {
             disableBukkitRecipe(namespacedKey.toBukkit(customCrafting));
@@ -203,7 +203,7 @@ public class DataHandler {
     }
 
     public void enableRecipe(ICustomRecipe<?, ?> recipe) {
-        NamespacedKey namespacedKey = recipe.getNamespacedKey();
+        var namespacedKey = recipe.getNamespacedKey();
         if (recipe instanceof ICustomVanillaRecipe) {
             enableBukkitRecipe(namespacedKey.toBukkit(customCrafting));
         }
@@ -250,18 +250,13 @@ public class DataHandler {
     }
 
     private int gridSize(ItemStack[] ingredients) {
-        switch (ingredients.length) {
-            case 9:
-                return 3;
-            case 16:
-                return 4;
-            case 25:
-                return 5;
-            case 36:
-                return 6;
-            default:
-                return (int) Math.sqrt(ingredients.length);
-        }
+        return switch (ingredients.length) {
+            case 9 -> 3;
+            case 16 -> 4;
+            case 25 -> 5;
+            case 36 -> 6;
+            default -> (int) Math.sqrt(ingredients.length);
+        };
     }
 
     public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {
