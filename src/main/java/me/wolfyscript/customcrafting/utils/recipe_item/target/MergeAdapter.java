@@ -35,6 +35,11 @@ public abstract class MergeAdapter implements Keyed {
         this.key = key;
     }
 
+    protected MergeAdapter(MergeAdapter adapter) {
+        this.key = new NamespacedKey(adapter.key.getNamespace(), adapter.key.getKey());
+        this.slots = adapter.slots.clone();
+    }
+
     @Override
     public NamespacedKey getNamespacedKey() {
         return key;

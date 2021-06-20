@@ -138,7 +138,7 @@ public class CraftManager {
             if (possible > 0) {
                 RandomCollection<CustomItem> results = recipeResult.getRandomChoices(player);
                 for (int i = 0; i < possible; i++) {
-                    CustomItem customItem = results.next();
+                    var customItem = results.next();
                     if (customItem != null) {
                         player.getInventory().addItem(customItem.create());
                     }

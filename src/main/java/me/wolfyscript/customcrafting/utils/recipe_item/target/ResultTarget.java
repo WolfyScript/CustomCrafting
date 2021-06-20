@@ -30,7 +30,11 @@ public abstract class ResultTarget {
      * @return
      */
     public ItemStack mergeCraftingData(CraftingData craftingData, Player player, ItemStack result) {
-        return null;
+        var currentItem = result;
+        for (MergeOption mergeOption : mergeOptions) {
+            currentItem = mergeOption.merge(craftingData, player, result);
+        }
+        return currentItem;
     }
 
     /**
