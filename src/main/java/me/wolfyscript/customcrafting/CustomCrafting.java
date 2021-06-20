@@ -27,6 +27,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantMergeAdapter;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantedBookMergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -138,6 +139,7 @@ public class CustomCrafting extends JavaPlugin {
 
         getLogger().info("Registering Result Merge Adapters");
         Registry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
+        Registry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
 
         CustomTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         CustomTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
