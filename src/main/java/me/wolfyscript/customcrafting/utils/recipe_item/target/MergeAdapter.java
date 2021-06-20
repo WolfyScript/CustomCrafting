@@ -42,6 +42,7 @@ public abstract class MergeAdapter implements Keyed {
         this.slots = adapter.slots.clone();
     }
 
+    @JsonIgnore
     @Override
     public NamespacedKey getNamespacedKey() {
         return key;
@@ -72,5 +73,5 @@ public abstract class MergeAdapter implements Keyed {
      */
     public abstract ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result);
 
-
+    public abstract MergeAdapter clone();
 }

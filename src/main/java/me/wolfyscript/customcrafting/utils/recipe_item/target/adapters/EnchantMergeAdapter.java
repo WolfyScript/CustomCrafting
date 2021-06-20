@@ -15,12 +15,16 @@ public class EnchantMergeAdapter extends MergeAdapter {
         super(NamespacedKey.wolfyutilties("enchant"));
     }
 
+    public EnchantMergeAdapter(EnchantMergeAdapter adapter) {
+        super(adapter);
+    }
+
     @Override
     public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
         for (IngredientData data : craftingData.getBySlots(slots)) {
             var item = data.itemStack();
             item.getEnchantments().forEach((enchantment, level) -> {
-                if (result.containsEnchantment(enchantment) && result.getEnchantmentLevel(enchantment) < level) {
+                if (!result.containsEnchantment(enchantment) && result.getEnchantmentLevel(enchantment) < level) {
                     result.addUnsafeEnchantment(enchantment, level);
                 }
             });
@@ -31,5 +35,10 @@ public class EnchantMergeAdapter extends MergeAdapter {
     @Override
     public ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result) {
         return null;
+    }
+
+    @Override
+    public MergeAdapter clone() {
+        return new EnchantMergeAdapter(this);
     }
 }
