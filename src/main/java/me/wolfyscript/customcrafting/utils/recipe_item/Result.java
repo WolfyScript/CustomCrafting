@@ -113,7 +113,10 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     public ItemStack getItem(CraftingData data, Player player) {
-        var customItem = getItem(player).orElse(new CustomItem(Material.AIR));
+        return getItem(getItem(player).orElse(new CustomItem(Material.AIR)), data, player);
+    }
+
+    public ItemStack getItem(CustomItem customItem, CraftingData data, Player player) {
         if (target != null) {
             return target.mergeCraftingData(data, player, customItem, customItem.create());
         }

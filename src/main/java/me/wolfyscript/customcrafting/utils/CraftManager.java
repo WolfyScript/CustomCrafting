@@ -140,7 +140,7 @@ public class CraftManager {
                 for (int i = 0; i < possible; i++) {
                     var customItem = results.next();
                     if (customItem != null) {
-                        player.getInventory().addItem(customItem.create());
+                        player.getInventory().addItem(recipeResult.getItem(customItem, craftingData, player));
                     }
                 }
             }
