@@ -53,7 +53,7 @@ public interface IShapedCraftingRecipe {
                     if (ingredient != null) {
                         Optional<CustomItem> item = ingredient.check(targetItem, exactMeta);
                         if (item.isPresent()) {
-                            dataMap.put(new Vec2d(row, column), new IngredientData(ingredient, item.get(), targetItem));
+                            dataMap.put(new Vec2d(row, column), new IngredientData(CraftingRecipe.LETTERS.indexOf(key), ingredient, item.get(), targetItem));
                             containedKeys.add(key);
                         }
                     }
