@@ -10,12 +10,12 @@ import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -56,7 +56,7 @@ public class CraftManager {
         }
         List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
         Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
-        return Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().map(CustomItem::create).orElse(null);
+        return Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     /**
@@ -70,17 +70,17 @@ public class CraftManager {
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
-    public CustomItem checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory) {
-        if (!recipe.isDisabled()) {
-            CraftingData craftingData = recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory())) ? recipe.check(ingredients) : null;
+    public ItemStack checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory) {
+        if (!recipe.isDisabled() && recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory()))) {
+            var craftingData = recipe.check(ingredients);
             if (craftingData != null) {
                 var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                 if (!customPreCraftEvent.isCancelled()) {
-                    Result<?> result = customPreCraftEvent.getResult();
+                    Result<SlotResultTarget> result = customPreCraftEvent.getResult();
                     craftingData.setResult(result);
                     put(player.getUniqueId(), craftingData);
-                    return result.getItem(player).orElse(new CustomItem(Material.AIR));
+                    return result.getItem(craftingData, player);
                 }
             }
         }
@@ -138,9 +138,9 @@ public class CraftManager {
             if (possible > 0) {
                 RandomCollection<CustomItem> results = recipeResult.getRandomChoices(player);
                 for (int i = 0; i < possible; i++) {
-                    CustomItem customItem = results.next();
+                    var customItem = results.next();
                     if (customItem != null) {
-                        player.getInventory().addItem(customItem.create());
+                        player.getInventory().addItem(recipeResult.getItem(customItem, craftingData, player));
                     }
                 }
             }

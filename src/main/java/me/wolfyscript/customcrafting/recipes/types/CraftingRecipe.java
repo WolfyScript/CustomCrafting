@@ -95,7 +95,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
         if (!getIngredients().isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < bookSquaredGrid; i++) {
-                Ingredient ingredient = getIngredient(i);
+                var ingredient = getIngredient(i);
                 if (ingredient != null) {
                     ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
                 }
@@ -107,7 +107,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         if (!getIngredients().isEmpty()) {
             if (this instanceof AdvancedCraftingRecipe && getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
-                NamespacedKey glass = new NamespacedKey("none", "glass_purple");
+                var glass = new NamespacedKey("none", "glass_purple");
                 for (int i = 0; i < 9; i++) {
                     event.setButton(i, glass);
                 }

@@ -23,7 +23,11 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.RecipeUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
+import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantMergeAdapter;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantedBookMergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -31,6 +35,7 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -131,6 +136,13 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
         Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
         CustomPlayerData.register(new CCPlayerData.Provider());
+
+        getLogger().info("Registering Result Merge Adapters");
+        Registry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
+        Registry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
+
+        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
+        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
     }
 
     @Override

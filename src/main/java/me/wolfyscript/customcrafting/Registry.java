@@ -9,6 +9,7 @@ import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -35,7 +36,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
     /**
      * This Registry contains all the custom Result Extensions that can be saved to a Result.
      */
-    ResultExtensionRegistry RESULT_EXTENSIONS = new ResultExtensionRegistry();
+    SimpleRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleRegistry<>();
+
+    SimpleRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleRegistry<>();
 
     /**
      * The custom Registry for the Recipes of CustomCrafting.
@@ -247,14 +250,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                 }
             }
         }
-    }
-
-    class ResultExtensionRegistry extends SimpleRegistry<ResultExtension.Provider<?>> {
-
-        public void register(ResultExtension value) {
-            super.register(new ResultExtension.Provider<>(value.getNamespacedKey(), value.getClass()));
-        }
-
     }
 
 }

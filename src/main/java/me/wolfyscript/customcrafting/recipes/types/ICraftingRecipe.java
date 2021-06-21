@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +20,7 @@ public interface ICraftingRecipe {
     default void removeMatrix(List<List<ItemStack>> matrix, Inventory inventory, int totalAmount, CraftingData craftingData) {
         for (Map.Entry<Vec2d, IngredientData> entry : craftingData.getIngredients().entrySet()) {
             Vec2d vec = entry.getKey();
-            CustomItem item = entry.getValue().customItem();
+            var item = entry.getValue().customItem();
             if (matrix.size() > vec.y && matrix.get((int) vec.y).size() > vec.x) {
                 ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
                 if (item != null) {
@@ -35,7 +34,7 @@ public interface ICraftingRecipe {
         int totalAmount = -1;
         for (Map.Entry<Vec2d, IngredientData> entry : craftingData.getIngredients().entrySet()) {
             Vec2d vec = entry.getKey();
-            CustomItem item = entry.getValue().customItem();
+            var item = entry.getValue().customItem();
             if (matrix.size() > vec.y && matrix.get((int) vec.y).size() > vec.x) {
                 ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
                 if (item != null && input != null) {
