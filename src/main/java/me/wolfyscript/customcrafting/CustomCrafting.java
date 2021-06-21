@@ -35,7 +35,7 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
-import me.wolfyscript.utilities.util.json.jackson.CustomTypeIdResolver;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -141,8 +141,8 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
         Registry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
 
-        CustomTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
-        CustomTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
+        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
+        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
     }
 
     @Override

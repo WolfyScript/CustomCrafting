@@ -10,14 +10,14 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.CustomTypeIdResolver;
-import me.wolfyscript.utilities.util.json.jackson.CustomTypeResolver;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-@JsonTypeResolver(CustomTypeResolver.class)
-@JsonTypeIdResolver(CustomTypeIdResolver.class)
+@JsonTypeResolver(KeyedTypeResolver.class)
+@JsonTypeIdResolver(KeyedTypeIdResolver.class)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "key")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class MergeAdapter implements Keyed {
