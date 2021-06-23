@@ -15,7 +15,6 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Item;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -121,8 +120,8 @@ public class CauldronListener implements Listener {
                                 .forEach(entry -> {
                                     Location loc = entry.getKey();
                                     List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).collect(Collectors.toList());
-                                    if (!items.isEmpty() && loc.getBlock().getBlockData() instanceof Levelled levelled) {
-                                        int level = levelled.getLevel();
+                                    if (!items.isEmpty()) {
+                                        int level = Cauldrons.getLevel(loc.getBlock());
                                         List<Cauldron> cauldronEntryValue = entry.getValue();
                                         //Check for new possible Recipes
                                         List<CauldronRecipe> recipes = Registry.RECIPES.get(Types.CAULDRON);

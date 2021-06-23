@@ -53,7 +53,7 @@ public class Cauldrons {
                     final Location loc = entry.getKey();
                     final var world = loc.getWorld();
                     final var block = loc.getBlock();
-                    int level = block.getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
+                    int level = getLevel(block);
                     final boolean isLit = isCustomCauldronLit(block);
                     if (spawnParticles && isLit && level > 0) {
                         world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
@@ -158,6 +158,10 @@ public class Cauldrons {
 
     public static boolean isCauldron(Material type) {
         return type.equals(Material.CAULDRON) || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17) && type.equals(Material.WATER_CAULDRON));
+    }
+
+    public static int getLevel(Block block) {
+        return block.getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
     }
 
     public void save() {
