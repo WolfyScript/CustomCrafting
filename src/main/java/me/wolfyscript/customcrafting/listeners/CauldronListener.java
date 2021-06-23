@@ -74,7 +74,7 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.CAULDRON)) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && event.getClickedBlock() != null && Cauldrons.isCauldron(event.getClickedBlock().getType())) {
             var player = event.getPlayer();
             var block = event.getClickedBlock();
             var cauldrons = CustomCrafting.inst().getCauldrons();
