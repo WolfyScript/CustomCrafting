@@ -31,7 +31,6 @@ public class Cauldrons {
     private final WolfyUtilities api;
     private final int autosaveTask;
     private final Random random = new Random();
-
     //Hashmap of all the locations of the valid cauldrons. The Key is the Location. The Value is the current active recipe, which is going to be saved on server shutdown.
     private final Map<Location, List<Cauldron>> cauldrons = new HashMap<>();
 
