@@ -6,13 +6,19 @@ import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.utils.StackedContents;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.network.messages.MessageAPI;
 import me.wolfyscript.utilities.api.nms.NetworkUtil;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.block.BlastFurnace;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Smoker;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.CraftingInventory;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +36,9 @@ public class NetworkHandler {
     private static final NamespacedKey RECIPE_BOOK_CATEGORIES = new NamespacedKey(KEY, "recipe_book_categories");
     private static final NamespacedKey RECIPE_BOOK_FILTERS = new NamespacedKey(KEY, "recipe_book_filters");
     private static final NamespacedKey RECIPE_BOOK_FILTERS_END = new NamespacedKey(KEY, "recipe_book_filters_end");
+
+    private static final NamespacedKey PLACE_RECIPE = new NamespacedKey(KEY, "place_recipe");
+    private static final NamespacedKey GHOST_RECIPE = new NamespacedKey(KEY, "ghost_recipe");
 
     private final CustomCrafting customCrafting;
     private final WolfyUtilities wolfyUtilities;
@@ -54,6 +63,12 @@ public class NetworkHandler {
             }
         });
 
+        api.register(PLACE_RECIPE, (player, wolfyUtilities1, mcByteBuf) -> {
+            if (!player.getGameMode().equals(GameMode.SPECTATOR) && wolfyUtilities.getPermissions().hasPermission(player, "customcrafting.network.place_recipe")) {
+                Bukkit.getScheduler().runTaskLater(wolfyUtilities.getPlugin(), () -> handlePlaceRecipe(player, mcByteBuf), 2);
+            }
+        });
+
         //Register outgoing packets
         api.register(RECIPE_LIST_SIZE);
         api.register(RECIPE_LIST);
@@ -62,13 +77,14 @@ public class NetworkHandler {
         api.register(RECIPE_BOOK_CATEGORIES);
         api.register(RECIPE_BOOK_FILTERS);
         api.register(RECIPE_BOOK_FILTERS_END);
+        api.register(GHOST_RECIPE);
     }
 
     public void sendRecipes(Player player) {
         List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(player);
 
         //Send size of recipe list! Client will wait for recipe packets after it receives this packet.
-        MCByteBuf mcByteBuf = networkUtil.buffer();
+        var mcByteBuf = networkUtil.buffer();
         mcByteBuf.writeVarInt(recipes.size());
         api.send(RECIPE_LIST_SIZE, player, mcByteBuf);
 
@@ -116,5 +132,27 @@ public class NetworkHandler {
     protected void writeNamespacedKeyList(List<String> values, MCByteBuf byteBuf) {
         byteBuf.writeVarInt(values.size());
         values.forEach(s -> byteBuf.writeUtf(NamespacedKeyUtils.NAMESPACE + ":" + s));
+    }
+
+
+    public void handlePlaceRecipe(Player player, MCByteBuf byteBuf) {
+        var key = byteBuf.readNamespacedKey();
+        var recipe = Registry.RECIPES.get(key);
+        if (recipe != null) {
+            var inventory = player.getOpenInventory().getTopInventory();
+            boolean validInv = switch (recipe.getRecipeType().getType()) {
+                case WORKBENCH -> inventory instanceof CraftingInventory;
+                case FURNACE -> inventory.getHolder() instanceof Furnace;
+                case BLAST_FURNACE -> inventory.getHolder() instanceof BlastFurnace;
+                case SMOKER -> inventory.getHolder() instanceof Smoker;
+                default -> false;
+            };
+            if (validInv) {
+                player.sendMessage("Complete recipe: " + key);
+                var stackedContents = new StackedContents(inventory);
+                player.getOpenInventory().getBottomInventory().forEach(stackedContents::accountItemStack);
+            }
+
+        }
     }
 }
