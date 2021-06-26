@@ -12,25 +12,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class DamageMergeAdapter extends MergeAdapter {
 
-    private boolean subtract = false;
     private int additionalDamage = 0;
 
     public DamageMergeAdapter() {
-        super(NamespacedKey.wolfyutilties("durability"));
+        super(NamespacedKey.wolfyutilties("damage"));
     }
 
     public DamageMergeAdapter(DamageMergeAdapter adapter) {
         super(adapter);
+        this.additionalDamage = adapter.additionalDamage;
     }
 
     /**
-     * 110 dur + 110 dur = 220 dur (max 131)
-     * <p>
-     * 21 + 21 = 42 dmg
-     * <p>
-     * 42 - 131 = -89
-     * <p>
-     * 131 maxdur - (-89) = 220 dur (max 131)
+     *
      *
      * @param craftingData The {@link CraftingData} containing all the info of the grid state.
      * @param player       The player that crafted the item.
@@ -41,16 +35,19 @@ public class DamageMergeAdapter extends MergeAdapter {
     @Override
     public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
         int totalDamage = 0;
+        int maxDur = result.getType().getMaxDurability();
         for (IngredientData data : craftingData.getBySlots(slots)) {
             if (data.itemStack().getItemMeta() instanceof Damageable damageable) {
-                totalDamage += damageable.getDamage();
+                if (totalDamage <= 0) {
+                    totalDamage += damageable.getDamage();
+                } else {
+                    totalDamage = Math.min((totalDamage + damageable.getDamage()) - maxDur, maxDur);
+                }
             }
         }
-        int maxDur = result.getType().getMaxDurability();
-        totalDamage = Math.max(totalDamage - maxDur + additionalDamage, 0);
-        if (result instanceof Damageable damageable) {
-            damageable.setDamage(totalDamage);
-        }
+        var meta = result.getItemMeta();
+        ((Damageable) meta).setDamage(Math.min(totalDamage + additionalDamage, maxDur));
+        result.setItemMeta(meta);
         return result;
     }
 
@@ -65,14 +62,6 @@ public class DamageMergeAdapter extends MergeAdapter {
 
     public void setAdditionalDamage(int additionalDamage) {
         this.additionalDamage = additionalDamage;
-    }
-
-    public boolean isSubtract() {
-        return subtract;
-    }
-
-    public void setSubtract(boolean subtract) {
-        this.subtract = subtract;
     }
 
     @Override
