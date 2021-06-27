@@ -93,11 +93,15 @@ public class FurnaceListener implements Listener {
                                 CustomItem item = result.getItem(block).orElse(new CustomItem(Material.AIR));
                                 if (currentResultItem != null) {
                                     int nextAmount = currentResultItem.getAmount() + item.getAmount();
-                                    if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
-                                        inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                                        currentResultItem.setAmount(nextAmount);
-                                        result.executeExtensions(block.getLocation(), true, null);
-                                        result.removeCachedItem(block);
+                                    if (nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
+                                        ItemStack clonedCurrentItem = currentResultItem.clone();
+                                        clonedCurrentItem.setAmount(item.getAmount());
+                                        if (item.isSimilar(clonedCurrentItem)) {
+                                            inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                                            currentResultItem.setAmount(nextAmount);
+                                            result.executeExtensions(block.getLocation(), true, null);
+                                            result.removeCachedItem(block);
+                                        }
                                     }
                                     event.setCancelled(true);
                                 } else {
