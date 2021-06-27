@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DamageMergeAdapter extends MergeAdapter {
 
+    private boolean repairBonus = false;
     private int additionalDamage = 0;
 
     public DamageMergeAdapter() {
@@ -21,6 +22,7 @@ public class DamageMergeAdapter extends MergeAdapter {
     public DamageMergeAdapter(DamageMergeAdapter adapter) {
         super(adapter);
         this.additionalDamage = adapter.additionalDamage;
+        this.repairBonus = adapter.repairBonus;
     }
 
     /**
@@ -34,19 +36,23 @@ public class DamageMergeAdapter extends MergeAdapter {
      */
     @Override
     public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
-        int totalDamage = 0;
+        int damage = 0;
         int maxDur = result.getType().getMaxDurability();
         for (IngredientData data : craftingData.getBySlots(slots)) {
             if (data.itemStack().getItemMeta() instanceof Damageable damageable) {
-                if (totalDamage <= 0) {
-                    totalDamage += damageable.getDamage();
+                if (damage <= 0) {
+                    damage += damageable.getDamage();
                 } else {
-                    totalDamage = Math.min((totalDamage + damageable.getDamage()) - maxDur, maxDur);
+                    damage = Math.max(damage + damageable.getDamage() - maxDur, maxDur);
                 }
             }
         }
         var meta = result.getItemMeta();
-        ((Damageable) meta).setDamage(Math.min(totalDamage + additionalDamage, maxDur));
+        int totalDamage = damage + additionalDamage;
+        if (repairBonus) {
+            totalDamage += Math.floor(maxDur / 20d);
+        }
+        ((Damageable) meta).setDamage(Math.min(totalDamage, maxDur));
         result.setItemMeta(meta);
         return result;
     }
