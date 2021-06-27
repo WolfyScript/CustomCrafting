@@ -36,22 +36,15 @@ public class DamageMergeAdapter extends MergeAdapter {
      */
     @Override
     public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
-        int damage = 0;
+        int totalDurability = 0;
         int maxDur = result.getType().getMaxDurability();
         for (IngredientData data : craftingData.getBySlots(slots)) {
             if (data.itemStack().getItemMeta() instanceof Damageable damageable) {
-                if (damage <= 0) {
-                    damage += damageable.getDamage();
-                } else {
-                    damage = Math.max(damage + damageable.getDamage() - maxDur, maxDur);
-                }
+                totalDurability += maxDur - damageable.getDamage();
             }
         }
         var meta = result.getItemMeta();
-        int totalDamage = damage + additionalDamage;
-        if (repairBonus) {
-            totalDamage += Math.floor(maxDur / 20d);
-        }
+        int totalDamage = Math.max((maxDur - totalDurability) + additionalDamage - (repairBonus ? (int) Math.floor(maxDur / 20d) : 0), 0);
         ((Damageable) meta).setDamage(Math.min(totalDamage, maxDur));
         result.setItemMeta(meta);
         return result;
