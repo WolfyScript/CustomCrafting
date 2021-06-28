@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
@@ -13,7 +12,6 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,7 +99,7 @@ public class ChatUtils {
     }
 
     public static void sendLoreManager(Player player) {
-        ItemMeta itemMeta = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().getItemMeta();
+        var itemMeta = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache()).getItems().getItem().getItemMeta();
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
@@ -132,8 +130,8 @@ public class ChatUtils {
 
     public static void sendAttributeModifierManager(Player player) {
         CCCache cache = ((CCCache) api.getInventoryAPI().getGuiHandler(player).getCustomCache());
-        Items items = cache.getItems();
-        ItemMeta itemMeta = items.getItem().getItemMeta();
+        var items = cache.getItems();
+        var itemMeta = items.getItem().getItemMeta();
         for (int i = 0; i < 15; i++) {
             player.sendMessage("");
         }
