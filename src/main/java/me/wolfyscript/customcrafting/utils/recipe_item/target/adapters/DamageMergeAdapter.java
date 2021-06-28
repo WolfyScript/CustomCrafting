@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.utils.recipe_item.target.adapters;
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -16,7 +17,7 @@ public class DamageMergeAdapter extends MergeAdapter {
     private int additionalDamage = 0;
 
     public DamageMergeAdapter() {
-        super(NamespacedKey.wolfyutilties("damage"));
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "damage"));
     }
 
     public DamageMergeAdapter(DamageMergeAdapter adapter) {

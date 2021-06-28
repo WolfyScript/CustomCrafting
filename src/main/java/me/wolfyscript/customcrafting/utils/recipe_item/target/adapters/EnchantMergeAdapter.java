@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.utils.recipe_item.target.adapters;
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +22,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
     private List<Enchantment> blackListedEnchants = new ArrayList<>();
 
     public EnchantMergeAdapter() {
-        super(NamespacedKey.wolfyutilties("enchant"));
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchant"));
     }
 
     public EnchantMergeAdapter(EnchantMergeAdapter adapter) {

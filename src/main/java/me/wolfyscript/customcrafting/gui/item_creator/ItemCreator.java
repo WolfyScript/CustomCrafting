@@ -111,7 +111,7 @@ public class ItemCreator extends CCWindow {
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
                     var namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
                     if (namespacedKey != null) {
-                        CustomItem customItem = items.getItem();
+                        var customItem = items.getItem();
                         if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
                             api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
                             return true;
