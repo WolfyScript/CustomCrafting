@@ -127,8 +127,7 @@ public class RecipeCreatorCluster extends CCCluster {
 
     private void registerSaveButtons() {
         registerButton(new ActionButton<>(SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            if (guiHandler.getWindow() instanceof RecipeCreator) {
-                RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getWindow();
+            if (guiHandler.getWindow() instanceof RecipeCreator recipeCreator) {
                 WolfyUtilities api = guiHandler.getApi();
                 if (recipeCreator.validToSave(cache)) {
                     return saveRecipe(cache, cache.getRecipe(), player, api, guiHandler, recipeCreator.getCustomCrafting());
@@ -138,10 +137,9 @@ public class RecipeCreatorCluster extends CCCluster {
             return true;
         }));
         registerButton(new ActionButton<>(SAVE_AS.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            if (guiHandler.getWindow() instanceof RecipeCreator) {
-                RecipeCreator recipeCreator = (RecipeCreator) guiHandler.getWindow();
-                WolfyUtilities api = guiHandler.getApi();
-                CustomCrafting customCrafting = recipeCreator.getCustomCrafting();
+            if (guiHandler.getWindow() instanceof RecipeCreator recipeCreator) {
+                var api = guiHandler.getApi();
+                var customCrafting = recipeCreator.getCustomCrafting();
                 if (recipeCreator.validToSave(cache)) {
                     guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                         List<String> results = new ArrayList<>();
@@ -158,7 +156,7 @@ public class RecipeCreatorCluster extends CCCluster {
                         return results;
                     });
                     recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster(KEY), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
-                        NamespacedKey namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
+                        var namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
                         if (namespacedKey != null) {
                             ICustomRecipe<?, ?> recipe = cache.getRecipe();
                             recipe.setNamespacedKey(namespacedKey);

@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -42,7 +41,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.*;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,11 +103,11 @@ public class ItemCreator extends CCWindow {
             return true;
         })));
         registerButton(new ItemInputButton<>(ITEM_INPUT, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> false, (cache, guiHandler, player, inventory, item, slot, event) -> {
-            Items items = cache.getItems();
+            var items = cache.getItems();
             items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
         }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
         registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
-            Items items = cache.getItems();
+            var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
@@ -132,7 +134,7 @@ public class ItemCreator extends CCWindow {
 
         registerButton(new ActionButton<>(APPLY_ITEM, Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
-                CustomItem customItem = cache.getItems().getItem();
+                var customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
                     ItemLoader.saveItem(items.getNamespacedKey(), customItem);
                     customItem = Registry.CUSTOM_ITEMS.get(items.getNamespacedKey());
@@ -185,9 +187,9 @@ public class ItemCreator extends CCWindow {
         super.onUpdateAsync(event);
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
         CCCache cache = guiHandler.getCustomCache();
-        Items items = cache.getItems();
-        CustomItem customItem = items.getItem();
-        ItemStack item = customItem.create();
+        var items = cache.getItems();
+        var customItem = items.getItem();
+        var item = customItem.create();
 
         event.setButton(45, BACK);
         event.setButton(4, ITEM_INPUT);
@@ -538,7 +540,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ChatInputButton<>("custom_durability.set_damage", Material.RED_CONCRETE, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Items items = guiHandler.getCustomCache().getItems();
+            var items = guiHandler.getCustomCache().getItems();
             values.put("%VAR%", items.getItem().getCustomDamage());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
@@ -551,7 +553,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ChatInputButton<>("custom_durability.set_tag", Material.NAME_TAG, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Items items = guiHandler.getCustomCache().getItems();
+            var items = guiHandler.getCustomCache().getItems();
             values.put("%VAR%", items.getItem().getCustomDurabilityTag());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
@@ -635,11 +637,11 @@ public class ItemCreator extends CCWindow {
     private void registerCustomModelData() {
         registerButton(new OptionButton(Material.REDSTONE, CUSTOM_MODEL_DATA));
         registerButton(new ChatInputButton<>("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Items items = guiHandler.getCustomCache().getItems();
+            var items = guiHandler.getCustomCache().getItems();
             hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "&7&l/") + "");
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Repairable)) {
                 return true;
             }
@@ -655,7 +657,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("custom_model_data.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.setCustomModelData(null);
             items.getItem().setItemMeta(itemMeta);
             return true;
@@ -666,7 +668,7 @@ public class ItemCreator extends CCWindow {
         registerButton(new OptionButton(Material.POTION, POTION));
         registerButton(new ActionButton<>("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             cache.getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> {
-                ItemMeta itemMeta = items.getItem().getItemMeta();
+                var itemMeta = items.getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
                     ((PotionMeta) itemMeta).addCustomEffect(potionEffect, true);
                 }
@@ -679,7 +681,7 @@ public class ItemCreator extends CCWindow {
         registerButton(new ActionButton<>("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, type) -> {
-                ItemMeta itemMeta = items.getItem().getItemMeta();
+                var itemMeta = items.getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
                     ((PotionMeta) itemMeta).removeCustomEffect(type);
                 }
@@ -696,12 +698,12 @@ public class ItemCreator extends CCWindow {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable();
         }, new ButtonState<>(UNBREAKABLE + ".enabled", Material.BEDROCK, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(false);
             items.getItem().setItemMeta(itemMeta);
             return true;
         }), new ButtonState<>(UNBREAKABLE + ".disabled", Material.GLASS, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(true);
             items.getItem().setItemMeta(itemMeta);
             return true;
@@ -723,7 +725,7 @@ public class ItemCreator extends CCWindow {
             return true;
         }));
         registerButton(new ChatInputButton<>("player_head.owner", Material.NAME_TAG, (guiHandler, player, s, args) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof SkullMeta)) {
                 return true;
             }
@@ -741,7 +743,7 @@ public class ItemCreator extends CCWindow {
     private void registerDamage() {
         registerButton(new OptionButton(Material.IRON_SWORD, DAMAGE));
         registerButton(new ChatInputButton<>("damage.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Damageable)) {
                 return true;
             }
@@ -757,7 +759,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("damage.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Damageable) {
                 ((Damageable) itemMeta).setDamage(0);
             }
@@ -769,7 +771,7 @@ public class ItemCreator extends CCWindow {
     private void registerRepairCost() {
         registerButton(new OptionButton(Material.EXPERIENCE_BOTTLE, REPAIR_COST));
         registerButton(new ChatInputButton<>("repair_cost.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             try {
                 int value = Integer.parseInt(s);
                 ((Repairable) itemMeta).setRepairCost(value);
@@ -782,7 +784,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("repair_cost.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Repairable) {
                 ((Repairable) itemMeta).setRepairCost(0);
             }
@@ -797,13 +799,13 @@ public class ItemCreator extends CCWindow {
             hashMap.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getItemMeta().getLocalizedName());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(ChatColor.convert(s));
             guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
             return false;
         }));
         registerButton(new ActionButton<>("localized_name.remove", Material.NAME_TAG, (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(null);
             guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
             return true;
@@ -898,7 +900,7 @@ public class ItemCreator extends CCWindow {
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             try {
-                UUID uuid = UUID.fromString(strings[0]);
+                var uuid = UUID.fromString(strings[0]);
                 guiHandler.getCustomCache().getItems().setAttributeUUID(uuid.toString());
             } catch (IllegalArgumentException ex) {
                 api.getChat().sendKey(player, getNamespacedKey(), "attribute.uuid.error.line1", new Pair<>("%UUID%", strings[0]));
@@ -908,7 +910,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("attribute.save", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), items.getAttributeModifier());
             items.getItem().setItemMeta(itemMeta);
             return true;
@@ -992,7 +994,7 @@ public class ItemCreator extends CCWindow {
                     sendMessage(player, "enchant.invalid_lvl");
                     return true;
                 }
-                Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
+                var enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
                 if (enchantment != null) {
                     guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
                 } else {
@@ -1006,7 +1008,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ChatInputButton<>(ENCHANTS + ".remove", Material.RED_CONCRETE, (guiHandler, player, s, args) -> {
-            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
+            var enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
             if (enchantment != null) {
                 guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
             } else {
