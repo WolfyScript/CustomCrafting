@@ -15,7 +15,6 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Item;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -74,7 +73,7 @@ public class CauldronListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.CAULDRON)) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getHand().equals(EquipmentSlot.HAND) && event.getClickedBlock() != null && Cauldrons.isCauldron(event.getClickedBlock().getType())) {
             var player = event.getPlayer();
             var block = event.getClickedBlock();
             var cauldrons = CustomCrafting.inst().getCauldrons();
@@ -121,14 +120,12 @@ public class CauldronListener implements Listener {
                                 .forEach(entry -> {
                                     Location loc = entry.getKey();
                                     List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).collect(Collectors.toList());
-                                    if (!items.isEmpty() && loc.getBlock().getBlockData() instanceof Levelled levelled) {
-                                        int level = levelled.getLevel();
-                                        List<Cauldron> cauldronEntryValue = entry.getValue();
-                                        //Check for new possible Recipes
+                                    if (!items.isEmpty()) {
+                                        int level = Cauldrons.getLevel(loc.getBlock());
                                         List<CauldronRecipe> recipes = Registry.RECIPES.get(Types.CAULDRON);
                                         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
                                         for (CauldronRecipe recipe : recipes) {
-                                            if (cauldronEntryValue.isEmpty() || cauldronEntryValue.get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {
+                                            if (entry.getValue().isEmpty() || entry.getValue().get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {
                                                 if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || cauldrons.isCustomCauldronLit(loc.getBlock()))) {
                                                     List<Item> validItems = recipe.checkRecipe(items);
                                                     if (!validItems.isEmpty()) {
@@ -137,7 +134,7 @@ public class CauldronListener implements Listener {
                                                         Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
                                                         if (!cauldronPreCookEvent.isCancelled()) {
                                                             synchronized (cauldrons.getCauldrons()) {
-                                                                cauldronEntryValue.add(new Cauldron(cauldronPreCookEvent));
+                                                                entry.getValue().add(new Cauldron(cauldronPreCookEvent));
                                                             }
                                                             for (int i = 0; i < recipe.getIngredient().size() && i < validItems.size(); i++) {
                                                                 var itemEntity = validItems.get(i);

@@ -118,25 +118,17 @@ public class GiveSubCommand extends AbstractSubCommand {
     protected @Nullable List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] strings) {
         List<String> results = new ArrayList<>();
         if (strings.length > 0) {
-            switch (strings.length) {
-                case 1:
-                    //Player completion
-                    StringUtil.copyPartialMatches(strings[0], Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()), results);
-                    break;
-                case 2:
-                    //Item completion
-                    StringUtil.copyPartialMatches(strings[1], Registry.CUSTOM_ITEMS.keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).collect(Collectors.toList()), results);
-                    break;
-                case 3:
-                    StringUtil.copyPartialMatches(strings[2], NUMBERS, results);
-                    break;
-                case 4:
-                    //Drop Items
-                    StringUtil.copyPartialMatches(strings[3], Arrays.asList("true", "false"), results);
-                    break;
-                default:
-                    //No option
-            }
+            StringUtil.copyPartialMatches(
+                    strings[strings.length - 1],
+                    switch (strings.length) {
+                        case 1 -> Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()); //Player completion
+                        case 2 -> Registry.CUSTOM_ITEMS.keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).collect(Collectors.toList()); //Item completion
+                        case 3 -> NUMBERS;
+                        case 4 -> Arrays.asList("true", "false"); //Drop Items
+                        default -> new ArrayList<String>();
+                    },
+                    results
+            );
         }
         Collections.sort(results);
         return results;

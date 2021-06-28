@@ -26,6 +26,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResult
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantedBookMergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -60,7 +61,7 @@ import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
-    private static final boolean DEVELOPMENT = true;
+    private static final boolean DEVELOPMENT = false;
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
     public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
@@ -140,6 +141,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("Registering Result Merge Adapters");
         Registry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
         Registry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
+        Registry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
 
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);

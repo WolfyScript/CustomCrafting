@@ -85,6 +85,7 @@ public class CraftListener implements Listener {
             ItemStack result = craftManager.preCheckRecipe(matrix, player, e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
                 e.getInventory().setResult(result);
+                Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
                 return;
             }
             //No valid custom recipes found
@@ -96,6 +97,7 @@ public class CraftListener implements Listener {
             if (dataHandler.getDisabledRecipes().contains(namespacedKey) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);
+                Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
                 return;
             }
             //Check for items that are not allowed in vanilla recipes.
@@ -104,7 +106,7 @@ public class CraftListener implements Listener {
                 e.getInventory().setResult(ItemUtils.AIR);
             }
             //At this point the vanilla recipe is valid and can be crafted
-            player.updateInventory();
+            Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
         } catch (Exception ex) {
             CustomCrafting.inst().getLogger().severe("-------- WHAT HAPPENED? Please report! --------");
             ex.printStackTrace();

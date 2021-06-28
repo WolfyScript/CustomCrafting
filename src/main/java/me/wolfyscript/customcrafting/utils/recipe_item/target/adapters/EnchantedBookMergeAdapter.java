@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.utils.recipe_item.target.adapters;
 
 import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class EnchantedBookMergeAdapter extends MergeAdapter {
 
     public EnchantedBookMergeAdapter() {
-        super(NamespacedKey.wolfyutilties("enchanted_book"));
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "enchanted_book"));
     }
 
     public EnchantedBookMergeAdapter(EnchantedBookMergeAdapter adapter) {

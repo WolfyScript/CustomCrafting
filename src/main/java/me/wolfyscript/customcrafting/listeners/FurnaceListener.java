@@ -89,18 +89,25 @@ public class FurnaceListener implements Listener {
                         if (cookingRecipe.checkConditions(new Conditions.Data(null, block, null))) {
                             event.setCancelled(false);
                             Result<?> result = cookingRecipe.getResult();
-                            result.executeExtensions(block.getLocation(), true, null);
                             if (result.size() > 1) {
-                                CustomItem item = result.getItem().orElse(new CustomItem(Material.AIR));
+                                CustomItem item = result.getItem(block).orElse(new CustomItem(Material.AIR));
                                 if (currentResultItem != null) {
                                     int nextAmount = currentResultItem.getAmount() + item.getAmount();
-                                    if ((item.isSimilar(currentResultItem)) && nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
-                                        inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                                        currentResultItem.setAmount(nextAmount);
+                                    if (nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
+                                        ItemStack clonedCurrentItem = currentResultItem.clone();
+                                        clonedCurrentItem.setAmount(item.getAmount());
+                                        if (item.isSimilar(clonedCurrentItem)) {
+                                            inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
+                                            currentResultItem.setAmount(nextAmount);
+                                            result.executeExtensions(block.getLocation(), true, null);
+                                            result.removeCachedItem(block);
+                                        }
                                     }
                                     event.setCancelled(true);
                                 } else {
                                     event.setResult(item.create());
+                                    result.executeExtensions(block.getLocation(), true, null);
+                                    result.removeCachedItem(block);
                                 }
                             }
                             break;

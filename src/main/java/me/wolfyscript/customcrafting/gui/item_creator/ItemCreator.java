@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -42,7 +41,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.*;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,17 +103,17 @@ public class ItemCreator extends CCWindow {
             return true;
         })));
         registerButton(new ItemInputButton<>(ITEM_INPUT, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> false, (cache, guiHandler, player, inventory, item, slot, event) -> {
-            Items items = cache.getItems();
+            var items = cache.getItems();
             items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
         }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
         registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
-            Items items = cache.getItems();
+            var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
                 openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
                     var namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
                     if (namespacedKey != null) {
-                        CustomItem customItem = items.getItem();
+                        var customItem = items.getItem();
                         if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
                             api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
                             return true;
@@ -132,7 +134,7 @@ public class ItemCreator extends CCWindow {
 
         registerButton(new ActionButton<>(APPLY_ITEM, Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
-                CustomItem customItem = cache.getItems().getItem();
+                var customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
                     ItemLoader.saveItem(items.getNamespacedKey(), customItem);
                     customItem = Registry.CUSTOM_ITEMS.get(items.getNamespacedKey());
@@ -185,24 +187,22 @@ public class ItemCreator extends CCWindow {
         super.onUpdateAsync(event);
         GuiHandler<CCCache> guiHandler = event.getGuiHandler();
         CCCache cache = guiHandler.getCustomCache();
-        Items items = cache.getItems();
-        CustomItem customItem = items.getItem();
-        ItemStack item = customItem.create();
+        var items = cache.getItems();
+        var customItem = items.getItem();
+        var item = customItem.create();
 
-        event.setButton(0, BACK);
-        event.setButton(13, ITEM_INPUT);
+        event.setButton(45, BACK);
+        event.setButton(4, ITEM_INPUT);
 
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         var gray = data.getLightBackground();
-        event.setButton(4, gray);
-        event.setButton(12, gray);
-        event.setButton(14, gray);
-        event.setButton(22, gray);
+        event.setButton(13, gray);
 
         if (items.isRecipeItem()) {
-            event.setButton(2, APPLY_ITEM);
+            event.setButton(51, APPLY_ITEM);
         }
-        event.setButton(3, SAVE_ITEM);
+        event.setButton(52, SAVE_ITEM);
+        event.setButton(53, SAVE_ITEM);
 
         List<String> options = new ArrayList<>();
         if (customItem.getApiReference() instanceof VanillaRef) {
@@ -225,13 +225,13 @@ public class ItemCreator extends CCWindow {
             }
         } else {
             if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-                event.setButton(5, REFERENCE_WOLFYUTILITIES);
+                event.setButton(49, REFERENCE_WOLFYUTILITIES);
             } else if (customItem.getApiReference() instanceof OraxenRef) {
-                event.setButton(5, REFERENCE_ORAXEN);
+                event.setButton(49, REFERENCE_ORAXEN);
             } else if (customItem.getApiReference() instanceof ItemsAdderRef) {
-                event.setButton(5, REFERENCE_ITEMSADDER);
+                event.setButton(49, REFERENCE_ITEMSADDER);
             } else if (customItem.getApiReference() instanceof MythicMobsRef) {
-                event.setButton(5, REFERENCE_MYTHICMOBS);
+                event.setButton(49, REFERENCE_MYTHICMOBS);
             }
         }
         options.add("fuel.option");
@@ -262,13 +262,13 @@ public class ItemCreator extends CCWindow {
             event.setButton(5, PAGE_NEXT);
         }
 
-        int slot = 9;
+        int slot = 0;
         int j = 14 * items.getPage();
         for (int i = 0; i < 14; i++) {
             if (i == 3) {
-                slot = 12;
+                slot = 3;
             } else if (i == 10) {
-                slot = 13;
+                slot = 4;
             }
             if (j < options.size()) {
                 event.setButton(slot + i, options.get(j));
@@ -282,19 +282,19 @@ public class ItemCreator extends CCWindow {
             //DRAW Sections
             switch (cache.getSubSetting()) {
                 case DISPLAY_NAME:
-                    event.setButton(39, DISPLAY_NAME + ".set");
-                    event.setButton(41, DISPLAY_NAME + ".remove");
-                    event.setButton(45, "meta_ignore.wolfyutilities.name");
+                    event.setButton(30, DISPLAY_NAME + ".set");
+                    event.setButton(32, DISPLAY_NAME + ".remove");
+                    event.setButton(36, "meta_ignore.wolfyutilities.name");
                     break;
                 case ENCHANTS:
-                    event.setButton(39, ENCHANTS + ".add");
-                    event.setButton(41, ENCHANTS + ".remove");
-                    event.setButton(45, "meta_ignore.wolfyutilities.enchant");
+                    event.setButton(30, ENCHANTS + ".add");
+                    event.setButton(32, ENCHANTS + ".remove");
+                    event.setButton(36, "meta_ignore.wolfyutilities.enchant");
                     break;
                 case LORE:
-                    event.setButton(39, LORE + ".add");
-                    event.setButton(41, LORE + ".remove");
-                    event.setButton(45, "meta_ignore.wolfyutilities.lore");
+                    event.setButton(30, LORE + ".add");
+                    event.setButton(32, LORE + ".remove");
+                    event.setButton(36, "meta_ignore.wolfyutilities.lore");
                     break;
                 case FLAGS:
                     event.setButton(28, "flags.attributes");
@@ -306,60 +306,60 @@ public class ItemCreator extends CCWindow {
                         event.setButton(40, "flags.dye");
                     }
                     event.setButton(42, "flags.enchants");
-                    event.setButton(45, "meta_ignore.wolfyutilities.flags");
+                    event.setButton(36, "meta_ignore.wolfyutilities.flags");
                     break;
                 case ATTRIBUTE:
-                    event.setButton(36, "attribute.generic_max_health");
-                    event.setButton(37, "attribute.generic_follow_range");
-                    event.setButton(38, "attribute.generic_knockback_resistance");
-                    event.setButton(39, "attribute.generic_movement_speed");
-                    event.setButton(40, "attribute.generic_flying_speed");
-                    event.setButton(41, "attribute.generic_attack_damage");
-                    event.setButton(42, "attribute.generic_attack_speed");
-                    event.setButton(43, "attribute.generic_armor");
-                    event.setButton(44, "attribute.generic_armor_toughness");
-                    event.setButton(48, "attribute.generic_luck");
-                    event.setButton(49, "attribute.horse_jump_strength");
-                    event.setButton(50, "attribute.zombie_spawn_reinforcements");
-                    event.setButton(45, "meta_ignore.wolfyutilities.attributes_modifiers");
+                    event.setButton(27, "attribute.generic_max_health");
+                    event.setButton(28, "attribute.generic_follow_range");
+                    event.setButton(29, "attribute.generic_knockback_resistance");
+                    event.setButton(30, "attribute.generic_movement_speed");
+                    event.setButton(31, "attribute.generic_flying_speed");
+                    event.setButton(32, "attribute.generic_attack_damage");
+                    event.setButton(33, "attribute.generic_attack_speed");
+                    event.setButton(34, "attribute.generic_armor");
+                    event.setButton(35, "attribute.generic_armor_toughness");
+                    event.setButton(39, "attribute.generic_luck");
+                    event.setButton(40, "attribute.horse_jump_strength");
+                    event.setButton(41, "attribute.zombie_spawn_reinforcements");
+                    event.setButton(36, "meta_ignore.wolfyutilities.attributes_modifiers");
                     break;
                 case PLAYER_HEAD:
                     if (items.getItem() != null && item.getType().equals(Material.PLAYER_HEAD)) {
-                        event.setButton(38, "player_head.texture.input");
-                        event.setButton(39, "player_head.texture.apply");
-                        event.setButton(41, "player_head.owner");
-                        event.setButton(45, "meta_ignore.wolfyutilities.playerHead");
+                        event.setButton(29, "player_head.texture.input");
+                        event.setButton(30, "player_head.texture.apply");
+                        event.setButton(32, "player_head.owner");
+                        event.setButton(36, "meta_ignore.wolfyutilities.playerHead");
                     }
                     break;
                 case POTION:
                     if (items.getItem() != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
-                        event.setButton(39, "potion.add");
-                        event.setButton(40, "potion_beta.add");
-                        event.setButton(41, "potion.remove");
-                        event.setButton(45, "meta_ignore.wolfyutilities.potion");
+                        event.setButton(30, "potion.add");
+                        event.setButton(31, "potion_beta.add");
+                        event.setButton(32, "potion.remove");
+                        event.setButton(36, "meta_ignore.wolfyutilities.potion");
                     }
                     break;
                 case DAMAGE:
-                    event.setButton(39, "damage.set");
-                    event.setButton(41, "damage.reset");
-                    event.setButton(45, "meta_ignore.wolfyutilities.damage");
+                    event.setButton(30, "damage.set");
+                    event.setButton(32, "damage.reset");
+                    event.setButton(36, "meta_ignore.wolfyutilities.damage");
                     break;
                 case REPAIR_COST:
-                    event.setButton(39, "repair_cost.set");
-                    event.setButton(41, "repair_cost.reset");
-                    event.setButton(45, "meta_ignore.wolfyutilities.repairCost");
+                    event.setButton(30, "repair_cost.set");
+                    event.setButton(32, "repair_cost.reset");
+                    event.setButton(36, "meta_ignore.wolfyutilities.repairCost");
                     break;
                 case FUEL:
-                    event.setButton(39, "fuel.burn_time.set");
-                    event.setButton(41, "fuel.burn_time.reset");
-                    event.setButton(47, "fuel.furnace");
-                    event.setButton(49, "fuel.blast_furnace");
-                    event.setButton(51, "fuel.smoker");
+                    event.setButton(30, "fuel.burn_time.set");
+                    event.setButton(32, "fuel.burn_time.reset");
+                    event.setButton(38, "fuel.furnace");
+                    event.setButton(40, "fuel.blast_furnace");
+                    event.setButton(42, "fuel.smoker");
                     break;
                 case CUSTOM_MODEL_DATA:
-                    event.setButton(39, "custom_model_data.set");
-                    event.setButton(41, "custom_model_data.reset");
-                    event.setButton(45, "meta_ignore.wolfyutilities.customModelData");
+                    event.setButton(30, "custom_model_data.set");
+                    event.setButton(32, "custom_model_data.reset");
+                    event.setButton(36, "meta_ignore.wolfyutilities.customModelData");
                     break;
                 case CONSUME:
                     event.setButton(31, "consume.consume_item");
@@ -372,81 +372,81 @@ public class ItemCreator extends CCWindow {
                     }
                     break;
                 case CUSTOM_DURABILITY:
-                    event.setButton(38, "custom_durability.set_damage");
-                    event.setButton(40, "custom_durability.set_tag");
-                    event.setButton(42, "custom_durability.set_durability");
-                    event.setButton(49, "custom_durability.remove");
-                    event.setButton(45, "meta_ignore.wolfyutilities.custom_damage");
-                    event.setButton(53, "meta_ignore.wolfyutilities.custom_durability");
+                    event.setButton(29, "custom_durability.set_damage");
+                    event.setButton(31, "custom_durability.set_tag");
+                    event.setButton(33, "custom_durability.set_durability");
+                    event.setButton(40, "custom_durability.remove");
+                    event.setButton(36, "meta_ignore.wolfyutilities.custom_damage");
+                    event.setButton(44, "meta_ignore.wolfyutilities.custom_durability");
                     break;
                 case LOCALIZED_NAME:
-                    event.setButton(39, "localized_name.set");
-                    event.setButton(41, "localized_name.remove");
+                    event.setButton(30, "localized_name.set");
+                    event.setButton(32, "localized_name.remove");
                     break;
                 case PERMISSION:
-                    event.setButton(39, "permission.set");
-                    event.setButton(41, "permission.remove");
+                    event.setButton(30, "permission.set");
+                    event.setButton(32, "permission.remove");
                     break;
                 case RARITY:
-                    event.setButton(39, "rarity.set");
-                    event.setButton(41, "rarity.reset");
+                    event.setButton(30, "rarity.set");
+                    event.setButton(32, "rarity.reset");
                     break;
                 case ELITE_CRAFTING_TABLE:
                     if (!item.getType().isBlock()) break;
-                    event.setButton(37, "elite_workbench.particles");
-                    event.setButton(39, "elite_workbench.grid_size");
-                    event.setButton(41, "elite_workbench.toggle");
-                    event.setButton(43, "elite_workbench.advanced_recipes");
+                    event.setButton(28, "elite_workbench.particles");
+                    event.setButton(30, "elite_workbench.grid_size");
+                    event.setButton(32, "elite_workbench.toggle");
+                    event.setButton(34, "elite_workbench.advanced_recipes");
                     break;
                 case RECIPE_BOOK:
-                    event.setButton(40, "knowledge_book.toggle");
+                    event.setButton(31, "knowledge_book.toggle");
                     break;
                 case ARMOR_SLOTS:
-                    event.setButton(37, "armor_slots.head");
-                    event.setButton(39, "armor_slots.chest");
-                    event.setButton(41, "armor_slots.legs");
-                    event.setButton(43, "armor_slots.feet");
+                    event.setButton(28, "armor_slots.head");
+                    event.setButton(30, "armor_slots.chest");
+                    event.setButton(32, "armor_slots.legs");
+                    event.setButton(34, "armor_slots.feet");
                     break;
                 case PARTICLE_EFFECTS:
-                    event.setButton(37, "particle_effects.head");
-                    event.setButton(38, "particle_effects.chest");
-                    event.setButton(39, "particle_effects.legs");
-                    event.setButton(40, "particle_effects.feet");
-                    event.setButton(41, "particle_effects.hand");
-                    event.setButton(42, "particle_effects.off_hand");
-                    event.setButton(43, "particle_effects.block");
+                    event.setButton(28, "particle_effects.head");
+                    event.setButton(29, "particle_effects.chest");
+                    event.setButton(30, "particle_effects.legs");
+                    event.setButton(31, "particle_effects.feet");
+                    event.setButton(32, "particle_effects.hand");
+                    event.setButton(33, "particle_effects.off_hand");
+                    event.setButton(34, "particle_effects.block");
 
-                    event.setButton(46, "particle_effects.head.input");
-                    event.setButton(47, "particle_effects.chest.input");
-                    event.setButton(48, "particle_effects.legs.input");
-                    event.setButton(49, "particle_effects.feet.input");
-                    event.setButton(50, "particle_effects.hand.input");
-                    event.setButton(51, "particle_effects.off_hand.input");
-                    event.setButton(52, "particle_effects.block.input");
+                    event.setButton(37, "particle_effects.head.input");
+                    event.setButton(38, "particle_effects.chest.input");
+                    event.setButton(39, "particle_effects.legs.input");
+                    event.setButton(40, "particle_effects.feet.input");
+                    event.setButton(41, "particle_effects.hand.input");
+                    event.setButton(42, "particle_effects.off_hand.input");
+                    event.setButton(43, "particle_effects.block.input");
                     break;
                 case VANILLA:
-                    event.setButton(38, "vanilla.block_recipes");
+                    event.setButton(29, "vanilla.block_recipes");
                     if (!item.getType().isBlock()) break;
-                    event.setButton(40, "vanilla.block_placement");
+                    event.setButton(31, "vanilla.block_placement");
                     break;
                 default:
                     //NONE selected
             }
             if (cache.getSubSetting().startsWith("attribute.generic") || cache.getSubSetting().startsWith("attribute.horse") || cache.getSubSetting().startsWith("attribute.zombie")) {
-                event.setButton(36, "attribute.slot_head");
-                event.setButton(45, "attribute.slot_chest");
-                event.setButton(37, "attribute.slot_legs");
-                event.setButton(46, "attribute.slot_feet");
-                event.setButton(38, "attribute.slot_hand");
-                event.setButton(47, "attribute.slot_off_hand");
-                event.setButton(42, "attribute.multiply_scalar_1");
-                event.setButton(43, "attribute.add_scalar");
-                event.setButton(44, "attribute.add_number");
-                event.setButton(51, "attribute.set_amount");
-                event.setButton(52, "attribute.set_name");
-                event.setButton(53, "attribute.set_uuid");
-                event.setButton(40, "attribute.save");
-                event.setButton(49, "attribute.delete");
+                event.setButton(27, "attribute.slot_head");
+                event.setButton(36, "attribute.slot_chest");
+                event.setButton(28, "attribute.slot_legs");
+                event.setButton(37, "attribute.slot_feet");
+                event.setButton(29, "attribute.slot_hand");
+                event.setButton(38, "attribute.slot_off_hand");
+                event.setButton(33, "attribute.multiply_scalar_1");
+                event.setButton(34, "attribute.add_scalar");
+                event.setButton(35, "attribute.add_number");
+                event.setButton(42, "attribute.set_amount");
+                event.setButton(43, "attribute.set_name");
+                event.setButton(44, "attribute.set_uuid");
+                event.setButton(31, "attribute.save");
+                event.setButton(40, "attribute.delete");
             }
         }
     }
@@ -540,7 +540,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ChatInputButton<>("custom_durability.set_damage", Material.RED_CONCRETE, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Items items = guiHandler.getCustomCache().getItems();
+            var items = guiHandler.getCustomCache().getItems();
             values.put("%VAR%", items.getItem().getCustomDamage());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
@@ -553,7 +553,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ChatInputButton<>("custom_durability.set_tag", Material.NAME_TAG, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Items items = guiHandler.getCustomCache().getItems();
+            var items = guiHandler.getCustomCache().getItems();
             values.put("%VAR%", items.getItem().getCustomDurabilityTag());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
@@ -637,11 +637,11 @@ public class ItemCreator extends CCWindow {
     private void registerCustomModelData() {
         registerButton(new OptionButton(Material.REDSTONE, CUSTOM_MODEL_DATA));
         registerButton(new ChatInputButton<>("custom_model_data.set", Material.GREEN_CONCRETE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Items items = guiHandler.getCustomCache().getItems();
+            var items = guiHandler.getCustomCache().getItems();
             hashMap.put("%VAR%", (items.getItem().hasItemMeta() && items.getItem().getItemMeta().hasCustomModelData() ? items.getItem().getItemMeta().getCustomModelData() : "&7&l/") + "");
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Repairable)) {
                 return true;
             }
@@ -657,7 +657,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("custom_model_data.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.setCustomModelData(null);
             items.getItem().setItemMeta(itemMeta);
             return true;
@@ -668,7 +668,7 @@ public class ItemCreator extends CCWindow {
         registerButton(new OptionButton(Material.POTION, POTION));
         registerButton(new ActionButton<>("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             cache.getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> {
-                ItemMeta itemMeta = items.getItem().getItemMeta();
+                var itemMeta = items.getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
                     ((PotionMeta) itemMeta).addCustomEffect(potionEffect, true);
                 }
@@ -681,7 +681,7 @@ public class ItemCreator extends CCWindow {
         registerButton(new ActionButton<>("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             PotionEffects potionEffectCache = cache.getPotionEffectCache();
             potionEffectCache.setApplyPotionEffectType((cache1, type) -> {
-                ItemMeta itemMeta = items.getItem().getItemMeta();
+                var itemMeta = items.getItem().getItemMeta();
                 if (itemMeta instanceof PotionMeta) {
                     ((PotionMeta) itemMeta).removeCustomEffect(type);
                 }
@@ -698,12 +698,12 @@ public class ItemCreator extends CCWindow {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable();
         }, new ButtonState<>(UNBREAKABLE + ".enabled", Material.BEDROCK, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(false);
             items.getItem().setItemMeta(itemMeta);
             return true;
         }), new ButtonState<>(UNBREAKABLE + ".disabled", Material.GLASS, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.setUnbreakable(true);
             items.getItem().setItemMeta(itemMeta);
             return true;
@@ -725,7 +725,7 @@ public class ItemCreator extends CCWindow {
             return true;
         }));
         registerButton(new ChatInputButton<>("player_head.owner", Material.NAME_TAG, (guiHandler, player, s, args) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof SkullMeta)) {
                 return true;
             }
@@ -743,7 +743,7 @@ public class ItemCreator extends CCWindow {
     private void registerDamage() {
         registerButton(new OptionButton(Material.IRON_SWORD, DAMAGE));
         registerButton(new ChatInputButton<>("damage.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             if (!(itemMeta instanceof Damageable)) {
                 return true;
             }
@@ -759,7 +759,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("damage.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Damageable) {
                 ((Damageable) itemMeta).setDamage(0);
             }
@@ -771,7 +771,7 @@ public class ItemCreator extends CCWindow {
     private void registerRepairCost() {
         registerButton(new OptionButton(Material.EXPERIENCE_BOTTLE, REPAIR_COST));
         registerButton(new ChatInputButton<>("repair_cost.set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             try {
                 int value = Integer.parseInt(s);
                 ((Repairable) itemMeta).setRepairCost(value);
@@ -784,7 +784,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("repair_cost.reset", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             if (itemMeta instanceof Repairable) {
                 ((Repairable) itemMeta).setRepairCost(0);
             }
@@ -799,13 +799,13 @@ public class ItemCreator extends CCWindow {
             hashMap.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getItemMeta().getLocalizedName());
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(ChatColor.convert(s));
             guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
             return false;
         }));
         registerButton(new ActionButton<>("localized_name.remove", Material.NAME_TAG, (cache, guiHandler, player, inventory, i, inventoryClickEvent) -> {
-            ItemMeta itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
+            var itemMeta = guiHandler.getCustomCache().getItems().getItem().getItemMeta();
             itemMeta.setLocalizedName(null);
             guiHandler.getCustomCache().getItems().getItem().setItemMeta(itemMeta);
             return true;
@@ -900,7 +900,7 @@ public class ItemCreator extends CCWindow {
             return itemStack;
         }, (guiHandler, player, s, strings) -> {
             try {
-                UUID uuid = UUID.fromString(strings[0]);
+                var uuid = UUID.fromString(strings[0]);
                 guiHandler.getCustomCache().getItems().setAttributeUUID(uuid.toString());
             } catch (IllegalArgumentException ex) {
                 api.getChat().sendKey(player, getNamespacedKey(), "attribute.uuid.error.line1", new Pair<>("%UUID%", strings[0]));
@@ -910,7 +910,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ActionButton<>("attribute.save", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ItemMeta itemMeta = items.getItem().getItemMeta();
+            var itemMeta = items.getItem().getItemMeta();
             itemMeta.addAttributeModifier(Attribute.valueOf(cache.getSubSetting().split("\\.")[1].toUpperCase(Locale.ROOT)), items.getAttributeModifier());
             items.getItem().setItemMeta(itemMeta);
             return true;
@@ -994,7 +994,7 @@ public class ItemCreator extends CCWindow {
                     sendMessage(player, "enchant.invalid_lvl");
                     return true;
                 }
-                Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
+                var enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
                 if (enchantment != null) {
                     guiHandler.getCustomCache().getItems().getItem().addUnsafeEnchantment(enchantment, level);
                 } else {
@@ -1008,7 +1008,7 @@ public class ItemCreator extends CCWindow {
             return false;
         }));
         registerButton(new ChatInputButton<>(ENCHANTS + ".remove", Material.RED_CONCRETE, (guiHandler, player, s, args) -> {
-            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
+            var enchantment = Enchantment.getByKey(NamespacedKey.minecraft(args[0].toLowerCase(Locale.ROOT).replace(' ', '_')));
             if (enchantment != null) {
                 guiHandler.getCustomCache().getItems().getItem().removeEnchantment(enchantment);
             } else {

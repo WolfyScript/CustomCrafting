@@ -93,7 +93,7 @@ public abstract class RecipeItemStack {
 
     public void buildChoices() {
         this.choices.clear();
-        this.choices.addAll(items.stream().map(ItemLoader::load).filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toSet()));
+        this.choices.addAll(items.stream().map(ItemLoader::load).filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
         this.tags.stream().map(namespacedKey -> {
             if (namespacedKey.getNamespace().equals("minecraft")) {
                 Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(namespacedKey.getKey()), Material.class);
@@ -152,7 +152,7 @@ public abstract class RecipeItemStack {
         } else if (!getTags().isEmpty()) {
             Optional<NamespacedKey> tag = getTags().stream().findFirst();
             if (tag.isPresent()) {
-                ItemBuilder itemBuilder = new ItemBuilder(Material.NAME_TAG);
+                var itemBuilder = new ItemBuilder(Material.NAME_TAG);
                 itemBuilder.setDisplayName("§6§lTag");
                 itemBuilder.addLoreLine("§7" + tag.get());
                 return itemBuilder.create();

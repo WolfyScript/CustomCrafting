@@ -15,8 +15,10 @@ import me.wolfyscript.utilities.util.RandomCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +30,8 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
 
     @JsonIgnore
     private final Map<UUID, CustomItem> cachedItems = new HashMap<>();
+    @JsonIgnore
+    private final Map<Vector, CustomItem> cachedBlockItems = new HashMap<>();
     private T target;
     private List<ResultExtension> extensions;
 
@@ -123,9 +127,12 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         return customItem.create();
     }
 
-    @JsonIgnore
-    public Optional<CustomItem> getItem() {
-        return getItem(null);
+    public Optional<CustomItem> getItem(@NotNull Block block) {
+        var vector = block.getLocation().toVector();
+        var item = cachedBlockItems.computeIfAbsent(vector, uuid -> getRandomChoices(null).next());
+        addCachedItem(vector, item);
+        return Optional.ofNullable(item);
+
     }
 
     private void addCachedItem(Player player, CustomItem customItem) {
@@ -141,6 +148,22 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     public void removeCachedItem(Player player) {
         if (player != null) {
             cachedItems.remove(player.getUniqueId());
+        }
+    }
+
+    private void addCachedItem(Vector block, CustomItem customItem) {
+        if (block != null) {
+            if (customItem == null) {
+                cachedBlockItems.remove(block);
+            } else {
+                cachedBlockItems.put(block, customItem);
+            }
+        }
+    }
+
+    public void removeCachedItem(Block block) {
+        if (block != null) {
+            cachedBlockItems.remove(block.getLocation().toVector());
         }
     }
 
