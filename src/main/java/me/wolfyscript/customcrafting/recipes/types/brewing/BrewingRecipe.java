@@ -148,12 +148,16 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
-        this.ingredients = ingredient;
+        if (slot == 0) {
+            this.ingredients = ingredient;
+        } else {
+            this.allowedItems = ingredient;
+        }
     }
 
     @Override
     public Ingredient getIngredient(int slot) {
-        return this.ingredients;
+        return slot == 0 ? this.ingredients : this.allowedItems;
     }
 
     public Ingredient getIngredient() {
