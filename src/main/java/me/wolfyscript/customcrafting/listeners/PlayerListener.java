@@ -3,11 +3,9 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import net.md_5.bungee.api.chat.ClickEvent;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,9 +24,8 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        WolfyUtilities api = CustomCrafting.inst().getApi();
-
+        var player = event.getPlayer();
+        var api = CustomCrafting.inst().getApi();
         if (customCrafting.getConfigHandler().getConfig().updateOldCustomItems()) {
             ItemStack[] contents = player.getInventory().getContents();
             if (contents.length > 0) {
@@ -51,9 +48,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
         if (event.hasItem() && (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR))) {
-            Player p = event.getPlayer();
-            ItemStack itemStack = event.getItem();
-            CustomItem customItem = CustomItem.getByItemStack(itemStack);
+            var p = event.getPlayer();
+            var itemStack = event.getItem();
+            var customItem = CustomItem.getByItemStack(itemStack);
             if (customItem != null) {
                 RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
                 if (knowledgeBook.isEnabled()) {
