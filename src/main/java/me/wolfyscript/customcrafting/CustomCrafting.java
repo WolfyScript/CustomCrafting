@@ -61,7 +61,7 @@ import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
-    private static final boolean DEVELOPMENT = false;
+    private static final String ENVIRONMENT = System.getProperties().getProperty("com.wolfyscript.env", "PROD");
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
     public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
@@ -123,10 +123,26 @@ public class CustomCrafting extends JavaPlugin {
         return inst();
     }
 
+    public static boolean isDevEnv() {
+        return ENVIRONMENT.equalsIgnoreCase("DEV");
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            configHandler.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cauldrons.endAutoSaveTask();
+        cauldrons.save();
+        getDataHandler().onSave();
+    }
+
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
-
+        getLogger().info("Environment: " + ENVIRONMENT);
         getLogger().info("Registering custom data");
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
@@ -145,66 +161,6 @@ public class CustomCrafting extends JavaPlugin {
 
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
-    }
-
-    @Override
-    public void onDisable() {
-        try {
-            configHandler.save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cauldrons.endAutoSaveTask();
-        cauldrons.save();
-        getDataHandler().onSave();
-    }
-
-    @Override
-    public void onEnable() {
-        this.api.initialize();
-        writeBanner();
-        writePatreonCredits();
-        writeSeparator();
-
-        configHandler = new ConfigHandler(this);
-        if (configHandler.getConfig().isDatabaseEnabled()) {
-            try {
-                dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-        configHandler.loadDefaults();
-        dataHandler = new DataHandler(this);
-        craftManager = new CraftManager(this);
-
-        writeSeparator();
-        registerListeners();
-        registerCommands();
-        registerInventories();
-        if (DEVELOPMENT) {
-            this.networkHandler.registerPackets();
-        }
-
-        cauldrons = new Cauldrons(this);
-        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
-            api.getConsole().info("$msg.startup.placeholder$");
-            new PlaceHolder(this).register();
-        }
-        //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
-        if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
-            dataHandler.loadRecipesAndItems();
-        }
-        //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
-        if (!patreon.isPatreon()) {
-            checkUpdate(null);
-        }
-        //Load Metrics
-        Metrics metrics = new Metrics(this, 3211);
-
-        metrics.addCustomChart(new SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
-        metrics.addCustomChart(new SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
-        writeSeparator();
     }
 
     private void writeBanner() {
@@ -375,5 +331,53 @@ public class CustomCrafting extends JavaPlugin {
 
     public boolean isOutdated() {
         return outdated;
+    }
+
+    @Override
+    public void onEnable() {
+        this.api.initialize();
+        writeBanner();
+        writePatreonCredits();
+        writeSeparator();
+
+        configHandler = new ConfigHandler(this);
+        if (configHandler.getConfig().isDatabaseEnabled()) {
+            try {
+                dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        configHandler.loadDefaults();
+        dataHandler = new DataHandler(this);
+        craftManager = new CraftManager(this);
+
+        writeSeparator();
+        registerListeners();
+        registerCommands();
+        registerInventories();
+        if (isDevEnv()) {
+            this.networkHandler.registerPackets();
+        }
+
+        cauldrons = new Cauldrons(this);
+        if (WolfyUtilities.hasPlugin("PlaceholderAPI")) {
+            api.getConsole().info("$msg.startup.placeholder$");
+            new PlaceHolder(this).register();
+        }
+        //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
+        if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
+            dataHandler.loadRecipesAndItems();
+        }
+        //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
+        if (!patreon.isPatreon()) {
+            checkUpdate(null);
+        }
+        //Load Metrics
+        Metrics metrics = new Metrics(this, 3211);
+
+        metrics.addCustomChart(new SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
+        metrics.addCustomChart(new SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
+        writeSeparator();
     }
 }
