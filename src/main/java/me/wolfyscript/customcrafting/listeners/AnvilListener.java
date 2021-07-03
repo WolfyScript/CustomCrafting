@@ -40,7 +40,7 @@ public class AnvilListener implements Listener {
 
     @EventHandler
     public void onCheck(PrepareAnvilEvent event) {
-        Player player = (Player) event.getView().getPlayer();
+        var player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
         List<CustomAnvilRecipe> recipes = Registry.RECIPES.getAvailable(Types.ANVIL, player);
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));

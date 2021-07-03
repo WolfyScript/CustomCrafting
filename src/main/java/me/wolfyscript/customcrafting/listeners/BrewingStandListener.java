@@ -7,13 +7,11 @@ import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.NMSUtil;
-import me.wolfyscript.utilities.api.nms.block.NMSBrewingStand;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.BrewingStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -95,10 +93,10 @@ public class BrewingStandListener implements Listener {
                     return;
                 }
                 //Recipe Checker!
-                BrewingStand brewingStand = inventory.getHolder();
+                var brewingStand = inventory.getHolder();
                 if (brewingStand != null) {
 
-                    NMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
+                    var nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
 
                     if (nmsBrewingStand != null) {
                         int fuelLevel = nmsBrewingStand.getFuelLevel();
@@ -149,14 +147,14 @@ public class BrewingStandListener implements Listener {
                             int multiplier = -1;
 
                             if (brewingStand.getFuelLevel() > 0) {
-                                AtomicInteger tick = new AtomicInteger(400);
+                                var tick = new AtomicInteger(400);
                                 BukkitRunnable runnable = new BukkitRunnable() {
                                     @Override
                                     public void run() {
                                         if (activeBrewingStands.containsKey(location)) {
                                             if (tick.get() > 0) {
                                                 Bukkit.getScheduler().runTask(customCrafting, () -> {
-                                                    NMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
+                                                    var nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
                                                     if (nmsBrewingStand != null) {
                                                         nmsBrewingStand.setBrewingTime(tick.addAndGet(multiplier));
                                                     } else {
