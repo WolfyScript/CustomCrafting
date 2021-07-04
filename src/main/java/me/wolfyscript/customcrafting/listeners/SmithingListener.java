@@ -22,7 +22,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
@@ -45,9 +44,9 @@ public class SmithingListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepare(PrepareSmithingEvent event) {
         SmithingInventory inv = event.getInventory();
-        Player player = (Player) event.getView().getPlayer();
-        ItemStack base = inv.getItem(0);
-        ItemStack addition = inv.getItem(1);
+        var player = (Player) event.getView().getPlayer();
+        var base = inv.getItem(0);
+        var addition = inv.getItem(1);
         if (!ItemUtils.isAirOrNull(event.getResult())) {
             if (Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof SmithingRecipe && customCrafting.getDataHandler().getDisabledRecipes().contains(NamespacedKey.fromBukkit(((Keyed) recipe).getKey())))) {
                 event.setResult(null);
@@ -83,9 +82,9 @@ public class SmithingListener implements Listener {
     public void onTakeOutItem(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (!event.getClickedInventory().getType().equals(InventoryType.SMITHING)) return;
-        Player player = (Player) event.getWhoClicked();
-        InventoryAction action = event.getAction();
-        Inventory inventory = event.getClickedInventory();
+        var player = (Player) event.getWhoClicked();
+        var action = event.getAction();
+        var inventory = event.getClickedInventory();
         if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(event.getCurrentItem()) && action.equals(InventoryAction.NOTHING)) {
             //Take out item!
             if (preCraftedRecipes.get(player.getUniqueId()) == null) {
@@ -105,22 +104,16 @@ public class SmithingListener implements Listener {
             }
             final ItemStack baseItem = Objects.requireNonNull(inventory.getItem(0)).clone();
             final ItemStack additionItem = Objects.requireNonNull(inventory.getItem(1)).clone();
-
-            SmithingData smithingData = preCraftedRecipes.get(player.getUniqueId());
+            var smithingData = preCraftedRecipes.get(player.getUniqueId());
             CustomItem base = smithingData.getBase();
             CustomItem addition = smithingData.getAddition();
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-
             base.consumeItem(baseItem, 1, inventory);
             inventory.setItem(0, baseItem);
-
             addition.consumeItem(additionItem, 1, inventory);
             inventory.setItem(1, additionItem);
-
             preCraftedRecipes.remove(player.getUniqueId());
         }
-
-
     }
 
 }

@@ -50,16 +50,12 @@ public class BrewingStandListener implements Listener {
     @EventHandler
     public void onInv(InventoryClickEvent event) {
         if (event.getClickedInventory() instanceof BrewerInventory inventory && customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-            Player player = (Player) event.getWhoClicked();
-            Location location = inventory.getLocation();
-
+            var player = (Player) event.getWhoClicked();
+            var location = inventory.getLocation();
             if (event.getSlot() != 4) {
-                final ItemStack cursor = event.getCursor(); //The item in the cursor
-                final ItemStack currentItem = event.getCurrentItem(); //The item in the slot
                 //Place items
                 if (event.getClickedInventory() == null) return;
                 if (event.getClickedInventory().getType() != InventoryType.BREWING) return;
-
                 if (event.getSlot() == 3) {
                     //Make it possible to place in everything into the ingredient slot
                     if (event.isRightClick()) {
@@ -95,9 +91,7 @@ public class BrewingStandListener implements Listener {
                 //Recipe Checker!
                 var brewingStand = inventory.getHolder();
                 if (brewingStand != null) {
-
                     var nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
-
                     if (nmsBrewingStand != null) {
                         int fuelLevel = nmsBrewingStand.getFuelLevel();
                         //Check if recipe is correct

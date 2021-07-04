@@ -5,10 +5,8 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.world.WorldUtils;
-import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,9 +24,9 @@ public class EliteWorkbenchListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (!event.useInteractedBlock().equals(Event.Result.DENY) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !event.getPlayer().isSneaking()) {
-            Block block = event.getClickedBlock();
+            var block = event.getClickedBlock();
             if (block != null && WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
-                CustomItem customItem = NamespacedKeyUtils.getCustomItem(block);
+                var customItem = NamespacedKeyUtils.getCustomItem(block);
                 if (customItem != null) {
                     EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
                     if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {

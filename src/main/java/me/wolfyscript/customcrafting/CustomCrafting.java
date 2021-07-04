@@ -45,14 +45,12 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
@@ -94,7 +92,6 @@ public class CustomCrafting extends JavaPlugin {
 
     private boolean outdated = false;
     private final NetworkHandler networkHandler;
-
 
     public CustomCrafting() {
         super();
@@ -235,7 +232,7 @@ public class CustomCrafting extends JavaPlugin {
         int size = patronList.size();
         for (int i = 0; i <= size; i += 2) {
             if (i < size) {
-                StringBuilder sB = new StringBuilder();
+                var sB = new StringBuilder();
                 String name = patronList.get(i).getName();
                 sB.append("| ").append(name);
                 sB.append(" ".repeat(Math.max(0, lengthColumn - name.length())));
@@ -248,7 +245,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     private void registerListeners() {
-        PluginManager pM = Bukkit.getPluginManager();
+        var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
         pM.registerEvents(new FurnaceListener(this), this);
@@ -268,10 +265,10 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     private void registerCommands() {
-        final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
+        final var serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
         serverCommandMap.setAccessible(true);
         try {
-            CommandMap commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
+            var commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
             commandMap.register("customcrafting", new CommandCC(this));
             commandMap.register("recipes", "customcrafting", new CommandRecipe(this));
         } catch (IllegalAccessException e) {

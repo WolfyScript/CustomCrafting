@@ -23,7 +23,6 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 
 import java.util.*;
@@ -102,7 +101,7 @@ public class AnvilListener implements Listener {
                     }
                     if (recipe.isBlockRename()) {
                         //Block Renaming
-                        ItemMeta itemMeta = result.getItemMeta();
+                        var itemMeta = result.getItemMeta();
                         if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
                             itemMeta.setDisplayName(inputLeft.getItemMeta().getDisplayName());
                         } else {
@@ -112,7 +111,7 @@ public class AnvilListener implements Listener {
                     }
                     if (recipe.isBlockRepair()) {
                         //Block Repairing
-                        ItemMeta itemMeta = result.getItemMeta();
+                        var itemMeta = result.getItemMeta();
                         if (itemMeta instanceof Damageable) {
                             if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable) {
                                 ((Damageable) itemMeta).setDamage(((Damageable) inputLeft.getItemMeta()).getDamage());
@@ -130,7 +129,7 @@ public class AnvilListener implements Listener {
                         }
                         result.setCustomDamage(damage);
                     } else if (result.getItemMeta() instanceof Damageable) {
-                        ItemMeta itemMeta = result.getItemMeta();
+                        var itemMeta = result.getItemMeta();
                         ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() - recipe.getDurability());
                         result.setItemMeta(itemMeta);
                     }
@@ -142,7 +141,7 @@ public class AnvilListener implements Listener {
             int repairCost = Math.max(1, recipe.getRepairCost());
 
             if (inputLeft != null) {
-                ItemMeta inputMeta = inputLeft.getItemMeta();
+                var inputMeta = inputLeft.getItemMeta();
                 //Configure the Repair cost
                 if (inputMeta instanceof Repairable) {
                     int itemRepairCost = ((Repairable) inputMeta).getRepairCost();
@@ -154,7 +153,7 @@ public class AnvilListener implements Listener {
                 }
                 //Apply the repair cost to the result.
                 if (recipe.isApplyRepairCost()) {
-                    ItemMeta itemMeta = result.getItemMeta();
+                    var itemMeta = result.getItemMeta();
                     if (itemMeta instanceof Repairable) {
                         ((Repairable) itemMeta).setRepairCost(repairCost);
                         result.setItemMeta(itemMeta);

@@ -34,7 +34,6 @@ public class PlayerListener implements Listener {
                 }
             }
         }
-
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
             if (customCrafting.isOutdated()) {
                 api.getChat().sendMessage(player, "$msg.player.outdated.msg$");
