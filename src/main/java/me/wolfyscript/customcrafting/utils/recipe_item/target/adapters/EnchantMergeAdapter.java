@@ -61,7 +61,7 @@ public class EnchantMergeAdapter extends MergeAdapter {
 
     @Override
     public ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result) {
-        return null;
+        return result;
     }
 
     @Override
