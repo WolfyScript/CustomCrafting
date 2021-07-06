@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -85,15 +86,10 @@ public class CookingCreator extends RecipeCreator {
     }
 
     public boolean validToSave(CCCache cache) {
-        switch (cache.getRecipeType().getType()) {
-            case BLAST_FURNACE:
-            case SMOKER:
-            case CAMPFIRE:
-            case FURNACE:
-                CustomCookingRecipe<?, ?> furnace = cache.getCookingRecipe();
-                return !furnace.getSource().isEmpty() && !furnace.getResult().isEmpty();
-            default:
-                return false;
+        if (cache.getRecipeType().getType() == Types.Type.FURNACE || cache.getRecipeType().getType() == Types.Type.BLAST_FURNACE || cache.getRecipeType().getType() == Types.Type.SMOKER || cache.getRecipeType().getType() == Types.Type.CAMPFIRE) {
+            CustomCookingRecipe<?, ?> furnace = cache.getCookingRecipe();
+            return !furnace.getSource().isEmpty() && !furnace.getResult().isEmpty();
         }
+        return false;
     }
 }

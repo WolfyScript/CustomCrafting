@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.EliteWorkbenchConditionButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.WorldBiomeConditionButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.WorldNameConditionButton;
-import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -19,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConditionsMenu extends CCWindow {
@@ -37,7 +37,7 @@ public class ConditionsMenu extends CCWindow {
         })));
 
         registerButton(new ActionButton<>("conditions.world_time", new ButtonState<>("world_time", Material.CLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
-            Conditions conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
@@ -64,7 +64,7 @@ public class ConditionsMenu extends CCWindow {
         })));
 
         registerButton(new ActionButton<>("conditions.player_experience", new ButtonState<>("player_experience", Material.EXPERIENCE_BOTTLE, (cache, guiHandler, player, inventory, slot, event) -> {
-            Conditions conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
@@ -92,7 +92,7 @@ public class ConditionsMenu extends CCWindow {
 
         registerButton(new ActionButton<>("conditions.weather", new ButtonState<>("weather", Material.WATER_BUCKET, (cache, guiHandler, player, inventory, slot, event) -> {
             ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            Conditions conditions = recipeConfig.getConditions();
+            var conditions = recipeConfig.getConditions();
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
@@ -147,7 +147,7 @@ public class ConditionsMenu extends CCWindow {
         })));
 
         registerButton(new ActionButton<>("conditions.craft_delay", new ButtonState<>("craft_delay", Material.CLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
-            Conditions conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
@@ -175,7 +175,7 @@ public class ConditionsMenu extends CCWindow {
         })));
 
         registerButton(new ActionButton<>("conditions.craft_limit", new ButtonState<>("craft_limit", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
-            Conditions conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
@@ -184,8 +184,7 @@ public class ConditionsMenu extends CCWindow {
                     //Change Value
                     openChat("craft_limit", guiHandler, (guiHandler1, player1, s, strings) -> {
                         try {
-                            long value = Long.parseLong(s);
-                            conditions.getByType(CraftLimitCondition.class).setLimit(value);
+                            conditions.getByType(CraftLimitCondition.class).setLimit(Long.parseLong(s));
                         } catch (NumberFormatException ex) {
                             api.getChat().sendKey(player1, "recipe_creator", "valid_number");
                         }
@@ -208,38 +207,19 @@ public class ConditionsMenu extends CCWindow {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, BACK);
-
         List<String> values = new ArrayList<>();
         values.add("conditions.world_time");
         values.add("conditions.world_name");
         values.add("conditions.world_biome");
         values.add("conditions.weather");
         switch (cache.getRecipeType().getType()) {
-            case WORKBENCH:
-                values.add("conditions.permission");
-                values.add("conditions.player_experience");
-                values.add("conditions.advanced_workbench");
-                values.add("conditions.craft_delay");
-                values.add("conditions.craft_limit");
-                break;
-            case ELITE_WORKBENCH:
-                values.add("conditions.permission");
-                values.add("conditions.player_experience");
-                values.add("conditions.elite_workbench");
-                values.add("conditions.craft_delay");
-                values.add("conditions.craft_limit");
-                break;
-            case BREWING_STAND:
-            case GRINDSTONE:
-                values.add("conditions.permission");
-                values.add("conditions.player_experience");
-                break;
-            default:
-                //No special conditions
+            case WORKBENCH -> values.addAll(Arrays.asList("conditions.permission", "conditions.player_experience", "conditions.advanced_workbench", "conditions.craft_delay", "conditions.craft_limit"));
+            case ELITE_WORKBENCH -> values.addAll(Arrays.asList("conditions.permission", "conditions.player_experience", "conditions.elite_workbench", "conditions.craft_delay", "conditions.craft_limit"));
+            case BREWING_STAND, GRINDSTONE -> values.addAll(Arrays.asList("conditions.permission", "conditions.player_experience"));
+            default -> {/*No special conditions!*/}
         }
-        int item = 9;
-        for (int i = 0; i < values.size() && item < 45; i++) {
-            event.setButton(item++, values.get(i));
+        for (int i = 0, item = 9; i < values.size() && item < 45; i++, item++) {
+            event.setButton(item, values.get(i));
         }
     }
 }

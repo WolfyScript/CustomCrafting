@@ -39,7 +39,7 @@ public class AnvilCreator extends RecipeCreator {
         registerButton(new ButtonRecipeResult());
 
         registerButton(new ActionButton<>(MODE, Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
-            CustomAnvilRecipe.Mode mode = guiHandler.getCustomCache().getAnvilRecipe().getMode();
+            var mode = guiHandler.getCustomCache().getAnvilRecipe().getMode();
             int id = mode.getId();
             if (id < 2) {
                 id++;

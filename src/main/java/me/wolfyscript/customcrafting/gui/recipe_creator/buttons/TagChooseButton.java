@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.utils.recipe_item.RecipeItemStack;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -12,7 +11,7 @@ public class TagChooseButton extends ActionButton<CCCache> {
 
     public TagChooseButton(Tag<Material> tag) {
         super("tag." + NamespacedKey.fromBukkit(tag.getKey()).toString("."), new ButtonState<>("tag", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, slot, event) -> {
-            RecipeItemStack recipeItemStack = cache.getTagSettingsCache().getRecipeItemStack();
+            var recipeItemStack = cache.getTagSettingsCache().getRecipeItemStack();
             if (recipeItemStack != null) {
                 recipeItemStack.getTags().add(NamespacedKey.fromBukkit(tag.getKey()));
             }

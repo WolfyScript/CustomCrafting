@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
@@ -49,7 +48,7 @@ public class GrindstoneCreator extends RecipeCreator {
         super.onUpdateAsync(update);
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
-        GrindstoneRecipe grindstoneRecipe = cache.getGrindstoneRecipe();
+        var grindstoneRecipe = cache.getGrindstoneRecipe();
 
         update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
@@ -73,7 +72,7 @@ public class GrindstoneCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        GrindstoneRecipe recipe = cache.getGrindstoneRecipe();
+        var recipe = cache.getGrindstoneRecipe();
         if (!recipe.getInputTop().isEmpty() || !recipe.getInputBottom().isEmpty()) {
             return !recipe.getResult().isEmpty();
         }

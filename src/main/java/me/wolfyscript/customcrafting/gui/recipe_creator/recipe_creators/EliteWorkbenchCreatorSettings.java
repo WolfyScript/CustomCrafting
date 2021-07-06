@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
@@ -27,7 +26,7 @@ public class EliteWorkbenchCreatorSettings extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
+        var workbench = cache.getEliteCraftingRecipe();
         return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
     }
 }

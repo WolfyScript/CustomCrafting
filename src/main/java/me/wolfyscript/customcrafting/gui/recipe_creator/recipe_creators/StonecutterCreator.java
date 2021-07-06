@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
@@ -40,7 +39,7 @@ public class StonecutterCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        CustomStonecutterRecipe recipe = cache.getStonecutterRecipe();
+        var recipe = cache.getStonecutterRecipe();
         return !recipe.getResult().isEmpty() && !recipe.getSource().isEmpty();
     }
 }

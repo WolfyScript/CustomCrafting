@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -52,7 +51,7 @@ public class CauldronCreator extends RecipeCreator {
             }
             guiHandler.getCustomCache().getCauldronRecipe().setHandItem(!ItemUtils.isAirOrNull(inventory.getItem(slot)) ? CustomItem.getReferenceByItemStack(inventory.getItem(slot)) : new CustomItem(Material.AIR));
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomItem customItem = guiHandler.getCustomCache().getCauldronRecipe().getHandItem();
+            var customItem = guiHandler.getCustomCache().getCauldronRecipe().getHandItem();
             if (customItem != null) {
                 return customItem.getItemStack();
             }
@@ -132,7 +131,7 @@ public class CauldronCreator extends RecipeCreator {
         super.onUpdateAsync(update);
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
-        CauldronRecipe cauldronRecipe = cache.getCauldronRecipe();
+        var cauldronRecipe = cache.getCauldronRecipe();
         ((ToggleButton<CCCache>) getButton("fire")).setState(update.getGuiHandler(), cauldronRecipe.needsFire());
         ((ToggleButton<CCCache>) getButton("water")).setState(update.getGuiHandler(), cauldronRecipe.needsWater());
         ((ToggleButton<CCCache>) getButton("dropItems")).setState(update.getGuiHandler(), cauldronRecipe.dropItems());
@@ -167,7 +166,7 @@ public class CauldronCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        CauldronRecipe config = cache.getCauldronRecipe();
+        var config = cache.getCauldronRecipe();
         return !config.getIngredient().isEmpty() && !config.getResult().isEmpty();
     }
 }
