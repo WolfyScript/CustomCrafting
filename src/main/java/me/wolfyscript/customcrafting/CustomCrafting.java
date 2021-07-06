@@ -11,6 +11,7 @@ import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.*;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
@@ -289,6 +290,29 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
         invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
         invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
+
+        Registry.ITEM_CREATOR_TABS.register(new TabArmorSlots());
+        Registry.ITEM_CREATOR_TABS.register(new TabAttributes());
+        Registry.ITEM_CREATOR_TABS.register(new TabConsume());
+        Registry.ITEM_CREATOR_TABS.register(new TabCustomDurability());
+        Registry.ITEM_CREATOR_TABS.register(new TabCustomModelData());
+        Registry.ITEM_CREATOR_TABS.register(new TabDamage());
+        Registry.ITEM_CREATOR_TABS.register(new TabDisplayName());
+        Registry.ITEM_CREATOR_TABS.register(new TabEliteCraftingTable());
+        Registry.ITEM_CREATOR_TABS.register(new TabEnchants());
+        Registry.ITEM_CREATOR_TABS.register(new TabFlags());
+        Registry.ITEM_CREATOR_TABS.register(new TabFuel());
+        Registry.ITEM_CREATOR_TABS.register(new TabLocalizedName());
+        Registry.ITEM_CREATOR_TABS.register(new TabLore());
+        Registry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
+        Registry.ITEM_CREATOR_TABS.register(new TabPermission());
+        Registry.ITEM_CREATOR_TABS.register(new TabPlayerHead());
+        Registry.ITEM_CREATOR_TABS.register(new TabPotion());
+        Registry.ITEM_CREATOR_TABS.register(new TabRarity());
+        Registry.ITEM_CREATOR_TABS.register(new TabRecipeBook());
+        Registry.ITEM_CREATOR_TABS.register(new TabRepairCost());
+        Registry.ITEM_CREATOR_TABS.register(new TabVanilla());
+        Registry.ITEM_CREATOR_TABS.register(new TabUnbreakable());
     }
 
     public void checkUpdate(@Nullable Player player) {
