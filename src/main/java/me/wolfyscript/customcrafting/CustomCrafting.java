@@ -95,10 +95,14 @@ public class CustomCrafting extends JavaPlugin {
     private boolean outdated = false;
     private final NetworkHandler networkHandler;
 
+    private final boolean isPaper;
+
     public CustomCrafting() {
         super();
         instance = this;
         currentVersion = instance.getDescription().getVersion();
+
+        isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
 
         api = WolfyUtilities.get(this, false);
         this.chat = api.getChat();
@@ -251,7 +255,7 @@ public class CustomCrafting extends JavaPlugin {
         var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
-        pM.registerEvents(new FurnaceListener(this), this);
+        pM.registerEvents(new FurnaceListenerBukkit(this), this);
         pM.registerEvents(new AnvilListener(this), this);
         pM.registerEvents(new CauldronListener(this), this);
         pM.registerEvents(new EliteWorkbenchListener(api), this);
@@ -402,5 +406,9 @@ public class CustomCrafting extends JavaPlugin {
 
     public boolean isOutdated() {
         return outdated;
+    }
+
+    public boolean isPaper() {
+        return isPaper;
     }
 }
