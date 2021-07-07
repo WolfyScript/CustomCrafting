@@ -29,6 +29,19 @@ public class TabAttributes extends ItemCreatorTab {
 
     public static final String KEY = "attribute";
 
+    private static final String MAX_HEALTH = "generic_max_health";
+    private static final String FOLLOW_RANGE = "generic_follow_range";
+    private static final String KNOCKBACK_RESISTANCE = "generic_knockback_resistance";
+    private static final String MOVEMENT_SPEED = "generic_movement_speed";
+    private static final String FLYING_SPEED = "generic_flying_speed";
+    private static final String ATTACK_DAMAGE = "generic_attack_damage";
+    private static final String ATTACK_SPEED = "generic_attack_speed";
+    private static final String ARMOR = "generic_armor";
+    private static final String ARMOR_TOUGHNESS = "generic_armor_toughness";
+    private static final String LUCK = "generic_luck";
+    private static final String HORSE_JUMB_STRENGTH = "horse_jump_strength";
+    private static final String ZOMBIE_SPAWN_REINFORCEMENTS = "zombie_spawn_reinforcements";
+
     public TabAttributes() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, KEY));
     }
@@ -36,18 +49,18 @@ public class TabAttributes extends ItemCreatorTab {
     @Override
     public void register() {
         creator.registerButton(new OptionButton(Material.ENCHANTED_GOLDEN_APPLE, this));
-        creator.registerButton(new AttributeCategoryButton("generic_max_health", Material.ENCHANTED_GOLDEN_APPLE));
-        creator.registerButton(new AttributeCategoryButton("generic_follow_range", Material.ENDER_EYE));
-        creator.registerButton(new AttributeCategoryButton("generic_knockback_resistance", Material.STICK));
-        creator.registerButton(new AttributeCategoryButton("generic_movement_speed", Material.IRON_BOOTS));
-        creator.registerButton(new AttributeCategoryButton("generic_flying_speed", Material.FIREWORK_ROCKET));
-        creator.registerButton(new AttributeCategoryButton("generic_attack_damage", Material.DIAMOND_SWORD));
-        creator.registerButton(new AttributeCategoryButton("generic_attack_speed", Material.DIAMOND_AXE));
-        creator.registerButton(new AttributeCategoryButton("generic_armor", Material.CHAINMAIL_CHESTPLATE));
-        creator.registerButton(new AttributeCategoryButton("generic_armor_toughness", Material.DIAMOND_CHESTPLATE));
-        creator.registerButton(new AttributeCategoryButton("generic_luck", Material.NETHER_STAR));
-        creator.registerButton(new AttributeCategoryButton("horse_jump_strength", Material.DIAMOND_HORSE_ARMOR));
-        creator.registerButton(new AttributeCategoryButton("zombie_spawn_reinforcements", Material.ZOMBIE_HEAD));
+        creator.registerButton(new AttributeCategoryButton(MAX_HEALTH, Material.ENCHANTED_GOLDEN_APPLE));
+        creator.registerButton(new AttributeCategoryButton(FOLLOW_RANGE, Material.ENDER_EYE));
+        creator.registerButton(new AttributeCategoryButton(KNOCKBACK_RESISTANCE, Material.STICK));
+        creator.registerButton(new AttributeCategoryButton(MOVEMENT_SPEED, Material.IRON_BOOTS));
+        creator.registerButton(new AttributeCategoryButton(FLYING_SPEED, Material.FIREWORK_ROCKET));
+        creator.registerButton(new AttributeCategoryButton(ATTACK_DAMAGE, Material.DIAMOND_SWORD));
+        creator.registerButton(new AttributeCategoryButton(ATTACK_SPEED, Material.DIAMOND_AXE));
+        creator.registerButton(new AttributeCategoryButton(ARMOR, Material.CHAINMAIL_CHESTPLATE));
+        creator.registerButton(new AttributeCategoryButton(ARMOR_TOUGHNESS, Material.DIAMOND_CHESTPLATE));
+        creator.registerButton(new AttributeCategoryButton(LUCK, Material.NETHER_STAR));
+        creator.registerButton(new AttributeCategoryButton(HORSE_JUMB_STRENGTH, Material.DIAMOND_HORSE_ARMOR));
+        creator.registerButton(new AttributeCategoryButton(ZOMBIE_SPAWN_REINFORCEMENTS, Material.ZOMBIE_HEAD));
 
         creator.registerButton(new AttributeModeButton(AttributeModifier.Operation.ADD_NUMBER, "60b55f74681c68283a1c1ce51f1c83b52e2971c91ee34efcb598df3990a7e7"));
         creator.registerButton(new AttributeModeButton(AttributeModifier.Operation.ADD_SCALAR, "57b1791bdc46d8a5c51729e8982fd439bb40513f64b5babee93294efc1c7"));
@@ -124,18 +137,22 @@ public class TabAttributes extends ItemCreatorTab {
             update.setButton(40, "attribute.delete");
             return;
         }
-        update.setButton(27, "attribute.generic_max_health");
-        update.setButton(28, "attribute.generic_follow_range");
-        update.setButton(29, "attribute.generic_knockback_resistance");
-        update.setButton(30, "attribute.generic_movement_speed");
-        update.setButton(31, "attribute.generic_flying_speed");
-        update.setButton(32, "attribute.generic_attack_damage");
-        update.setButton(33, "attribute.generic_attack_speed");
-        update.setButton(34, "attribute.generic_armor");
-        update.setButton(35, "attribute.generic_armor_toughness");
-        update.setButton(39, "attribute.generic_luck");
-        update.setButton(40, "attribute.horse_jump_strength");
-        update.setButton(41, "attribute.zombie_spawn_reinforcements");
+        setSectionButton(update, 27, MAX_HEALTH);
+        setSectionButton(update, 28, FOLLOW_RANGE);
+        setSectionButton(update, 29, KNOCKBACK_RESISTANCE);
+        setSectionButton(update, 30, MOVEMENT_SPEED);
+        setSectionButton(update, 31, FLYING_SPEED);
+        setSectionButton(update, 32, ATTACK_DAMAGE);
+        setSectionButton(update, 33, ATTACK_SPEED);
+        setSectionButton(update, 34, ARMOR);
+        setSectionButton(update, 35, ARMOR_TOUGHNESS);
+        setSectionButton(update, 39, LUCK);
+        setSectionButton(update, 40, HORSE_JUMB_STRENGTH);
+        setSectionButton(update, 41, ZOMBIE_SPAWN_REINFORCEMENTS);
         update.setButton(36, "meta_ignore.wolfyutilities.attributes_modifiers");
+    }
+
+    private void setSectionButton(GuiUpdate<CCCache> update, int slot, String section) {
+        update.setButton(slot, KEY + "." + section);
     }
 }
