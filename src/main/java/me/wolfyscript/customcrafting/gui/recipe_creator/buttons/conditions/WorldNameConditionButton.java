@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldNameCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -10,7 +9,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class WorldNameConditionButton extends ActionButton<CCCache> {
@@ -18,8 +16,8 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
     public WorldNameConditionButton() {
         super("conditions.world_name", new ButtonState<>("world_name", Material.GRASS_BLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
             GuiWindow<CCCache> window = guiHandler.getWindow();
-            ICustomRecipe<?,?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            Conditions conditions = recipeConfig.getConditions();
+            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            var conditions = recipeConfig.getConditions();
             if (event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
@@ -29,7 +27,7 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
                     //CONFIGURE ELITE WORKBENCHES
                     window.openChat("world_name", guiHandler, (guiHandler1, player1, s, args) -> {
                         if (!s.isEmpty()) {
-                            World world = Bukkit.getWorld(s);
+                            var world = Bukkit.getWorld(s);
                             if (world == null) {
                                 window.sendMessage(player1, "missing_world");
                                 return true;

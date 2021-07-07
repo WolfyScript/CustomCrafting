@@ -11,6 +11,7 @@ import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.*;
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
@@ -29,6 +30,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantedBookMergeAdapter;
+import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.PlaceholderAPIMergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.chat.ClickData;
@@ -45,14 +47,12 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
@@ -61,7 +61,7 @@ import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
-    private static final boolean DEVELOPMENT = false;
+    private static final String ENVIRONMENT = System.getProperties().getProperty("com.wolfyscript.env", "PROD");
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
     public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
@@ -95,7 +95,6 @@ public class CustomCrafting extends JavaPlugin {
     private boolean outdated = false;
     private final NetworkHandler networkHandler;
 
-
     public CustomCrafting() {
         super();
         instance = this;
@@ -123,10 +122,14 @@ public class CustomCrafting extends JavaPlugin {
         return inst();
     }
 
+    public static boolean isDevEnv() {
+        return ENVIRONMENT.equalsIgnoreCase("DEV");
+    }
+
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
-
+        getLogger().info("Environment: " + ENVIRONMENT);
         getLogger().info("Registering custom data");
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
@@ -142,21 +145,10 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
         Registry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
         Registry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
+        Registry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
 
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
-    }
-
-    @Override
-    public void onDisable() {
-        try {
-            configHandler.save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cauldrons.endAutoSaveTask();
-        cauldrons.save();
-        getDataHandler().onSave();
     }
 
     @Override
@@ -182,7 +174,7 @@ public class CustomCrafting extends JavaPlugin {
         registerListeners();
         registerCommands();
         registerInventories();
-        if (DEVELOPMENT) {
+        if (isDevEnv()) {
             this.networkHandler.registerPackets();
         }
 
@@ -200,11 +192,23 @@ public class CustomCrafting extends JavaPlugin {
             checkUpdate(null);
         }
         //Load Metrics
-        Metrics metrics = new Metrics(this, 3211);
+        var metrics = new Metrics(this, 3211);
 
         metrics.addCustomChart(new SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
         writeSeparator();
+    }
+
+    @Override
+    public void onDisable() {
+        try {
+            configHandler.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cauldrons.endAutoSaveTask();
+        cauldrons.save();
+        getDataHandler().onSave();
     }
 
     private void writeBanner() {
@@ -231,7 +235,7 @@ public class CustomCrafting extends JavaPlugin {
         int size = patronList.size();
         for (int i = 0; i <= size; i += 2) {
             if (i < size) {
-                StringBuilder sB = new StringBuilder();
+                var sB = new StringBuilder();
                 String name = patronList.get(i).getName();
                 sB.append("| ").append(name);
                 sB.append(" ".repeat(Math.max(0, lengthColumn - name.length())));
@@ -244,7 +248,7 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     private void registerListeners() {
-        PluginManager pM = Bukkit.getPluginManager();
+        var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
         pM.registerEvents(new FurnaceListener(this), this);
@@ -264,10 +268,10 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     private void registerCommands() {
-        final Field serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
+        final var serverCommandMap = Reflection.getDeclaredField(Bukkit.getServer().getClass(), "commandMap");
         serverCommandMap.setAccessible(true);
         try {
-            CommandMap commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
+            var commandMap = (CommandMap) serverCommandMap.get(Bukkit.getServer());
             commandMap.register("customcrafting", new CommandCC(this));
             commandMap.register("recipes", "customcrafting", new CommandRecipe(this));
         } catch (IllegalAccessException e) {
@@ -286,6 +290,29 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
         invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
         invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
+
+        Registry.ITEM_CREATOR_TABS.register(new TabArmorSlots());
+        Registry.ITEM_CREATOR_TABS.register(new TabAttributes());
+        Registry.ITEM_CREATOR_TABS.register(new TabConsume());
+        Registry.ITEM_CREATOR_TABS.register(new TabCustomDurability());
+        Registry.ITEM_CREATOR_TABS.register(new TabCustomModelData());
+        Registry.ITEM_CREATOR_TABS.register(new TabDamage());
+        Registry.ITEM_CREATOR_TABS.register(new TabDisplayName());
+        Registry.ITEM_CREATOR_TABS.register(new TabEliteCraftingTable());
+        Registry.ITEM_CREATOR_TABS.register(new TabEnchants());
+        Registry.ITEM_CREATOR_TABS.register(new TabFlags());
+        Registry.ITEM_CREATOR_TABS.register(new TabFuel());
+        Registry.ITEM_CREATOR_TABS.register(new TabLocalizedName());
+        Registry.ITEM_CREATOR_TABS.register(new TabLore());
+        Registry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
+        Registry.ITEM_CREATOR_TABS.register(new TabPermission());
+        Registry.ITEM_CREATOR_TABS.register(new TabPlayerHead());
+        Registry.ITEM_CREATOR_TABS.register(new TabPotion());
+        Registry.ITEM_CREATOR_TABS.register(new TabRarity());
+        Registry.ITEM_CREATOR_TABS.register(new TabRecipeBook());
+        Registry.ITEM_CREATOR_TABS.register(new TabRepairCost());
+        Registry.ITEM_CREATOR_TABS.register(new TabVanilla());
+        Registry.ITEM_CREATOR_TABS.register(new TabUnbreakable());
     }
 
     public void checkUpdate(@Nullable Player player) {
@@ -293,7 +320,7 @@ public class CustomCrafting extends JavaPlugin {
             try {
                 HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
                 con.setReadTimeout(2000);
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                var bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String version = bufferedReader.readLine();
 
                 String[] vNew = version.split("\\.");

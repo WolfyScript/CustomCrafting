@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.MainMenu;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
@@ -69,19 +68,19 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new ItemCategoryButton(customCrafting));
         registerButton(new ActionButton<>(NEXT_PAGE.getKey(), PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
             RecipeBookContainerButton.resetButtons(guiHandler);
-            KnowledgeBook book = guiHandler.getCustomCache().getKnowledgeBook();
+            var book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() + 1);
             return true;
         }));
         registerButton(new ActionButton<>(PREVIOUS_PAGE.getKey(), PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
             RecipeBookContainerButton.resetButtons(guiHandler);
-            KnowledgeBook book = guiHandler.getCustomCache().getKnowledgeBook();
+            var book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
         }));
         registerButton(new ActionButton<>(BACK_TO_LIST.getKey(), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             if (event instanceof InventoryClickEvent) {
-                KnowledgeBook book = cache.getKnowledgeBook();
+                var book = cache.getKnowledgeBook();
                 IngredientContainerButton.resetButtons(guiHandler);
                 if (((InventoryClickEvent) event).isLeftClick()) {
                     book.removePreviousResearchItem();
@@ -126,7 +125,7 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>("anvil.none", Material.ANVIL));
 
         registerButton(new DummyButton<>("cooking.icon", Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
+            var knowledgeBook = cache.getKnowledgeBook();
             RecipeType<?> recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
             CustomCookingRecipe<?, ?> cookingRecipe = ((CustomCookingRecipe<?, ?>) knowledgeBook.getCurrentRecipe());
             itemStack.setType(Material.matchMaterial(recipeType.name()));
@@ -146,7 +145,7 @@ public class RecipeBookCluster extends CCCluster {
         }
         registerButton(new DummyButton<>("cauldron.water.disabled", Material.CAULDRON));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>("cauldron.water.enabled", PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            KnowledgeBook knowledgeBook = cache.getKnowledgeBook();
+            var knowledgeBook = cache.getKnowledgeBook();
             hashMap.put("%lvl%", ((CauldronRecipe) knowledgeBook.getCurrentRecipe()).getWaterLevel());
             return itemStack;
         })));

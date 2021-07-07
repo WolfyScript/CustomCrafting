@@ -23,7 +23,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
@@ -46,9 +45,9 @@ public class GrindStoneListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (event.getAction().equals(InventoryAction.NOTHING)) return;
         if (!event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE)) return;
-        Player player = (Player) event.getWhoClicked();
-        InventoryAction action = event.getAction();
-        Inventory inventory = event.getClickedInventory();
+        var player = (Player) event.getWhoClicked();
+        var action = event.getAction();
+        var inventory = event.getClickedInventory();
         if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(inventory.getItem(2)) && (action.toString().startsWith("PICKUP_") || action.equals(InventoryAction.COLLECT_TO_CURSOR) || action.equals(InventoryAction.MOVE_TO_OTHER_INVENTORY))) {
             //Take out item!
             if (preCraftedRecipes.get(player.getUniqueId()) == null) {
@@ -56,7 +55,7 @@ public class GrindStoneListener implements Listener {
                 return;
             }
             event.setCancelled(true);
-            GrindstoneData grindstoneData = preCraftedRecipes.get(player.getUniqueId());
+            var grindstoneData = preCraftedRecipes.get(player.getUniqueId());
 
             //Result taken out and placed on cursor or into the inventory.
             ItemStack result = event.getCurrentItem();
@@ -123,9 +122,9 @@ public class GrindStoneListener implements Listener {
         if (event.getClickedInventory() == null) return;
         if (event.getAction().equals(InventoryAction.NOTHING)) return;
         if (!event.getClickedInventory().getType().equals(InventoryType.GRINDSTONE)) return;
-        Player player = (Player) event.getWhoClicked();
-        InventoryAction action = event.getAction();
-        Inventory inventory = event.getClickedInventory();
+        var player = (Player) event.getWhoClicked();
+        var action = event.getAction();
+        var inventory = event.getClickedInventory();
         if (event.getSlot() != 2) {
             //Place in items and click empty result slot
             final ItemStack cursor = event.getCursor(); //And the item in the cursor

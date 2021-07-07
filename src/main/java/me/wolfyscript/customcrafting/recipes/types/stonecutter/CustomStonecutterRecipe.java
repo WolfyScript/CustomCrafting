@@ -27,7 +27,6 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -115,7 +114,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
         ItemStack whiteGlass = event.getInventory().getItem(53);
         if (whiteGlass != null) {
-            ItemMeta itemMeta = whiteGlass.getItemMeta();
+            var itemMeta = whiteGlass.getItemMeta();
             itemMeta.setCustomModelData(9007);
             whiteGlass.setItemMeta(itemMeta);
             event.setItem(53, whiteGlass);

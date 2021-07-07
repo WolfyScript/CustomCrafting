@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache.items;
 
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -33,6 +34,8 @@ public class Items implements Serializable {
     private String attributeUUID;
     private String attributeName;
 
+    private ItemCreatorTab currentTab;
+
     public Items() {
         this.listPage = 0;
         this.listNamespace = null;
@@ -52,6 +55,8 @@ public class Items implements Serializable {
         this.attribAmount = 0.5;
         this.attributeUUID = "";
         this.attributeName = "";
+
+        this.currentTab = null;
     }
 
     public void setItem(boolean recipeItem, CustomItem customItem) {
@@ -208,5 +213,13 @@ public class Items implements Serializable {
 
     public void setListNamespace(String listNamespace) {
         this.listNamespace = listNamespace;
+    }
+
+    public ItemCreatorTab getCurrentTab() {
+        return currentTab;
+    }
+
+    public void setCurrentTab(ItemCreatorTab currentTab) {
+        this.currentTab = currentTab;
     }
 }

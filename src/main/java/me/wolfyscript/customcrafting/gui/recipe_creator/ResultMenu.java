@@ -10,6 +10,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
@@ -34,15 +35,8 @@ public class ResultMenu extends CCWindow {
             guiHandler.openWindow("tag_settings");
             return true;
         })));
-        registerButton(new ActionButton<>("target", Material.ARROW, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-
-            return true;
-        }));
-
-        registerButton(new ActionButton<>("extensions", Material.COMMAND_BLOCK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-
-            return true;
-        }));
+        registerButton(new DummyButton<>("target", Material.ARROW));
+        registerButton(new DummyButton<>("extensions", Material.COMMAND_BLOCK));
     }
 
     @Override

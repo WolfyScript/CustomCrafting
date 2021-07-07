@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting;
 
+import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
@@ -32,19 +33,18 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
      * This Registry contains all the recipes of this plugin.
      */
     RecipeRegistry RECIPES = new RecipeRegistry();
-
     /**
      * This Registry contains all the custom Result Extensions that can be saved to a Result.
      */
     SimpleRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleRegistry<>();
-
     SimpleRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleRegistry<>();
+    ItemCreatorTabRegistry ITEM_CREATOR_TABS = new ItemCreatorTabRegistry();
 
     /**
      * The custom Registry for the Recipes of CustomCrafting.
      * Providing a lot of functionality to get the recipes you need.
      */
-    class RecipeRegistry extends me.wolfyscript.utilities.util.Registry.SimpleRegistry<ICustomRecipe<?, ?>> {
+    class RecipeRegistry extends SimpleRegistry<ICustomRecipe<?, ?>> {
 
         private RecipeRegistry() {
         }
@@ -252,4 +252,18 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
     }
 
+    class ItemCreatorTabRegistry extends SimpleRegistry<ItemCreatorTab> {
+
+        @Override
+        public void register(ItemCreatorTab value) {
+            super.register(value);
+            value.register();
+        }
+
+        @Override
+        public void register(NamespacedKey namespacedKey, ItemCreatorTab value) {
+            super.register(namespacedKey, value);
+            value.register();
+        }
+    }
 }

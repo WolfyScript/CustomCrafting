@@ -2550,10 +2550,11 @@
         "gui_name": "&8&lResult Options",
         "items": {
           "target": {
-            "name": "&6&lTarget &8[&7WIP&8]",
+            "name": "&6&lTarget &8[&7Config Only&8]",
             "lore": [
-              "&7Allows to target an Ingredient slot",
-              "&7and manipulate the Result according to it."
+              "&7Allows to target an Ingredient slot of the recipe",
+              "&7and merge it's data into the result or",
+              "&7manipulate the resulting item in other ways."
             ]
           },
           "extensions": {

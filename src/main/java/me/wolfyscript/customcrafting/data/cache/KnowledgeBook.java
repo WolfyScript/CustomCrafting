@@ -102,7 +102,9 @@ public class KnowledgeBook {
     }
 
     public void removePreviousResearchItem() {
-        researchItems.remove(0);
+        if (!researchItems.isEmpty()) {
+            researchItems.remove(0);
+        }
     }
 
     public void setResearchItems(List<CustomItem> researchItems) {

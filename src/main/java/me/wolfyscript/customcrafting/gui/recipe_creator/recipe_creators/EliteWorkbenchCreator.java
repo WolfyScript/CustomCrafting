@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -74,7 +73,7 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         super.onUpdateAsync(update);
         update.setButton(6, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
-        EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
+        var workbench = cache.getEliteCraftingRecipe();
 
         if (!workbench.isShapeless()) {
             if (((ShapedEliteCraftRecipe) workbench).mirrorHorizontal() && ((ShapedEliteCraftRecipe) workbench).mirrorVertical()) {
@@ -102,7 +101,7 @@ public class EliteWorkbenchCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        EliteCraftingRecipe workbench = cache.getEliteCraftingRecipe();
+        var workbench = cache.getEliteCraftingRecipe();
         return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
     }
 }

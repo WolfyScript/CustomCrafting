@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldBiomeCondition;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -19,8 +18,8 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
     public WorldBiomeConditionButton() {
         super("conditions.world_biome", new ButtonState<>("world_biome", Material.SAND, (cache, guiHandler, player, inventory, slot, event) -> {
             GuiWindow<CCCache> window = guiHandler.getWindow();
-            ICustomRecipe<?,?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            Conditions conditions = recipeConfig.getConditions();
+            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            var conditions = recipeConfig.getConditions();
             if(event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
                     //Change Mode
@@ -31,7 +30,7 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
                     guiHandler.getWindow().openChat("world_biome", guiHandler, (guiHandler1, player1, s, args) -> {
                         if (!s.isEmpty()) {
                             try {
-                                Biome biome = Biome.valueOf(s.toUpperCase(Locale.ROOT));
+                                var biome = Biome.valueOf(s.toUpperCase(Locale.ROOT));
                                 WorldBiomeCondition condition = conditions.getByType(WorldBiomeCondition.class);
                                 if (condition.getBiomes().contains(biome.toString())) {
                                     window.sendMessage(player1, "already_existing");
@@ -47,7 +46,7 @@ public class WorldBiomeConditionButton extends ActionButton<CCCache> {
                         return true;
                     });
                 } else {
-                    if (conditions.getByType(WorldBiomeCondition.class).getBiomes().size() > 0) {
+                    if (!conditions.getByType(WorldBiomeCondition.class).getBiomes().isEmpty()) {
                         conditions.getByType(WorldBiomeCondition.class).getBiomes().remove(conditions.getByType(WorldBiomeCondition.class).getBiomes().size() - 1);
                         recipeConfig.setConditions(conditions);
                     }

@@ -340,8 +340,8 @@ public class BrewingCreator extends RecipeCreator {
         CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
-        BrewingGUICache brewingGUICache = cache.getBrewingGUICache();
-        BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+        var brewingGUICache = cache.getBrewingGUICache();
+        var brewingRecipe = cache.getBrewingRecipe();
 
         update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
@@ -351,7 +351,7 @@ public class BrewingCreator extends RecipeCreator {
         update.setButton(9, "recipe.ingredient_0");
         update.setButton(10, "brewing_stand");
 
-        update.setButton(36, "brewing.container_1");
+        update.setButton(36, "recipe.ingredient_1");
         update.setButton(37, "allowed_items");
 
         //Simple Options

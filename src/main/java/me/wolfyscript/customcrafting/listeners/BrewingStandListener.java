@@ -7,13 +7,11 @@ import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.NMSUtil;
-import me.wolfyscript.utilities.api.nms.block.NMSBrewingStand;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.BrewingStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,16 +50,12 @@ public class BrewingStandListener implements Listener {
     @EventHandler
     public void onInv(InventoryClickEvent event) {
         if (event.getClickedInventory() instanceof BrewerInventory inventory && customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-            Player player = (Player) event.getWhoClicked();
-            Location location = inventory.getLocation();
-
+            var player = (Player) event.getWhoClicked();
+            var location = inventory.getLocation();
             if (event.getSlot() != 4) {
-                final ItemStack cursor = event.getCursor(); //The item in the cursor
-                final ItemStack currentItem = event.getCurrentItem(); //The item in the slot
                 //Place items
                 if (event.getClickedInventory() == null) return;
                 if (event.getClickedInventory().getType() != InventoryType.BREWING) return;
-
                 if (event.getSlot() == 3) {
                     //Make it possible to place in everything into the ingredient slot
                     if (event.isRightClick()) {
@@ -95,11 +89,9 @@ public class BrewingStandListener implements Listener {
                     return;
                 }
                 //Recipe Checker!
-                BrewingStand brewingStand = inventory.getHolder();
+                var brewingStand = inventory.getHolder();
                 if (brewingStand != null) {
-
-                    NMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
-
+                    var nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
                     if (nmsBrewingStand != null) {
                         int fuelLevel = nmsBrewingStand.getFuelLevel();
                         //Check if recipe is correct
@@ -149,14 +141,14 @@ public class BrewingStandListener implements Listener {
                             int multiplier = -1;
 
                             if (brewingStand.getFuelLevel() > 0) {
-                                AtomicInteger tick = new AtomicInteger(400);
+                                var tick = new AtomicInteger(400);
                                 BukkitRunnable runnable = new BukkitRunnable() {
                                     @Override
                                     public void run() {
                                         if (activeBrewingStands.containsKey(location)) {
                                             if (tick.get() > 0) {
                                                 Bukkit.getScheduler().runTask(customCrafting, () -> {
-                                                    NMSBrewingStand nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
+                                                    var nmsBrewingStand = nmsUtil.getBlockUtil().getNmsBrewingStand(brewingStand);
                                                     if (nmsBrewingStand != null) {
                                                         nmsBrewingStand.setBrewingTime(tick.addAndGet(multiplier));
                                                     } else {

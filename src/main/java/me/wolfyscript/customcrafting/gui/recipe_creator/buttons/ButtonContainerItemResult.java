@@ -34,7 +34,7 @@ public class ButtonContainerItemResult extends ItemInputButton<CCCache> {
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
-            cache.getRecipe().getResult().put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : new CustomItem(Material.AIR));
+            cache.getRecipe().getResult().put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Result<?> result = cache.getRecipe().getResult();
             return result != null ? result.getItemStack(variantSlot) : ItemUtils.AIR;

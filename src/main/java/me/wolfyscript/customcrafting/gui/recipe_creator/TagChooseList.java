@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.TagSettingsCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.MainCluster;
@@ -54,8 +53,8 @@ public class TagChooseList extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        CCCache cache = update.getGuiHandler().getCustomCache();
-        TagSettingsCache tagsCache = cache.getTagSettingsCache();
+        var cache = update.getGuiHandler().getCustomCache();
+        var tagsCache = cache.getTagSettingsCache();
         int page = tagsCache.getChooseListPage();
         int maxPages = ITEM_TAGS.size() / 45 + (ITEM_TAGS.size() % 45 > 0 ? 1 : 0);
         if (page > maxPages) {
@@ -63,7 +62,7 @@ public class TagChooseList extends CCWindow {
         }
 
         for (int i = 45 * page, invSlot = 0; i < ITEM_TAGS.size() && invSlot < getSize() - 9; i++, invSlot++) {
-            TagChooseButton button = new TagChooseButton(ITEM_TAGS.get(i));
+            var button = new TagChooseButton(ITEM_TAGS.get(i));
             registerButton(button);
             update.setButton(invSlot, button);
         }
