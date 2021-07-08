@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
@@ -62,7 +61,7 @@ public class MainCategoryButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         if (category != null) {
-            KnowledgeBook knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
+            var knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
             knowledgeBook.setCategory(category);
             guiHandler.openWindow("recipe_book");
         }

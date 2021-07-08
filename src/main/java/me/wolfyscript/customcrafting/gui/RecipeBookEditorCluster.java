@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.*;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.buttons.SaveCategoryButton;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
@@ -74,7 +73,7 @@ public class RecipeBookEditorCluster extends CCCluster {
             });
             return false;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            RecipeBookEditor recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
+            var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
             if (recipeBookEditor.getCategorySetting() != null && recipeBookEditor.getCategorySetting().getIcon() != null) {
                 return new ItemStack(guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getIcon());
             }
@@ -111,7 +110,7 @@ public class RecipeBookEditorCluster extends CCCluster {
                 });
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
-                        NamespacedKey namespacedKey = new NamespacedKey(args[0], args[1]);
+                        var namespacedKey = new NamespacedKey(args[0], args[1]);
                         ICustomRecipe<?, ?> recipe = Registry.RECIPES.get(namespacedKey);
                         if (recipe == null) {
                             wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));

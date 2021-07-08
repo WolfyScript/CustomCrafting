@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -9,7 +8,6 @@ import me.wolfyscript.customcrafting.gui.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.MainCategoryButton;
-import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -26,8 +24,8 @@ public class MainMenu extends CCWindow {
 
     @Override
     public void onInit() {
-        DataHandler dataHandler = customCrafting.getDataHandler();
-        Categories categories = dataHandler.getCategories();
+        var dataHandler = customCrafting.getDataHandler();
+        var categories = dataHandler.getCategories();
 
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new MainCategoryButton(categoryId, customCrafting));
@@ -49,8 +47,8 @@ public class MainMenu extends CCWindow {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         event.setButton(8, data.getLightBackground());
 
-        DataHandler dataHandler = customCrafting.getDataHandler();
-        Categories categories = dataHandler.getCategories();
+        var dataHandler = customCrafting.getDataHandler();
+        var categories = dataHandler.getCategories();
 
         int slot = 0;
         for (String categoryId : categories.getSortedCategories()) {

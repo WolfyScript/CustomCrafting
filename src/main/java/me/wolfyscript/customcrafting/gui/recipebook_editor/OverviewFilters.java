@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.buttons.FilterButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -32,7 +31,7 @@ public class OverviewFilters extends Overview {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        RecipeBookConfig recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
+        var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
         update.setButton(49, ADD);
 
         List<String> categories = recipeBook.getCategories().getSortedFilters();

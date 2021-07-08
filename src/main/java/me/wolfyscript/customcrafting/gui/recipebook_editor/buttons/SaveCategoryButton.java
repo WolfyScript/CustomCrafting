@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.customcrafting.gui.RecipeBookEditorCluster;
@@ -17,7 +16,7 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
 
     public SaveCategoryButton(boolean saveAs, CustomCrafting customCrafting) {
         super(saveAs ? RecipeBookEditorCluster.SAVE_AS.getKey() : RecipeBookEditorCluster.SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            RecipeBookEditor recipeBookEditor = cache.getRecipeBookEditor();
+            var recipeBookEditor = cache.getRecipeBookEditor();
             GuiWindow<CCCache> guiWindow = inventory.getWindow();
             WolfyUtilities api = guiHandler.getApi();
 
@@ -45,7 +44,7 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
     }
 
     private static boolean saveCategorySetting(RecipeBookEditor recipeBookEditor, CustomCrafting customCrafting) {
-        RecipeBookConfig recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
+        var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
         CategorySettings category = recipeBookEditor.getCategorySetting();
         if (category.getIcon() == null) {
             return false;

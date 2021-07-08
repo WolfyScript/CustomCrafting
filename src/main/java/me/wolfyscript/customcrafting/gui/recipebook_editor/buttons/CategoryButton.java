@@ -4,9 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.configs.recipebook.CategorySettings;
-import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.RecipeBookEditor;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
@@ -17,9 +15,9 @@ public class CategoryButton extends ActionButton<CCCache> {
     public CategoryButton(String categoryID, CustomCrafting customCrafting) {
         super("category_" + categoryID, new ButtonState<>("category", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             if (!categoryID.isEmpty()) {
-                RecipeBookEditor recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
-                RecipeBookConfig recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-                if(event instanceof InventoryClickEvent){
+                var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
+                var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
+                if (event instanceof InventoryClickEvent) {
                     if (((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                         //Delete Category
                         if (recipeBookEditor.isFilters()) {
@@ -46,8 +44,8 @@ public class CategoryButton extends ActionButton<CCCache> {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            RecipeBookEditor recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
-            RecipeBookConfig recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
+            var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
+            var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
             CategorySettings category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
             itemStack.setType(category.getIcon());
             values.put("%name%", category.getName());

@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 public class AdvancedWorkbenchCondition extends Condition {
 
@@ -23,7 +22,7 @@ public class AdvancedWorkbenchCondition extends Condition {
         }
         if (recipe instanceof CraftingRecipe) {
             if (data.getBlock() != null) {
-                CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
+                var customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
                 return customItem != null && (customItem.getNamespacedKey().equals(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE) || customItem.getNamespacedKey().equals(CustomCrafting.ADVANCED_WORKBENCH));
             }
             return false;

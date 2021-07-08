@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.KnowledgeBook;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.RecipeItemStack;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -81,9 +80,9 @@ public class IngredientContainerButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
-        KnowledgeBook book = cache.getKnowledgeBook();
+        var book = cache.getKnowledgeBook();
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
-            CustomItem customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
+            var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
                 List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
