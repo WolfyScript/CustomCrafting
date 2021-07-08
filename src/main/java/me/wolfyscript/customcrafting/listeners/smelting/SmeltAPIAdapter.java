@@ -38,17 +38,14 @@ public abstract class SmeltAPIAdapter {
             if (cookingRecipe.checkConditions(new Conditions.Data(null, block, null))) {
                 event.setCancelled(false);
                 Result<?> result = cookingRecipe.getResult();
-                if (result.size() > 1) {
-                    ItemStack source = event.getSource();
-                    Optional<CustomItem> customSource = cookingRecipe.getSource().getChoices().stream().filter(customItem -> customItem.isSimilar(source, cookingRecipe.isExactMeta())).findFirst();
-                    if (customSource.isPresent()) {
-                        return applyResult(event, cookingRecipe, result, customSource.get(), block, inventory, currentResultItem);
-                    } else {
-                        event.setCancelled(true);
-                        return false;
-                    }
+                ItemStack source = event.getSource();
+                Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isExactMeta());
+                if (customSource.isPresent()) {
+                    return applyResult(event, cookingRecipe, result, customSource.get(), block, inventory, currentResultItem);
+                } else {
+                    event.setCancelled(true);
+                    return false;
                 }
-                return true;
             }
             event.setCancelled(true);
         }
