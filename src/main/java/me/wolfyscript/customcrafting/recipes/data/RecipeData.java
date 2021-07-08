@@ -81,7 +81,10 @@ public abstract class RecipeData<R extends ICustomRecipe<?, ?>> {
     public List<IngredientData> getBySlots(int[] slots) {
         List<IngredientData> list = new ArrayList<>();
         for (int slot : slots) {
-            list.add(getBySlot(slot));
+            IngredientData data = getBySlot(slot);
+            if (data != null) {
+                list.add(data);
+            }
         }
         return list;
     }
