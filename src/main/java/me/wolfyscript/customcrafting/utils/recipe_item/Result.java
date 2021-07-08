@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.utils.recipe_item;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -110,29 +110,55 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem)));
     }
 
+    /**
+     * @param player The player to get the result for.
+     * @return The optional {@link CustomItem} for that player. This might be a cached Item if the player hasn't taken it out previously.
+     */
     public Optional<CustomItem> getItem(@Nullable Player player) {
         CustomItem item = cachedItems.computeIfAbsent(player == null ? null : player.getUniqueId(), uuid -> getRandomChoices(player).next());
         addCachedItem(player, item);
         return Optional.ofNullable(item);
     }
 
-    public ItemStack getItem(CraftingData data, Player player) {
-        return getItem(getItem(player).orElse(new CustomItem(Material.AIR)), data, player);
-    }
-
-    public ItemStack getItem(CustomItem customItem, CraftingData data, Player player) {
-        if (target != null) {
-            return target.mergeCraftingData(data, player, customItem, customItem.create());
-        }
-        return customItem.create();
-    }
-
+    /**
+     * @param block The {@link Block} to get the result for.
+     * @return The optional {@link CustomItem} for that block. This might be a cached Item if the block failed to processed it.
+     */
     public Optional<CustomItem> getItem(@NotNull Block block) {
         var vector = block.getLocation().toVector();
         var item = cachedBlockItems.computeIfAbsent(vector, uuid -> getRandomChoices(null).next());
         addCachedItem(vector, item);
         return Optional.ofNullable(item);
+    }
 
+    /**
+     * Combination of {@link #getItem(Player)} and {@link #getItem(Block)}.
+     * <p>
+     * If the player is available it returns the item for the player.
+     * <br>
+     * If the player is null, but the block is available it returns the item for the block.
+     * </p>
+     *
+     * @param player The player to get the result for.
+     * @param block  The {@link Block} to get the result for.
+     * @return Either the item for the player or block, depending on which one is available.
+     */
+    public Optional<CustomItem> getItem(@Nullable Player player, @Nullable Block block) {
+        if (player != null) {
+            return getItem(player);
+        }
+        return block != null ? getItem(block) : Optional.empty();
+    }
+
+    public ItemStack getItem(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block) {
+        return getItem(recipeData, getItem(player, block).orElse(new CustomItem(Material.AIR)), player, block);
+    }
+
+    public ItemStack getItem(RecipeData<?> recipeData, CustomItem chosenItem, @Nullable Player player, @Nullable Block block) {
+        if (target != null) {
+            return target.merge(recipeData, player, block, chosenItem, chosenItem.create());
+        }
+        return chosenItem.create();
     }
 
     private void addCachedItem(Player player, CustomItem customItem) {

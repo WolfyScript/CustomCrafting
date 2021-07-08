@@ -1,11 +1,12 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target.adapters;
 
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -26,20 +27,19 @@ public class DamageMergeAdapter extends MergeAdapter {
         this.repairBonus = adapter.repairBonus;
     }
 
-    /**
-     *
-     *
-     * @param craftingData The {@link CraftingData} containing all the info of the grid state.
-     * @param player       The player that crafted the item.
-     * @param customResult The {@link CustomItem} of the crafted item.
-     * @param result       The actual manipulable result ItemStack. (Previous adapters might have already manipulated this item!)
-     * @return
-     */
+    public int getAdditionalDamage() {
+        return additionalDamage;
+    }
+
+    public void setAdditionalDamage(int additionalDamage) {
+        this.additionalDamage = additionalDamage;
+    }
+
     @Override
-    public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         int totalDurability = 0;
         int maxDur = result.getType().getMaxDurability();
-        for (IngredientData data : craftingData.getBySlots(slots)) {
+        for (IngredientData data : recipeData.getBySlots(slots)) {
             if (data.itemStack().getItemMeta() instanceof Damageable damageable) {
                 totalDurability += maxDur - damageable.getDamage();
             }
@@ -49,19 +49,6 @@ public class DamageMergeAdapter extends MergeAdapter {
         ((Damageable) meta).setDamage(Math.min(totalDamage, maxDur));
         result.setItemMeta(meta);
         return result;
-    }
-
-    @Override
-    public ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result) {
-        return result;
-    }
-
-    public int getAdditionalDamage() {
-        return additionalDamage;
-    }
-
-    public void setAdditionalDamage(int additionalDamage) {
-        this.additionalDamage = additionalDamage;
     }
 
     @Override

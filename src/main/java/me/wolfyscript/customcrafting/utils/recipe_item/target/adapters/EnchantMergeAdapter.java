@@ -1,12 +1,13 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target.adapters;
 
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,22 +30,6 @@ public class EnchantMergeAdapter extends MergeAdapter {
         super(adapter);
     }
 
-    @Override
-    public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
-        for (IngredientData data : craftingData.getBySlots(slots)) {
-            var item = data.itemStack();
-            item.getEnchantments().forEach((enchantment, level) -> {
-                if (!blackListedEnchants.contains(enchantment) && !result.containsEnchantment(enchantment) && result.getEnchantmentLevel(enchantment) < level) {
-                    var meta = result.getItemMeta();
-                    if (meta != null && meta.addEnchant(enchantment, level, ignoreEnchantLimit)) {
-                        result.setItemMeta(meta);
-                    }
-                }
-            });
-        }
-        return result;
-    }
-
     public boolean isIgnoreEnchantLimit() {
         return ignoreEnchantLimit;
     }
@@ -60,7 +45,18 @@ public class EnchantMergeAdapter extends MergeAdapter {
     }
 
     @Override
-    public ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+        for (IngredientData data : recipeData.getBySlots(slots)) {
+            var item = data.itemStack();
+            item.getEnchantments().forEach((enchantment, level) -> {
+                if (!blackListedEnchants.contains(enchantment) && !result.containsEnchantment(enchantment) && result.getEnchantmentLevel(enchantment) < level) {
+                    var meta = result.getItemMeta();
+                    if (meta != null && meta.addEnchant(enchantment, level, ignoreEnchantLimit)) {
+                        result.setItemMeta(meta);
+                    }
+                }
+            });
+        }
         return result;
     }
 

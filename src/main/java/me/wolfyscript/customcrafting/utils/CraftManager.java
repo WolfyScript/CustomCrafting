@@ -7,8 +7,8 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
+import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -80,7 +80,7 @@ public class CraftManager {
                     Result<SlotResultTarget> result = customPreCraftEvent.getResult();
                     craftingData.setResult(result);
                     put(player.getUniqueId(), craftingData);
-                    return result.getItem(craftingData, player);
+                    return result.getItem(craftingData, player, block);
                 }
             }
         }
@@ -140,7 +140,7 @@ public class CraftManager {
                 for (int i = 0; i < possible; i++) {
                     var customItem = results.next();
                     if (customItem != null) {
-                        player.getInventory().addItem(recipeResult.getItem(customItem, craftingData, player));
+                        player.getInventory().addItem(recipeResult.getItem(craftingData, customItem, player, null));
                     }
                 }
             }

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 
 import java.util.UUID;
 

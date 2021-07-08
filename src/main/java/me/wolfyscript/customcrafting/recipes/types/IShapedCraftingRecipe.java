@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;

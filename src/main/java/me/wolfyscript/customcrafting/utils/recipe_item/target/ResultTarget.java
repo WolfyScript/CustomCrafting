@@ -1,9 +1,10 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target;
 
 
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -26,22 +27,6 @@ public class ResultTarget {
     }
 
     /**
-     * Merges nbt from crafting recipes into the result. Only for Crafting recipes.
-     *
-     * @param craftingData
-     * @param player
-     * @param result
-     * @return
-     */
-    public ItemStack mergeCraftingData(CraftingData craftingData, Player player, CustomItem customItemResult, ItemStack result) {
-        var currentItem = result;
-        for (MergeOption mergeOption : mergeOptions) {
-            currentItem = mergeOption.merge(craftingData, player, customItemResult, result);
-        }
-        return currentItem;
-    }
-
-    /**
      * Merges the nbt of other recipes, that usually have fixed slots.
      *
      * @param ingredients
@@ -49,8 +34,12 @@ public class ResultTarget {
      * @param result
      * @return
      */
-    public ItemStack mergeMisc(ItemStack[] ingredients, @Nullable Player player, ItemStack result) {
-        return null;
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customItemResult, ItemStack result) {
+        var currentItem = result;
+        for (MergeOption mergeOption : mergeOptions) {
+            currentItem = mergeOption.merge(recipeData, player, block, customItemResult, result);
+        }
+        return currentItem;
     }
 
     /**

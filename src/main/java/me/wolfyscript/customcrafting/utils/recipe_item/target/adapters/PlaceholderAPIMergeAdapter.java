@@ -1,13 +1,14 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target.adapters;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.chat.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -40,16 +41,9 @@ public class PlaceholderAPIMergeAdapter extends MergeAdapter {
         this.loreBracketPlaceholders = adapter.loreBracketPlaceholders;
     }
 
-    /**
-     * @param craftingData The {@link CraftingData} containing all the info of the grid state.
-     * @param player       The player that crafted the item.
-     * @param customResult The {@link CustomItem} of the crafted item.
-     * @param result       The actual manipulable result ItemStack. (Previous adapters might have already manipulated this item!)
-     * @return
-     */
     @Override
-    public ItemStack mergeCrafting(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
-        if (WolfyUtilities.hasPlaceHolderAPI() && result.hasItemMeta()) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
+        if (player != null && WolfyUtilities.hasPlaceHolderAPI() && result.hasItemMeta()) {
             var meta = result.getItemMeta();
             if (replaceName) {
                 String name = meta.getDisplayName();
@@ -71,11 +65,6 @@ public class PlaceholderAPIMergeAdapter extends MergeAdapter {
             }
             result.setItemMeta(meta);
         }
-        return result;
-    }
-
-    @Override
-    public ItemStack merge(ItemStack[] ingredients, @Nullable Player player, CustomItem customResult, ItemStack result) {
         return result;
     }
 

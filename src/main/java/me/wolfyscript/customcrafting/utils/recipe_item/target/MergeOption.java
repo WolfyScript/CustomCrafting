@@ -1,11 +1,13 @@
 package me.wolfyscript.customcrafting.utils.recipe_item.target;
 
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,10 +33,10 @@ public class MergeOption {
         this.adapters = mergeOption.adapters.stream().map(MergeAdapter::clone).collect(Collectors.toList());
     }
 
-    public ItemStack merge(CraftingData craftingData, Player player, CustomItem customResult, ItemStack result) {
+    public ItemStack merge(RecipeData<?> recipeData, @Nullable Player player, @Nullable Block block, CustomItem customResult, ItemStack result) {
         var currentItem = result;
         for (MergeAdapter adapter : adapters) {
-            currentItem = adapter.mergeCrafting(craftingData, player, customResult, currentItem);
+            currentItem = adapter.merge(recipeData, player, block, customResult, currentItem);
         }
         return currentItem;
     }

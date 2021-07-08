@@ -4,8 +4,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.data.SmithingData;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smithing.SmithingData;
+import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -13,7 +14,6 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,10 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
 
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class SmithingListener implements Listener {
@@ -66,9 +63,14 @@ public class SmithingListener implements Listener {
                         assert base != null;
                         assert addition != null;
                         Result<?> result = recipe.getResult();
-                        preCraftedRecipes.put(player.getUniqueId(), new SmithingData(recipe, result, optionalBase.get(), optionalAddition.get()));
+                        Map<Integer, IngredientData> ingredients = Map.of(
+                                0, new IngredientData(0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
+                                1, new IngredientData(1, recipe.getBase(), optionalBase.get(), inv.getItem(1))
+                        );
+                        SmithingData data = new SmithingData(recipe, ingredients);
+                        preCraftedRecipes.put(player.getUniqueId(), data);
                         //Progress result
-                        ItemStack endResult = result.getItem(player).orElse(new CustomItem(Material.AIR)).create();
+                        ItemStack endResult = result.getItem(data, player, inv.getLocation() != null ? inv.getLocation().getBlock() : null);
                         endResult.addUnsafeEnchantments(base.getEnchantments());
                         event.setResult(endResult);
                         break;

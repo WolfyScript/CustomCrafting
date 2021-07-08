@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
 import me.wolfyscript.customcrafting.recipes.RecipePacketType;
+import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
