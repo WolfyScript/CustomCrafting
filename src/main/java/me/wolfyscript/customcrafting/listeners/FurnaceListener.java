@@ -21,13 +21,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class FurnaceListenerBukkit implements Listener {
+public class FurnaceListener implements Listener {
 
     private final CustomCrafting customCrafting;
     private final SmeltAPIAdapter smeltAPIAdapter;
     private final List<InventoryType> invs = Arrays.asList(InventoryType.FURNACE, InventoryType.BLAST_FURNACE, InventoryType.SMOKER);
 
-    public FurnaceListenerBukkit(CustomCrafting customCrafting) {
+    public FurnaceListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
         this.smeltAPIAdapter = customCrafting.isPaper() ? new PaperSmeltAPIAdapter(customCrafting) : new BukkitSmeltAPIAdapter(customCrafting);
     }

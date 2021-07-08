@@ -12,7 +12,6 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -181,65 +180,61 @@ public class AnvilListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (event.getClickedInventory() instanceof AnvilInventory inventory) {
-            Player player = (Player) event.getWhoClicked();
-            if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(event.getCurrentItem())) {
-                if (preCraftedRecipes.get(player.getUniqueId()) != null) {
-                    event.setCancelled(true);
-                    AnvilData anvilData = preCraftedRecipes.get(player.getUniqueId());
-                    if (inventory.getRepairCost() > 0 && player.getLevel() >= inventory.getRepairCost()) {
-                        ItemStack result = event.getCurrentItem();
-                        ItemStack cursor = event.getCursor();
-                        if (event.isShiftClick()) {
-                            if (InventoryUtils.hasInventorySpace(player, result)) {
-                                player.getInventory().addItem(result);
-                            } else {
-                                return;
-                            }
-                        } else if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.getAmount() + result.getAmount() <= cursor.getMaxStackSize())) {
-                            if (ItemUtils.isAirOrNull(cursor)) {
-                                event.setCursor(result);
-                            } else {
-                                cursor.setAmount(cursor.getAmount() + result.getAmount());
-                            }
+            var player = (Player) event.getWhoClicked();
+            if (event.getSlot() == 2 && !ItemUtils.isAirOrNull(event.getCurrentItem()) && preCraftedRecipes.get(player.getUniqueId()) != null) {
+                event.setCancelled(true);
+                var anvilData = preCraftedRecipes.get(player.getUniqueId());
+                if (inventory.getRepairCost() > 0 && player.getLevel() >= inventory.getRepairCost()) {
+                    ItemStack result = event.getCurrentItem();
+                    ItemStack cursor = event.getCursor();
+                    if (event.isShiftClick()) {
+                        if (InventoryUtils.hasInventorySpace(player, result)) {
+                            player.getInventory().addItem(result);
                         } else {
                             return;
                         }
-                        if (anvilData.getResult().isPresent()) {
-                            Result<?> recipeResult = anvilData.getResult().get();
-                            recipeResult.executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-                            recipeResult.removeCachedItem(player);
-                        }
-                        preCraftedRecipes.remove(player.getUniqueId());
-
-                        if (inventory.getLocation() != null && inventory.getLocation().getWorld() != null) {
-                            //Play sound & TODO: damage the Anvil Block!
-                            Location location = inventory.getLocation();
-                            location.getWorld().playEffect(location, Effect.ANVIL_USE, 0);
-                        }
-
-                        event.setCurrentItem(null);
-                        player.updateInventory();
-
-                        CustomItem inputLeft = anvilData.getInputLeft();
-                        CustomItem inputRight = anvilData.getInputRight();
-
-                        if (inputLeft != null && inventory.getItem(0) != null) {
-                            ItemStack itemLeft = inventory.getItem(0).clone();
-                            inputLeft.consumeItem(itemLeft, itemLeft.getAmount(), inventory);
-                            inventory.setItem(0, itemLeft);
+                    } else if (ItemUtils.isAirOrNull(cursor) || (result.isSimilar(cursor) && cursor.getAmount() + result.getAmount() <= cursor.getMaxStackSize())) {
+                        if (ItemUtils.isAirOrNull(cursor)) {
+                            event.setCursor(result);
                         } else {
-                            inventory.setItem(0, null);
+                            cursor.setAmount(cursor.getAmount() + result.getAmount());
                         }
-                        if (inputRight != null && inventory.getItem(1) != null) {
-                            ItemStack itemRight = inventory.getItem(1).clone();
-                            inputRight.consumeItem(itemRight, 1, inventory);
-                            inventory.setItem(1, itemRight);
-                        } else {
-                            inventory.setItem(1, null);
-                        }
+                    } else {
+                        return;
                     }
-                } else {
-                    //Vanilla Recipe
+                    if (anvilData.getResult().isPresent()) {
+                        Result<?> recipeResult = anvilData.getResult().get();
+                        recipeResult.executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
+                        recipeResult.removeCachedItem(player);
+                    }
+                    preCraftedRecipes.remove(player.getUniqueId());
+
+                    if (inventory.getLocation() != null && inventory.getLocation().getWorld() != null) {
+                        //Play sound & TODO: damage the Anvil Block!
+                        var location = inventory.getLocation();
+                        location.getWorld().playEffect(location, Effect.ANVIL_USE, 0);
+                    }
+
+                    event.setCurrentItem(null);
+                    player.updateInventory();
+
+                    CustomItem inputLeft = anvilData.getInputLeft();
+                    CustomItem inputRight = anvilData.getInputRight();
+
+                    if (inputLeft != null && inventory.getItem(0) != null) {
+                        ItemStack itemLeft = inventory.getItem(0).clone();
+                        inputLeft.consumeItem(itemLeft, itemLeft.getAmount(), inventory);
+                        inventory.setItem(0, itemLeft);
+                    } else {
+                        inventory.setItem(0, null);
+                    }
+                    if (inputRight != null && inventory.getItem(1) != null) {
+                        ItemStack itemRight = inventory.getItem(1).clone();
+                        inputRight.consumeItem(itemRight, 1, inventory);
+                        inventory.setItem(1, itemRight);
+                    } else {
+                        inventory.setItem(1, null);
+                    }
                 }
             }
         }

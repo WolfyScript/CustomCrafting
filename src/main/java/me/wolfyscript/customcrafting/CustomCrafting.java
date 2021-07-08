@@ -255,7 +255,7 @@ public class CustomCrafting extends JavaPlugin {
         var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
-        pM.registerEvents(new FurnaceListenerBukkit(this), this);
+        pM.registerEvents(new FurnaceListener(this), this);
         pM.registerEvents(new AnvilListener(this), this);
         pM.registerEvents(new CauldronListener(this), this);
         pM.registerEvents(new EliteWorkbenchListener(api), this);
