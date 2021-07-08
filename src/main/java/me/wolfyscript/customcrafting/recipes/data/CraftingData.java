@@ -9,12 +9,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Contains all the data that is cached when a player crafts a recipe.
- * This way the recipe doesn't need to be verified again when the player collects the result.
- * <p>
- * It indexes at which place of the grid which CustomItem is used, so it can use the CustomItem consume options, etc. a user might have saved.
- * <p>
- * The indexed Ingredients are used to target specific items and is used inside the {@link me.wolfyscript.customcrafting.utils.recipe_item.target.MergeOption}s.
+ * Besides the usual use case for {@link me.wolfyscript.customcrafting.utils.recipe_item.target.MergeOption}s,
+ * this data is also used internally when a player takes out the result so the recipe doesn't need to be verified again.
+ * <br>
+ * Additionally, it saves the position of the IngredientData inside the crafting grid.
  */
 public class CraftingData extends RecipeData<CraftingRecipe<?>> {
 

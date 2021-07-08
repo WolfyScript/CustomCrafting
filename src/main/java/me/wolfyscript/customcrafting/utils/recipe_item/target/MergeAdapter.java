@@ -54,8 +54,6 @@ public abstract class MergeAdapter implements Keyed {
 
     /**
      * Called when the data is merged inside of recipes like Furnace, Smithing Table, etc.
-     * <p>
-     * </p>
      *
      * @param recipeData   The {@link RecipeData}, that contains all the data of the pre-crafted recipe, like ingredients and their slots, result, and the recipe itself.
      * @param player       The player that has crafted the item. <strong>Might be null! e.g. Furnaces, and other workstations without player interaction!</strong>
