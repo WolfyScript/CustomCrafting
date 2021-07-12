@@ -11,6 +11,11 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
+import org.bukkit.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SaveCategoryButton extends ActionButton<CCCache> {
 
@@ -21,6 +26,14 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
             WolfyUtilities api = guiHandler.getApi();
 
             if (saveAs) {
+                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                    List<String> results = new ArrayList<>();
+                    if (args.length == 1) {
+                        StringUtil.copyPartialMatches(args[0], customCrafting.getConfigHandler().getRecipeBookConfig().getCategories().getCategories().keySet(), results);
+                    }
+                    Collections.sort(results);
+                    return results;
+                });
                 guiWindow.openChat(guiHandler.getInvAPI().getGuiCluster("recipe_book_editor"), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     if (s != null && !s.isEmpty() && recipeBookEditor.setCategoryID(s)) {
                         if (saveCategorySetting(recipeBookEditor, customCrafting)) {
