@@ -45,6 +45,8 @@ public class RecipeBookEditor {
         if (categoryID != null && !categoryID.isEmpty() && VALID_ID.matcher(categoryID).matches()) {
             this.categoryID = categoryID;
             return true;
+        } else if (categoryID == null || categoryID.isEmpty()) {
+            this.categoryID = null;
         }
         return false;
     }
