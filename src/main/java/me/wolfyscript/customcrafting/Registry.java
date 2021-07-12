@@ -231,12 +231,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
     class ItemCreatorTabRegistry extends SimpleRegistry<ItemCreatorTab> {
 
         @Override
-        public void register(ItemCreatorTab value) {
-            super.register(value);
-            value.register();
-        }
-
-        @Override
         public void register(NamespacedKey namespacedKey, ItemCreatorTab value) {
             super.register(namespacedKey, value);
             value.register();

@@ -360,6 +360,10 @@ public class CustomCrafting extends JavaPlugin {
         return api;
     }
 
+    public void onPlayerDisconnect(Player player) {
+        this.networkHandler.disconnectPlayer(player);
+    }
+
     public DataHandler getDataHandler() {
         return dataHandler;
     }

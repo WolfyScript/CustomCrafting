@@ -20,8 +20,7 @@ import org.bukkit.block.Smoker;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NetworkHandler {
 
@@ -40,6 +39,8 @@ public class NetworkHandler {
     private static final NamespacedKey PLACE_RECIPE = new NamespacedKey(KEY, "place_recipe");
     private static final NamespacedKey GHOST_RECIPE = new NamespacedKey(KEY, "ghost_recipe");
 
+    private static final Set<UUID> networkPlayers = new HashSet<>();
+
     private final CustomCrafting customCrafting;
     private final WolfyUtilities wolfyUtilities;
     private final MessageAPI api;
@@ -52,19 +53,31 @@ public class NetworkHandler {
         this.networkUtil = this.wolfyUtilities.getNmsUtil().getNetworkUtil();
     }
 
+    public boolean isNetworkPlayer(Player player) {
+        return networkPlayers.contains(player.getUniqueId());
+    }
+
+    public void connectPlayer(Player player) {
+        networkPlayers.add(player.getUniqueId());
+    }
+
+    public void disconnectPlayer(Player player) {
+        networkPlayers.remove(player.getUniqueId());
+    }
+
     public void registerPackets() {
         api.register(DATA_REQUEST, (player, wolfyUtilities1, mcByteBuf) -> {
             //Decode request and verify!
             if (wolfyUtilities.getPermissions().hasPermission(player, "customcrafting.network.receive_data")) {
+                connectPlayer(player);
                 Bukkit.getScheduler().runTaskLater(wolfyUtilities.getPlugin(), () -> {
                     sendRecipes(player);
                     sendRecipeBookSettings(player);
                 }, 3);
             }
         });
-
         api.register(PLACE_RECIPE, (player, wolfyUtilities1, mcByteBuf) -> {
-            if (!player.getGameMode().equals(GameMode.SPECTATOR) && wolfyUtilities.getPermissions().hasPermission(player, "customcrafting.network.place_recipe")) {
+            if (!player.getGameMode().equals(GameMode.SPECTATOR) && isNetworkPlayer(player) && wolfyUtilities.getPermissions().hasPermission(player, "customcrafting.network.place_recipe")) {
                 Bukkit.getScheduler().runTaskLater(wolfyUtilities.getPlugin(), () -> handlePlaceRecipe(player, mcByteBuf), 2);
             }
         });
@@ -82,19 +95,16 @@ public class NetworkHandler {
 
     public void sendRecipes(Player player) {
         List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(player);
-
         //Send size of recipe list! Client will wait for recipe packets after it receives this packet.
         var mcByteBuf = networkUtil.buffer();
         mcByteBuf.writeVarInt(recipes.size());
         api.send(RECIPE_LIST_SIZE, player, mcByteBuf);
-
         //Send recipes
         for (ICustomRecipe<?, ?> recipe : recipes) {
             var recipeBuf = networkUtil.buffer();
             recipe.writeToBuf(recipeBuf);
             api.send(RECIPE_LIST, player, recipeBuf);
         }
-
         //Send end packet
         api.send(RECIPE_LIST_END, player);
     }
@@ -133,7 +143,6 @@ public class NetworkHandler {
         byteBuf.writeVarInt(values.size());
         values.forEach(s -> byteBuf.writeUtf(NamespacedKeyUtils.NAMESPACE + ":" + s));
     }
-
 
     public void handlePlaceRecipe(Player player, MCByteBuf byteBuf) {
         var key = byteBuf.readNamespacedKey();

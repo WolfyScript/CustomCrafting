@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
@@ -25,7 +26,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
-        var api = CustomCrafting.inst().getApi();
+        var api = customCrafting.getApi();
         if (customCrafting.getConfigHandler().getConfig().updateOldCustomItems()) {
             ItemStack[] contents = player.getInventory().getContents();
             if (contents.length > 0) {
@@ -60,5 +61,10 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        customCrafting.onPlayerDisconnect(event.getPlayer());
     }
 }
