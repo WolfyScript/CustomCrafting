@@ -14,13 +14,9 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import me.wolfyscript.utilities.util.version.MinecraftVersions;
-import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -228,27 +224,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
 
         private void removeBukkitRecipe(NamespacedKey namespacedKey) {
-            if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_15)) {
-                Bukkit.removeRecipe(namespacedKey.toBukkit(CustomCrafting.inst()));
-                return;
-            }
-            Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
-            var inject = false;
-            while (recipeIterator.hasNext()) {
-                var recipe = recipeIterator.next();
-                if (((Keyed) recipe).getKey().toString().equals(namespacedKey.toString())) {
-                    if (!inject) {
-                        inject = true;
-                    }
-                    recipeIterator.remove();
-                }
-            }
-            if (inject) {
-                Bukkit.resetRecipes();
-                while (recipeIterator.hasNext()) {
-                    Bukkit.addRecipe(recipeIterator.next());
-                }
-            }
+            Bukkit.removeRecipe(namespacedKey.toBukkit(CustomCrafting.inst()));
         }
     }
 
