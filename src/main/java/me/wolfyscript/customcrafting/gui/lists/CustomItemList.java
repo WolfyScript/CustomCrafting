@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.lists;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.MainCluster;
@@ -17,7 +16,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
-import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
@@ -63,8 +61,7 @@ public class CustomItemList extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         update.setButton(0, "back");
-        CCCache cache = update.getGuiHandler().getCustomCache();
-        Items items = cache.getItems();
+        var items = update.getGuiHandler().getCustomCache().getItems();
         int maxPages;
         int page;
         String namespace = items.getListNamespace();
@@ -86,7 +83,7 @@ public class CustomItemList extends CCWindow {
             page = items.getListPage(maxPages);
 
             for (int i = items.getListPage() * 45, s = 9; i < customItems.size() && s < 54; i++, s++) {
-                NamespacedKey namespacedKey = customItems.get(i).getNamespacedKey();
+                var namespacedKey = customItems.get(i).getNamespacedKey();
                 String id = "item_" + namespacedKey.toString("__");
                 if (!hasButton(id)) {
                     registerButton(new CustomItemSelectButton(customCrafting, namespacedKey));

@@ -11,7 +11,6 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -25,7 +24,6 @@ import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -37,7 +35,7 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                 return true;
             }
             WolfyUtilities api = customCrafting.getApi();
-            CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
+            var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).isRightClick()) {
                     if (((InventoryClickEvent) event).isShiftClick()) {
@@ -59,7 +57,7 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                         history.remove(history.size() - 1);
                         guiHandler.openCluster(RecipeCreatorCluster.KEY);
                     } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
-                        ItemStack itemStack = customItem.create();
+                        var itemStack = customItem.create();
                         int amount = ((InventoryClickEvent) event).isShiftClick() ? itemStack.getMaxStackSize() : 1;
                         itemStack.setAmount(amount);
                         if (InventoryUtils.hasInventorySpace(player, itemStack)) {
@@ -77,15 +75,15 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            CustomItem customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
+            var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
             if (!ItemUtils.isAirOrNull(customItem)) {
-                ItemBuilder itemB = new ItemBuilder(customItem.create());
+                var itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");
                 itemB.addLoreLine("§8" + namespacedKey);
                 CustomCrafting.inst().getApi().getLanguageAPI().replaceKey("inventories.none.item_list.items.custom_item.lore").forEach(s -> itemB.addLoreLine(ChatColor.convert(s)));
                 return itemB.create();
             }
-            ItemBuilder itemB = new ItemBuilder(itemStack);
+            var itemB = new ItemBuilder(itemStack);
             itemB.addLoreLine("");
             itemB.addLoreLine("§8" + namespacedKey);
             itemB.addLoreLine("§c");

@@ -677,7 +677,13 @@
             ]
           },
           "save_item": {
-            "name": "&aSave Item",
+            "name": "&3Save Item",
+            "lore": [
+              "&7Saves the item with the existing namespaced key!"
+            ]
+          },
+          "save_item_as": {
+            "name": "&6Save As...",
             "lore": [
               "&7Save the item with a new namespaced key.",
               "&7Input: &e<namespace> <key>",
@@ -1691,7 +1697,7 @@
         "save": {
           "name": "&3Save",
           "lore": [
-            "&7Save the recipe with the existing namespaced key!"
+            "&7Saves the recipe with the existing namespaced key!"
           ]
         },
         "save_as": {

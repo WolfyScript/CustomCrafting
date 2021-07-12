@@ -30,9 +30,12 @@ import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +45,7 @@ public class ItemCreator extends CCWindow {
 
     private static final String BACK = "back";
     private static final String SAVE_ITEM = "save_item";
+    private static final String SAVE_ITEM_AS = "save_item_as";
     private static final String APPLY_ITEM = "apply_item";
     private static final String ITEM_INPUT = "item_input";
     private static final String PAGE_NEXT = "page_next";
@@ -70,28 +74,37 @@ public class ItemCreator extends CCWindow {
             var items = cache.getItems();
             items.setItem(CustomItem.getReferenceByItemStack(item != null ? item : ItemUtils.AIR));
         }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> guiHandler.getCustomCache().getItems().getItem().getItemStack())));
-        registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
+
+        registerButton(new ActionButton<>(SAVE_ITEM, Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            var items = cache.getItems();
+            if (!ItemUtils.isAirOrNull(items.getItem().getItemStack()) && items.getNamespacedKey() != null) {
+                saveItem(items, player, items.getNamespacedKey());
+            }
+            return true;
+        }));
+        registerButton(new ActionButton<>(SAVE_ITEM_AS, Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, i, event) -> {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
-                openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> {
-                    var namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
-                    if (namespacedKey != null) {
-                        var customItem = items.getItem();
-                        if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
-                            api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
-                            return true;
+                List<String[]> namespacedKeys = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).collect(Collectors.toList());
+                List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).collect(Collectors.toList());
+                List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).collect(Collectors.toList());
+                guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
+                    List<String> results = new ArrayList<>();
+                    if (args.length > 0) {
+                        if (args.length == 1) {
+                            results.add("<namespace>");
+                            StringUtil.copyPartialMatches(args[0], namespaces, results);
+                        } else if (args.length == 2) {
+                            results.add("<key>");
+                            StringUtil.copyPartialMatches(args[1], keys, results);
                         }
-                        ItemLoader.saveItem(namespacedKey, items.getItem());
-                        items.setSaved(true);
-                        items.setNamespacedKey(namespacedKey);
-                        sendMessage(player, "save.success");
-                        var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-                        api.getChat().sendMessage(player1, "&6" + internalKey.getNamespace() + "/items/" + internalKey.getKey());
-                        return false;
                     }
-                    return true;
+                    Collections.sort(results);
+                    return results;
                 });
+
+                openChat("save.input.line2", guiHandler, (guiHandler1, player1, s, args) -> !saveItem(items, player1, ChatUtils.getNamespacedKey(player1, s, args)));
             }
             return true;
         }));
@@ -169,6 +182,23 @@ public class ItemCreator extends CCWindow {
         });
     }
 
+    private boolean saveItem(Items items, Player player, NamespacedKey namespacedKey) {
+        if (namespacedKey != null) {
+            var customItem = items.getItem();
+            if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
+                api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
+                return false;
+            }
+            ItemLoader.saveItem(namespacedKey, items.getItem());
+            items.setSaved(true);
+            items.setNamespacedKey(namespacedKey);
+            sendMessage(player, "save.success");
+            var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
+            api.getChat().sendMessage(player, "&6" + internalKey.getNamespace() + "/items/" + internalKey.getKey());
+        }
+        return true;
+    }
+
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
@@ -186,8 +216,10 @@ public class ItemCreator extends CCWindow {
         if (items.isRecipeItem()) {
             event.setButton(51, APPLY_ITEM);
         }
-        event.setButton(52, SAVE_ITEM);
-        event.setButton(53, SAVE_ITEM);
+        if (items.getNamespacedKey() != null) {
+            event.setButton(52, SAVE_ITEM);
+        }
+        event.setButton(53, SAVE_ITEM_AS);
 
         if (customItem.getApiReference() instanceof WolfyUtilitiesRef) {
             event.setButton(49, REFERENCE_WOLFYUTILITIES);
