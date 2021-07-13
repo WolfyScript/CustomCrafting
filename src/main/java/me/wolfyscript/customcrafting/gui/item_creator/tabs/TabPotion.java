@@ -16,7 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
-public class TabPotion extends ItemCreatorTab {
+public class TabPotion extends ItemCreatorTabVanilla {
 
     public static final String KEY = "potion";
 
@@ -56,7 +56,7 @@ public class TabPotion extends ItemCreatorTab {
 
     @Override
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        return items.getItem() != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta;
+        return super.shouldRender(update, cache, items, customItem, item) && items.getItem() != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta;
     }
 
     @Override

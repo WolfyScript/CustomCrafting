@@ -14,7 +14,7 @@ import me.wolfyscript.utilities.util.chat.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class TabLore extends ItemCreatorTab {
+public class TabLore extends ItemCreatorTabVanilla {
 
     public static final String KEY = "lore";
 

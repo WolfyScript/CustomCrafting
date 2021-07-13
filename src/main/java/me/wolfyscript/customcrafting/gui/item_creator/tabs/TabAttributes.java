@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Locale;
 import java.util.UUID;
 
-public class TabAttributes extends ItemCreatorTab {
+public class TabAttributes extends ItemCreatorTabVanilla {
 
     public static final String KEY = "attribute";
 

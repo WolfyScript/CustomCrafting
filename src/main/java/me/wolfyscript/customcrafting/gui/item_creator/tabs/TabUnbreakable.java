@@ -13,7 +13,7 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class TabUnbreakable extends ItemCreatorTab {
+public class TabUnbreakable extends ItemCreatorTabVanilla {
 
     public static final String KEY = "unbreakable";
 
@@ -46,7 +46,7 @@ public class TabUnbreakable extends ItemCreatorTab {
 
     @Override
     public boolean shouldRender(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        return !ItemUtils.isAirOrNull(item);
+        return super.shouldRender(update, cache, items, customItem, item) && !ItemUtils.isAirOrNull(item);
     }
 
     @Override

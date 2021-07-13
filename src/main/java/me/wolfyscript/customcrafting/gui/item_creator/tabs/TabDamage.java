@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
-public class TabDamage extends ItemCreatorTab {
+public class TabDamage extends ItemCreatorTabVanilla {
 
     public static final String KEY = "damage";
 

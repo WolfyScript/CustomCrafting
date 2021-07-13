@@ -13,7 +13,7 @@ import me.wolfyscript.utilities.util.chat.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class TabLocalizedName extends ItemCreatorTab {
+public class TabLocalizedName extends ItemCreatorTabVanilla {
 
     public static final String KEY = "localized_name";
 

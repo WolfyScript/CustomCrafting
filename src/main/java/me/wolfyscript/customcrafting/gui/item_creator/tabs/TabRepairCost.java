@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
 
-public class TabRepairCost extends ItemCreatorTab {
+public class TabRepairCost extends ItemCreatorTabVanilla {
 
     public static final String KEY = "repair_cost";
 

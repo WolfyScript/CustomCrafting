@@ -20,7 +20,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
 
-public class TabPlayerHead extends ItemCreatorTab {
+public class TabPlayerHead extends ItemCreatorTabVanilla {
 
     public static final String KEY = "player_head";
 

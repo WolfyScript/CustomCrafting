@@ -14,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-public class TabFlags extends ItemCreatorTab {
+public class TabFlags extends ItemCreatorTabVanilla {
 
     public static final String KEY = "flags";
 

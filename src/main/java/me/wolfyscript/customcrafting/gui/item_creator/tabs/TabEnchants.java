@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Locale;
 
-public class TabEnchants extends ItemCreatorTab {
+public class TabEnchants extends ItemCreatorTabVanilla {
 
     public static final String KEY = "enchantments";
 
