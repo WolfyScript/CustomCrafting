@@ -67,6 +67,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                     CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey.toString(), ex.getMessage()));
                 }
             }
+            if (value instanceof IShapedCraftingRecipe craftingRecipe) {
+                craftingRecipe.constructShape();
+            }
         }
 
         @Override
