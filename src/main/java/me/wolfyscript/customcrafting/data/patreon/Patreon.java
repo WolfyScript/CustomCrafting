@@ -40,6 +40,8 @@ public class Patreon {
         addPatron(new Patron("Jiří Hudský", Tier.WOLFRAM));
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
         addPatron(new Patron("Qsycho", Tier.WOLFRAM));
+        addPatron(new Patron("GD4aming 4", Tier.WOLFRAM));
+        addPatron(new Patron("Advanced-Kind", Tier.WOLFRAM));
         addPatron(new Patron("Filip Oreško", Tier.SUPPORTER));
         //addPatron(new Patron("John", Tier.WOLFRAM));
         //addPatron(new Patron("Vincent Deniau", "a307c2b3-463a-4db6-8a6a-07419909af72", Tier.WOLFRAM));
