@@ -14,12 +14,12 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
+import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
 
@@ -103,7 +103,7 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<C, T>, T
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        Player player = guiHandler.getPlayer();
+        var player = guiHandler.getPlayer();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getSource().getChoices(player));
         ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
     }
@@ -133,5 +133,15 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<C, T>, T
         gen.writeNumberField("exp", exp);
         gen.writeObjectField("result", result);
         gen.writeObjectField("source", source);
+    }
+
+    @Override
+    public void writeToBuf(MCByteBuf byteBuf) {
+        super.writeToBuf(byteBuf);
+
+        byteBuf.writeVarInt(source.size());
+        for (CustomItem choice : source.getChoices()) {
+            byteBuf.writeItemStack(choice.create());
+        }
     }
 }
