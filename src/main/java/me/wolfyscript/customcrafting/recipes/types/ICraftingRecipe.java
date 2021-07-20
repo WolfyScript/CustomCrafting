@@ -39,8 +39,9 @@ public interface ICraftingRecipe {
                 var item = entry.getValue().customItem();
                 if (item != null && input != null) {
                     int possible = input.getAmount() / item.getAmount();
-                    if (possible < totalAmount || totalAmount == -1)
+                    if (possible < totalAmount || totalAmount == -1) {
                         totalAmount = possible;
+                    }
                 }
             }
         }

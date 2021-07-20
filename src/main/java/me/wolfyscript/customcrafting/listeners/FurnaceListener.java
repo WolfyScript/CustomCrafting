@@ -37,9 +37,9 @@ public class FurnaceListener implements Listener {
         if (event.getClickedInventory() != null && invs.contains(event.getClickedInventory().getType()) && event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
             var location = event.getInventory().getLocation();
             if (event.getCursor() == null) return;
-            Optional<CustomItem> fuelItem = me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.values().parallelStream().filter(customItem -> customItem.getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
+            Optional<CustomItem> fuelItem = me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.values().parallelStream().filter(customItem -> customItem.getFuelSettings().getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
             if (fuelItem.isPresent()) {
-                if (fuelItem.get().getAllowedBlocks().contains(location != null ? location.getBlock().getType() : Material.FURNACE)) {
+                if (fuelItem.get().getFuelSettings().getAllowedBlocks().contains(location != null ? location.getBlock().getType() : Material.FURNACE)) {
                     InventoryUtils.calculateClickedSlot(event);
                 } else {
                     event.setCancelled(true);
@@ -52,10 +52,11 @@ public class FurnaceListener implements Listener {
     public void onBurn(FurnaceBurnEvent event) {
         ItemStack input = event.getFuel();
         for (CustomItem customItem : me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.values()) {
-            if (customItem.getBurnTime() > 0 && customItem.isSimilar(input) && customItem.getAllowedBlocks().contains(event.getBlock().getType())) {
+            var fuelSettings = customItem.getFuelSettings();
+            if (fuelSettings.getBurnTime() > 0 && customItem.isSimilar(input) && fuelSettings.getAllowedBlocks().contains(event.getBlock().getType())) {
                 event.setCancelled(false);
                 event.setBurning(true);
-                event.setBurnTime(customItem.getBurnTime());
+                event.setBurnTime(fuelSettings.getBurnTime());
                 break;
             }
         }
