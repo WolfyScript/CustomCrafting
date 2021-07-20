@@ -12,12 +12,15 @@ import java.util.Set;
 
 public class Ingredient extends RecipeItemStack {
 
+    private boolean replaceWithRemains = true;
+
     public Ingredient() {
         super();
     }
 
     public Ingredient(Ingredient ingredient) {
         super(ingredient);
+        this.replaceWithRemains = ingredient.replaceWithRemains;
     }
 
     public Ingredient(Material... materials) {
@@ -38,6 +41,14 @@ public class Ingredient extends RecipeItemStack {
 
     public Ingredient(List<APIReference> references, Set<NamespacedKey> tags) {
         super(references, tags);
+    }
+
+    public boolean isReplaceWithRemains() {
+        return replaceWithRemains;
+    }
+
+    public void setReplaceWithRemains(boolean replaceWithRemains) {
+        this.replaceWithRemains = replaceWithRemains;
     }
 
     @Override

@@ -6,6 +6,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.tags.CustomTag;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@JsonPropertyOrder({"items", "tags"})
 public abstract class RecipeItemStack {
 
     @JsonIgnore
