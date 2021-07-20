@@ -2,9 +2,11 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.ArmorSlotToggleButton;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -21,7 +23,7 @@ public class TabArmorSlots extends ItemCreatorTab {
     }
 
     @Override
-    public void register() {
+    public void register(ItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new OptionButton(Material.IRON_HELMET, this));
         creator.registerButton(new ArmorSlotToggleButton(EquipmentSlot.HEAD, Material.DIAMOND_HELMET));
         creator.registerButton(new ArmorSlotToggleButton(EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE));
