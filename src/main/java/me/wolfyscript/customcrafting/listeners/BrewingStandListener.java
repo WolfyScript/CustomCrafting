@@ -108,7 +108,7 @@ public class BrewingStandListener implements Listener {
                                     if (!recipe.getAllowedItems().isEmpty()) {
                                         for (int i = 0; i < 3; i++) {
                                             ItemStack itemStack = inventory.getItem(i);
-                                            if (!recipe.getAllowedItems().test(itemStack, recipe.isExactMeta())) {
+                                            if (!ItemUtils.isAirOrNull(itemStack) && !recipe.getAllowedItems().test(itemStack, recipe.isExactMeta())) {
                                                 valid = false;
                                                 break;
                                             }
@@ -121,7 +121,6 @@ public class BrewingStandListener implements Listener {
                                 }
                             });
                         }
-                        //System.out.println("Current valid recipes: " + brewingRecipeList);
                         //Check if the current state of recipes is empty
                         if (brewingRecipeList.isEmpty()) {
                             //list of recipes empty
