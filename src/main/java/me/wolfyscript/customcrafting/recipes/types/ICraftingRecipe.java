@@ -20,11 +20,11 @@ public interface ICraftingRecipe {
     default void removeMatrix(List<List<ItemStack>> matrix, Inventory inventory, int totalAmount, CraftingData craftingData) {
         for (Map.Entry<Vec2d, IngredientData> entry : craftingData.getIngredients().entrySet()) {
             Vec2d vec = entry.getKey();
-            var item = entry.getValue().customItem();
             if (matrix.size() > vec.y && matrix.get((int) vec.y).size() > vec.x) {
                 ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
+                var item = entry.getValue().customItem();
                 if (item != null) {
-                    item.consumeItem(input, totalAmount, inventory);
+                    item.remove(input, totalAmount, inventory, null, entry.getValue().ingredient().isReplaceWithRemains());
                 }
             }
         }
@@ -34,9 +34,9 @@ public interface ICraftingRecipe {
         int totalAmount = -1;
         for (Map.Entry<Vec2d, IngredientData> entry : craftingData.getIngredients().entrySet()) {
             Vec2d vec = entry.getKey();
-            var item = entry.getValue().customItem();
             if (matrix.size() > vec.y && matrix.get((int) vec.y).size() > vec.x) {
                 ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
+                var item = entry.getValue().customItem();
                 if (item != null && input != null) {
                     int possible = input.getAmount() / item.getAmount();
                     if (possible < totalAmount || totalAmount == -1)
