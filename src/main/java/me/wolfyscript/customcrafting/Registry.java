@@ -236,7 +236,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         @Override
         public void register(NamespacedKey namespacedKey, ItemCreatorTab value) {
             super.register(namespacedKey, value);
-            value.register();
         }
     }
 }

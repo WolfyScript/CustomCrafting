@@ -5,8 +5,10 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
+import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -25,7 +27,7 @@ public class TabPotion extends ItemCreatorTabVanilla {
     }
 
     @Override
-    public void register() {
+    public void register(ItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new OptionButton(Material.POTION, this));
         creator.registerButton(new ActionButton<>("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             cache.getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> {

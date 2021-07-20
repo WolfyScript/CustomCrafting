@@ -2,8 +2,10 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
+import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -22,7 +24,7 @@ public class TabDisplayName extends ItemCreatorTabVanilla {
     }
 
     @Override
-    public void register() {
+    public void register(ItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new OptionButton(Material.NAME_TAG, this));
         creator.registerButton(new ChatInputButton<>(KEY + ".set", Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
             guiHandler.getCustomCache().getItems().getItem().setDisplayName(ChatColor.convert(s));

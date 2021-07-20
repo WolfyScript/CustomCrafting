@@ -284,15 +284,6 @@ public class CustomCrafting extends JavaPlugin {
     private void registerInventories() {
         InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
         api.getConsole().info("$msg.startup.inventories$");
-        invAPI.registerCluster(new MainCluster(invAPI, this));
-        invAPI.registerCluster(new RecipeCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new RecipeBookCluster(invAPI, this));
-        invAPI.registerCluster(new EliteCraftingCluster(invAPI, this));
-        invAPI.registerCluster(new ItemCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
-
         Registry.ITEM_CREATOR_TABS.register(new TabArmorSlots());
         Registry.ITEM_CREATOR_TABS.register(new TabAttributes());
         Registry.ITEM_CREATOR_TABS.register(new TabConsume());
@@ -315,6 +306,16 @@ public class CustomCrafting extends JavaPlugin {
         Registry.ITEM_CREATOR_TABS.register(new TabRepairCost());
         Registry.ITEM_CREATOR_TABS.register(new TabVanilla());
         Registry.ITEM_CREATOR_TABS.register(new TabUnbreakable());
+
+        invAPI.registerCluster(new MainCluster(invAPI, this));
+        invAPI.registerCluster(new RecipeCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new RecipeBookCluster(invAPI, this));
+        invAPI.registerCluster(new EliteCraftingCluster(invAPI, this));
+        invAPI.registerCluster(new ItemCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
+        invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
+
     }
 
     public void checkUpdate(@Nullable Player player) {

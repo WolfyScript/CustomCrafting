@@ -5,8 +5,10 @@ import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
+import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -27,7 +29,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
     }
 
     @Override
-    public void register() {
+    public void register(ItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new OptionButton(Material.CRAFTING_TABLE, this));
         creator.registerButton(new ActionButton<>("elite_workbench.particles", Material.FIREWORK_ROCKET, (cache, guiHandler, player, inventory, i, event) -> {
             cache.setSubSetting(TabParticleEffects.KEY);
