@@ -26,8 +26,6 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
-import me.wolfyscript.utilities.util.version.MinecraftVersions;
-import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -140,9 +138,8 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>(CAMPFIRE.getKey(), Material.CAMPFIRE));
         registerButton(new DummyButton<>(GRINDSTONE.getKey(), Material.GRINDSTONE));
         registerButton(new DummyButton<>(SMOKER.getKey(), Material.SMOKER));
-        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
-            registerButton(new DummyButton<>(SMITHING.getKey(), Material.SMITHING_TABLE));
-        }
+        registerButton(new DummyButton<>(SMITHING.getKey(), Material.SMITHING_TABLE));
+
         registerButton(new DummyButton<>("cauldron.water.disabled", Material.CAULDRON));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>("cauldron.water.enabled", PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var knowledgeBook = cache.getKnowledgeBook();

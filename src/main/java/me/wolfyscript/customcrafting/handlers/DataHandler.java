@@ -18,8 +18,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectM
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
-import me.wolfyscript.utilities.util.version.MinecraftVersions;
-import me.wolfyscript.utilities.util.version.ServerVersion;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -236,7 +234,7 @@ public class DataHandler {
     public List<Recipe> getMinecraftRecipes() {
         if (minecraftRecipes.isEmpty()) {
             minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> {
-                if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16) && recipe instanceof SmithingRecipe)) {
+                if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || recipe instanceof SmithingRecipe) {
                     return ((Keyed) recipe).getKey().getNamespace().equals("minecraft");
                 }
                 return false;

@@ -39,8 +39,6 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
-import me.wolfyscript.utilities.util.version.MinecraftVersions;
-import me.wolfyscript.utilities.util.version.ServerVersion;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -105,6 +103,7 @@ public class CustomCrafting extends JavaPlugin {
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
 
         api = WolfyUtilities.get(this, false);
+
         this.chat = api.getChat();
         this.chat.setInGamePrefix("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
@@ -262,9 +261,8 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new GrindStoneListener(this), this);
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
-        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
-            pM.registerEvents(new SmithingListener(this), this);
-        }
+        pM.registerEvents(new SmithingListener(this), this);
+
         if (WolfyUtilities.hasPlugin("ItemsAdder")) {
             getLogger().info("Detected ItemsAdder! CustomItems and Recipes will be loaded after ItemsAdder is successfully loaded!");
             pM.registerEvents(new ItemsAdderListener(this), this);

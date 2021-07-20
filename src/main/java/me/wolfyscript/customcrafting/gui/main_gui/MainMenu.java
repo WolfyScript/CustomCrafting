@@ -12,8 +12,6 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
-import me.wolfyscript.utilities.util.version.MinecraftVersions;
-import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -31,15 +29,7 @@ public class MainMenu extends CCWindow {
     private static final String BREWING_STAND = Types.BREWING_STAND.getId();
     private static final String ELITE_WORKBENCH = Types.ELITE_WORKBENCH.getId();
     private static final String CAULDRON = Types.CAULDRON.getId();
-    private static final String SMITHING;
-
-    static {
-        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
-            SMITHING = Types.SMITHING.getId();
-        } else {
-            SMITHING = "smithing";
-        }
-    }
+    private static final String SMITHING = Types.SMITHING.getId();
 
     private static final String SETTINGS = "settings";
 
@@ -63,10 +53,7 @@ public class MainMenu extends CCWindow {
         registerButton(new RecipeTypeButton(Types.BREWING_STAND, Material.BREWING_STAND));
         registerButton(new RecipeTypeButton(Types.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new RecipeTypeButton(Types.CAULDRON, Material.CAULDRON));
-
-        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
-            registerButton(new RecipeTypeButton(Types.SMITHING, Material.SMITHING_TABLE));
-        }
+        registerButton(new RecipeTypeButton(Types.SMITHING, Material.SMITHING_TABLE));
 
         registerButton(new ActionButton<>(ITEM_EDITOR, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.setSetting(Setting.ITEMS);
@@ -104,35 +91,21 @@ public class MainMenu extends CCWindow {
         event.setButton(14, ANVIL);
         event.setButton(16, CAULDRON);
 
-        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_16)) {
-            event.setButton(19, BLAST_FURNACE);
-            event.setButton(21, SMOKER);
-            event.setButton(23, CAMPFIRE);
-            event.setButton(25, STONECUTTER);
-            if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-                event.setButton(28, GRINDSTONE);
-                event.setButton(30, BREWING_STAND);
-                event.setButton(32, ELITE_WORKBENCH);
-                event.setButton(34, SMITHING);
-            } else {
-                event.setButton(29, GRINDSTONE);
-                event.setButton(31, ELITE_WORKBENCH);
-                event.setButton(33, SMITHING);
-            }
+        event.setButton(19, BLAST_FURNACE);
+        event.setButton(21, SMOKER);
+        event.setButton(23, CAMPFIRE);
+        event.setButton(25, STONECUTTER);
+        if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
+            event.setButton(28, GRINDSTONE);
+            event.setButton(30, BREWING_STAND);
+            event.setButton(32, ELITE_WORKBENCH);
+            event.setButton(34, SMITHING);
         } else {
-            event.setButton(20, BLAST_FURNACE);
-            event.setButton(22, SMOKER);
-            event.setButton(24, CAMPFIRE);
-            event.setButton(28, STONECUTTER);
-            if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
-                event.setButton(30, GRINDSTONE);
-                event.setButton(32, BREWING_STAND);
-                event.setButton(34, ELITE_WORKBENCH);
-            } else {
-                event.setButton(29, GRINDSTONE);
-                event.setButton(33, ELITE_WORKBENCH);
-            }
+            event.setButton(29, GRINDSTONE);
+            event.setButton(31, ELITE_WORKBENCH);
+            event.setButton(33, SMITHING);
         }
+
         for (int i = 37; i < 44; i++) {
             event.setButton(i, data.getLightBackground());
         }
