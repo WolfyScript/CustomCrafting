@@ -2550,7 +2550,32 @@
         ]
       },
       "ingredient": {
-        "gui_name": "&8&lIngredient Options"
+        "gui_name": "&8&lIngredient Options",
+        "items": {
+          "replace_with_remains": {
+            "enabled": {
+              "name": "&a✔ &6&lCraft Remains",
+              "lore": [
+                "&eThe ingredient will be replaced",
+                "&eby the vanilla craft remains.",
+                "&eOr by the custom replacement/durability cost",
+                "&eif it is a CustomItem that has it enabled.",
+                "",
+                "&8[&aClick&8] &eDisable Vanilla Craft Remains"
+              ]
+            },
+            "disabled": {
+              "name": "&4❌ &6&lCraft Remains",
+              "lore": [
+                "&eThe ingredient will be removed completely.",
+                "&eOnly exception are CustomItems that have",
+                "&ea custom replacement or durability cost.",
+                "",
+                "&8[&aClick&8] &eEnable Vanilla Craft Remains"
+              ]
+            }
+          }
+        }
       },
       "result": {
         "gui_name": "&8&lResult Options",

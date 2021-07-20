@@ -10,10 +10,13 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 public class IngredientMenu extends CCWindow {
+
+    private static final String REPLACE_WITH_REMAINS = "replace_with_remains";
 
     public IngredientMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "ingredient", 54, customCrafting);
@@ -35,6 +38,13 @@ public class IngredientMenu extends CCWindow {
             guiHandler.openWindow("tag_settings");
             return true;
         })));
+        registerButton(new ToggleButton<>(REPLACE_WITH_REMAINS, (cache, guiHandler, player, guiInventory, i) -> cache.getIngredientData().getIngredient().isReplaceWithRemains(), new ButtonState<>(REPLACE_WITH_REMAINS + ".enabled", Material.BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            cache.getIngredientData().getIngredient().setReplaceWithRemains(false);
+            return true;
+        }), new ButtonState<>(REPLACE_WITH_REMAINS + ".disabled", Material.BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            cache.getIngredientData().getIngredient().setReplaceWithRemains(true);
+            return true;
+        })));
     }
 
     @Override
@@ -44,6 +54,7 @@ public class IngredientMenu extends CCWindow {
         for (int i = 0; i < 36; i++) {
             update.setButton(9 + i, "item_container_" + i);
         }
-        update.setButton(49, "tags");
+        update.setButton(48, "tags");
+        update.setButton(50, REPLACE_WITH_REMAINS);
     }
 }
