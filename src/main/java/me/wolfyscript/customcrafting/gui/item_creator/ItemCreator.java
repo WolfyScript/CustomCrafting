@@ -131,6 +131,8 @@ public class ItemCreator extends CCWindow {
             return true;
         }));
         registerReferences();
+        tabs.clear();
+        me.wolfyscript.customcrafting.Registry.ITEM_CREATOR_TABS.forEach(tab -> tab.register(this, api));
 
         Registry.META_PROVIDER.keySet().forEach(namespacedKey -> registerButton(new MetaIgnoreButton(namespacedKey)));
     }
