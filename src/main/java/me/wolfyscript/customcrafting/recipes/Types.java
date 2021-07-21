@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastReci
 import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
 import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
@@ -14,7 +13,6 @@ import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 

@@ -43,6 +43,14 @@ public class RecipeType<C extends ICustomRecipe<?, ?>> {
         return clazz;
     }
 
+    public boolean isInstance(ICustomRecipe<?, ?> recipe) {
+        return clazz.isInstance(recipe);
+    }
+
+    public C cast(ICustomRecipe<?, ?> recipe) {
+        return clazz.cast(recipe);
+    }
+
     public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         return clazz.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
     }
@@ -72,28 +80,41 @@ public class RecipeType<C extends ICustomRecipe<?, ?>> {
         }
     }
 
-    public static final class CraftingRecipeType<C extends CraftingRecipe<?>, SHAPELESS extends C, SHAPED extends C> extends RecipeType<C> {
+    public static class CraftingRecipeType<D extends CraftingRecipe<D>, S extends CraftingRecipe<S>> extends RecipeType<CraftingRecipe<?>> {
 
-        private final Class<SHAPELESS> shapelessClass;
-        private final Class<SHAPED> shapedClass;
+        private final RecipeType<D> shaped;
+        private final RecipeType<S> shapeless;
 
-        public CraftingRecipeType(Types.Type type, Class<C> clazz, Class<SHAPELESS> shapelessClass, Class<SHAPED> shapedClass) {
-            super(type, clazz);
-            this.shapelessClass = shapelessClass;
-            this.shapedClass = shapedClass;
+        public CraftingRecipeType(Types.Type type, RecipeType<D> shaped, RecipeType<S> shapeless) {
+            super(type, (Class<CraftingRecipe<?>>) (Object) CraftingRecipe.class);
+            this.shaped = shaped;
+            this.shapeless = shapeless;
         }
 
         @Override
-        public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-            Class<? extends C> recipeClass = node.path("shapeless").asBoolean() ? shapelessClass : shapedClass;
-            return recipeClass.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
+        public CraftingRecipe<?> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+            return node.path("shapeless").asBoolean() ? shapeless.getInstance(namespacedKey, node) : shaped.getInstance(namespacedKey, node);
+        }
+
+        @Override
+        public boolean isInstance(ICustomRecipe<?, ?> recipe) {
+            return shaped.isInstance(recipe) || shapeless.isInstance(recipe);
+        }
+
+        @Override
+        public CraftingRecipe<?> cast(ICustomRecipe<?, ?> recipe) {
+            try {
+                return shaped.cast(recipe);
+            } catch (ClassCastException e) {
+                return shapeless.cast(recipe);
+            }
         }
 
         @Override
         public String toString() {
             return "CraftingRecipeType{" +
-                    "shapelessClass=" + shapelessClass +
-                    ", shapedClass=" + shapedClass +
+                    "shapelessClass=" + shapeless +
+                    ", shapedClass=" + shaped +
                     "} " + super.toString();
         }
     }

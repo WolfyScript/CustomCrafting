@@ -41,19 +41,11 @@ public class Conditions extends HashMap<String, Condition> {
 
     public boolean check(String id, ICustomRecipe<?, ?> customRecipe, Data data) {
         var condition = getByID(id);
-        if (condition != null) {
-            return condition.check(customRecipe, data);
-        }
-        return true;
+        return condition != null && condition.check(customRecipe, data);
     }
 
     public boolean checkConditions(ICustomRecipe<?, ?> customRecipe, Data data) {
-        for (Condition condition : values()) {
-            if (!condition.check(customRecipe, data)) {
-                return false;
-            }
-        }
-        return true;
+        return values().stream().allMatch(condition -> condition.check(customRecipe, data));
     }
 
     public EliteWorkbenchCondition getEliteCraftingTableCondition() {

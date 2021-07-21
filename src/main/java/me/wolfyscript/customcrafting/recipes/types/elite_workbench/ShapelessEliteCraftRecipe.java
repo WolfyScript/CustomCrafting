@@ -1,38 +1,39 @@
 package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 
 import me.wolfyscript.customcrafting.recipes.RecipePacketType;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.recipes.types.IShapelessCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.AbstractShapelessCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class ShapelessEliteCraftRecipe extends EliteCraftingRecipe implements IShapelessCraftingRecipe {
+public class ShapelessEliteCraftRecipe extends AbstractShapelessCraftingRecipe<ShapelessEliteCraftRecipe> implements EliteCraftingRecipe {
 
     public ShapelessEliteCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        shapeless = true;
     }
 
     public ShapelessEliteCraftRecipe() {
         super();
-        this.shapeless = true;
-    }
-
-    public ShapelessEliteCraftRecipe(EliteCraftingRecipe eliteCraftingRecipe) {
-        super(eliteCraftingRecipe);
-        this.shapeless = true;
     }
 
     public ShapelessEliteCraftRecipe(ShapelessEliteCraftRecipe eliteCraftingRecipe) {
-        this((EliteCraftingRecipe) eliteCraftingRecipe);
+        super(eliteCraftingRecipe);
     }
 
     @Override
     public CraftingData check(List<List<ItemStack>> ingredients) {
         return check(this, getIngredients(), isExactMeta(), ingredients);
+    }
+
+    @Override
+    public RecipeType<ShapelessEliteCraftRecipe> getRecipeType() {
+        return Types.ELITE_WORKBENCH_SHAPELESS;
     }
 
     @Override

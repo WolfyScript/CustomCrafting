@@ -67,7 +67,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                     CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey.toString(), ex.getMessage()));
                 }
             }
-            if (value instanceof IShapedCraftingRecipe craftingRecipe) {
+            if (value instanceof AbstractShapedCraftRecipe craftingRecipe) {
                 craftingRecipe.constructShape();
             }
         }
@@ -125,7 +125,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @return A list including the {@link ICustomRecipe}s of the specified {@link RecipeType}
          */
         public <T extends ICustomRecipe<?, ?>> List<T> get(RecipeType<T> type) {
-            return get(type.getClazz());
+            return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
         public AdvancedCraftingRecipe getAdvancedCrafting(NamespacedKey recipeKey) {

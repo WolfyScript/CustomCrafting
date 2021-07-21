@@ -13,6 +13,8 @@ import java.util.Map;
 
 public interface ICraftingRecipe {
 
+    String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
     boolean isShapeless();
 
     CraftingData check(List<List<ItemStack>> ingredients);

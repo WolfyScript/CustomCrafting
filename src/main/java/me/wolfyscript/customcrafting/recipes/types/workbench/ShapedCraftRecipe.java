@@ -2,86 +2,31 @@ package me.wolfyscript.customcrafting.recipes.types.workbench;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipePacketType;
-import me.wolfyscript.customcrafting.recipes.data.CraftingData;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.types.AbstractShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.RecipeUtil;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
-
-    private int width;
-    private int height;
-    private String[] shape, shapeMirrorHorizontal, shapeMirrorVertical, shapeRotated;
-    private boolean mirrorHorizontal, mirrorVertical, mirrorRotation;
+public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftRecipe> implements AdvancedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
 
     public ShapedCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.shapeless = false;
-        constructShape();
-        JsonNode mirrorNode = node.path("mirror");
-        this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
-        this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
-        this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
 
     public ShapedCraftRecipe() {
         super();
-        this.shapeless = false;
-        this.mirrorHorizontal = true;
-        this.mirrorVertical = false;
-        this.mirrorRotation = false;
     }
 
-    public ShapedCraftRecipe(AdvancedCraftingRecipe craftingRecipe) {
+    public ShapedCraftRecipe(ShapedCraftRecipe craftingRecipe) {
         super(craftingRecipe);
-        this.shapeless = false;
-        constructShape();
-        if (craftingRecipe instanceof ShapedCraftRecipe) {
-            this.width = ((ShapedCraftRecipe) craftingRecipe).width;
-            this.height = ((ShapedCraftRecipe) craftingRecipe).height;
-            this.mirrorHorizontal = ((ShapedCraftRecipe) craftingRecipe).mirrorHorizontal();
-            this.mirrorVertical = ((ShapedCraftRecipe) craftingRecipe).mirrorVertical();
-            this.mirrorRotation = ((ShapedCraftRecipe) craftingRecipe).mirrorRotation();
-        } else {
-            this.mirrorHorizontal = true;
-            this.mirrorVertical = false;
-            this.mirrorRotation = false;
-        }
-    }
-
-    @Override
-    public String[] getShapeMirrorHorizontal() {
-        return shapeMirrorHorizontal;
-    }
-
-    @Override
-    public String[] getShapeMirrorVertical() {
-        return shapeMirrorVertical;
-    }
-
-    @Override
-    public String[] getShapeRotated() {
-        return shapeRotated;
-    }
-
-    @Override
-    public String[] getShape() {
-        return shape;
     }
 
     @Override
@@ -164,78 +109,24 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
     }
 
     @Override
-    public void constructShape() {
-        Map<Character, Ingredient> ingredients = getIngredients();
-        String[] shape = new String[3];
-        int index = 0;
-        int row = 0;
-        for (int i = 0; i < 9; i++) {
-            var ingrd = LETTERS.charAt(i);
-            var items = ingredients.get(ingrd);
-            if (items == null || items.isEmpty()) {
-                if (shape[row] != null) {
-                    shape[row] = shape[row] + " ";
-                } else {
-                    shape[row] = " ";
-                }
-            } else {
-                if (shape[row] != null) {
-                    shape[row] = shape[row] + ingrd;
-                } else {
-                    shape[row] = String.valueOf(ingrd);
-                }
-            }
-            index++;
-            if ((index % 3) == 0) {
-                row++;
-            }
-        }
-        this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
-        this.shapeMirrorVertical = new String[]{"   ", "   ", "   "};
-        for (int i = shape.length - 1, j = 0; i > 0; i--, j++) {
-            this.shapeMirrorVertical[j] = shape[i];
-        }
-        this.shapeMirrorVertical = RecipeUtil.formatShape(this.shapeMirrorVertical).toArray(new String[0]);
-        this.shapeMirrorHorizontal = this.shape.clone();
-        for (int i = 0; i < this.shapeMirrorHorizontal.length; i++) {
-            this.shapeMirrorHorizontal[i] = new StringBuilder(this.shapeMirrorHorizontal[i]).reverse().toString();
-        }
-        this.shapeRotated = this.shapeMirrorVertical.clone();
-        for (int i = 0; i < this.shapeRotated.length; i++) {
-            this.shapeRotated[i] = new StringBuilder(this.shapeRotated[i]).reverse().toString();
-        }
-        this.width = this.shape.length > 0 ? this.shape[0].length() : 0;
-        this.height = this.shape.length;
-    }
-
-    @Override
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        super.writeToJson(gen, serializerProvider);
-        gen.writeObjectFieldStart("mirror");
-        gen.writeBooleanField("horizontal", this.mirrorHorizontal);
-        gen.writeBooleanField("vertical", this.mirrorVertical);
-        gen.writeBooleanField("rotation", this.mirrorRotation);
-        gen.writeEndObject();
-    }
-
-    @Override
-    public void writeToBuf(MCByteBuf byteBuf) {
-        super.writeToBuf(byteBuf);
-        byteBuf.writeVarInt(shape.length);
-        for (String s : shape) {
-            byteBuf.writeUtf(s, 3);
-        }
-    }
-
-    @Override
     public ShapedRecipe getVanillaRecipe() {
-        if (!allowVanillaRecipe() && !getResult().isEmpty() && this.width > 0) {
-            ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
-            recipe.shape(shape);
+        if (!getResult().isEmpty() && getShape().length > 0) {
+            var recipe = new ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
+            recipe.shape(getShape());
             getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
             recipe.setGroup(getGroup());
             return recipe;
         }
         return null;
+    }
+
+    @Override
+    public boolean allowVanillaRecipe() {
+        return false;
+    }
+
+    @Override
+    public void setAllowVanillaRecipe(boolean vanillaRecipe) {
+
     }
 }

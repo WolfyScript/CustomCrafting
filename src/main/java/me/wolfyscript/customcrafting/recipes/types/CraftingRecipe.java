@@ -29,10 +29,8 @@ import java.util.stream.Collectors;
 
 public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
 
-    protected static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-    protected boolean shapeless;
     private Map<Character, Ingredient> ingredients;
+    protected List<Ingredient> ingredientsFlat;
 
     protected int bookGridSize = 3;
     protected int bookSquaredGrid = 9;
@@ -86,11 +84,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     }
 
     @Override
-    public boolean isShapeless() {
-        return shapeless;
-    }
-
-    @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!getIngredients().isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, this.getResult());
@@ -136,7 +129,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
-        gen.writeBooleanField("shapeless", shapeless);
+        gen.writeBooleanField("shapeless", isShapeless());
         gen.writeObjectField("result", result);
         gen.writeObjectField("ingredients", ingredients);
     }
@@ -144,8 +137,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     @Override
     public void writeToBuf(MCByteBuf byteBuf) {
         super.writeToBuf(byteBuf);
-        byteBuf.writeBoolean(shapeless);
-        byteBuf.writeInt(bookGridSize);
+        byteBuf.writeBoolean(isShapeless());
+        byteBuf.writeInt(requiredGridSize);
         byteBuf.writeVarInt(ingredients.size());
         ingredients.forEach((key, ingredient) -> {
             byteBuf.writeInt(LETTERS.indexOf(key));
@@ -154,6 +147,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
                 byteBuf.writeItemStack(choice.create());
             }
         });
-
     }
+
 }
