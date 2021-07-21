@@ -45,7 +45,7 @@ public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapeles
                 usedKeys.add(entry.getKey());
                 var customItem = validItem.get().clone();
                 if (customItem != null) {
-                    dataMap.put(new Vec2d(x, y), new IngredientData(CraftingRecipe.LETTERS.indexOf(entry.getKey()), entry.getValue(), customItem, item));
+                    dataMap.put(new Vec2d(x, y), new IngredientData(ICraftingRecipe.LETTERS.indexOf(entry.getKey()), entry.getValue(), customItem, item));
                 }
                 return;
             }

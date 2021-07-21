@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngr
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -33,7 +32,7 @@ public class WorkbenchCreator extends RecipeCreator {
         registerButton(new ButtonRecipeResult());
 
         registerButton(new ToggleButton<>(RecipeCreatorCluster.SHAPELESS, (cache, guiHandler, player, guiInventory, i) -> cache.getRecipe(Types.WORKBENCH).isShapeless(), new ButtonState<>(RecipeCreatorCluster.SHAPELESS_ENABLED, PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().setCustomRecipe(new ShapedCraftRecipe(guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)));
+            guiHandler.getCustomCache().setCustomRecipe(new ShapedCraftRecipe(cache.getRecipe(Types.WORKBENCH)));
             return true;
         }), new ButtonState<>(RecipeCreatorCluster.SHAPELESS_DISABLED, PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().setCustomRecipe(new ShapelessCraftRecipe(guiHandler.getCustomCache().getRecipe(Types.WORKBENCH)));
@@ -98,7 +97,7 @@ public class WorkbenchCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        AdvancedCraftingRecipe workbench = cache.getRecipe(Types.WORKBENCH);
+        CraftingRecipe<?> workbench = cache.getRecipe(Types.WORKBENCH);
         return workbench.getIngredients() != null && !workbench.getIngredients().isEmpty() && !workbench.getResult().isEmpty();
     }
 }

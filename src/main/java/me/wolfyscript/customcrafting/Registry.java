@@ -4,10 +4,10 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.types.AbstractShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
@@ -128,9 +128,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
-        public AdvancedCraftingRecipe getAdvancedCrafting(NamespacedKey recipeKey) {
+        public CraftingRecipe<?> getAdvancedCrafting(NamespacedKey recipeKey) {
             ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(recipeKey);
-            return customRecipe instanceof AdvancedCraftingRecipe ? (AdvancedCraftingRecipe) customRecipe : null;
+            return customRecipe instanceof CraftingRecipe<?> craftingRecipe && craftingRecipe instanceof AdvancedCraftingRecipe ? craftingRecipe : null;
         }
 
         /**
@@ -215,8 +215,8 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             final int itemsSize = items.size();
             final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
             return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {
-                if (recipe instanceof IShapedCraftingRecipe shapedRecipe) {
-                    return itemsSize > 0 && shapedRecipe.getHeight() > 0 && itemsSize == shapedRecipe.getHeight() && items0Size == shapedRecipe.getWidth();
+                if (recipe instanceof AbstractShapedCraftRecipe<?> shapedRecipe) {
+                    return itemsSize > 0 && shapedRecipe.getShape().length > 0 && itemsSize == shapedRecipe.getShape()[0].length() && items0Size == shapedRecipe.getShape().length;
                 }
                 return true;
             }).sorted(Comparator.comparing(ICustomRecipe::getPriority));

@@ -29,73 +29,17 @@ public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftReci
         super(craftingRecipe);
     }
 
-    @Override
-    public int getWidth() {
-        return width;
+    public ShapedCraftRecipe(ShapelessCraftRecipe craftingRecipe) {
+        super(craftingRecipe);
+    }
+
+    public ShapedCraftRecipe(CraftingRecipe<?> craftingRecipe) {
+        super(craftingRecipe);
     }
 
     @Override
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public void setMirrorHorizontal(boolean mirrorHorizontal) {
-        this.mirrorHorizontal = mirrorHorizontal;
-    }
-
-    @Override
-    public boolean mirrorHorizontal() {
-        return mirrorHorizontal;
-    }
-
-    @Override
-    public void setMirrorVertical(boolean mirrorVertical) {
-        this.mirrorVertical = mirrorVertical;
-    }
-
-    @Override
-    public boolean mirrorVertical() {
-        return mirrorVertical;
-    }
-
-    @Override
-    public void setMirrorRotation(boolean mirrorRotation) {
-        this.mirrorRotation = mirrorRotation;
-    }
-
-    @Override
-    public boolean mirrorRotation() {
-        return mirrorRotation;
-    }
-
-    @Override
-    public CraftingData check(List<List<ItemStack>> ingredients) {
-        CraftingData craftingData = checkShape(ingredients, getShape());
-        if (craftingData != null) {
-            return craftingData;
-        }
-        if (mirrorHorizontal()) {
-            craftingData = checkShape(ingredients, getShapeMirrorHorizontal());
-            if (craftingData != null) {
-                return craftingData;
-            }
-        }
-        if (mirrorVertical()) {
-            craftingData = checkShape(ingredients, getShapeMirrorVertical());
-            if (craftingData != null) {
-                return craftingData;
-            }
-        }
-        if (mirrorHorizontal() && mirrorVertical() && mirrorRotation()) {
-            craftingData = checkShape(ingredients, getShapeRotated());
-            return craftingData;
-        }
-        return null;
-    }
-
-    private CraftingData checkShape(List<List<ItemStack>> matrix, String[] shape) {
-        return checkShape(this, getIngredients(), isExactMeta(), matrix, shape);
+    public RecipeType<ShapedCraftRecipe> getRecipeType() {
+        return Types.WORKBENCH_SHAPED;
     }
 
     @Override

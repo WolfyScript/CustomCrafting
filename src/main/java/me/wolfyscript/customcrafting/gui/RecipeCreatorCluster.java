@@ -8,8 +8,8 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.HiddenButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.PriorityButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.*;
+import me.wolfyscript.customcrafting.recipes.types.AbstractShapedCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.IShapedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -186,8 +186,8 @@ public class RecipeCreatorCluster extends CCCluster {
         }
         try {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
-                if (recipe instanceof IShapedCraftingRecipe) {
-                    ((IShapedCraftingRecipe) recipe).constructShape();
+                if (recipe instanceof AbstractShapedCraftRecipe) {
+                    ((AbstractShapedCraftRecipe) recipe).constructShape();
                 }
                 Registry.RECIPES.register(recipe);
                 api.getChat().sendKey(player, KEY, "loading.success");

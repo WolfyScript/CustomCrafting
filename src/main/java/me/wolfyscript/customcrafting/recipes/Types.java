@@ -25,11 +25,21 @@ import java.util.Set;
  */
 public class Types {
 
+    public static final RecipeType<ShapedCraftRecipe> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, ShapedCraftRecipe.class);
+    public static final RecipeType<ShapelessCraftRecipe> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, ShapelessCraftRecipe.class);
+    public static final RecipeType.CraftingRecipeType<ShapedCraftRecipe, ShapelessCraftRecipe> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS);
+    public static final RecipeType<ShapedEliteCraftRecipe> ELITE_WORKBENCH_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, ShapedEliteCraftRecipe.class);
+    public static final RecipeType<ShapelessEliteCraftRecipe> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, ShapelessEliteCraftRecipe.class);
+    public static final RecipeType.CraftingRecipeType<ShapedEliteCraftRecipe, ShapelessEliteCraftRecipe> ELITE_WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.ELITE_WORKBENCH, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS);
     static final Set<RecipeType<? extends ICustomRecipe<?, ?>>> values = new HashSet<>();
 
     public enum Type {
         WORKBENCH,
+        WORKBENCH_SHAPED,
+        WORKBENCH_SHAPELESS,
         ELITE_WORKBENCH,
+        ELITE_WORKBENCH_SHAPED,
+        ELITE_WORKBENCH_SHAPELESS,
         ANVIL,
         FURNACE,
         BLAST_FURNACE,
@@ -42,8 +52,6 @@ public class Types {
         SMITHING
     }
 
-    public static final RecipeType.CraftingRecipeType<AdvancedCraftingRecipe, ShapelessCraftRecipe, ShapedCraftRecipe> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, AdvancedCraftingRecipe.class, ShapelessCraftRecipe.class, ShapedCraftRecipe.class);
-    public static final RecipeType.CraftingRecipeType<EliteCraftingRecipe, ShapelessEliteCraftRecipe, ShapedEliteCraftRecipe> ELITE_WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.ELITE_WORKBENCH, EliteCraftingRecipe.class, ShapelessEliteCraftRecipe.class, ShapedEliteCraftRecipe.class);
     public static final RecipeType.CookingRecipeType<CustomFurnaceRecipe> FURNACE = new RecipeType.CookingRecipeType<>(Type.FURNACE, CustomFurnaceRecipe.class);
     public static final RecipeType.CookingRecipeType<CustomBlastRecipe> BLAST_FURNACE = new RecipeType.CookingRecipeType<>(Type.BLAST_FURNACE, CustomBlastRecipe.class);
     public static final RecipeType.CookingRecipeType<CustomSmokerRecipe> SMOKER = new RecipeType.CookingRecipeType<>(Type.SMOKER, CustomSmokerRecipe.class);

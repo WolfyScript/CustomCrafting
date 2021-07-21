@@ -93,6 +93,7 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //Check for custom recipe that overrides the vanilla recipe
             var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
+
             ICraftingRecipe recipe = Registry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey));
             if (dataHandler.getDisabledRecipes().contains(namespacedKey) || recipe != null) {
                 //Recipe is disabled or it is a custom recipe!

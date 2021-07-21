@@ -11,9 +11,6 @@ import java.util.Locale;
 
 public class RecipeType<C extends ICustomRecipe<?, ?>> {
 
-    /**
-     * This is the RecipeType object.
-     */
     private final String id;
     private final String creatorID;
     private final Class<C> clazz;

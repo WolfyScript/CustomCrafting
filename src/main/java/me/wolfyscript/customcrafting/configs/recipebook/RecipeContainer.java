@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
+import me.wolfyscript.customcrafting.recipes.types.AbstractShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
@@ -85,11 +86,11 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
                     if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;
                     }
-                    if (((EliteCraftingRecipe) cachedRecipe).isShapeless()) {
-                        return ((EliteCraftingRecipe) cachedRecipe).getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
+                    if (cachedRecipe instanceof AbstractShapelessCraftingRecipe<?> shapeless) {
+                        return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
                         ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) cachedRecipe;
-                        return recipe1.getHeight() <= cache.getCurrentGridSize() && recipe1.getWidth() <= cache.getCurrentGridSize();
+                        return recipe1.getShape().length <= cache.getCurrentGridSize() && recipe1.getShape()[0].length() <= cache.getCurrentGridSize();
                     }
                 }
                 return true;

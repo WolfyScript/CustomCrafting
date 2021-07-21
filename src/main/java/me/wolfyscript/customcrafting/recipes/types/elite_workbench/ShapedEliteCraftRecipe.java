@@ -25,19 +25,14 @@ public class ShapedEliteCraftRecipe extends AbstractShapedCraftRecipe<ShapedElit
         setSize();
     }
 
+    public ShapedEliteCraftRecipe(CraftingRecipe<?> craftingRecipe) {
+        super(craftingRecipe);
+        setSize();
+    }
+
     private void setSize() {
         this.requiredGridSize = 6;
         this.bookSquaredGrid = 36;
-    }
-
-    @Override
-    public int getWidth() {
-        return this.width;
-    }
-
-    @Override
-    public int getHeight() {
-        return this.height;
     }
 
     @Override

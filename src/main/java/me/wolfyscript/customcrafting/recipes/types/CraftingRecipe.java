@@ -32,8 +32,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     private Map<Character, Ingredient> ingredients;
     protected List<Ingredient> ingredientsFlat;
 
-    protected int bookGridSize = 3;
-    protected int bookSquaredGrid = 9;
+    protected int requiredGridSize = 3;
+    protected int bookSquaredGrid = requiredGridSize * requiredGridSize;
 
     protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -45,12 +45,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
         this.ingredients = new HashMap<>();
     }
 
-    protected CraftingRecipe(CraftingRecipe<C> craftingRecipe) {
+    protected CraftingRecipe(CraftingRecipe<?> craftingRecipe) {
         super(craftingRecipe);
-        this.bookGridSize = craftingRecipe.bookGridSize;
+        this.ingredientsFlat = craftingRecipe.ingredientsFlat.stream().map(Ingredient::clone).collect(Collectors.toList());
+        this.requiredGridSize = craftingRecipe.requiredGridSize;
         this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
-        this.shapeless = craftingRecipe.shapeless;
-        this.ingredients = craftingRecipe.ingredients;
+        this.ingredients = craftingRecipe.getIngredients();
     }
 
     @Override
@@ -120,7 +120,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
             event.setButton(this instanceof EliteCraftingRecipe ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             startSlot = this instanceof EliteCraftingRecipe ? 0 : 10;
             for (int i = 0; i < bookSquaredGrid; i++) {
-                event.setButton(startSlot + i + (i / bookGridSize) * (9 - bookGridSize), new NamespacedKey("recipe_book", "ingredient.container_" + i));
+                event.setButton(startSlot + i + (i / requiredGridSize) * (9 - requiredGridSize), new NamespacedKey("recipe_book", "ingredient.container_" + i));
             }
             event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_" + bookSquaredGrid));
         }

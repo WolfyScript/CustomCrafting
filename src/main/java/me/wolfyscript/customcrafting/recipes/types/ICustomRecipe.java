@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.util.List;
 
 @JsonSerialize(using = ICustomRecipe.Serializer.class)
-public interface ICustomRecipe<C extends ICustomRecipe<?, ?>, T extends ResultTarget> extends Keyed {
+public interface ICustomRecipe<C extends ICustomRecipe<C, T>, T extends ResultTarget> extends Keyed {
 
     WolfyUtilities getAPI();
 

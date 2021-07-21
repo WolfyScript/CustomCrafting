@@ -26,6 +26,10 @@ public class ShapelessEliteCraftRecipe extends AbstractShapelessCraftingRecipe<S
         super(eliteCraftingRecipe);
     }
 
+    public ShapelessEliteCraftRecipe(CraftingRecipe<?> craftingRecipe) {
+        super(craftingRecipe);
+    }
+
     @Override
     public CraftingData check(List<List<ItemStack>> ingredients) {
         return check(this, getIngredients(), isExactMeta(), ingredients);

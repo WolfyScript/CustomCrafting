@@ -19,7 +19,7 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 
-public abstract class CustomRecipe<C extends CustomRecipe<C, T>, T extends ResultTarget> implements ICustomRecipe<C, T> {
+public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends ResultTarget> implements ICustomRecipe<C, T> {
 
     protected NamespacedKey namespacedKey;
     protected boolean exactMeta;
@@ -65,7 +65,13 @@ public abstract class CustomRecipe<C extends CustomRecipe<C, T>, T extends Resul
         this.hidden = false;
     }
 
-    protected CustomRecipe(CustomRecipe<C, T> customRecipe) {
+    /**
+     * Used to copy the fields of another instance to this one.
+     * The ResultTarget must be the same in order to copy it.
+     *
+     * @param customRecipe The other CustomRecipe. Can be from another type, but must have the same ResultTarget.
+     */
+    protected CustomRecipe(CustomRecipe<?, T> customRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = customRecipe.namespacedKey;
