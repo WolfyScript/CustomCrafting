@@ -16,7 +16,6 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
@@ -273,20 +272,33 @@ public class DataHandler {
             if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
-        if (!items.isEmpty()) {
-            isColumnOccupied(items, 0);
-            isColumnOccupied(items, items.get(0).size());
+        var leftPos = gridSize;
+        var rightPos = 0;
+        for (List<ItemStack> itemsY : items) {
+            var size = itemsY.size();
+            for (int i = 0; i < size; i++) {
+                if (itemsY.get(i) != null) {
+                    leftPos = Math.min(leftPos, i);
+                    break;
+                }
+            }
+            if (leftPos == 0) break;
         }
-        return items;
+        for (List<ItemStack> itemsY : items) {
+            var size = itemsY.size();
+            for (int i = size - 1; i > 0; i--) {
+                if (itemsY.get(i) != null) {
+                    rightPos = Math.max(rightPos, i + 1);
+                    break;
+                }
+            }
+            if (rightPos == gridSize) break;
+        }
+        var finalLeftPos = leftPos;
+        var finalRightPos = rightPos;
+        return items.stream().map(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos)).collect(Collectors.toList());
     }
 
-    private void isColumnOccupied(List<List<ItemStack>> items, int column) {
-        int columnToCheck = Math.max(0, --column);
-        if (!items.isEmpty() && columnToCheck < items.get(0).size() && items.parallelStream().allMatch(item -> ItemUtils.isAirOrNull(item.get(columnToCheck)))) {
-            items.forEach(item -> item.remove(columnToCheck));
-            isColumnOccupied(items, columnToCheck);
-        }
-    }
 
     /**
      * Loads a recipe copy into the {@link CCCache} of the {@link GuiHandler}.
