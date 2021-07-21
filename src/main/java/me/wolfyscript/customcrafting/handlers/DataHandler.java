@@ -8,8 +8,10 @@ import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -308,10 +310,14 @@ public class DataHandler {
      * @return If the recipe was successfully loaded into cache.
      */
     public boolean loadRecipeIntoCache(ICustomRecipe<?, ?> recipe, GuiHandler<CCCache> guiHandler) {
-        if (guiHandler.getCustomCache().getRecipeType().equals(recipe.getRecipeType())) {
+        if (guiHandler.getCustomCache().getRecipeType().isInstance(recipe)) {
             ICustomRecipe<?, ?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
-            guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
+            if (recipeCopy instanceof CraftingRecipe<?> craftingRecipe) {
+                guiHandler.getCustomCache().setCustomRecipe(craftingRecipe instanceof AdvancedCraftingRecipe ? Types.WORKBENCH : Types.ELITE_WORKBENCH, craftingRecipe);
+            } else {
+                guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
+            }
             return true;
         }
         return false;

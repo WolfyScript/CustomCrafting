@@ -54,7 +54,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
 
     protected CraftingRecipe(CraftingRecipe<?> craftingRecipe) {
         super(craftingRecipe);
-        this.ingredientsFlat = craftingRecipe.ingredientsFlat.stream().map(Ingredient::clone).collect(Collectors.toList());
+        this.ingredientsFlat = craftingRecipe.ingredientsFlat != null ? craftingRecipe.ingredientsFlat.stream().map(Ingredient::clone).collect(Collectors.toList()) : null;
         this.requiredGridSize = craftingRecipe.requiredGridSize;
         this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
         this.ingredients = craftingRecipe.getIngredients();

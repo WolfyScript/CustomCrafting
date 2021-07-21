@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -38,10 +39,10 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         }));
 
         registerButton(new ToggleButton<>(RecipeCreatorCluster.SHAPELESS, (cache, g, p, gui, i) -> cache.getEliteCraftingRecipe().isShapeless(), new ButtonState<>(RecipeCreatorCluster.SHAPELESS_ENABLED, PlayerHeadUtils.getViaURL("f21d93da43863cb3759afefa9f7cc5c81f34d920ca97b7283b462f8b197f813"), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.setCustomRecipe(new ShapedEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
+            cache.setCustomRecipe(Types.ELITE_WORKBENCH, new ShapedEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
             return true;
         }), new ButtonState<>(RecipeCreatorCluster.SHAPELESS_DISABLED, PlayerHeadUtils.getViaURL("1aae7e8222ddbee19d184b97e79067814b6ba3142a3bdcce8b93099a312"), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.setCustomRecipe(new ShapelessEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
+            cache.setCustomRecipe(Types.ELITE_WORKBENCH, new ShapelessEliteCraftRecipe(guiHandler.getCustomCache().getEliteCraftingRecipe()));
             return true;
         })));
 

@@ -44,7 +44,6 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
 
     protected AbstractShapedCraftRecipe(CraftingRecipe<?> craftingRecipe) {
         super(craftingRecipe);
-        constructShape();
         if (craftingRecipe instanceof AbstractShapedCraftRecipe<?> shapedRecipe) {
             this.mirrorHorizontal = shapedRecipe.mirrorHorizontal;
             this.mirrorVertical = shapedRecipe.mirrorVertical;

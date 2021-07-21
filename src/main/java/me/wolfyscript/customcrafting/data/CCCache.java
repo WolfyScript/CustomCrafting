@@ -70,8 +70,8 @@ public class CCCache extends CustomCache {
         this.recipeType = Types.WORKBENCH;
 
         setCustomRecipe(new CustomAnvilRecipe());
-        setCustomRecipe(new ShapedCraftRecipe());
-        setCustomRecipe(new ShapedEliteCraftRecipe());
+        setCustomRecipe(Types.WORKBENCH, new ShapedCraftRecipe());
+        setCustomRecipe(Types.ELITE_WORKBENCH, new ShapedEliteCraftRecipe());
         setCustomRecipe(new CustomBlastRecipe());
         setCustomRecipe(new CustomCampfireRecipe());
         setCustomRecipe(new CustomSmokerRecipe());
@@ -177,15 +177,19 @@ public class CCCache extends CustomCache {
     }
 
     //Recipes
-    public void setCustomRecipe(ICustomRecipe<?,?> customRecipe) {
+    public void setCustomRecipe(ICustomRecipe<?, ?> customRecipe) {
         recipes.put(customRecipe.getRecipeType(), customRecipe);
     }
 
-    public ICustomRecipe<?,?> getRecipe() {
+    public <T extends ICustomRecipe<?, ?>> void setCustomRecipe(RecipeType<T> type, T customRecipe) {
+        recipes.put(type, customRecipe);
+    }
+
+    public ICustomRecipe<?, ?> getRecipe() {
         return getRecipe(getRecipeType());
     }
 
-    public <T extends ICustomRecipe<?,?>> T getRecipe(RecipeType<T> recipeType) {
+    public <T extends ICustomRecipe<?, ?>> T getRecipe(RecipeType<T> recipeType) {
         return recipeType.getClazz().cast(recipes.get(recipeType));
     }
 
@@ -210,16 +214,7 @@ public class CCCache extends CustomCache {
             case WORKBENCH:
                 setCustomRecipe(new ShapedCraftRecipe());
                 break;
-            case CAMPFIRE:
-            case SMOKER:
-            case FURNACE:
-            case BLAST_FURNACE:
-            case ANVIL:
-            case STONECUTTER:
-            case CAULDRON:
-            case GRINDSTONE:
-            case BREWING_STAND:
-            case SMITHING:
+            default:
                 try {
                     setCustomRecipe(getRecipeType().getClazz().getDeclaredConstructor().newInstance());
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

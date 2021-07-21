@@ -5,7 +5,10 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -73,7 +76,13 @@ public class RecipeListContainerButton extends Button<CCCache> {
             if (clickEvent.isShiftClick() && customRecipe != null) {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
-                    cache.setRecipeType(customRecipe.getRecipeType());
+                    if (customRecipe instanceof AdvancedCraftingRecipe) {
+                        cache.setRecipeType(Types.WORKBENCH);
+                    } else if (customRecipe instanceof EliteCraftingRecipe) {
+                        cache.setRecipeType(Types.ELITE_WORKBENCH);
+                    } else {
+                        cache.setRecipeType(customRecipe.getRecipeType());
+                    }
                     if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(RecipeCreatorCluster.KEY, guiHandler.getCustomCache().getRecipeType().getCreatorID())), 1);
                     } else {

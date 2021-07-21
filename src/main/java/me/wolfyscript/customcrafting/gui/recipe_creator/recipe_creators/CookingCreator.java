@@ -86,7 +86,8 @@ public class CookingCreator extends RecipeCreator {
     }
 
     public boolean validToSave(CCCache cache) {
-        if (cache.getRecipeType().getType() == Types.Type.FURNACE || cache.getRecipeType().getType() == Types.Type.BLAST_FURNACE || cache.getRecipeType().getType() == Types.Type.SMOKER || cache.getRecipeType().getType() == Types.Type.CAMPFIRE) {
+        var type = cache.getRecipeType().getType();
+        if (type == Types.Type.FURNACE || type == Types.Type.BLAST_FURNACE || type == Types.Type.SMOKER || type == Types.Type.CAMPFIRE) {
             CustomCookingRecipe<?, ?> furnace = cache.getCookingRecipe();
             return !furnace.getSource().isEmpty() && !furnace.getResult().isEmpty();
         }

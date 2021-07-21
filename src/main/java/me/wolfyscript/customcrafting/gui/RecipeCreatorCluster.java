@@ -157,7 +157,7 @@ public class RecipeCreatorCluster extends CCCluster {
                                 StringUtil.copyPartialMatches(args[0], Registry.RECIPES.namespaces(), results);
                             } else if (args.length == 2) {
                                 results.add("<key>");
-                                StringUtil.copyPartialMatches(args[1], Registry.RECIPES.get(args[0]).stream().filter(recipe -> recipe.getRecipeType().equals(cache.getRecipeType())).map(recipe -> recipe.getNamespacedKey().getKey()).collect(Collectors.toList()), results);
+                                StringUtil.copyPartialMatches(args[1], Registry.RECIPES.get(args[0]).stream().filter(recipe -> cache.getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).collect(Collectors.toList()), results);
                             }
                         }
                         Collections.sort(results);
