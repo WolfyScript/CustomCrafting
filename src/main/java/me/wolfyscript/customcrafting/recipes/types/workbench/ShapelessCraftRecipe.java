@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<ShapelessCraftRecipe> implements AdvancedCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
 
     public ShapelessCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
+        super(namespacedKey, node, 3);
     }
 
     public ShapelessCraftRecipe() {
-        super();
+        super(3);
     }
 
     public ShapelessCraftRecipe(ShapelessCraftRecipe craftingRecipe) {

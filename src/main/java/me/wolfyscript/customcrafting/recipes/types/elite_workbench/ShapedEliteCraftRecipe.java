@@ -11,12 +11,12 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 public class ShapedEliteCraftRecipe extends AbstractShapedCraftRecipe<ShapedEliteCraftRecipe> implements EliteCraftingRecipe {
 
     public ShapedEliteCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
+        super(namespacedKey, node, 6);
         setSize();
     }
 
     public ShapedEliteCraftRecipe() {
-        super();
+        super(6);
         setSize();
     }
 

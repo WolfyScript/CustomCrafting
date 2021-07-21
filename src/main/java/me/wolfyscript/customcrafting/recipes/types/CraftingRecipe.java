@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
@@ -29,19 +30,25 @@ import java.util.stream.Collectors;
 
 public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
 
+    protected static final String INGREDIENTS_KEY = "ingredients";
+
     private Map<Character, Ingredient> ingredients;
     protected List<Ingredient> ingredientsFlat;
 
-    protected int requiredGridSize = 3;
-    protected int bookSquaredGrid = requiredGridSize * requiredGridSize;
+    protected int requiredGridSize;
+    protected int bookSquaredGrid;
 
-    protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
+    protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
         super(namespacedKey, node);
-        setIngredients(Streams.stream(node.path("ingredients").fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue()))));
+        this.requiredGridSize = gridSize;
+        this.bookSquaredGrid = requiredGridSize * requiredGridSize;
+        setIngredients(Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue()))));
     }
 
-    protected CraftingRecipe() {
+    protected CraftingRecipe(int gridSize) {
         super();
+        this.requiredGridSize = gridSize;
+        this.bookSquaredGrid = requiredGridSize * requiredGridSize;
         this.ingredients = new HashMap<>();
     }
 
@@ -66,6 +73,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     @Override
     public void setIngredients(Map<Character, Ingredient> ingredients) {
         this.ingredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o));
+        Preconditions.checkArgument(!ingredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
     }
 
     @Override
@@ -130,8 +138,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("shapeless", isShapeless());
-        gen.writeObjectField("result", result);
-        gen.writeObjectField("ingredients", ingredients);
+        gen.writeObjectField(RESULT, result);
+        gen.writeObjectField(INGREDIENTS_KEY, ingredients);
     }
 
     @Override

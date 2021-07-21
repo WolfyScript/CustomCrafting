@@ -68,10 +68,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
-        if(event instanceof InventoryClickEvent) {
+        if (event instanceof InventoryClickEvent clickEvent) {
             ICustomRecipe<?, ?> customRecipe = getCustomRecipe(guiHandler);
-            if (((InventoryClickEvent) event).isShiftClick() && customRecipe != null) {
-                if (((InventoryClickEvent) event).isLeftClick()) {
+            if (clickEvent.isShiftClick() && customRecipe != null) {
+                if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
                     cache.setRecipeType(customRecipe.getRecipeType());
                     if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
@@ -102,7 +102,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
         if (getCustomRecipe(guiHandler) != null) {
             ICustomRecipe<?,?> recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
+                var itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
                 if (recipe.getResult().isEmpty()) {
                     itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
                 }

@@ -58,16 +58,16 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
 
         @Override
         public void register(NamespacedKey namespacedKey, ICustomRecipe<?, ?> value) {
-            remove(namespacedKey);
+            remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
             super.register(namespacedKey, value);
             if (value instanceof ICustomVanillaRecipe) {
                 try {
                     Bukkit.addRecipe(((ICustomVanillaRecipe<?>) value).getVanillaRecipe());
                 } catch (IllegalArgumentException ex) {
-                    CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey.toString(), ex.getMessage()));
+                    CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
             }
-            if (value instanceof AbstractShapedCraftRecipe craftingRecipe) {
+            if (value instanceof AbstractShapedCraftRecipe<?> craftingRecipe) {
                 craftingRecipe.constructShape();
             }
         }

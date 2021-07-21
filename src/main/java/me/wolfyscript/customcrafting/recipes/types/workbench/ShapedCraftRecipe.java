@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftRecipe> implements AdvancedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
 
     public ShapedCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
+        super(namespacedKey, node, 3);
     }
 
     public ShapedCraftRecipe() {
-        super();
+        super(3);
     }
 
     public ShapedCraftRecipe(ShapedCraftRecipe craftingRecipe) {

@@ -44,7 +44,7 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     public CustomStonecutterRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         if (node.has("result")) {
-            this.result = node.path("result").has("custom_amount") ? new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class)) : ItemLoader.loadResult(node.path("result"));
+            setResult(node.path("result").has("custom_amount") ? new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class)) : ItemLoader.loadResult(node.path("result")));
         }
         this.source = ItemLoader.loadIngredient(node.path("source"));
     }

@@ -74,7 +74,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
         setEffectRemovals(Streams.stream(node.path("effect_removals").elements()).map(n -> mapper.convertValue(n, PotionEffectType.class)).collect(Collectors.toList()));
         Map<PotionEffect, Boolean> effectAdditions = new HashMap<>();
         node.path("effect_additions").elements().forEachRemaining(n -> {
-            PotionEffect potionEffect = mapper.convertValue(n.path("effect"), PotionEffect.class);
+            var potionEffect = mapper.convertValue(n.path("effect"), PotionEffect.class);
             if (potionEffect != null) {
                 effectAdditions.put(potionEffect, n.path("replace").asBoolean());
             }

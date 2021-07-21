@@ -139,9 +139,7 @@ public abstract class RecipeItemStack {
 
     @JsonIgnore
     public boolean isEmpty() {
-        if (items.isEmpty() && tags.isEmpty()) return true;
-        buildChoices();
-        return InventoryUtils.isCustomItemsListEmpty(this.choices);
+        return (items.isEmpty() && tags.isEmpty()) || InventoryUtils.isCustomItemsListEmpty(this.choices);
     }
 
     /**

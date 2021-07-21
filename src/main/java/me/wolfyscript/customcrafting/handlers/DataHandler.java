@@ -288,14 +288,14 @@ public class DataHandler {
             var size = itemsY.size();
             for (int i = size - 1; i > 0; i--) {
                 if (itemsY.get(i) != null) {
-                    rightPos = Math.max(rightPos, i + 1);
+                    rightPos = Math.max(rightPos, i);
                     break;
                 }
             }
             if (rightPos == gridSize) break;
         }
         var finalLeftPos = leftPos;
-        var finalRightPos = rightPos;
+        var finalRightPos = rightPos + 1;
         return items.stream().map(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos)).collect(Collectors.toList());
     }
 

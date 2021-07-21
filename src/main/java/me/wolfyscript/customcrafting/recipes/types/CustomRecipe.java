@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
@@ -18,8 +19,16 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends ResultTarget> implements ICustomRecipe<C, T> {
+
+    protected static final String RESULT = "result";
+    protected static final String GROUP = "group";
+    protected static final String PRIORITY = "priority";
+    protected static final String EXACT_META = "exactItemMeta";
+    protected static final String CONDITIONS = "conditions";
+    protected static final String HIDDEN = "hidden";
 
     protected NamespacedKey namespacedKey;
     protected boolean exactMeta;
@@ -33,22 +42,22 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
     protected Result<T> result;
 
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        this.namespacedKey = Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!");
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
-        this.namespacedKey = namespacedKey;
         //Get fields from JsonNode
-        this.group = node.path("group").asText("");
-        this.priority = mapper.convertValue(node.path("priority").asText("NORMAL"), RecipePriority.class);
-        this.exactMeta = node.path("exactItemMeta").asBoolean(true);
-        this.conditions = mapper.convertValue(node.path("conditions"), Conditions.class);
+        this.group = node.path(GROUP).asText("");
+        this.priority = mapper.convertValue(node.path(PRIORITY).asText("NORMAL"), RecipePriority.class);
+        this.exactMeta = node.path(EXACT_META).asBoolean(true);
+        this.conditions = mapper.convertValue(node.path(CONDITIONS), Conditions.class);
         if (this.conditions == null) {
             this.conditions = new Conditions();
         }
-        this.hidden = node.path("hidden").asBoolean(false);
+        this.hidden = node.path(HIDDEN).asBoolean(false);
 
         //Sets the result of the recipe if one exists in the config
-        if (node.has("result") && !(this instanceof CustomStonecutterRecipe)) {
-            this.result = ItemLoader.loadResult(node.path("result"));
+        if (node.has(RESULT) && !(this instanceof CustomStonecutterRecipe)) {
+            setResult(ItemLoader.loadResult(node.path(RESULT)));
         }
     }
 
@@ -165,15 +174,16 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
     @Override
     public void setResult(Result<T> result) {
         this.result = result;
+        Preconditions.checkArgument(!result.isEmpty(), "Invalid result! Recipe must have a non-air result!");
     }
 
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        gen.writeStringField("group", group);
-        gen.writeBooleanField("hidden", hidden);
-        gen.writeStringField("priority", priority.toString());
-        gen.writeBooleanField("exactItemMeta", exactMeta);
-        gen.writeObjectField("conditions", conditions);
+        gen.writeStringField(GROUP, group);
+        gen.writeBooleanField(HIDDEN, hidden);
+        gen.writeStringField(PRIORITY, priority.toString());
+        gen.writeBooleanField(EXACT_META, exactMeta);
+        gen.writeObjectField(CONDITIONS, conditions);
     }
 
     @Override

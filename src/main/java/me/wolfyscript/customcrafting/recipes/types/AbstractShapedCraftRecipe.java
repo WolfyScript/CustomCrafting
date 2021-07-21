@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
@@ -25,8 +26,8 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
     private boolean mirrorVertical;
     private boolean mirrorRotation;
 
-    protected AbstractShapedCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
+    protected AbstractShapedCraftRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
+        super(namespacedKey, node, gridSize);
         constructShape();
         JsonNode mirrorNode = node.path("mirror");
         this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
@@ -34,8 +35,8 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
 
-    protected AbstractShapedCraftRecipe() {
-        super();
+    protected AbstractShapedCraftRecipe(int gridSize) {
+        super(gridSize);
         this.mirrorHorizontal = true;
         this.mirrorVertical = false;
         this.mirrorRotation = false;
@@ -93,14 +94,18 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
             this.shape = generateMissingShape();
         }
         //Create flatten ingredients. This makes it possible to use a key multiple times in one shape.
-        var flattenShape = String.join("", shape);
+        var flattenShape = String.join("", this.shape);
+
+        Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Empty shape \"" + Arrays.toString(this.shape) + "\"!");
+
         this.ingredientsFlat = new ArrayList<>();
         for (char key : flattenShape.toCharArray()) {
             ingredientsFlat.add(getIngredients().getOrDefault(key, new Ingredient()));
         }
+
+        this.shape = RecipeUtil.formatShape(this.shape).toArray(new String[0]);
         //Create internal shape, which is more performant when used in checks later on.
-        this.internalShape = new AbstractShapedCraftRecipe.Shape(shape);
-        this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
+        this.internalShape = new Shape();
     }
 
     private String[] generateMissingShape() {
@@ -131,7 +136,7 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
 
     @Override
     public CraftingData check(List<List<ItemStack>> matrix) {
-        var craftingData = checkShape(matrix, internalShape.shape);
+        var craftingData = checkShape(matrix, internalShape.original);
         if (craftingData == null) {
             if (mirrorHorizontal()) {
                 craftingData = checkShape(matrix, internalShape.flippedHorizontally);
@@ -202,27 +207,26 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
         }
     }
 
-    public static class Shape {
+    public class Shape {
 
-        private final int[][] shape;
+        private final int[][] original;
         private final int[][] flippedVertically;
         private final int[][] flippedHorizontally;
         private final int[][] rotated;
 
-        public Shape(String[] originalShape) {
+        public Shape() {
             //Original shape
-            this.shape = new int[originalShape.length][originalShape[0].length()];
+            this.original = new int[shape.length][shape[0].length()];
             int index = 0;
-            for (int i = 0; i < originalShape.length; i++) {
-                for (int j = 0; j < originalShape[i].length(); j++) {
-                    shape[i][j] = originalShape[i].charAt(j) != ' ' ? index++ : -1;
+            for (int i = 0; i < shape.length; i++) {
+                for (int j = 0; j < shape[i].length(); j++) {
+                    original[i][j] = shape[i].charAt(j) != ' ' ? index++ : -1;
                 }
             }
-
-            this.flippedVertically = this.shape.clone();
+            this.flippedVertically = this.original.clone();
             ArrayUtils.reverse(this.flippedVertically);
 
-            this.flippedHorizontally = this.shape.clone();
+            this.flippedHorizontally = this.original.clone();
             for (int[] ints : this.flippedHorizontally) {
                 ArrayUtils.reverse(ints);
             }
@@ -234,7 +238,7 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
         }
 
         public int[][] getOriginal() {
-            return shape;
+            return original;
         }
 
         public int[][] getFlippedVertically() {
@@ -247,6 +251,16 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
 
         public int[][] getRotated() {
             return rotated;
+        }
+
+        @Override
+        public String toString() {
+            return "Shape{" +
+                    "original=" + Arrays.toString(original) +
+                    ", flippedVertically=" + Arrays.toString(flippedVertically) +
+                    ", flippedHorizontally=" + Arrays.toString(flippedHorizontally) +
+                    ", rotated=" + Arrays.toString(rotated) +
+                    '}';
         }
     }
 

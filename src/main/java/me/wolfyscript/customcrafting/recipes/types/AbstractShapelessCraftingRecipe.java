@@ -13,12 +13,12 @@ import java.util.*;
 
 public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapelessCraftingRecipe<C>> extends CraftingRecipe<C> {
 
-    protected AbstractShapelessCraftingRecipe(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node);
+    protected AbstractShapelessCraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
+        super(namespacedKey, node, gridSize);
     }
 
-    protected AbstractShapelessCraftingRecipe() {
-        super();
+    protected AbstractShapelessCraftingRecipe(int gridSize) {
+        super(gridSize);
     }
 
     protected AbstractShapelessCraftingRecipe(CraftingRecipe<?> craftingRecipe) {
