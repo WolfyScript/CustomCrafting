@@ -99,30 +99,29 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
             ingredientsFlat.add(getIngredients().getOrDefault(key, new Ingredient()));
         }
         //Create internal shape, which is more performant when used in checks later on.
-        this.internalShape = new AbstractShapedCraftRecipe.Shape(shape, getIngredients());
-
-        shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
+        this.internalShape = new AbstractShapedCraftRecipe.Shape(shape);
+        this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
     }
 
     private String[] generateMissingShape() {
-        String[] shape = new String[3];
-        int index = 0;
-        int row = 0;
-        for (int i = 0; i < 9; i++) {
+        var genShape = new String[requiredGridSize];
+        var index = 0;
+        var row = 0;
+        for (int i = 0; i < bookSquaredGrid; i++) {
             var ingrd = ICraftingRecipe.LETTERS.charAt(i);
             var items = getIngredients().get(ingrd);
-            final var current = shape[row] != null ? shape[row] : "";
+            final var current = genShape[row] != null ? genShape[row] : "";
             if (items == null || items.isEmpty()) {
-                shape[row] = current + " ";
+                genShape[row] = current + " ";
             } else {
-                shape[row] = current + ingrd;
+                genShape[row] = current + ingrd;
             }
             index++;
-            if ((index % 3) == 0) {
+            if ((index % requiredGridSize) == 0) {
                 row++;
             }
         }
-        return shape;
+        return genShape;
     }
 
     @Override
@@ -131,23 +130,23 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
     }
 
     @Override
-    public CraftingData check(List<List<ItemStack>> ingredients) {
-        var craftingData = checkShape(ingredients, internalShape.shape);
+    public CraftingData check(List<List<ItemStack>> matrix) {
+        var craftingData = checkShape(matrix, internalShape.shape);
         if (craftingData == null) {
             if (mirrorHorizontal()) {
-                craftingData = checkShape(ingredients, internalShape.flippedHorizontally);
+                craftingData = checkShape(matrix, internalShape.flippedHorizontally);
                 if (craftingData != null) {
                     return craftingData;
                 }
             }
             if (mirrorVertical()) {
-                craftingData = checkShape(ingredients, internalShape.flippedVertically);
+                craftingData = checkShape(matrix, internalShape.flippedVertically);
                 if (craftingData != null) {
                     return craftingData;
                 }
             }
             if (mirrorHorizontal() && mirrorVertical() && mirrorRotation()) {
-                craftingData = checkShape(ingredients, internalShape.rotated);
+                craftingData = checkShape(matrix, internalShape.rotated);
                 return craftingData;
             }
         }
@@ -210,7 +209,7 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
         private final int[][] flippedHorizontally;
         private final int[][] rotated;
 
-        public Shape(String[] originalShape, Map<Character, Ingredient> ingredients) {
+        public Shape(String[] originalShape) {
             //Original shape
             this.shape = new int[originalShape.length][originalShape[0].length()];
             int index = 0;

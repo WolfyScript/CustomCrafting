@@ -25,22 +25,23 @@ public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapeles
         super(craftingRecipe);
     }
 
-    public CraftingData check(CraftingRecipe<?> recipe, Map<Character, Ingredient> recipeIngredients, boolean exactMeta, List<List<ItemStack>> ingredients) {
+    @Override
+    public CraftingData check(List<List<ItemStack>> matrix) {
         List<Character> usedKeys = new ArrayList<>();
         Map<Vec2d, IngredientData> dataMap = new HashMap<>();
-        for (int i = 0; i < ingredients.size(); i++) {
-            for (int j = 0; j < ingredients.get(i).size(); j++) {
-                checkIngredient(j, i, recipeIngredients, usedKeys, dataMap, ingredients.get(i).get(j), exactMeta);
+        for (int i = 0; i < matrix.size(); i++) {
+            for (int j = 0; j < matrix.get(i).size(); j++) {
+                checkIngredient(j, i, usedKeys, dataMap, matrix.get(i).get(j));
             }
         }
-        return usedKeys.containsAll(recipeIngredients.keySet()) ? new CraftingData(recipe, dataMap) : null;
+        return usedKeys.containsAll(getIngredients().keySet()) ? new CraftingData(this, dataMap) : null;
     }
 
-    protected void checkIngredient(int x, int y, Map<Character, Ingredient> ingredientMap, List<Character> usedKeys, Map<Vec2d, IngredientData> dataMap, ItemStack item, boolean exactMatch) {
+    protected void checkIngredient(int x, int y, List<Character> usedKeys, Map<Vec2d, IngredientData> dataMap, ItemStack item) {
         if (item == null) return;
-        for (Map.Entry<Character, Ingredient> entry : ingredientMap.entrySet()) {
+        for (Map.Entry<Character, Ingredient> entry : getIngredients().entrySet()) {
             if (usedKeys.contains(entry.getKey())) continue;
-            Optional<CustomItem> validItem = entry.getValue().check(item, exactMatch);
+            Optional<CustomItem> validItem = entry.getValue().check(item, isExactMeta());
             if (validItem.isPresent()) {
                 usedKeys.add(entry.getKey());
                 var customItem = validItem.get().clone();

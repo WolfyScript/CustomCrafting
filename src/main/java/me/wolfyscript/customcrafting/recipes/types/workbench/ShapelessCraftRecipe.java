@@ -4,7 +4,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.AbstractShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
@@ -12,11 +11,9 @@ import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<ShapelessCraftRecipe> implements AdvancedCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
@@ -35,11 +32,6 @@ public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<Shapel
 
     public ShapelessCraftRecipe(CraftingRecipe<?> craftingRecipe) {
         super(craftingRecipe);
-    }
-
-    @Override
-    public CraftingData check(List<List<ItemStack>> ingredients) {
-        return check(this, getIngredients(), isExactMeta(), ingredients);
     }
 
     @Override

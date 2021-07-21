@@ -3,14 +3,10 @@ package me.wolfyscript.customcrafting.recipes.types.elite_workbench;
 import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.AbstractShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class ShapelessEliteCraftRecipe extends AbstractShapelessCraftingRecipe<ShapelessEliteCraftRecipe> implements EliteCraftingRecipe {
 
@@ -28,11 +24,6 @@ public class ShapelessEliteCraftRecipe extends AbstractShapelessCraftingRecipe<S
 
     public ShapelessEliteCraftRecipe(CraftingRecipe<?> craftingRecipe) {
         super(craftingRecipe);
-    }
-
-    @Override
-    public CraftingData check(List<List<ItemStack>> ingredients) {
-        return check(this, getIngredients(), isExactMeta(), ingredients);
     }
 
     @Override
