@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CraftManager {
 
@@ -190,5 +191,58 @@ public class CraftManager {
     @Deprecated
     public RecipeUtils getRecipeUtils() {
         return recipeUtils;
+    }
+
+    public int gridSize(ItemStack[] ingredients) {
+        return switch (ingredients.length) {
+            case 9 -> 3;
+            case 16 -> 4;
+            case 25 -> 5;
+            case 36 -> 6;
+            default -> (int) Math.sqrt(ingredients.length);
+        };
+    }
+
+    public List<ItemStack> getIngredients(ItemStack[] ingredients) {
+        List<List<ItemStack>> items = new ArrayList<>();
+        int gridSize = gridSize(ingredients);
+        for (int y = 0; y < gridSize; y++) {
+            items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
+        }
+        ListIterator<List<ItemStack>> iterator = items.listIterator();
+        while (iterator.hasNext()) {
+            if (!iterator.next().parallelStream().allMatch(Objects::isNull)) break;
+            iterator.remove();
+        }
+        iterator = items.listIterator(items.size());
+        while (iterator.hasPrevious()) {
+            if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
+            iterator.remove();
+        }
+        var leftPos = gridSize;
+        var rightPos = 0;
+        for (List<ItemStack> itemsY : items) {
+            var size = itemsY.size();
+            for (int i = 0; i < size; i++) {
+                if (itemsY.get(i) != null) {
+                    leftPos = Math.min(leftPos, i);
+                    break;
+                }
+            }
+            if (leftPos == 0) break;
+        }
+        for (List<ItemStack> itemsY : items) {
+            var size = itemsY.size();
+            for (int i = size - 1; i > 0; i--) {
+                if (itemsY.get(i) != null) {
+                    rightPos = Math.max(rightPos, i + 1);
+                    break;
+                }
+            }
+            if (rightPos == gridSize) break;
+        }
+        var finalLeftPos = leftPos;
+        var finalRightPos = rightPos;
+        return items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).collect(Collectors.toList());
     }
 }
