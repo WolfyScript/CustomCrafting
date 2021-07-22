@@ -88,10 +88,13 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
      * The shapes are shrunk to the smallest possible width and height.<br>
      * Besides the shape it generates a flat list of the ingredients based on the shrunk shape.
      */
-    public void constructShape() {
+    @Override
+    public void constructRecipe() {
         if (this.shape == null) {
             this.shape = generateMissingShape();
         }
+        this.shape = RecipeUtil.formatShape(this.shape).toArray(new String[0]);
+
         //Create flatten ingredients. This makes it possible to use a key multiple times in one shape.
         var flattenShape = String.join("", this.shape);
 
