@@ -204,7 +204,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
 
         public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
-            final long size = items.stream().flatMap(Collection::parallelStream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
+            final long size = items.stream().flatMap(Collection::stream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
             List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
             if (elite) {
                 craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
@@ -214,11 +214,11 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             }
             final int itemsSize = items.size();
             final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
-            return craftingRecipes.stream().filter(r -> r.getIngredients().keySet().size() == size).filter(recipe -> {
+            return craftingRecipes.stream().filter(recipe -> {
                 if (recipe instanceof AbstractShapedCraftRecipe<?> shapedRecipe) {
-                    return itemsSize > 0 && shapedRecipe.getShape().length > 0 && itemsSize == shapedRecipe.getShape()[0].length() && items0Size == shapedRecipe.getShape().length;
+                    return itemsSize > 0 && shapedRecipe.getShape().length > 0 && items0Size == shapedRecipe.getShape()[0].length() && itemsSize == shapedRecipe.getShape().length;
                 }
-                return true;
+                return recipe.getIngredients().keySet().size() == size;
             }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 

@@ -161,9 +161,10 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
         if (ingredientsFlat == null || ingredientsFlat.isEmpty() || matrix.size() != internalShape.length || matrix.get(0).size() != internalShape[0].length) {
             return null;
         }
-        Map<Vec2d, IngredientData> dataMap = new HashMap<>(); //TODO: A more efficient store of ingredients. For example in a list and index ingredients with integers!
+        Map<Vec2d, IngredientData> dataMap = new HashMap<>();
         for (var column = 0; column < matrix.size(); column++) {
-            for (var row = 0; row < matrix.get(column).size(); row++) {
+            var rowSize = matrix.get(column).size();
+            for (var row = 0; row < rowSize; row++) {
                 ItemStack targetItem = matrix.get(column).get(row);
                 if (targetItem != null) {
                     int slot = internalShape[column][row];
@@ -178,7 +179,7 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
                         }
                     }
                     return null;
-                } else if (internalShape[column][row] <= -1) {
+                } else if (internalShape[column][row] >= 0) {
                     return null;
                 }
             }
@@ -206,6 +207,10 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
         }
     }
 
+    /**
+     * This generates and stores the flipped states of the recipe shape.
+     * We trade more calculation on start-up for better performance later on.
+     */
     public class Shape {
 
         private final int[][] original;
@@ -219,9 +224,11 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
             int index = 0;
             for (int i = 0; i < shape.length; i++) {
                 for (int j = 0; j < shape[i].length(); j++) {
-                    original[i][j] = shape[i].charAt(j) != ' ' ? index++ : -1;
+                    original[i][j] = shape[i].charAt(j) != ' ' ? index : -1;
+                    index++;
                 }
             }
+
             this.flippedVertically = this.original.clone();
             ArrayUtils.reverse(this.flippedVertically);
 
