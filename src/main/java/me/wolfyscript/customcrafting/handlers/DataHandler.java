@@ -248,6 +248,7 @@ public class DataHandler {
         return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
     }
 
+    @Deprecated
     private int gridSize(ItemStack[] ingredients) {
         return switch (ingredients.length) {
             case 9 -> 3;
@@ -258,6 +259,7 @@ public class DataHandler {
         };
     }
 
+    @Deprecated
     public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {
         List<List<ItemStack>> items = new ArrayList<>();
         int gridSize = gridSize(ingredients);
@@ -300,7 +302,6 @@ public class DataHandler {
         var finalRightPos = rightPos + 1;
         return items.stream().map(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos)).collect(Collectors.toList());
     }
-
 
     /**
      * Loads a recipe copy into the {@link CCCache} of the {@link GuiHandler}.

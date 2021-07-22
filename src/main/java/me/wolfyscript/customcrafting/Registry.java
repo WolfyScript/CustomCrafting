@@ -4,10 +4,7 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.AbstractShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.recipes.types.*;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
@@ -59,6 +56,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         @Override
         public void register(NamespacedKey namespacedKey, ICustomRecipe<?, ?> value) {
             remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
+            if (value instanceof ICraftingRecipe craftingRecipe) {
+                craftingRecipe.constructRecipe();
+            }
             super.register(namespacedKey, value);
             if (value instanceof ICustomVanillaRecipe) {
                 try {
@@ -66,9 +66,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                 } catch (IllegalArgumentException ex) {
                     CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
-            }
-            if (value instanceof AbstractShapedCraftRecipe<?> craftingRecipe) {
-                craftingRecipe.constructShape();
             }
         }
 
@@ -203,6 +200,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 
+        @Deprecated
         public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
             final long size = items.stream().flatMap(Collection::stream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
             List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
@@ -220,6 +218,19 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
                 }
                 return recipe.getIngredients().keySet().size() == size;
             }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
+        }
+
+        public Stream<CraftingRecipe<?>> getSimilarCraftingRecipes(List<ItemStack> items, boolean elite, boolean advanced) {
+            List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
+            if (elite) {
+                craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
+            }
+            if (advanced) {
+                craftingRecipes.addAll(get(Types.WORKBENCH));
+            }
+            final int size = items.size();
+            final long strippedSize = items.stream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
+            return craftingRecipes.stream().filter(recipe -> recipe instanceof AbstractShapedCraftRecipe<?> shapedRecipe ? shapedRecipe.getFlatIngredients().size() == size : recipe.getIngredients().keySet().size() == strippedSize).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
         public int size() {

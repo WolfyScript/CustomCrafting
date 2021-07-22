@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomPreCraftEvent extends CustomCraftEvent {
@@ -14,11 +15,13 @@ public class CustomPreCraftEvent extends CustomCraftEvent {
     private static final HandlerList handlers = new HandlerList();
     private me.wolfyscript.customcrafting.utils.recipe_item.Result<SlotResultTarget> result;
     private List<List<ItemStack>> ingredients;
+    private final List<ItemStack> matrix;
 
-    public CustomPreCraftEvent(CraftingRecipe<?> craftingRecipe, Inventory inventory, List<List<ItemStack>> ingredients) {
+    public CustomPreCraftEvent(CraftingRecipe<?> craftingRecipe, Inventory inventory, List<ItemStack> matrix) {
         super(craftingRecipe, inventory);
         this.result = craftingRecipe.getResult();
-        this.ingredients = ingredients;
+        this.ingredients = new ArrayList<>();
+        this.matrix = matrix;
     }
 
     public @NotNull me.wolfyscript.customcrafting.utils.recipe_item.Result<SlotResultTarget> getResult() {
@@ -29,12 +32,18 @@ public class CustomPreCraftEvent extends CustomCraftEvent {
         this.result = result;
     }
 
+    @Deprecated
     public List<List<ItemStack>> getIngredients() {
         return ingredients;
     }
 
+    @Deprecated
     public void setIngredients(List<List<ItemStack>> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public List<ItemStack> getMatrix() {
+        return matrix;
     }
 
     @Override

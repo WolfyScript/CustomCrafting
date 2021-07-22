@@ -70,6 +70,10 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
         return getIngredients(LETTERS.charAt(slot));
     }
 
+    public List<Ingredient> getFlatIngredients() {
+        return ingredientsFlat;
+    }
+
     @Override
     public void setIngredients(Map<Character, Ingredient> ingredients) {
         this.ingredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o));

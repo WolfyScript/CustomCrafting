@@ -56,6 +56,10 @@ public abstract class RecipeData<R extends ICustomRecipe<?, ?>> {
         this.result = result;
     }
 
+    public Map<Integer, IngredientData> getIndexedBySlot() {
+        return Map.copyOf(indexedBySlot);
+    }
+
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.
      * For normal recipes that means from 0 - 9.

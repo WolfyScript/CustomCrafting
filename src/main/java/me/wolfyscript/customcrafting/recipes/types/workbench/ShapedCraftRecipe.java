@@ -54,7 +54,7 @@ public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftReci
 
     @Override
     public ShapedRecipe getVanillaRecipe() {
-        if (!getResult().isEmpty() && getShape().length > 0) {
+        if (!getResult().isEmpty() && !ingredientsFlat.isEmpty()) {
             var recipe = new ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
             recipe.shape(getShape());
             getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));

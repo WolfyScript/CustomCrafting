@@ -5,8 +5,8 @@ import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Besides the usual use case for {@link me.wolfyscript.customcrafting.utils.recipe_item.target.MergeOption}s,
@@ -16,11 +16,8 @@ import java.util.stream.Collectors;
  */
 public class CraftingData extends RecipeData<CraftingRecipe<?>> {
 
-    private final Map<Vec2d, IngredientData> ingredients;
-
-    public CraftingData(CraftingRecipe<?> recipe, Map<Vec2d, IngredientData> ingredients) {
-        super(recipe, ingredients.values().stream().collect(Collectors.toMap(IngredientData::recipeSlot, data -> data)));
-        this.ingredients = ingredients;
+    public CraftingData(CraftingRecipe<?> recipe, Map<Integer, IngredientData> ingredients) {
+        super(recipe, ingredients);
     }
 
     /**
@@ -29,13 +26,16 @@ public class CraftingData extends RecipeData<CraftingRecipe<?>> {
      */
     @Deprecated
     public Map<Vec2d, CustomItem> getFoundItems() {
-        return ingredients.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, val -> val.getValue().customItem()));
+        return new HashMap<>();
     }
 
     /**
      * @return A Map of the Ingredients with the position inside the crafting grid.
      */
+    @Deprecated
     public Map<Vec2d, IngredientData> getIngredients() {
-        return ingredients;
+        return new HashMap<>();
     }
+
+
 }

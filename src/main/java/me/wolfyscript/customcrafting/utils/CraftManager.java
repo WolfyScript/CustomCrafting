@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CraftManager {
 
@@ -54,9 +55,9 @@ public class CraftManager {
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             return null;
         }
-        List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
+        List<ItemStack> flatMatrix = getIngredients(matrix);
         Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
-        return Registry.RECIPES.getSimilar(ingredients, elite, advanced).map(recipe -> checkRecipe(recipe, ingredients, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
+        return Registry.RECIPES.getSimilarCraftingRecipes(flatMatrix, elite, advanced).map(recipe -> checkRecipe(recipe, flatMatrix, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     /**
@@ -70,11 +71,11 @@ public class CraftManager {
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
-    public ItemStack checkRecipe(CraftingRecipe<?> recipe, List<List<ItemStack>> ingredients, Player player, Block block, Inventory inventory) {
+    public ItemStack checkRecipe(CraftingRecipe<?> recipe, List<ItemStack> flatMatrix, Player player, Block block, Inventory inventory) {
         if (!recipe.isDisabled() && recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory()))) {
-            var craftingData = recipe.check(ingredients);
+            var craftingData = recipe.check(flatMatrix);
             if (craftingData != null) {
-                var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, ingredients);
+                var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, flatMatrix);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                 if (!customPreCraftEvent.isCancelled()) {
                     Result<SlotResultTarget> result = customPreCraftEvent.getResult();
@@ -131,7 +132,7 @@ public class CraftManager {
     }
 
     private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, ItemStack[] matrix, Result<?> recipeResult, ItemStack result) {
-        List<List<ItemStack>> ingredients = dataHandler.getIngredients(matrix);
+        List<ItemStack> ingredients = getIngredients(matrix);
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData)) : 1;
         recipe.removeMatrix(ingredients, event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {
@@ -191,4 +192,58 @@ public class CraftManager {
     public RecipeUtils getRecipeUtils() {
         return recipeUtils;
     }
+
+    private int gridSize(ItemStack[] ingredients) {
+        return switch (ingredients.length) {
+            case 9 -> 3;
+            case 16 -> 4;
+            case 25 -> 5;
+            case 36 -> 6;
+            default -> (int) Math.sqrt(ingredients.length);
+        };
+    }
+
+    public List<ItemStack> getIngredients(ItemStack[] ingredients) {
+        List<List<ItemStack>> items = new ArrayList<>();
+        int gridSize = gridSize(ingredients);
+        for (int y = 0; y < gridSize; y++) {
+            items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
+        }
+        ListIterator<List<ItemStack>> iterator = items.listIterator();
+        while (iterator.hasNext()) {
+            if (!iterator.next().parallelStream().allMatch(Objects::isNull)) break;
+            iterator.remove();
+        }
+        iterator = items.listIterator(items.size());
+        while (iterator.hasPrevious()) {
+            if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
+            iterator.remove();
+        }
+        var leftPos = gridSize;
+        var rightPos = 0;
+        for (List<ItemStack> itemsY : items) {
+            var size = itemsY.size();
+            for (int i = 0; i < size; i++) {
+                if (itemsY.get(i) != null) {
+                    leftPos = Math.min(leftPos, i);
+                    break;
+                }
+            }
+            if (leftPos == 0) break;
+        }
+        for (List<ItemStack> itemsY : items) {
+            var size = itemsY.size();
+            for (int i = size - 1; i > 0; i--) {
+                if (itemsY.get(i) != null) {
+                    rightPos = Math.max(rightPos, i);
+                    break;
+                }
+            }
+            if (rightPos == gridSize) break;
+        }
+        var finalLeftPos = leftPos;
+        var finalRightPos = rightPos + 1;
+        return items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).collect(Collectors.toList());
+    }
+
 }

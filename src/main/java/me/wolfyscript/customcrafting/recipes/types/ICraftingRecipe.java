@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
-import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -17,32 +16,33 @@ public interface ICraftingRecipe {
 
     boolean isShapeless();
 
-    CraftingData check(List<List<ItemStack>> matrix);
+    CraftingData check(List<ItemStack> flatMatrix);
 
-    default void removeMatrix(List<List<ItemStack>> matrix, Inventory inventory, int totalAmount, CraftingData craftingData) {
-        for (Map.Entry<Vec2d, IngredientData> entry : craftingData.getIngredients().entrySet()) {
-            Vec2d vec = entry.getKey();
-            if (matrix.size() > vec.y && matrix.get((int) vec.y).size() > vec.x) {
-                ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
-                var item = entry.getValue().customItem();
+    void constructRecipe();
+
+    default void removeMatrix(List<ItemStack> matrix, Inventory inventory, int totalAmount, CraftingData craftingData) {
+        craftingData.getIndexedBySlot().forEach((slot, data) -> {
+            if (matrix.size() > slot) {
+                var item = data.customItem();
                 if (item != null) {
-                    item.remove(input, totalAmount, inventory, null, entry.getValue().ingredient().isReplaceWithRemains());
+                    item.remove(matrix.get(slot), totalAmount, inventory, null, data.ingredient().isReplaceWithRemains());
                 }
             }
-        }
+        });
     }
 
-    default int getAmountCraftable(List<List<ItemStack>> matrix, CraftingData craftingData) {
+    default int getAmountCraftable(List<ItemStack> matrix, CraftingData craftingData) {
         int totalAmount = -1;
-        for (Map.Entry<Vec2d, IngredientData> entry : craftingData.getIngredients().entrySet()) {
-            Vec2d vec = entry.getKey();
-            if (matrix.size() > vec.y && matrix.get((int) vec.y).size() > vec.x) {
-                ItemStack input = matrix.get((int) vec.y).get((int) vec.x);
+        for (Map.Entry<Integer, IngredientData> entry : craftingData.getIndexedBySlot().entrySet()) {
+            if (matrix.size() > entry.getKey()) {
                 var item = entry.getValue().customItem();
-                if (item != null && input != null) {
-                    int possible = input.getAmount() / item.getAmount();
-                    if (possible < totalAmount || totalAmount == -1) {
-                        totalAmount = possible;
+                if (item != null) {
+                    ItemStack input = matrix.get(entry.getKey());
+                    if (input != null) {
+                        int possible = input.getAmount() / item.getAmount();
+                        if (possible < totalAmount || totalAmount == -1) {
+                            totalAmount = possible;
+                        }
                     }
                 }
             }

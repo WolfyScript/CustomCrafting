@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.recipes.types;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
-import me.wolfyscript.customcrafting.utils.geom.Vec2d;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -17,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRecipe<C>> extends CraftingRecipe<C> {
 
@@ -28,7 +29,6 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
 
     protected AbstractShapedCraftRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
         super(namespacedKey, node, gridSize);
-        constructShape();
         JsonNode mirrorNode = node.path("mirror");
         this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
         this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
@@ -57,6 +57,10 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
 
     public String[] getShape() {
         return shape;
+    }
+
+    public Shape getInternalShape() {
+        return internalShape;
     }
 
     public void setMirrorHorizontal(boolean mirrorHorizontal) {
@@ -97,7 +101,6 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
 
         //Create flatten ingredients. This makes it possible to use a key multiple times in one shape.
         var flattenShape = String.join("", this.shape);
-
         Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Empty shape \"" + Arrays.toString(this.shape) + "\"!");
 
         this.ingredientsFlat = new ArrayList<>();
@@ -105,7 +108,6 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
             ingredientsFlat.add(getIngredients().getOrDefault(key, new Ingredient()));
         }
 
-        this.shape = RecipeUtil.formatShape(this.shape).toArray(new String[0]);
         //Create internal shape, which is more performant when used in checks later on.
         this.internalShape = new Shape();
     }
@@ -137,54 +139,51 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
     }
 
     @Override
-    public CraftingData check(List<List<ItemStack>> matrix) {
-        var craftingData = checkShape(matrix, internalShape.original);
+    public CraftingData check(List<ItemStack> flatMatrix) {
+        var craftingData = checkShape(flatMatrix, internalShape.original);
         if (craftingData == null) {
             if (mirrorHorizontal()) {
-                craftingData = checkShape(matrix, internalShape.flippedHorizontally);
+                craftingData = checkShape(flatMatrix, internalShape.flippedHorizontally);
                 if (craftingData != null) {
                     return craftingData;
                 }
             }
             if (mirrorVertical()) {
-                craftingData = checkShape(matrix, internalShape.flippedVertically);
+                craftingData = checkShape(flatMatrix, internalShape.flippedVertically);
                 if (craftingData != null) {
                     return craftingData;
                 }
             }
             if (mirrorHorizontal() && mirrorVertical() && mirrorRotation()) {
-                craftingData = checkShape(matrix, internalShape.rotated);
+                craftingData = checkShape(flatMatrix, internalShape.rotated);
                 return craftingData;
             }
         }
         return craftingData;
     }
 
-    protected CraftingData checkShape(List<List<ItemStack>> matrix, int[][] internalShape) {
-        if (ingredientsFlat == null || ingredientsFlat.isEmpty() || matrix.size() != internalShape.length || matrix.get(0).size() != internalShape[0].length) {
+    protected CraftingData checkShape(List<ItemStack> flatMatrix, int[] internalShape) {
+        if (ingredientsFlat == null || ingredientsFlat.isEmpty() || flatMatrix.size() != internalShape.length) {
             return null;
         }
-        Map<Vec2d, IngredientData> dataMap = new HashMap<>();
-        for (var column = 0; column < matrix.size(); column++) {
-            var rowSize = matrix.get(column).size();
-            for (var row = 0; row < rowSize; row++) {
-                ItemStack targetItem = matrix.get(column).get(row);
-                if (targetItem != null) {
-                    int slot = internalShape[column][row];
-                    if (slot >= 0) {
-                        var ingredient = ingredientsFlat.get(slot);
-                        if (ingredient != null) {
-                            Optional<CustomItem> item = ingredient.check(targetItem, this.exactMeta);
-                            if (item.isPresent()) {
-                                dataMap.put(new Vec2d(row, column), new IngredientData(slot, ingredient, item.get(), targetItem));
-                                continue;
-                            }
+        Map<Integer, IngredientData> dataMap = new HashMap<>();
+        for (var i = 0; i < flatMatrix.size(); i++) {
+            if (flatMatrix.get(i) != null) {
+                int slot = internalShape[i];
+                if (slot >= 0) {
+                    var ingredient = ingredientsFlat.get(slot);
+                    if (ingredient != null) {
+                        ItemStack targetItem = flatMatrix.get(i);
+                        Optional<CustomItem> item = ingredient.check(targetItem, this.exactMeta);
+                        if (item.isPresent()) {
+                            dataMap.put(i, new IngredientData(slot, ingredient, item.get(), targetItem));
+                            continue;
                         }
                     }
-                    return null;
-                } else if (internalShape[column][row] >= 0) {
-                    return null;
                 }
+                return null;
+            } else if (internalShape[i] >= 0) {
+                return null;
             }
         }
         return new CraftingData(this, dataMap);
@@ -216,49 +215,62 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
      */
     public class Shape {
 
-        private final int[][] original;
-        private final int[][] flippedVertically;
-        private final int[][] flippedHorizontally;
-        private final int[][] rotated;
+        private final int[] original;
+        private final int[] flippedVertically;
+        private final int[] flippedHorizontally;
+        private final int[] rotated;
 
+        /**
+         * This constructor performs a very resource intensive calculation <br>
+         * to generate, flip, and flatten the original shape <br>
+         * to multiple int only arrays of different possible states of the recipe.
+         */
         public Shape() {
             //Original shape
-            this.original = new int[shape.length][shape[0].length()];
-            int index = 0;
+            final var original2d = new int[shape.length][shape[0].length()];
+            var index = 0;
             for (int i = 0; i < shape.length; i++) {
                 for (int j = 0; j < shape[i].length(); j++) {
-                    original[i][j] = shape[i].charAt(j) != ' ' ? index : -1;
+                    original2d[i][j] = shape[i].charAt(j) != ' ' ? index : -1;
                     index++;
                 }
             }
+            this.original = flatten(original2d);
 
-            this.flippedVertically = this.original.clone();
-            ArrayUtils.reverse(this.flippedVertically);
+            final int[][] flippedVertically2d = original2d.clone();
+            ArrayUtils.reverse(flippedVertically2d);
+            this.flippedVertically = flatten(flippedVertically2d);
 
-            this.flippedHorizontally = this.original.clone();
-            for (int[] ints : this.flippedHorizontally) {
+            final int[][] flippedHorizontally2d = original2d.clone();
+            for (int[] ints : flippedHorizontally2d) {
                 ArrayUtils.reverse(ints);
             }
+            this.flippedHorizontally = flatten(flippedHorizontally2d);
 
-            this.rotated = this.flippedVertically.clone();
-            for (int[] ints : this.rotated) {
+            int[][] rotated = flippedVertically2d.clone();
+            for (int[] ints : rotated) {
                 ArrayUtils.reverse(ints);
             }
+            this.rotated = flatten(rotated);
         }
 
-        public int[][] getOriginal() {
+        private static int[] flatten(int[][] arr) {
+            return Stream.of(arr).flatMapToInt(IntStream::of).toArray();
+        }
+
+        public int[] getOriginal() {
             return original;
         }
 
-        public int[][] getFlippedVertically() {
-            return flippedVertically;
-        }
-
-        public int[][] getFlippedHorizontally() {
+        public int[] getFlippedHorizontally() {
             return flippedHorizontally;
         }
 
-        public int[][] getRotated() {
+        public int[] getFlippedVertically() {
+            return flippedVertically;
+        }
+
+        public int[] getRotated() {
             return rotated;
         }
 
