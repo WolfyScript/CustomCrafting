@@ -200,6 +200,13 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 
+        /**
+         * @param items    The items of the matrix. Usually stripped to the smallest possible size.
+         * @param elite    include Elite crafting recipes.
+         * @param advanced include Advanced crafting recipes.
+         * @return The similar crafting recipes that match the size of the provided matrix items.
+         * @deprecated Replaced by {@link #getSimilarCraftingRecipes(List, boolean, boolean)}
+         */
         @Deprecated
         public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
             final long size = items.stream().flatMap(Collection::stream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
@@ -230,7 +237,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             }
             final int size = items.size();
             final long strippedSize = items.stream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
-            return craftingRecipes.stream().filter(recipe -> recipe instanceof AbstractShapedCraftRecipe<?> shapedRecipe ? shapedRecipe.getFlatIngredients().size() == size : recipe.getIngredients().keySet().size() == strippedSize).sorted(Comparator.comparing(ICustomRecipe::getPriority));
+            return craftingRecipes.stream().filter(recipe -> recipe.getFlatIngredients().size() == (recipe.isShapeless() ? strippedSize : size)).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
         public int size() {

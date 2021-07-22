@@ -39,7 +39,6 @@ public class DataHandler {
     private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 
-
     private final MainConfig mainConfig;
     private final WolfyUtilities api;
     private final ObjectMapper objectMapper;
@@ -74,8 +73,8 @@ public class DataHandler {
             loadConfigs();
         }
         if (update) {
-            int lastBukkitVersion = mainConfig.getInt("data.bukkit_version");
-            int lastVersion = mainConfig.getInt("data.version");
+            var lastBukkitVersion = mainConfig.getInt("data.bukkit_version");
+            var lastVersion = mainConfig.getInt("data.version");
             if (lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION) {
                 api.getConsole().info("[ Converting Items & Recipes to the latest Bukkit and Config format ]");
                 saveData();
@@ -130,7 +129,7 @@ public class DataHandler {
     }
 
     private File[] getFiles(String subFolder, String type) {
-        File data = new File(DATA_FOLDER, subFolder + File.separator + type);
+        var data = new File(DATA_FOLDER, subFolder + File.separator + type);
         if (!data.exists()) return new File[0];
         return data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
     }
@@ -182,7 +181,7 @@ public class DataHandler {
      */
     @Deprecated
     public boolean isRecipeDisabled(ICustomRecipe<?, ?> recipe) {
-        return disabledRecipes.contains(recipe.getNamespacedKey());
+        return recipe.isDisabled();
     }
 
     public void toggleRecipe(ICustomRecipe<?, ?> recipe) {
