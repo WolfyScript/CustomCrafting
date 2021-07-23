@@ -167,24 +167,26 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
             return null;
         }
         Map<Integer, IngredientData> dataMap = new HashMap<>();
-        for (var i = 0; i < flatMatrix.size(); i++) {
-            if (flatMatrix.get(i) != null) {
-                int slot = internalShape[i];
+        var i = 0;
+        for (ItemStack invItem : flatMatrix) {
+            int slot = internalShape[i];
+            if (invItem != null) {
                 if (slot >= 0) {
                     var ingredient = ingredientsFlat.get(slot);
                     if (ingredient != null) {
-                        ItemStack targetItem = flatMatrix.get(i);
-                        Optional<CustomItem> item = ingredient.check(targetItem, this.exactMeta);
+                        Optional<CustomItem> item = ingredient.check(invItem, this.exactMeta);
                         if (item.isPresent()) {
-                            dataMap.put(i, new IngredientData(slot, ingredient, item.get(), targetItem));
+                            dataMap.put(i, new IngredientData(slot, ingredient, item.get(), invItem));
+                            i++;
                             continue;
                         }
                     }
                 }
                 return null;
-            } else if (internalShape[i] >= 0) {
+            } else if (slot >= 0) {
                 return null;
             }
+            i++;
         }
         return new CraftingData(this, dataMap);
     }
