@@ -58,7 +58,7 @@ public class CategoryFilter extends CategorySettings {
         if (!groups.isEmpty() && container.getGroup() != null && !groups.contains(container.getGroup())) {
             return false;
         }
-        if (container.getRecipe() != null && (!recipes.isEmpty() && !recipes.contains(container.getRecipe())) || (!namespaces.isEmpty() && !namespaces.contains(container.getRecipe().getNamespace()))) {
+        if (container.getRecipe() != null && ((!recipes.isEmpty() && !recipes.contains(container.getRecipe())) || (!namespaces.isEmpty() && !namespaces.contains(container.getRecipe().getNamespace())))) {
             return false;
         }
         return container.isValid(totalMaterials);
