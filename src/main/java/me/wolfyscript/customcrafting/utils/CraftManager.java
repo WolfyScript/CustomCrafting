@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CraftManager {
 
@@ -55,7 +54,7 @@ public class CraftManager {
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             return null;
         }
-        List<ItemStack> flatMatrix = getIngredients(matrix);
+        MatrixData flatMatrix = getIngredients(matrix);
         Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
         return Registry.RECIPES.getSimilarCraftingRecipes(flatMatrix, elite, advanced).map(recipe -> checkRecipe(recipe, flatMatrix, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
     }
@@ -71,7 +70,7 @@ public class CraftManager {
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
-    public ItemStack checkRecipe(CraftingRecipe<?> recipe, List<ItemStack> flatMatrix, Player player, Block block, Inventory inventory) {
+    public ItemStack checkRecipe(CraftingRecipe<?> recipe, MatrixData flatMatrix, Player player, Block block, Inventory inventory) {
         if (!recipe.isDisabled() && recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory()))) {
             var craftingData = recipe.check(flatMatrix);
             if (craftingData != null) {
@@ -132,7 +131,7 @@ public class CraftManager {
     }
 
     private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, ItemStack[] matrix, Result<?> recipeResult, ItemStack result) {
-        List<ItemStack> ingredients = getIngredients(matrix);
+        MatrixData ingredients = getIngredients(matrix);
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData)) : 1;
         recipe.removeMatrix(ingredients, event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {
@@ -203,7 +202,7 @@ public class CraftManager {
         };
     }
 
-    public List<ItemStack> getIngredients(ItemStack[] ingredients) {
+    public MatrixData getIngredients(ItemStack[] ingredients) {
         List<List<ItemStack>> items = new ArrayList<>();
         int gridSize = gridSize(ingredients);
         for (int y = 0; y < gridSize; y++) {
@@ -243,7 +242,41 @@ public class CraftManager {
         }
         var finalLeftPos = leftPos;
         var finalRightPos = rightPos + 1;
-        return items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).collect(Collectors.toList());
+        return new MatrixData(items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos);
+    }
+
+    public static class MatrixData {
+
+        private final ItemStack[] matrix;
+        private final int height;
+        private final int width;
+
+        public MatrixData(ItemStack[] matrix, int height, int width) {
+            this.matrix = matrix;
+            this.height = height;
+            this.width = width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public ItemStack[] getMatrix() {
+            return matrix;
+        }
+
+        @Override
+        public String toString() {
+            return "MatrixData{" +
+                    "matrix=" + Arrays.toString(matrix) +
+                    ", height=" + height +
+                    ", width=" + width +
+                    '}';
+        }
     }
 
 }

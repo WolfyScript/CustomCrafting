@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.*;
 import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
+import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -205,7 +206,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param elite    include Elite crafting recipes.
          * @param advanced include Advanced crafting recipes.
          * @return The similar crafting recipes that match the size of the provided matrix items.
-         * @deprecated Replaced by {@link #getSimilarCraftingRecipes(List, boolean, boolean)}
+         * @deprecated Replaced by {@link #getSimilarCraftingRecipes(me.wolfyscript.customcrafting.utils.CraftManager.MatrixData, boolean, boolean)}
          */
         @Deprecated
         public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
@@ -227,7 +228,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
-        public Stream<CraftingRecipe<?>> getSimilarCraftingRecipes(List<ItemStack> items, boolean elite, boolean advanced) {
+        public Stream<CraftingRecipe<?>> getSimilarCraftingRecipes(CraftManager.MatrixData items, boolean elite, boolean advanced) {
             List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
             if (elite) {
                 craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
@@ -235,9 +236,14 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             if (advanced) {
                 craftingRecipes.addAll(get(Types.WORKBENCH));
             }
-            final int size = items.size();
-            final long strippedSize = items.stream().filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
-            return craftingRecipes.stream().filter(recipe -> recipe.getFlatIngredients().size() == (recipe.isShapeless() ? strippedSize : size)).sorted(Comparator.comparing(ICustomRecipe::getPriority));
+            final int size = items.getMatrix().length;
+            final long strippedSize = Arrays.stream(items.getMatrix()).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
+            return craftingRecipes.stream().filter(recipe -> {
+                if (recipe instanceof AbstractShapedCraftRecipe<?> shaped) {
+                    return shaped.getFlatIngredients().size() == size && shaped.getInternalShape().getHeight() == items.getHeight() && shaped.getInternalShape().getWidth() == items.getWidth();
+                }
+                return strippedSize == recipe.getFlatIngredients().size();
+            }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
         public int size() {

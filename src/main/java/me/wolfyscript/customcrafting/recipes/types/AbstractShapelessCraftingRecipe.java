@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.types;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -33,11 +34,12 @@ public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapeles
     }
 
     @Override
-    public CraftingData check(List<ItemStack> flatMatrix) {
+    public CraftingData check(CraftManager.MatrixData flatMatrix) {
         List<Integer> usedKeys = new ArrayList<>();
         Map<Integer, IngredientData> dataMap = new HashMap<>();
-        for (int i = 0; i < flatMatrix.size(); i++) {
-            checkIngredient(i, usedKeys, dataMap, flatMatrix.get(i));
+        ItemStack[] matrix = flatMatrix.getMatrix();
+        for (int i = 0; i < matrix.length; i++) {
+            checkIngredient(i, usedKeys, dataMap, matrix[i]);
         }
         return usedKeys.size() == ingredientsFlat.size() ? new CraftingData(this, dataMap) : null;
     }
