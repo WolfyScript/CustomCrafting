@@ -54,9 +54,9 @@ public class CraftManager {
         if (customCrafting.getConfigHandler().getConfig().isLockedDown()) {
             return null;
         }
-        MatrixData flatMatrix = getIngredients(matrix);
-        Block targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
-        return Registry.RECIPES.getSimilarCraftingRecipes(flatMatrix, elite, advanced).map(recipe -> checkRecipe(recipe, flatMatrix, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
+        var matrixData = getIngredients(matrix);
+        var targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
+        return Registry.RECIPES.getSimilarCraftingRecipes(matrixData, elite, advanced).map(recipe -> checkRecipe(recipe, matrixData, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     /**
@@ -93,19 +93,31 @@ public class CraftManager {
      * @param result The result {@link ItemStack} from the inventory.
      * @param matrix The matrix of the crafting grid. <strong>The {@link ItemStack}s of the matrix will be edited directly! It will not add new instances!</strong>
      * @param event  The {@link InventoryClickEvent} that caused this click.
+     * @deprecated This method no longer uses the passed in matrix! Instead it will use the cached {@link CraftingData} created when {@link #preCheckRecipe(ItemStack[], Player, Inventory, boolean, boolean)} is called. Use {@link #consumeRecipe(ItemStack, InventoryClickEvent)} instead!
      */
+    @Deprecated
     public void consumeRecipe(ItemStack result, ItemStack[] matrix, InventoryClickEvent event) {
+        consumeRecipe(result, event);
+    }
+
+    /**
+     * Consumes the active Recipe from the matrix and sets the correct item to the cursor.
+     *
+     * @param result The result {@link ItemStack} from the inventory.
+     * @param event  The {@link InventoryClickEvent} that caused this click.
+     */
+    public void consumeRecipe(ItemStack result, InventoryClickEvent event) {
         var inventory = event.getClickedInventory();
-        if (inventory != null && !ItemUtils.isAirOrNull(result) && has(event.getWhoClicked().getUniqueId())) {
-            var craftingData = preCraftedRecipes.get(event.getWhoClicked().getUniqueId());
+        var player = (Player) event.getWhoClicked();
+        if (inventory != null && !ItemUtils.isAirOrNull(result) && has(player.getUniqueId())) {
+            var craftingData = preCraftedRecipes.get(player.getUniqueId());
             CraftingRecipe<?> recipe = craftingData.getRecipe();
             if (recipe != null && !ItemUtils.isAirOrNull(result)) {
                 Result<?> recipeResult = craftingData.getResult();
-                var player = (Player) event.getWhoClicked();
                 editStatistics(player, inventory, recipe);
                 setPlayerCraftTime(player, recipe);
                 recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
-                calculateClick(player, event, craftingData, recipe, matrix, recipeResult, result);
+                calculateClick(player, event, craftingData, recipe, recipeResult, result);
             }
             remove(event.getWhoClicked().getUniqueId());
         }
@@ -130,10 +142,9 @@ public class CraftManager {
         }
     }
 
-    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, ItemStack[] matrix, Result<?> recipeResult, ItemStack result) {
-        MatrixData ingredients = getIngredients(matrix);
-        int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(ingredients, craftingData)) : 1;
-        recipe.removeMatrix(ingredients, event.getClickedInventory(), possible, craftingData);
+    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, Result<?> recipeResult, ItemStack result) {
+        int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
+        recipe.removeMatrix(event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {
             if (possible > 0) {
                 RandomCollection<CustomItem> results = recipeResult.getRandomChoices(player);
@@ -250,11 +261,13 @@ public class CraftManager {
         private final ItemStack[] matrix;
         private final int height;
         private final int width;
+        private final long strippedSize;
 
         public MatrixData(ItemStack[] matrix, int height, int width) {
             this.matrix = matrix;
             this.height = height;
             this.width = width;
+            this.strippedSize = Arrays.stream(matrix).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
         }
 
         public int getHeight() {
@@ -263,6 +276,10 @@ public class CraftManager {
 
         public int getWidth() {
             return width;
+        }
+
+        public long getStrippedSize() {
+            return strippedSize;
         }
 
         public ItemStack[] getMatrix() {

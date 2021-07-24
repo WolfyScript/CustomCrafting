@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
-import me.wolfyscript.customcrafting.recipes.types.ICraftingRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -55,9 +54,7 @@ public class CraftListener implements Listener {
             if (craftManager.has(event.getWhoClicked().getUniqueId())) {
                 event.setCancelled(true);
                 if (event.isShiftClick() || ItemUtils.isAirOrNull(cursor) || cursor.getAmount() + resultItem.getAmount() <= cursor.getMaxStackSize()) {
-                    ItemStack[] matrix = inventory.getMatrix();
-                    craftManager.consumeRecipe(resultItem, matrix, event);
-                    inventory.setMatrix(matrix);
+                    craftManager.consumeRecipe(resultItem, event);
                     ((Player) event.getWhoClicked()).updateInventory();
                     inventory.setResult(new ItemStack(Material.AIR));
                     callPreCraftEvent(inventory, event);
@@ -69,11 +66,7 @@ public class CraftListener implements Listener {
     }
 
     public void callPreCraftEvent(CraftingInventory inventory, InventoryClickEvent event) {
-        Bukkit.getScheduler().runTask(customCrafting, () -> {
-            var event1 = new PrepareItemCraftEvent(inventory, event.getView(), false);
-            Bukkit.getPluginManager().callEvent(event1);
-            ((Player) event.getWhoClicked()).updateInventory();
-        });
+        Bukkit.getScheduler().runTask(customCrafting, () -> Bukkit.getPluginManager().callEvent(new PrepareItemCraftEvent(inventory, event.getView(), false)));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -93,9 +86,7 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //Check for custom recipe that overrides the vanilla recipe
             var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
-
-            ICraftingRecipe recipe = Registry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey));
-            if (dataHandler.getDisabledRecipes().contains(namespacedKey) || recipe != null) {
+            if (dataHandler.getDisabledRecipes().contains(namespacedKey) || Registry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey)) != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);
                 Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
@@ -103,7 +94,7 @@ public class CraftListener implements Listener {
             }
             //Check for items that are not allowed in vanilla recipes.
             //If one is found, then cancel the recipe.
-            if (Stream.of(matrix).parallel().map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+            if (Stream.of(matrix).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
                 e.getInventory().setResult(ItemUtils.AIR);
             }
             //At this point the vanilla recipe is valid and can be crafted

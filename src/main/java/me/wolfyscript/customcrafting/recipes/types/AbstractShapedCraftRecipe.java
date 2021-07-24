@@ -137,37 +137,41 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
     }
 
     @Override
-    public CraftingData check(CraftManager.MatrixData flatMatrix) {
+    public boolean fitsDimensions(CraftManager.MatrixData matrixData) {
+        return ingredientsFlat.size() == matrixData.getMatrix().length && internalShape.height == matrixData.getHeight() && internalShape.width == matrixData.getWidth();
+    }
+
+    @Override
+    public CraftingData check(CraftManager.MatrixData matrixData) {
         for (int[] entry : internalShape.getUniqueShapes()) {
-            var craftingData = checkShape(flatMatrix, entry);
+            var craftingData = checkShape(matrixData, entry);
             if (craftingData != null) return craftingData;
         }
         return null;
     }
 
-    protected CraftingData checkShape(CraftManager.MatrixData flatMatrix, int[] shape) {
+    protected CraftingData checkShape(CraftManager.MatrixData matrixData, int[] shape) {
         Map<Integer, IngredientData> dataMap = new HashMap<>();
         var i = 0;
-        for (ItemStack invItem : flatMatrix.getMatrix()) {
+        for (ItemStack invItem : matrixData.getMatrix()) {
             int slot = shape[i];
-            if (invItem == null) {
-                if (slot < 0) {
-                    i++;
-                    continue;
-                } else return null;
-            } else if (slot < 0) {
+            if (invItem != null) {
+                if (slot >= 0) {
+                    var ingredient = ingredientsFlat.get(slot);
+                    if (ingredient != null) {
+                        Optional<CustomItem> item = ingredient.check(invItem, this.exactMeta);
+                        if (item.isPresent()) {
+                            dataMap.put(i, new IngredientData(slot, ingredient, item.get(), invItem));
+                            i++;
+                            continue;
+                        }
+                    }
+                }
+                return null;
+            } else if (slot >= 0) {
                 return null;
             }
-            var ingredient = ingredientsFlat.get(slot);
-            if (ingredient != null) {
-                Optional<CustomItem> item = ingredient.check(invItem, this.exactMeta);
-                if (item.isPresent()) {
-                    dataMap.put(i, new IngredientData(slot, ingredient, item.get(), invItem));
-                    i++;
-                    continue;
-                }
-            }
-            return null;
+            i++;
         }
         return new CraftingData(this, dataMap);
     }

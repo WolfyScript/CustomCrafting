@@ -42,7 +42,7 @@ public class ResultSlotButton extends ItemInputButton<CCCache> {
                     return false;
                 } else if (!((InventoryClickEvent) event).getClick().equals(ClickType.DOUBLE_CLICK) && eliteWorkbench.getResult() != null && customCrafting.getCraftManager().has(event.getWhoClicked().getUniqueId())) {
                     if (ItemUtils.isAirOrNull(clickEvent.getCursor()) || clickEvent.getCursor().isSimilar(eliteWorkbench.getResult())) {
-                        customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), eliteWorkbench.getContents(), clickEvent);
+                        customCrafting.getCraftManager().consumeRecipe(eliteWorkbench.getResult(), clickEvent);
                         eliteWorkbench.setResult(null);
                         customCrafting.getCraftManager().remove(event.getWhoClicked().getUniqueId());
                     }

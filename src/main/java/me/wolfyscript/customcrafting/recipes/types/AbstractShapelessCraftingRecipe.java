@@ -34,10 +34,15 @@ public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapeles
     }
 
     @Override
-    public CraftingData check(CraftManager.MatrixData flatMatrix) {
+    public boolean fitsDimensions(CraftManager.MatrixData matrixData) {
+        return ingredientsFlat.size() == matrixData.getStrippedSize();
+    }
+
+    @Override
+    public CraftingData check(CraftManager.MatrixData matrixData) {
         List<Integer> usedKeys = new ArrayList<>();
         Map<Integer, IngredientData> dataMap = new HashMap<>();
-        ItemStack[] matrix = flatMatrix.getMatrix();
+        ItemStack[] matrix = matrixData.getMatrix();
         for (int i = 0; i < matrix.length; i++) {
             checkIngredient(i, usedKeys, dataMap, matrix[i]);
         }

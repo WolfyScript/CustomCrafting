@@ -228,7 +228,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
-        public Stream<CraftingRecipe<?>> getSimilarCraftingRecipes(CraftManager.MatrixData items, boolean elite, boolean advanced) {
+        public Stream<CraftingRecipe<?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
             List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
             if (elite) {
                 craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
@@ -236,14 +236,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             if (advanced) {
                 craftingRecipes.addAll(get(Types.WORKBENCH));
             }
-            final int size = items.getMatrix().length;
-            final long strippedSize = Arrays.stream(items.getMatrix()).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
-            return craftingRecipes.stream().filter(recipe -> {
-                if (recipe instanceof AbstractShapedCraftRecipe<?> shaped) {
-                    return shaped.getFlatIngredients().size() == size && shaped.getInternalShape().getHeight() == items.getHeight() && shaped.getInternalShape().getWidth() == items.getWidth();
-                }
-                return strippedSize == recipe.getFlatIngredients().size();
-            }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
+            return craftingRecipes.stream().filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
         public int size() {
