@@ -18,10 +18,7 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
-import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.customcrafting.utils.RecipeUtils;
+import me.wolfyscript.customcrafting.utils.*;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
@@ -33,32 +30,28 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.Enchanted
 import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.PlaceholderAPIMergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
-import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
-import net.md_5.bungee.api.chat.ClickEvent;
+import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
 public class CustomCrafting extends JavaPlugin {
 
+    //Only used for displaying which version it is.
+    private static final boolean PREMIUM = true;
     private static final String ENVIRONMENT = System.getProperties().getProperty("com.wolfyscript.env", "PROD");
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
@@ -78,6 +71,7 @@ public class CustomCrafting extends JavaPlugin {
     private static CustomCrafting instance;
     //Utils
     private final String currentVersion;
+    private final WUVersion version;
     private final Patreon patreon;
     private final ChatUtils chatUtils;
     //The main WolfyUtilities instance
@@ -90,7 +84,7 @@ public class CustomCrafting extends JavaPlugin {
     private DataBaseHandler dataBaseHandler = null;
     private Cauldrons cauldrons = null;
 
-    private boolean outdated = false;
+    private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
 
     private final boolean isPaper;
@@ -99,6 +93,8 @@ public class CustomCrafting extends JavaPlugin {
         super();
         instance = this;
         currentVersion = instance.getDescription().getVersion();
+        this.version = WUVersion.parse(getDescription().getVersion());
+        this.updateChecker = new UpdateChecker(this, 55883);
 
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
 
@@ -109,7 +105,7 @@ public class CustomCrafting extends JavaPlugin {
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
 
         this.chatUtils = new ChatUtils(this);
-        this.patreon = new Patreon(this);
+        this.patreon = new Patreon();
         this.networkHandler = new NetworkHandler(this, api);
     }
 
@@ -190,10 +186,9 @@ public class CustomCrafting extends JavaPlugin {
         if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
             dataHandler.loadRecipesAndItems();
         }
-        //Don't check for updates when it's a Premium+ version, because there isn't a way to do so yet!
-        if (!patreon.isPatreon()) {
-            checkUpdate(null);
-        }
+
+        updateChecker.run(null);
+
         //Load Metrics
         var metrics = new Metrics(this, 3211);
 
@@ -218,7 +213,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("____ _  _ ____ ___ ____ _  _ ____ ____ ____ ____ ___ _ _  _ ____ ");
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
-        getLogger().info(() -> "    v" + currentVersion + " " + (patreon.isPatreon() ? "Patreon" : "Free"));
+        getLogger().info(() -> "    v" + currentVersion + " " + (PREMIUM ? "Premium" : "Free"));
         getLogger().info(" ");
     }
 
@@ -227,9 +222,6 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     private void writePatreonCredits() {
-        if (patreon.isPatreon()) {
-            getLogger().info("Thanks for actively supporting this plugin on Patreon!");
-        }
         patreon.initialize();
         getLogger().info("");
         getLogger().info("Special thanks to my Patrons for supporting this project: ");
@@ -318,39 +310,6 @@ public class CustomCrafting extends JavaPlugin {
 
     }
 
-    public void checkUpdate(@Nullable Player player) {
-        new Thread(() -> {
-            try {
-                HttpURLConnection con = (HttpURLConnection) new URL("https://api.spigotmc.org/legacy/update.php?resource=55883").openConnection();
-                con.setReadTimeout(2000);
-                var bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String version = bufferedReader.readLine();
-
-                String[] vNew = version.split("\\.");
-                String[] vOld = currentVersion.split("\\.");
-
-                for (int i = 0; i < vNew.length; i++) {
-                    int v1 = Integer.parseInt(vNew[i]);
-                    int v2 = Integer.parseInt(vOld[i]);
-                    if (v2 > v1) {
-                        outdated = false;
-                        return;
-                    } else if (v1 > v2) {
-                        outdated = true;
-                        api.getConsole().warn("$msg.startup.outdated$");
-                        if (player != null) {
-                            chat.sendMessage(player, "$msg.player.outdated.msg$");
-                            chat.sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
-                        }
-                        return;
-                    }
-                }
-            } catch (Exception ex) {
-                api.getConsole().warn("$msg.startup.update_check_fail$");
-            }
-        }).start();
-    }
-
     public ConfigHandler getConfigHandler() {
         return configHandler;
     }
@@ -407,11 +366,20 @@ public class CustomCrafting extends JavaPlugin {
         return patreon;
     }
 
+    @Deprecated
     public boolean isOutdated() {
-        return outdated;
+        return getUpdateChecker().isOutdated();
     }
 
     public boolean isPaper() {
         return isPaper;
+    }
+
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
+    }
+
+    public WUVersion getVersion() {
+        return version;
     }
 }

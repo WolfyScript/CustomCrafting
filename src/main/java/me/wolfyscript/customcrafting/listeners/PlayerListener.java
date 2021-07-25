@@ -3,9 +3,7 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +24,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
-        var api = customCrafting.getApi();
         if (customCrafting.getConfigHandler().getConfig().updateOldCustomItems()) {
             ItemStack[] contents = player.getInventory().getContents();
             if (contents.length > 0) {
@@ -36,12 +33,7 @@ public class PlayerListener implements Listener {
             }
         }
         if ((player.isOp() || player.hasPermission("customcrafting.*") || player.hasPermission("customcrafting.update_check"))) {
-            if (customCrafting.isOutdated()) {
-                api.getChat().sendMessage(player, "$msg.player.outdated.msg$");
-                api.getChat().sendActionMessage(player, new ClickData("$msg.player.outdated.msg2$", null), new ClickData("$msg.player.outdated.link$", null, new me.wolfyscript.utilities.api.chat.ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/55883/")));
-            } else if (!customCrafting.getPatreon().isPatreon()) {
-                customCrafting.checkUpdate(player);
-            }
+            customCrafting.getUpdateChecker().run(player);
         }
     }
 
