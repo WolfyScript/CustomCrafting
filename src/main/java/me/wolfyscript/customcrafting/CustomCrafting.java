@@ -94,18 +94,14 @@ public class CustomCrafting extends JavaPlugin {
         instance = this;
         currentVersion = instance.getDescription().getVersion();
         this.version = WUVersion.parse(getDescription().getVersion());
-        this.updateChecker = new UpdateChecker(this, 55883);
-
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
-
         api = WolfyUtilities.get(this, false);
-
         this.chat = api.getChat();
         this.chat.setInGamePrefix("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
-
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon();
+        this.updateChecker = new UpdateChecker(this, 55883);
         this.networkHandler = new NetworkHandler(this, api);
     }
 
