@@ -56,7 +56,7 @@ public class UpdateChecker {
         if (outdated) {
             sendOutdatedMsg(player);
         } else if (System.currentTimeMillis() - lastCheck > CHECK_DELAY) {
-            new Thread(() -> check(player)).start();
+            new Thread(() -> check(player), "CC-update-check").start();
         }
     }
 
