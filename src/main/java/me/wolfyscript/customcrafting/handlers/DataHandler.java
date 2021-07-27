@@ -11,7 +11,6 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -313,8 +312,8 @@ public class DataHandler {
         if (guiHandler.getCustomCache().getRecipeType().isInstance(recipe)) {
             ICustomRecipe<?, ?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
-            if (recipeCopy instanceof CraftingRecipe<?> craftingRecipe) {
-                guiHandler.getCustomCache().setCustomRecipe(craftingRecipe instanceof AdvancedCraftingRecipe ? Types.WORKBENCH : Types.ELITE_WORKBENCH, craftingRecipe);
+            if (recipeCopy instanceof CraftingRecipe<?, ?> craftingRecipe) {
+                guiHandler.getCustomCache().setCustomRecipe(Types.WORKBENCH.isInstance(craftingRecipe) ? Types.WORKBENCH : Types.ELITE_WORKBENCH, craftingRecipe);
             } else {
                 guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
             }

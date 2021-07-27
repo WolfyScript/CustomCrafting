@@ -1,12 +1,11 @@
-package me.wolfyscript.customcrafting.recipes.types.grindstone;
+package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -24,7 +23,8 @@ import java.io.IOException;
 
 public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultTarget> {
 
-    private Ingredient inputTop, inputBottom;
+    private Ingredient inputTop;
+    private Ingredient inputBottom;
     private int xp;
 
     public GrindstoneRecipe(NamespacedKey namespacedKey, JsonNode node) {
@@ -55,11 +55,6 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultT
     }
 
     @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.GRINDSTONE;
-    }
-
-    @Override
     public void setIngredient(int slot, Ingredient ingredient) {
         if (slot == 0) {
             setInputTop(ingredient);
@@ -87,6 +82,7 @@ public class GrindstoneRecipe extends CustomRecipe<GrindstoneRecipe, SlotResultT
 
     public void setInputBottom(Ingredient inputBottom) {
         this.inputBottom = inputBottom;
+        Preconditions.checkArgument(!inputBottom.isEmpty(), "Invalid Bottom ingredient! Recipe must have non-air base ingredient!");
     }
 
     public int getXp() {

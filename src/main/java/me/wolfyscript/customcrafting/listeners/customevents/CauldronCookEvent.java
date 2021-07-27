@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
 import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CauldronRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

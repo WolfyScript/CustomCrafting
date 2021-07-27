@@ -2,7 +2,8 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
+import me.wolfyscript.customcrafting.recipes.types.crafting.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -20,7 +21,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRecipe<C>> extends CraftingRecipe<C> {
+public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRecipe<C, S>, S extends CraftingRecipeSettings> extends CraftingRecipe<C, S> {
 
     private String[] shape;
     private Shape internalShape;
@@ -43,9 +44,9 @@ public abstract class AbstractShapedCraftRecipe<C extends AbstractShapedCraftRec
         this.mirrorRotation = false;
     }
 
-    protected AbstractShapedCraftRecipe(CraftingRecipe<?> craftingRecipe) {
+    protected AbstractShapedCraftRecipe(CraftingRecipe<?, S> craftingRecipe) {
         super(craftingRecipe);
-        if (craftingRecipe instanceof AbstractShapedCraftRecipe<?> shapedRecipe) {
+        if (craftingRecipe instanceof AbstractShapedCraftRecipe<?, ?> shapedRecipe) {
             this.mirrorHorizontal = shapedRecipe.mirrorHorizontal;
             this.mirrorVertical = shapedRecipe.mirrorVertical;
             this.mirrorRotation = shapedRecipe.mirrorRotation;

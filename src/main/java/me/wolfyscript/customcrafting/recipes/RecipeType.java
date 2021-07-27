@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.types.crafting.CraftingRecipeSettings;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
@@ -77,34 +78,32 @@ public class RecipeType<C extends ICustomRecipe<?, ?>> {
         }
     }
 
-    public static class CraftingRecipeType<D extends CraftingRecipe<D>, S extends CraftingRecipe<S>> extends RecipeType<CraftingRecipe<?>> {
+    public static class CraftingRecipeType<T extends CraftingRecipeSettings, D extends CraftingRecipe<D, T>, S extends CraftingRecipe<S, T>> extends RecipeType<CraftingRecipe<?, T>> {
 
         private final RecipeType<D> shaped;
         private final RecipeType<S> shapeless;
+        private final Class<T> typeClass;
 
-        public CraftingRecipeType(Types.Type type, RecipeType<D> shaped, RecipeType<S> shapeless) {
-            super(type, (Class<CraftingRecipe<?>>) (Object) CraftingRecipe.class);
+        public CraftingRecipeType(Types.Type type, Class<T> settingsType, RecipeType<D> shaped, RecipeType<S> shapeless) {
+            super(type, (Class<CraftingRecipe<?, T>>) (Object) CraftingRecipe.class);
+            this.typeClass = settingsType;
             this.shaped = shaped;
             this.shapeless = shapeless;
         }
 
         @Override
-        public CraftingRecipe<?> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        public CraftingRecipe<?, T> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
             return node.path("shapeless").asBoolean() ? shapeless.getInstance(namespacedKey, node) : shaped.getInstance(namespacedKey, node);
         }
 
         @Override
         public boolean isInstance(ICustomRecipe<?, ?> recipe) {
-            return shaped.isInstance(recipe) || shapeless.isInstance(recipe);
+            return recipe instanceof CraftingRecipe<?, ?> craftingRecipe && typeClass.isInstance(craftingRecipe.getSettings());
         }
 
         @Override
-        public CraftingRecipe<?> cast(ICustomRecipe<?, ?> recipe) {
-            try {
-                return shaped.cast(recipe);
-            } catch (ClassCastException e) {
-                return shapeless.cast(recipe);
-            }
+        public CraftingRecipe<?, T> cast(ICustomRecipe<?, ?> recipe) {
+            return (CraftingRecipe<?, T>) recipe;
         }
 
         @Override

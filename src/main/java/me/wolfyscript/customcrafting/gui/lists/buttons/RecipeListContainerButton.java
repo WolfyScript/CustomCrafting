@@ -7,8 +7,6 @@ import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -76,9 +74,9 @@ public class RecipeListContainerButton extends Button<CCCache> {
             if (clickEvent.isShiftClick() && customRecipe != null) {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
-                    if (customRecipe instanceof AdvancedCraftingRecipe) {
+                    if (Types.WORKBENCH.isInstance(customRecipe)) {
                         cache.setRecipeType(Types.WORKBENCH);
-                    } else if (customRecipe instanceof EliteCraftingRecipe) {
+                    } else if (Types.ELITE_WORKBENCH.isInstance(customRecipe)) {
                         cache.setRecipeType(Types.ELITE_WORKBENCH);
                     } else {
                         cache.setRecipeType(customRecipe.getRecipeType());

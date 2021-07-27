@@ -1,20 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapelessEliteCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.*;
+import me.wolfyscript.customcrafting.recipes.types.crafting.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,11 +34,11 @@ public class Types {
 
     public static final RecipeType<ShapedCraftRecipe> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, ShapedCraftRecipe.class);
     public static final RecipeType<ShapelessCraftRecipe> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, ShapelessCraftRecipe.class);
-    public static final RecipeType.CraftingRecipeType<ShapedCraftRecipe, ShapelessCraftRecipe> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS);
+    public static final RecipeType.CraftingRecipeType<AdvancedRecipeSettings, ShapedCraftRecipe, ShapelessCraftRecipe> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, AdvancedRecipeSettings.class, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS);
 
     public static final RecipeType<ShapedEliteCraftRecipe> ELITE_WORKBENCH_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, ShapedEliteCraftRecipe.class);
     public static final RecipeType<ShapelessEliteCraftRecipe> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, ShapelessEliteCraftRecipe.class);
-    public static final RecipeType.CraftingRecipeType<ShapedEliteCraftRecipe, ShapelessEliteCraftRecipe> ELITE_WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.ELITE_WORKBENCH, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS);
+    public static final RecipeType.CraftingRecipeType<EliteRecipeSettings, ShapedEliteCraftRecipe, ShapelessEliteCraftRecipe> ELITE_WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.ELITE_WORKBENCH, EliteRecipeSettings.class, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS);
 
     public static final RecipeType.CookingRecipeType<CustomFurnaceRecipe> FURNACE = new RecipeType.CookingRecipeType<>(Type.FURNACE, CustomFurnaceRecipe.class);
     public static final RecipeType.CookingRecipeType<CustomBlastRecipe> BLAST_FURNACE = new RecipeType.CookingRecipeType<>(Type.BLAST_FURNACE, CustomBlastRecipe.class);

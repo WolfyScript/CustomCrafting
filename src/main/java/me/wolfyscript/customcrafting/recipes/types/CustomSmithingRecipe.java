@@ -1,11 +1,10 @@
-package me.wolfyscript.customcrafting.recipes.types.smithing;
+package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -23,6 +22,9 @@ import java.io.IOException;
 
 public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, SlotResultTarget> {
 
+    private static final String KEY_BASE = "base";
+    private static final String KEY_ADDITION = "addition";
+
     private Ingredient base;
     private Ingredient addition;
 
@@ -30,8 +32,8 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
 
     public CustomSmithingRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        base = ItemLoader.loadIngredient(node.path("base"));
-        addition = ItemLoader.loadIngredient(node.path("addition"));
+        base = ItemLoader.loadIngredient(node.path(KEY_BASE));
+        addition = ItemLoader.loadIngredient(node.path(KEY_ADDITION));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
     }
 
@@ -57,11 +59,6 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
     }
 
     @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.SMITHING;
-    }
-
-    @Override
     public void setIngredient(int slot, Ingredient ingredient) {
         if (slot == 0) {
             setBase(ingredient);
@@ -81,6 +78,7 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
 
     public void setAddition(Ingredient addition) {
         this.addition = addition;
+        Preconditions.checkArgument(!this.addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
     }
 
     public Ingredient getBase() {
@@ -89,6 +87,7 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
 
     public void setBase(Ingredient base) {
         this.base = base;
+        Preconditions.checkArgument(!this.base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
     }
 
     public boolean isPreserveEnchants() {
@@ -123,8 +122,8 @@ public class CustomSmithingRecipe extends CustomRecipe<CustomSmithingRecipe, Slo
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("preserve_enchants", preserveEnchants);
-        gen.writeObjectField("result", result);
-        gen.writeObjectField("base", base);
-        gen.writeObjectField("addition", addition);
+        gen.writeObjectField(KEY_RESULT, result);
+        gen.writeObjectField(KEY_BASE, base);
+        gen.writeObjectField(KEY_ADDITION, addition);
     }
 }

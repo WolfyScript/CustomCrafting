@@ -1,15 +1,13 @@
-package me.wolfyscript.customcrafting.recipes.types.stonecutter;
+package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -33,6 +31,8 @@ import java.util.stream.Collectors;
 
 public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecipe, FixedResultTarget> implements ICustomVanillaRecipe<StonecuttingRecipe> {
 
+    private static final String KEY_SOURCE = "source";
+
     private Ingredient source;
 
     public CustomStonecutterRecipe() {
@@ -43,10 +43,11 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     public CustomStonecutterRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        if (node.has("result")) {
-            setResult(node.path("result").has("custom_amount") ? new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class)) : ItemLoader.loadResult(node.path("result")));
+        if (node.has(KEY_RESULT)) {
+            //Some old config format, which saved the item directly as a reference
+            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class)) : ItemLoader.loadResult(node.path("result")));
         }
-        this.source = ItemLoader.loadIngredient(node.path("source"));
+        setSource(ItemLoader.loadIngredient(node.path(KEY_SOURCE)));
     }
 
     public CustomStonecutterRecipe(CustomStonecutterRecipe customStonecutterRecipe) {
@@ -61,13 +62,14 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
 
     public void setSource(Ingredient source) {
         this.source = source;
+        Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
     }
 
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField("result", this.result);
-        gen.writeObjectField("source", this.source);
+        gen.writeObjectField(KEY_RESULT, this.result);
+        gen.writeObjectField(KEY_SOURCE, this.source);
     }
 
     @Override
@@ -76,13 +78,8 @@ public class CustomStonecutterRecipe extends CustomRecipe<CustomStonecutterRecip
     }
 
     @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.STONECUTTER;
-    }
-
-    @Override
     public void setIngredient(int slot, Ingredient ingredient) {
-        this.source = ingredient;
+        setSource(ingredient);
     }
 
     @Override

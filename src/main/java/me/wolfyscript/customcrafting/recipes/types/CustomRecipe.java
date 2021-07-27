@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
@@ -23,12 +22,12 @@ import java.util.Objects;
 
 public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends ResultTarget> implements ICustomRecipe<C, T> {
 
-    protected static final String RESULT = "result";
-    protected static final String GROUP = "group";
-    protected static final String PRIORITY = "priority";
-    protected static final String EXACT_META = "exactItemMeta";
-    protected static final String CONDITIONS = "conditions";
-    protected static final String HIDDEN = "hidden";
+    protected static final String KEY_RESULT = "result";
+    protected static final String KEY_GROUP = "group";
+    protected static final String KEY_PRIORITY = "priority";
+    protected static final String KEY_EXACT_META = "exactItemMeta";
+    protected static final String KEY_CONDITIONS = "conditions";
+    protected static final String KEY_HIDDEN = "hidden";
 
     protected NamespacedKey namespacedKey;
     protected boolean exactMeta;
@@ -37,8 +36,8 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
     protected RecipePriority priority;
     protected Conditions conditions;
     protected String group;
-    protected WolfyUtilities api;
-    protected ObjectMapper mapper;
+    protected final WolfyUtilities api;
+    protected final ObjectMapper mapper;
     protected Result<T> result;
 
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
@@ -46,19 +45,31 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         //Get fields from JsonNode
-        this.group = node.path(GROUP).asText("");
-        this.priority = mapper.convertValue(node.path(PRIORITY).asText("NORMAL"), RecipePriority.class);
-        this.exactMeta = node.path(EXACT_META).asBoolean(true);
-        this.conditions = mapper.convertValue(node.path(CONDITIONS), Conditions.class);
+        this.group = node.path(KEY_GROUP).asText("");
+        this.priority = mapper.convertValue(node.path(KEY_PRIORITY).asText("NORMAL"), RecipePriority.class);
+        this.exactMeta = node.path(KEY_EXACT_META).asBoolean(true);
+        this.conditions = mapper.convertValue(node.path(KEY_CONDITIONS), Conditions.class);
         if (this.conditions == null) {
             this.conditions = new Conditions();
         }
-        this.hidden = node.path(HIDDEN).asBoolean(false);
+        this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
 
         //Sets the result of the recipe if one exists in the config
-        if (node.has(RESULT) && !(this instanceof CustomStonecutterRecipe)) {
-            setResult(ItemLoader.loadResult(node.path(RESULT)));
+        if (node.has(KEY_RESULT) && !(this instanceof CustomStonecutterRecipe)) {
+            setResult(ItemLoader.loadResult(node.path(KEY_RESULT)));
         }
+    }
+
+    protected CustomRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result<T> result) {
+        this.mapper = JacksonUtil.getObjectMapper();
+        this.api = CustomCrafting.inst().getApi();
+        this.namespacedKey = Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!");
+        this.exactMeta = exactMeta;
+        this.hidden = hidden;
+        this.group = group;
+        this.priority = priority;
+        this.conditions = conditions;
+        this.result = result;
     }
 
     protected CustomRecipe() {
@@ -179,16 +190,16 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
 
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        gen.writeStringField(GROUP, group);
-        gen.writeBooleanField(HIDDEN, hidden);
-        gen.writeStringField(PRIORITY, priority.toString());
-        gen.writeBooleanField(EXACT_META, exactMeta);
-        gen.writeObjectField(CONDITIONS, conditions);
+        gen.writeStringField(KEY_GROUP, group);
+        gen.writeBooleanField(KEY_HIDDEN, hidden);
+        gen.writeStringField(KEY_PRIORITY, priority.toString());
+        gen.writeBooleanField(KEY_EXACT_META, exactMeta);
+        gen.writeObjectField(KEY_CONDITIONS, conditions);
     }
 
     @Override
     public void writeToBuf(MCByteBuf byteBuf) {
-        byteBuf.writeUtf(getPacketType().name());
+        byteBuf.writeUtf(getRecipeType().name());
         byteBuf.writeUtf(namespacedKey.toString());
         byteBuf.writeBoolean(exactMeta);
         byteBuf.writeUtf(group);

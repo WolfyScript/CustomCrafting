@@ -1,5 +1,6 @@
-package me.wolfyscript.customcrafting.recipes.types.grindstone;
+package me.wolfyscript.customcrafting.recipes.data;
 
+import me.wolfyscript.customcrafting.recipes.types.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 

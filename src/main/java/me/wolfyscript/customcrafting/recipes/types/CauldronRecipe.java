@@ -1,9 +1,11 @@
-package me.wolfyscript.customcrafting.recipes.types.cauldron;
+package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
-import me.wolfyscript.customcrafting.recipes.*;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.Condition;
+import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -161,11 +163,6 @@ public class CauldronRecipe extends CustomRecipe<CauldronRecipe, NoneResultTarge
     @Override
     public RecipeType<CauldronRecipe> getRecipeType() {
         return Types.CAULDRON;
-    }
-
-    @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.CAULDRON;
     }
 
     @Override

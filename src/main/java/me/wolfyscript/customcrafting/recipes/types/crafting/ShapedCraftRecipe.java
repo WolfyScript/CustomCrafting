@@ -1,7 +1,6 @@
-package me.wolfyscript.customcrafting.recipes.types.workbench;
+package me.wolfyscript.customcrafting.recipes.types.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.AbstractShapedCraftRecipe;
@@ -15,7 +14,7 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.stream.Collectors;
 
-public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftRecipe> implements AdvancedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
+public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftRecipe, AdvancedRecipeSettings> implements ICustomVanillaRecipe<ShapedRecipe> {
 
     public ShapedCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3);
@@ -33,18 +32,13 @@ public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftReci
         super(craftingRecipe);
     }
 
-    public ShapedCraftRecipe(CraftingRecipe<?> craftingRecipe) {
+    public ShapedCraftRecipe(CraftingRecipe<?, AdvancedRecipeSettings> craftingRecipe) {
         super(craftingRecipe);
     }
 
     @Override
     public RecipeType<ShapedCraftRecipe> getRecipeType() {
         return Types.WORKBENCH_SHAPED;
-    }
-
-    @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.CRAFTING_SHAPED;
     }
 
     @Override
@@ -62,15 +56,5 @@ public class ShapedCraftRecipe extends AbstractShapedCraftRecipe<ShapedCraftReci
             return recipe;
         }
         return null;
-    }
-
-    @Override
-    public boolean allowVanillaRecipe() {
-        return false;
-    }
-
-    @Override
-    public void setAllowVanillaRecipe(boolean vanillaRecipe) {
-
     }
 }

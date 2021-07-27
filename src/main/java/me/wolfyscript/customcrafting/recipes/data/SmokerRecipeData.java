@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.recipes.types.CustomSmokerRecipe;
 
 public class SmokerRecipeData extends CookingRecipeData<CustomSmokerRecipe> {
 

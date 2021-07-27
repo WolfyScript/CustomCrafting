@@ -1,10 +1,8 @@
-package me.wolfyscript.customcrafting.recipes.types.campfire;
+package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -35,11 +33,6 @@ public class CustomCampfireRecipe extends CustomCookingRecipe<CustomCampfireReci
     @Override
     public RecipeType<CustomCampfireRecipe> getRecipeType() {
         return Types.CAMPFIRE;
-    }
-
-    @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.CAMPFIRE;
     }
 
     @Override

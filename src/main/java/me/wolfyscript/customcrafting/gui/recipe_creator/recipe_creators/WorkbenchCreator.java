@@ -7,8 +7,8 @@ import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngr
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.crafting.ShapelessCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;

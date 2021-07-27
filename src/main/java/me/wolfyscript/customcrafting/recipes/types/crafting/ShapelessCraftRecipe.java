@@ -1,7 +1,6 @@
-package me.wolfyscript.customcrafting.recipes.types.workbench;
+package me.wolfyscript.customcrafting.recipes.types.crafting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.AbstractShapelessCraftingRecipe;
@@ -16,7 +15,7 @@ import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.stream.Collectors;
 
-public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<ShapelessCraftRecipe> implements AdvancedCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
+public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<ShapelessCraftRecipe, AdvancedRecipeSettings> implements ICustomVanillaRecipe<ShapelessRecipe> {
 
     public ShapelessCraftRecipe(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3);
@@ -30,7 +29,7 @@ public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<Shapel
         super(craftingRecipe);
     }
 
-    public ShapelessCraftRecipe(CraftingRecipe<?> craftingRecipe) {
+    public ShapelessCraftRecipe(CraftingRecipe<?, AdvancedRecipeSettings> craftingRecipe) {
         super(craftingRecipe);
     }
 
@@ -40,18 +39,13 @@ public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<Shapel
     }
 
     @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.CRAFTING_SHAPELESS;
-    }
-
-    @Override
     public ShapelessCraftRecipe clone() {
         return new ShapelessCraftRecipe(this);
     }
 
     @Override
     public ShapelessRecipe getVanillaRecipe() {
-        if (!allowVanillaRecipe() && !getResult().isEmpty()) {
+        if (!getSettings().isAllowVanillaRecipe() && !getResult().isEmpty()) {
             var shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
             for (Ingredient value : getIngredients().values()) {
                 shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
@@ -60,15 +54,5 @@ public class ShapelessCraftRecipe extends AbstractShapelessCraftingRecipe<Shapel
             return shapelessRecipe;
         }
         return null;
-    }
-
-    @Override
-    public boolean allowVanillaRecipe() {
-        return false;
-    }
-
-    @Override
-    public void setAllowVanillaRecipe(boolean vanillaRecipe) {
-
     }
 }

@@ -33,7 +33,12 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             }
             ingredient.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
             ingredient.buildChoices();
-            cache.getRecipe().setIngredient(recipeSlot, ingredient);
+            try {
+                cache.getRecipe().setIngredient(recipeSlot, ingredient);
+            } catch (IllegalArgumentException exception) {
+                //We can ignore it, because the recipe is being created/edited!
+                //TODO: Look for a better solution! Perhaps a builder of some sort.
+            }
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var ingredient = cache.getRecipe().getIngredient(recipeSlot);
             return ingredient != null ? ingredient.getItemStack() : new ItemStack(Material.AIR);

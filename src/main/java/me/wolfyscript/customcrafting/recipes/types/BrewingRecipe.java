@@ -1,13 +1,11 @@
-package me.wolfyscript.customcrafting.recipes.types.brewing;
+package me.wolfyscript.customcrafting.recipes.types;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -139,11 +137,6 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
     @Override
     public RecipeType<BrewingRecipe> getRecipeType() {
         return Types.BREWING_STAND;
-    }
-
-    @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.BREWING_STAND;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.recipes.types.CustomFurnaceRecipe;
 
 public class FurnaceRecipeData extends CookingRecipeData<CustomFurnaceRecipe> {
 

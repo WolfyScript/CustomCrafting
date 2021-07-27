@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CustomAnvilRecipe;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.InventoryView;

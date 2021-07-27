@@ -9,21 +9,11 @@ import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.campfire.CustomCampfireRecipe;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.furnace.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.grindstone.GrindstoneRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.smoker.CustomSmokerRecipe;
-import me.wolfyscript.customcrafting.recipes.types.stonecutter.CustomStonecutterRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.*;
+import me.wolfyscript.customcrafting.recipes.types.crafting.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.types.crafting.EliteRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.potion.PotionEffect;
@@ -223,8 +213,8 @@ public class CCCache extends CustomCache {
         }
     }
 
-    public CraftingRecipe<?> getCraftingRecipe() {
-        return (CraftingRecipe<?>) getRecipe(getRecipeType());
+    public CraftingRecipe<?, ?> getCraftingRecipe() {
+        return (CraftingRecipe<?, ?>) getRecipe(getRecipeType());
     }
 
     /***************************************************************
@@ -232,7 +222,7 @@ public class CCCache extends CustomCache {
      * Usage for the GUI Creator!
      *
      ***************************************************************/
-    public CraftingRecipe<?> getAdvancedCraftingRecipe() {
+    public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCraftingRecipe() {
         return getRecipe(Types.WORKBENCH);
     }
 
@@ -240,7 +230,7 @@ public class CCCache extends CustomCache {
         return getRecipe(Types.ANVIL);
     }
 
-    public CraftingRecipe<?> getEliteCraftingRecipe() {
+    public CraftingRecipe<?, EliteRecipeSettings> getEliteCraftingRecipe() {
         return getRecipe(Types.ELITE_WORKBENCH);
     }
 

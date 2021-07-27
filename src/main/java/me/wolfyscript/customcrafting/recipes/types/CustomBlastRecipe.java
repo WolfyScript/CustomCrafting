@@ -1,10 +1,8 @@
-package me.wolfyscript.customcrafting.recipes.types.blast_furnace;
+package me.wolfyscript.customcrafting.recipes.types;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.RecipePacketType;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -35,11 +33,6 @@ public class CustomBlastRecipe extends CustomCookingRecipe<CustomBlastRecipe, Bl
     @Override
     public RecipeType<CustomBlastRecipe> getRecipeType() {
         return Types.BLAST_FURNACE;
-    }
-
-    @Override
-    public RecipePacketType getPacketType() {
-        return RecipePacketType.BLAST_FURNACE;
     }
 
     @Override

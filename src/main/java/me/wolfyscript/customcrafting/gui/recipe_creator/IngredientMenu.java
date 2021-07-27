@@ -29,7 +29,12 @@ public class IngredientMenu extends CCWindow {
             registerButton(new ButtonContainerItemIngredient(i));
         }
         registerButton(new ActionButton<>("back", new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipe().setIngredient(cache.getIngredientData().getSlot(), cache.getIngredientData().getIngredient());
+            try {
+                cache.getRecipe().setIngredient(cache.getIngredientData().getSlot(), cache.getIngredientData().getIngredient());
+            } catch (IllegalArgumentException exception) {
+                //We can ignore it, because the recipe is being created/edited!
+                //TODO: Look for a better solution! Perhaps a builder of some sort.
+            }
             guiHandler.openPreviousWindow();
             return true;
         })));

@@ -6,10 +6,12 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.Condition;
 import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipePriority;
+import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.types.crafting.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -28,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
+public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
 
     protected static final String INGREDIENTS_KEY = "ingredients";
 
@@ -37,6 +39,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
 
     protected int requiredGridSize;
     protected int bookSquaredGrid;
+
+    private S settings;
 
     protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
         super(namespacedKey, node);
@@ -52,7 +56,15 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
         this.ingredients = new HashMap<>();
     }
 
-    protected CraftingRecipe(CraftingRecipe<?> craftingRecipe) {
+    protected CraftingRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result<SlotResultTarget> result, Map<Character, Ingredient> ingredients, int requiredGridSize, S settings) {
+        super(namespacedKey, exactMeta, hidden, group, priority, conditions, result);
+        this.ingredients = ingredients;
+        this.requiredGridSize = requiredGridSize;
+        this.bookSquaredGrid = requiredGridSize * requiredGridSize;
+        this.settings = settings;
+    }
+
+    protected CraftingRecipe(CraftingRecipe<?, S> craftingRecipe) {
         super(craftingRecipe);
         this.ingredientsFlat = craftingRecipe.ingredientsFlat != null ? craftingRecipe.ingredientsFlat.stream().map(Ingredient::clone).collect(Collectors.toList()) : null;
         this.requiredGridSize = craftingRecipe.requiredGridSize;
@@ -70,6 +82,14 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
         return getIngredients(LETTERS.charAt(slot));
     }
 
+    public S getSettings() {
+        return settings;
+    }
+
+    public void setSettings(S settings) {
+        this.settings = settings;
+    }
+
     public List<Ingredient> getFlatIngredients() {
         return ingredientsFlat;
     }
@@ -77,7 +97,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     @Override
     public void setIngredients(Map<Character, Ingredient> ingredients) {
         this.ingredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o));
-        Preconditions.checkArgument(!ingredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
+        Preconditions.checkArgument(!this.ingredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
     }
 
     @Override
@@ -111,7 +131,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         if (!getIngredients().isEmpty()) {
-            if (this instanceof AdvancedCraftingRecipe && getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
+            if (Types.WORKBENCH.isInstance(this) && getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
                 var glass = new NamespacedKey("none", "glass_purple");
                 for (int i = 0; i < 9; i++) {
                     event.setButton(i, glass);
@@ -129,8 +149,9 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
                     slot += 2;
                 }
             }
-            event.setButton(this instanceof EliteCraftingRecipe ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
-            startSlot = this instanceof EliteCraftingRecipe ? 0 : 10;
+            boolean elite = Types.ELITE_WORKBENCH.isInstance(this);
+            event.setButton(elite ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
+            startSlot = elite ? 0 : 10;
             for (int i = 0; i < bookSquaredGrid; i++) {
                 event.setButton(startSlot + i + (i / requiredGridSize) * (9 - requiredGridSize), new NamespacedKey("recipe_book", "ingredient.container_" + i));
             }
@@ -142,7 +163,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C>> extends Custom
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("shapeless", isShapeless());
-        gen.writeObjectField(RESULT, result);
+        gen.writeObjectField(KEY_RESULT, result);
         gen.writeObjectField(INGREDIENTS_KEY, ingredients);
     }
 

@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.recipes.types.workbench;
+package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;

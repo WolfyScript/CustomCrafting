@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.recipes.Conditions;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.*;
-import me.wolfyscript.customcrafting.recipes.types.workbench.AdvancedCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.types.crafting.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
@@ -126,9 +126,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
-        public CraftingRecipe<?> getAdvancedCrafting(NamespacedKey recipeKey) {
+        public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
             ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(recipeKey);
-            return customRecipe instanceof CraftingRecipe<?> craftingRecipe && craftingRecipe instanceof AdvancedCraftingRecipe ? craftingRecipe : null;
+            return Types.WORKBENCH.isInstance(customRecipe) ? Types.WORKBENCH.cast(customRecipe) : null;
         }
 
         /**
@@ -209,9 +209,9 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @deprecated Replaced by {@link #getSimilarCraftingRecipes(me.wolfyscript.customcrafting.utils.CraftManager.MatrixData, boolean, boolean)}
          */
         @Deprecated
-        public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
+        public Stream<CraftingRecipe<?, ?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
             final long size = items.stream().flatMap(Collection::stream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
-            List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
+            List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
             if (elite) {
                 craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
             }
@@ -221,15 +221,15 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             final int itemsSize = items.size();
             final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
             return craftingRecipes.stream().filter(recipe -> {
-                if (recipe instanceof AbstractShapedCraftRecipe<?> shapedRecipe) {
+                if (recipe instanceof AbstractShapedCraftRecipe<?, ?> shapedRecipe) {
                     return itemsSize > 0 && shapedRecipe.getShape().length > 0 && items0Size == shapedRecipe.getShape()[0].length() && itemsSize == shapedRecipe.getShape().length;
                 }
                 return recipe.getIngredients().keySet().size() == size;
             }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
-        public Stream<CraftingRecipe<?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
-            List<CraftingRecipe<?>> craftingRecipes = new ArrayList<>();
+        public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
+            List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
             if (elite) {
                 craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
             }

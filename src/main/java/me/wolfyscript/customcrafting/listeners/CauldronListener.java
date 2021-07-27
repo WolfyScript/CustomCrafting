@@ -6,8 +6,8 @@ import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.types.CauldronRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -114,8 +114,7 @@ public class CauldronListener implements Listener {
         Bukkit.getScheduler().runTaskLater(api.getPlugin(),
                 () -> {
                     if (cauldrons != null && cauldrons.getCauldrons() != null) {
-                        cauldrons.getCauldrons().entrySet().stream()
-                                .filter(entry -> entry.getKey().getWorld() != null)
+                        cauldrons.getCauldrons().entrySet().stream().filter(entry -> entry.getKey().getWorld() != null)
                                 .filter(entry -> entry.getKey().getWorld().equals(itemDrop.getLocation().getWorld()) && entry.getKey().clone().add(0.5, 0.4, 0.5).distance(itemDrop.getLocation()) <= 0.4)
                                 .forEach(entry -> {
                                     Location loc = entry.getKey();
@@ -139,7 +138,7 @@ public class CauldronListener implements Listener {
                                                             for (int i = 0; i < recipe.getIngredient().size() && i < validItems.size(); i++) {
                                                                 var itemEntity = validItems.get(i);
                                                                 var customItem = recipe.getIngredient().getChoices().get(i);
-                                                                customItem.consumeItem(itemEntity.getItemStack(), customItem.getAmount(), itemEntity.getLocation().add(0.0, 0.5, 0.0));
+                                                                customItem.remove(itemEntity.getItemStack(), customItem.getAmount(), itemEntity.getLocation().add(0.0, 0.5, 0.0));
                                                             }
                                                         }
                                                         break;

@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.data.cauldron;
 
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.types.CauldronRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;

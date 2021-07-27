@@ -2,7 +2,8 @@ package me.wolfyscript.customcrafting.recipes.types;
 
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
+import me.wolfyscript.customcrafting.recipes.types.crafting.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
@@ -12,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapelessCraftingRecipe<C>> extends CraftingRecipe<C> {
+public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapelessCraftingRecipe<C, S>, S extends CraftingRecipeSettings> extends CraftingRecipe<C, S> {
 
     protected AbstractShapelessCraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
         super(namespacedKey, node, gridSize);
@@ -23,7 +24,7 @@ public abstract class AbstractShapelessCraftingRecipe<C extends AbstractShapeles
         super(gridSize);
     }
 
-    protected AbstractShapelessCraftingRecipe(CraftingRecipe<?> craftingRecipe) {
+    protected AbstractShapelessCraftingRecipe(CraftingRecipe<?, S> craftingRecipe) {
         super(craftingRecipe);
     }
 

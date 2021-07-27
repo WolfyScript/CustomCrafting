@@ -1,6 +1,7 @@
-package me.wolfyscript.customcrafting.recipes.types.anvil;
+package me.wolfyscript.customcrafting.recipes.data;
 
 
+import me.wolfyscript.customcrafting.recipes.types.CustomAnvilRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.jetbrains.annotations.Nullable;

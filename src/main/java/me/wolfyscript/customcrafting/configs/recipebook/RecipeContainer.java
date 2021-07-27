@@ -3,12 +3,12 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.types.AbstractShapelessCraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -80,13 +80,13 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     public boolean isValid(EliteWorkbench cache) {
         var data = cache.getEliteWorkbenchData();
         return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
-            if (cachedRecipe instanceof CraftingRecipe && (cachedRecipe instanceof EliteCraftingRecipe || data.isAdvancedRecipes())) {
-                if (cachedRecipe instanceof EliteCraftingRecipe) {
+            if (cachedRecipe instanceof CraftingRecipe && (Types.ELITE_WORKBENCH.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
+                if (Types.ELITE_WORKBENCH.isInstance(cachedRecipe)) {
                     EliteWorkbenchCondition condition = cachedRecipe.getConditions().getEliteCraftingTableCondition();
                     if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;
                     }
-                    if (cachedRecipe instanceof AbstractShapelessCraftingRecipe<?> shapeless) {
+                    if (cachedRecipe instanceof AbstractShapelessCraftingRecipe<?, ?> shapeless) {
                         return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
                         ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) cachedRecipe;

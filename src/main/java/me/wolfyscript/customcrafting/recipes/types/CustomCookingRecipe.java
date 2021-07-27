@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.types;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
@@ -67,6 +68,11 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<C, T>, T
         return this.source;
     }
 
+    public void setSource(Ingredient source) {
+        this.source = source;
+        Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
+    }
+
     @Override
     public Ingredient getIngredient(int slot) {
         return this.source;
@@ -74,9 +80,14 @@ public abstract class CustomCookingRecipe<C extends CustomCookingRecipe<C, T>, T
 
     @Override
     public void setIngredient(int slot, Ingredient ingredient) {
-        this.source = ingredient;
+        setSource(ingredient);
     }
 
+    /**
+     * @param ingredient The ingredient to set as the source.
+     * @deprecated Replaced by {@link #setSource(Ingredient)}
+     */
+    @Deprecated
     public void setIngredient(Ingredient ingredient) {
         setIngredient(0, ingredient);
     }
