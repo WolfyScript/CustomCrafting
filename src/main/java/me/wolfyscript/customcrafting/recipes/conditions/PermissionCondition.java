@@ -1,10 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.Condition;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +29,7 @@ public class PermissionCondition extends Condition {
 
     @Override
     public boolean check(ICustomRecipe<?,?> recipe, Conditions.Data data) {
-        if (recipe instanceof CustomCookingRecipe && data.getPlayer() == null) {
+        if (recipe instanceof CustomRecipeCooking && data.getPlayer() == null) {
             return true;
         }
         if (option.equals(Conditions.Option.IGNORE)) return true;

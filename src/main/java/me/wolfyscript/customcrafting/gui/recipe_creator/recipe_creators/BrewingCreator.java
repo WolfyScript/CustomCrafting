@@ -9,7 +9,7 @@ import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.BrewingOptionButton;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.types.BrewingRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -111,11 +111,11 @@ public class BrewingCreator extends RecipeCreator {
             return true;
         })));
         registerButton(new ActionButton<>("effect_color", Material.RED_DYE, (cache, guiHandler, player, inventory, i, event) -> {
-            BrewingRecipe brewingRecipe = cache.getBrewingRecipe();
+            CustomRecipeBrewing customRecipeBrewing = cache.getBrewingRecipe();
             if (event instanceof InventoryClickEvent clickEvent) {
                 if (clickEvent.getClick().isRightClick()) {
                     //Change Mode
-                    brewingRecipe.setEffectColor(null);
+                    customRecipeBrewing.setEffectColor(null);
                     return true;
                 }
                 //Change Value
@@ -125,7 +125,7 @@ public class BrewingCreator extends RecipeCreator {
                             int red = Integer.parseInt(args[0]);
                             int green = Integer.parseInt(args[1]);
                             int blue = Integer.parseInt(args[2]);
-                            brewingRecipe.setEffectColor(Color.fromRGB(red, green, blue));
+                            customRecipeBrewing.setEffectColor(Color.fromRGB(red, green, blue));
                         } catch (NumberFormatException ex) {
                             api.getChat().sendKey(player1, getCluster(), "valid_number");
                         }

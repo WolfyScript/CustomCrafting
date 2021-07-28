@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.recipes.types.*;
-import me.wolfyscript.customcrafting.recipes.types.crafting.*;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,24 +32,24 @@ public class Types {
         SMITHING
     }
 
-    public static final RecipeType<ShapedCraftRecipe> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, ShapedCraftRecipe.class);
-    public static final RecipeType<ShapelessCraftRecipe> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, ShapelessCraftRecipe.class);
-    public static final RecipeType.CraftingRecipeType<AdvancedRecipeSettings, ShapedCraftRecipe, ShapelessCraftRecipe> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, AdvancedRecipeSettings.class, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS);
+    public static final RecipeType<CustomRecipeShaped> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, CustomRecipeShaped.class);
+    public static final RecipeType<CustomRecipeShapeless> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, CustomRecipeShapeless.class);
+    public static final RecipeType.CraftingRecipeType<AdvancedRecipeSettings, CustomRecipeShaped, CustomRecipeShapeless> WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.WORKBENCH, AdvancedRecipeSettings.class, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS);
 
-    public static final RecipeType<ShapedEliteCraftRecipe> ELITE_WORKBENCH_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, ShapedEliteCraftRecipe.class);
-    public static final RecipeType<ShapelessEliteCraftRecipe> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, ShapelessEliteCraftRecipe.class);
-    public static final RecipeType.CraftingRecipeType<EliteRecipeSettings, ShapedEliteCraftRecipe, ShapelessEliteCraftRecipe> ELITE_WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.ELITE_WORKBENCH, EliteRecipeSettings.class, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS);
+    public static final RecipeType<CustomRecipeShapedElite> ELITE_WORKBENCH_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, CustomRecipeShapedElite.class);
+    public static final RecipeType<CustomRecipeShapelessElite> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, CustomRecipeShapelessElite.class);
+    public static final RecipeType.CraftingRecipeType<EliteRecipeSettings, CustomRecipeShapedElite, CustomRecipeShapelessElite> ELITE_WORKBENCH = new RecipeType.CraftingRecipeType<>(Type.ELITE_WORKBENCH, EliteRecipeSettings.class, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS);
 
-    public static final RecipeType.CookingRecipeType<CustomFurnaceRecipe> FURNACE = new RecipeType.CookingRecipeType<>(Type.FURNACE, CustomFurnaceRecipe.class);
-    public static final RecipeType.CookingRecipeType<CustomBlastRecipe> BLAST_FURNACE = new RecipeType.CookingRecipeType<>(Type.BLAST_FURNACE, CustomBlastRecipe.class);
-    public static final RecipeType.CookingRecipeType<CustomSmokerRecipe> SMOKER = new RecipeType.CookingRecipeType<>(Type.SMOKER, CustomSmokerRecipe.class);
-    public static final RecipeType.CookingRecipeType<CustomCampfireRecipe> CAMPFIRE = new RecipeType.CookingRecipeType<>(Type.CAMPFIRE, CustomCampfireRecipe.class);
-    public static final RecipeType<CustomAnvilRecipe> ANVIL = new RecipeType<>(Type.ANVIL, CustomAnvilRecipe.class);
-    public static final RecipeType<CustomStonecutterRecipe> STONECUTTER = new RecipeType<>(Type.STONECUTTER, CustomStonecutterRecipe.class);
-    public static final RecipeType<CauldronRecipe> CAULDRON = new RecipeType<>(Type.CAULDRON, CauldronRecipe.class);
-    public static final RecipeType<GrindstoneRecipe> GRINDSTONE = new RecipeType<>(Type.GRINDSTONE, GrindstoneRecipe.class);
-    public static final RecipeType<BrewingRecipe> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, BrewingRecipe.class);
-    public static final RecipeType<CustomSmithingRecipe> SMITHING = new RecipeType<>(Type.SMITHING, CustomSmithingRecipe.class);
+    public static final RecipeType.CookingRecipeType<CustomRecipeFurnace> FURNACE = new RecipeType.CookingRecipeType<>(Type.FURNACE, CustomRecipeFurnace.class);
+    public static final RecipeType.CookingRecipeType<CustomRecipeBlasting> BLAST_FURNACE = new RecipeType.CookingRecipeType<>(Type.BLAST_FURNACE, CustomRecipeBlasting.class);
+    public static final RecipeType.CookingRecipeType<CustomRecipeSmoking> SMOKER = new RecipeType.CookingRecipeType<>(Type.SMOKER, CustomRecipeSmoking.class);
+    public static final RecipeType.CookingRecipeType<CustomRecipeCampfire> CAMPFIRE = new RecipeType.CookingRecipeType<>(Type.CAMPFIRE, CustomRecipeCampfire.class);
+    public static final RecipeType<CustomRecipeAnvil> ANVIL = new RecipeType<>(Type.ANVIL, CustomRecipeAnvil.class);
+    public static final RecipeType<CustomRecipeStonecutter> STONECUTTER = new RecipeType<>(Type.STONECUTTER, CustomRecipeStonecutter.class);
+    public static final RecipeType<CustomRecipeCauldron> CAULDRON = new RecipeType<>(Type.CAULDRON, CustomRecipeCauldron.class);
+    public static final RecipeType<CustomRecipeGrindstone> GRINDSTONE = new RecipeType<>(Type.GRINDSTONE, CustomRecipeGrindstone.class);
+    public static final RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
+    public static final RecipeType<CustomRecipeSmithing> SMITHING = new RecipeType<>(Type.SMITHING, CustomRecipeSmithing.class);
 
     public static Set<RecipeType<? extends ICustomRecipe<?,?>>> values() {
         return Collections.unmodifiableSet(values);

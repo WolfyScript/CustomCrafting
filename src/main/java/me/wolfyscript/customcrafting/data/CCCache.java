@@ -7,13 +7,9 @@ import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.*;
-import me.wolfyscript.customcrafting.recipes.types.crafting.AdvancedRecipeSettings;
-import me.wolfyscript.customcrafting.recipes.types.crafting.EliteRecipeSettings;
-import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedEliteCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.potion.PotionEffect;
@@ -59,18 +55,18 @@ public class CCCache extends CustomCache {
         this.applyItem = null;
         this.recipeType = Types.WORKBENCH;
 
-        setCustomRecipe(new CustomAnvilRecipe());
-        setCustomRecipe(Types.WORKBENCH, new ShapedCraftRecipe());
-        setCustomRecipe(Types.ELITE_WORKBENCH, new ShapedEliteCraftRecipe());
-        setCustomRecipe(new CustomBlastRecipe());
-        setCustomRecipe(new CustomCampfireRecipe());
-        setCustomRecipe(new CustomSmokerRecipe());
-        setCustomRecipe(new CustomFurnaceRecipe());
-        setCustomRecipe(new CustomStonecutterRecipe());
-        setCustomRecipe(new GrindstoneRecipe());
-        setCustomRecipe(new CauldronRecipe());
-        setCustomRecipe(new BrewingRecipe());
-        setCustomRecipe(new CustomSmithingRecipe());
+        setCustomRecipe(new CustomRecipeAnvil());
+        setCustomRecipe(Types.WORKBENCH, new CustomRecipeShaped());
+        setCustomRecipe(Types.ELITE_WORKBENCH, new CustomRecipeShapedElite());
+        setCustomRecipe(new CustomRecipeBlasting());
+        setCustomRecipe(new CustomRecipeCampfire());
+        setCustomRecipe(new CustomRecipeSmoking());
+        setCustomRecipe(new CustomRecipeFurnace());
+        setCustomRecipe(new CustomRecipeStonecutter());
+        setCustomRecipe(new CustomRecipeGrindstone());
+        setCustomRecipe(new CustomRecipeCauldron());
+        setCustomRecipe(new CustomRecipeBrewing());
+        setCustomRecipe(new CustomRecipeSmithing());
     }
 
     public Setting getSetting() {
@@ -189,7 +185,7 @@ public class CCCache extends CustomCache {
      * Used for the GUI Recipe Creators!
      *
      ***************************************************************/
-    public CustomCookingRecipe<?,?> getCookingRecipe() {
+    public CustomRecipeCooking<?,?> getCookingRecipe() {
         if (recipeType instanceof RecipeType.CookingRecipeType) {
             return getRecipe((RecipeType.CookingRecipeType<?>) recipeType);
         }
@@ -199,10 +195,10 @@ public class CCCache extends CustomCache {
     public void resetRecipe(){
         switch (getRecipeType().getType()) {
             case ELITE_WORKBENCH:
-                setCustomRecipe(new ShapedEliteCraftRecipe());
+                setCustomRecipe(new CustomRecipeShapedElite());
                 break;
             case WORKBENCH:
-                setCustomRecipe(new ShapedCraftRecipe());
+                setCustomRecipe(new CustomRecipeShaped());
                 break;
             default:
                 try {
@@ -226,7 +222,7 @@ public class CCCache extends CustomCache {
         return getRecipe(Types.WORKBENCH);
     }
 
-    public CustomAnvilRecipe getAnvilRecipe() {
+    public CustomRecipeAnvil getAnvilRecipe() {
         return getRecipe(Types.ANVIL);
     }
 
@@ -234,23 +230,23 @@ public class CCCache extends CustomCache {
         return getRecipe(Types.ELITE_WORKBENCH);
     }
 
-    public CauldronRecipe getCauldronRecipe() {
+    public CustomRecipeCauldron getCauldronRecipe() {
         return getRecipe(Types.CAULDRON);
     }
 
-    public CustomStonecutterRecipe getStonecutterRecipe() {
+    public CustomRecipeStonecutter getStonecutterRecipe() {
         return getRecipe(Types.STONECUTTER);
     }
 
-    public GrindstoneRecipe getGrindstoneRecipe() {
+    public CustomRecipeGrindstone getGrindstoneRecipe() {
         return getRecipe(Types.GRINDSTONE);
     }
 
-    public BrewingRecipe getBrewingRecipe() {
+    public CustomRecipeBrewing getBrewingRecipe() {
         return getRecipe(Types.BREWING_STAND);
     }
 
-    public CustomSmithingRecipe getSmithingRecipe() {
+    public CustomRecipeSmithing getSmithingRecipe() {
         return getRecipe(Types.SMITHING);
     }
 }

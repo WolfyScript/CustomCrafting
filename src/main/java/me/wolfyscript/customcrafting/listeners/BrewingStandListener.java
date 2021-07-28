@@ -2,8 +2,8 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.BrewingRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.NMSUtil;
@@ -34,7 +34,7 @@ public class BrewingStandListener implements Listener {
     private final CustomCrafting customCrafting;
     private final WolfyUtilities wolfyUtilities;
     private final NMSUtil nmsUtil;
-    private final Map<Location, Pair<BukkitTask, Map<BrewingRecipe, CustomItem>>> activeBrewingStands = new HashMap<>();
+    private final Map<Location, Pair<BukkitTask, Map<CustomRecipeBrewing, CustomItem>>> activeBrewingStands = new HashMap<>();
 
     public BrewingStandListener(WolfyUtilities wolfyUtilities, CustomCrafting customCrafting) {
         this.wolfyUtilities = wolfyUtilities;
@@ -95,7 +95,7 @@ public class BrewingStandListener implements Listener {
                     if (nmsBrewingStand != null) {
                         int fuelLevel = nmsBrewingStand.getFuelLevel();
                         //Check if recipe is correct
-                        Map<BrewingRecipe, CustomItem> brewingRecipeList = new HashMap<>();
+                        Map<CustomRecipeBrewing, CustomItem> brewingRecipeList = new HashMap<>();
                         //Check if at least one slot contains an item
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
@@ -132,7 +132,7 @@ public class BrewingStandListener implements Listener {
                         } else if (!activeBrewingStands.containsKey(location)) {
                             //Using the first recipe to set the brew time, fuel Level cost and ingredient.
                             //Because there can be multiple recipes for one ingredient
-                            Map.Entry<BrewingRecipe, CustomItem> firstEntry = brewingRecipeList.entrySet().stream().findFirst().get();
+                            Map.Entry<CustomRecipeBrewing, CustomItem> firstEntry = brewingRecipeList.entrySet().stream().findFirst().get();
                             nmsBrewingStand.setBrewingTime(400);
                             nmsBrewingStand.setFuelLevel(fuelLevel - 1);
                             final CustomItem finalIngredient = firstEntry.getValue();
@@ -159,7 +159,7 @@ public class BrewingStandListener implements Listener {
                                             }
                                             Bukkit.getScheduler().runTask(customCrafting, () -> {
                                                 List<Integer> processedSlots = new ArrayList<>();
-                                                for (BrewingRecipe recipe : activeBrewingStands.get(location).getValue().keySet()) {
+                                                for (CustomRecipeBrewing recipe : activeBrewingStands.get(location).getValue().keySet()) {
                                                     if (processedSlots.size() >= 3) break;
                                                     var brewerInventory = brewingStand.getInventory();
                                                     finalIngredient.consumeItem(brewerInventory.getItem(3), 1, player.getInventory());

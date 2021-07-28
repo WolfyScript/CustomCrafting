@@ -1,13 +1,13 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.types.CustomSmithingRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 import java.util.Map;
 
-public class SmithingData extends RecipeData<CustomSmithingRecipe> {
+public class SmithingData extends RecipeData<CustomRecipeSmithing> {
 
-    public SmithingData(CustomSmithingRecipe recipe, Map<Integer, IngredientData> ingredients) {
+    public SmithingData(CustomRecipeSmithing recipe, Map<Integer, IngredientData> ingredients) {
         super(recipe, ingredients);
     }
 

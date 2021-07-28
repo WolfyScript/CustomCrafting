@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.GrindstoneData;
-import me.wolfyscript.customcrafting.recipes.types.GrindstoneRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -107,7 +107,7 @@ public class GrindStoneListener implements Listener {
             //Check for new recipe!
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(inventory.getItem(0), inventory.getItem(1), 0, player, event.getView());
-                GrindstoneRecipe foundRecipe = checkResult.getValue().getRecipe();
+                CustomRecipeGrindstone foundRecipe = checkResult.getValue().getRecipe();
                 if (foundRecipe == null) {
                     return; //Returns and uses Vanilla recipe instead
                 }
@@ -182,7 +182,7 @@ public class GrindStoneListener implements Listener {
 
             Pair<CustomItem, GrindstoneData> checkResult = checkRecipe(calculatedCurrentItem, inventory.getItem(event.getSlot() == 0 ? 1 : 0), event.getSlot(), player, event.getView());
             boolean validItem = checkResult.getValue().isValidItem();
-            GrindstoneRecipe foundRecipe = checkResult.getValue().getRecipe();
+            CustomRecipeGrindstone foundRecipe = checkResult.getValue().getRecipe();
             if (validItem) {
                 event.setCurrentItem(calculatedCurrentItem);
                 event.getWhoClicked().setItemOnCursor(calculatedCursor);
@@ -212,20 +212,20 @@ public class GrindStoneListener implements Listener {
 
         preCraftedRecipes.remove(player.getUniqueId());
 
-        GrindstoneRecipe foundRecipe = null;
+        CustomRecipeGrindstone foundRecipe = null;
         boolean validItem = false;
 
-        for (GrindstoneRecipe grindstoneRecipe : Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList())) {
-            Ingredient input = slot == 0 ? grindstoneRecipe.getInputTop() : grindstoneRecipe.getInputBottom();
-            Ingredient otherInput = slot == 0 ? grindstoneRecipe.getInputBottom() : grindstoneRecipe.getInputTop();
-            Optional<CustomItem> optional = input.check(item, grindstoneRecipe.isExactMeta());
+        for (CustomRecipeGrindstone customRecipeGrindstone : Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList())) {
+            Ingredient input = slot == 0 ? customRecipeGrindstone.getInputTop() : customRecipeGrindstone.getInputBottom();
+            Ingredient otherInput = slot == 0 ? customRecipeGrindstone.getInputBottom() : customRecipeGrindstone.getInputTop();
+            Optional<CustomItem> optional = input.check(item, customRecipeGrindstone.isExactMeta());
             if (!optional.isPresent()) {
                 //Item is invalid! Go to next recipe!
                 continue;
             }
             if (!ItemUtils.isAirOrNull(itemOther)) {
                 //Another item exists in the other slot! Check if current and other item are a valid recipe
-                Optional<CustomItem> optionalOther = otherInput.check(itemOther, grindstoneRecipe.isExactMeta());
+                Optional<CustomItem> optionalOther = otherInput.check(itemOther, customRecipeGrindstone.isExactMeta());
                 if (!optionalOther.isPresent()) {
                     //Other existing Item is invalid!
                     continue;
@@ -246,7 +246,7 @@ public class GrindStoneListener implements Listener {
             } else {
                 finalInputBottom = optional.get();
             }
-            foundRecipe = grindstoneRecipe;
+            foundRecipe = customRecipeGrindstone;
             break;
         }
         Result<?> result = null;

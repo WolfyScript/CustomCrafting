@@ -2,15 +2,15 @@ package me.wolfyscript.customcrafting.listeners.smelting;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeFurnace;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeSmoking;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.BlastingRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.FurnaceRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmokerRecipeData;
-import me.wolfyscript.customcrafting.recipes.types.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomFurnaceRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomSmokerRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -34,7 +34,7 @@ public abstract class SmeltAPIAdapter {
     public abstract void process(FurnaceSmeltEvent event, Block block, Furnace furnace, FurnaceInventory inventory, ItemStack currentResultItem);
 
     protected boolean processRecipe(FurnaceSmeltEvent event, NamespacedKey recipeKey, Block block, FurnaceInventory inventory, ItemStack currentResultItem) {
-        if (Registry.RECIPES.get(recipeKey) instanceof CustomCookingRecipe<?, ?> cookingRecipe && cookingRecipe.validType(block.getType())) {
+        if (Registry.RECIPES.get(recipeKey) instanceof CustomRecipeCooking<?, ?> cookingRecipe && cookingRecipe.validType(block.getType())) {
             if (cookingRecipe.checkConditions(new Conditions.Data(null, block, null))) {
                 event.setCancelled(false);
                 Result<?> result = cookingRecipe.getResult();
@@ -52,12 +52,12 @@ public abstract class SmeltAPIAdapter {
         return false;
     }
 
-    private boolean applyResult(FurnaceSmeltEvent event, CustomCookingRecipe<?, ?> cookingRecipe, Result<?> result, CustomItem customSource, Block block, FurnaceInventory inventory, ItemStack currentResultItem) {
+    private boolean applyResult(FurnaceSmeltEvent event, CustomRecipeCooking<?, ?> cookingRecipe, Result<?> result, CustomItem customSource, Block block, FurnaceInventory inventory, ItemStack currentResultItem) {
         var data = new IngredientData(0, cookingRecipe.getSource(), customSource, event.getSource());
         ItemStack itemResult = result.getItem(switch (cookingRecipe.getRecipeType().getType()) {
-            case FURNACE -> new FurnaceRecipeData((CustomFurnaceRecipe) cookingRecipe, data);
-            case SMOKER -> new SmokerRecipeData((CustomSmokerRecipe) cookingRecipe, data);
-            case BLAST_FURNACE -> new BlastingRecipeData((CustomBlastRecipe) cookingRecipe, data);
+            case FURNACE -> new FurnaceRecipeData((CustomRecipeFurnace) cookingRecipe, data);
+            case SMOKER -> new SmokerRecipeData((CustomRecipeSmoking) cookingRecipe, data);
+            case BLAST_FURNACE -> new BlastingRecipeData((CustomRecipeBlasting) cookingRecipe, data);
             default -> null;
         }, null, block);
         if (currentResultItem != null) {

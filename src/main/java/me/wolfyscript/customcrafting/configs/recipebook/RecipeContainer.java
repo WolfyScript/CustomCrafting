@@ -2,13 +2,9 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
-import me.wolfyscript.customcrafting.recipes.types.AbstractShapelessCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -86,10 +82,10 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
                     if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;
                     }
-                    if (cachedRecipe instanceof AbstractShapelessCraftingRecipe<?, ?> shapeless) {
+                    if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
                         return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
-                        ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) cachedRecipe;
+                        CustomRecipeShapedElite recipe1 = (CustomRecipeShapedElite) cachedRecipe;
                         return recipe1.getShape().length <= cache.getCurrentGridSize() && recipe1.getShape()[0].length() <= cache.getCurrentGridSize();
                     }
                 }

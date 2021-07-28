@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.types.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -46,15 +46,15 @@ public class AnvilCreator extends RecipeCreator {
             } else {
                 id = 0;
             }
-            guiHandler.getCustomCache().getAnvilRecipe().setMode(CustomAnvilRecipe.Mode.getById(id));
+            guiHandler.getCustomCache().getAnvilRecipe().setMode(CustomRecipeAnvil.Mode.getById(id));
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, event) -> {
             values.put("%MODE%", guiHandler.getCustomCache().getAnvilRecipe().getMode().name());
             return itemStack;
         }));
         registerButton(new ActionButton<>(REPAIR_MODE, Material.GLOWSTONE_DUST, (cache, guiHandler, player, inventory, slot, event) -> {
-            int index = CustomAnvilRecipe.RepairCostMode.getModes().indexOf(guiHandler.getCustomCache().getAnvilRecipe().getRepairCostMode()) + 1;
-            guiHandler.getCustomCache().getAnvilRecipe().setRepairCostMode(CustomAnvilRecipe.RepairCostMode.getModes().get(index >= CustomAnvilRecipe.RepairCostMode.getModes().size() ? 0 : index));
+            int index = CustomRecipeAnvil.RepairCostMode.getModes().indexOf(guiHandler.getCustomCache().getAnvilRecipe().getRepairCostMode()) + 1;
+            guiHandler.getCustomCache().getAnvilRecipe().setRepairCostMode(CustomRecipeAnvil.RepairCostMode.getModes().get(index >= CustomRecipeAnvil.RepairCostMode.getModes().size() ? 0 : index));
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, event) -> {
             values.put("%VAR%", guiHandler.getCustomCache().getAnvilRecipe().getRepairCostMode().name());
@@ -123,16 +123,16 @@ public class AnvilCreator extends RecipeCreator {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, BACK);
-        CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
+        CustomRecipeAnvil anvilRecipe = cache.getAnvilRecipe();
         event.setButton(1, RecipeCreatorCluster.HIDDEN);
         event.setButton(3, RecipeCreatorCluster.CONDITIONS);
         event.setButton(5, RecipeCreatorCluster.PRIORITY);
         event.setButton(7, RecipeCreatorCluster.EXACT_META);
         event.setButton(19, "recipe.ingredient_0");
         event.setButton(21, "recipe.ingredient_1");
-        if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+        if (anvilRecipe.getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
             event.setButton(25, "recipe.result");
-        } else if (anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
+        } else if (anvilRecipe.getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
             event.setButton(25, DURABILITY);
         } else {
             event.setItem(25, new ItemStack(Material.BARRIER));
@@ -154,9 +154,9 @@ public class AnvilCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        CustomAnvilRecipe anvilRecipe = cache.getAnvilRecipe();
+        CustomRecipeAnvil anvilRecipe = cache.getAnvilRecipe();
         if (anvilRecipe.getInputLeft().isEmpty() && anvilRecipe.getInputRight().isEmpty())
             return false;
-        return !anvilRecipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT) || anvilRecipe.getResult() != null && !anvilRecipe.getResult().isEmpty();
+        return !anvilRecipe.getMode().equals(CustomRecipeAnvil.Mode.RESULT) || anvilRecipe.getResult() != null && !anvilRecipe.getResult().isEmpty();
     }
 }

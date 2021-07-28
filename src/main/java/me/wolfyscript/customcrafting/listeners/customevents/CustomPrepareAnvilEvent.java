@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.recipes.types.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.InventoryView;
@@ -10,9 +10,9 @@ public class CustomPrepareAnvilEvent extends PrepareAnvilEvent implements Cancel
 
     private boolean cancelled;
 
-    private final CustomAnvilRecipe recipe;
+    private final CustomRecipeAnvil recipe;
 
-    public CustomPrepareAnvilEvent(InventoryView transaction, ItemStack result, CustomAnvilRecipe recipe) {
+    public CustomPrepareAnvilEvent(InventoryView transaction, ItemStack result, CustomRecipeAnvil recipe) {
         super(transaction, result);
         this.cancelled = false;
         this.recipe = recipe;
@@ -28,7 +28,7 @@ public class CustomPrepareAnvilEvent extends PrepareAnvilEvent implements Cancel
         this.cancelled = cancelled;
     }
 
-    public CustomAnvilRecipe getRecipe() {
+    public CustomRecipeAnvil getRecipe() {
         return recipe;
     }
 }

@@ -1,9 +1,6 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.crafting.CraftingRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
@@ -71,7 +68,7 @@ public class RecipeType<C extends ICustomRecipe<?, ?>> {
                 '}';
     }
 
-    public static final class CookingRecipeType<C extends CustomCookingRecipe<?, ?>> extends RecipeType<C> {
+    public static final class CookingRecipeType<C extends CustomRecipeCooking<?, ?>> extends RecipeType<C> {
 
         public CookingRecipeType(Types.Type type, Class<C> clazz) {
             super(type, clazz, "cooking");

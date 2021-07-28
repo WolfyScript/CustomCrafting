@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.types.CustomSmithingRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
@@ -29,7 +29,7 @@ public class SmithingCreator extends RecipeCreator {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();
         event.setButton(0, BACK);
-        CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
+        CustomRecipeSmithing smithingRecipe = cache.getSmithingRecipe();
         event.setButton(1, RecipeCreatorCluster.HIDDEN);
         event.setButton(3, RecipeCreatorCluster.CONDITIONS);
         event.setButton(5, RecipeCreatorCluster.PRIORITY);
@@ -47,7 +47,7 @@ public class SmithingCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        CustomSmithingRecipe smithingRecipe = cache.getSmithingRecipe();
+        CustomRecipeSmithing smithingRecipe = cache.getSmithingRecipe();
         return !smithingRecipe.getBase().isEmpty() && !smithingRecipe.getAddition().isEmpty() && !smithingRecipe.getResult().isEmpty();
     }
 }

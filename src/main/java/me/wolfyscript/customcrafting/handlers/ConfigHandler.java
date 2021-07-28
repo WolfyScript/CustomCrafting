@@ -4,8 +4,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
-import me.wolfyscript.customcrafting.recipes.types.crafting.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.crafting.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeShaped;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeShapeless;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
@@ -80,7 +80,7 @@ public class ConfigHandler {
             ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
             ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
-            var knowledgeBookCraft = new ShapelessCraftRecipe();
+            var knowledgeBookCraft = new CustomRecipeShapeless();
             knowledgeBookCraft.setIngredient('A', new Ingredient(Material.BOOK));
             knowledgeBookCraft.setIngredient('B', new Ingredient(Material.CRAFTING_TABLE));
             knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
@@ -96,7 +96,7 @@ public class ConfigHandler {
             advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, CustomCrafting.ADVANCED_CRAFTING_TABLE);
             ItemLoader.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
 
-            var workbenchCraft = new ShapedCraftRecipe();
+            var workbenchCraft = new CustomRecipeShaped();
             workbenchCraft.setMirrorHorizontal(false);
             workbenchCraft.setIngredient('B', new Ingredient(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('E', new Ingredient(Material.CRAFTING_TABLE));

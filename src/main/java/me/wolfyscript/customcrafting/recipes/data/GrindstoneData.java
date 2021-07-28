@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.types.GrindstoneRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public class GrindstoneData {
 
-    private final GrindstoneRecipe recipe;
+    private final CustomRecipeGrindstone recipe;
     private final Result<?> result;
     private final CustomItem inputTop;
     private final CustomItem inputBottom;
     private final boolean validItem;
 
-    public GrindstoneData(GrindstoneRecipe recipe, Result<?> result, boolean validItem, CustomItem inputTop, CustomItem inputBottom) {
+    public GrindstoneData(CustomRecipeGrindstone recipe, Result<?> result, boolean validItem, CustomItem inputTop, CustomItem inputBottom) {
         this.recipe = recipe;
         this.result = result;
         this.validItem = validItem;
@@ -30,7 +30,7 @@ public class GrindstoneData {
         return inputTop;
     }
 
-    public GrindstoneRecipe getRecipe() {
+    public CustomRecipeGrindstone getRecipe() {
         return recipe;
     }
 

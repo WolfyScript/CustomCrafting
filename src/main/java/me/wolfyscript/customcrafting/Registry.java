@@ -1,11 +1,9 @@
 package me.wolfyscript.customcrafting;
 
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.*;
-import me.wolfyscript.customcrafting.recipes.types.crafting.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
@@ -221,7 +219,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             final int itemsSize = items.size();
             final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
             return craftingRecipes.stream().filter(recipe -> {
-                if (recipe instanceof AbstractShapedCraftRecipe<?, ?> shapedRecipe) {
+                if (recipe instanceof AbstractRecipeShaped<?, ?> shapedRecipe) {
                     return itemsSize > 0 && shapedRecipe.getShape().length > 0 && items0Size == shapedRecipe.getShape()[0].length() && itemsSize == shapedRecipe.getShape().length;
                 }
                 return recipe.getIngredients().keySet().size() == size;
