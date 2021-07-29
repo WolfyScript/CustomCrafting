@@ -25,6 +25,9 @@ public class ReloadSubCommand extends AbstractSubCommand {
         WolfyUtilities api = customCrafting.getApi();
         if (sender instanceof Player p && ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
             InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
+            api.getChat().sendMessage(p, "&eReloading Config!");
+            customCrafting.getConfigHandler().getConfig().load();
+            api.getChat().sendMessage(p, "  - &aComplete");
             api.getChat().sendMessage(p, "&eReloading Languages!");
             customCrafting.getApi().getLanguageAPI().unregisterLanguages();
             customCrafting.getConfigHandler().loadLang();
