@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class EditSubCommand extends AbstractSubCommand {
@@ -31,15 +30,17 @@ public class EditSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player player) {
+        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes.edit") && args.length > 0) {
             WolfyUtilities api = customCrafting.getApi();
-            if (ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.edit") && args.length > 0) {
-                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
+            NamespacedKey key = NamespacedKey.of(args[0]);
+            if (key != null) {
+                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(key);
                 if (customRecipe != null) {
                     GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
-                    guiHandler.getCustomCache().setSetting(Setting.valueOf(customRecipe.getRecipeType().toString().toUpperCase(Locale.ROOT)));
+                    guiHandler.getCustomCache().setRecipeType(customRecipe.getRecipeType());
+                    guiHandler.getCustomCache().setSetting(Setting.RECIPE_CREATOR);
                     if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
-                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("none", "recipe_creator")), 1);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("recipe_creator", guiHandler.getCustomCache().getRecipeType().getCreatorID())), 1);
                     }
                 } else {
                     api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));

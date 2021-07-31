@@ -29,10 +29,11 @@ public class DeleteSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.delete")) {
+        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes.delete") && args.length > 0) {
             WolfyUtilities api = customCrafting.getApi();
-            if (args.length > 0) {
-                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(new NamespacedKey(args[0].split(":")[0], args[0].split(":")[1]));
+            NamespacedKey key = NamespacedKey.of(args[0]);
+            if (key != null) {
+                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(key);
                 if (customRecipe != null) {
                     api.getChat().sendMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new Pair<>("%RECIPE%", customRecipe.getNamespacedKey().toString()));
                     api.getChat().sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player))), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> api.getChat().sendMessage(player1, "§cCancelled"), new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete ")));
