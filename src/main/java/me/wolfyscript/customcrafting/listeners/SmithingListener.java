@@ -45,10 +45,7 @@ public class SmithingListener implements Listener {
         var base = inv.getItem(0);
         var addition = inv.getItem(1);
         if (!ItemUtils.isAirOrNull(event.getResult())) {
-            if (Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof SmithingRecipe && customCrafting.getDataHandler().getDisabledRecipes().contains(NamespacedKey.fromBukkit(((Keyed) recipe).getKey())))) {
-                event.setResult(null);
-            }
-            if (Stream.of(inv.getStorageContents()).parallel().map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes())) {
+            if (Stream.of(inv.getStorageContents()).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes()) || Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof SmithingRecipe && customCrafting.getDataHandler().getDisabledRecipes().contains(NamespacedKey.fromBukkit(((Keyed) recipe).getKey())))) {
                 event.setResult(null);
             }
         }
@@ -63,13 +60,12 @@ public class SmithingListener implements Listener {
                         assert base != null;
                         assert addition != null;
                         Result<?> result = recipe.getResult();
-                        Map<Integer, IngredientData> ingredients = Map.of(
+                        SmithingData data = new SmithingData(recipe, Map.of(
                                 0, new IngredientData(0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
-                                1, new IngredientData(1, recipe.getBase(), optionalBase.get(), inv.getItem(1))
-                        );
-                        SmithingData data = new SmithingData(recipe, ingredients);
+                                1, new IngredientData(1, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))
+                        ));
                         preCraftedRecipes.put(player.getUniqueId(), data);
-                        //Progress result
+                        //Process result
                         ItemStack endResult = result.getItem(data, player, inv.getLocation() != null ? inv.getLocation().getBlock() : null);
                         endResult.addUnsafeEnchantments(base.getEnchantments());
                         event.setResult(endResult);
@@ -110,11 +106,14 @@ public class SmithingListener implements Listener {
             CustomItem base = smithingData.getBase();
             CustomItem addition = smithingData.getAddition();
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-            base.consumeItem(baseItem, 1, inventory);
+            base.remove(baseItem, 1, inventory);
+            addition.remove(additionItem, 1, inventory);
             inventory.setItem(0, baseItem);
-            addition.consumeItem(additionItem, 1, inventory);
             inventory.setItem(1, additionItem);
             preCraftedRecipes.remove(player.getUniqueId());
+            var smithingEvent = new PrepareSmithingEvent(event.getView(), null);
+            Bukkit.getPluginManager().callEvent(smithingEvent);
+            inventory.setItem(2, smithingEvent.getResult());
         }
     }
 
