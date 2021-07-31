@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends me.wolfyscript.utilities.util.Registry<T> {
@@ -81,14 +80,14 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @return A list of all available namespaces.
          */
         public List<String> namespaces() {
-            return keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
+            return keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().toList();
         }
 
         /**
          * @return A list of all available groups.
          */
         public List<String> groups() {
-            return values().parallelStream().map(ICustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList());
+            return values().parallelStream().map(ICustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().toList();
         }
 
         /**
@@ -98,7 +97,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @return The recipes contained in the namespace.
          */
         public List<ICustomRecipe<?, ?>> get(String namespace) {
-            return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
+            return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).toList();
         }
 
         /**
@@ -108,15 +107,15 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @return The recipes contained in the group.
          */
         public List<ICustomRecipe<?, ?>> getGroup(String group) {
-            return Registry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
+            return Registry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).toList();
         }
 
         public List<ICustomRecipe<?, ?>> get(CustomItem result) {
-            return values().parallelStream().filter(recipe -> recipe.getResult().getChoices().contains(result)).collect(Collectors.toList());
+            return values().parallelStream().filter(recipe -> recipe.getResult().getChoices().contains(result)).toList();
         }
 
         public <T extends ICustomRecipe<?, ?>> List<T> get(Class<T> type) {
-            return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+            return values().parallelStream().filter(type::isInstance).map(type::cast).toList();
         }
 
         /**
@@ -185,7 +184,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @return All the recipes, that have the specified Result, are not hidden, and the player has permission to view.
          */
         public List<ICustomRecipe<?, ?>> getAvailable(ItemStack result, Player player) {
-            return getAvailable(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
+            return getAvailable(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).toList();
         }
 
         public synchronized <T extends ICustomRecipe<?, ?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
@@ -200,7 +199,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @return A filtered {@link List} containing only visible and enabled recipes.
          */
         private <T extends ICustomRecipe<?, ?>> List<T> getAvailable(Stream<T> recipes) {
-            return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
+            return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(ICustomRecipe::getPriority)).toList();
         }
 
         public Stream<CraftingRecipe<?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {

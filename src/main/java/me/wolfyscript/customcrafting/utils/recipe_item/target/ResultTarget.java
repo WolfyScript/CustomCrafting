@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ResultTarget {
@@ -23,7 +22,7 @@ public class ResultTarget {
     }
 
     protected ResultTarget(ResultTarget target) {
-        this.mergeOptions = target.mergeOptions.stream().map(MergeOption::clone).collect(Collectors.toList());
+        this.mergeOptions = target.mergeOptions.stream().map(MergeOption::clone).toList();
     }
 
     /**

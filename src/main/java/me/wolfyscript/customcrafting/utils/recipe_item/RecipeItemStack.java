@@ -43,11 +43,11 @@ public abstract class RecipeItemStack {
     }
 
     protected RecipeItemStack(Material... materials) {
-        this(Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList()), new LinkedHashSet<>());
+        this(Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).toList(), new LinkedHashSet<>());
     }
 
     protected RecipeItemStack(ItemStack... items) {
-        this(Arrays.stream(items).map(VanillaRef::new).collect(Collectors.toList()), new LinkedHashSet<>());
+        this(Arrays.stream(items).map(VanillaRef::new).toList(), new LinkedHashSet<>());
     }
 
     protected RecipeItemStack(NamespacedKey... tags) {
@@ -95,7 +95,7 @@ public abstract class RecipeItemStack {
 
     public void buildChoices() {
         this.choices.clear();
-        this.choices.addAll(items.stream().map(ItemLoader::load).filter(customItem -> !ItemUtils.isAirOrNull(customItem)).collect(Collectors.toList()));
+        this.choices.addAll(items.stream().map(ItemLoader::load).filter(customItem -> !ItemUtils.isAirOrNull(customItem)).toList());
         this.tags.stream().map(namespacedKey -> {
             if (namespacedKey.getNamespace().equals("minecraft")) {
                 Tag<Material> tag = Bukkit.getTag("items", org.bukkit.NamespacedKey.minecraft(namespacedKey.getKey()), Material.class);
@@ -119,7 +119,7 @@ public abstract class RecipeItemStack {
 
     @JsonIgnore
     public List<CustomItem> getChoices(Player player) {
-        return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList());
+        return getChoicesStream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList();
     }
 
     @JsonIgnore
@@ -129,7 +129,7 @@ public abstract class RecipeItemStack {
 
     @JsonIgnore
     public List<ItemStack> getBukkitChoices() {
-        return getChoicesStream().map(CustomItem::create).collect(Collectors.toList());
+        return getChoicesStream().map(CustomItem::create).toList();
     }
 
     @JsonIgnore

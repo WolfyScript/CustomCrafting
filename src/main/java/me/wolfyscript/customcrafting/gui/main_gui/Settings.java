@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Settings extends CCWindow {
 
@@ -91,7 +90,7 @@ public class Settings extends CCWindow {
         File langFolder = new File(customCrafting.getDataFolder() + File.separator + "lang");
         String[] filenames = langFolder.list((dir, name) -> name.endsWith(".json"));
         if (filenames != null) {
-            availableLangs.addAll(Arrays.stream(filenames).map(s -> s.replace(".json", "")).distinct().collect(Collectors.toList()));
+            availableLangs.addAll(Arrays.stream(filenames).map(s -> s.replace(".json", "")).distinct().toList());
         }
         Player player = event.getPlayer();
         event.setButton(0, MainCluster.BACK);

@@ -17,8 +17,7 @@ import java.net.URL;
 
 public class UpdateChecker {
 
-    private static final long CHECK_DELAY = 1000L * 60L * 5L;
-
+    private static final long CHECK_DELAY = 1000L * 60L * 20L;
     private static final String REQUEST_URL = "https://api.spigotmc.org/simple/0.2/index.php?action=getResource&id=";
     private static final String RESOURCE_URL = "https://www.spigotmc.org/resources/";
     private final CustomCrafting plugin;

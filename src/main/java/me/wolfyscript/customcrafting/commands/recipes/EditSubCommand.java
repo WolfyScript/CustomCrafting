@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EditSubCommand extends AbstractSubCommand {
 
@@ -54,7 +53,7 @@ public class EditSubCommand extends AbstractSubCommand {
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
-        StringUtil.copyPartialMatches(args[args.length - 1], Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList()), results);
+        StringUtil.copyPartialMatches(args[args.length - 1], Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).toList(), results);
         return results;
     }
 }

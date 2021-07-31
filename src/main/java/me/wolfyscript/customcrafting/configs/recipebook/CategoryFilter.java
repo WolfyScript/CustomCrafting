@@ -68,7 +68,7 @@ public class CategoryFilter extends CategorySettings {
     public void writeToByteBuf(MCByteBuf byteBuf) {
         super.writeToByteBuf(byteBuf);
         writeData(byteBuf);
-        writeStringArray(totalMaterials.stream().map(material -> material.getKey().toString()).collect(Collectors.toList()), byteBuf);
+        writeStringArray(totalMaterials.stream().map(material -> material.getKey().toString()).toList(), byteBuf);
 
     }
 }

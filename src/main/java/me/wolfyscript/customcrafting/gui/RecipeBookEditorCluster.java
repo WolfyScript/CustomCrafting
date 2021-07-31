@@ -25,7 +25,6 @@ import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RecipeBookEditorCluster extends CCCluster {
 
@@ -100,9 +99,9 @@ public class RecipeBookEditorCluster extends CCCluster {
         }));
         registerButton(new ActionButton<>(RECIPES.getKey(), Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
-            if (event instanceof InventoryClickEvent) {
-                boolean remove = ((InventoryClickEvent) event).isRightClick();
-                List<String> recipeKeys = Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList());
+            if (event instanceof InventoryClickEvent clickEvent) {
+                boolean remove = clickEvent.isRightClick();
+                List<String> recipeKeys = Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).toList();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     StringUtil.copyPartialMatches(args[0], recipeKeys, results);
@@ -128,7 +127,7 @@ public class RecipeBookEditorCluster extends CCCluster {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%recipes%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getRecipes().stream().map(recipe -> "&7 - " + recipe.toString()).collect(Collectors.toList()));
+            values.put("%recipes%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getRecipes().stream().map(recipe -> "&7 - " + recipe.toString()).toList());
             return itemStack;
         }));
 
@@ -160,14 +159,14 @@ public class RecipeBookEditorCluster extends CCCluster {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%namespaces%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getNamespaces().stream().map(namespacedKey -> "&7 - " + namespacedKey).collect(Collectors.toList()));
+            values.put("%namespaces%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getNamespaces().stream().map(namespacedKey -> "&7 - " + namespacedKey).toList());
             return itemStack;
         }));
 
         registerButton(new ActionButton<>(GROUPS.getKey(), Material.BOOKSHELF, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
-            if (event instanceof InventoryClickEvent) {
-                boolean remove = ((InventoryClickEvent) event).isRightClick();
+            if (event instanceof InventoryClickEvent clickEvent) {
+                boolean remove = clickEvent.isRightClick();
                 List<String> groups = Registry.RECIPES.groups();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
@@ -192,7 +191,7 @@ public class RecipeBookEditorCluster extends CCCluster {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            values.put("%groups%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getGroups().stream().map(group -> "&7 - " + group).collect(Collectors.toList()));
+            values.put("%groups%", guiHandler.getCustomCache().getRecipeBookEditor().getCategorySetting().getGroups().stream().map(group -> "&7 - " + group).toList());
             return itemStack;
         }));
 

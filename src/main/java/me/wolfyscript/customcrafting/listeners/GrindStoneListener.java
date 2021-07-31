@@ -29,7 +29,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class GrindStoneListener implements Listener {
 
@@ -215,7 +214,7 @@ public class GrindStoneListener implements Listener {
         GrindstoneRecipe foundRecipe = null;
         boolean validItem = false;
 
-        for (GrindstoneRecipe grindstoneRecipe : Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).collect(Collectors.toList())) {
+        for (GrindstoneRecipe grindstoneRecipe : Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).toList()) {
             Ingredient input = slot == 0 ? grindstoneRecipe.getInputTop() : grindstoneRecipe.getInputBottom();
             Ingredient otherInput = slot == 0 ? grindstoneRecipe.getInputBottom() : grindstoneRecipe.getInputTop();
             Optional<CustomItem> optional = input.check(item, grindstoneRecipe.isExactMeta());

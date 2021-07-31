@@ -20,7 +20,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShapedCraftingRecipe, ICustomVanillaRecipe<ShapedRecipe> {
 
@@ -232,7 +231,7 @@ public class ShapedCraftRecipe extends AdvancedCraftingRecipe implements IShaped
         if (!allowVanillaRecipe() && !getResult().isEmpty() && this.width > 0) {
             ShapedRecipe recipe = new ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
             recipe.shape(shape);
-            getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList()))));
+            getIngredients().forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().parallelStream().map(CustomItem::create).distinct().toList())));
             recipe.setGroup(getGroup());
             return recipe;
         }

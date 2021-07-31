@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DeleteSubCommand extends AbstractSubCommand {
 
@@ -49,7 +48,7 @@ public class DeleteSubCommand extends AbstractSubCommand {
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
-        List<String> recipes = Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).collect(Collectors.toList());
+        List<String> recipes = Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).toList();
         StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
         return results;
     }

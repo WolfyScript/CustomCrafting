@@ -32,7 +32,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget> {
 
@@ -71,7 +70,7 @@ public class BrewingRecipe extends CustomRecipe<BrewingRecipe, FixedResultTarget
         setResetEffects(node.path("reset_effects").asBoolean(false));
         setEffectColor(node.has("color") ? mapper.convertValue(node.path("color"), Color.class) : null);
 
-        setEffectRemovals(Streams.stream(node.path("effect_removals").elements()).map(n -> mapper.convertValue(n, PotionEffectType.class)).collect(Collectors.toList()));
+        setEffectRemovals(Streams.stream(node.path("effect_removals").elements()).map(n -> mapper.convertValue(n, PotionEffectType.class)).toList());
         Map<PotionEffect, Boolean> effectAdditions = new HashMap<>();
         node.path("effect_additions").elements().forEachRemaining(n -> {
             PotionEffect potionEffect = mapper.convertValue(n.path("effect"), PotionEffect.class);

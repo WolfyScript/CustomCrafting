@@ -14,7 +14,6 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements IShapelessCraftingRecipe, ICustomVanillaRecipe<ShapelessRecipe> {
 
@@ -53,7 +52,7 @@ public class ShapelessCraftRecipe extends AdvancedCraftingRecipe implements ISha
         if (!allowVanillaRecipe() && !getResult().isEmpty()) {
             ShapelessRecipe shapelessRecipe = new ShapelessRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
             for (Ingredient value : getIngredients().values()) {
-                shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
+                shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().toList()));
             }
             shapelessRecipe.setGroup(getGroup());
             return shapelessRecipe;

@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EnchantMergeAdapter extends MergeAdapter {
 
@@ -36,12 +35,12 @@ public class EnchantMergeAdapter extends MergeAdapter {
 
     @JsonProperty("blackListedEnchants")
     public List<String> getBlackListedEnchants() {
-        return blackListedEnchants.stream().map(enchantment -> enchantment.getKey().toString()).collect(Collectors.toList());
+        return blackListedEnchants.stream().map(enchantment -> enchantment.getKey().toString()).toList();
     }
 
     @JsonProperty("blackListedEnchants")
     public void setBlackListedEnchants(List<String> blackListedEnchants) {
-        this.blackListedEnchants = blackListedEnchants.stream().map(s -> Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(s))).collect(Collectors.toList());
+        this.blackListedEnchants = blackListedEnchants.stream().map(s -> Enchantment.getByKey(org.bukkit.NamespacedKey.fromString(s))).toList();
     }
 
     @Override

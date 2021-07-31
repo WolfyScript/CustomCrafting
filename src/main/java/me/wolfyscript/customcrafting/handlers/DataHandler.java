@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DataHandler {
 
@@ -90,7 +89,7 @@ public class DataHandler {
 
     public void loadRecipesAndItems() {
         if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
-            getDisabledRecipes().addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).collect(Collectors.toList()));
+            getDisabledRecipes().addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
         }
         load(true);
         categories.index();
@@ -238,13 +237,13 @@ public class DataHandler {
                     return ((Keyed) recipe).getKey().getNamespace().equals("minecraft");
                 }
                 return false;
-            }).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).collect(Collectors.toList());
+            }).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).toList();
         }
         return Collections.unmodifiableList(minecraftRecipes);
     }
 
     public List<String> getBukkitNamespacedKeys() {
-        return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
+        return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).toList();
     }
 
     private int gridSize(ItemStack[] ingredients) {

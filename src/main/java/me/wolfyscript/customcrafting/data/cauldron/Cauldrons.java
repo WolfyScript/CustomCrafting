@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class Cauldrons {
 
@@ -173,7 +172,7 @@ public class Cauldrons {
                 cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {
                     String loc = locationToString(entry.getKey());
                     if (loc != null) {
-                        saveMap.put(loc, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().filter(Objects::nonNull).map(Cauldron::toString).collect(Collectors.toList()));
+                        saveMap.put(loc, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().filter(Objects::nonNull).map(Cauldron::toString).toList());
                     }
                 });
             }
@@ -212,7 +211,7 @@ public class Cauldrons {
                 for (Map.Entry<String, List<String>> entry : loadMap.entrySet()) {
                     var location = stringToLocation(entry.getKey());
                     if (location != null) {
-                        this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(Cauldron::fromString).filter(Objects::nonNull).collect(Collectors.toList()));
+                        this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(Cauldron::fromString).filter(Objects::nonNull).toList());
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
