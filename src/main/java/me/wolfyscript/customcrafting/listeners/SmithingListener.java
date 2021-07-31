@@ -63,13 +63,12 @@ public class SmithingListener implements Listener {
                         assert base != null;
                         assert addition != null;
                         Result<?> result = recipe.getResult();
-                        Map<Integer, IngredientData> ingredients = Map.of(
+                        SmithingData data = new SmithingData(recipe, Map.of(
                                 0, new IngredientData(0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
-                                1, new IngredientData(1, recipe.getBase(), optionalBase.get(), inv.getItem(1))
-                        );
-                        SmithingData data = new SmithingData(recipe, ingredients);
+                                1, new IngredientData(1, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))
+                        ));
                         preCraftedRecipes.put(player.getUniqueId(), data);
-                        //Progress result
+                        //Process result
                         ItemStack endResult = result.getItem(data, player, inv.getLocation() != null ? inv.getLocation().getBlock() : null);
                         endResult.addUnsafeEnchantments(base.getEnchantments());
                         event.setResult(endResult);
