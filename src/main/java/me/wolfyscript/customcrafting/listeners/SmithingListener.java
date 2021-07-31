@@ -106,11 +106,14 @@ public class SmithingListener implements Listener {
             CustomItem base = smithingData.getBase();
             CustomItem addition = smithingData.getAddition();
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-            base.consumeItem(baseItem, 1, inventory);
+            base.remove(baseItem, 1, inventory);
+            addition.remove(additionItem, 1, inventory);
             inventory.setItem(0, baseItem);
-            addition.consumeItem(additionItem, 1, inventory);
             inventory.setItem(1, additionItem);
             preCraftedRecipes.remove(player.getUniqueId());
+            var smithingEvent = new PrepareSmithingEvent(event.getView(), null);
+            Bukkit.getPluginManager().callEvent(smithingEvent);
+            inventory.setItem(2, smithingEvent.getResult());
         }
     }
 
