@@ -43,11 +43,11 @@ public abstract class RecipeItemStack {
     }
 
     protected RecipeItemStack(Material... materials) {
-        this(Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).toList(), new LinkedHashSet<>());
+        this(Arrays.stream(materials).map(material -> new VanillaRef(new ItemStack(material))).collect(Collectors.toList()), new LinkedHashSet<>());
     }
 
     protected RecipeItemStack(ItemStack... items) {
-        this(Arrays.stream(items).map(VanillaRef::new).toList(), new LinkedHashSet<>());
+        this(Arrays.stream(items).map(VanillaRef::new).collect(Collectors.toList()), new LinkedHashSet<>());
     }
 
     protected RecipeItemStack(NamespacedKey... tags) {
