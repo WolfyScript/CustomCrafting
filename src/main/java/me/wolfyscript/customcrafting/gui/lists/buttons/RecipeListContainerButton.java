@@ -68,10 +68,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
-        if(event instanceof InventoryClickEvent) {
+        if (event instanceof InventoryClickEvent clickEvent) {
             ICustomRecipe<?, ?> customRecipe = getCustomRecipe(guiHandler);
-            if (((InventoryClickEvent) event).isShiftClick() && customRecipe != null) {
-                if (((InventoryClickEvent) event).isLeftClick()) {
+            if (clickEvent.isShiftClick() && customRecipe != null) {
+                if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
                     cache.setRecipeType(customRecipe.getRecipeType());
                     if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
@@ -92,6 +92,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 } else {
                     customCrafting.getDataHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
                 }
+                customCrafting.getDataHandler().saveDisabledRecipes();
             }
         }
         return true;
