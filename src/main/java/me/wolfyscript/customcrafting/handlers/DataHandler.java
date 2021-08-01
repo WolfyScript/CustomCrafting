@@ -161,7 +161,7 @@ public class DataHandler {
         }
     }
 
-    public void onSave() {
+    public void saveDisabledRecipes() {
         customCrafting.getConfigHandler().getConfig().setDisabledRecipes(disabledRecipes);
         customCrafting.getConfigHandler().getConfig().save();
     }

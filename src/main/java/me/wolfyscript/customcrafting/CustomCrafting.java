@@ -202,7 +202,6 @@ public class CustomCrafting extends JavaPlugin {
         }
         cauldrons.endAutoSaveTask();
         cauldrons.save();
-        getDataHandler().onSave();
     }
 
     private void writeBanner() {
