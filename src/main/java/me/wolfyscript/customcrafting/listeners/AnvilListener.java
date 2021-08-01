@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.recipes.Types;
 import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilData;
 import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
+import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -40,8 +41,6 @@ public class AnvilListener implements Listener {
     public void onCheck(PrepareAnvilEvent event) {
         var player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
-        List<CustomAnvilRecipe> recipes = Registry.RECIPES.getAvailable(Types.ANVIL, player);
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         preCraftedRecipes.remove(player.getUniqueId());
         ItemStack inputLeft = inventory.getItem(0);
         ItemStack inputRight = inventory.getItem(1);
@@ -49,101 +48,83 @@ public class AnvilListener implements Listener {
             event.setResult(null);
             return;
         }
+        List<CustomAnvilRecipe> recipes = Registry.RECIPES.getAvailable(Types.ANVIL, player);
+        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         for (CustomAnvilRecipe recipe : recipes) {
             Optional<CustomItem> finalInputLeft = Optional.empty();
             Optional<CustomItem> finalInputRight = Optional.empty();
-            if (recipe.hasInputLeft()) {
-                if (inputLeft != null) {
-                    finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isExactMeta());
-                    if (!finalInputLeft.isPresent()) {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
+            if ((recipe.hasInputLeft() && (inputLeft == null || (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isExactMeta())).isEmpty())) || (recipe.hasInputRight() && (inputRight == null || (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isExactMeta())).isEmpty()))) {
+                continue;
             }
-            if (recipe.hasInputRight()) {
-                if (inputRight != null) {
-                    finalInputRight = recipe.getInputRight().check(inputRight, recipe.isExactMeta());
-                    if (!finalInputRight.isPresent()) {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-            }
-
             //Recipe is valid at this point!
             final CustomItem result;
-            Result<?> recipeResult = null;
+            AnvilData anvilData = new AnvilData(recipe, Map.of(0, new IngredientData(0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft), 1, new IngredientData(1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)));
             //Set the result depending on what is configured!
             if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
                 //Recipe has a plain result set that we can use.
-                recipeResult = recipe.getResult();
-                result = recipeResult.getItem(player).orElse(new CustomItem(Material.AIR));
-            } else if (!ItemUtils.isAirOrNull(event.getResult())) {
+                result = recipe.getResult().getItem(player).orElse(new CustomItem(Material.AIR));
+                anvilData.setUsedResult(true);
+            } else {
                 //Either none or durability mode is set.
-                result = new CustomItem(event.getResult());
-                ItemStack resultStack = result.create();
-                if (resultStack.hasItemMeta()) {
-                    //Further recipe options to block features.
-                    if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && result.getItemMeta().hasEnchants()) {
-                        //Block Enchants
-                        for (Enchantment enchantment : resultStack.getEnchantments().keySet()) {
-                            result.removeEnchantment(enchantment);
-                        }
-                        if (inputLeft != null) {
-                            for (Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()) {
-                                result.addUnsafeEnchantment(entry.getKey(), entry.getValue());
+                if (ItemUtils.isAirOrNull(event.getResult())) {
+                    result = new CustomItem(inputLeft).clone();
+                    if (!recipe.isBlockRename() && inventory.getRenameText() != null && !inventory.getRenameText().isEmpty()) {
+                        result.setDisplayName(inventory.getRenameText());
+                    }
+                } else {
+                    result = new CustomItem(event.getResult());
+                    ItemStack resultStack = result.getItemStack();
+                    if (result.hasItemMeta()) {
+                        //Further recipe options to block features.
+                        if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && result.getItemMeta().hasEnchants()) {
+                            //Block Enchants
+                            for (Enchantment enchantment : resultStack.getEnchantments().keySet()) {
+                                result.removeEnchantment(enchantment);
+                            }
+                            if (inputLeft != null) {
+                                for (Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()) {
+                                    result.addUnsafeEnchantment(entry.getKey(), entry.getValue());
+                                }
                             }
                         }
-                    }
-                    if (recipe.isBlockRename()) {
-                        //Block Renaming
-                        var itemMeta = result.getItemMeta();
-                        if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
-                            itemMeta.setDisplayName(inputLeft.getItemMeta().getDisplayName());
-                        } else {
-                            itemMeta.setDisplayName(null);
-                        }
-                        result.setItemMeta(itemMeta);
-                    }
-                    if (recipe.isBlockRepair()) {
-                        //Block Repairing
-                        var itemMeta = result.getItemMeta();
-                        if (itemMeta instanceof Damageable) {
-                            if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable) {
-                                ((Damageable) itemMeta).setDamage(((Damageable) inputLeft.getItemMeta()).getDamage());
+                        if (recipe.isBlockRename()) {
+                            //Block Renaming
+                            if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
+                                result.setDisplayName(inputLeft.getItemMeta().getDisplayName());
+                            } else {
+                                result.setDisplayName(null);
                             }
-                            result.setItemMeta(itemMeta);
+                        }
+                        if (recipe.isBlockRepair()) {
+                            //Block Repairing
+                            var itemMeta = result.getItemMeta();
+                            if (itemMeta instanceof Damageable resultDamageable) {
+                                if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
+                                    resultDamageable.setDamage(damageable.getDamage());
+                                }
+                                result.setItemMeta(itemMeta);
+                            }
                         }
                     }
                 }
                 if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
                     //Durability mode is set.
                     if (result.hasCustomDurability()) {
-                        int damage = result.getCustomDamage() - recipe.getDurability();
-                        if (damage < 0) {
-                            damage = 0;
-                        }
-                        result.setCustomDamage(damage);
-                    } else if (result.getItemMeta() instanceof Damageable) {
+                        result.setCustomDamage(Math.max(0, result.getCustomDamage() - recipe.getDurability()));
+                    } else if (result.getItemMeta() instanceof Damageable damageable) {
                         var itemMeta = result.getItemMeta();
-                        ((Damageable) itemMeta).setDamage(((Damageable) itemMeta).getDamage() - recipe.getDurability());
+                        damageable.setDamage(damageable.getDamage() - recipe.getDurability());
                         result.setItemMeta(itemMeta);
                     }
                 }
-            } else {
-                event.setResult(null);
-                continue;
             }
-            int repairCost = Math.max(1, recipe.getRepairCost());
 
+            int repairCost = Math.max(1, recipe.getRepairCost());
             if (inputLeft != null) {
                 var inputMeta = inputLeft.getItemMeta();
                 //Configure the Repair cost
-                if (inputMeta instanceof Repairable) {
-                    int itemRepairCost = ((Repairable) inputMeta).getRepairCost();
+                if (inputMeta instanceof Repairable repairable) {
+                    int itemRepairCost = repairable.getRepairCost();
                     if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.ADD)) {
                         repairCost = repairCost + itemRepairCost;
                     } else if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.MULTIPLY)) {
@@ -153,17 +134,19 @@ public class AnvilListener implements Listener {
                 //Apply the repair cost to the result.
                 if (recipe.isApplyRepairCost()) {
                     var itemMeta = result.getItemMeta();
-                    if (itemMeta instanceof Repairable) {
-                        ((Repairable) itemMeta).setRepairCost(repairCost);
+                    if (itemMeta instanceof Repairable repairable) {
+                        repairable.setRepairCost(repairCost);
                         result.setItemMeta(itemMeta);
                     }
                 }
             }
 
             //Save current active recipe to consume correct item inputs!
-            preCraftedRecipes.put(player.getUniqueId(), new AnvilData(recipe, recipeResult, finalInputLeft.orElse(null), finalInputRight.orElse(null)));
-            final ItemStack finalResult = result.create();
+            preCraftedRecipes.put(player.getUniqueId(), anvilData);
+            final ItemStack finalResult = result.getItemStack();
+
             inventory.setRepairCost(repairCost);
+
             event.setResult(repairCost > 0 ? finalResult : null);
             player.updateInventory();
             int finalRepairCost = repairCost;
@@ -202,8 +185,8 @@ public class AnvilListener implements Listener {
                     } else {
                         return;
                     }
-                    if (anvilData.getResult().isPresent()) {
-                        Result<?> recipeResult = anvilData.getResult().get();
+                    if (anvilData.isUsedResult()) {
+                        Result<?> recipeResult = anvilData.getResult();
                         recipeResult.executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
                         recipeResult.removeCachedItem(player);
                     }
@@ -222,15 +205,15 @@ public class AnvilListener implements Listener {
                     CustomItem inputRight = anvilData.getInputRight();
 
                     if (inputLeft != null && inventory.getItem(0) != null) {
-                        ItemStack itemLeft = inventory.getItem(0).clone();
-                        inputLeft.consumeItem(itemLeft, itemLeft.getAmount(), inventory);
+                        ItemStack itemLeft = anvilData.getLeftIngredient().itemStack().clone();
+                        inputLeft.remove(itemLeft, itemLeft.getAmount(), inventory);
                         inventory.setItem(0, itemLeft);
                     } else {
                         inventory.setItem(0, null);
                     }
                     if (inputRight != null && inventory.getItem(1) != null) {
-                        ItemStack itemRight = inventory.getItem(1).clone();
-                        inputRight.consumeItem(itemRight, 1, inventory);
+                        ItemStack itemRight = anvilData.getRightIngredient().itemStack().clone();
+                        inputRight.remove(itemRight, 1, inventory);
                         inventory.setItem(1, itemRight);
                     } else {
                         inventory.setItem(1, null);
