@@ -11,7 +11,6 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
@@ -30,7 +29,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public void constructRecipe() {
-        this.ingredientsFlat = getIngredients().values().stream().filter(ingredient -> !ingredient.isEmpty()).collect(Collectors.toList());
+        this.ingredientsFlat = getIngredients().values().stream().filter(ingredient -> !ingredient.isEmpty()).toList();
         Preconditions.checkArgument(!ingredientsFlat.isEmpty(), "Invalid ingredients! Recipe requires non-air ingredients!");
     }
 

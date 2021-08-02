@@ -103,10 +103,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         //Create flatten ingredients. This makes it possible to use a key multiple times in one shape.
         var flattenShape = String.join("", this.shape);
         Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Empty shape \"" + Arrays.toString(this.shape) + "\"!");
-        this.ingredientsFlat = new ArrayList<>();
-        for (char key : flattenShape.toCharArray()) {
-            ingredientsFlat.add(getIngredients().getOrDefault(key, new Ingredient()));
-        }
+        this.ingredientsFlat = flattenShape.chars().mapToObj(key -> getIngredients().getOrDefault((char) key, new Ingredient())).toList();
         //Create internal shape, which is more performant when used in checks later on.
         this.internalShape = new Shape();
     }

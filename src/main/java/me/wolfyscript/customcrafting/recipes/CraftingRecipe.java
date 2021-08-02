@@ -63,7 +63,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     protected CraftingRecipe(CraftingRecipe<?, S> craftingRecipe) {
         super(craftingRecipe);
-        this.ingredientsFlat = craftingRecipe.ingredientsFlat != null ? craftingRecipe.ingredientsFlat.stream().map(Ingredient::clone).collect(Collectors.toList()) : null;
+        this.ingredientsFlat = craftingRecipe.ingredientsFlat != null ? craftingRecipe.ingredientsFlat.stream().map(Ingredient::clone).toList() : null;
         this.requiredGridSize = craftingRecipe.requiredGridSize;
         this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
         this.ingredients = craftingRecipe.getIngredients();
@@ -88,6 +88,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         this.settings = settings;
     }
 
+    /**
+     * The flat ingredients are created from the already shrunken shape, so the list might be smaller than 9 or 36 in case of elite crafting recipes.
+     * Slots that do not have an associated ingredient in the shape are filled with empty {@link Ingredient} objects.
+     *
+     * @return An unmodifiable list presenting the flattened ingredients.
+     */
     public List<Ingredient> getFlatIngredients() {
         return ingredientsFlat;
     }
