@@ -17,7 +17,7 @@ import java.util.*;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
-    private final List<ICustomRecipe<?, ?>> cachedRecipes;
+    private final List<ICustomRecipe<?>> cachedRecipes;
     //private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
     private final Map<UUID, List<ItemStack>> cachedPlayerItemStacks = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
         this.cachedRecipes = Collections.singletonList(Registry.RECIPES.get(recipe));
     }
 
-    public RecipeContainer(ICustomRecipe<?, ?> recipe) {
+    public RecipeContainer(ICustomRecipe<?> recipe) {
         this.group = null;
         this.recipe = recipe.getNamespacedKey();
         this.cachedRecipes = Collections.singletonList(recipe);
@@ -46,7 +46,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
      * @param player The player to get the recipes for.
      * @return The recipes of this container the player has access to.
      */
-    public List<ICustomRecipe<?, ?>> getRecipes(Player player) {
+    public List<ICustomRecipe<?>> getRecipes(Player player) {
         return Registry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 

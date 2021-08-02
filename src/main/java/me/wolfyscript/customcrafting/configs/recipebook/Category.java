@@ -43,7 +43,7 @@ public class Category extends CategorySettings {
         recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).toList());
         recipeContainers.addAll(this.namespaces.stream().flatMap(s -> Registry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
         recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
-            ICustomRecipe<?, ?> recipe = Registry.RECIPES.get(namespacedKey);
+            ICustomRecipe<?> recipe = Registry.RECIPES.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(recipe);
         }).filter(Objects::nonNull).toList());
         containers.addAll(recipeContainers.stream().distinct().sorted().toList());

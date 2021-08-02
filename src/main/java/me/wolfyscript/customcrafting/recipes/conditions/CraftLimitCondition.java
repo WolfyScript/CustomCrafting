@@ -21,7 +21,7 @@ public class CraftLimitCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         Player player = data.getPlayer();
         if (player != null) {
             CCPlayerData playerStore = PlayerUtil.getStore(player);

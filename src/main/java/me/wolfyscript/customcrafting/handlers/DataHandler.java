@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DataHandler {
 
@@ -108,7 +109,7 @@ public class DataHandler {
                 loadItems(dir);
             }
             for (String dir : dirs) {
-                for (RecipeType<? extends ICustomRecipe<?, ?>> type : Types.values()) {
+                for (RecipeType<? extends ICustomRecipe<?>> type : Types.values()) {
                     loadRecipe(dir, type);
                 }
             }
@@ -142,7 +143,7 @@ public class DataHandler {
         }
     }
 
-    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?, ?>> type) {
+    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?>> type) {
         for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
             String name = file.getName();
             var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
@@ -174,11 +175,11 @@ public class DataHandler {
      * @deprecated Replaced by {@link ICustomRecipe#isDisabled()}
      */
     @Deprecated
-    public boolean isRecipeDisabled(ICustomRecipe<?, ?> recipe) {
+    public boolean isRecipeDisabled(ICustomRecipe<?> recipe) {
         return recipe.isDisabled();
     }
 
-    public void toggleRecipe(ICustomRecipe<?, ?> recipe) {
+    public void toggleRecipe(ICustomRecipe<?> recipe) {
         if (recipe.isDisabled()) {
             enableRecipe(recipe);
         } else {
@@ -186,7 +187,7 @@ public class DataHandler {
         }
     }
 
-    public void disableRecipe(ICustomRecipe<?, ?> recipe) {
+    public void disableRecipe(ICustomRecipe<?> recipe) {
         var namespacedKey = recipe.getNamespacedKey();
         disabledRecipes.add(namespacedKey);
         if (recipe instanceof ICustomVanillaRecipe<?>) {
@@ -194,7 +195,7 @@ public class DataHandler {
         }
     }
 
-    public void enableRecipe(ICustomRecipe<?, ?> recipe) {
+    public void enableRecipe(ICustomRecipe<?> recipe) {
         var namespacedKey = recipe.getNamespacedKey();
         if (recipe instanceof ICustomVanillaRecipe) {
             enableBukkitRecipe(namespacedKey.toBukkit(customCrafting));
@@ -303,9 +304,9 @@ public class DataHandler {
      * @param guiHandler The {@link GuiHandler} to load into.
      * @return If the recipe was successfully loaded into cache.
      */
-    public boolean loadRecipeIntoCache(ICustomRecipe<?, ?> recipe, GuiHandler<CCCache> guiHandler) {
+    public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<CCCache> guiHandler) {
         if (guiHandler.getCustomCache().getRecipeType().isInstance(recipe)) {
-            ICustomRecipe<?, ?> recipeCopy = recipe.clone();
+            ICustomRecipe<?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
             if (recipeCopy instanceof CraftingRecipe<?, ?> craftingRecipe) {
                 guiHandler.getCustomCache().setCustomRecipe(Types.WORKBENCH.isInstance(craftingRecipe) ? Types.WORKBENCH : Types.ELITE_WORKBENCH, craftingRecipe);

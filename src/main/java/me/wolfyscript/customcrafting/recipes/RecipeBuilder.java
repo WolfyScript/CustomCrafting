@@ -7,7 +7,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
-public abstract class RecipeBuilder<R extends CustomRecipe<R, T>, T extends ResultTarget, B extends RecipeBuilder<R, T, B>> {
+public abstract class RecipeBuilder<R extends CustomRecipe<R>, T extends ResultTarget, B extends RecipeBuilder<R, T, B>> {
 
     protected final WolfyUtilities api;
     protected NamespacedKey namespacedKey;
@@ -16,7 +16,7 @@ public abstract class RecipeBuilder<R extends CustomRecipe<R, T>, T extends Resu
     protected RecipePriority priority;
     protected Conditions conditions;
     protected String group;
-    protected Result<T> result;
+    protected Result result;
 
     protected RecipeBuilder() {
         this.api = CustomCrafting.inst().getApi();
@@ -101,11 +101,11 @@ public abstract class RecipeBuilder<R extends CustomRecipe<R, T>, T extends Resu
         return this;
     }
 
-    public Result<T> getResult() {
+    public Result getResult() {
         return result;
     }
 
-    public RecipeBuilder<R, T, B> setResult(Result<T> result) {
+    public RecipeBuilder<R, T, B> setResult(Result result) {
         this.result = result;
         return this;
     }

@@ -14,13 +14,13 @@ import java.util.Optional;
 public class TargetCase {
 
     private final APIReference caseReference;
-    private final Result<NoneResultTarget> result;
+    private final Result result;
 
     @JsonIgnore
     private CustomItem ingredient;
 
     @JsonCreator
-    public TargetCase(@JsonProperty("case") APIReference caseReference, @JsonProperty("result") Result<NoneResultTarget> result) {
+    public TargetCase(@JsonProperty("case") APIReference caseReference, @JsonProperty("result") Result result) {
         this.caseReference = caseReference;
         this.result = result;
         build();
@@ -32,7 +32,7 @@ public class TargetCase {
     }
 
     @JsonProperty("result")
-    public Result<NoneResultTarget> getResult() {
+    public Result getResult() {
         return result;
     }
 
@@ -41,7 +41,7 @@ public class TargetCase {
         result.buildChoices();
     }
 
-    public Optional<Result<NoneResultTarget>> check(ItemStack itemStack) {
+    public Optional<Result> check(ItemStack itemStack) {
         return ingredient.isSimilar(itemStack) ? Optional.of(result) : Optional.empty();
     }
 

@@ -1,4 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.settings;
 
-public interface CraftingRecipeSettings {
+public interface CraftingRecipeSettings<C extends CraftingRecipeSettings<C>> {
+
+    C clone();
 }

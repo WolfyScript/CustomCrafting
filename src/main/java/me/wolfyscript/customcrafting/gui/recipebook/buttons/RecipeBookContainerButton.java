@@ -70,7 +70,7 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         var cache = guiHandler.getCustomCache();
         var book = cache.getKnowledgeBook();
         var customItem = new CustomItem(Material.AIR);
-        List<ICustomRecipe<?, ?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
+        List<ICustomRecipe<?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
         if (!recipes.isEmpty()) {
             book.setSubFolderPage(0);
             book.addResearchItem(customItem);

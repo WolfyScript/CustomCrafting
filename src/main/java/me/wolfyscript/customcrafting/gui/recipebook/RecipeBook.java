@@ -142,7 +142,7 @@ public class RecipeBook extends CCWindow {
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, grayBtnKey);
             }
-            List<ICustomRecipe<?, ?>> recipes = knowledgeBook.getSubFolderRecipes();
+            List<ICustomRecipe<?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, grayBtnKey);
             }
@@ -154,7 +154,7 @@ public class RecipeBook extends CCWindow {
                 knowledgeBook.setSubFolderPage(0);
             }
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
-                ICustomRecipe<?, ?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+                ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
                 customRecipe.renderMenu(this, event);
                 boolean elite = Types.ELITE_WORKBENCH.isInstance(customRecipe);
                 if (knowledgeBook.getSubFolderPage() > 0) {

@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -19,7 +18,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.io.IOException;
 
-public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone, SlotResultTarget> {
+public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone> {
 
     private Ingredient inputTop;
     private Ingredient inputBottom;

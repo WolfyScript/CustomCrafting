@@ -18,7 +18,7 @@ public class ExperienceCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         if (data.getPlayer() != null) {
             int currentExp = data.getPlayer().getLevel();
             return switch (option) {

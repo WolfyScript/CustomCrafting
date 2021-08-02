@@ -84,7 +84,7 @@ public class IngredientContainerButton extends Button<CCCache> {
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
-                List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
+                List<ICustomRecipe<?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
                     book.setSubFolderPage(0);

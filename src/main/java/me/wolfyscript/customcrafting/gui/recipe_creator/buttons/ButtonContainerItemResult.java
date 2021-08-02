@@ -36,7 +36,7 @@ public class ButtonContainerItemResult extends ItemInputButton<CCCache> {
             }
             cache.getRecipe().getResult().put(variantSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Result<?> result = cache.getRecipe().getResult();
+            Result result = cache.getRecipe().getResult();
             return result != null ? result.getItemStack(variantSlot) : ItemUtils.AIR;
         }));
     }

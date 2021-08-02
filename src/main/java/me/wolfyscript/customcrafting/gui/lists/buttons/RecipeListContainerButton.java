@@ -37,7 +37,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
     private final HashMap<GuiHandler<CCCache>, Recipe> recipes = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, ICustomRecipe<?,?>> customRecipes = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, ICustomRecipe<?>> customRecipes = new HashMap<>();
     private final WolfyUtilities api;
 
     public RecipeListContainerButton(int slot, CustomCrafting customCrafting) {
@@ -70,7 +70,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
         if (event instanceof InventoryClickEvent clickEvent) {
-            ICustomRecipe<?, ?> customRecipe = getCustomRecipe(guiHandler);
+            ICustomRecipe<?> customRecipe = getCustomRecipe(guiHandler);
             if (clickEvent.isShiftClick() && customRecipe != null) {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
@@ -108,7 +108,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         if (getCustomRecipe(guiHandler) != null) {
-            ICustomRecipe<?,?> recipe = getCustomRecipe(guiHandler);
+            ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
                 var itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
                 if (recipe.getResult().isEmpty()) {
@@ -147,11 +147,11 @@ public class RecipeListContainerButton extends Button<CCCache> {
         }
     }
 
-    public ICustomRecipe<?,?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
+    public ICustomRecipe<?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
         return customRecipes.getOrDefault(guiHandler, null);
     }
 
-    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, ICustomRecipe<?,?> recipe) {
+    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
         customRecipes.put(guiHandler, recipe);
     }
 

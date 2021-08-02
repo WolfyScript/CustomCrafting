@@ -15,21 +15,21 @@ public class ButtonRecipeResult extends ItemInputButton<CCCache> {
 
     public ButtonRecipeResult() {
         super("recipe.result", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
-            Result<?> result = cache.getRecipe().getResult();
+            Result result = cache.getRecipe().getResult();
             if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
                 guiHandler.openWindow("result");
                 return true;
             }
             return result.getItems().isEmpty() && !result.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
-            Result<?> result = cache.getRecipe().getResult();
+            Result result = cache.getRecipe().getResult();
             if ((result.getItems().isEmpty() && !result.getTags().isEmpty()) || event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
                 return;
             }
             result.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
             result.buildChoices();
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            Result<?> result = cache.getRecipe().getResult();
+            Result result = cache.getRecipe().getResult();
             return result != null ? result.getItemStack() : new ItemStack(Material.AIR);
         }));
     }

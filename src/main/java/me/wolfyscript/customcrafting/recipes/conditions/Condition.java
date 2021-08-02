@@ -50,7 +50,7 @@ public abstract class Condition {
         this.option = availableOptions.get(index);
     }
 
-    public abstract boolean check(ICustomRecipe<?,?> recipe, Conditions.Data data);
+    public abstract boolean check(ICustomRecipe<?> recipe, Conditions.Data data);
 
     public String getId() {
         return id;

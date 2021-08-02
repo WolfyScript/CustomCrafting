@@ -59,7 +59,7 @@ public class SmithingListener implements Listener {
                         //Recipe is valid
                         assert base != null;
                         assert addition != null;
-                        Result<?> result = recipe.getResult();
+                        Result result = recipe.getResult();
                         SmithingData data = new SmithingData(recipe, Map.of(
                                 0, new IngredientData(0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
                                 1, new IngredientData(1, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))

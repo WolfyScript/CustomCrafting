@@ -22,7 +22,7 @@ public class CCCache extends CustomCache {
     private Setting setting;
 
     //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
-    private final HashMap<RecipeType<?>, ICustomRecipe<?, ?>> recipes = new HashMap<>();
+    private final HashMap<RecipeType<?>, ICustomRecipe<?>> recipes = new HashMap<>();
 
     private final CustomCrafting customCrafting;
     private String subSetting;
@@ -163,19 +163,19 @@ public class CCCache extends CustomCache {
     }
 
     //Recipes
-    public void setCustomRecipe(ICustomRecipe<?, ?> customRecipe) {
+    public void setCustomRecipe(ICustomRecipe<?> customRecipe) {
         recipes.put(customRecipe.getRecipeType(), customRecipe);
     }
 
-    public <T extends ICustomRecipe<?, ?>> void setCustomRecipe(RecipeType<T> type, T customRecipe) {
+    public <T extends ICustomRecipe<?>> void setCustomRecipe(RecipeType<T> type, T customRecipe) {
         recipes.put(type, customRecipe);
     }
 
-    public ICustomRecipe<?, ?> getRecipe() {
+    public ICustomRecipe<?> getRecipe() {
         return getRecipe(getRecipeType());
     }
 
-    public <T extends ICustomRecipe<?, ?>> T getRecipe(RecipeType<T> recipeType) {
+    public <T extends ICustomRecipe<?>> T getRecipe(RecipeType<T> recipeType) {
         return recipeType.getClazz().cast(recipes.get(recipeType));
     }
 

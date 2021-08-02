@@ -57,7 +57,7 @@ public class ConditionsMenu extends CCWindow {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(WorldTimeCondition.class).getTime());
             hashMap.put("%MODE%", recipeConfig.getConditions().getByType(WorldTimeCondition.class).getOption().getDisplayString(api));
             return itemStack;
@@ -84,14 +84,14 @@ public class ConditionsMenu extends CCWindow {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(ExperienceCondition.class).getExpLevel());
             hashMap.put("%MODE%", recipeConfig.getConditions().getByType(ExperienceCondition.class).getOption().getDisplayString(api));
             return itemStack;
         })));
 
         registerButton(new ActionButton<>("conditions.weather", new ButtonState<>("weather", Material.WATER_BUCKET, (cache, guiHandler, player, inventory, slot, event) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             var conditions = recipeConfig.getConditions();
             if (event instanceof InventoryClickEvent) {
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {
@@ -104,7 +104,7 @@ public class ConditionsMenu extends CCWindow {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
             hashMap.put("%MODE%", recipeConfig.getConditions().getByType(WeatherCondition.class).getOption().getDisplayString(api));
             return itemStack;
@@ -140,7 +140,7 @@ public class ConditionsMenu extends CCWindow {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(PermissionCondition.class).getPermission());
             hashMap.put("%MODE%", recipeConfig.getConditions().getByType(PermissionCondition.class).getOption().getDisplayString(api));
             return itemStack;
@@ -168,7 +168,7 @@ public class ConditionsMenu extends CCWindow {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(CraftDelayCondition.class).getDelay());
             hashMap.put("%MODE%", recipeConfig.getConditions().getByType(CraftDelayCondition.class).getOption().getDisplayString(api));
             return itemStack;
@@ -195,7 +195,7 @@ public class ConditionsMenu extends CCWindow {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(CraftLimitCondition.class).getLimit());
             hashMap.put("%MODE%", recipeConfig.getConditions().getByType(CraftLimitCondition.class).getOption().getDisplayString(api));
             return itemStack;

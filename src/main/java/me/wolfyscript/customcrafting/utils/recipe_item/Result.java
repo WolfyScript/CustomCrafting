@@ -26,13 +26,13 @@ import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Result<T extends ResultTarget> extends RecipeItemStack {
+public class Result extends RecipeItemStack {
 
     @JsonIgnore
     private final Map<UUID, CustomItem> cachedItems = new HashMap<>();
     @JsonIgnore
     private final Map<Vector, CustomItem> cachedBlockItems = new HashMap<>();
-    private T target;
+    private ResultTarget target;
     private List<ResultExtension> extensions;
 
     public Result() {
@@ -40,7 +40,7 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
         this.extensions = new ArrayList<>();
     }
 
-    public Result(Result<T> result) {
+    public Result(Result result) {
         super(result);
         this.extensions = result.extensions;
         this.target = result.target;
@@ -72,16 +72,16 @@ public class Result<T extends ResultTarget> extends RecipeItemStack {
     }
 
     @Override
-    public Result<T> clone() {
-        return new Result<>(this);
+    public Result clone() {
+        return new Result(this);
     }
 
-    public void setTarget(T target) {
-        this.target = target;
-    }
-
-    public T getTarget() {
+    public ResultTarget getTarget() {
         return target;
+    }
+
+    public void setTarget(ResultTarget target) {
+        this.target = target;
     }
 
     @JsonProperty("extensions")

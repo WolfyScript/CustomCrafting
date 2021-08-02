@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.FixedResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -29,7 +28,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.io.IOException;
 import java.util.*;
 
-public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing, FixedResultTarget> {
+public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     private static final CustomItem placeHolderPotion = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lAny kind of potion!"));
 
@@ -109,7 +108,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing, Fixed
         this.effectRemovals = new ArrayList<>();
         this.effectAdditions = new HashMap<>();
         this.effectUpgrades = new HashMap<>();
-        this.result = new Result<>();
+        this.result = new Result();
         this.requiredEffects = new HashMap<>();
     }
 

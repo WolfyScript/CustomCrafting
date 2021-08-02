@@ -36,7 +36,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
      * The custom Registry for the Recipes of CustomCrafting.
      * Providing a lot of functionality to get the recipes you need.
      */
-    class RecipeRegistry extends SimpleRegistry<ICustomRecipe<?, ?>> {
+    class RecipeRegistry extends SimpleRegistry<ICustomRecipe<?>> {
 
         private RecipeRegistry() {
         }
@@ -53,7 +53,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
 
         @Override
-        public void register(NamespacedKey namespacedKey, ICustomRecipe<?, ?> value) {
+        public void register(NamespacedKey namespacedKey, ICustomRecipe<?> value) {
             remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
             if (value instanceof ICraftingRecipe craftingRecipe) {
                 craftingRecipe.constructRecipe();
@@ -69,7 +69,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
 
         @Override
-        public void register(ICustomRecipe<?, ?> value) {
+        public void register(ICustomRecipe<?> value) {
             this.register(value.getNamespacedKey(), value);
         }
 
@@ -93,7 +93,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param namespace The namespace to get recipes from.
          * @return The recipes contained in the namespace.
          */
-        public List<ICustomRecipe<?, ?>> get(String namespace) {
+        public List<ICustomRecipe<?>> get(String namespace) {
             return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
         }
 
@@ -103,15 +103,15 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param group The group to get recipes from.
          * @return The recipes contained in the group.
          */
-        public List<ICustomRecipe<?, ?>> getGroup(String group) {
+        public List<ICustomRecipe<?>> getGroup(String group) {
             return Registry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
         }
 
-        public List<ICustomRecipe<?, ?>> get(CustomItem result) {
+        public List<ICustomRecipe<?>> get(CustomItem result) {
             return values().parallelStream().filter(recipe -> recipe.getResult().getChoices().contains(result)).collect(Collectors.toList());
         }
 
-        public <T extends ICustomRecipe<?, ?>> List<T> get(Class<T> type) {
+        public <T extends ICustomRecipe<?>> List<T> get(Class<T> type) {
             return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
@@ -120,12 +120,12 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param <T>  The type passed via the {@link RecipeType}
          * @return A list including the {@link ICustomRecipe}s of the specified {@link RecipeType}
          */
-        public <T extends ICustomRecipe<?, ?>> List<T> get(RecipeType<T> type) {
+        public <T extends ICustomRecipe<?>> List<T> get(RecipeType<T> type) {
             return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
-            ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(recipeKey);
+            ICustomRecipe<?> customRecipe = Registry.RECIPES.get(recipeKey);
             return Types.WORKBENCH.isInstance(customRecipe) ? Types.WORKBENCH.cast(customRecipe) : null;
         }
 
@@ -135,7 +135,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          *
          * @return The recipes that are available and are not hidden or disabled.
          */
-        public List<ICustomRecipe<?, ?>> getAvailable() {
+        public List<ICustomRecipe<?>> getAvailable() {
             return getAvailable(values().parallelStream());
         }
 
@@ -146,7 +146,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param player The player to get the recipes for.
          * @return The recipes that are available and the player has permission to view.
          */
-        public List<ICustomRecipe<?, ?>> getAvailable(Player player) {
+        public List<ICustomRecipe<?>> getAvailable(Player player) {
             return getAvailable(getAvailable(), player);
         }
 
@@ -157,7 +157,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param <T>  The type passed via the {@link RecipeType}
          * @return A list only including the {@link ICustomRecipe}s of the specified {@link RecipeType}, which are enabled and visible.
          */
-        public <T extends ICustomRecipe<?, ?>> List<T> getAvailable(RecipeType<T> type) {
+        public <T extends ICustomRecipe<?>> List<T> getAvailable(RecipeType<T> type) {
             return getAvailable(get(type.getClazz()).parallelStream());
         }
 
@@ -169,7 +169,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param player The player to get the recipes for.
          * @return A list only including the {@link ICustomRecipe}s of the specified {@link RecipeType}, which are enabled, visible and the Player has permission to view.
          */
-        public <T extends ICustomRecipe<?, ?>> List<T> getAvailable(RecipeType<T> type, Player player) {
+        public <T extends ICustomRecipe<?>> List<T> getAvailable(RecipeType<T> type, Player player) {
             return getAvailable(getAvailable(type), player);
         }
 
@@ -180,11 +180,11 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param player The player to get the recipes for.
          * @return All the recipes, that have the specified Result, are not hidden, and the player has permission to view.
          */
-        public List<ICustomRecipe<?, ?>> getAvailable(ItemStack result, Player player) {
+        public List<ICustomRecipe<?>> getAvailable(ItemStack result, Player player) {
             return getAvailable(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
         }
 
-        public synchronized <T extends ICustomRecipe<?, ?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
+        public synchronized <T extends ICustomRecipe<?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
             return getAvailable(recipes.stream().filter(recipe -> recipe.checkCondition("permission", new Conditions.Data(player))));
         }
 
@@ -195,7 +195,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @param <T>     The type of the {@link ICustomRecipe}
          * @return A filtered {@link List} containing only visible and enabled recipes.
          */
-        private <T extends ICustomRecipe<?, ?>> List<T> getAvailable(Stream<T> recipes) {
+        private <T extends ICustomRecipe<?>> List<T> getAvailable(Stream<T> recipes) {
             return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
         }
 

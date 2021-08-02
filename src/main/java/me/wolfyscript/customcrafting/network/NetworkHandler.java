@@ -94,13 +94,13 @@ public class NetworkHandler {
     }
 
     public void sendRecipes(Player player) {
-        List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(player);
+        List<ICustomRecipe<?>> recipes = Registry.RECIPES.getAvailable(player);
         //Send size of recipe list! Client will wait for recipe packets after it receives this packet.
         var mcByteBuf = networkUtil.buffer();
         mcByteBuf.writeVarInt(recipes.size());
         api.send(RECIPE_LIST_SIZE, player, mcByteBuf);
         //Send recipes
-        for (ICustomRecipe<?, ?> recipe : recipes) {
+        for (ICustomRecipe<?> recipe : recipes) {
             var recipeBuf = networkUtil.buffer();
             recipe.writeToBuf(recipeBuf);
             api.send(RECIPE_LIST, player, recipeBuf);

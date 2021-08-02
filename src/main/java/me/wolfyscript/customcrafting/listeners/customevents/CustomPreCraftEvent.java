@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.listeners.customevents;
 
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +13,7 @@ import java.util.List;
 public class CustomPreCraftEvent extends CustomCraftEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    private me.wolfyscript.customcrafting.utils.recipe_item.Result<SlotResultTarget> result;
+    private me.wolfyscript.customcrafting.utils.recipe_item.Result result;
     private List<List<ItemStack>> ingredients;
     private final CraftManager.MatrixData matrix;
 
@@ -25,11 +24,11 @@ public class CustomPreCraftEvent extends CustomCraftEvent {
         this.matrix = matrix;
     }
 
-    public @NotNull me.wolfyscript.customcrafting.utils.recipe_item.Result<SlotResultTarget> getResult() {
+    public @NotNull me.wolfyscript.customcrafting.utils.recipe_item.Result getResult() {
         return result;
     }
 
-    public void setResult(@NotNull me.wolfyscript.customcrafting.utils.recipe_item.Result<SlotResultTarget> result) {
+    public void setResult(@NotNull me.wolfyscript.customcrafting.utils.recipe_item.Result result) {
         this.result = result;
     }
 

@@ -38,12 +38,12 @@ public class Conditions extends HashMap<String, Condition> {
         addCondition(new CraftLimitCondition());
     }
 
-    public boolean check(String id, ICustomRecipe<?, ?> customRecipe, Data data) {
+    public boolean check(String id, ICustomRecipe<?> customRecipe, Data data) {
         var condition = getByID(id);
         return condition != null && condition.check(customRecipe, data);
     }
 
-    public boolean checkConditions(ICustomRecipe<?, ?> customRecipe, Data data) {
+    public boolean checkConditions(ICustomRecipe<?> customRecipe, Data data) {
         return values().stream().allMatch(condition -> condition.check(customRecipe, data));
     }
 

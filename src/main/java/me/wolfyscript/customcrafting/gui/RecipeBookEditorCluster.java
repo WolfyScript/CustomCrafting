@@ -110,7 +110,7 @@ public class RecipeBookEditorCluster extends CCCluster {
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         var namespacedKey = new NamespacedKey(args[0], args[1]);
-                        ICustomRecipe<?, ?> recipe = Registry.RECIPES.get(namespacedKey);
+                        ICustomRecipe<?> recipe = Registry.RECIPES.get(namespacedKey);
                         if (recipe == null) {
                             wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                             return true;

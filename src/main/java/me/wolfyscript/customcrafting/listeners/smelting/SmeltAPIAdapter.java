@@ -37,7 +37,7 @@ public abstract class SmeltAPIAdapter {
         if (Registry.RECIPES.get(recipeKey) instanceof CustomRecipeCooking<?, ?> cookingRecipe && cookingRecipe.validType(block.getType())) {
             if (cookingRecipe.checkConditions(new Conditions.Data(null, block, null))) {
                 event.setCancelled(false);
-                Result<?> result = cookingRecipe.getResult();
+                Result result = cookingRecipe.getResult();
                 ItemStack source = event.getSource();
                 Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isExactMeta());
                 if (customSource.isPresent()) {
@@ -52,7 +52,7 @@ public abstract class SmeltAPIAdapter {
         return false;
     }
 
-    private boolean applyResult(FurnaceSmeltEvent event, CustomRecipeCooking<?, ?> cookingRecipe, Result<?> result, CustomItem customSource, Block block, FurnaceInventory inventory, ItemStack currentResultItem) {
+    private boolean applyResult(FurnaceSmeltEvent event, CustomRecipeCooking<?, ?> cookingRecipe, Result result, CustomItem customSource, Block block, FurnaceInventory inventory, ItemStack currentResultItem) {
         var data = new IngredientData(0, cookingRecipe.getSource(), customSource, event.getSource());
         ItemStack itemResult = result.getItem(switch (cookingRecipe.getRecipeType().getType()) {
             case FURNACE -> new FurnaceRecipeData((CustomRecipeFurnace) cookingRecipe, data);

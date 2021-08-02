@@ -9,7 +9,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.FixedResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -26,7 +25,7 @@ import org.bukkit.inventory.StonecuttingRecipe;
 
 import java.io.IOException;
 
-public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutter, FixedResultTarget> implements ICustomVanillaRecipe<StonecuttingRecipe> {
+public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutter> implements ICustomVanillaRecipe<StonecuttingRecipe> {
 
     private static final String KEY_SOURCE = "source";
 

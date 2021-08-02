@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -18,7 +17,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.io.IOException;
 
-public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing, SlotResultTarget> {
+public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     private static final String KEY_BASE = "base";
     private static final String KEY_ADDITION = "addition";
@@ -39,7 +38,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing, Slo
         super();
         this.base = new Ingredient();
         this.addition = new Ingredient();
-        this.result = new Result<>();
+        this.result = new Result();
         this.preserveEnchants = true;
     }
 

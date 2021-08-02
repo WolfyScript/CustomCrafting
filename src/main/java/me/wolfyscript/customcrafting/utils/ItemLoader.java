@@ -50,8 +50,8 @@ public class ItemLoader {
         return new Ingredient();
     }
 
-    public static <T extends ResultTarget> Result<T> loadResult(JsonNode node) {
-        final Result<T> result;
+    public static <T extends ResultTarget> Result loadResult(JsonNode node) {
+        final Result result;
         if (node.isArray()) {
             result = new Result<>();
             node.elements().forEachRemaining(item -> {
@@ -61,7 +61,7 @@ public class ItemLoader {
                 }
             });
         } else {
-            result = JacksonUtil.getObjectMapper().convertValue(node, new TypeReference<Result<T>>() {
+            result = JacksonUtil.getObjectMapper().convertValue(node, new TypeReference<Result>() {
             });
         }
         if (result != null) {

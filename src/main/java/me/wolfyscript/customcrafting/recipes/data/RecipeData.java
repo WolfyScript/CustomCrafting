@@ -27,15 +27,16 @@ import java.util.Map;
  *     </ul>
  *     </li>
  *     <li>{@link SmithingData}</li>
+ *     <li>{@link AnvilData}</li>
  * </ul>
  *
  * @param <R> The type of the Recipe which this data stores.
  */
-public abstract class RecipeData<R extends ICustomRecipe<?, ?>> {
+public abstract class RecipeData<R extends ICustomRecipe<?>> {
 
     protected final R recipe;
     protected final Map<Integer, IngredientData> indexedBySlot;
-    protected Result<?> result;
+    protected Result result;
 
     protected RecipeData(R recipe, Map<Integer, IngredientData> indexedBySlot) {
         this.result = recipe.getResult();
@@ -47,11 +48,11 @@ public abstract class RecipeData<R extends ICustomRecipe<?, ?>> {
         return recipe;
     }
 
-    public Result<?> getResult() {
+    public Result getResult() {
         return result;
     }
 
-    public void setResult(Result<?> result) {
+    public void setResult(Result result) {
         this.result = result;
     }
 

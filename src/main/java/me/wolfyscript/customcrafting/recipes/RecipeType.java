@@ -7,7 +7,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
-public class RecipeType<C extends ICustomRecipe<?, ?>> {
+public class RecipeType<C extends ICustomRecipe<?>> {
 
     private final String id;
     private final String creatorID;
@@ -38,11 +38,11 @@ public class RecipeType<C extends ICustomRecipe<?, ?>> {
         return clazz;
     }
 
-    public boolean isInstance(ICustomRecipe<?, ?> recipe) {
+    public boolean isInstance(ICustomRecipe<?> recipe) {
         return clazz.isInstance(recipe);
     }
 
-    public C cast(ICustomRecipe<?, ?> recipe) {
+    public C cast(ICustomRecipe<?> recipe) {
         return clazz.cast(recipe);
     }
 
@@ -94,12 +94,12 @@ public class RecipeType<C extends ICustomRecipe<?, ?>> {
         }
 
         @Override
-        public boolean isInstance(ICustomRecipe<?, ?> recipe) {
+        public boolean isInstance(ICustomRecipe<?> recipe) {
             return recipe instanceof CraftingRecipe<?, ?> craftingRecipe && typeClass.isInstance(craftingRecipe.getSettings());
         }
 
         @Override
-        public CraftingRecipe<?, T> cast(ICustomRecipe<?, ?> recipe) {
+        public CraftingRecipe<?, T> cast(ICustomRecipe<?> recipe) {
             return (CraftingRecipe<?, T>) recipe;
         }
 

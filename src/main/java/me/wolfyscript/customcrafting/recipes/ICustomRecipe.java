@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -32,7 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 @JsonSerialize(using = ICustomRecipe.Serializer.class)
-public interface ICustomRecipe<C extends ICustomRecipe<C, T>, T extends ResultTarget> extends Keyed {
+public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
 
     WolfyUtilities getAPI();
 
@@ -49,9 +48,9 @@ public interface ICustomRecipe<C extends ICustomRecipe<C, T>, T extends ResultTa
 
     void setGroup(String group);
 
-    Result<T> getResult();
+    Result getResult();
 
-    void setResult(Result<T> result);
+    void setResult(Result result);
 
     /**
      * Used to set Ingredient from cache of the RecipeCreator

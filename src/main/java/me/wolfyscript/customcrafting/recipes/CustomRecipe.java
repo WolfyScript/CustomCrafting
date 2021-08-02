@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -19,7 +18,7 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import java.io.IOException;
 import java.util.Objects;
 
-public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends ResultTarget> implements ICustomRecipe<C, T> {
+public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICustomRecipe<C> {
 
     protected static final String KEY_RESULT = "result";
     protected static final String KEY_GROUP = "group";
@@ -37,7 +36,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
     protected String group;
     protected final WolfyUtilities api;
     protected final ObjectMapper mapper;
-    protected Result<T> result;
+    protected Result result;
 
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.namespacedKey = Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!");
@@ -59,7 +58,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
         }
     }
 
-    protected CustomRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result<T> result) {
+    protected CustomRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result result) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!");
@@ -75,7 +74,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = null;
-        this.result = new Result<>();
+        this.result = new Result();
 
         this.group = "";
         this.priority = RecipePriority.NORMAL;
@@ -90,7 +89,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
      *
      * @param customRecipe The other CustomRecipe. Can be from another type, but must have the same ResultTarget.
      */
-    protected CustomRecipe(CustomRecipe<?, T> customRecipe) {
+    protected CustomRecipe(CustomRecipe<?> customRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = customRecipe.namespacedKey;
@@ -177,12 +176,12 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C, T>, T extends Resu
     }
 
     @Override
-    public Result<T> getResult() {
+    public Result getResult() {
         return result;
     }
 
     @Override
-    public void setResult(Result<T> result) {
+    public void setResult(Result result) {
         this.result = result;
         Preconditions.checkArgument(!result.isEmpty(), "Invalid result! Recipe must have a non-air result!");
     }

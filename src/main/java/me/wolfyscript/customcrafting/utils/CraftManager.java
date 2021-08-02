@@ -10,7 +10,6 @@ import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -77,7 +76,7 @@ public class CraftManager {
                 var customPreCraftEvent = new CustomPreCraftEvent(recipe, inventory, flatMatrix);
                 Bukkit.getPluginManager().callEvent(customPreCraftEvent);
                 if (!customPreCraftEvent.isCancelled()) {
-                    Result<SlotResultTarget> result = customPreCraftEvent.getResult();
+                    Result result = customPreCraftEvent.getResult();
                     craftingData.setResult(result);
                     put(player.getUniqueId(), craftingData);
                     return result.getItem(craftingData, player, block);
@@ -113,7 +112,7 @@ public class CraftManager {
             var craftingData = preCraftedRecipes.get(player.getUniqueId());
             CraftingRecipe<?> recipe = craftingData.getRecipe();
             if (recipe != null && !ItemUtils.isAirOrNull(result)) {
-                Result<?> recipeResult = craftingData.getResult();
+                Result recipeResult = craftingData.getResult();
                 editStatistics(player, inventory, recipe);
                 setPlayerCraftTime(player, recipe);
                 recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
@@ -142,7 +141,7 @@ public class CraftManager {
         }
     }
 
-    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, Result<?> recipeResult, ItemStack result) {
+    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, Result recipeResult, ItemStack result) {
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
         recipe.removeMatrix(event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {

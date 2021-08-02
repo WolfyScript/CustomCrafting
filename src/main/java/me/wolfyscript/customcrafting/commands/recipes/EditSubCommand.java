@@ -33,7 +33,7 @@ public class EditSubCommand extends AbstractSubCommand {
             WolfyUtilities api = customCrafting.getApi();
             NamespacedKey key = NamespacedKey.of(args[0]);
             if (key != null) {
-                ICustomRecipe<?, ?> customRecipe = Registry.RECIPES.get(key);
+                ICustomRecipe<?> customRecipe = Registry.RECIPES.get(key);
                 if (customRecipe != null) {
                     GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
                     guiHandler.getCustomCache().setRecipeType(customRecipe.getRecipeType());

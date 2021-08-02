@@ -164,7 +164,7 @@ public class RecipeCreatorCluster extends CCCluster {
                     recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster(KEY), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                         var namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
                         if (namespacedKey != null) {
-                            ICustomRecipe<?, ?> recipe = cache.getRecipe();
+                            ICustomRecipe<?> recipe = cache.getRecipe();
                             recipe.setNamespacedKey(namespacedKey);
                             return saveRecipe(cache, recipe, player1, api, guiHandler, customCrafting);
                         }
@@ -178,7 +178,7 @@ public class RecipeCreatorCluster extends CCCluster {
         }));
     }
 
-    private boolean saveRecipe(CCCache cache, ICustomRecipe<?, ?> recipe, Player player, WolfyUtilities api, GuiHandler<CCCache> guiHandler, CustomCrafting customCrafting) {
+    private boolean saveRecipe(CCCache cache, ICustomRecipe<?> recipe, Player player, WolfyUtilities api, GuiHandler<CCCache> guiHandler, CustomCrafting customCrafting) {
         if (!recipe.save(player)) {
             return true;
         }

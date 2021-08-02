@@ -124,7 +124,7 @@ public class CategorySettings {
         return categoryItem;
     }
 
-    public boolean isValid(ICustomRecipe<?, ?> recipe) {
+    public boolean isValid(ICustomRecipe<?> recipe) {
         if (recipes.isEmpty()) return false;
         return recipes.contains(recipe.getNamespacedKey());
     }

@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class Types {
 
-    static final Set<RecipeType<? extends ICustomRecipe<?, ?>>> values = new HashSet<>();
+    static final Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
     public enum Type {
         WORKBENCH,
         WORKBENCH_SHAPED,
@@ -51,7 +51,7 @@ public class Types {
     public static final RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
     public static final RecipeType<CustomRecipeSmithing> SMITHING = new RecipeType<>(Type.SMITHING, CustomRecipeSmithing.class);
 
-    public static Set<RecipeType<? extends ICustomRecipe<?,?>>> values() {
+    public static Set<RecipeType<? extends ICustomRecipe<?>>> values() {
         return Collections.unmodifiableSet(values);
     }
 

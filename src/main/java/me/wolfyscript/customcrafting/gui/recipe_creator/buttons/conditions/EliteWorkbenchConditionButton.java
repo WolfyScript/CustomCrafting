@@ -18,7 +18,7 @@ public class EliteWorkbenchConditionButton extends ActionButton<CCCache> {
     public EliteWorkbenchConditionButton() {
         super("conditions.elite_workbench", new ButtonState<>("elite_workbench", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
             GuiWindow<CCCache> window = inventory.getWindow();
-            ICustomRecipe<?, ?> recipeConfig = cache.getRecipe();
+            ICustomRecipe<?> recipeConfig = cache.getRecipe();
             var conditions = recipeConfig.getConditions();
             if(event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {

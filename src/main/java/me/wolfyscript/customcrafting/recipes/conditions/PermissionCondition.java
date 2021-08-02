@@ -28,7 +28,7 @@ public class PermissionCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?,?> recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         if (recipe instanceof CustomRecipeCooking && data.getPlayer() == null) {
             return true;
         }

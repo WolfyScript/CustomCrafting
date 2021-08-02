@@ -21,7 +21,7 @@ public class WorldNameCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }

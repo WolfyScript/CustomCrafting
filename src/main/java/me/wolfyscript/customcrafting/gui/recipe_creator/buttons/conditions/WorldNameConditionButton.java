@@ -16,7 +16,7 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
     public WorldNameConditionButton() {
         super("conditions.world_name", new ButtonState<>("world_name", Material.GRASS_BLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
             GuiWindow<CCCache> window = guiHandler.getWindow();
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
+            ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             var conditions = recipeConfig.getConditions();
             if (event instanceof InventoryClickEvent){
                 if (((InventoryClickEvent) event).getClick().isRightClick()) {

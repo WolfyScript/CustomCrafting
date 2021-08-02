@@ -1,8 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-
-import me.wolfyscript.customcrafting.recipes.data.RecipeData;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 import java.util.Map;

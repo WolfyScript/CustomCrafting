@@ -248,7 +248,7 @@ public class GrindStoneListener implements Listener {
             foundRecipe = customRecipeGrindstone;
             break;
         }
-        Result<?> result = null;
+        Result result = null;
         var resultItem = new CustomItem(Material.AIR);
         if (foundRecipe != null) {
             result = foundRecipe.getResult();

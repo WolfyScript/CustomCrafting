@@ -10,7 +10,6 @@ import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings> extends CustomRecipe<C, SlotResultTarget> implements ICraftingRecipe {
+public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings<S>> extends CustomRecipe<C> implements ICraftingRecipe {
 
     protected static final String INGREDIENTS_KEY = "ingredients";
 
@@ -54,7 +53,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         this.ingredients = new HashMap<>();
     }
 
-    protected CraftingRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result<SlotResultTarget> result, Map<Character, Ingredient> ingredients, int requiredGridSize, S settings) {
+    protected CraftingRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result result, Map<Character, Ingredient> ingredients, int requiredGridSize, S settings) {
         super(namespacedKey, exactMeta, hidden, group, priority, conditions, result);
         this.ingredients = ingredients;
         this.requiredGridSize = requiredGridSize;
@@ -68,6 +67,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         this.requiredGridSize = craftingRecipe.requiredGridSize;
         this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
         this.ingredients = craftingRecipe.getIngredients();
+        this.settings = craftingRecipe.settings.clone();
     }
 
     @Override
