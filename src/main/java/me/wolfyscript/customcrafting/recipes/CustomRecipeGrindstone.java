@@ -33,7 +33,7 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     public CustomRecipeGrindstone() {
         super();
-        this.result = new Result<>();
+        this.result = new Result();
         this.inputTop = new Ingredient();
         this.inputBottom = new Ingredient();
         this.xp = 0;
@@ -48,7 +48,7 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     @Override
     public RecipeType<CustomRecipeGrindstone> getRecipeType() {
-        return Types.GRINDSTONE;
+        return RecipeType.GRINDSTONE;
     }
 
     @Override

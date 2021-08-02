@@ -9,36 +9,36 @@ import org.bukkit.inventory.RecipeChoice;
 
 import java.util.stream.Collectors;
 
-public class CustomRecipeShaped extends AbstractRecipeShaped<CustomRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
+public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
 
-    public CustomRecipeShaped(NamespacedKey namespacedKey, JsonNode node) {
+    public CraftingRecipeShaped(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3);
     }
 
-    public CustomRecipeShaped() {
+    public CraftingRecipeShaped() {
         super(3);
     }
 
-    public CustomRecipeShaped(CustomRecipeShaped craftingRecipe) {
+    public CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {
         super(craftingRecipe);
     }
 
-    public CustomRecipeShaped(CustomRecipeShapeless craftingRecipe) {
+    public CraftingRecipeShaped(CraftingRecipeShapeless craftingRecipe) {
         super(craftingRecipe);
     }
 
-    public CustomRecipeShaped(CraftingRecipe<?, AdvancedRecipeSettings> craftingRecipe) {
+    public CraftingRecipeShaped(CraftingRecipe<?, AdvancedRecipeSettings> craftingRecipe) {
         super(craftingRecipe);
     }
 
     @Override
-    public RecipeType<CustomRecipeShaped> getRecipeType() {
-        return Types.WORKBENCH_SHAPED;
+    public RecipeType<CraftingRecipeShaped> getRecipeType() {
+        return RecipeType.WORKBENCH_SHAPED;
     }
 
     @Override
-    public CustomRecipeShaped clone() {
-        return new CustomRecipeShaped(this);
+    public CraftingRecipeShaped clone() {
+        return new CraftingRecipeShaped(this);
     }
 
     @Override

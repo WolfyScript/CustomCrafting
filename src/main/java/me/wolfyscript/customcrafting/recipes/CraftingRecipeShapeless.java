@@ -10,32 +10,32 @@ import org.bukkit.inventory.RecipeChoice;
 
 import java.util.stream.Collectors;
 
-public class CustomRecipeShapeless extends AbstractRecipeShapeless<CustomRecipeShapeless, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapelessRecipe> {
+public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRecipeShapeless, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapelessRecipe> {
 
-    public CustomRecipeShapeless(NamespacedKey namespacedKey, JsonNode node) {
+    public CraftingRecipeShapeless(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3);
     }
 
-    public CustomRecipeShapeless() {
+    public CraftingRecipeShapeless() {
         super(3);
     }
 
-    public CustomRecipeShapeless(CustomRecipeShapeless craftingRecipe) {
+    public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {
         super(craftingRecipe);
     }
 
-    public CustomRecipeShapeless(CraftingRecipe<?, AdvancedRecipeSettings> craftingRecipe) {
+    public CraftingRecipeShapeless(CraftingRecipe<?, AdvancedRecipeSettings> craftingRecipe) {
         super(craftingRecipe);
     }
 
     @Override
-    public RecipeType<CustomRecipeShapeless> getRecipeType() {
-        return Types.WORKBENCH_SHAPELESS;
+    public RecipeType<CraftingRecipeShapeless> getRecipeType() {
+        return RecipeType.WORKBENCH_SHAPELESS;
     }
 
     @Override
-    public CustomRecipeShapeless clone() {
-        return new CustomRecipeShapeless(this);
+    public CraftingRecipeShapeless clone() {
+        return new CraftingRecipeShapeless(this);
     }
 
     @Override

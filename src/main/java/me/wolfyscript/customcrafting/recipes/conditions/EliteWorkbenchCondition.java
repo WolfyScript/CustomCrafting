@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
@@ -32,11 +32,11 @@ public class EliteWorkbenchCondition extends Condition {
         if (option.equals(Conditions.Option.IGNORE)) {
             return true;
         }
-        if (Types.ELITE_WORKBENCH.isInstance(recipe)) {
+        if (RecipeType.ELITE_WORKBENCH.isInstance(recipe)) {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
-                if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-                    return eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled();
+                if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilsRef) {
+                    return eliteWorkbenches.contains(wolfyUtilsRef.getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled();
                 }
             }
             return false;

@@ -6,7 +6,10 @@ import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -109,7 +112,7 @@ public class DataHandler {
                 loadItems(dir);
             }
             for (String dir : dirs) {
-                for (RecipeType<? extends ICustomRecipe<?>> type : Types.values()) {
+                for (RecipeType<? extends ICustomRecipe<?>> type : RecipeType.values()) {
                     loadRecipe(dir, type);
                 }
             }
@@ -309,7 +312,11 @@ public class DataHandler {
             ICustomRecipe<?> recipeCopy = recipe.clone();
             recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
             if (recipeCopy instanceof CraftingRecipe<?, ?> craftingRecipe) {
-                guiHandler.getCustomCache().setCustomRecipe(Types.WORKBENCH.isInstance(craftingRecipe) ? Types.WORKBENCH : Types.ELITE_WORKBENCH, craftingRecipe);
+                if (RecipeType.WORKBENCH.isInstance(craftingRecipe)) {
+                    guiHandler.getCustomCache().setCustomRecipe(RecipeType.WORKBENCH, RecipeType.WORKBENCH.cast(craftingRecipe));
+                } else if (RecipeType.ELITE_WORKBENCH.isInstance(craftingRecipe)) {
+                    guiHandler.getCustomCache().setCustomRecipe(RecipeType.ELITE_WORKBENCH, RecipeType.ELITE_WORKBENCH.cast(craftingRecipe));
+                }
             } else {
                 guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
             }

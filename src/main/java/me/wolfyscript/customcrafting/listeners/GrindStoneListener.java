@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.GrindstoneData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
@@ -214,7 +214,7 @@ public class GrindStoneListener implements Listener {
         CustomRecipeGrindstone foundRecipe = null;
         boolean validItem = false;
 
-        for (CustomRecipeGrindstone customRecipeGrindstone : Registry.RECIPES.getAvailable(Types.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).toList()) {
+        for (CustomRecipeGrindstone customRecipeGrindstone : Registry.RECIPES.getAvailable(RecipeType.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).toList()) {
             Ingredient input = slot == 0 ? customRecipeGrindstone.getInputTop() : customRecipeGrindstone.getInputBottom();
             Ingredient otherInput = slot == 0 ? customRecipeGrindstone.getInputBottom() : customRecipeGrindstone.getInputTop();
             Optional<CustomItem> optional = input.check(item, customRecipeGrindstone.isExactMeta());

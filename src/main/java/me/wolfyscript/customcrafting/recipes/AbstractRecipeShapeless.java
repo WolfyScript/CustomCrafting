@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings> extends CraftingRecipe<C, S> {
+public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
         super(namespacedKey, node, gridSize);

@@ -33,7 +33,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
 
     public CustomRecipeStonecutter() {
         super();
-        this.result = new Result<>();
+        this.result = new Result();
         this.source = new Ingredient();
     }
 
@@ -41,7 +41,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         super(namespacedKey, node);
         if (node.has(KEY_RESULT)) {
             //Some old config format, which saved the item directly as a reference
-            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result<>(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class)) : ItemLoader.loadResult(node.path("result")));
+            setResult(node.path(KEY_RESULT).has("custom_amount") ? new Result(JacksonUtil.getObjectMapper().convertValue(node.path("result"), APIReference.class)) : ItemLoader.loadResult(node.path("result")));
         }
         setSource(ItemLoader.loadIngredient(node.path(KEY_SOURCE)));
     }
@@ -70,7 +70,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
 
     @Override
     public RecipeType<CustomRecipeStonecutter> getRecipeType() {
-        return Types.STONECUTTER;
+        return RecipeType.STONECUTTER;
     }
 
     @Override

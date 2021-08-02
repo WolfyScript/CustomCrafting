@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
@@ -134,7 +134,7 @@ public class DataBaseHandler extends SQLDataBase {
                 String typeID = resultSet.getString("rType");
                 String data = resultSet.getString("rData");
                 try {
-                    return Types.valueOf(typeID).getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
+                    return RecipeType.valueOf(typeID).getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
                 } catch (JsonProcessingException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                     ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), typeID, e);
                 }

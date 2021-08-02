@@ -7,7 +7,7 @@ import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -87,7 +87,7 @@ public class CookingCreator extends RecipeCreator {
 
     public boolean validToSave(CCCache cache) {
         var type = cache.getRecipeType().getType();
-        if (type == Types.Type.FURNACE || type == Types.Type.BLAST_FURNACE || type == Types.Type.SMOKER || type == Types.Type.CAMPFIRE) {
+        if (type == RecipeType.Type.FURNACE || type == RecipeType.Type.BLAST_FURNACE || type == RecipeType.Type.SMOKER || type == RecipeType.Type.CAMPFIRE) {
             CustomRecipeCooking<?, ?> furnace = cache.getCookingRecipe();
             return !furnace.getSource().isEmpty() && !furnace.getResult().isEmpty();
         }

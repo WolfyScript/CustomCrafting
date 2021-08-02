@@ -30,7 +30,7 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
 
     @Override
     public RecipeType<CustomRecipeCampfire> getRecipeType() {
-        return Types.CAMPFIRE;
+        return RecipeType.CAMPFIRE;
     }
 
     @Override

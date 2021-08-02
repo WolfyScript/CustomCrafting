@@ -52,7 +52,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public CustomRecipeCauldron() {
         super();
-        this.result = new Result<>();
+        this.result = new Result();
         this.ingredients = new Ingredient();
         this.dropItems = true;
         this.xp = 0;
@@ -158,7 +158,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     @Override
     public RecipeType<CustomRecipeCauldron> getRecipeType() {
-        return Types.CAULDRON;
+        return RecipeType.CAULDRON;
     }
 
     @Override

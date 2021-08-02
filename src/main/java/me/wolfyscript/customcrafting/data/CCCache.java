@@ -53,11 +53,11 @@ public class CCCache extends CustomCache {
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;
-        this.recipeType = Types.WORKBENCH;
+        this.recipeType = RecipeType.WORKBENCH;
 
         setCustomRecipe(new CustomRecipeAnvil());
-        setCustomRecipe(Types.WORKBENCH, new CustomRecipeShaped());
-        setCustomRecipe(Types.ELITE_WORKBENCH, new CustomRecipeShapedElite());
+        setCustomRecipe(RecipeType.WORKBENCH, new CraftingRecipeShaped());
+        setCustomRecipe(RecipeType.ELITE_WORKBENCH, new CraftingRecipeEliteShaped());
         setCustomRecipe(new CustomRecipeBlasting());
         setCustomRecipe(new CustomRecipeCampfire());
         setCustomRecipe(new CustomRecipeSmoking());
@@ -186,19 +186,19 @@ public class CCCache extends CustomCache {
      *
      ***************************************************************/
     public CustomRecipeCooking<?,?> getCookingRecipe() {
-        if (recipeType instanceof RecipeType.CookingRecipeType) {
-            return getRecipe((RecipeType.CookingRecipeType<?>) recipeType);
-        }
-        return null;
+        return switch (recipeType.getType()) {
+            case FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE -> (CustomRecipeCooking<?, ?>) getRecipe(recipeType);
+            default -> null;
+        };
     }
 
     public void resetRecipe(){
         switch (getRecipeType().getType()) {
             case ELITE_WORKBENCH:
-                setCustomRecipe(new CustomRecipeShapedElite());
+                setCustomRecipe(new CraftingRecipeEliteShaped());
                 break;
             case WORKBENCH:
-                setCustomRecipe(new CustomRecipeShaped());
+                setCustomRecipe(new CraftingRecipeShaped());
                 break;
             default:
                 try {
@@ -219,34 +219,34 @@ public class CCCache extends CustomCache {
      *
      ***************************************************************/
     public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCraftingRecipe() {
-        return getRecipe(Types.WORKBENCH);
+        return getRecipe(RecipeType.WORKBENCH);
     }
 
     public CustomRecipeAnvil getAnvilRecipe() {
-        return getRecipe(Types.ANVIL);
+        return getRecipe(RecipeType.ANVIL);
     }
 
     public CraftingRecipe<?, EliteRecipeSettings> getEliteCraftingRecipe() {
-        return getRecipe(Types.ELITE_WORKBENCH);
+        return getRecipe(RecipeType.ELITE_WORKBENCH);
     }
 
     public CustomRecipeCauldron getCauldronRecipe() {
-        return getRecipe(Types.CAULDRON);
+        return getRecipe(RecipeType.CAULDRON);
     }
 
     public CustomRecipeStonecutter getStonecutterRecipe() {
-        return getRecipe(Types.STONECUTTER);
+        return getRecipe(RecipeType.STONECUTTER);
     }
 
     public CustomRecipeGrindstone getGrindstoneRecipe() {
-        return getRecipe(Types.GRINDSTONE);
+        return getRecipe(RecipeType.GRINDSTONE);
     }
 
     public CustomRecipeBrewing getBrewingRecipe() {
-        return getRecipe(Types.BREWING_STAND);
+        return getRecipe(RecipeType.BREWING_STAND);
     }
 
     public CustomRecipeSmithing getSmithingRecipe() {
-        return getRecipe(Types.SMITHING);
+        return getRecipe(RecipeType.SMITHING);
     }
 }

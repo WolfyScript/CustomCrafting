@@ -30,7 +30,7 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
 
     @Override
     public RecipeType<CustomRecipeBlasting> getRecipeType() {
-        return Types.BLAST_FURNACE;
+        return RecipeType.BLAST_FURNACE;
     }
 
     @Override

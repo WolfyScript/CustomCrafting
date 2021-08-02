@@ -4,13 +4,11 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.ResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
@@ -50,10 +48,10 @@ public class ItemLoader {
         return new Ingredient();
     }
 
-    public static <T extends ResultTarget> Result loadResult(JsonNode node) {
+    public static Result loadResult(JsonNode node) {
         final Result result;
         if (node.isArray()) {
-            result = new Result<>();
+            result = new Result();
             node.elements().forEachRemaining(item -> {
                 APIReference reference = loadAndConvertCorruptReference(item);
                 if (reference != null) {
@@ -61,14 +59,13 @@ public class ItemLoader {
                 }
             });
         } else {
-            result = JacksonUtil.getObjectMapper().convertValue(node, new TypeReference<Result>() {
-            });
+            result = JacksonUtil.getObjectMapper().convertValue(node, Result.class);
         }
         if (result != null) {
             result.buildChoices();
             return result;
         }
-        return new Result<>();
+        return new Result();
     }
 
     private static APIReference loadAndConvertCorruptReference(JsonNode itemNode) {
@@ -85,13 +82,13 @@ public class ItemLoader {
                 }
             }
             //Update NamespacedKey of old WolfyUtilityReference
-            if (reference instanceof WolfyUtilitiesRef) {
-                var oldNamespacedKey = ((WolfyUtilitiesRef) reference).getNamespacedKey();
+            if (reference instanceof WolfyUtilitiesRef wolfyUtilitiesRef) {
+                var oldNamespacedKey = wolfyUtilitiesRef.getNamespacedKey();
                 if (!oldNamespacedKey.getKey().contains("/") && !Registry.CUSTOM_ITEMS.has(oldNamespacedKey)) {
-                    var namespacedKey = NamespacedKeyUtils.fromInternal(((WolfyUtilitiesRef) reference).getNamespacedKey());
+                    var namespacedKey = NamespacedKeyUtils.fromInternal(wolfyUtilitiesRef.getNamespacedKey());
                     if (Registry.CUSTOM_ITEMS.has(namespacedKey)) {
                         var wuRef = new WolfyUtilitiesRef(namespacedKey);
-                        wuRef.setAmount(reference.getAmount());
+                        wuRef.setAmount(wolfyUtilitiesRef.getAmount());
                         return wuRef;
                     }
                 }

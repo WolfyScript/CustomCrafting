@@ -4,9 +4,9 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -48,7 +48,7 @@ public class AnvilListener implements Listener {
             event.setResult(null);
             return;
         }
-        List<CustomRecipeAnvil> recipes = Registry.RECIPES.getAvailable(Types.ANVIL, player);
+        List<CustomRecipeAnvil> recipes = Registry.RECIPES.getAvailable(RecipeType.ANVIL, player);
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
         for (CustomRecipeAnvil recipe : recipes) {
             Optional<CustomItem> finalInputLeft = Optional.empty();

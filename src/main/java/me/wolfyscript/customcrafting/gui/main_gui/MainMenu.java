@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.*;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeTypeButton;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -18,18 +18,18 @@ import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends CCWindow {
 
-    private static final String WORKBENCH = Types.WORKBENCH.getId();
-    private static final String FURNACE = Types.FURNACE.getId();
-    private static final String ANVIL = Types.ANVIL.getId();
-    private static final String BLAST_FURNACE = Types.BLAST_FURNACE.getId();
-    private static final String SMOKER = Types.SMOKER.getId();
-    private static final String CAMPFIRE = Types.CAMPFIRE.getId();
-    private static final String STONECUTTER = Types.STONECUTTER.getId();
-    private static final String GRINDSTONE = Types.GRINDSTONE.getId();
-    private static final String BREWING_STAND = Types.BREWING_STAND.getId();
-    private static final String ELITE_WORKBENCH = Types.ELITE_WORKBENCH.getId();
-    private static final String CAULDRON = Types.CAULDRON.getId();
-    private static final String SMITHING = Types.SMITHING.getId();
+    private static final String WORKBENCH = RecipeType.WORKBENCH.getId();
+    private static final String FURNACE = RecipeType.FURNACE.getId();
+    private static final String ANVIL = RecipeType.ANVIL.getId();
+    private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.getId();
+    private static final String SMOKER = RecipeType.SMOKER.getId();
+    private static final String CAMPFIRE = RecipeType.CAMPFIRE.getId();
+    private static final String STONECUTTER = RecipeType.STONECUTTER.getId();
+    private static final String GRINDSTONE = RecipeType.GRINDSTONE.getId();
+    private static final String BREWING_STAND = RecipeType.BREWING_STAND.getId();
+    private static final String ELITE_WORKBENCH = RecipeType.ELITE_WORKBENCH.getId();
+    private static final String CAULDRON = RecipeType.CAULDRON.getId();
+    private static final String SMITHING = RecipeType.SMITHING.getId();
 
     private static final String SETTINGS = "settings";
 
@@ -42,18 +42,18 @@ public class MainMenu extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new RecipeTypeButton(Types.WORKBENCH, Material.CRAFTING_TABLE));
-        registerButton(new RecipeTypeButton(Types.FURNACE, Material.FURNACE));
-        registerButton(new RecipeTypeButton(Types.ANVIL, Material.ANVIL));
-        registerButton(new RecipeTypeButton(Types.BLAST_FURNACE, Material.BLAST_FURNACE));
-        registerButton(new RecipeTypeButton(Types.SMOKER, Material.SMOKER));
-        registerButton(new RecipeTypeButton(Types.CAMPFIRE, Material.CAMPFIRE));
-        registerButton(new RecipeTypeButton(Types.STONECUTTER, Material.STONECUTTER));
-        registerButton(new RecipeTypeButton(Types.GRINDSTONE, Material.GRINDSTONE));
-        registerButton(new RecipeTypeButton(Types.BREWING_STAND, Material.BREWING_STAND));
-        registerButton(new RecipeTypeButton(Types.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
-        registerButton(new RecipeTypeButton(Types.CAULDRON, Material.CAULDRON));
-        registerButton(new RecipeTypeButton(Types.SMITHING, Material.SMITHING_TABLE));
+        registerButton(new RecipeTypeButton(RecipeType.WORKBENCH, Material.CRAFTING_TABLE));
+        registerButton(new RecipeTypeButton(RecipeType.FURNACE, Material.FURNACE));
+        registerButton(new RecipeTypeButton(RecipeType.ANVIL, Material.ANVIL));
+        registerButton(new RecipeTypeButton(RecipeType.BLAST_FURNACE, Material.BLAST_FURNACE));
+        registerButton(new RecipeTypeButton(RecipeType.SMOKER, Material.SMOKER));
+        registerButton(new RecipeTypeButton(RecipeType.CAMPFIRE, Material.CAMPFIRE));
+        registerButton(new RecipeTypeButton(RecipeType.STONECUTTER, Material.STONECUTTER));
+        registerButton(new RecipeTypeButton(RecipeType.GRINDSTONE, Material.GRINDSTONE));
+        registerButton(new RecipeTypeButton(RecipeType.BREWING_STAND, Material.BREWING_STAND));
+        registerButton(new RecipeTypeButton(RecipeType.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
+        registerButton(new RecipeTypeButton(RecipeType.CAULDRON, Material.CAULDRON));
+        registerButton(new RecipeTypeButton(RecipeType.SMITHING, Material.SMITHING_TABLE));
 
         registerButton(new ActionButton<>(ITEM_EDITOR, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.setSetting(Setting.ITEMS);

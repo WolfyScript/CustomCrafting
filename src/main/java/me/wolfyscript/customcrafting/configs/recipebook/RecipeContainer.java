@@ -75,8 +75,8 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     public boolean isValid(EliteWorkbench cache) {
         var data = cache.getEliteWorkbenchData();
         return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
-            if (cachedRecipe instanceof CraftingRecipe && (Types.ELITE_WORKBENCH.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
-                if (Types.ELITE_WORKBENCH.isInstance(cachedRecipe)) {
+            if (cachedRecipe instanceof CraftingRecipe && (RecipeType.ELITE_WORKBENCH.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
+                if (RecipeType.ELITE_WORKBENCH.isInstance(cachedRecipe)) {
                     EliteWorkbenchCondition condition = cachedRecipe.getConditions().getEliteCraftingTableCondition();
                     if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;
@@ -84,7 +84,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
                     if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
                         return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
-                        CustomRecipeShapedElite recipe1 = (CustomRecipeShapedElite) cachedRecipe;
+                        CraftingRecipeEliteShaped recipe1 = (CraftingRecipeEliteShaped) cachedRecipe;
                         return recipe1.getShape().length <= cache.getCurrentGridSize() && recipe1.getShape()[0].length() <= cache.getCurrentGridSize();
                     }
                 }

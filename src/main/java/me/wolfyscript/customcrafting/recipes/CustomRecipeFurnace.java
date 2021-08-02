@@ -30,7 +30,7 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
 
     @Override
     public RecipeType<CustomRecipeFurnace> getRecipeType() {
-        return Types.FURNACE;
+        return RecipeType.FURNACE;
     }
 
     @Override

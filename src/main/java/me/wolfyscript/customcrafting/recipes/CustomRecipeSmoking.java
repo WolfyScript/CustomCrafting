@@ -22,7 +22,7 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
 
     @Override
     public RecipeType<CustomRecipeSmoking> getRecipeType() {
-        return Types.SMOKER;
+        return RecipeType.SMOKER;
     }
 
     @Override

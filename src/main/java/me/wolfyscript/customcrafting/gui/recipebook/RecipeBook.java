@@ -12,7 +12,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerB
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -156,7 +156,7 @@ public class RecipeBook extends CCWindow {
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
                 ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
                 customRecipe.renderMenu(this, event);
-                boolean elite = Types.ELITE_WORKBENCH.isInstance(customRecipe);
+                boolean elite = RecipeType.ELITE_WORKBENCH.isInstance(customRecipe);
                 if (knowledgeBook.getSubFolderPage() > 0) {
                     event.setButton(elite ? 51 : 48, PREVIOUS_RECIPE);
                 }

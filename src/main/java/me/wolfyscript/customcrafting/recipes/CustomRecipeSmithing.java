@@ -52,7 +52,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     @Override
     public RecipeType<CustomRecipeSmithing> getRecipeType() {
-        return Types.SMITHING;
+        return RecipeType.SMITHING;
     }
 
     @Override

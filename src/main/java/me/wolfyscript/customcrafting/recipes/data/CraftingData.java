@@ -13,9 +13,9 @@ import java.util.Map;
  * <br>
  * Additionally, it saves the position of the IngredientData inside the crafting grid.
  */
-public class CraftingData extends RecipeData<CraftingRecipe<?>> {
+public class CraftingData extends RecipeData<CraftingRecipe<?, ?>> {
 
-    public CraftingData(CraftingRecipe<?> recipe, Map<Integer, IngredientData> ingredients) {
+    public CraftingData(CraftingRecipe<?, ?> recipe, Map<Integer, IngredientData> ingredients) {
         super(recipe, ingredients);
     }
 

@@ -69,7 +69,7 @@ public class CraftManager {
      * @return The result {@link CustomItem} if the {@link CraftingRecipe} is valid. Else null.
      */
     @Nullable
-    public ItemStack checkRecipe(CraftingRecipe<?> recipe, MatrixData flatMatrix, Player player, Block block, Inventory inventory) {
+    public ItemStack checkRecipe(CraftingRecipe<?, ?> recipe, MatrixData flatMatrix, Player player, Block block, Inventory inventory) {
         if (!recipe.isDisabled() && recipe.checkConditions(new Conditions.Data(player, block, player.getOpenInventory()))) {
             var craftingData = recipe.check(flatMatrix);
             if (craftingData != null) {
@@ -110,7 +110,7 @@ public class CraftManager {
         var player = (Player) event.getWhoClicked();
         if (inventory != null && !ItemUtils.isAirOrNull(result) && has(player.getUniqueId())) {
             var craftingData = preCraftedRecipes.get(player.getUniqueId());
-            CraftingRecipe<?> recipe = craftingData.getRecipe();
+            CraftingRecipe<?, ?> recipe = craftingData.getRecipe();
             if (recipe != null && !ItemUtils.isAirOrNull(result)) {
                 Result recipeResult = craftingData.getResult();
                 editStatistics(player, inventory, recipe);
@@ -122,7 +122,7 @@ public class CraftManager {
         }
     }
 
-    private void editStatistics(Player player, Inventory inventory, CraftingRecipe<?> recipe) {
+    private void editStatistics(Player player, Inventory inventory, CraftingRecipe<?, ?> recipe) {
         CCPlayerData playerStore = PlayerUtil.getStore(player);
         playerStore.increaseRecipeCrafts(recipe.getNamespacedKey(), 1);
         playerStore.increaseTotalCrafts(1);
@@ -134,14 +134,14 @@ public class CraftManager {
         }
     }
 
-    private void setPlayerCraftTime(Player player, CraftingRecipe<?> recipe) {
+    private void setPlayerCraftTime(Player player, CraftingRecipe<?, ?> recipe) {
         CraftDelayCondition condition = recipe.getConditions().getByType(CraftDelayCondition.class);
         if (condition != null && condition.getOption().equals(Conditions.Option.EXACT)) {
             condition.setPlayerCraftTime(player);
         }
     }
 
-    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?> recipe, Result recipeResult, ItemStack result) {
+    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult, ItemStack result) {
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
         recipe.removeMatrix(event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {

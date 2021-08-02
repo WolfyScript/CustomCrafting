@@ -126,7 +126,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
 
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
             ICustomRecipe<?> customRecipe = Registry.RECIPES.get(recipeKey);
-            return Types.WORKBENCH.isInstance(customRecipe) ? Types.WORKBENCH.cast(customRecipe) : null;
+            return RecipeType.WORKBENCH.isInstance(customRecipe) ? RecipeType.WORKBENCH.cast(customRecipe) : null;
         }
 
         /**
@@ -211,10 +211,10 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
             final long size = items.stream().flatMap(Collection::stream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
             List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
             if (elite) {
-                craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
+                craftingRecipes.addAll(get(RecipeType.ELITE_WORKBENCH));
             }
             if (advanced) {
-                craftingRecipes.addAll(get(Types.WORKBENCH));
+                craftingRecipes.addAll(get(RecipeType.WORKBENCH));
             }
             final int itemsSize = items.size();
             final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
@@ -229,10 +229,10 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
             List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
             if (elite) {
-                craftingRecipes.addAll(get(Types.ELITE_WORKBENCH));
+                craftingRecipes.addAll(get(RecipeType.ELITE_WORKBENCH));
             }
             if (advanced) {
-                craftingRecipes.addAll(get(Types.WORKBENCH));
+                craftingRecipes.addAll(get(RecipeType.WORKBENCH));
             }
             return craftingRecipes.stream().filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }

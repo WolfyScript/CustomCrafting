@@ -173,7 +173,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     @Override
     public RecipeType<CustomRecipeAnvil> getRecipeType() {
-        return Types.ANVIL;
+        return RecipeType.ANVIL;
     }
 
     @Override

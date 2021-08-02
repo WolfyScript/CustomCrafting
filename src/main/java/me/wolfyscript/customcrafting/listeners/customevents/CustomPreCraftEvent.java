@@ -17,7 +17,7 @@ public class CustomPreCraftEvent extends CustomCraftEvent {
     private List<List<ItemStack>> ingredients;
     private final CraftManager.MatrixData matrix;
 
-    public CustomPreCraftEvent(CraftingRecipe<?> craftingRecipe, Inventory inventory, CraftManager.MatrixData matrix) {
+    public CustomPreCraftEvent(CraftingRecipe<?, ?> craftingRecipe, Inventory inventory, CraftManager.MatrixData matrix) {
         super(craftingRecipe, inventory);
         this.result = craftingRecipe.getResult();
         this.ingredients = new ArrayList<>();

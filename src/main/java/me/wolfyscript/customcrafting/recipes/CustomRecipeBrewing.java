@@ -132,7 +132,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     @Override
     public RecipeType<CustomRecipeBrewing> getRecipeType() {
-        return Types.BREWING_STAND;
+        return RecipeType.BREWING_STAND;
     }
 
     @Override
