@@ -16,7 +16,6 @@ import org.bukkit.Tag;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class TagChooseList extends CCWindow {
@@ -24,7 +23,7 @@ public class TagChooseList extends CCWindow {
     private static final List<Tag<Material>> ITEM_TAGS;
 
     static {
-        ITEM_TAGS = StreamSupport.stream(Bukkit.getTags("items", Material.class).spliterator(), false).sorted(Comparator.comparing(o -> o.getKey().toString())).collect(Collectors.toList());
+        ITEM_TAGS = StreamSupport.stream(Bukkit.getTags("items", Material.class).spliterator(), false).sorted(Comparator.comparing(o -> o.getKey().toString())).toList();
     }
 
     public TagChooseList(GuiCluster<CCCache> guiCluster, CustomCrafting customCrafting) {

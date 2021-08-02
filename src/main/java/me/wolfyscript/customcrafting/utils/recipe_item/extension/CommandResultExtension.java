@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CommandResultExtension extends ResultExtension {
 
@@ -79,7 +78,7 @@ public class CommandResultExtension extends ResultExtension {
             } else {
                 return s.replace("%player%", player.getName());
             }
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
 

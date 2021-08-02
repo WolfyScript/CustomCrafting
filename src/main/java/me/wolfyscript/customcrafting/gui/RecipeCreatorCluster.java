@@ -27,7 +27,6 @@ import org.bukkit.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RecipeCreatorCluster extends CCCluster {
 
@@ -156,7 +155,7 @@ public class RecipeCreatorCluster extends CCCluster {
                                 StringUtil.copyPartialMatches(args[0], Registry.RECIPES.namespaces(), results);
                             } else if (args.length == 2) {
                                 results.add("<key>");
-                                StringUtil.copyPartialMatches(args[1], Registry.RECIPES.get(args[0]).stream().filter(recipe -> cache.getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).collect(Collectors.toList()), results);
+                                StringUtil.copyPartialMatches(args[1], Registry.RECIPES.get(args[0]).stream().filter(recipe -> cache.getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
                             }
                         }
                         Collections.sort(results);

@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class GiveSubCommand extends AbstractSubCommand {
 
@@ -121,8 +120,8 @@ public class GiveSubCommand extends AbstractSubCommand {
             StringUtil.copyPartialMatches(
                     strings[strings.length - 1],
                     switch (strings.length) {
-                        case 1 -> Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()); //Player completion
-                        case 2 -> Registry.CUSTOM_ITEMS.keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).collect(Collectors.toList()); //Item completion
+                        case 1 -> Bukkit.getOnlinePlayers().stream().map(Player::getName).toList(); //Player completion
+                        case 2 -> Registry.CUSTOM_ITEMS.keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).toList(); //Item completion
                         case 3 -> NUMBERS;
                         case 4 -> Arrays.asList("true", "false"); //Drop Items
                         default -> new ArrayList<String>();

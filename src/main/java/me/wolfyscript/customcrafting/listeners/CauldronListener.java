@@ -29,7 +29,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CauldronListener implements Listener {
 
@@ -118,7 +117,7 @@ public class CauldronListener implements Listener {
                                 .filter(entry -> entry.getKey().getWorld().equals(itemDrop.getLocation().getWorld()) && entry.getKey().clone().add(0.5, 0.4, 0.5).distance(itemDrop.getLocation()) <= 0.4)
                                 .forEach(entry -> {
                                     Location loc = entry.getKey();
-                                    List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).collect(Collectors.toList());
+                                    List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).toList();
                                     if (!items.isEmpty()) {
                                         int level = Cauldrons.getLevel(loc.getBlock());
                                         List<CustomRecipeCauldron> recipes = Registry.RECIPES.get(Types.CAULDRON);

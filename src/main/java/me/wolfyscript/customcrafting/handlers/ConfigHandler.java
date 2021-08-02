@@ -150,7 +150,7 @@ public class ConfigHandler {
 
     public void save() throws IOException {
         recipeBookConfig.save(getConfig().isPrettyPrinting());
-        getConfig().save();
+        //getConfig().save();
     }
 
     public MainConfig getConfig() {

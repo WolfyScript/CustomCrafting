@@ -99,6 +99,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 } else {
                     customCrafting.getDataHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
                 }
+                customCrafting.getDataHandler().saveDisabledRecipes();
             }
         }
         return true;

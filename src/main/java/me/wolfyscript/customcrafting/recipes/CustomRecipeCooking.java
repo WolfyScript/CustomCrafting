@@ -26,7 +26,6 @@ import org.bukkit.inventory.RecipeChoice;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T extends CookingRecipe<?>> extends CustomRecipe<C, NoneResultTarget> implements ICustomVanillaRecipe<T> {
 
@@ -109,20 +108,20 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     protected RecipeChoice getRecipeChoice(){
-        return isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getChoices().parallelStream().map(CustomItem::create).collect(Collectors.toList())) : new RecipeChoice.MaterialChoice(getSource().getChoices().parallelStream().map(i -> i.create().getType()).collect(Collectors.toList()));
+        return isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getChoices().parallelStream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().parallelStream().map(i -> i.create().getType()).toList());
     }
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         var player = guiHandler.getPlayer();
         ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getSource().getChoices(player));
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).collect(Collectors.toList()));
+        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
+        List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
         for (Condition condition : conditions) {

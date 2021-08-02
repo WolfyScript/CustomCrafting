@@ -37,7 +37,6 @@ import org.bukkit.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ItemCreator extends CCWindow {
 
@@ -86,9 +85,9 @@ public class ItemCreator extends CCWindow {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
-                List<String[]> namespacedKeys = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).collect(Collectors.toList());
-                List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).collect(Collectors.toList());
-                List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).collect(Collectors.toList());
+                List<String[]> namespacedKeys = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
+                List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).toList();
+                List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).toList();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     if (args.length > 0) {
@@ -284,6 +283,6 @@ public class ItemCreator extends CCWindow {
                 });
             }
         }
-        return tabs.stream().filter(tab -> tab != null && tab.shouldRender(update, cache, items, customItem, item)).collect(Collectors.toList());
+        return tabs.stream().filter(tab -> tab != null && tab.shouldRender(update, cache, items, customItem, item)).toList();
     }
 }

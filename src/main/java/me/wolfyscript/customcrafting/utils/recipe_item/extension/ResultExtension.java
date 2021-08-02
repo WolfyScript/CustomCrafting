@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @JsonTypeResolver(KeyedTypeResolver.class)
 @JsonTypeIdResolver(KeyedTypeIdResolver.class)
@@ -138,9 +137,9 @@ public abstract class ResultExtension implements Keyed {
     protected <E extends Entity> List<E> getEntitiesInRange(Class<E> entityType, Location location, Vector outerRadius, Vector innerRadius) {
         var world = location.getWorld();
         if (world != null) {
-            List<E> outerEntities = world.getNearbyEntities(location, outerRadius.getX(), outerRadius.getZ(), outerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).collect(Collectors.toList());
+            List<E> outerEntities = world.getNearbyEntities(location, outerRadius.getX(), outerRadius.getZ(), outerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).toList();
             if (innerRadius.getX() != 0 || innerRadius.getY() != 0 || innerRadius.getZ() != 0) {
-                List<E> innerEntities = world.getNearbyEntities(location, innerRadius.getX(), innerRadius.getZ(), innerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).collect(Collectors.toList());
+                List<E> innerEntities = world.getNearbyEntities(location, innerRadius.getX(), innerRadius.getZ(), innerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).toList();
                 outerEntities.removeAll(innerEntities);
             }
             return outerEntities;

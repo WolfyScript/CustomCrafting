@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron, NoneResultTarget> {
 
@@ -216,7 +215,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron, Non
             invSlot = 10 + i + (i / 3) * 6;
             event.setButton(invSlot, new NamespacedKey("recipe_book", "ingredient.container_" + invSlot));
         }
-        List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).collect(Collectors.toList());
+        List<Condition> conditions = getConditions().values().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
         for (Condition condition : conditions) {

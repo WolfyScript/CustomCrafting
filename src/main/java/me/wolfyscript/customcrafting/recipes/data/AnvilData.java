@@ -1,40 +1,44 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 
-import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
+import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import java.util.Map;
 
-public class AnvilData {
+public class AnvilData extends RecipeData<CustomRecipeAnvil> {
 
-    private final CustomRecipeAnvil recipe;
-    private final CustomItem inputLeft;
-    private final CustomItem inputRight;
-    private final Optional<Result<?>> result;
+    private boolean usedResult;
 
-    public AnvilData(CustomRecipeAnvil recipe, @Nullable Result<?> result, CustomItem inputLeft, CustomItem inputRight) {
-        this.recipe = recipe;
-        this.inputLeft = inputLeft;
-        this.inputRight = inputRight;
-        this.result = Optional.ofNullable(result);
+    public AnvilData(CustomRecipeAnvil recipe, Map<Integer, IngredientData> dataMap) {
+        super(recipe, dataMap);
+        this.usedResult = false;
     }
 
-    public CustomRecipeAnvil getRecipe() {
-        return recipe;
-    }
-
+    @Deprecated
     public CustomItem getInputLeft() {
-        return inputLeft;
+        return getBySlot(0).customItem();
     }
 
+    @Deprecated
     public CustomItem getInputRight() {
-        return inputRight;
+        return getBySlot(1).customItem();
     }
 
-    public Optional<Result<?>> getResult() {
-        return result;
+    public IngredientData getLeftIngredient() {
+        return getBySlot(0);
+    }
+
+    public IngredientData getRightIngredient() {
+        return getBySlot(1);
+    }
+
+    public boolean isUsedResult() {
+        return usedResult;
+    }
+
+    public void setUsedResult(boolean usedResult) {
+        this.usedResult = usedResult;
     }
 }

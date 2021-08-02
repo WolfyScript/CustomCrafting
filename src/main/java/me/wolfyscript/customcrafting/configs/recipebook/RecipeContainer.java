@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
@@ -104,7 +103,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public List<ItemStack> getDisplayItems(Player player) {
-        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream().flatMap(recipe1 -> recipe1.getRecipeBookItems().stream()).map(CustomItem::create).distinct().collect(Collectors.toList()));
+        return cachedPlayerItemStacks.computeIfAbsent(player.getUniqueId(), uuid -> getRecipes(player).stream().flatMap(recipe1 -> recipe1.getRecipeBookItems().stream()).map(CustomItem::create).distinct().toList());
     }
 
     @Override

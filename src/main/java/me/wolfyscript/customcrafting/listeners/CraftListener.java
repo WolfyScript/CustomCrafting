@@ -110,7 +110,7 @@ public class CraftListener implements Listener {
 
     @EventHandler
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
-        if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+        if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) || customCrafting.getDataHandler().isBukkitRecipeDisabled(event.getRecipe())) {
             event.setCancelled(true);
         }
     }

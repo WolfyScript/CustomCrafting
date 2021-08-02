@@ -1,6 +1,5 @@
 package me.wolfyscript.customcrafting.data.patreon;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import net.md_5.bungee.api.ChatColor;
 
 import java.util.ArrayList;
@@ -8,12 +7,9 @@ import java.util.List;
 
 public class Patreon {
 
-    boolean isPatreon;
-
     List<Patron> patronList = new ArrayList<>();
 
-    public Patreon(CustomCrafting customCrafting) {
-        this.isPatreon = true;//!customCrafting.getDescription().getVersion().endsWith(".0");
+    public Patreon() {
     }
 
     public void initialize() {
@@ -79,10 +75,6 @@ public class Patreon {
 
     public List<Patron> getPatronList() {
         return patronList;
-    }
-
-    public boolean isPatreon() {
-        return isPatreon;
     }
 
     public enum Tier {

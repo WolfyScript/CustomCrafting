@@ -22,7 +22,6 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class CustomItemList extends CCWindow {
 
@@ -66,7 +65,7 @@ public class CustomItemList extends CCWindow {
         int page;
         String namespace = items.getListNamespace();
         if (namespace == null) {
-            List<String> namespaceList = Registry.CUSTOM_ITEMS.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().filter(Objects::nonNull).sorted(String::compareToIgnoreCase).collect(Collectors.toList());
+            List<String> namespaceList = Registry.CUSTOM_ITEMS.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().filter(Objects::nonNull).sorted(String::compareToIgnoreCase).toList();
             maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
             page = items.getListPage(maxPages);
 
@@ -78,7 +77,7 @@ public class CustomItemList extends CCWindow {
                 update.setButton(item, btnID);
             }
         } else {
-            List<CustomItem> customItems = Registry.CUSTOM_ITEMS.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && namespace.equals(NamespacedKeyUtils.getInternalNamespace(entry.getKey()))).map(Map.Entry::getValue).collect(Collectors.toList());
+            List<CustomItem> customItems = Registry.CUSTOM_ITEMS.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && namespace.equals(NamespacedKeyUtils.getInternalNamespace(entry.getKey()))).map(Map.Entry::getValue).toList();
             maxPages = customItems.size() / 45 + (customItems.size() % 45 > 0 ? 1 : 0);
             page = items.getListPage(maxPages);
 

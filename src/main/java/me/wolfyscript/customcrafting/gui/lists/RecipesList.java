@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class RecipesList extends CCWindow {
 
@@ -89,7 +88,7 @@ public class RecipesList extends CCWindow {
             }
         } else {
             if (namespace.equalsIgnoreCase("minecraft")) {
-                List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
+                List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).toList();
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
                 for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
@@ -98,7 +97,7 @@ public class RecipesList extends CCWindow {
                     event.setButton(9 + slot, button);
                 }
             } else {
-                List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
+                List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).toList();
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
                 for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {

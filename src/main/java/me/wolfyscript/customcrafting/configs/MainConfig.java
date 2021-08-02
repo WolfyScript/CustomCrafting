@@ -9,7 +9,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class MainConfig extends YamlConfiguration {
 
@@ -90,7 +89,7 @@ public class MainConfig extends YamlConfiguration {
     }
 
     public void setDisabledRecipes(Set<NamespacedKey> recipes) {
-        set("recipes.disabled_recipes", recipes.parallelStream().map(NamespacedKey::toString).collect(Collectors.toList()));
+        set("recipes.disabled_recipes", recipes.parallelStream().map(NamespacedKey::toString).toList());
     }
 
     public boolean isPrettyPrinting() {
