@@ -4,11 +4,12 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class AdvancedWorkbenchCondition extends Condition {
 
     public AdvancedWorkbenchCondition() {
-        super("advanced_workbench");
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_workbench"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
     }

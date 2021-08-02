@@ -1,9 +1,11 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +18,7 @@ public class WeatherCondition extends Condition {
     private Weather weather;
 
     public WeatherCondition() {
-        super("weather");
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "weather"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
         this.weather = Weather.NONE;

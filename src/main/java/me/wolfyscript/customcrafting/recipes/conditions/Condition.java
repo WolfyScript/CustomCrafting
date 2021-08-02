@@ -1,8 +1,15 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
+import me.wolfyscript.utilities.util.Keyed;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,16 +17,25 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Condition {
+@JsonTypeResolver(KeyedTypeResolver.class)
+@JsonTypeIdResolver(KeyedTypeIdResolver.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "key")
+@JsonPropertyOrder("key")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public abstract class Condition implements Keyed {
+
+    @JsonProperty("key")
+    private final NamespacedKey key;
 
     protected Conditions.Option option;
+    private ItemStack iconEnabled;
+    private ItemStack iconDisabled;
 
-    private ItemStack iconEnabled, iconDisabled;
-    private final String id;
+    @JsonIgnore
     private List<Conditions.Option> availableOptions;
 
-    protected Condition(String id) {
-        this.id = id;
+    protected Condition(NamespacedKey key) {
+        this.key = key;
     }
 
     public Conditions.Option getOption() {
@@ -52,8 +68,15 @@ public abstract class Condition {
 
     public abstract boolean check(ICustomRecipe<?> recipe, Conditions.Data data);
 
+    @JsonIgnore
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return key;
+    }
+
+    @Deprecated
     public String getId() {
-        return id;
+        return key.toString();
     }
 
     /**

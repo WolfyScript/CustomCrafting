@@ -3,8 +3,10 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ public class PermissionCondition extends Condition {
     private String permission = "customcrafting.craft.%namespace%.%recipe_name%";
 
     public PermissionCondition() {
-        super("permission");
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "permission"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
     }

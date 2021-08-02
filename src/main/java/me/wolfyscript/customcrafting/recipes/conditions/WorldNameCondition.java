@@ -1,8 +1,10 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ public class WorldNameCondition extends Condition {
     private final List<String> worldNames;
 
     public WorldNameCondition() {
-        super("world_name");
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_name"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
         this.worldNames = new ArrayList<>();

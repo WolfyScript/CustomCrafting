@@ -21,7 +21,7 @@ public class EliteWorkbenchCondition extends Condition {
     private final List<NamespacedKey> eliteWorkbenches;
 
     public EliteWorkbenchCondition() {
-        super("elite_crafting_table");
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
         this.eliteWorkbenches = new ArrayList<>();

@@ -2,9 +2,11 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +17,7 @@ public class CraftLimitCondition extends Condition {
     long limit = 0;
 
     public CraftLimitCondition() {
-        super("craft_limit");
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_limit"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.LOWER_EXACT, Conditions.Option.LOWER);
     }

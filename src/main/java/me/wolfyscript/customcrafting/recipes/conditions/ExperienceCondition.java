@@ -1,8 +1,10 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -12,7 +14,7 @@ public class ExperienceCondition extends Condition {
     int expLevel = 0;
 
     public ExperienceCondition() {
-        super("player_experience");
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
     }
