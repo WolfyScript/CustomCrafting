@@ -88,16 +88,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
 
         /**
-         * Returns a List of all recipes contained in the namespace.
-         *
-         * @param namespace The namespace to get recipes from.
-         * @return The recipes contained in the namespace.
-         */
-        public List<ICustomRecipe<?>> get(String namespace) {
-            return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
-        }
-
-        /**
          * Get all the Recipes from this group
          *
          * @param group The group to get recipes from.
@@ -105,6 +95,16 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          */
         public List<ICustomRecipe<?>> getGroup(String group) {
             return Registry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
+        }
+
+        /**
+         * Returns a List of all recipes contained in the namespace.
+         *
+         * @param namespace The namespace to get recipes from.
+         * @return The recipes contained in the namespace.
+         */
+        public List<ICustomRecipe<?>> get(String namespace) {
+            return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
         }
 
         public List<ICustomRecipe<?>> get(CustomItem result) {

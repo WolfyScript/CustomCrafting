@@ -136,21 +136,21 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     }
 
     @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
-        if (slot == 0) {
-            this.ingredients = ingredient;
-        } else {
-            this.allowedItems = ingredient;
-        }
-    }
-
-    @Override
     public Ingredient getIngredient(int slot) {
         return slot == 0 ? this.ingredients : this.allowedItems;
     }
 
     public Ingredient getIngredient() {
         return getIngredient(0);
+    }
+
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        if (slot == 0) {
+            this.ingredients = ingredient;
+        } else {
+            this.allowedItems = ingredient;
+        }
     }
 
     public void setIngredient(Ingredient ingredient) {

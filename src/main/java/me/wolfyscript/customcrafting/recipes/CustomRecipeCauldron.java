@@ -116,14 +116,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.xp = xp;
     }
 
-    public Ingredient getIngredient() {
-        return getIngredient(0);
-    }
-
-    public void setIngredient(Ingredient ingredients) {
-        setIngredient(0, ingredients);
-    }
-
     public boolean dropItems() {
         return dropItems;
     }
@@ -161,14 +153,22 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         return RecipeType.CAULDRON;
     }
 
-    @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
-        this.ingredients = ingredient;
+    public Ingredient getIngredient() {
+        return getIngredient(0);
     }
 
     @Override
     public Ingredient getIngredient(int slot) {
         return this.ingredients;
+    }
+
+    public void setIngredient(Ingredient ingredients) {
+        setIngredient(0, ingredients);
+    }
+
+    @Override
+    public void setIngredient(int slot, Ingredient ingredient) {
+        this.ingredients = ingredient;
     }
 
     @Override

@@ -48,14 +48,14 @@ public interface ICraftingRecipe {
         return totalAmount;
     }
 
+    Map<Character, Ingredient> getIngredients();
+
     @Nullable
     default Ingredient getIngredients(char key) {
         return getIngredients().get(key);
     }
 
     void setIngredient(char key, Ingredient ingredients);
-
-    Map<Character, Ingredient> getIngredients();
 
     void setIngredients(Map<Character, Ingredient> ingredients);
 }
