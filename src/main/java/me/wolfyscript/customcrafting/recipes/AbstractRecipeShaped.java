@@ -195,23 +195,23 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     }
 
     /**
-     * This generates and stores the flipped states of the recipe shape.
-     * We trade more calculation on start-up for better performance later on.
+     * This generates and stores the flipped states of the recipe shape.<br>
+     * This pre-calculates the different states of the recipe on start-up for better performance on runtime.
      */
     public class Shape {
 
         private final int width;
         private final int height;
 
-        private final List<int[]> entries;
+        private final Set<int[]> entries;
 
         /**
          * This constructor performs a very resource intensive calculation <br>
          * to generate, flip, and flatten the original shape <br>
-         * to multiple int only arrays of different possible states of the recipe.
+         * to multiple int only arrays of different possible states the recipe can be in.
          */
         public Shape() {
-            List<int[]> shapeEntryList = new ArrayList<>();
+            Set<int[]> shapeEntryList = new HashSet<>();
             //Original shape
             final var original2d = new int[shape.length][shape[0].length()];
             var index = 0;
@@ -237,7 +237,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                 final int[][] flippedVertically2d = original2d.clone();
                 ArrayUtils.reverse(flippedVertically2d);
                 apply(shapeEntryList, flippedVertically2d);
-
                 if (mirrorRotation) {
                     int[][] rotated = flippedVertically2d.clone();
                     for (int[] ints : rotated) {
@@ -246,14 +245,21 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     apply(shapeEntryList, rotated);
                 }
             }
-            this.entries = List.copyOf(shapeEntryList);
+            //Makes sure to make the set unmodifiable!
+            this.entries = Set.copyOf(shapeEntryList);
         }
 
-        private void apply(List<int[]> entries, int[][] array) {
-            var entry = Stream.of(array).flatMapToInt(IntStream::of).toArray();
-            if (!entries.contains(entry)) {
-                entries.add(entry);
-            }
+        /**
+         * Applies the flattened shape array to the set.
+         * <br>
+         * Because flat ingredients of different flipped/rotated shapes can be the same, <br>
+         * we don't need to check the same shape twice.
+         *
+         * @param entries The modifiable set of entries.
+         * @param array   The shape array to flatten.
+         */
+        private void apply(Set<int[]> entries, int[][] array) {
+            entries.add(Stream.of(array).flatMapToInt(IntStream::of).toArray());
         }
 
         public int getWidth() {
@@ -264,7 +270,10 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             return height;
         }
 
-        public List<int[]> getUniqueShapes() {
+        /**
+         * @return An unmodifiable set of all the states the recipe can be crafted in.
+         */
+        public Set<int[]> getUniqueShapes() {
             return entries;
         }
 

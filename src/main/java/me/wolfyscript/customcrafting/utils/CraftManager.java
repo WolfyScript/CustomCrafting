@@ -62,7 +62,6 @@ public class CraftManager {
      * Checks one single {@link CraftingRecipe} and returns the {@link CustomItem} if it's valid.
      *
      * @param recipe      The {@link CraftingRecipe} to check.
-     * @param ingredients The ingredients of the matrix without surrounding empty columns/rows (via {@link DataHandler#getIngredients(ItemStack[])}).
      * @param player      The player that crafts it.
      * @param block       The block of the workstation or players inventory.
      * @param inventory   The inventory of the workstation or player.
@@ -220,12 +219,12 @@ public class CraftManager {
         }
         ListIterator<List<ItemStack>> iterator = items.listIterator();
         while (iterator.hasNext()) {
-            if (!iterator.next().parallelStream().allMatch(Objects::isNull)) break;
+            if (!iterator.next().stream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
         iterator = items.listIterator(items.size());
         while (iterator.hasPrevious()) {
-            if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
+            if (!iterator.previous().stream().allMatch(Objects::isNull)) break;
             iterator.remove();
         }
         var leftPos = gridSize;
@@ -255,6 +254,12 @@ public class CraftManager {
         return new MatrixData(items.stream().flatMap(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos).stream()).toArray(ItemStack[]::new), items.size(), finalRightPos - finalLeftPos);
     }
 
+    /**
+     * This object contains all necessary data of the crafting matrix like the width and height of the ingredients area. <br>
+     * <p>
+     * The contained matrix is already stripped down to the smallest possible dimensions.<br>
+     * Which means that it can be smaller than the actual grid!<br>
+     */
     public static class MatrixData {
 
         private final ItemStack[] matrix;
@@ -269,18 +274,30 @@ public class CraftManager {
             this.strippedSize = Arrays.stream(matrix).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
         }
 
+        /**
+         * @return The height of the matrix.
+         */
         public int getHeight() {
             return height;
         }
 
+        /**
+         * @return The width of the matrix.
+         */
         public int getWidth() {
             return width;
         }
 
+        /**
+         * @return The matrix size with all empty air/null values removed.
+         */
         public long getStrippedSize() {
             return strippedSize;
         }
 
+        /**
+         * @return The matrix of the crafting grid. Stripped to the smallest possible dimensions.
+         */
         public ItemStack[] getMatrix() {
             return matrix;
         }
