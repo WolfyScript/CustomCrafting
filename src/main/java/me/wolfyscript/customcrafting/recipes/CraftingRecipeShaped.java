@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeShaped, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapedRecipe> {
 
     public CraftingRecipeShaped(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node, 3);
+        super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
     }
 
     public CraftingRecipeShaped() {
-        super(3);
+        super(3, new AdvancedRecipeSettings());
     }
 
     public CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {

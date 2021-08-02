@@ -2,10 +2,10 @@ package me.wolfyscript.customcrafting.recipes.settings;
 
 public class AdvancedRecipeSettings implements CraftingRecipeSettings<AdvancedRecipeSettings> {
 
-    private boolean allowVanillaRecipe = true;
+    private boolean allowVanillaRecipe;
 
     public AdvancedRecipeSettings() {
-
+        this.allowVanillaRecipe = true;
     }
 
     public AdvancedRecipeSettings(AdvancedRecipeSettings settings) {

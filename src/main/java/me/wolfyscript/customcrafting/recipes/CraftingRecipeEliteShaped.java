@@ -7,11 +7,11 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingRecipeEliteShaped, EliteRecipeSettings> {
 
     public CraftingRecipeEliteShaped(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node, 6);
+        super(namespacedKey, node, 6, EliteRecipeSettings.class);
     }
 
     public CraftingRecipeEliteShaped() {
-        super(6);
+        super(6, new EliteRecipeSettings());
     }
 
     public CraftingRecipeEliteShaped(CraftingRecipeEliteShaped eliteCraftingRecipe) {

@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRecipeShapeless, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapelessRecipe> {
 
     public CraftingRecipeShapeless(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node, 3);
+        super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
     }
 
     public CraftingRecipeShapeless() {
-        super(3);
+        super(3, new AdvancedRecipeSettings());
     }
 
     public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {

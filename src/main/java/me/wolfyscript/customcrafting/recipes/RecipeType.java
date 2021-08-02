@@ -11,13 +11,12 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-public abstract class RecipeType<C extends ICustomRecipe<?>> {
+public class RecipeType<C extends ICustomRecipe<?>> {
 
     //Crafting recipes
-    public static final RecipeType<CraftingRecipeShaped> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, CraftingRecipeShaped.class) {
-    };
-    public static final RecipeType<CraftingRecipeShapeless> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, CraftingRecipeShapeless.class) {
-    };
+    public static final RecipeType<CraftingRecipeShaped> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, CraftingRecipeShaped.class);
+    public static final RecipeType<CraftingRecipeShapeless> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, CraftingRecipeShapeless.class);
+    public static final RecipeType<CraftingRecipeEliteShaped> ELITE_WORKBENCH_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, CraftingRecipeEliteShaped.class);
     public static final RecipeType<CraftingRecipe<?, AdvancedRecipeSettings>> WORKBENCH = new RecipeType<>(Type.WORKBENCH, (Class<CraftingRecipe<?, AdvancedRecipeSettings>>) (Object) CraftingRecipe.class) {
         @Override
         public CraftingRecipe<?, AdvancedRecipeSettings> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -29,10 +28,9 @@ public abstract class RecipeType<C extends ICustomRecipe<?>> {
             return recipe instanceof CraftingRecipe<?, ?> craftingRecipe && craftingRecipe.getSettings() instanceof AdvancedRecipeSettings;
         }
     };
-    public static final RecipeType<CraftingRecipeEliteShaped> ELITE_WORKBENCH_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, CraftingRecipeEliteShaped.class) {
-    };
-    public static final RecipeType<CraftingRecipeEliteShapeless> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, CraftingRecipeEliteShapeless.class) {
-    };
+    public static final RecipeType<CraftingRecipeEliteShapeless> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, CraftingRecipeEliteShapeless.class);
+    //Cooking recipes
+    public static final RecipeType<CustomRecipeFurnace> FURNACE = new RecipeType<>(Type.FURNACE, CustomRecipeFurnace.class);
     public static final RecipeType<CraftingRecipe<?, EliteRecipeSettings>> ELITE_WORKBENCH = new RecipeType<>(Type.ELITE_WORKBENCH, (Class<CraftingRecipe<?, EliteRecipeSettings>>) (Object) CraftingRecipe.class) {
         @Override
         public CraftingRecipe<?, EliteRecipeSettings> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -44,29 +42,19 @@ public abstract class RecipeType<C extends ICustomRecipe<?>> {
             return recipe instanceof CraftingRecipe<?, ?> craftingRecipe && craftingRecipe.getSettings() instanceof EliteRecipeSettings;
         }
     };
-    //Cooking recipes
-    public static final RecipeType<CustomRecipeFurnace> FURNACE = new RecipeType<>(Type.FURNACE, CustomRecipeFurnace.class) {
-    };
-    public static final RecipeType<CustomRecipeBlasting> BLAST_FURNACE = new RecipeType<>(Type.BLAST_FURNACE, CustomRecipeBlasting.class) {
-    };
-    public static final RecipeType<CustomRecipeSmoking> SMOKER = new RecipeType<>(Type.SMOKER, CustomRecipeSmoking.class) {
-    };
-    public static final RecipeType<CustomRecipeCampfire> CAMPFIRE = new RecipeType<>(Type.CAMPFIRE, CustomRecipeCampfire.class) {
-    };
+    public static final RecipeType<CustomRecipeBlasting> BLAST_FURNACE = new RecipeType<>(Type.BLAST_FURNACE, CustomRecipeBlasting.class);
+    public static final RecipeType<CustomRecipeSmoking> SMOKER = new RecipeType<>(Type.SMOKER, CustomRecipeSmoking.class);
+    public static final RecipeType<CustomRecipeCampfire> CAMPFIRE = new RecipeType<>(Type.CAMPFIRE, CustomRecipeCampfire.class);
     //Misc recipes
-    public static final RecipeType<CustomRecipeAnvil> ANVIL = new RecipeType<>(Type.ANVIL, CustomRecipeAnvil.class) {
-    };
-    public static final RecipeType<CustomRecipeStonecutter> STONECUTTER = new RecipeType<>(Type.STONECUTTER, CustomRecipeStonecutter.class) {
-    };
-    public static final RecipeType<CustomRecipeCauldron> CAULDRON = new RecipeType<>(Type.CAULDRON, CustomRecipeCauldron.class) {
-    };
-    public static final RecipeType<CustomRecipeGrindstone> GRINDSTONE = new RecipeType<>(Type.GRINDSTONE, CustomRecipeGrindstone.class) {
-    };
-    public static final RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, CustomRecipeBrewing.class) {
-    };
-    public static final RecipeType<CustomRecipeSmithing> SMITHING = new RecipeType<>(Type.SMITHING, CustomRecipeSmithing.class) {
-    };
+    public static final RecipeType<CustomRecipeAnvil> ANVIL = new RecipeType<>(Type.ANVIL, CustomRecipeAnvil.class);
+    public static final RecipeType<CustomRecipeStonecutter> STONECUTTER = new RecipeType<>(Type.STONECUTTER, CustomRecipeStonecutter.class);
+    public static final RecipeType<CustomRecipeCauldron> CAULDRON = new RecipeType<>(Type.CAULDRON, CustomRecipeCauldron.class);
+    public static final RecipeType<CustomRecipeGrindstone> GRINDSTONE = new RecipeType<>(Type.GRINDSTONE, CustomRecipeGrindstone.class);
+    public static final RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
+    public static final RecipeType<CustomRecipeSmithing> SMITHING = new RecipeType<>(Type.SMITHING, CustomRecipeSmithing.class);
     static final Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
+
+
     private final Type type;
 
     protected RecipeType(Type type, Class<C> clazz) {

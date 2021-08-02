@@ -29,16 +29,16 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private boolean mirrorVertical;
     private boolean mirrorRotation;
 
-    protected AbstractRecipeShaped(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
-        super(namespacedKey, node, gridSize);
+    protected AbstractRecipeShaped(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
+        super(namespacedKey, node, gridSize, settingsType);
         JsonNode mirrorNode = node.path("mirror");
         this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
         this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
 
-    protected AbstractRecipeShaped(int gridSize) {
-        super(gridSize);
+    protected AbstractRecipeShaped(int gridSize, S settings) {
+        super(gridSize, settings);
         this.mirrorHorizontal = true;
         this.mirrorVertical = false;
         this.mirrorRotation = false;

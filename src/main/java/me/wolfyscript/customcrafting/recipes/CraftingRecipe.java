@@ -17,14 +17,17 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings<S>> extends CustomRecipe<C> implements ICraftingRecipe {
@@ -37,20 +40,29 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     protected int requiredGridSize;
     protected int bookSquaredGrid;
 
-    private S settings;
+    private final S settings;
 
-    protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize) {
+    protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node);
         this.requiredGridSize = gridSize;
         this.bookSquaredGrid = requiredGridSize * requiredGridSize;
+        this.settings = Objects.requireNonNullElseGet(mapper.convertValue(node.path("settings"), new TypeReference<>() {
+        }), () -> {
+            try {
+                return settingsType.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                return null;
+            }
+        });
         setIngredients(Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue()))));
     }
 
-    protected CraftingRecipe(int gridSize) {
+    protected CraftingRecipe(int gridSize, S settings) {
         super();
         this.requiredGridSize = gridSize;
         this.bookSquaredGrid = requiredGridSize * requiredGridSize;
         this.ingredients = new HashMap<>();
+        this.settings = settings;
     }
 
     protected CraftingRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result result, Map<Character, Ingredient> ingredients, int requiredGridSize, S settings) {
@@ -82,10 +94,6 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     public S getSettings() {
         return settings;
-    }
-
-    public void setSettings(S settings) {
-        this.settings = settings;
     }
 
     /**

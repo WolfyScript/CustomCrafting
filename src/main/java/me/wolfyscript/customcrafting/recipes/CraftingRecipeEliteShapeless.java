@@ -7,11 +7,11 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<CraftingRecipeEliteShapeless, EliteRecipeSettings> {
 
     public CraftingRecipeEliteShapeless(NamespacedKey namespacedKey, JsonNode node) {
-        super(namespacedKey, node, 6);
+        super(namespacedKey, node, 6, EliteRecipeSettings.class);
     }
 
     public CraftingRecipeEliteShapeless() {
-        super(6);
+        super(6, new EliteRecipeSettings());
     }
 
     public CraftingRecipeEliteShapeless(CraftingRecipeEliteShapeless eliteCraftingRecipe) {
