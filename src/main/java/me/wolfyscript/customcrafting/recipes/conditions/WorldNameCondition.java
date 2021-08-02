@@ -2,24 +2,22 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WorldNameCondition extends Condition {
 
-    private final List<String> worldNames;
+    @JsonProperty("names")
+    private final Set<String> worldNames;
 
     public WorldNameCondition() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_name"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
-        this.worldNames = new ArrayList<>();
+        this.worldNames = new HashSet<>();
     }
 
     @Override
@@ -33,28 +31,11 @@ public class WorldNameCondition extends Condition {
         return false;
     }
 
-    @Override
-    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        gen.writeArrayFieldStart("names");
-        for (String s : worldNames) {
-            gen.writeString(s);
-        }
-        gen.writeEndArray();
-    }
-
-    @Override
-    public void readFromJson(JsonNode node) {
-        JsonNode array = node.get("names");
-        array.elements().forEachRemaining(element -> addWorldName(element.asText()));
-    }
-
     public void addWorldName(String worldName) {
-        if (!this.worldNames.contains(worldName)) {
-            this.worldNames.add(worldName);
-        }
+        this.worldNames.add(worldName);
     }
 
-    public List<String> getWorldNames() {
+    public Set<String> getWorldNames() {
         return worldNames;
     }
 

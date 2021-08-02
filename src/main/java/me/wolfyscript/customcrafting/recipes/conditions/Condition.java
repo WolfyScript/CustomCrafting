@@ -25,6 +25,7 @@ import java.util.List;
 public abstract class Condition implements Keyed {
 
     @JsonProperty("key")
+    @JsonAlias("id")
     private final NamespacedKey key;
 
     protected Conditions.Option option;

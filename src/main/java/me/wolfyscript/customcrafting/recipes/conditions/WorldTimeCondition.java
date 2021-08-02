@@ -2,16 +2,11 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class WorldTimeCondition extends Condition {
 
-    long time = 0;
+    private long time = 0;
 
     public WorldTimeCondition() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_time"));
@@ -31,16 +26,6 @@ public class WorldTimeCondition extends Condition {
             case HIGHER_LOWER -> currentTime < time || currentTime > time;
             default -> true;
         };
-    }
-
-    @Override
-    public void readFromJson(JsonNode node) {
-        this.time = node.get("time").asInt();
-    }
-
-    @Override
-    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        gen.writeNumberField("time", time);
     }
 
     public void setTime(long time) {

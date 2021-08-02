@@ -2,16 +2,14 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class ExperienceCondition extends Condition {
 
-    int expLevel = 0;
+    @JsonProperty("experience")
+    private int expLevel = 0;
 
     public ExperienceCondition() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience"));
@@ -36,20 +34,12 @@ public class ExperienceCondition extends Condition {
         return true;
     }
 
-    @Override
-    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        gen.writeNumberField("experience", expLevel);
-    }
-
-    @Override
-    public void readFromJson(JsonNode node) {
-        this.expLevel = node.get("experience").asInt();
-    }
-
+    @JsonIgnore
     public float getExpLevel() {
         return expLevel;
     }
 
+    @JsonIgnore
     public void setExpLevel(int expLevel) {
         this.expLevel = expLevel;
     }
