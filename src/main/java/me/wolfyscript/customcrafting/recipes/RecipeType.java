@@ -13,6 +13,8 @@ import java.util.Set;
 
 public class RecipeType<C extends ICustomRecipe<?>> {
 
+    static final Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
+
     //Crafting recipes
     public static final RecipeType<CraftingRecipeShaped> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, CraftingRecipeShaped.class);
     public static final RecipeType<CraftingRecipeShapeless> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, CraftingRecipeShapeless.class);
@@ -52,8 +54,6 @@ public class RecipeType<C extends ICustomRecipe<?>> {
     public static final RecipeType<CustomRecipeGrindstone> GRINDSTONE = new RecipeType<>(Type.GRINDSTONE, CustomRecipeGrindstone.class);
     public static final RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeType<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
     public static final RecipeType<CustomRecipeSmithing> SMITHING = new RecipeType<>(Type.SMITHING, CustomRecipeSmithing.class);
-    static final Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
-
 
     private final Type type;
 
