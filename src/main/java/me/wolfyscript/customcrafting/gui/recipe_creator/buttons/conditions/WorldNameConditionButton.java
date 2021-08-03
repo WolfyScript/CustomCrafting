@@ -18,12 +18,12 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
             GuiWindow<CCCache> window = guiHandler.getWindow();
             ICustomRecipe<?> recipeConfig = guiHandler.getCustomCache().getRecipe();
             var conditions = recipeConfig.getConditions();
-            if (event instanceof InventoryClickEvent){
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
+            if (event instanceof InventoryClickEvent clickEvent) {
+                if (clickEvent.getClick().isRightClick()) {
                     //Change Mode
                     conditions.getByType(WorldNameCondition.class).toggleOption();
                     recipeConfig.setConditions(conditions);
-                } else if (!((InventoryClickEvent) event).isShiftClick()) {
+                } else if (!clickEvent.isShiftClick()) {
                     //CONFIGURE ELITE WORKBENCHES
                     window.openChat("world_name", guiHandler, (guiHandler1, player1, s, args) -> {
                         if (!s.isEmpty()) {
@@ -43,7 +43,7 @@ public class WorldNameConditionButton extends ActionButton<CCCache> {
                         }
                         return true;
                     });
-                }else {
+                } else {
                     if (!conditions.getByType(WorldNameCondition.class).getWorldNames().isEmpty()) {
                         conditions.getByType(WorldNameCondition.class).getWorldNames().remove(conditions.getByType(WorldNameCondition.class).getWorldNames().size() - 1);
                         recipeConfig.setConditions(conditions);

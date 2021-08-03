@@ -5,19 +5,19 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorldNameCondition extends Condition {
 
     @JsonProperty("names")
-    private final Set<String> worldNames;
+    private final List<String> worldNames;
 
     public WorldNameCondition() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_name"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
-        this.worldNames = new HashSet<>();
+        this.worldNames = new ArrayList<>();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class WorldNameCondition extends Condition {
         this.worldNames.add(worldName);
     }
 
-    public Set<String> getWorldNames() {
+    public List<String> getWorldNames() {
         return worldNames;
     }
 

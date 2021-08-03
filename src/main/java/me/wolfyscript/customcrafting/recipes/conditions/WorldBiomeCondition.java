@@ -4,18 +4,18 @@ import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorldBiomeCondition extends Condition {
 
-    private final Set<String> biomes;
+    private final List<String> biomes;
 
     public WorldBiomeCondition() {
         super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_biome"));
         setOption(Conditions.Option.IGNORE);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
-        this.biomes = new HashSet<>();
+        this.biomes = new ArrayList<>();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class WorldBiomeCondition extends Condition {
         this.biomes.add(biome);
     }
 
-    public Set<String> getBiomes() {
+    public List<String> getBiomes() {
         return biomes;
     }
 

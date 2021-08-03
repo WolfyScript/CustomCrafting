@@ -1,41 +1,47 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonParser;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.node.ObjectNode;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@JsonSerialize(using = Conditions.Serialization.class)
-@JsonDeserialize(using = Conditions.Deserialization.class)
-public class Conditions extends HashMap<String, Condition> {
+public class Conditions {
+
+    @JsonIgnore
+    private final Map<NamespacedKey, Condition> valuesMap;
 
     //Conditions initialization
     public Conditions() {
-        addCondition(new PermissionCondition());
-        addCondition(new AdvancedWorkbenchCondition());
-        addCondition(new EliteWorkbenchCondition());
-        addCondition(new WorldTimeCondition());
-        addCondition(new WorldNameCondition());
-        addCondition(new WeatherCondition());
-        addCondition(new ExperienceCondition());
-        addCondition(new WorldBiomeCondition());
-        addCondition(new CraftDelayCondition());
-        addCondition(new CraftLimitCondition());
+        this.valuesMap = new HashMap<>();
+    }
+
+    @JsonCreator
+    private Conditions(JsonNode node) {
+        if (node.isArray()) {
+            //Required for backwards compatibility with previous configs.
+            this.valuesMap = new HashMap<>();
+            node.elements().forEachRemaining(element -> {
+                ((ObjectNode) element).put("key", String.valueOf(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, element.path("id").asText())));
+                var condition = JacksonUtil.getObjectMapper().convertValue(element, Condition.class);
+                valuesMap.put(condition.getNamespacedKey(), condition);
+            });
+        } else {
+            this.valuesMap = JacksonUtil.getObjectMapper().convertValue(node.path("values"), new TypeReference<Set<Condition>>() {
+            }).stream().collect(Collectors.toMap(Condition::getNamespacedKey, condition -> condition));
+        }
     }
 
     public boolean check(String id, ICustomRecipe<?> customRecipe, Data data) {
@@ -44,32 +50,44 @@ public class Conditions extends HashMap<String, Condition> {
     }
 
     public boolean checkConditions(ICustomRecipe<?> customRecipe, Data data) {
-        return values().stream().allMatch(condition -> condition.check(customRecipe, data));
+        return valuesMap.values().stream().allMatch(condition -> condition.check(customRecipe, data));
     }
 
+    @JsonIgnore
     public EliteWorkbenchCondition getEliteCraftingTableCondition() {
-        return (EliteWorkbenchCondition) get("elite_crafting_table");
+        return (EliteWorkbenchCondition) getByID("elite_crafting_table");
     }
 
+    public <C extends Condition> C getByType(Class<C> type) {
+        return valuesMap.values().stream().filter(type::isInstance).map(type::cast).findFirst().orElse(null);
+    }
+
+    public void setCondition(Condition condition) {
+        valuesMap.put(condition.getNamespacedKey(), condition);
+    }
+
+    public void removeCondition(Condition condition) {
+        valuesMap.remove(condition.getNamespacedKey());
+    }
+
+    public Collection<Condition> getValues() {
+        return valuesMap.values();
+    }
+
+    @Deprecated
     public Condition getByID(String id) {
-        return get(id);
+        return valuesMap.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, id));
     }
 
+    @Deprecated
     public <C extends Condition> C getByID(String id, Class<C> type) {
         var condition = getByID(id);
         return type.isInstance(condition) ? type.cast(condition) : null;
     }
 
-    public <C extends Condition> C getByType(Class<C> type) {
-        return values().stream().filter(type::isInstance).map(type::cast).findFirst().orElse(null);
-    }
-
-    public void updateCondition(Condition condition) {
-        put(condition.getId(), condition);
-    }
-
+    @Deprecated
     public void addCondition(Condition condition) {
-        put(condition.getId(), condition);
+        setCondition(condition);
     }
 
     public enum Option {
@@ -134,61 +152,6 @@ public class Conditions extends HashMap<String, Condition> {
 
         public void setInventoryView(@Nullable InventoryView inventoryView) {
             this.inventoryView = inventoryView;
-        }
-    }
-
-    public static class Serialization extends StdSerializer<Conditions> {
-
-        public Serialization() {
-            super(Conditions.class);
-        }
-
-        protected Serialization(Class<Conditions> t) {
-            super(t);
-        }
-
-        @Override
-        public void serialize(Conditions conditions, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-            gen.writeStartArray();
-            for(Condition condition : conditions.values()){
-                gen.writeStartObject();
-                gen.writeStringField("id", condition.getId());
-                gen.writeStringField("option", condition.getOption().toString());
-                condition.writeJson(gen);
-                gen.writeEndObject();
-            }
-            gen.writeEndArray();
-        }
-    }
-
-    public static class Deserialization extends StdDeserializer<Conditions> {
-
-        public Deserialization() {
-            super(Conditions.class);
-        }
-
-        protected Deserialization(Class<?> vc) {
-            super(vc);
-        }
-
-        @Override
-        public Conditions deserialize(JsonParser p, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = p.readValueAsTree();
-            var conditions = new Conditions();
-            if (node.isArray()) {
-                node.elements().forEachRemaining(element -> {
-                    if (element.isObject()) {
-                        String id = element.get("id").asText();
-                        var option = Conditions.Option.valueOf(element.get("option").asText());
-                        var condition = conditions.getByID(id);
-                        if (condition != null) {
-                            condition.setOption(option);
-                            condition.readFromJson(element);
-                        }
-                    }
-                });
-            }
-            return conditions;
         }
     }
 

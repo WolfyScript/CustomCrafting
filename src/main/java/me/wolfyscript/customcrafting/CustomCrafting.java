@@ -18,6 +18,7 @@ import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
+import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.utils.*;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
@@ -142,8 +143,21 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
         Registry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
 
+        getLogger().info("Registering Recipe Conditions");
+        Registry.RECIPE_CONDITIONS.register(new PermissionCondition());
+        Registry.RECIPE_CONDITIONS.register(new AdvancedWorkbenchCondition());
+        Registry.RECIPE_CONDITIONS.register(new EliteWorkbenchCondition());
+        Registry.RECIPE_CONDITIONS.register(new WorldTimeCondition());
+        Registry.RECIPE_CONDITIONS.register(new WorldNameCondition());
+        Registry.RECIPE_CONDITIONS.register(new WeatherCondition());
+        Registry.RECIPE_CONDITIONS.register(new ExperienceCondition());
+        Registry.RECIPE_CONDITIONS.register(new WorldBiomeCondition());
+        Registry.RECIPE_CONDITIONS.register(new CraftDelayCondition());
+        Registry.RECIPE_CONDITIONS.register(new CraftLimitCondition());
+
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
+        KeyedTypeIdResolver.registerTypeRegistry(Condition.class, Registry.RECIPE_CONDITIONS);
     }
 
     @Override

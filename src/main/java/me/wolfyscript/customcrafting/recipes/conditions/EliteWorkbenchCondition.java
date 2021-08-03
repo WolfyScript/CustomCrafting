@@ -9,6 +9,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAlias;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 public class EliteWorkbenchCondition extends Condition {
 
     @JsonAlias({"elite_crafting_tables", "elite_workbenches"})
+    @JsonProperty
     private final List<NamespacedKey> eliteWorkbenches;
 
     public EliteWorkbenchCondition() {
