@@ -41,6 +41,7 @@ public class CCCache extends CustomCache {
 
     private final IngredientData ingredientData = new IngredientData();
     private final TagSettingsCache tagSettingsCache = new TagSettingsCache();
+    private final ConditionsCache conditionsCache = new ConditionsCache();
 
     private ApplyItem applyItem;
     private ApplyPotionEffect applyPotionEffect;
@@ -119,6 +120,10 @@ public class CCCache extends CustomCache {
 
     public TagSettingsCache getTagSettingsCache() {
         return tagSettingsCache;
+    }
+
+    public ConditionsCache getConditionsCache() {
+        return conditionsCache;
     }
 
     public void setApplyPotionEffect(ApplyPotionEffect applyPotionEffect) {

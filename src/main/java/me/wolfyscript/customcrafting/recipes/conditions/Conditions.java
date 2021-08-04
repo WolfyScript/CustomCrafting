@@ -76,6 +76,10 @@ public class Conditions {
         valuesMap.remove(condition.getNamespacedKey());
     }
 
+    public void removeCondition(NamespacedKey key) {
+        valuesMap.remove(key);
+    }
+
     public Collection<Condition> getValues() {
         return valuesMap.values();
     }

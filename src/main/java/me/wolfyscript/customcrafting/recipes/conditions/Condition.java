@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.RecipeCreator;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -32,7 +32,7 @@ public abstract class Condition implements Keyed {
     @JsonIgnore
     private List<Conditions.Option> availableOptions;
     @JsonIgnore
-    private GUIComponent guiComponent;
+    private AbstractGUIComponent guiComponent;
 
     protected Condition(NamespacedKey key) {
         this.key = key;
@@ -48,6 +48,11 @@ public abstract class Condition implements Keyed {
 
     public List<Conditions.Option> getAvailableOptions() {
         return availableOptions;
+    }
+
+    @JsonIgnore
+    public AbstractGUIComponent getGuiComponent() {
+        return guiComponent;
     }
 
     protected void setAvailableOptions(Conditions.Option... options) {
@@ -83,19 +88,41 @@ public abstract class Condition implements Keyed {
         return true;
     }
 
-    public abstract class GUIComponent {
+    protected void setGuiComponent(AbstractGUIComponent component) {
+        this.guiComponent = component;
+    }
 
-        private Material icon;
-        private String name;
-        private List<String> description;
+    public class AbstractGUIComponent {
 
-        public abstract void init(RecipeCreator creator, WolfyUtilities api);
+        private final Material icon;
+        private final String name;
+        private final List<String> description;
 
-        public void test() {
-            option.getDisplayString();
+        protected AbstractGUIComponent(Material icon, String name, List<String> description) {
+            this.icon = icon;
+            this.name = name;
+            this.description = description;
         }
 
-        public abstract void renderMenu(GuiUpdate<CCCache> update, CCCache cache, ICustomRecipe<?> recipe);
+        public void init(ConditionsMenu menu, WolfyUtilities api) {
 
+        }
+
+        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, ICustomRecipe<?> recipe) {
+
+
+        }
+
+        public Material getIcon() {
+            return icon;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public List<String> getDescription() {
+            return description;
+        }
     }
 }

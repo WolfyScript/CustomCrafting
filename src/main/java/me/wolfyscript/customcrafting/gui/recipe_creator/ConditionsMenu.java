@@ -24,9 +24,13 @@ import java.util.List;
 public class ConditionsMenu extends CCWindow {
 
     private static final String BACK = "back";
+    private static final String PAGE_UP = "page_up";
+    private static final String PAGE_DOWN = "page_down";
+    private static final String ADD_CONDITION = "add_condition";
+    private static final String REMOVE_CONDITION = "remove_condition";
 
     public ConditionsMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "conditions", 45, customCrafting);
+        super(cluster, "conditions", 54, customCrafting);
     }
 
     @Override
@@ -35,6 +39,19 @@ public class ConditionsMenu extends CCWindow {
             guiHandler.openPreviousWindow();
             return true;
         })));
+        registerButton(new ActionButton<>(ADD_CONDITION, new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178"), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openWindow(ConditionsAddMenu.KEY);
+            return true;
+        })));
+        registerButton(new ActionButton<>(PAGE_UP, new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("3f46abad924b22372bc966a6d517d2f1b8b57fdd262b4e04f48352e683fff92"), (cache, guiHandler, player, inventory, slot, event) -> {
+
+            return true;
+        })));
+        registerButton(new ActionButton<>(PAGE_DOWN, new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("be9ae7a4be65fcbaee65181389a2f7d47e2e326db59ea3eb789a92c85ea46"), (cache, guiHandler, player, inventory, slot, event) -> {
+
+            return true;
+        })));
+
 
         registerButton(new ActionButton<>("conditions.world_time", new ButtonState<>("world_time", Material.CLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
             var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
@@ -205,13 +222,46 @@ public class ConditionsMenu extends CCWindow {
             hashMap.put("%MODE%", recipeConfig.getConditions().getByType(CraftLimitCondition.class).getOption().getDisplayString(api));
             return itemStack;
         })));
+
+        registerButton(new ActionButton<>("toggle_mode", Material.CLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
+            var condition = cache.getRecipe().getConditions().getByKey(cache.getConditionsCache().getSelectedCondition());
+            if (condition != null) {
+                condition.toggleOption();
+            }
+            return true;
+        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
+            var condition = cache.getRecipe().getConditions().getByKey(cache.getConditionsCache().getSelectedCondition());
+            if (condition != null) {
+                hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
+            }
+            return itemStack;
+        }));
+
+        registerButton(new ActionButton<>(REMOVE_CONDITION, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+            var condition = cache.getConditionsCache().getSelectedCondition();
+            if (condition != null) {
+                cache.getRecipe().getConditions().removeCondition(condition);
+            }
+            return true;
+        }));
+
     }
 
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> event) {
         super.onUpdateAsync(event);
         CCCache cache = event.getGuiHandler().getCustomCache();
-        event.setButton(0, BACK);
+        event.setButton(45, BACK);
+        event.setButton(7, PAGE_UP);
+        event.setButton(16, PAGE_DOWN);
+        event.setButton(17, ADD_CONDITION);
+
+        var selectedCondition = cache.getRecipe().getConditions().getByKey(cache.getConditionsCache().getSelectedCondition());
+        if (selectedCondition != null) {
+            selectedCondition.getGuiComponent().renderMenu(event, cache, cache.getRecipe());
+            event.setButton(53, REMOVE_CONDITION);
+        }
+
         List<String> values = new ArrayList<>();
         values.add("conditions.world_time");
         values.add("conditions.world_name");
@@ -223,7 +273,7 @@ public class ConditionsMenu extends CCWindow {
             case BREWING_STAND, GRINDSTONE -> values.addAll(Arrays.asList("conditions.permission", "conditions.player_experience"));
             default -> {/*No special conditions!*/}
         }
-        for (int i = 0, item = 9; i < values.size() && item < 45; i++, item++) {
+        for (int i = 0, item = 18; i < values.size() && item < 45; i++, item++) {
             event.setButton(item, values.get(i));
         }
     }
