@@ -6,11 +6,12 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class WorldTimeCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_time");
+
     private long time = 0;
 
     public WorldTimeCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_time"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
     }
 

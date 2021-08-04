@@ -36,7 +36,9 @@ public class Conditions {
             node.elements().forEachRemaining(element -> {
                 ((ObjectNode) element).put("key", String.valueOf(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, element.path("id").asText())));
                 var condition = JacksonUtil.getObjectMapper().convertValue(element, Condition.class);
-                valuesMap.put(condition.getNamespacedKey(), condition);
+                if (!condition.getOption().equals(Option.IGNORE)) {
+                    valuesMap.put(condition.getNamespacedKey(), condition);
+                }
             });
         } else {
             this.valuesMap = JacksonUtil.getObjectMapper().convertValue(node.path("values"), new TypeReference<Set<Condition>>() {
@@ -60,6 +62,10 @@ public class Conditions {
 
     public <C extends Condition> C getByType(Class<C> type) {
         return valuesMap.values().stream().filter(type::isInstance).map(type::cast).findFirst().orElse(null);
+    }
+
+    public Condition getByKey(NamespacedKey key) {
+        return valuesMap.get(key);
     }
 
     public void setCondition(Condition condition) {
@@ -91,7 +97,13 @@ public class Conditions {
     }
 
     public enum Option {
-        EXACT, IGNORE, HIGHER, HIGHER_EXACT, LOWER, LOWER_EXACT, HIGHER_LOWER;
+        EXACT,
+        @Deprecated IGNORE,
+        HIGHER,
+        HIGHER_EXACT,
+        LOWER,
+        LOWER_EXACT,
+        HIGHER_LOWER;
 
         private final String displayString;
 

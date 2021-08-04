@@ -20,12 +20,12 @@ public class EliteWorkbenchConditionButton extends ActionButton<CCCache> {
             GuiWindow<CCCache> window = inventory.getWindow();
             ICustomRecipe<?> recipeConfig = cache.getRecipe();
             var conditions = recipeConfig.getConditions();
-            if(event instanceof InventoryClickEvent){
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
+            if (event instanceof InventoryClickEvent clickEvent) {
+                if (clickEvent.getClick().isRightClick()) {
                     //Change Mode
                     conditions.getEliteCraftingTableCondition().toggleOption();
                     recipeConfig.setConditions(conditions);
-                } else if (!((InventoryClickEvent) event).isShiftClick()) {
+                } else if (!clickEvent.isShiftClick()) {
                     //CONFIGURE ELITE WORKBENCHES
                     window.openChat("elite_workbench", guiHandler, (guiHandler1, player1, s, args) -> {
                         if (args.length > 1) {

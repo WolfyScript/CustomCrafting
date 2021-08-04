@@ -9,11 +9,12 @@ import org.bukkit.entity.Player;
 
 public class CraftLimitCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_limit");
+
     private long limit = 0;
 
     public CraftLimitCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_limit"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.LOWER_EXACT, Conditions.Option.LOWER);
     }
 
@@ -25,7 +26,6 @@ public class CraftLimitCondition extends Condition {
             if (playerStore != null) {
                 long amount = playerStore.getRecipeCrafts(recipe.getNamespacedKey());
                 return switch (option) {
-                    case IGNORE -> true;
                     case LOWER_EXACT -> amount <= limit;
                     case LOWER -> amount < limit;
                     default -> false;

@@ -8,12 +8,13 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class ExperienceCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience");
+
     @JsonProperty("experience")
     private int expLevel = 0;
 
     public ExperienceCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
     }
 

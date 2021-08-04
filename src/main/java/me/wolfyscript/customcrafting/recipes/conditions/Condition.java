@@ -1,6 +1,10 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.RecipeCreator;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
@@ -8,7 +12,7 @@ import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,12 +27,8 @@ public abstract class Condition implements Keyed {
 
     @JsonProperty("key")
     private final NamespacedKey key;
-    protected Conditions.Option option;
+    protected Conditions.Option option = Conditions.Option.EXACT;
 
-    @JsonIgnore
-    private ItemStack iconEnabled;
-    @JsonIgnore
-    private ItemStack iconDisabled;
     @JsonIgnore
     private List<Conditions.Option> availableOptions;
 

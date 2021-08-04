@@ -8,11 +8,12 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class PermissionCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "permission");
+
     private String permission = "customcrafting.craft.%namespace%.%recipe_name%";
 
     public PermissionCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "permission"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
     }
 
@@ -29,7 +30,6 @@ public class PermissionCondition extends Condition {
         if (recipe instanceof CustomRecipeCooking && data.getPlayer() == null) {
             return true;
         }
-        if (option.equals(Conditions.Option.IGNORE)) return true;
         if (data.getPlayer() == null) return false;
         return CustomCrafting.inst().getApi().getPermissions().hasPermission(data.getPlayer(), permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey()));
     }

@@ -9,20 +9,18 @@ import java.util.List;
 
 public class WorldBiomeCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_biome");
+
     private final List<String> biomes;
 
     public WorldBiomeCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_biome"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
         this.biomes = new ArrayList<>();
     }
 
     @Override
     public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
-        if (option.equals(Conditions.Option.IGNORE)) {
-            return true;
-        }
         if (data.getBlock() != null) {
             return biomes.contains(data.getBlock().getBiome().toString());
         }

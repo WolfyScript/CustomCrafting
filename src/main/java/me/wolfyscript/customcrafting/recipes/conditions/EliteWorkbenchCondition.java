@@ -17,22 +17,20 @@ import java.util.List;
 
 public class EliteWorkbenchCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
+
     @JsonAlias({"elite_crafting_tables", "elite_workbenches"})
     @JsonProperty
     private final List<NamespacedKey> eliteWorkbenches;
 
     public EliteWorkbenchCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
         this.eliteWorkbenches = new ArrayList<>();
     }
 
     @Override
     public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
-        if (option.equals(Conditions.Option.IGNORE)) {
-            return true;
-        }
         if (RecipeType.ELITE_WORKBENCH.isInstance(recipe)) {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());

@@ -10,21 +10,19 @@ import java.util.List;
 
 public class WorldNameCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_name");
+
     @JsonProperty("names")
     private final List<String> worldNames;
 
     public WorldNameCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_name"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
         this.worldNames = new ArrayList<>();
     }
 
     @Override
     public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
-        if (option.equals(Conditions.Option.IGNORE)) {
-            return true;
-        }
         if (data.getBlock() != null) {
             return worldNames.contains(data.getBlock().getLocation().getWorld().getName());
         }

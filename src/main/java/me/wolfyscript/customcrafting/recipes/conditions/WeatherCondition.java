@@ -11,11 +11,12 @@ import java.util.Locale;
 
 public class WeatherCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "weather");
+
     private Weather weather;
 
     public WeatherCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "weather"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
         this.weather = Weather.NONE;
     }
@@ -36,9 +37,6 @@ public class WeatherCondition extends Condition {
 
     @Override
     public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
-        if (option.equals(Conditions.Option.IGNORE)) {
-            return true;
-        }
         Block block = data.getBlock();
         if (block != null) {
             World world = block.getWorld();

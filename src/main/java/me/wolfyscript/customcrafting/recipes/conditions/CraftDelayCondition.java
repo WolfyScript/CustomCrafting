@@ -1,7 +1,11 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.recipe_creator.recipe_creators.RecipeCreator;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -11,14 +15,15 @@ import java.util.UUID;
 
 public class CraftDelayCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_delay");
+
     @JsonIgnore
     private final HashMap<UUID, Long> playerCraftTimeMap = new HashMap<>();
 
     private long delay = 0;
 
     public CraftDelayCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_delay"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
     }
 
@@ -37,11 +42,7 @@ public class CraftDelayCondition extends Condition {
     }
 
     private boolean checkDelay(long timeSinceLastCraft) {
-        return switch (option) {
-            case IGNORE -> true;
-            case EXACT -> timeSinceLastCraft >= delay;
-            default -> false;
-        };
+        return timeSinceLastCraft >= delay;
     }
 
     @JsonIgnore
@@ -55,5 +56,18 @@ public class CraftDelayCondition extends Condition {
 
     public void setDelay(long delay) {
         this.delay = delay;
+    }
+
+    public class GUIComponent extends Condition.GUIComponent {
+
+        @Override
+        public void init(RecipeCreator creator, WolfyUtilities api) {
+
+        }
+
+        @Override
+        public void renderMenu(GuiUpdate update, CCCache cache, ICustomRecipe recipe) {
+
+        }
     }
 }

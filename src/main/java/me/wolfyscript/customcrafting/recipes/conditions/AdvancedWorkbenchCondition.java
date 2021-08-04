@@ -8,9 +8,10 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class AdvancedWorkbenchCondition extends Condition {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_workbench");
+
     public AdvancedWorkbenchCondition() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_workbench"));
-        setOption(Conditions.Option.IGNORE);
+        super(KEY);
         setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
     }
 
