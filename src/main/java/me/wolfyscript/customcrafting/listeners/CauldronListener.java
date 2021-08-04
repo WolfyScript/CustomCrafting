@@ -120,7 +120,8 @@ public class CauldronListener implements Listener {
                                     Location loc = entry.getKey();
                                     List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).toList();
                                     if (!items.isEmpty()) {
-                                        int level = Cauldrons.getLevel(loc.getBlock());
+                                        var cauldronBlock = loc.getBlock();
+                                        int level = Cauldrons.getLevel(cauldronBlock);
                                         List<CauldronRecipe> recipes = Registry.RECIPES.get(Types.CAULDRON);
                                         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
                                         for (CauldronRecipe recipe : recipes) {
@@ -129,7 +130,7 @@ public class CauldronListener implements Listener {
                                                     List<Item> validItems = recipe.checkRecipe(items);
                                                     if (!validItems.isEmpty()) {
                                                         //Do something with the items! e.g. consume!
-                                                        var cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player);
+                                                        var cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player, cauldronBlock);
                                                         Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
                                                         if (!cauldronPreCookEvent.isCancelled()) {
                                                             synchronized (cauldrons.getCauldrons()) {
@@ -138,7 +139,7 @@ public class CauldronListener implements Listener {
                                                             for (int i = 0; i < recipe.getIngredient().size() && i < validItems.size(); i++) {
                                                                 var itemEntity = validItems.get(i);
                                                                 var customItem = recipe.getIngredient().getChoices().get(i);
-                                                                customItem.consumeItem(itemEntity.getItemStack(), customItem.getAmount(), itemEntity.getLocation().add(0.0, 0.5, 0.0));
+                                                                customItem.remove(itemEntity.getItemStack(), customItem.getAmount(), itemEntity.getLocation().add(0.0, 0.5, 0.0));
                                                             }
                                                         }
                                                         break;
