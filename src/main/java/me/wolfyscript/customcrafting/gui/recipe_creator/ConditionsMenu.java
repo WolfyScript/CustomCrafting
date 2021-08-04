@@ -38,10 +38,15 @@ public class ConditionsMenu extends CCWindow {
 
         registerButton(new ActionButton<>("conditions.world_time", new ButtonState<>("world_time", Material.CLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
             var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
+            if (event instanceof InventoryClickEvent clickEvent) {
+                if (clickEvent.getClick().isRightClick()) {
                     //Change Mode
-                    conditions.getByType(WorldTimeCondition.class).toggleOption();
+                    Condition condition = conditions.getByType(WorldTimeCondition.class);
+                    if (condition == null) {
+                        conditions.setCondition(new WorldTimeCondition());
+                    } else {
+                        conditions.removeCondition(condition);
+                    }
                 } else {
                     //Change Value
                     openChat("world_time", guiHandler, (guiHandler1, player1, s, strings) -> {

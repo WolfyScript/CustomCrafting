@@ -31,6 +31,8 @@ public abstract class Condition implements Keyed {
 
     @JsonIgnore
     private List<Conditions.Option> availableOptions;
+    @JsonIgnore
+    private GUIComponent guiComponent;
 
     protected Condition(NamespacedKey key) {
         this.key = key;
@@ -77,24 +79,23 @@ public abstract class Condition implements Keyed {
         return key.toString();
     }
 
-    public ItemStack getIconEnabled() {
-        return iconEnabled;
+    public boolean isApplicable(ICustomRecipe<?> recipe) {
+        return true;
     }
 
-    protected void setIconEnabled(ItemStack iconEnabled) {
-        this.iconEnabled = iconEnabled;
-    }
+    public abstract class GUIComponent {
 
-    public ItemStack getIconDisabled() {
-        return iconDisabled;
-    }
+        private Material icon;
+        private String name;
+        private List<String> description;
 
-    protected void setIconDisabled(ItemStack iconDisabled) {
-        this.iconDisabled = iconDisabled;
-    }
+        public abstract void init(RecipeCreator creator, WolfyUtilities api);
 
-    protected void setIcons(ItemStack iconEnabled, ItemStack iconDisabled) {
-        this.iconEnabled = iconEnabled;
-        this.iconDisabled = iconDisabled;
+        public void test() {
+            option.getDisplayString();
+        }
+
+        public abstract void renderMenu(GuiUpdate<CCCache> update, CCCache cache, ICustomRecipe<?> recipe);
+
     }
 }
