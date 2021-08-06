@@ -43,7 +43,7 @@ public class AdvancedWorkbenchCondition extends Condition<AdvancedWorkbenchCondi
     public static class GUIComponent extends IconGUIComponent<AdvancedWorkbenchCondition> {
 
         public GUIComponent() {
-            super(Material.CRAFTING_TABLE, "Advanced Crafting Table", List.of());
+            super(Material.CRAFTING_TABLE, "$inventories.recipe_creator.conditions.items.advanced_workbench.name$", List.of("$inventories.recipe_creator.conditions.items.advanced_workbench.description$"));
         }
     }
 }

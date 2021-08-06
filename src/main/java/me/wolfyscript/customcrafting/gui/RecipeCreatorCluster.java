@@ -90,6 +90,7 @@ public class RecipeCreatorCluster extends CCCluster {
         registerGuiWindow(new SmithingCreator(this, customCrafting));
         //Other Menus
         registerGuiWindow(new ConditionsMenu(this, customCrafting));
+        registerGuiWindow(new ConditionsAddMenu(this, customCrafting));
         registerGuiWindow(new ResultMenu(this, customCrafting));
         registerGuiWindow(new IngredientMenu(this, customCrafting));
         //Tags

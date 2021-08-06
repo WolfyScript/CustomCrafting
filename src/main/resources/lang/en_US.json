@@ -1875,6 +1875,35 @@
           "lower_exact": "&e<="
         },
         "items": {
+          "select": {
+            "name": "&6&l%name%",
+            "lore": [
+              "%description%",
+              "",
+              "&8[&aClick&8] &7Open Settings"
+            ]
+          },
+          "add": {
+            "name": "&7&lAdd Condition",
+            "lore": [
+              "",
+              "&8[&aClick&8] &7Open selection menu"
+            ]
+          },
+          "remove": {
+            "name": "&c&lRemove",
+            "lore": [
+              "&eRemoves this selected",
+              "&eCondition from the recipe.",
+              "&8[&aClick&8] &7Remove Condition"
+            ]
+          },
+          "page_up": {
+            "name": "&7&lUp"
+          },
+          "page_down": {
+            "name": "&7&lDown"
+          },
           "world_time": {
             "name": "&7- World Time - ",
             "lore": [
@@ -1928,19 +1957,15 @@
               "storm_thunder": "&eRain/Snow &7+ &eThunder",
               "none": "&eSunshine"
             },
-            "name": "&7- World Weather -",
-            "lore": [
-              "&7Weather:&e %VALUE%",
-              "&7Mode:&e %MODE%",
-              "&8[&aRight Click&8] &7toggle Mode",
-              "&8[&aLeft Click&8] &7toggle Weather"
+            "name": "World Weather",
+            "description": [
             ]
           },
           "advanced_workbench": {
-            "name": "&7- Advanced Workbench -",
-            "lore": [
-              "&7Mode:&e %MODE%",
-              "&8[&aLeft Click&8] &7toggle on/off"
+            "name": "Advanced Crafting Table",
+            "description": [
+              "&eEnable recipe to only work in the ",
+              "&eAdvanced Crafting Table."
             ]
           },
           "elite_workbench": {
@@ -1999,6 +2024,19 @@
           "already_existing": "&cYou already added this item!",
           "craft_delay": "&eType in the delay in milliseconds",
           "craft_limit": "&eType in the limit (How many times the recipe can be crafted! Shift-Click = 1 use)"
+        }
+      },
+      "conditions_add": {
+        "gui_name": "&8&lAdd Categories",
+        "items": {
+          "icon": {
+            "name": "&6&l%name%",
+            "lore": [
+              "%description%",
+              "",
+              "&8[&aClick&8] &eAdd to recipe"
+            ]
+          }
         }
       },
       "workbench": {

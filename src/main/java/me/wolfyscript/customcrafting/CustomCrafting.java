@@ -32,7 +32,6 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.Placehold
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
@@ -158,8 +157,7 @@ public class CustomCrafting extends JavaPlugin {
 
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
-        KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) new TypeReference<Condition<?>>() {
-        }.getType(), Registry.RECIPE_CONDITIONS);
+        KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, Registry.RECIPE_CONDITIONS);
     }
 
     @Override

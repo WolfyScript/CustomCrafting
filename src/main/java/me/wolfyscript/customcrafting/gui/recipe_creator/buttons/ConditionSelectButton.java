@@ -5,11 +5,11 @@ import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 
-public class ConditionAddButton extends ActionButton<CCCache> {
+public class ConditionSelectButton extends ActionButton<CCCache> {
 
-    public ConditionAddButton(Condition<?> condition) {
-        super("icon_" + condition.getNamespacedKey().toString("_"), new ButtonState<>("icon", condition.getGuiComponent().getIcon(), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipe().getConditions().setCondition(condition);
+    public ConditionSelectButton(Condition<?> condition) {
+        super("icon_" + condition.getNamespacedKey().toString("_"), new ButtonState<>("select", condition.getGuiComponent().getIcon(), (cache, guiHandler, player, inventory, slot, event) -> {
+            cache.getConditionsCache().setSelectedCondition(condition.getNamespacedKey());
             return true;
         }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             var langAPI = guiHandler.getApi().getLanguageAPI();

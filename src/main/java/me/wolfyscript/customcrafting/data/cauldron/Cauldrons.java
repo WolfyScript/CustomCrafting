@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class Cauldrons {
 
@@ -211,7 +212,7 @@ public class Cauldrons {
                 for (Map.Entry<String, List<String>> entry : loadMap.entrySet()) {
                     var location = stringToLocation(entry.getKey());
                     if (location != null) {
-                        this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(Cauldron::fromString).filter(Objects::nonNull).toList());
+                        this.cauldrons.put(location, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().map(Cauldron::fromString).filter(Objects::nonNull).collect(Collectors.toList()));
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
