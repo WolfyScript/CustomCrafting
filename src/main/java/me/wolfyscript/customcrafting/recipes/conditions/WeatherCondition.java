@@ -3,13 +3,16 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import java.util.List;
 import java.util.Locale;
 
-public class WeatherCondition extends Condition {
+public class WeatherCondition extends Condition<WeatherCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "weather");
 
@@ -61,6 +64,25 @@ public class WeatherCondition extends Condition {
 
         public String getDisplay(WolfyUtilities api) {
             return api.getLanguageAPI().replaceKeys(display);
+        }
+    }
+
+    public static class GUIComponent extends FunctionalGUIComponent<WeatherCondition> {
+
+        public GUIComponent() {
+            super(Material.WATER_BUCKET, "Weather", List.of(),
+                    (menu, api) -> {
+                        menu.registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                            cache.getRecipe().getConditions().getByType(WeatherCondition.class).toggleWeather();
+                            return true;
+                        }, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
+                            return itemStack;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+
+                    });
         }
     }
 }

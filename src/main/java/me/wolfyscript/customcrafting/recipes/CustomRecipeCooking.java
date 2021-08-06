@@ -5,7 +5,6 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
@@ -106,7 +105,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         this.exp = exp;
     }
 
-    protected RecipeChoice getRecipeChoice(){
+    protected RecipeChoice getRecipeChoice() {
         return isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getChoices().parallelStream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().parallelStream().map(i -> i.create().getType()).toList());
     }
 
@@ -120,14 +119,12 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        List<Condition> conditions = getConditions().getValues().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).toList();
+        List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getId().equals("permission")).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
-        for (Condition condition : conditions) {
-            if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
-                event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
-                slot += 2;
-            }
+        for (Condition<?> condition : conditions) {
+            event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
+            slot += 2;
         }
         event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
         event.setButton(20, data.getLightBackground());

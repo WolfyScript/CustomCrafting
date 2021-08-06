@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class Conditions {
 
     @JsonIgnore
-    private final Map<NamespacedKey, Condition> valuesMap;
+    private final Map<NamespacedKey, Condition<?>> valuesMap;
 
     //Conditions initialization
     public Conditions() {
@@ -41,7 +41,7 @@ public class Conditions {
                 }
             });
         } else {
-            this.valuesMap = JacksonUtil.getObjectMapper().convertValue(node.path("values"), new TypeReference<Set<Condition>>() {
+            this.valuesMap = JacksonUtil.getObjectMapper().convertValue(node.path("values"), new TypeReference<Set<Condition<?>>>() {
             }).stream().collect(Collectors.toMap(Condition::getNamespacedKey, condition -> condition));
         }
     }
@@ -60,19 +60,19 @@ public class Conditions {
         return (EliteWorkbenchCondition) getByID("elite_crafting_table");
     }
 
-    public <C extends Condition> C getByType(Class<C> type) {
+    public <C extends Condition<C>> C getByType(Class<C> type) {
         return valuesMap.values().stream().filter(type::isInstance).map(type::cast).findFirst().orElse(null);
     }
 
-    public Condition getByKey(NamespacedKey key) {
+    public Condition<?> getByKey(NamespacedKey key) {
         return valuesMap.get(key);
     }
 
-    public void setCondition(Condition condition) {
+    public void setCondition(Condition<?> condition) {
         valuesMap.put(condition.getNamespacedKey(), condition);
     }
 
-    public void removeCondition(Condition condition) {
+    public void removeCondition(Condition<?> condition) {
         valuesMap.remove(condition.getNamespacedKey());
     }
 
@@ -80,24 +80,13 @@ public class Conditions {
         valuesMap.remove(key);
     }
 
-    public Collection<Condition> getValues() {
+    public Collection<Condition<?>> getValues() {
         return valuesMap.values();
     }
 
     @Deprecated
-    public Condition getByID(String id) {
+    public Condition<?> getByID(String id) {
         return valuesMap.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, id));
-    }
-
-    @Deprecated
-    public <C extends Condition> C getByID(String id, Class<C> type) {
-        var condition = getByID(id);
-        return type.isInstance(condition) ? type.cast(condition) : null;
-    }
-
-    @Deprecated
-    public void addCondition(Condition condition) {
-        setCondition(condition);
     }
 
     public enum Option {

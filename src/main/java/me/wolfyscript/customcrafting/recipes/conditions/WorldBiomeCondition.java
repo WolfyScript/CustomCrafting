@@ -2,12 +2,18 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
+import org.bukkit.block.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class WorldBiomeCondition extends Condition {
+public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_biome");
 
@@ -43,5 +49,61 @@ public class WorldBiomeCondition extends Condition {
             stringBuilder.append(eliteWorkbench).append(",");
         }
         return stringBuilder.toString();
+    }
+
+    public static class GUIComponent extends FunctionalGUIComponent<WorldBiomeCondition> {
+
+        private static final String PARENT_LANG = "conditions.world_biome";
+        private static final String ADD = PARENT_LANG + ".add";
+        private static final String LIST = PARENT_LANG + ".list";
+        private static final String REMOVE = PARENT_LANG + ".remove";
+
+        public GUIComponent() {
+            super(Material.SAND, "Biome", List.of(),
+                    (menu, api) -> {
+                        menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
+                            var conditions = cache.getRecipe().getConditions();
+                            if (!conditions.getByType(WorldBiomeCondition.class).getBiomes().isEmpty()) {
+                                conditions.getByType(WorldBiomeCondition.class).getBiomes().remove(conditions.getByType(WorldBiomeCondition.class).getBiomes().size() - 1);
+                            }
+                            return true;
+                        }));
+                        menu.registerButton(new DummyButton<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                            WorldBiomeCondition condition = guiHandler.getCustomCache().getRecipe().getConditions().getByType(WorldBiomeCondition.class);
+                            hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
+                            for (int i = 0; i < 4; i++) {
+                                if (i < condition.getBiomes().size()) {
+                                    hashMap.put("%var" + i + "%", condition.getBiomes().get(i));
+                                } else {
+                                    hashMap.put("%var" + i + "%", "...");
+                                }
+                            }
+                            return itemStack;
+                        }));
+                        menu.registerButton(new ChatInputButton<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, strings) -> {
+                            if (!s.isEmpty()) {
+                                try {
+                                    var biome = Biome.valueOf(s.toUpperCase(Locale.ROOT));
+                                    var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+                                    WorldBiomeCondition condition = conditions.getByType(WorldBiomeCondition.class);
+                                    if (condition.getBiomes().contains(biome.toString())) {
+                                        menu.sendMessage(player, "already_existing");
+                                        return true;
+                                    }
+                                    conditions.getByType(WorldBiomeCondition.class).addBiome(biome.toString());
+                                    return false;
+                                } catch (IllegalArgumentException ex) {
+                                    menu.sendMessage(player, "invalid_biome");
+                                }
+                            }
+                            return true;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+                        update.setButton(29, ADD);
+                        update.setButton(31, LIST);
+                        update.setButton(33, REMOVE);
+                    });
+        }
     }
 }

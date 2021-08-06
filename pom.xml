@@ -18,7 +18,7 @@
     <repositories>
         <repository>
             <id>wolfyscript-private</id>
-            <url>https://maven.wolfyscript.com/repository/private/</url>
+            <url>https://maven.wolfyscript.com/repository/public/</url>
         </repository>
     </repositories>
 
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.wolfyscript.wolfyutilities</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.7.1.0</version>
+            <version>1.7.2.1</version>
             <scope>provided</scope>
         </dependency>
         <!--

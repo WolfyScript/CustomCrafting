@@ -152,14 +152,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
                     event.setButton(i, glass);
                 }
             }
-            List<Condition> conditions = getConditions().getValues().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("advanced_workbench") && !condition.getId().equals("permission")).toList();
+            List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getId().equals("advanced_workbench") && !condition.getId().equals("permission")).toList();
             int startSlot = 9 / (conditions.size() + 1);
             int slot = 0;
-            for (Condition condition : conditions) {
-                if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
-                    event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
-                    slot += 2;
-                }
+            for (Condition<?> condition : conditions) {
+                event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
+                slot += 2;
             }
             boolean elite = RecipeType.ELITE_WORKBENCH.isInstance(this);
             event.setButton(elite ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));

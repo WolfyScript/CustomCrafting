@@ -2,9 +2,13 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 
-public class WorldTimeCondition extends Condition {
+import java.util.List;
+
+public class WorldTimeCondition extends Condition<WorldTimeCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_time");
 
@@ -12,7 +16,7 @@ public class WorldTimeCondition extends Condition {
 
     public WorldTimeCondition() {
         super(KEY);
-        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
+        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
     }
 
     @Override
@@ -35,5 +39,29 @@ public class WorldTimeCondition extends Condition {
 
     public long getTime() {
         return time;
+    }
+
+    public static class GUIComponent extends FunctionalGUIComponent<WorldTimeCondition> {
+
+        public GUIComponent() {
+            super(Material.CLOCK, "World Time", List.of("Specify the time of day, in", "that the recipe can be crafted in."),
+                    (menu, api) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(WorldTimeCondition.class).getTime());
+                            return itemStack;
+                        }, (guiHandler, player, s, strings) -> {
+                            try {
+                                long value = Long.parseLong(s);
+                                guiHandler.getCustomCache().getRecipe().getConditions().getByType(WorldTimeCondition.class).setTime(value);
+                            } catch (NumberFormatException ex) {
+                                api.getChat().sendKey(player, "recipe_creator", "valid_number");
+                            }
+                            return false;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+
+                    });
+        }
     }
 }

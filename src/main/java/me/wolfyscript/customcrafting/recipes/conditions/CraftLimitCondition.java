@@ -1,13 +1,18 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.data.CCPlayerData;
+import me.wolfyscript.customcrafting.recipes.ICraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class CraftLimitCondition extends Condition {
+import java.util.List;
+
+public class CraftLimitCondition extends Condition<CraftLimitCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_limit");
 
@@ -15,7 +20,12 @@ public class CraftLimitCondition extends Condition {
 
     public CraftLimitCondition() {
         super(KEY);
-        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.LOWER_EXACT, Conditions.Option.LOWER);
+        setAvailableOptions(Conditions.Option.LOWER_EXACT, Conditions.Option.LOWER);
+    }
+
+    @Override
+    public boolean isApplicable(ICustomRecipe<?> recipe) {
+        return recipe instanceof ICraftingRecipe;
     }
 
     @Override
@@ -41,5 +51,29 @@ public class CraftLimitCondition extends Condition {
 
     public void setLimit(long limit) {
         this.limit = limit;
+    }
+
+    public static class GUIComponent extends FunctionalGUIComponent<CraftLimitCondition> {
+
+        public GUIComponent() {
+            super(Material.BARRIER, "Craft Limit", List.of("Limit the amount of times", "the recipe can be crafted."),
+                    (menu, api) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.craft_limit", Material.BARRIER, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(CraftLimitCondition.class).getLimit());
+                            return itemStack;
+                        }, (guiHandler, player, s, strings) -> {
+                            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+                            try {
+                                conditions.getByType(CraftLimitCondition.class).setLimit(Long.parseLong(s));
+                            } catch (NumberFormatException ex) {
+                                api.getChat().sendKey(player, "recipe_creator", "valid_number");
+                            }
+                            return false;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+
+                    });
+        }
     }
 }

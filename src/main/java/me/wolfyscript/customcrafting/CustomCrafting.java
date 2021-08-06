@@ -32,6 +32,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.Placehold
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
@@ -144,20 +145,21 @@ public class CustomCrafting extends JavaPlugin {
         Registry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
 
         getLogger().info("Registering Recipe Conditions");
-        Registry.RECIPE_CONDITIONS.register(new PermissionCondition());
-        Registry.RECIPE_CONDITIONS.register(new AdvancedWorkbenchCondition());
-        Registry.RECIPE_CONDITIONS.register(new EliteWorkbenchCondition());
-        Registry.RECIPE_CONDITIONS.register(new WorldTimeCondition());
-        Registry.RECIPE_CONDITIONS.register(new WorldNameCondition());
-        Registry.RECIPE_CONDITIONS.register(new WeatherCondition());
-        Registry.RECIPE_CONDITIONS.register(new ExperienceCondition());
-        Registry.RECIPE_CONDITIONS.register(new WorldBiomeCondition());
-        Registry.RECIPE_CONDITIONS.register(new CraftDelayCondition());
-        Registry.RECIPE_CONDITIONS.register(new CraftLimitCondition());
+        Condition.register(new AdvancedWorkbenchCondition(), new AdvancedWorkbenchCondition.GUIComponent());
+        Condition.register(new CraftDelayCondition(), new CraftDelayCondition.GUIComponent());
+        Condition.register(new CraftLimitCondition(), new CraftLimitCondition.GUIComponent());
+        Condition.register(new EliteWorkbenchCondition(), new EliteWorkbenchCondition.GUIComponent());
+        Condition.register(new ExperienceCondition(), new ExperienceCondition.GUIComponent());
+        Condition.register(new PermissionCondition(), new PermissionCondition.GUIComponent());
+        Condition.register(new WeatherCondition(), new WeatherCondition.GUIComponent());
+        Condition.register(new WorldBiomeCondition(), new WorldBiomeCondition.GUIComponent());
+        Condition.register(new WorldNameCondition(), new WorldNameCondition.GUIComponent());
+        Condition.register(new WorldTimeCondition(), new WorldTimeCondition.GUIComponent());
 
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
-        KeyedTypeIdResolver.registerTypeRegistry(Condition.class, Registry.RECIPE_CONDITIONS);
+        KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) new TypeReference<Condition<?>>() {
+        }.getType(), Registry.RECIPE_CONDITIONS);
     }
 
     @Override

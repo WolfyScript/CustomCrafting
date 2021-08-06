@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -214,14 +213,12 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
             invSlot = 10 + i + (i / 3) * 6;
             event.setButton(invSlot, new NamespacedKey("recipe_book", "ingredient.container_" + invSlot));
         }
-        List<Condition> conditions = getConditions().getValues().stream().filter(condition -> !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getId().equals("permission")).toList();
+        List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getId().equals("permission")).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
-        for (Condition condition : conditions) {
-            if (!condition.getOption().equals(Conditions.Option.IGNORE)) {
-                event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
-                slot += 2;
-            }
+        for (Condition<?> condition : conditions) {
+            event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
+            slot += 2;
         }
         event.setButton(23, new NamespacedKey("recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled"));
         event.setButton(32, new NamespacedKey("recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));

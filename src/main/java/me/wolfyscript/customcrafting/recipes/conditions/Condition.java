@@ -1,5 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
@@ -13,9 +15,10 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
 import org.bukkit.Material;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 @JsonTypeResolver(KeyedTypeResolver.class)
 @JsonTypeIdResolver(KeyedTypeIdResolver.class)
@@ -23,16 +26,46 @@ import java.util.List;
 @JsonPropertyOrder("key")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonIgnoreProperties("id")
-public abstract class Condition implements Keyed {
+public abstract class Condition<C extends Condition<C>> implements Keyed {
+
+    private static final Map<NamespacedKey, AbstractGUIComponent<?>> GUI_COMPONENTS = new HashMap<>();
+
+    /**
+     * Registers the {@link Condition} into the {@link Registry#RECIPE_CONDITIONS} and it's optional {@link AbstractGUIComponent} for the GUI settings.
+     *
+     * @param condition The {@link Condition} to register.
+     * @param component An optional {@link AbstractGUIComponent}, to edit settings inside the GUI.
+     * @param <C>       The type of the {@link Condition}
+     */
+    public static <C extends Condition<C>> void register(Condition<C> condition, @Nullable AbstractGUIComponent<C> component) {
+        var key = Objects.requireNonNull(condition, "Can't register Condition! Condition must not be null!").getNamespacedKey();
+        Preconditions.checkArgument(!GUI_COMPONENTS.containsKey(key), "Can't register GUI Component for condition \"" + key + "\"! Value already exists!");
+        GUI_COMPONENTS.putIfAbsent(key, component != null ? component : new IconGUIComponent<>(Material.COMMAND_BLOCK, key.toString(), List.of()));
+        Registry.RECIPE_CONDITIONS.register(condition);
+    }
+
+    /**
+     * Registers a {@link Condition} into the {@link Registry#RECIPE_CONDITIONS} without an additional GUI component.
+     *
+     * @param condition The {@link Condition} to register.
+     * @param <C>       The type of the {@link Condition}
+     */
+    public static <C extends Condition<C>> void register(Condition<C> condition) {
+        register(condition, null);
+    }
+
+    /**
+     * @return An unmodifiable Map containing the available {@link AbstractGUIComponent}s.
+     */
+    public static Map<NamespacedKey, AbstractGUIComponent<?>> getGuiComponents() {
+        return Map.copyOf(GUI_COMPONENTS);
+    }
 
     @JsonProperty("key")
     private final NamespacedKey key;
     protected Conditions.Option option = Conditions.Option.EXACT;
-
     @JsonIgnore
     private List<Conditions.Option> availableOptions;
-    @JsonIgnore
-    private AbstractGUIComponent guiComponent;
 
     protected Condition(NamespacedKey key) {
         this.key = key;
@@ -48,11 +81,6 @@ public abstract class Condition implements Keyed {
 
     public List<Conditions.Option> getAvailableOptions() {
         return availableOptions;
-    }
-
-    @JsonIgnore
-    public AbstractGUIComponent getGuiComponent() {
-        return guiComponent;
     }
 
     protected void setAvailableOptions(Conditions.Option... options) {
@@ -88,11 +116,23 @@ public abstract class Condition implements Keyed {
         return true;
     }
 
-    protected void setGuiComponent(AbstractGUIComponent component) {
-        this.guiComponent = component;
+    @JsonIgnore
+    public AbstractGUIComponent<C> getGuiComponent() {
+        return (AbstractGUIComponent<C>) GUI_COMPONENTS.get(key);
     }
 
-    public class AbstractGUIComponent {
+    public void render(GuiUpdate<CCCache> update, CCCache cache, ICustomRecipe<?> recipe) {
+        if (getGuiComponent() != null) {
+            getGuiComponent().renderMenu(update, cache, (C) this, recipe);
+        }
+    }
+
+    /**
+     * GUI Component to edit conditions of this type. <br>
+     * This GUI Component will be initialized once when the ConditionsMenu is initiated and will be used for all the instances of conditions of this type. <br>
+     * Therefore, the implementation must be static! <br>
+     */
+    public abstract static class AbstractGUIComponent<C extends Condition<C>> {
 
         private final Material icon;
         private final String name;
@@ -104,14 +144,9 @@ public abstract class Condition implements Keyed {
             this.description = description;
         }
 
-        public void init(ConditionsMenu menu, WolfyUtilities api) {
+        public abstract void init(ConditionsMenu menu, WolfyUtilities api);
 
-        }
-
-        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, ICustomRecipe<?> recipe) {
-
-
-        }
+        public abstract void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe);
 
         public Material getIcon() {
             return icon;
@@ -123,6 +158,54 @@ public abstract class Condition implements Keyed {
 
         public List<String> getDescription() {
             return description;
+        }
+    }
+
+    public static class IconGUIComponent<C extends Condition<C>> extends AbstractGUIComponent<C> {
+
+        protected IconGUIComponent(Material icon, String name, List<String> description) {
+            super(icon, name, description);
+        }
+
+        @Override
+        public void init(ConditionsMenu menu, WolfyUtilities api) {
+            //We only have an icon!
+        }
+
+        @Override
+        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe) {
+            //We only have an icon and no menu to render!
+        }
+    }
+
+    public static class FunctionalGUIComponent<C extends Condition<C>> extends AbstractGUIComponent<C> {
+
+        private final BiConsumer<ConditionsMenu, WolfyUtilities> initConsumer;
+        private final RenderConsumer<C> renderConsumer;
+
+        protected FunctionalGUIComponent(Material icon, String name, List<String> description, BiConsumer<ConditionsMenu, WolfyUtilities> init, RenderConsumer<C> render) {
+            super(icon, name, description);
+            this.initConsumer = init;
+            this.renderConsumer = render;
+        }
+
+        @Override
+        public void init(ConditionsMenu menu, WolfyUtilities api) {
+            if (initConsumer != null) {
+                initConsumer.accept(menu, api);
+            }
+        }
+
+        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe) {
+            if (renderConsumer != null) {
+                renderConsumer.accept(update, cache, condition, recipe);
+            }
+        }
+
+        public interface RenderConsumer<C extends Condition<C>> {
+
+            void accept(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe);
+
         }
     }
 }

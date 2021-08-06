@@ -4,9 +4,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 
-public class PermissionCondition extends Condition {
+import java.util.List;
+
+public class PermissionCondition extends Condition<PermissionCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "permission");
 
@@ -14,7 +18,15 @@ public class PermissionCondition extends Condition {
 
     public PermissionCondition() {
         super(KEY);
-        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
+        setAvailableOptions(Conditions.Option.EXACT);
+    }
+
+    @Override
+    public boolean isApplicable(ICustomRecipe<?> recipe) {
+        return switch (recipe.getRecipeType().getType()) {
+            case WORKBENCH, ELITE_WORKBENCH, BREWING_STAND, GRINDSTONE -> true;
+            default -> false;
+        };
     }
 
     public void setPermission(String permission) {
@@ -32,5 +44,23 @@ public class PermissionCondition extends Condition {
         }
         if (data.getPlayer() == null) return false;
         return CustomCrafting.inst().getApi().getPermissions().hasPermission(data.getPlayer(), permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey()));
+    }
+
+    public static class GUIComponent extends FunctionalGUIComponent<PermissionCondition> {
+
+        public GUIComponent() {
+            super(Material.REDSTONE, "Permission", List.of("Set a permission for this recipe", "that the player needs to have", "to craft this recipe."),
+                    (menu, wolfyUtilities) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.permission", Material.REDSTONE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(PermissionCondition.class).getPermission());
+                            return itemStack;
+                        }, (guiHandler, player, s, strings) -> {
+                            guiHandler.getCustomCache().getRecipe().getConditions().getByType(PermissionCondition.class).setPermission(s.trim());
+                            return false;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+                    });
+        }
     }
 }

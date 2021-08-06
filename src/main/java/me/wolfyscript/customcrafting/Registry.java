@@ -31,7 +31,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
      */
     SimpleRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleRegistry<>();
     SimpleRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleRegistry<>();
-    SimpleRegistry<Condition> RECIPE_CONDITIONS = new SimpleRegistry<>();
+    SimpleRegistry<Condition<?>> RECIPE_CONDITIONS = new SimpleRegistry<>();
     ItemCreatorTabRegistry ITEM_CREATOR_TABS = new ItemCreatorTabRegistry();
 
     /**
