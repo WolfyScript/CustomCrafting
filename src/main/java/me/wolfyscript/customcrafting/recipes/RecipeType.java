@@ -31,8 +31,6 @@ public class RecipeType<C extends ICustomRecipe<?>> {
         }
     };
     public static final RecipeType<CraftingRecipeEliteShapeless> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, CraftingRecipeEliteShapeless.class);
-    //Cooking recipes
-    public static final RecipeType<CustomRecipeFurnace> FURNACE = new RecipeType<>(Type.FURNACE, CustomRecipeFurnace.class);
     public static final RecipeType<CraftingRecipe<?, EliteRecipeSettings>> ELITE_WORKBENCH = new RecipeType<>(Type.ELITE_WORKBENCH, (Class<CraftingRecipe<?, EliteRecipeSettings>>) (Object) CraftingRecipe.class) {
         @Override
         public CraftingRecipe<?, EliteRecipeSettings> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
@@ -44,9 +42,12 @@ public class RecipeType<C extends ICustomRecipe<?>> {
             return recipe instanceof CraftingRecipe<?, ?> craftingRecipe && craftingRecipe.getSettings() instanceof EliteRecipeSettings;
         }
     };
-    public static final RecipeType<CustomRecipeBlasting> BLAST_FURNACE = new RecipeType<>(Type.BLAST_FURNACE, CustomRecipeBlasting.class);
-    public static final RecipeType<CustomRecipeSmoking> SMOKER = new RecipeType<>(Type.SMOKER, CustomRecipeSmoking.class);
-    public static final RecipeType<CustomRecipeCampfire> CAMPFIRE = new RecipeType<>(Type.CAMPFIRE, CustomRecipeCampfire.class);
+    //Cooking recipes
+    private static final String COOKING = "cooking";
+    public static final RecipeType<CustomRecipeFurnace> FURNACE = new RecipeType<>(Type.FURNACE, CustomRecipeFurnace.class, COOKING);
+    public static final RecipeType<CustomRecipeBlasting> BLAST_FURNACE = new RecipeType<>(Type.BLAST_FURNACE, CustomRecipeBlasting.class, COOKING);
+    public static final RecipeType<CustomRecipeSmoking> SMOKER = new RecipeType<>(Type.SMOKER, CustomRecipeSmoking.class, COOKING);
+    public static final RecipeType<CustomRecipeCampfire> CAMPFIRE = new RecipeType<>(Type.CAMPFIRE, CustomRecipeCampfire.class, COOKING);
     //Misc recipes
     public static final RecipeType<CustomRecipeAnvil> ANVIL = new RecipeType<>(Type.ANVIL, CustomRecipeAnvil.class);
     public static final RecipeType<CustomRecipeStonecutter> STONECUTTER = new RecipeType<>(Type.STONECUTTER, CustomRecipeStonecutter.class);
