@@ -157,6 +157,76 @@
       }
     }
   },
+  "recipe_conditions": {
+    "world_time": {
+      "name": "Time",
+      "description": [
+        "&eSet the world time in which ",
+        "&ethe recipe can be crafted."
+      ]
+    },
+    "player_experience": {
+      "name": "Player Experience",
+      "description": [
+        "&Set the levels a player has",
+        "&eto have to craft the recipe."
+      ]
+    },
+    "world_name": {
+      "name": "World",
+      "description": []
+    },
+    "world_biome": {
+      "name": "Biome",
+      "description": []
+    },
+    "weather": {
+      "name": "Weather",
+      "description": [
+        "&eSet the weather in which the",
+        "&erecipe can be crafted in."
+      ],
+      "modes": {
+        "storm": "&eRain/Snow",
+        "thunder": "&eThunder",
+        "storm_thunder": "&eRain/Snow &7+ &eThunder",
+        "none": "&eSunshine"
+      }
+    },
+    "advanced_crafting_table": {
+      "name": "Advanced Crafting Table",
+      "description": [
+        "&eEnable recipe to only work in the ",
+        "&eAdvanced Crafting Table."
+      ]
+    },
+    "elite_crafting_table": {
+      "name": "Elite Crafting Table",
+      "description": [
+      ]
+    },
+    "permission": {
+      "name": "Permission",
+      "description": [
+        "&Set a permission players need ",
+        "&eneed to have to craft the recipe."
+      ]
+    },
+    "craft_delay": {
+      "name": "Craft Delay",
+      "description": [
+        "&eSet a delay, that the player",
+        "&eneeds to wait for to craft again."
+      ]
+    },
+    "craft_limit": {
+      "name": "Craft Limit",
+      "description": [
+        "&eLimit the amount of times",
+        "&ethe recipe can be crafted."
+      ]
+    }
+  },
   "inventories": {
     "none": {
       "global_items": {

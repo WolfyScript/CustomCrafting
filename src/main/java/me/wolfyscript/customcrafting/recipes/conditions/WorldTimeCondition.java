@@ -44,7 +44,7 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<WorldTimeCondition> {
 
         public GUIComponent() {
-            super(Material.CLOCK, "World Time", List.of("Specify the time of day, in", "that the recipe can be crafted in."),
+            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(WorldTimeCondition.class).getTime());

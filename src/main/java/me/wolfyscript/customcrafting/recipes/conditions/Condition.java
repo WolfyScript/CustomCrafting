@@ -31,12 +31,15 @@ import java.util.function.BiConsumer;
 @JsonIgnoreProperties("id")
 public abstract class Condition<C extends Condition<C>> implements Keyed {
 
+    public static String getLangKey(String condition, String subPath) {
+        return "$recipe_conditions." + condition + "." + subPath + "$";
+    }
+
     private static final Map<NamespacedKey, AbstractGUIComponent<?>> GUI_COMPONENTS = new HashMap<>();
 
     /**
      * Registers the {@link Condition} into the {@link CCClassRegistry#RECIPE_CONDITIONS} and it's optional {@link AbstractGUIComponent} for the GUI settings.
      *
-     * @param condition The {@link Condition} to register.
      * @param component An optional {@link AbstractGUIComponent}, to edit settings inside the GUI.
      * @param <C>       The type of the {@link Condition}
      */

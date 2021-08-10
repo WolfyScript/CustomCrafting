@@ -46,7 +46,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<PermissionCondition> {
 
         public GUIComponent() {
-            super(Material.REDSTONE, "Permission", List.of("Set a permission for this recipe", "that the player needs to have", "to craft this recipe."),
+            super(Material.REDSTONE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, wolfyUtilities) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.permission", Material.REDSTONE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(PermissionCondition.class).getPermission());

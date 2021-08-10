@@ -64,7 +64,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<ExperienceCondition> {
 
         public GUIComponent() {
-            super(Material.EXPERIENCE_BOTTLE, "Player Experience", List.of(""),
+            super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.player_experience", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(ExperienceCondition.class).getExpLevel());

@@ -70,7 +70,7 @@ public class WeatherCondition extends Condition<WeatherCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<WeatherCondition> {
 
         public GUIComponent() {
-            super(Material.WATER_BUCKET, "Weather", List.of(),
+            super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                             cache.getRecipe().getConditions().getByType(WeatherCondition.class).toggleWeather();

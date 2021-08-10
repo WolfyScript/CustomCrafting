@@ -66,7 +66,7 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<CraftDelayCondition> {
 
         public GUIComponent() {
-            super(Material.CLOCK, "Craft Delay", List.of("Set a delay in which the recipe", "cannot be crafted/processed!"),
+            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.craft_delay", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(CraftDelayCondition.class).getDelay());

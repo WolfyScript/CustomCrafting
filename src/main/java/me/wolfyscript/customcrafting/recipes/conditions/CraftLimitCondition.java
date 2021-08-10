@@ -56,7 +56,7 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
     public static class GUIComponent extends FunctionalGUIComponent<CraftLimitCondition> {
 
         public GUIComponent() {
-            super(Material.BARRIER, "Craft Limit", List.of("Limit the amount of times", "the recipe can be crafted."),
+            super(Material.BARRIER, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.craft_limit", Material.BARRIER, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(CraftLimitCondition.class).getLimit());
