@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting;
 
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.*;
-import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -10,6 +9,7 @@ import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension
 import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends me.wolfyscript.utilities.util.Registry<T> {
+public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> extends Registry<T> {
 
     /**
      * This Registry contains all the recipes of this plugin.
@@ -31,7 +31,6 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
      */
     SimpleRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleRegistry<>();
     SimpleRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleRegistry<>();
-    SimpleRegistry<Condition<?>> RECIPE_CONDITIONS = new SimpleRegistry<>();
     ItemCreatorTabRegistry ITEM_CREATOR_TABS = new ItemCreatorTabRegistry();
 
     /**
@@ -96,7 +95,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
          * @return The recipes contained in the group.
          */
         public List<ICustomRecipe<?>> getGroup(String group) {
-            return Registry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
+            return CCRegistry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
         }
 
         /**
@@ -127,7 +126,7 @@ public interface Registry<T extends me.wolfyscript.utilities.util.Keyed> extends
         }
 
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
-            ICustomRecipe<?> customRecipe = Registry.RECIPES.get(recipeKey);
+            ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(recipeKey);
             return RecipeType.WORKBENCH.isInstance(customRecipe) ? RecipeType.WORKBENCH.cast(customRecipe) : null;
         }
 

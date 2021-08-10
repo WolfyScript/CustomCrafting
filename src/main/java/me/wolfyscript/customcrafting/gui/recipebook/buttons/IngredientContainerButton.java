@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.recipe_item.RecipeItemStack;
@@ -84,7 +84,7 @@ public class IngredientContainerButton extends Button<CCCache> {
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
-                List<ICustomRecipe<?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
+                List<ICustomRecipe<?>> recipes = CCRegistry.RECIPES.getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
                     book.setSubFolderPage(0);

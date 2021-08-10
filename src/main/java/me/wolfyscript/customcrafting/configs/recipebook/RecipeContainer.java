@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
@@ -27,13 +27,13 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     public RecipeContainer(String group) {
         this.group = group;
         this.recipe = null;
-        this.cachedRecipes = Registry.RECIPES.getGroup(group);
+        this.cachedRecipes = CCRegistry.RECIPES.getGroup(group);
     }
 
     public RecipeContainer(NamespacedKey recipe) {
         this.group = null;
         this.recipe = recipe;
-        this.cachedRecipes = Collections.singletonList(Registry.RECIPES.get(recipe));
+        this.cachedRecipes = Collections.singletonList(CCRegistry.RECIPES.get(recipe));
     }
 
     public RecipeContainer(ICustomRecipe<?> recipe) {
@@ -47,7 +47,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
      * @return The recipes of this container the player has access to.
      */
     public List<ICustomRecipe<?>> getRecipes(Player player) {
-        return Registry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
+        return CCRegistry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 
     /**

@@ -14,6 +14,13 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience");
 
+    static boolean valid(ICustomRecipe<?> recipe) {
+        return switch (recipe.getRecipeType().getType()) {
+            case WORKBENCH, ELITE_WORKBENCH, BREWING_STAND, GRINDSTONE -> true;
+            default -> false;
+        };
+    }
+
     @JsonProperty("experience")
     private int expLevel = 0;
 
@@ -24,10 +31,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
 
     @Override
     public boolean isApplicable(ICustomRecipe<?> recipe) {
-        return switch (recipe.getRecipeType().getType()) {
-            case WORKBENCH, ELITE_WORKBENCH, BREWING_STAND, GRINDSTONE -> true;
-            default -> false;
-        };
+        return valid(recipe);
     }
 
     @Override
@@ -79,6 +83,11 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
 
 
                     });
+        }
+
+        @Override
+        public boolean shouldRender(ICustomRecipe<?> recipe) {
+            return valid(recipe);
         }
     }
 }

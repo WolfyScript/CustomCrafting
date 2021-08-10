@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.MainMenu;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
@@ -80,7 +80,7 @@ public class RecipeBookCluster extends CCCluster {
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
                         if (book.getSubFolderRecipes().isEmpty()) {
-                            book.setSubFolderRecipes(item, Registry.RECIPES.get(item));
+                            book.setSubFolderRecipes(item, CCRegistry.RECIPES.get(item));
                         }
                         if (!book.getSubFolderRecipes().isEmpty()) {
                             book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));

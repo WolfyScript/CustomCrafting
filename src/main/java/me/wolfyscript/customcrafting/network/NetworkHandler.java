@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.network;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
@@ -94,7 +94,7 @@ public class NetworkHandler {
     }
 
     public void sendRecipes(Player player) {
-        List<ICustomRecipe<?>> recipes = Registry.RECIPES.getAvailable(player);
+        List<ICustomRecipe<?>> recipes = CCRegistry.RECIPES.getAvailable(player);
         //Send size of recipe list! Client will wait for recipe packets after it receives this packet.
         var mcByteBuf = networkUtil.buffer();
         mcByteBuf.writeVarInt(recipes.size());
@@ -146,7 +146,7 @@ public class NetworkHandler {
 
     public void handlePlaceRecipe(Player player, MCByteBuf byteBuf) {
         var key = byteBuf.readNamespacedKey();
-        var recipe = Registry.RECIPES.get(key);
+        var recipe = CCRegistry.RECIPES.get(key);
         if (recipe != null) {
             var inventory = player.getOpenInventory().getTopInventory();
             boolean validInv = switch (recipe.getRecipeType().getType()) {

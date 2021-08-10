@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.commands.cc_subcommands;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -41,7 +42,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                             chat.sendMessage(p, "Exporting recipes to Database...");
                             new Thread(() -> {
                                 var dataBaseHandler = customCrafting.getDataBaseHandler();
-                                me.wolfyscript.customcrafting.Registry.RECIPES.values().forEach(dataBaseHandler::updateRecipe);
+                                CCRegistry.RECIPES.values().forEach(dataBaseHandler::updateRecipe);
                                 api.getConsole().fine("Successfully exported recipes to database");
                             }).start();
                             break;

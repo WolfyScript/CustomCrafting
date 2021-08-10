@@ -75,5 +75,10 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
 
                     });
         }
+
+        @Override
+        public boolean shouldRender(ICustomRecipe<?> recipe) {
+            return recipe instanceof ICraftingRecipe;
+        }
     }
 }

@@ -86,5 +86,11 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
                         update.setButton(31, "conditions.craft_delay");
                     });
         }
+
+        @Override
+        public boolean shouldRender(ICustomRecipe<?> recipe) {
+            return recipe instanceof ICraftingRecipe;
+        }
     }
+
 }

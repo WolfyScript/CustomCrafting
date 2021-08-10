@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -86,7 +86,7 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //Check for custom recipe that overrides the vanilla recipe
             var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
-            if (dataHandler.getDisabledRecipes().contains(namespacedKey) || Registry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey)) != null) {
+            if (dataHandler.getDisabledRecipes().contains(namespacedKey) || CCRegistry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey)) != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);
                 Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);

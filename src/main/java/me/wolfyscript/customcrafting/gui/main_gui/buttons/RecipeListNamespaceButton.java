@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.main_gui.buttons;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.lists.RecipesList;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
@@ -56,9 +56,9 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                             }
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
-                        Registry.RECIPES.get(namespace).forEach(dataHandler::disableRecipe);
+                        CCRegistry.RECIPES.get(namespace).forEach(dataHandler::disableRecipe);
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                        Registry.RECIPES.get(namespace).forEach(dataHandler::enableRecipe);
+                        CCRegistry.RECIPES.get(namespace).forEach(dataHandler::enableRecipe);
                     }
                 }
             }

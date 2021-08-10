@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.lists;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.RecipeList;
 import me.wolfyscript.customcrafting.gui.CCWindow;
@@ -76,7 +76,7 @@ public class RecipesList extends CCWindow {
 
         String namespace = recipeList.getNamespace();
         if (namespace == null) {
-            List<String> namespaceList = new ArrayList<>(Registry.RECIPES.namespaces());
+            List<String> namespaceList = new ArrayList<>(CCRegistry.RECIPES.namespaces());
             namespaceList.add("minecraft");
             namespaceList.sort(String::compareToIgnoreCase);
             maxPages = recipeList.getMaxPages(namespaceList.size());
@@ -97,7 +97,7 @@ public class RecipesList extends CCWindow {
                     event.setButton(9 + slot, button);
                 }
             } else {
-                List<ICustomRecipe<?>> recipes = Registry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).toList();
+                List<ICustomRecipe<?>> recipes = CCRegistry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).toList();
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
                 for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {

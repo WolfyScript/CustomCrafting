@@ -21,7 +21,7 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
 
     public WorldBiomeCondition() {
         super(KEY);
-        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
+        setAvailableOptions(Conditions.Option.EXACT);
         this.biomes = new ArrayList<>();
     }
 

@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import com.google.common.collect.Streams;
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -123,7 +123,7 @@ public class DataHandler {
     public void saveData() {
         api.getConsole().info("Saving Items & Recipes");
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> ItemLoader.saveItem(entry.getKey(), entry.getValue()));
-        Registry.RECIPES.values().forEach(ICustomRecipe::save);
+        CCRegistry.RECIPES.values().forEach(ICustomRecipe::save);
     }
 
     private File[] getFiles(String subFolder, String type) {
@@ -151,7 +151,7 @@ public class DataHandler {
             String name = file.getName();
             var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
             try {
-                Registry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
+                CCRegistry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 customCrafting.getLogger().severe(String.format("Could not load recipe '%s':", namespacedKey));
                 e.printStackTrace();

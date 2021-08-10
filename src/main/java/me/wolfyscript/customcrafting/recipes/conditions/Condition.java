@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.CCClassRegistry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
@@ -17,7 +17,10 @@ import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 @JsonTypeResolver(KeyedTypeResolver.class)
@@ -31,27 +34,15 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
     private static final Map<NamespacedKey, AbstractGUIComponent<?>> GUI_COMPONENTS = new HashMap<>();
 
     /**
-     * Registers the {@link Condition} into the {@link Registry#RECIPE_CONDITIONS} and it's optional {@link AbstractGUIComponent} for the GUI settings.
+     * Registers the {@link Condition} into the {@link CCClassRegistry#RECIPE_CONDITIONS} and it's optional {@link AbstractGUIComponent} for the GUI settings.
      *
      * @param condition The {@link Condition} to register.
      * @param component An optional {@link AbstractGUIComponent}, to edit settings inside the GUI.
      * @param <C>       The type of the {@link Condition}
      */
-    public static <C extends Condition<C>> void register(Condition<C> condition, @Nullable AbstractGUIComponent<C> component) {
-        var key = Objects.requireNonNull(condition, "Can't register Condition! Condition must not be null!").getNamespacedKey();
+    public static <C extends Condition<C>> void registerGUIComponent(NamespacedKey key, @Nullable AbstractGUIComponent<C> component) {
         Preconditions.checkArgument(!GUI_COMPONENTS.containsKey(key), "Can't register GUI Component for condition \"" + key + "\"! Value already exists!");
         GUI_COMPONENTS.putIfAbsent(key, component != null ? component : new IconGUIComponent<>(Material.COMMAND_BLOCK, key.toString(), List.of()));
-        Registry.RECIPE_CONDITIONS.register(condition);
-    }
-
-    /**
-     * Registers a {@link Condition} into the {@link Registry#RECIPE_CONDITIONS} without an additional GUI component.
-     *
-     * @param condition The {@link Condition} to register.
-     * @param <C>       The type of the {@link Condition}
-     */
-    public static <C extends Condition<C>> void register(Condition<C> condition) {
-        register(condition, null);
     }
 
     /**
@@ -59,6 +50,10 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
      */
     public static Map<NamespacedKey, AbstractGUIComponent<?>> getGuiComponents() {
         return Map.copyOf(GUI_COMPONENTS);
+    }
+
+    public static AbstractGUIComponent<?> getGuiComponent(NamespacedKey key) {
+        return GUI_COMPONENTS.get(key);
     }
 
     @JsonProperty("key")
@@ -158,6 +153,10 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
 
         public List<String> getDescription() {
             return description;
+        }
+
+        public boolean shouldRender(ICustomRecipe<?> recipe) {
+            return true;
         }
     }
 

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
@@ -120,7 +120,7 @@ public class CauldronListener implements Listener {
                                     List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).toList();
                                     if (!items.isEmpty()) {
                                         int level = Cauldrons.getLevel(loc.getBlock());
-                                        List<CustomRecipeCauldron> recipes = Registry.RECIPES.get(RecipeType.CAULDRON);
+                                        List<CustomRecipeCauldron> recipes = CCRegistry.RECIPES.get(RecipeType.CAULDRON);
                                         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
                                         for (CustomRecipeCauldron recipe : recipes) {
                                             if (entry.getValue().isEmpty() || entry.getValue().get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {

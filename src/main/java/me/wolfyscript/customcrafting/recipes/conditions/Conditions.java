@@ -68,6 +68,10 @@ public class Conditions {
         return valuesMap.get(key);
     }
 
+    public boolean has(NamespacedKey key) {
+        return valuesMap.containsKey(key);
+    }
+
     public void setCondition(Condition<?> condition) {
         valuesMap.put(condition.getNamespacedKey(), condition);
     }
@@ -82,6 +86,10 @@ public class Conditions {
 
     public Collection<Condition<?>> getValues() {
         return valuesMap.values();
+    }
+
+    public Set<NamespacedKey> keySet() {
+        return valuesMap.keySet();
     }
 
     @Deprecated

@@ -69,6 +69,7 @@ public class ConditionsMenu extends CCWindow {
             return true;
         }));
         Condition.getGuiComponents().forEach((key, abstractGUIComponent) -> abstractGUIComponent.init(this, api));
+
     }
 
     @Override
@@ -86,7 +87,7 @@ public class ConditionsMenu extends CCWindow {
 
         Conditions conditions = cache.getRecipe().getConditions();
 
-        List<Condition<?>> values = List.copyOf(conditions.getValues());
+        List<NamespacedKey> values = List.copyOf(conditions.keySet());
         int size = values.size();
         int maxPages = (int) Math.floor(size / 16d);
         int page = cache.getConditionsCache().getPage();

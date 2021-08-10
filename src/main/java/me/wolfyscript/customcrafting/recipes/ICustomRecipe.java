@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
@@ -140,7 +140,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
 
     default boolean delete(@Nullable Player player) {
         if (getNamespacedKey() != null) {
-            Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> Registry.RECIPES.remove(getNamespacedKey()));
+            Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> CCRegistry.RECIPES.remove(getNamespacedKey()));
             if (CustomCrafting.inst().hasDataBaseHandler()) {
                 CustomCrafting.inst().getDataBaseHandler().removeRecipe(getNamespacedKey().getNamespace(), getNamespacedKey().getKey());
                 getAPI().getChat().sendMessage(player, "§aRecipe deleted!");

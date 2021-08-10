@@ -23,10 +23,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
 
     @Override
     public boolean isApplicable(ICustomRecipe<?> recipe) {
-        return switch (recipe.getRecipeType().getType()) {
-            case WORKBENCH, ELITE_WORKBENCH, BREWING_STAND, GRINDSTONE -> true;
-            default -> false;
-        };
+        return ExperienceCondition.valid(recipe);
     }
 
     public void setPermission(String permission) {
@@ -61,6 +58,11 @@ public class PermissionCondition extends Condition<PermissionCondition> {
                     },
                     (update, cache, condition, recipe) -> {
                     });
+        }
+
+        @Override
+        public boolean shouldRender(ICustomRecipe<?> recipe) {
+            return ExperienceCondition.valid(recipe);
         }
     }
 }

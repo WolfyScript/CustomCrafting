@@ -134,5 +134,10 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                         update.setButton(33, REMOVE);
                     });
         }
+
+        @Override
+        public boolean shouldRender(ICustomRecipe<?> recipe) {
+            return RecipeType.ELITE_WORKBENCH.isInstance(recipe);
+        }
     }
 }

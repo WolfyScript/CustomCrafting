@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.listeners.smelting;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeFurnace;
@@ -34,7 +34,7 @@ public abstract class SmeltAPIAdapter {
     public abstract void process(FurnaceSmeltEvent event, Block block, Furnace furnace, FurnaceInventory inventory, ItemStack currentResultItem);
 
     protected boolean processRecipe(FurnaceSmeltEvent event, NamespacedKey recipeKey, Block block, FurnaceInventory inventory, ItemStack currentResultItem) {
-        if (Registry.RECIPES.get(recipeKey) instanceof CustomRecipeCooking<?, ?> cookingRecipe && cookingRecipe.validType(block.getType())) {
+        if (CCRegistry.RECIPES.get(recipeKey) instanceof CustomRecipeCooking<?, ?> cookingRecipe && cookingRecipe.validType(block.getType())) {
             if (cookingRecipe.checkConditions(new Conditions.Data(null, block, null))) {
                 event.setCancelled(false);
                 Result result = cookingRecipe.getResult();

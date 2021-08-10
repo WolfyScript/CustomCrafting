@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -35,15 +35,15 @@ public class Category extends CategorySettings {
         if (auto) {
             this.namespaces.clear();
             this.groups.clear();
-            this.namespaces.addAll(Registry.RECIPES.namespaces());
-            this.groups.addAll(Registry.RECIPES.groups());
+            this.namespaces.addAll(CCRegistry.RECIPES.namespaces());
+            this.groups.addAll(CCRegistry.RECIPES.groups());
         }
         containers.clear();
         List<RecipeContainer> recipeContainers = new ArrayList<>();
         recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).toList());
-        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> Registry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
+        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> CCRegistry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
         recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
-            ICustomRecipe<?> recipe = Registry.RECIPES.get(namespacedKey);
+            ICustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(recipe);
         }).filter(Objects::nonNull).toList());
         containers.addAll(recipeContainers.stream().distinct().sorted().toList());

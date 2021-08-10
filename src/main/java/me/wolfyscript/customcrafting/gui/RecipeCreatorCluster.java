@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.*;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ExactMetaButton;
@@ -123,7 +123,7 @@ public class RecipeCreatorCluster extends CCCluster {
             return false;
         }, (guiHandler, player, args) -> {
             List<String> results = new ArrayList<>();
-            StringUtil.copyPartialMatches(args[0], Registry.RECIPES.groups(), results);
+            StringUtil.copyPartialMatches(args[0], CCRegistry.RECIPES.groups(), results);
             return results;
         }));
         registerButton(new ExactMetaButton());
@@ -153,10 +153,10 @@ public class RecipeCreatorCluster extends CCCluster {
                         if (args.length > 0) {
                             if (args.length == 1) {
                                 results.add("<namespace>");
-                                StringUtil.copyPartialMatches(args[0], Registry.RECIPES.namespaces(), results);
+                                StringUtil.copyPartialMatches(args[0], CCRegistry.RECIPES.namespaces(), results);
                             } else if (args.length == 2) {
                                 results.add("<key>");
-                                StringUtil.copyPartialMatches(args[1], Registry.RECIPES.get(args[0]).stream().filter(recipe -> cache.getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
+                                StringUtil.copyPartialMatches(args[1], CCRegistry.RECIPES.get(args[0]).stream().filter(recipe -> cache.getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
                             }
                         }
                         Collections.sort(results);
@@ -185,7 +185,7 @@ public class RecipeCreatorCluster extends CCCluster {
         }
         try {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
-                Registry.RECIPES.register(recipe);
+                CCRegistry.RECIPES.register(recipe);
                 api.getChat().sendKey(player, KEY, "loading.success");
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) cache.resetRecipe();
             });

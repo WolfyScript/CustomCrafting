@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.commands.recipes;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.Setting;
@@ -33,7 +33,7 @@ public class EditSubCommand extends AbstractSubCommand {
             WolfyUtilities api = customCrafting.getApi();
             NamespacedKey key = NamespacedKey.of(args[0]);
             if (key != null) {
-                ICustomRecipe<?> customRecipe = Registry.RECIPES.get(key);
+                ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
                 if (customRecipe != null) {
                     GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
                     guiHandler.getCustomCache().setRecipeType(customRecipe.getRecipeType());
@@ -53,7 +53,7 @@ public class EditSubCommand extends AbstractSubCommand {
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
-        StringUtil.copyPartialMatches(args[args.length - 1], Registry.RECIPES.keySet().stream().map(NamespacedKey::toString).toList(), results);
+        StringUtil.copyPartialMatches(args[args.length - 1], CCRegistry.RECIPES.keySet().stream().map(NamespacedKey::toString).toList(), results);
         return results;
     }
 }

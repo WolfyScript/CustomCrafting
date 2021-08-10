@@ -20,7 +20,7 @@ public class WeatherCondition extends Condition<WeatherCondition> {
 
     public WeatherCondition() {
         super(KEY);
-        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
+        setAvailableOptions(Conditions.Option.EXACT);
         this.weather = Weather.NONE;
     }
 

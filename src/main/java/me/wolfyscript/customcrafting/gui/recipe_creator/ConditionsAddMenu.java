@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.MainCluster;
@@ -10,8 +9,10 @@ import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.util.List;
+import java.util.Map;
 
 public class ConditionsAddMenu extends CCWindow {
 
@@ -36,19 +37,20 @@ public class ConditionsAddMenu extends CCWindow {
         var recipe = cache.getRecipe();
         update.setButton(8, PlayerUtil.getStore(update.getPlayer()).getLightBackground());
 
-        List<Condition<?>> conditions = Registry.RECIPE_CONDITIONS.values().stream().filter(condition -> condition.isApplicable(recipe) && recipe.getConditions().getByKey(condition.getNamespacedKey()) == null).toList();
+        List<Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>>> conditions = Condition.getGuiComponents().entrySet().stream().filter(entry -> !recipe.getConditions().has(entry.getKey()) && entry.getValue().shouldRender(recipe)).toList();
         if (!conditions.isEmpty()) {
             int size = conditions.size();
-            int maxPages = (int) Math.floor(size / CONDITIONS_PER_PAGE);
             int page = cache.getConditionsCache().getSelectNewPage();
-
             for (int i = page * CONDITIONS_PER_PAGE, slot = 0; i < size && slot < CONDITIONS_PER_PAGE; i++, slot++) {
-                Condition<?> condition = conditions.get(i);
-                var button = new ConditionAddButton(condition);
+                Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>> entry = conditions.get(i);
+                var button = new ConditionAddButton(entry.getKey(), entry.getValue());
                 registerButton(button);
                 update.setButton(slot, button);
             }
+
+            int maxPages = (int) Math.floor(size / (double) CONDITIONS_PER_PAGE);
         }
+
         update.setButton(49, MainCluster.BACK_BOTTOM);
     }
 }
