@@ -25,6 +25,7 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,12 @@ public class RecipeBook extends CCWindow {
     private static final String BACK = "back";
     private static final String NEXT_RECIPE = "next_recipe";
     private static final String PREVIOUS_RECIPE = "previous_recipe";
+    private final BukkitTask ingredientTask;
+    private final BukkitTask containerTask;
 
     public RecipeBook(RecipeBookCluster cluster, CustomCrafting customCrafting) {
         super(cluster, RecipeBookCluster.RECIPE_BOOK.getKey(), 54, customCrafting);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        this.ingredientTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
                 Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
                 if (btn instanceof IngredientContainerButton cBtn) {
@@ -49,7 +52,7 @@ public class RecipeBook extends CCWindow {
                 }
             }
         }, 1, 30);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        this.containerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 45; i++) {
                 Button<CCCache> mainContainerBtn = cluster.getButton("recipe_book.container_" + i);
                 if (mainContainerBtn instanceof RecipeBookContainerButton cBtn) {
@@ -60,7 +63,12 @@ public class RecipeBook extends CCWindow {
                     });
                 }
             }
-        }, 1, 20);
+        }, 1, 30);
+    }
+
+    public void reset() {
+        this.containerTask.cancel();
+        this.ingredientTask.cancel();
     }
 
     @Override

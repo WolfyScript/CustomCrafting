@@ -3,6 +3,8 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
+import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -40,6 +42,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
             dataHandler.getCategories().index();
             api.getChat().sendMessage(p, "  - &aComplete");
             api.getChat().sendMessage(p, "&eReloading GUIs");
+            ((RecipeBook) invAPI.getGuiWindow(RecipeBookCluster.RECIPE_BOOK)).reset();
             invAPI.reset();
             api.getChat().sendMessage(p, "  - &aComplete");
         }

@@ -21,13 +21,14 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecipeBookContainerButton extends Button<CCCache> {
 
-    private final HashMap<GuiHandler<?>, CustomItem> recipes = new HashMap<>();
-    private final HashMap<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
+    private final Map<GuiHandler<?>, CustomItem> recipes = new HashMap<>();
+    private final Map<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
 
     public RecipeBookContainerButton(int slot) {
         super("recipe_book.container_" + slot, null);
