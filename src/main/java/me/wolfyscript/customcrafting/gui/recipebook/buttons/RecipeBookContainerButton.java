@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class RecipeBookContainerButton extends Button<CCCache> {
 
-    private final Map<GuiHandler<?>, CustomItem> recipes = new HashMap<>();
     private final Map<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
@@ -105,10 +104,6 @@ public class RecipeBookContainerButton extends Button<CCCache> {
             }, 20);
 
         }
-    }
-
-    public void setRecipeItem(GuiHandler<CCCache> guiHandler, CustomItem item) {
-        recipes.put(guiHandler, item);
     }
 
     public RecipeContainer getRecipeContainer(GuiHandler<CCCache> guiHandler) {
