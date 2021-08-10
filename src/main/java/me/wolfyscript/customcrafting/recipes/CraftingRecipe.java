@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
@@ -143,7 +144,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         if (!getIngredients().isEmpty()) {
-            if (RecipeType.WORKBENCH.isInstance(this) && getConditions().getByID("advanced_workbench").getOption().equals(Conditions.Option.EXACT)) {
+            if (RecipeType.WORKBENCH.isInstance(this) && getConditions().has(AdvancedWorkbenchCondition.KEY)) {
                 var glass = new NamespacedKey("none", "glass_purple");
                 for (int i = 0; i < 9; i++) {
                     event.setButton(i, glass);
@@ -156,7 +157,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             int startSlot = 9 / (conditions.size() + 1);
             int slot = 0;
             for (Condition<?> condition : conditions) {
-                event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
+                event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getNamespacedKey().toString("__")));
                 slot += 2;
             }
             boolean elite = RecipeType.ELITE_WORKBENCH.isInstance(this);

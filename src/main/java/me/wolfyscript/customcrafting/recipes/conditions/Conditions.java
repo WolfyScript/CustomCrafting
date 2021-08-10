@@ -48,7 +48,7 @@ public class Conditions {
 
     public boolean check(String id, ICustomRecipe<?> customRecipe, Data data) {
         var condition = getByID(id);
-        return condition != null && condition.check(customRecipe, data);
+        return condition == null || condition.check(customRecipe, data);
     }
 
     public boolean checkConditions(ICustomRecipe<?> customRecipe, Data data) {
