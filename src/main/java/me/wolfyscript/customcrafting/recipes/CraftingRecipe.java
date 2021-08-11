@@ -6,11 +6,9 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -58,19 +56,11 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         setIngredients(Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue()))));
     }
 
-    protected CraftingRecipe(int gridSize, S settings) {
-        super();
+    protected CraftingRecipe(NamespacedKey key, int gridSize, S settings) {
+        super(key);
         this.requiredGridSize = gridSize;
         this.bookSquaredGrid = requiredGridSize * requiredGridSize;
         this.ingredients = new HashMap<>();
-        this.settings = settings;
-    }
-
-    protected CraftingRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result result, Map<Character, Ingredient> ingredients, int requiredGridSize, S settings) {
-        super(namespacedKey, exactMeta, hidden, group, priority, conditions, result);
-        this.ingredients = ingredients;
-        this.requiredGridSize = requiredGridSize;
-        this.bookSquaredGrid = requiredGridSize * requiredGridSize;
         this.settings = settings;
     }
 
@@ -114,18 +104,12 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     }
 
     @Override
-    public void setIngredient(char key, Ingredient ingredients) {
-        if (ingredients == null || ingredients.isEmpty()) {
-            this.ingredients.remove(key);
-        } else {
-            ingredients.buildChoices();
-            this.ingredients.put(key, ingredients);
-        }
-    }
-
-    @Override
-    public void setIngredient(int slot, Ingredient ingredients) {
-        setIngredient(LETTERS.charAt(slot), ingredients);
+    public void setIngredient(char key, Ingredient ingredient) {
+        //TODO: Separate Shaped and Shapeless recipe!
+        Preconditions.checkArgument(this.ingredients.containsKey(key), "Invalid ingredient key! Shape does not contain key!");
+        Preconditions.checkArgument(ingredient != null && !ingredient.isEmpty(), "Invalid ingredient! Ingredient must not be null nor empty!");
+        ingredient.buildChoices();
+        this.ingredients.put(key, ingredient);
     }
 
     @Override

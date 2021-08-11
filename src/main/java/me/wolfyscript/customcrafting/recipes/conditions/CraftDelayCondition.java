@@ -69,10 +69,10 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
             super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.craft_delay", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(CraftDelayCondition.class).getDelay());
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
-                            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+                            var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                             try {
                                 long value = Long.parseLong(s);
                                 conditions.getByType(CraftDelayCondition.class).setDelay(value);

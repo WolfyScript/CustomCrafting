@@ -59,10 +59,10 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
             super(Material.BARRIER, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.craft_limit", Material.BARRIER, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(CraftLimitCondition.class).getLimit());
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftLimitCondition.class).getLimit());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
-                            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+                            var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                             try {
                                 conditions.getByType(CraftLimitCondition.class).setLimit(Long.parseLong(s));
                             } catch (NumberFormatException ex) {

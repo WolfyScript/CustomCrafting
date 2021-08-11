@@ -34,8 +34,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
     }
 
-    public CustomRecipeSmithing() {
-        super();
+    public CustomRecipeSmithing(NamespacedKey key) {
+        super(key);
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
@@ -53,15 +53,6 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     @Override
     public RecipeType<CustomRecipeSmithing> getRecipeType() {
         return RecipeType.SMITHING;
-    }
-
-    @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
-        if (slot == 0) {
-            setBase(ingredient);
-        } else {
-            setAddition(ingredient);
-        }
     }
 
     @Override

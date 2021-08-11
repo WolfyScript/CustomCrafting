@@ -31,8 +31,8 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
         this.inputBottom = ItemLoader.loadIngredient(node.path("input_bottom"));
     }
 
-    public CustomRecipeGrindstone() {
-        super();
+    public CustomRecipeGrindstone(NamespacedKey key) {
+        super(key);
         this.result = new Result();
         this.inputTop = new Ingredient();
         this.inputBottom = new Ingredient();
@@ -49,15 +49,6 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
     @Override
     public RecipeType<CustomRecipeGrindstone> getRecipeType() {
         return RecipeType.GRINDSTONE;
-    }
-
-    @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
-        if (slot == 0) {
-            setInputTop(ingredient);
-        } else {
-            setInputBottom(ingredient);
-        }
     }
 
     @Override

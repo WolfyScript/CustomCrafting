@@ -13,11 +13,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
 
-    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getIngredientData().getIngredient().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
 
     public ButtonContainerItemIngredient(int ingredSlot) {
         super("item_container_" + ingredSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, invSlot, event) -> {
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 if (!ItemUtils.isAirOrNull(inventory.getItem(invSlot))) {
                     cache.getItems().setVariant(ingredSlot, CustomItem.getReferenceByItemStack(inventory.getItem(invSlot)));
                     cache.setApplyItem(APPLY_ITEM);
@@ -27,12 +27,12 @@ public class ButtonContainerItemIngredient extends ItemInputButton<CCCache> {
             }
             return false;
         }, (cache, guiHandler, player, guiInventory, itemStack, i, event) -> {
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
                 return;
             }
-            cache.getIngredientData().getIngredient().put(ingredSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
+            cache.getRecipeCreatorCache().getIngredientCache().getIngredient().put(ingredSlot, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
         }, null, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-            var data = cache.getIngredientData().getIngredient();
+            var data = cache.getRecipeCreatorCache().getIngredientCache().getIngredient();
             return data != null ? data.getItemStack(ingredSlot) : ItemUtils.AIR;
         }));
     }

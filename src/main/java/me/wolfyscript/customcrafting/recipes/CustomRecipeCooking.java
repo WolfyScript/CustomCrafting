@@ -38,8 +38,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         this.source = ItemLoader.loadIngredient(node.path("source"));
     }
 
-    protected CustomRecipeCooking() {
-        super();
+    protected CustomRecipeCooking(NamespacedKey key) {
+        super(key);
         this.source = new Ingredient();
         this.exp = 0;
         this.cookingTime = 80;
@@ -75,8 +75,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         return this.source;
     }
 
-    @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
+    private void setIngredient(int slot, Ingredient ingredient) {
         setSource(ingredient);
     }
 

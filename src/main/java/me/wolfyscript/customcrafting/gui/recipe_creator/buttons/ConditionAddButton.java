@@ -11,7 +11,7 @@ public class ConditionAddButton extends ActionButton<CCCache> {
 
     public ConditionAddButton(NamespacedKey key, Condition.AbstractGUIComponent<?> condition) {
         super("icon_" + key.toString("_"), new ButtonState<>("icon", condition.getIcon(), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipe().getConditions().setCondition(CCClassRegistry.RECIPE_CONDITIONS.create(key));
+            cache.getRecipeCreatorCache().getRecipeCache().getConditions().setCondition(CCClassRegistry.RECIPE_CONDITIONS.create(key));
             return true;
         }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             var langAPI = guiHandler.getApi().getLanguageAPI();

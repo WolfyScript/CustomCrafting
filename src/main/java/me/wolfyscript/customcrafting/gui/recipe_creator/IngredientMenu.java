@@ -29,25 +29,20 @@ public class IngredientMenu extends CCWindow {
             registerButton(new ButtonContainerItemIngredient(i));
         }
         registerButton(new ActionButton<>("back", new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
-            try {
-                cache.getRecipe().setIngredient(cache.getIngredientData().getSlot(), cache.getIngredientData().getIngredient());
-            } catch (IllegalArgumentException exception) {
-                //We can ignore it, because the recipe is being created/edited!
-                //TODO: Look for a better solution! Perhaps a builder of some sort.
-            }
+            cache.getRecipeCreatorCache().getRecipeCache().applyIngredientCache();
             guiHandler.openPreviousWindow();
             return true;
         })));
         registerButton(new ActionButton<>("tags", new ButtonState<>(RecipeCreatorCluster.TAGS, Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            cache.getTagSettingsCache().setRecipeItemStack(cache.getIngredientData().getIngredient());
+            cache.getRecipeCreatorCache().getTagSettingsCache().setRecipeItemStack(cache.getRecipeCreatorCache().getIngredientCache().getIngredient());
             guiHandler.openWindow("tag_settings");
             return true;
         })));
-        registerButton(new ToggleButton<>(REPLACE_WITH_REMAINS, (cache, guiHandler, player, guiInventory, i) -> cache.getIngredientData().getIngredient().isReplaceWithRemains(), new ButtonState<>(REPLACE_WITH_REMAINS + ".enabled", Material.BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            cache.getIngredientData().getIngredient().setReplaceWithRemains(false);
+        registerButton(new ToggleButton<>(REPLACE_WITH_REMAINS, (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getIngredientCache().getIngredient().isReplaceWithRemains(), new ButtonState<>(REPLACE_WITH_REMAINS + ".enabled", Material.BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            cache.getRecipeCreatorCache().getIngredientCache().getIngredient().setReplaceWithRemains(false);
             return true;
         }), new ButtonState<>(REPLACE_WITH_REMAINS + ".disabled", Material.BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            cache.getIngredientData().getIngredient().setReplaceWithRemains(true);
+            cache.getRecipeCreatorCache().getIngredientCache().getIngredient().setReplaceWithRemains(true);
             return true;
         })));
     }

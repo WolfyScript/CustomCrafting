@@ -10,8 +10,8 @@ public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<Crafti
         super(namespacedKey, node, 6, EliteRecipeSettings.class);
     }
 
-    public CraftingRecipeEliteShapeless() {
-        super(6, new EliteRecipeSettings());
+    public CraftingRecipeEliteShapeless(NamespacedKey key) {
+        super(key, 6, new EliteRecipeSettings());
     }
 
     public CraftingRecipeEliteShapeless(CraftingRecipeEliteShapeless eliteCraftingRecipe) {

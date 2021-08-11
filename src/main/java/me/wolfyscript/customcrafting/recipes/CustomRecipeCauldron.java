@@ -49,8 +49,8 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
     }
 
-    public CustomRecipeCauldron() {
-        super();
+    public CustomRecipeCauldron(NamespacedKey key) {
+        super(key);
         this.result = new Result();
         this.ingredients = new Ingredient();
         this.dropItems = true;
@@ -165,8 +165,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         setIngredient(0, ingredients);
     }
 
-    @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
+    private void setIngredient(int slot, Ingredient ingredient) {
         this.ingredients = ingredient;
     }
 

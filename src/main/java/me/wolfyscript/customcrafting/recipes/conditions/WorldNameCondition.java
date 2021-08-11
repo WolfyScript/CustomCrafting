@@ -63,14 +63,14 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
             super(Material.GRASS_BLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
-                            var conditions = cache.getRecipe().getConditions();
+                            var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
                             if (!conditions.getByType(WorldNameCondition.class).getWorldNames().isEmpty()) {
                                 conditions.getByType(WorldNameCondition.class).getWorldNames().remove(conditions.getByType(WorldNameCondition.class).getWorldNames().size() - 1);
                             }
                             return true;
                         }));
                         menu.registerButton(new DummyButton<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
-                            var condition = guiHandler.getCustomCache().getRecipe().getConditions().getByType(WorldNameCondition.class);
+                            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldNameCondition.class);
                             hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.getWorldNames().size()) {
@@ -88,7 +88,7 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
                                     menu.sendMessage(player, "missing_world");
                                     return true;
                                 }
-                                var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+                                var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                                 var condition = conditions.getByType(WorldNameCondition.class);
                                 if (condition.getWorldNames().contains(s)) {
                                     menu.sendMessage(player, "already_existing");

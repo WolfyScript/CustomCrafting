@@ -12,9 +12,9 @@ public class RecipeTypeButton extends ActionButton<CCCache> {
 
     public RecipeTypeButton(RecipeType<?> recipeType, ItemStack icon) {
         super(recipeType.getId(), icon, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().setRecipeType(recipeType);
-            guiHandler.getCustomCache().setSetting(Setting.RECIPE_CREATOR);
-            guiHandler.openWindow(new NamespacedKey("recipe_creator", guiHandler.getCustomCache().getRecipeType().getCreatorID()));
+            cache.getRecipeCreatorCache().setRecipeType(recipeType);
+            cache.setSetting(Setting.RECIPE_CREATOR);
+            guiHandler.openWindow(new NamespacedKey("recipe_creator", cache.getRecipeCreatorCache().getRecipeType().getCreatorID()));
             return true;
         });
     }

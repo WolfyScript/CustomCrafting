@@ -67,8 +67,8 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.blockRepair = recipe.blockRepair;
     }
 
-    public CustomRecipeAnvil() {
-        super();
+    public CustomRecipeAnvil(NamespacedKey key) {
+        super(key);
         this.mode = Mode.RESULT;
         this.base = new Ingredient();
         this.addition = new Ingredient();
@@ -176,13 +176,12 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         return RecipeType.ANVIL;
     }
 
-    @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
-        if (slot == 0) {
-            this.base = ingredient;
-        } else {
-            this.addition = ingredient;
-        }
+    public void setBase(Ingredient base) {
+        this.base = base;
+    }
+
+    public void setAddition(Ingredient addition) {
+        this.addition = addition;
     }
 
     @Override

@@ -26,8 +26,9 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
     protected static final String KEY_EXACT_META = "exactItemMeta";
     protected static final String KEY_CONDITIONS = "conditions";
     protected static final String KEY_HIDDEN = "hidden";
+    protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
-    protected NamespacedKey namespacedKey;
+    protected final NamespacedKey namespacedKey;
     protected boolean exactMeta;
     protected boolean hidden;
 
@@ -39,7 +40,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
     protected Result result;
 
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
-        this.namespacedKey = Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!");
+        this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         //Get fields from JsonNode
@@ -58,22 +59,10 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
         }
     }
 
-    protected CustomRecipe(NamespacedKey namespacedKey, boolean exactMeta, boolean hidden, String group, RecipePriority priority, Conditions conditions, Result result) {
+    protected CustomRecipe(NamespacedKey key) {
+        this.namespacedKey = key;
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
-        this.namespacedKey = Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!");
-        this.exactMeta = exactMeta;
-        this.hidden = hidden;
-        this.group = group;
-        this.priority = priority;
-        this.conditions = conditions;
-        this.result = result;
-    }
-
-    protected CustomRecipe() {
-        this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.inst().getApi();
-        this.namespacedKey = null;
         this.result = new Result();
 
         this.group = "";
@@ -111,18 +100,8 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
     }
 
     @Override
-    public boolean hasNamespacedKey() {
-        return namespacedKey != null;
-    }
-
-    @Override
     public NamespacedKey getNamespacedKey() {
         return namespacedKey;
-    }
-
-    @Override
-    public void setNamespacedKey(NamespacedKey namespacedKey) {
-        this.namespacedKey = namespacedKey;
     }
 
     @Override
@@ -162,7 +141,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
 
     @Override
     public void setGroup(String group) {
-        this.group = group;
+        this.group = group == null ? "" : group;
     }
 
     @Override
@@ -182,8 +161,8 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
 
     @Override
     public void setResult(Result result) {
-        this.result = result;
         Preconditions.checkArgument(!result.isEmpty(), "Invalid result! Recipe must have a non-air result!");
+        this.result = result;
     }
 
     @Override

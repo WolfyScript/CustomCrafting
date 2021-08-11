@@ -6,23 +6,23 @@ import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
+import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCreatorCache;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.*;
-import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.potion.PotionEffect;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CCCache extends CustomCache {
 
     private Setting setting;
 
     //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
-    private final HashMap<RecipeType<?>, ICustomRecipe<?>> recipes = new HashMap<>();
+    private final Map<RecipeType<?>, ICustomRecipe<?>> recipes = new HashMap<>();
 
     private final CustomCrafting customCrafting;
     private String subSetting;
@@ -33,20 +33,16 @@ public class CCCache extends CustomCache {
     private final RecipeList recipeList = new RecipeList();
 
     private final PotionEffects potionEffectCache = new PotionEffects();
-    private final KnowledgeBook knowledgeBook = new KnowledgeBook();
+    private final RecipeBookCache recipeBookCache = new RecipeBookCache();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
     private final BrewingGUICache brewingGUICache = new BrewingGUICache();
 
-    private final IngredientData ingredientData = new IngredientData();
-    private final TagSettingsCache tagSettingsCache = new TagSettingsCache();
-    private final ConditionsCache conditionsCache = new ConditionsCache();
-
     private ApplyItem applyItem;
     private ApplyPotionEffect applyPotionEffect;
 
-    private RecipeType<?> recipeType;
+    private final RecipeCreatorCache recipeCreatorCache = new RecipeCreatorCache();
 
     public CCCache() {
         super();
@@ -54,20 +50,6 @@ public class CCCache extends CustomCache {
         this.setting = Setting.MAIN_MENU;
         this.subSetting = "";
         this.applyItem = null;
-        this.recipeType = RecipeType.WORKBENCH;
-
-        setCustomRecipe(new CustomRecipeAnvil());
-        setCustomRecipe(RecipeType.WORKBENCH, new CraftingRecipeShaped());
-        setCustomRecipe(RecipeType.ELITE_WORKBENCH, new CraftingRecipeEliteShaped());
-        setCustomRecipe(new CustomRecipeBlasting());
-        setCustomRecipe(new CustomRecipeCampfire());
-        setCustomRecipe(new CustomRecipeSmoking());
-        setCustomRecipe(new CustomRecipeFurnace());
-        setCustomRecipe(new CustomRecipeStonecutter());
-        setCustomRecipe(new CustomRecipeGrindstone());
-        setCustomRecipe(new CustomRecipeCauldron());
-        setCustomRecipe(new CustomRecipeBrewing());
-        setCustomRecipe(new CustomRecipeSmithing());
     }
 
     public Setting getSetting() {
@@ -76,14 +58,6 @@ public class CCCache extends CustomCache {
 
     public void setSetting(Setting setting) {
         this.setting = setting;
-    }
-
-    public RecipeType<?> getRecipeType() {
-        return recipeType;
-    }
-
-    public void setRecipeType(RecipeType<?> recipeType) {
-        this.recipeType = recipeType;
     }
 
     public String getSubSetting() {
@@ -98,8 +72,8 @@ public class CCCache extends CustomCache {
         return chatLists;
     }
 
-    public KnowledgeBook getKnowledgeBook() {
-        return knowledgeBook;
+    public RecipeBookCache getKnowledgeBook() {
+        return recipeBookCache;
     }
 
     public Items getItems() {
@@ -114,16 +88,14 @@ public class CCCache extends CustomCache {
         return potionEffectCache;
     }
 
-    public IngredientData getIngredientData() {
-        return ingredientData;
-    }
-
+    @Deprecated
     public TagSettingsCache getTagSettingsCache() {
-        return tagSettingsCache;
+        return getRecipeCreatorCache().getTagSettingsCache();
     }
 
+    @Deprecated
     public ConditionsCache getConditionsCache() {
-        return conditionsCache;
+        return getRecipeCreatorCache().getConditionsCache();
     }
 
     public void setApplyPotionEffect(ApplyPotionEffect applyPotionEffect) {
@@ -167,91 +139,23 @@ public class CCCache extends CustomCache {
         return recipeBookEditor;
     }
 
-    //Recipes
-    public void setCustomRecipe(ICustomRecipe<?> customRecipe) {
-        recipes.put(customRecipe.getRecipeType(), customRecipe);
+    public RecipeCreatorCache getRecipeCreatorCache() {
+        return recipeCreatorCache;
     }
 
-    public <T extends ICustomRecipe<?>> void setCustomRecipe(RecipeType<T> type, T customRecipe) {
-        recipes.put(type, customRecipe);
-    }
-
+    @Deprecated
     public ICustomRecipe<?> getRecipe() {
-        return getRecipe(getRecipeType());
+        return getRecipe(recipeCreatorCache.getRecipeType());
     }
 
+    @Deprecated
     public <T extends ICustomRecipe<?>> T getRecipe(RecipeType<T> recipeType) {
         return recipeType.getClazz().cast(recipes.get(recipeType));
     }
 
-
-    /***************************************************************
-     * Util methods to get specific kinds of Recipes that are cached into this class
-     * Used for the GUI Recipe Creators!
-     *
-     ***************************************************************/
-    public CustomRecipeCooking<?,?> getCookingRecipe() {
-        return switch (recipeType.getType()) {
-            case FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE -> (CustomRecipeCooking<?, ?>) getRecipe(recipeType);
-            default -> null;
-        };
-    }
-
+    @Deprecated
     public void resetRecipe(){
-        switch (getRecipeType().getType()) {
-            case ELITE_WORKBENCH:
-                setCustomRecipe(new CraftingRecipeEliteShaped());
-                break;
-            case WORKBENCH:
-                setCustomRecipe(new CraftingRecipeShaped());
-                break;
-            default:
-                try {
-                    setCustomRecipe(getRecipeType().getClazz().getDeclaredConstructor().newInstance());
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-        }
+        //TODO: Create new method to replace this one
     }
 
-    public CraftingRecipe<?, ?> getCraftingRecipe() {
-        return (CraftingRecipe<?, ?>) getRecipe(getRecipeType());
-    }
-
-    /***************************************************************
-     * Getters and setters for all the Recipes that are saved in this cache.
-     * Usage for the GUI Creator!
-     *
-     ***************************************************************/
-    public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCraftingRecipe() {
-        return getRecipe(RecipeType.WORKBENCH);
-    }
-
-    public CustomRecipeAnvil getAnvilRecipe() {
-        return getRecipe(RecipeType.ANVIL);
-    }
-
-    public CraftingRecipe<?, EliteRecipeSettings> getEliteCraftingRecipe() {
-        return getRecipe(RecipeType.ELITE_WORKBENCH);
-    }
-
-    public CustomRecipeCauldron getCauldronRecipe() {
-        return getRecipe(RecipeType.CAULDRON);
-    }
-
-    public CustomRecipeStonecutter getStonecutterRecipe() {
-        return getRecipe(RecipeType.STONECUTTER);
-    }
-
-    public CustomRecipeGrindstone getGrindstoneRecipe() {
-        return getRecipe(RecipeType.GRINDSTONE);
-    }
-
-    public CustomRecipeBrewing getBrewingRecipe() {
-        return getRecipe(RecipeType.BREWING_STAND);
-    }
-
-    public CustomRecipeSmithing getSmithingRecipe() {
-        return getRecipe(RecipeType.SMITHING);
-    }
 }

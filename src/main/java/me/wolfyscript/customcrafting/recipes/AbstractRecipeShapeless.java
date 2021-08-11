@@ -19,8 +19,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         constructRecipe();
     }
 
-    protected AbstractRecipeShapeless(int gridSize, S settings) {
-        super(gridSize, settings);
+    protected AbstractRecipeShapeless(NamespacedKey key, int gridSize, S settings) {
+        super(key, gridSize, settings);
     }
 
     protected AbstractRecipeShapeless(CraftingRecipe<?, S> craftingRecipe) {

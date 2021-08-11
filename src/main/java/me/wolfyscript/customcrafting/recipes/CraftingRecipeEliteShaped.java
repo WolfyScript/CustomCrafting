@@ -10,8 +10,8 @@ public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingReci
         super(namespacedKey, node, 6, EliteRecipeSettings.class);
     }
 
-    public CraftingRecipeEliteShaped() {
-        super(6, new EliteRecipeSettings());
+    public CraftingRecipeEliteShaped(NamespacedKey key) {
+        super(key, 6, new EliteRecipeSettings());
     }
 
     public CraftingRecipeEliteShaped(CraftingRecipeEliteShaped eliteCraftingRecipe) {

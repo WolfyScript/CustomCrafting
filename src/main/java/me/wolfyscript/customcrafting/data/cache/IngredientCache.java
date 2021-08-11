@@ -6,12 +6,12 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReferen
 
 import java.util.List;
 
-public class IngredientData {
+public class IngredientCache {
 
     private int slot;
     private Ingredient ingredient;
 
-    public IngredientData() {
+    public IngredientCache() {
         this.ingredient = null;
     }
 

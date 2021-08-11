@@ -94,8 +94,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         setRequiredEffects(requiredEffects);
     }
 
-    public CustomRecipeBrewing() {
-        super();
+    public CustomRecipeBrewing(NamespacedKey key) {
+        super(key);
         this.ingredients = new Ingredient();
         this.fuelCost = 1;
         this.brewTime = 400;
@@ -144,8 +144,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         return getIngredient(0);
     }
 
-    @Override
-    public void setIngredient(int slot, Ingredient ingredient) {
+    private void setIngredient(int slot, Ingredient ingredient) {
         if (slot == 0) {
             this.ingredients = ingredient;
         } else {

@@ -37,8 +37,8 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
     }
 
-    protected AbstractRecipeShaped(int gridSize, S settings) {
-        super(gridSize, settings);
+    protected AbstractRecipeShaped(NamespacedKey key, int gridSize, S settings) {
+        super(key, gridSize, settings);
         this.mirrorHorizontal = true;
         this.mirrorVertical = false;
         this.mirrorRotation = false;

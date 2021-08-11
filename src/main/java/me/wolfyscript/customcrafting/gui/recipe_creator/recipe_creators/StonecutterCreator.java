@@ -31,7 +31,7 @@ public class StonecutterCreator extends RecipeCreator {
         update.setButton(24, "recipe.result");
 
         update.setButton(42, RecipeCreatorCluster.GROUP);
-        if (update.getGuiHandler().getCustomCache().getStonecutterRecipe().hasNamespacedKey()) {
+        if (update.getGuiHandler().getCustomCache().getRecipeCreatorCache().getStonecuttingCache().isSaved()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }
         update.setButton(44, RecipeCreatorCluster.SAVE_AS);
@@ -39,7 +39,7 @@ public class StonecutterCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        var recipe = cache.getStonecutterRecipe();
+        var recipe = cache.getRecipeCreatorCache().getStonecuttingCache();
         return !recipe.getResult().isEmpty() && !recipe.getSource().isEmpty();
     }
 }

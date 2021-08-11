@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeIngredient;
 import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ButtonRecipeResult;
-import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -31,7 +30,7 @@ public class CookingCreator extends RecipeCreator {
         registerButton(new ButtonRecipeResult());
 
         registerButton(new ChatInputButton<>(XP, Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%XP%", guiHandler.getCustomCache().getCookingRecipe().getExp());
+            hashMap.put("%XP%", cache.getRecipeCreatorCache().getCookingCache().getExp());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
             float xp;
@@ -41,11 +40,11 @@ public class CookingCreator extends RecipeCreator {
                 api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
-            guiHandler.getCustomCache().getCookingRecipe().setExp(xp);
+            guiHandler.getCustomCache().getRecipeCreatorCache().getCookingCache().setExp(xp);
             return false;
         }));
         registerButton(new ChatInputButton<>(COOKING_TIME, Material.COAL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%TIME%", guiHandler.getCustomCache().getCookingRecipe().getCookingTime());
+            hashMap.put("%TIME%", cache.getRecipeCreatorCache().getCookingCache().getCookingTime());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
             int time;
@@ -55,7 +54,7 @@ public class CookingCreator extends RecipeCreator {
                 api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;
             }
-            guiHandler.getCustomCache().getCookingRecipe().setCookingTime(time);
+            guiHandler.getCustomCache().getRecipeCreatorCache().getCookingCache().setCookingTime(time);
             return false;
         }));
     }
@@ -79,16 +78,16 @@ public class CookingCreator extends RecipeCreator {
         update.setButton(29, COOKING_TIME);
 
         update.setButton(42, RecipeCreatorCluster.GROUP);
-        if (cache.getCookingRecipe().hasNamespacedKey()) {
+        if (cache.getRecipeCreatorCache().getCookingCache().isSaved()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }
         update.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
     public boolean validToSave(CCCache cache) {
-        var type = cache.getRecipeType().getType();
+        var type = cache.getRecipeCreatorCache().getRecipeType().getType();
         if (type == RecipeType.Type.FURNACE || type == RecipeType.Type.BLAST_FURNACE || type == RecipeType.Type.SMOKER || type == RecipeType.Type.CAMPFIRE) {
-            CustomRecipeCooking<?, ?> furnace = cache.getCookingRecipe();
+            var furnace = cache.getRecipeCreatorCache().getCookingCache();
             return !furnace.getSource().isEmpty() && !furnace.getResult().isEmpty();
         }
         return false;

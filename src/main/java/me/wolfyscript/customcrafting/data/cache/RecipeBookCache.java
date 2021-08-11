@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class KnowledgeBook {
+public class RecipeBookCache {
 
     private final CustomCrafting customCrafting;
     private EliteWorkbench eliteCraftingTable;
@@ -24,7 +24,7 @@ public class KnowledgeBook {
     private Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
 
-    public KnowledgeBook() {
+    public RecipeBookCache() {
         this.customCrafting = (CustomCrafting) Bukkit.getPluginManager().getPlugin("CustomCrafting");
         this.page = 0;
         this.subFolderPage = 0;

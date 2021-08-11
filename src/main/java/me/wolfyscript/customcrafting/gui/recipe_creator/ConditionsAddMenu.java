@@ -34,13 +34,13 @@ public class ConditionsAddMenu extends CCWindow {
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
         var cache = update.getGuiHandler().getCustomCache();
-        var recipe = cache.getRecipe();
+        var recipe = cache.getRecipeCreatorCache().getRecipeCache();
         update.setButton(8, PlayerUtil.getStore(update.getPlayer()).getLightBackground());
 
-        List<Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>>> conditions = Condition.getGuiComponents().entrySet().stream().filter(entry -> !recipe.getConditions().has(entry.getKey()) && entry.getValue().shouldRender(recipe)).toList();
+        List<Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>>> conditions = Condition.getGuiComponents().entrySet().stream().filter(entry -> !recipe.getConditions().has(entry.getKey())).toList();
         if (!conditions.isEmpty()) {
             int size = conditions.size();
-            int page = cache.getConditionsCache().getSelectNewPage();
+            int page = cache.getRecipeCreatorCache().getConditionsCache().getSelectNewPage();
             for (int i = page * CONDITIONS_PER_PAGE, slot = 0; i < size && slot < CONDITIONS_PER_PAGE; i++, slot++) {
                 Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>> entry = conditions.get(i);
                 var button = new ConditionAddButton(entry.getKey(), entry.getValue());

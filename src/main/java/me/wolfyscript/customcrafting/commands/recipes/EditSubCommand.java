@@ -36,10 +36,14 @@ public class EditSubCommand extends AbstractSubCommand {
                 ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
                 if (customRecipe != null) {
                     GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
-                    guiHandler.getCustomCache().setRecipeType(customRecipe.getRecipeType());
-                    guiHandler.getCustomCache().setSetting(Setting.RECIPE_CREATOR);
-                    if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
-                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("recipe_creator", guiHandler.getCustomCache().getRecipeType().getCreatorID())), 1);
+                    CCCache cache = guiHandler.getCustomCache();
+                    cache.setSetting(Setting.RECIPE_CREATOR);
+                    var creatorCache = cache.getRecipeCreatorCache();
+                    creatorCache.setRecipeType(customRecipe.getRecipeType());
+                    try {
+                        creatorCache.loadRecipeIntoCache(customRecipe);
+                    } catch (IllegalArgumentException ex) {
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("recipe_creator", creatorCache.getRecipeType().getCreatorID())), 1);
                     }
                 } else {
                     api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));

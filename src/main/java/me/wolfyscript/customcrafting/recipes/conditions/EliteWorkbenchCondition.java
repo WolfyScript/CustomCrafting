@@ -97,7 +97,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                                     menu.sendMessage(player, "not_elite_workbench");
                                     return true;
                                 }
-                                EliteWorkbenchCondition condition = guiHandler.getCustomCache().getRecipe().getConditions().getByType(EliteWorkbenchCondition.class);
+                                EliteWorkbenchCondition condition = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(EliteWorkbenchCondition.class);
                                 if (condition.getEliteWorkbenches().contains(namespacedKey)) {
                                     menu.sendMessage(player, "already_existing");
                                     return true;
@@ -109,7 +109,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             return true;
                         }));
                         menu.registerButton(new DummyButton<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
-                            var condition = guiHandler.getCustomCache().getRecipe().getConditions().getEliteCraftingTableCondition();
+                            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getEliteCraftingTableCondition();
                             hashMap.put("%MODE%", condition.getOption().getDisplayString(CustomCrafting.inst().getApi()));
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.getEliteWorkbenches().size()) {
@@ -121,7 +121,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             return itemStack;
                         }));
                         menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-                            var condition = guiHandler.getCustomCache().getRecipe().getConditions().getByType(EliteWorkbenchCondition.class);
+                            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(EliteWorkbenchCondition.class);
                             if (!condition.getEliteWorkbenches().isEmpty()) {
                                 condition.getEliteWorkbenches().remove(condition.getEliteWorkbenches().size() - 1);
                             }

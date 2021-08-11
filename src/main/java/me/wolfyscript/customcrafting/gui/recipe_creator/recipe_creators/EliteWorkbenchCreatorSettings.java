@@ -26,7 +26,7 @@ public class EliteWorkbenchCreatorSettings extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        var workbench = cache.getEliteCraftingRecipe();
+        var workbench = cache.getRecipeCreatorCache().getEliteCraftingCache();
         return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
     }
 }

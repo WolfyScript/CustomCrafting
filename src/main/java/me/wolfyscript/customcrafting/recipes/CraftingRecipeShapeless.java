@@ -16,8 +16,8 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
     }
 
-    public CraftingRecipeShapeless() {
-        super(3, new AdvancedRecipeSettings());
+    public CraftingRecipeShapeless(NamespacedKey key) {
+        super(key, 3, new AdvancedRecipeSettings());
     }
 
     public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {

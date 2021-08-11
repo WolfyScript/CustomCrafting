@@ -79,11 +79,10 @@ public class ConfigHandler {
             ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
             ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
-            var knowledgeBookCraft = new CraftingRecipeShapeless();
+            var knowledgeBookCraft = new CraftingRecipeShapeless(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.setIngredient('A', new Ingredient(Material.BOOK));
             knowledgeBookCraft.setIngredient('B', new Ingredient(Material.CRAFTING_TABLE));
             knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
-            knowledgeBookCraft.setNamespacedKey(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.save();
         }
         if (mainConfig.resetAdvancedWorkbench()) {
@@ -95,7 +94,7 @@ public class ConfigHandler {
             advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, CustomCrafting.ADVANCED_CRAFTING_TABLE);
             ItemLoader.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
 
-            var workbenchCraft = new CraftingRecipeShaped();
+            var workbenchCraft = new CraftingRecipeShaped(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.setMirrorHorizontal(false);
             workbenchCraft.setIngredient('B', new Ingredient(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('E', new Ingredient(Material.CRAFTING_TABLE));
@@ -108,7 +107,6 @@ public class ConfigHandler {
                 var extension = new MythicMobResultExtension("SkeletalKnight", 1);
                 result.addExtension(extension);
             }
-            workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }
 

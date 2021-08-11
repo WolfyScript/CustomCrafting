@@ -47,12 +47,12 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
             super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(WorldTimeCondition.class).getTime());
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).getTime());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
                             try {
                                 long value = Long.parseLong(s);
-                                guiHandler.getCustomCache().getRecipe().getConditions().getByType(WorldTimeCondition.class).setTime(value);
+                                guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).setTime(value);
                             } catch (NumberFormatException ex) {
                                 api.getChat().sendKey(player, "recipe_creator", "valid_number");
                             }

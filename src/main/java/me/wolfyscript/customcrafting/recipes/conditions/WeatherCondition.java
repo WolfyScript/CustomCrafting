@@ -73,10 +73,10 @@ public class WeatherCondition extends Condition<WeatherCondition> {
             super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-                            cache.getRecipe().getConditions().getByType(WeatherCondition.class).toggleWeather();
+                            cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).toggleWeather();
                             return true;
                         }, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
                             return itemStack;
                         }));
                     },

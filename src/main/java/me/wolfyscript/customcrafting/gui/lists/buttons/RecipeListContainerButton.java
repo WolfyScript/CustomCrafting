@@ -75,16 +75,17 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
                     if (RecipeType.WORKBENCH.isInstance(customRecipe)) {
-                        cache.setRecipeType(RecipeType.WORKBENCH);
+                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.WORKBENCH);
                     } else if (RecipeType.ELITE_WORKBENCH.isInstance(customRecipe)) {
-                        cache.setRecipeType(RecipeType.ELITE_WORKBENCH);
+                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.ELITE_WORKBENCH);
                     } else {
-                        cache.setRecipeType(customRecipe.getRecipeType());
+                        cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
                     }
-                    if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
-                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(RecipeCreatorCluster.KEY, guiHandler.getCustomCache().getRecipeType().getCreatorID())), 1);
-                    } else {
-                        api.getChat().sendKey(player, MainCluster.RECIPE_LIST, "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
+                    try {
+                        cache.getRecipeCreatorCache().loadRecipeIntoCache(customRecipe);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(RecipeCreatorCluster.KEY, cache.getRecipeCreatorCache().getRecipeType().getCreatorID())), 1);
+                    } catch (IllegalArgumentException ex) {
+                        api.getChat().sendKey(player, MainCluster.RECIPE_LIST, "invalid_recipe", new Pair<>("%recipe_type%", cache.getRecipeCreatorCache().getRecipeType().name()));
                     }
                 } else {
                     api.getChat().sendKey(player, MainCluster.RECIPE_LIST, "delete.confirm", new Pair<>("%recipe%", customRecipe.getNamespacedKey().toString()));

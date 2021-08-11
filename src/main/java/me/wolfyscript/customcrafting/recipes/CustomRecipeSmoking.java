@@ -12,8 +12,8 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
         super(namespacedKey, node);
     }
 
-    public CustomRecipeSmoking() {
-        super();
+    public CustomRecipeSmoking(NamespacedKey key) {
+        super(key);
     }
 
     public CustomRecipeSmoking(CustomRecipeSmoking customRecipeSmoking) {

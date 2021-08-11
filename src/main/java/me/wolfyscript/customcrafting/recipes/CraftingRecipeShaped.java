@@ -15,8 +15,8 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
     }
 
-    public CraftingRecipeShaped() {
-        super(3, new AdvancedRecipeSettings());
+    public CraftingRecipeShaped(NamespacedKey key) {
+        super(key, 3, new AdvancedRecipeSettings());
     }
 
     public CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {

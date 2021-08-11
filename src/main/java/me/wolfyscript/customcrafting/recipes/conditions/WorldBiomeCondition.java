@@ -62,14 +62,14 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
             super(Material.SAND, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
-                            var conditions = cache.getRecipe().getConditions();
+                            var conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
                             if (!conditions.getByType(WorldBiomeCondition.class).getBiomes().isEmpty()) {
                                 conditions.getByType(WorldBiomeCondition.class).getBiomes().remove(conditions.getByType(WorldBiomeCondition.class).getBiomes().size() - 1);
                             }
                             return true;
                         }));
                         menu.registerButton(new DummyButton<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
-                            WorldBiomeCondition condition = guiHandler.getCustomCache().getRecipe().getConditions().getByType(WorldBiomeCondition.class);
+                            WorldBiomeCondition condition = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldBiomeCondition.class);
                             hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
                             for (int i = 0; i < 4; i++) {
                                 if (i < condition.getBiomes().size()) {
@@ -84,7 +84,7 @@ public class WorldBiomeCondition extends Condition<WorldBiomeCondition> {
                             if (!s.isEmpty()) {
                                 try {
                                     var biome = Biome.valueOf(s.toUpperCase(Locale.ROOT));
-                                    var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
+                                    var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
                                     WorldBiomeCondition condition = conditions.getByType(WorldBiomeCondition.class);
                                     if (condition.getBiomes().contains(biome.toString())) {
                                         menu.sendMessage(player, "already_existing");

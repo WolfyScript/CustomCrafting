@@ -12,11 +12,11 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
         super(namespacedKey, node);
     }
 
-    public CustomRecipeFurnace() {
-        super();
+    public CustomRecipeFurnace(NamespacedKey key) {
+        super(key);
     }
 
-    public CustomRecipeFurnace(CustomRecipeFurnace customRecipeFurnace){
+    public CustomRecipeFurnace(CustomRecipeFurnace customRecipeFurnace) {
         super(customRecipeFurnace);
     }
 

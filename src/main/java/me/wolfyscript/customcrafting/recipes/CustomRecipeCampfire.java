@@ -12,11 +12,11 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
         super(namespacedKey, node);
     }
 
-    public CustomRecipeCampfire() {
-        super();
+    public CustomRecipeCampfire(NamespacedKey key) {
+        super(key);
     }
 
-    public CustomRecipeCampfire(CustomRecipeCampfire customRecipeCampfire){
+    public CustomRecipeCampfire(CustomRecipeCampfire customRecipeCampfire) {
         super(customRecipeCampfire);
     }
 

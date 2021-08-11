@@ -48,13 +48,13 @@ public class ConditionsMenu extends CCWindow {
             return true;
         }));
         registerButton(new ActionButton<>(TOGGLE_MODE, Material.LEVER, (cache, guiHandler, player, inventory, slot, event) -> {
-            var condition = cache.getRecipe().getConditions().getByKey(cache.getConditionsCache().getSelectedCondition());
+            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
             if (condition != null) {
                 condition.toggleOption();
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var condition = cache.getRecipe().getConditions().getByKey(cache.getConditionsCache().getSelectedCondition());
+            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
             if (condition != null) {
                 hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
             }
@@ -62,9 +62,9 @@ public class ConditionsMenu extends CCWindow {
         }));
 
         registerButton(new ActionButton<>(REMOVE, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
-            var condition = cache.getConditionsCache().getSelectedCondition();
+            var condition = cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition();
             if (condition != null) {
-                cache.getRecipe().getConditions().removeCondition(condition);
+                cache.getRecipeCreatorCache().getRecipeCache().getConditions().removeCondition(condition);
             }
             return true;
         }));
@@ -85,12 +85,12 @@ public class ConditionsMenu extends CCWindow {
         update.setButton(16, PAGE_DOWN);
         update.setButton(17, ADD);
 
-        Conditions conditions = cache.getRecipe().getConditions();
+        Conditions conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
 
         List<NamespacedKey> values = List.copyOf(conditions.keySet());
         int size = values.size();
         int maxPages = (int) Math.floor(size / 16d);
-        int page = cache.getConditionsCache().getPage();
+        int page = cache.getRecipeCreatorCache().getConditionsCache().getPage();
 
         for (int i = page * 16, slot = 0; i < values.size(); i++, slot++) {
             if (slot == 7) {
@@ -101,7 +101,7 @@ public class ConditionsMenu extends CCWindow {
             update.setButton(slot, button);
         }
 
-        NamespacedKey key = cache.getConditionsCache().getSelectedCondition();
+        NamespacedKey key = cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition();
 
         Condition<?> selectedCondition = conditions.getByKey(key);
         if (selectedCondition != null) {

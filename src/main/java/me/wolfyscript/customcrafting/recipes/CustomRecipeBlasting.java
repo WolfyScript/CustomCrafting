@@ -12,11 +12,11 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
         super(namespacedKey, node);
     }
 
-    public CustomRecipeBlasting() {
-        super();
+    public CustomRecipeBlasting(NamespacedKey key) {
+        super(key);
     }
 
-    public CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting){
+    public CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting) {
         super(customRecipeBlasting);
     }
 

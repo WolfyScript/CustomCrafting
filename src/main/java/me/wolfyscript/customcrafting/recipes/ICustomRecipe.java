@@ -35,12 +35,8 @@ public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
 
     WolfyUtilities getAPI();
 
-    boolean hasNamespacedKey();
-
     @Override
     NamespacedKey getNamespacedKey();
-
-    void setNamespacedKey(NamespacedKey namespacedKey);
 
     RecipeType<C> getRecipeType();
 
@@ -51,14 +47,6 @@ public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
     Result getResult();
 
     void setResult(Result result);
-
-    /**
-     * Used to set Ingredient from cache of the RecipeCreator
-     *
-     * @param slot       The slot of the ingredient in the recipe.
-     * @param ingredient The ingredient to set
-     */
-    void setIngredient(int slot, Ingredient ingredient);
 
     Ingredient getIngredient(int slot);
 

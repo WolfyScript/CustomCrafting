@@ -5,15 +5,12 @@ import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
@@ -298,31 +295,6 @@ public class DataHandler {
         var finalLeftPos = leftPos;
         var finalRightPos = rightPos + 1;
         return items.stream().map(itemStacks -> itemStacks.subList(finalLeftPos, finalRightPos)).collect(Collectors.toList());
-    }
-
-    /**
-     * Loads a recipe copy into the {@link CCCache} of the {@link GuiHandler}.
-     *
-     * @param recipe     The recipe to load.
-     * @param guiHandler The {@link GuiHandler} to load into.
-     * @return If the recipe was successfully loaded into cache.
-     */
-    public boolean loadRecipeIntoCache(ICustomRecipe<?> recipe, GuiHandler<CCCache> guiHandler) {
-        if (guiHandler.getCustomCache().getRecipeType().isInstance(recipe)) {
-            ICustomRecipe<?> recipeCopy = recipe.clone();
-            recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
-            if (recipeCopy instanceof CraftingRecipe<?, ?> craftingRecipe) {
-                if (RecipeType.WORKBENCH.isInstance(craftingRecipe)) {
-                    guiHandler.getCustomCache().setCustomRecipe(RecipeType.WORKBENCH, RecipeType.WORKBENCH.cast(craftingRecipe));
-                } else if (RecipeType.ELITE_WORKBENCH.isInstance(craftingRecipe)) {
-                    guiHandler.getCustomCache().setCustomRecipe(RecipeType.ELITE_WORKBENCH, RecipeType.ELITE_WORKBENCH.cast(craftingRecipe));
-                }
-            } else {
-                guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
-            }
-            return true;
-        }
-        return false;
     }
 
     public Categories getCategories() {

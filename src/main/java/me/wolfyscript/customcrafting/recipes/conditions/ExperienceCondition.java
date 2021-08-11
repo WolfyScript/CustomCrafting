@@ -67,12 +67,12 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
             super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
                         menu.registerButton(new ChatInputButton<>("conditions.player_experience", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipe().getConditions().getByType(ExperienceCondition.class).getExpLevel());
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).getExpLevel());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
                             try {
                                 int value = Integer.parseInt(s);
-                                guiHandler.getCustomCache().getRecipe().getConditions().getByType(ExperienceCondition.class).setExpLevel(value);
+                                guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).setExpLevel(value);
                             } catch (NumberFormatException ex) {
                                 api.getChat().sendKey(player, "recipe_creator", "valid_number");
                             }
