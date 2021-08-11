@@ -28,8 +28,7 @@ public abstract class RecipeCache<R extends ICustomRecipe<?>> {
     protected String group;
     protected Result result;
 
-    protected RecipeCache(RecipeCreatorCache creatorCache) {
-        this.creatorCache = creatorCache;
+    protected RecipeCache() {
         this.key = null;
         this.exactMeta = true;
         this.hidden = false;
@@ -39,8 +38,7 @@ public abstract class RecipeCache<R extends ICustomRecipe<?>> {
         this.result = new Result();
     }
 
-    protected RecipeCache(RecipeCreatorCache creatorCache, R customRecipe) {
-        this.creatorCache = creatorCache;
+    protected RecipeCache(R customRecipe) {
         this.key = customRecipe.getNamespacedKey();
         this.exactMeta = customRecipe.isExactMeta();
         this.hidden = customRecipe.isHidden();
@@ -110,10 +108,6 @@ public abstract class RecipeCache<R extends ICustomRecipe<?>> {
         this.result = result;
     }
 
-    public void applyIngredientCache() {
-        setIngredient(creatorCache.getIngredientCache().getSlot(), creatorCache.getIngredientCache().getIngredient());
-    }
-
     public abstract void setIngredient(int slot, Ingredient ingredient);
 
     public abstract Ingredient getIngredient(int slot);
@@ -145,13 +139,14 @@ public abstract class RecipeCache<R extends ICustomRecipe<?>> {
         WolfyUtilities api = customCrafting.getApi();
         try {
             ICustomRecipe<?> recipe = constructRecipe();
-            recipe.save();
+            recipe.save(player);
+            CCRegistry.RECIPES.register(recipe);
             Bukkit.getScheduler().runTask(customCrafting, () -> {
-                CCRegistry.RECIPES.register(recipe);
-                api.getChat().sendKey(player, RecipeCreatorCluster.KEY, "loading.success");
-
+                if (player != null) {
+                    api.getChat().sendKey(player, RecipeCreatorCluster.KEY, "loading.success");
+                }
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
-                    //TODO cache.resetRecipe();
+                    guiHandler.getCustomCache().getRecipeCreatorCache().reset();
                 }
             });
         } catch (IllegalArgumentException ex) {

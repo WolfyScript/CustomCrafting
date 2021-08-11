@@ -143,19 +143,4 @@ public class CCCache extends CustomCache {
         return recipeCreatorCache;
     }
 
-    @Deprecated
-    public ICustomRecipe<?> getRecipe() {
-        return getRecipe(recipeCreatorCache.getRecipeType());
-    }
-
-    @Deprecated
-    public <T extends ICustomRecipe<?>> T getRecipe(RecipeType<T> recipeType) {
-        return recipeType.getClazz().cast(recipes.get(recipeType));
-    }
-
-    @Deprecated
-    public void resetRecipe(){
-        //TODO: Create new method to replace this one
-    }
-
 }

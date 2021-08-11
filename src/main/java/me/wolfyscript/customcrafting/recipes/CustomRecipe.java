@@ -14,6 +14,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectM
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -60,7 +61,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
     }
 
     protected CustomRecipe(NamespacedKey key) {
-        this.namespacedKey = key;
+        this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.result = new Result();
@@ -81,7 +82,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
     protected CustomRecipe(CustomRecipe<?> customRecipe) {
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
-        this.namespacedKey = customRecipe.namespacedKey;
+        this.namespacedKey = Objects.requireNonNull(customRecipe.namespacedKey, ERROR_MSG_KEY);
 
         this.group = customRecipe.group;
         this.priority = customRecipe.priority;
@@ -100,7 +101,7 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
     }
 
     @Override
-    public NamespacedKey getNamespacedKey() {
+    public @NotNull NamespacedKey getNamespacedKey() {
         return namespacedKey;
     }
 

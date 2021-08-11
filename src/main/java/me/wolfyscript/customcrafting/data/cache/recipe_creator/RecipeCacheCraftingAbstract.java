@@ -20,14 +20,14 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
     private boolean mirrorVertical;
     private boolean mirrorRotation;
 
-    protected RecipeCacheCraftingAbstract(RecipeCreatorCache creatorCache) {
-        super(creatorCache);
+    protected RecipeCacheCraftingAbstract() {
+        super();
         this.shapeless = false;
         this.ingredients = new HashMap<>();
     }
 
-    protected RecipeCacheCraftingAbstract(RecipeCreatorCache creatorCache, CraftingRecipe<?, S> recipe) {
-        super(creatorCache, recipe);
+    protected RecipeCacheCraftingAbstract(CraftingRecipe<?, S> recipe) {
+        super(recipe);
         this.settings = recipe.getSettings().clone();
         this.shapeless = RecipeType.WORKBENCH_SHAPED.isInstance(recipe) || RecipeType.ELITE_WORKBENCH_SHAPED.isInstance(recipe);
         this.ingredients = recipe.getIngredients().entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.indexOf(entry.getKey()), Map.Entry::getValue));

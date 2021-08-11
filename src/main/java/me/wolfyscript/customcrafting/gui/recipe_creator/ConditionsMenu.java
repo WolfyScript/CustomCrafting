@@ -69,7 +69,6 @@ public class ConditionsMenu extends CCWindow {
             return true;
         }));
         Condition.getGuiComponents().forEach((key, abstractGUIComponent) -> abstractGUIComponent.init(this, api));
-
     }
 
     @Override
@@ -105,7 +104,7 @@ public class ConditionsMenu extends CCWindow {
 
         Condition<?> selectedCondition = conditions.getByKey(key);
         if (selectedCondition != null) {
-            selectedCondition.render(update, cache, cache.getRecipe());
+            selectedCondition.render(update, cache, cache.getRecipeCreatorCache().getRecipeCache());
             update.setButton(53, REMOVE);
         }
     }

@@ -7,12 +7,12 @@ import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 
 public class RecipeCacheCrafting extends RecipeCacheCraftingAbstract<AdvancedRecipeSettings> {
 
-    public RecipeCacheCrafting(RecipeCreatorCache creatorCache) {
-        super(creatorCache);
+    public RecipeCacheCrafting() {
+        super();
     }
 
-    public RecipeCacheCrafting(RecipeCreatorCache creatorCache, CraftingRecipe<?, AdvancedRecipeSettings> recipe) {
-        super(creatorCache, recipe);
+    public RecipeCacheCrafting(CraftingRecipe<?, AdvancedRecipeSettings> recipe) {
+        super(recipe);
     }
 
     @Override

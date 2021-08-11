@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CCClassRegistry;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -119,7 +120,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         return (AbstractGUIComponent<C>) GUI_COMPONENTS.get(key);
     }
 
-    public void render(GuiUpdate<CCCache> update, CCCache cache, ICustomRecipe<?> recipe) {
+    public void render(GuiUpdate<CCCache> update, CCCache cache, RecipeCache<?> recipe) {
         if (getGuiComponent() != null) {
             getGuiComponent().renderMenu(update, cache, (C) this, recipe);
         }
@@ -144,7 +145,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
 
         public abstract void init(ConditionsMenu menu, WolfyUtilities api);
 
-        public abstract void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe);
+        public abstract void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, RecipeCache<?> recipe);
 
         public Material getIcon() {
             return icon;
@@ -175,7 +176,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         }
 
         @Override
-        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe) {
+        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, RecipeCache<?> recipe) {
             //We only have an icon and no menu to render!
         }
     }
@@ -198,7 +199,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
             }
         }
 
-        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe) {
+        public void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, RecipeCache<?> recipe) {
             if (renderConsumer != null) {
                 renderConsumer.accept(update, cache, condition, recipe);
             }
@@ -206,7 +207,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
 
         public interface RenderConsumer<C extends Condition<C>> {
 
-            void accept(GuiUpdate<CCCache> update, CCCache cache, C condition, ICustomRecipe<?> recipe);
+            void accept(GuiUpdate<CCCache> update, CCCache cache, C condition, RecipeCache<?> recipe);
 
         }
     }

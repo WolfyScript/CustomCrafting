@@ -3,18 +3,18 @@ package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 
-public class RecipeCacheCooking extends RecipeCache<CustomRecipeCooking<?, ?>> {
+public abstract class RecipeCacheCooking<R extends CustomRecipeCooking<R, ?>> extends RecipeCache<R> {
 
     private Ingredient source;
     private float exp;
     private int cookingTime;
 
-    public RecipeCacheCooking(RecipeCreatorCache creatorCache) {
-        super(creatorCache);
+    protected RecipeCacheCooking() {
+        super();
     }
 
-    public RecipeCacheCooking(RecipeCreatorCache creatorCache, CustomRecipeCooking<?, ?> recipe) {
-        super(creatorCache, recipe);
+    protected RecipeCacheCooking(R recipe) {
+        super(recipe);
         this.source = recipe.getSource();
         this.exp = recipe.getExp();
         this.cookingTime = recipe.getCookingTime();
@@ -31,7 +31,7 @@ public class RecipeCacheCooking extends RecipeCache<CustomRecipeCooking<?, ?>> {
     }
 
     @Override
-    protected CustomRecipeCooking<?, ?> constructRecipe() {
+    protected R constructRecipe() {
         return null;
     }
 

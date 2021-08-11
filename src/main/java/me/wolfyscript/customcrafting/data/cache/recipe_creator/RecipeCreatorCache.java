@@ -14,15 +14,19 @@ public class RecipeCreatorCache {
     private final TagSettingsCache tagSettingsCache = new TagSettingsCache();
     private final ConditionsCache conditionsCache = new ConditionsCache();
     private RecipeType<?> recipeType;
-    private RecipeCacheAnvil anvilCache = new RecipeCacheAnvil(this);
-    private RecipeCacheBrewing brewingCache = new RecipeCacheBrewing(this);
-    private RecipeCacheCauldron cauldronCache = new RecipeCacheCauldron(this);
-    private RecipeCacheCrafting craftingCache = new RecipeCacheCrafting(this);
-    private RecipeCacheCraftingElite eliteCraftingCache = new RecipeCacheCraftingElite(this);
-    private RecipeCacheGrinding grindingCache = new RecipeCacheGrinding(this);
-    private RecipeCacheSmithing smithingCache = new RecipeCacheSmithing(this);
-    private RecipeCacheStonecutting stonecuttingCache = new RecipeCacheStonecutting(this);
-    private RecipeCacheCooking cookingCache = new RecipeCacheCooking(this);
+
+    private RecipeCacheAnvil anvilCache = new RecipeCacheAnvil();
+    private RecipeCacheBrewing brewingCache = new RecipeCacheBrewing();
+    private RecipeCacheCauldron cauldronCache = new RecipeCacheCauldron();
+    private RecipeCacheCrafting craftingCache = new RecipeCacheCrafting();
+    private RecipeCacheCraftingElite eliteCraftingCache = new RecipeCacheCraftingElite();
+    private RecipeCacheGrinding grindingCache = new RecipeCacheGrinding();
+    private RecipeCacheSmithing smithingCache = new RecipeCacheSmithing();
+    private RecipeCacheStonecutting stonecuttingCache = new RecipeCacheStonecutting();
+    private RecipeCacheFurnace furnaceCache = new RecipeCacheFurnace();
+    private RecipeCacheBlasting blastingCache = new RecipeCacheBlasting();
+    private RecipeCacheSmoking smokerCache = new RecipeCacheSmoking();
+    private RecipeCacheCampfire campfireCache = new RecipeCacheCampfire();
 
     public RecipeCreatorCache() {
 
@@ -39,7 +43,10 @@ public class RecipeCreatorCache {
     public RecipeCache<?> getCacheByType(RecipeType<?> type) {
         return switch (type.getType()) {
             case ANVIL -> anvilCache;
-            case FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE -> cookingCache;
+            case FURNACE -> furnaceCache;
+            case BLAST_FURNACE -> blastingCache;
+            case SMOKER -> smokerCache;
+            case CAMPFIRE -> campfireCache;
             case WORKBENCH, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS -> craftingCache;
             case CAULDRON -> cauldronCache;
             case SMITHING -> smithingCache;
@@ -50,24 +57,50 @@ public class RecipeCreatorCache {
         };
     }
 
+    public RecipeCacheCooking<?> getCookingCache() {
+        return switch (getRecipeType().getType()) {
+            case FURNACE -> furnaceCache;
+            case BLAST_FURNACE -> blastingCache;
+            case SMOKER -> smokerCache;
+            case CAMPFIRE -> campfireCache;
+            default -> throw new IllegalArgumentException("Recipe type \"" + getRecipeType().name() + "\" is not a cooking recipe type!");
+        };
+    }
+
     public void loadRecipeIntoCache(ICustomRecipe<?> recipe) throws IllegalArgumentException {
         switch (recipe.getRecipeType().getType()) {
-            case ANVIL -> anvilCache = new RecipeCacheAnvil(this, (CustomRecipeAnvil) recipe);
-            case FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE -> cookingCache = new RecipeCacheCooking(this, (CustomRecipeCooking<?, ?>) recipe);
-            case WORKBENCH, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS -> craftingCache = new RecipeCacheCrafting(this, (CraftingRecipe<?, AdvancedRecipeSettings>) recipe);
-            case CAULDRON -> cauldronCache = new RecipeCacheCauldron(this, (CustomRecipeCauldron) recipe);
-            case SMITHING -> smithingCache = new RecipeCacheSmithing(this, (CustomRecipeSmithing) recipe);
-            case GRINDSTONE -> grindingCache = new RecipeCacheGrinding(this, (CustomRecipeGrindstone) recipe);
-            case STONECUTTER -> stonecuttingCache = new RecipeCacheStonecutting(this, (CustomRecipeStonecutter) recipe);
-            case BREWING_STAND -> brewingCache = new RecipeCacheBrewing(this, (CustomRecipeBrewing) recipe);
-            case ELITE_WORKBENCH, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS -> eliteCraftingCache = new RecipeCacheCraftingElite(this, (CraftingRecipe<?, EliteRecipeSettings>) recipe);
+            case ANVIL -> setAnvilCache(new RecipeCacheAnvil((CustomRecipeAnvil) recipe));
+            case FURNACE -> setFurnaceCache(new RecipeCacheFurnace((CustomRecipeFurnace) recipe));
+            case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting((CustomRecipeBlasting) recipe));
+            case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire((CustomRecipeCampfire) recipe));
+            case SMOKER -> setSmokerCache(new RecipeCacheSmoking((CustomRecipeSmoking) recipe));
+            case WORKBENCH, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting((CraftingRecipe<?, AdvancedRecipeSettings>) recipe));
+            case CAULDRON -> setCauldronCache(new RecipeCacheCauldron((CustomRecipeCauldron) recipe));
+            case SMITHING -> setSmithingCache(new RecipeCacheSmithing((CustomRecipeSmithing) recipe));
+            case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding((CustomRecipeGrindstone) recipe));
+            case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting((CustomRecipeStonecutter) recipe));
+            case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing((CustomRecipeBrewing) recipe));
+            case ELITE_WORKBENCH, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite((CraftingRecipe<?, EliteRecipeSettings>) recipe));
             default -> throw new IllegalArgumentException("Unsupported recipe type \"" + recipe.getRecipeType().name() + "\"!");
         }
     }
 
     public void reset() {
-
-
+        switch (getRecipeType().getType()) {
+            case ANVIL -> setAnvilCache(new RecipeCacheAnvil());
+            case FURNACE -> setFurnaceCache(new RecipeCacheFurnace());
+            case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting());
+            case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire());
+            case SMOKER -> setSmokerCache(new RecipeCacheSmoking());
+            case WORKBENCH, WORKBENCH_SHAPED, WORKBENCH_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting());
+            case CAULDRON -> setCauldronCache(new RecipeCacheCauldron());
+            case SMITHING -> setSmithingCache(new RecipeCacheSmithing());
+            case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding());
+            case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting());
+            case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing());
+            case ELITE_WORKBENCH, ELITE_WORKBENCH_SHAPED, ELITE_WORKBENCH_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite());
+            default -> throw new IllegalArgumentException("Unsupported recipe type \"" + getRecipeType().name() + "\"!");
+        }
     }
 
     public IngredientCache getIngredientCache() {
@@ -150,11 +183,35 @@ public class RecipeCreatorCache {
         this.stonecuttingCache = stonecuttingCache;
     }
 
-    public RecipeCacheCooking getCookingCache() {
-        return cookingCache;
+    public RecipeCacheBlasting getBlastingCache() {
+        return blastingCache;
     }
 
-    public void setCookingCache(RecipeCacheCooking cookingCache) {
-        this.cookingCache = cookingCache;
+    public void setBlastingCache(RecipeCacheBlasting blastingCache) {
+        this.blastingCache = blastingCache;
+    }
+
+    public RecipeCacheFurnace getFurnaceCache() {
+        return furnaceCache;
+    }
+
+    public void setFurnaceCache(RecipeCacheFurnace furnaceCache) {
+        this.furnaceCache = furnaceCache;
+    }
+
+    public RecipeCacheCampfire getCampfireCache() {
+        return campfireCache;
+    }
+
+    public void setCampfireCache(RecipeCacheCampfire campfireCache) {
+        this.campfireCache = campfireCache;
+    }
+
+    public RecipeCacheSmoking getSmokerCache() {
+        return smokerCache;
+    }
+
+    public void setSmokerCache(RecipeCacheSmoking smokerCache) {
+        this.smokerCache = smokerCache;
     }
 }

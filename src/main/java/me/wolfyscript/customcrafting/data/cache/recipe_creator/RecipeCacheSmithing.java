@@ -10,12 +10,12 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     private boolean preserveEnchants;
 
-    public RecipeCacheSmithing(RecipeCreatorCache creatorCache) {
-        super(creatorCache);
+    public RecipeCacheSmithing() {
+        super();
     }
 
-    public RecipeCacheSmithing(RecipeCreatorCache creatorCache, CustomRecipeSmithing recipe) {
-        super(creatorCache, recipe);
+    public RecipeCacheSmithing(CustomRecipeSmithing recipe) {
+        super(recipe);
         this.base = recipe.getBase().clone();
         this.addition = recipe.getAddition().clone();
         this.preserveEnchants = recipe.isPreserveEnchants();
