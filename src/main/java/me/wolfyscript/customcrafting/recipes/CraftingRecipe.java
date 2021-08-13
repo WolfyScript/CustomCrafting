@@ -1,15 +1,11 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -23,18 +19,14 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings<S>> extends CustomRecipe<C> implements ICraftingRecipe {
 
     protected static final String INGREDIENTS_KEY = "ingredients";
 
-    private Map<Character, Ingredient> ingredients;
-    protected List<Ingredient> ingredientsFlat;
+    protected List<Ingredient> ingredients;
 
     protected int requiredGridSize;
     protected int bookSquaredGrid;
@@ -53,34 +45,26 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
                 return null;
             }
         });
-        setIngredients(Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue()))));
     }
 
     protected CraftingRecipe(NamespacedKey key, int gridSize, S settings) {
         super(key);
         this.requiredGridSize = gridSize;
         this.bookSquaredGrid = requiredGridSize * requiredGridSize;
-        this.ingredients = new HashMap<>();
         this.settings = settings;
     }
 
-    protected CraftingRecipe(CraftingRecipe<?, S> craftingRecipe) {
+    protected CraftingRecipe(CraftingRecipe<C, S> craftingRecipe) {
         super(craftingRecipe);
-        this.ingredientsFlat = craftingRecipe.ingredientsFlat != null ? craftingRecipe.ingredientsFlat.stream().map(Ingredient::clone).toList() : null;
+        this.ingredients = craftingRecipe.ingredients != null ? craftingRecipe.ingredients.stream().map(Ingredient::clone).toList() : null;
         this.requiredGridSize = craftingRecipe.requiredGridSize;
         this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
-        this.ingredients = craftingRecipe.getIngredients();
         this.settings = craftingRecipe.settings.clone();
     }
 
     @Override
-    public Map<Character, Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    @Override
     public Ingredient getIngredient(int slot) {
-        return getIngredients(LETTERS.charAt(slot));
+        return ingredients.get(slot);
     }
 
     public S getSettings() {
@@ -94,30 +78,15 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
      * @return An unmodifiable list presenting the flattened ingredients.
      */
     public List<Ingredient> getFlatIngredients() {
-        return ingredientsFlat;
-    }
-
-    @Override
-    public void setIngredients(Map<Character, Ingredient> ingredients) {
-        this.ingredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o));
-        Preconditions.checkArgument(!this.ingredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
-    }
-
-    @Override
-    public void setIngredient(char key, Ingredient ingredient) {
-        //TODO: Separate Shaped and Shapeless recipe!
-        Preconditions.checkArgument(this.ingredients.containsKey(key), "Invalid ingredient key! Shape does not contain key!");
-        Preconditions.checkArgument(ingredient != null && !ingredient.isEmpty(), "Invalid ingredient! Ingredient must not be null nor empty!");
-        ingredient.buildChoices();
-        this.ingredients.put(key, ingredient);
+        return ingredients;
     }
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        if (!getIngredients().isEmpty()) {
+        if (!ingredients.isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < bookSquaredGrid; i++) {
-                var ingredient = getIngredient(i);
+                var ingredient = ingredients.get(i);
                 if (ingredient != null) {
                     ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
                 }
@@ -127,7 +96,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        if (!getIngredients().isEmpty()) {
+        if (!ingredients.isEmpty()) {
             if (RecipeType.WORKBENCH.isInstance(this) && getConditions().has(AdvancedWorkbenchCondition.KEY)) {
                 var glass = new NamespacedKey("none", "glass_purple");
                 for (int i = 0; i < 9; i++) {
@@ -157,24 +126,13 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
-        gen.writeBooleanField("shapeless", isShapeless());
         gen.writeObjectField(KEY_RESULT, result);
-        gen.writeObjectField(INGREDIENTS_KEY, ingredients);
     }
 
     @Override
     public void writeToBuf(MCByteBuf byteBuf) {
         super.writeToBuf(byteBuf);
-        byteBuf.writeBoolean(isShapeless());
         byteBuf.writeInt(requiredGridSize);
-        byteBuf.writeVarInt(ingredients.size());
-        ingredients.forEach((key, ingredient) -> {
-            byteBuf.writeInt(LETTERS.indexOf(key));
-            byteBuf.writeVarInt(ingredient.size());
-            for (CustomItem choice : ingredient.getChoices()) {
-                byteBuf.writeItemStack(choice.create());
-            }
-        });
     }
 
 }

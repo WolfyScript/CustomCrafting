@@ -8,8 +8,6 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNod
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
 
-import java.util.stream.Collectors;
-
 public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRecipeShapeless, AdvancedRecipeSettings> implements ICustomVanillaRecipe<org.bukkit.inventory.ShapelessRecipe> {
 
     public CraftingRecipeShapeless(NamespacedKey namespacedKey, JsonNode node) {
@@ -21,10 +19,6 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     }
 
     public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {
-        super(craftingRecipe);
-    }
-
-    public CraftingRecipeShapeless(CraftingRecipe<?, AdvancedRecipeSettings> craftingRecipe) {
         super(craftingRecipe);
     }
 
@@ -42,8 +36,8 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
     public org.bukkit.inventory.ShapelessRecipe getVanillaRecipe() {
         if (!getSettings().isAllowVanillaRecipe() && !getResult().isEmpty()) {
             var shapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
-            for (Ingredient value : getIngredients().values()) {
-                shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().parallelStream().map(CustomItem::create).distinct().collect(Collectors.toList())));
+            for (Ingredient value : ingredients) {
+                shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().stream().map(CustomItem::create).distinct().toList()));
             }
             shapelessRecipe.setGroup(getGroup());
             return shapelessRecipe;

@@ -78,11 +78,11 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
             if (cachedRecipe instanceof CraftingRecipe && (RecipeType.ELITE_WORKBENCH.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
                 if (RecipeType.ELITE_WORKBENCH.isInstance(cachedRecipe)) {
                     EliteWorkbenchCondition condition = cachedRecipe.getConditions().getEliteCraftingTableCondition();
-                    if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
+                    if (condition != null && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;
                     }
                     if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
-                        return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
+                        return shapeless.getFlatIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
                         CraftingRecipeEliteShaped recipe1 = (CraftingRecipeEliteShaped) cachedRecipe;
                         return recipe1.getShape().length <= cache.getCurrentGridSize() && recipe1.getShape()[0].length() <= cache.getCurrentGridSize();

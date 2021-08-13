@@ -1,10 +1,12 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -15,14 +17,17 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.RecipeUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
+    protected Map<Character, Ingredient> mappedIngredients;
     private String[] shape;
     private Shape internalShape;
     private boolean mirrorHorizontal;
@@ -35,6 +40,14 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
         this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
+
+        Map<Character, Ingredient> mappedIngredients = Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue())));
+        if (node.has("shape")) {
+            setShape(mapper.convertValue(node.path("shape"), String[].class));
+        } else {
+            setShape(generateMissingShape(List.copyOf(mappedIngredients.keySet())));
+        }
+        setIngredients(mappedIngredients);
     }
 
     protected AbstractRecipeShaped(NamespacedKey key, int gridSize, S settings) {
@@ -44,25 +57,13 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         this.mirrorRotation = false;
     }
 
-    protected AbstractRecipeShaped(CraftingRecipe<?, S> craftingRecipe) {
-        super(craftingRecipe);
-        if (craftingRecipe instanceof AbstractRecipeShaped<?, ?> shapedRecipe) {
-            this.mirrorHorizontal = shapedRecipe.mirrorHorizontal;
-            this.mirrorVertical = shapedRecipe.mirrorVertical;
-            this.mirrorRotation = shapedRecipe.mirrorRotation;
-        } else {
-            this.mirrorHorizontal = true;
-            this.mirrorVertical = false;
-            this.mirrorRotation = false;
-        }
-    }
-
-    public String[] getShape() {
-        return shape;
-    }
-
-    public Shape getInternalShape() {
-        return internalShape;
+    protected AbstractRecipeShaped(AbstractRecipeShaped<C, S> recipe) {
+        super(recipe);
+        this.mirrorHorizontal = recipe.mirrorHorizontal;
+        this.mirrorVertical = recipe.mirrorVertical;
+        this.mirrorRotation = recipe.mirrorRotation;
+        setShape(recipe.shape.clone());
+        setIngredients(recipe.mappedIngredients.entrySet().stream().map(entry -> Map.entry(entry.getKey(), entry.getValue().clone())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
     public void setMirrorHorizontal(boolean mirrorHorizontal) {
@@ -89,34 +90,73 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         return mirrorRotation;
     }
 
+    public String[] getShape() {
+        return shape;
+    }
+
     /**
-     * Generates the shapes for all the possible ways the shape can be mirrored and rotated. <br>
-     * The shapes are shrunk to the smallest possible width and height.<br>
-     * Besides the shape it generates a flat list of the ingredients based on the shrunk shape.
+     * Sets the shape of the recipe and generates all the possible variations based on the mirror settings.<br>
+     * <br>
+     * The shape is shrunk to the smallest possible width and height.<br>
+     * Besides the shape, it generates a flat list of the ingredients based on the shrunk shape.<br>
+     * <br>
+     * <b>{@link #setMirrorHorizontal(boolean)}, {@link #setMirrorVertical(boolean)}, and {@link #setMirrorRotation(boolean)} must be invoked before this method so their settings have an effect on the generated shape!</b>
+     *
+     * @param shape The shape of the recipe
+     */
+    public void setShape(@NotNull String... shape) {
+        Preconditions.checkArgument(shape != null && shape.length > 0, "Shape can not be null!");
+        Preconditions.checkArgument(shape.length <= requiredGridSize, "Shape must not have more than " + requiredGridSize + " rows!");
+        int currentWidth = -1;
+        for (String row : shape) {
+            Preconditions.checkArgument(Objects.requireNonNull(row, "Shape row cannot be null!").length() <= requiredGridSize, "Shape row must not be longer than " + requiredGridSize + "!");
+            Preconditions.checkArgument(currentWidth == -1 || currentWidth == row.length(), "Shape must be rectangular!");
+            currentWidth = row.length();
+        }
+        this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
+        var flattenShape = String.join("", this.shape);
+        Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
+        //
+        Map<Character, Ingredient> refreshedIngredients = new HashMap<>();
+        flattenShape.chars().mapToObj(char.class::cast).forEach(character -> refreshedIngredients.put(character, this.mappedIngredients.get(character)));
+        this.mappedIngredients = refreshedIngredients;
+    }
+
+    public Shape getInternalShape() {
+        return internalShape;
+    }
+
+    /**
+     * Generates the shape if none is set. This
      */
     @Override
     public void constructRecipe() {
-        if (this.shape == null) {
-            this.shape = generateMissingShape();
-        }
-        this.shape = RecipeUtil.formatShape(this.shape).toArray(new String[0]);
+
+    }
+
+    private void createFlatIngredients() {
         //Create flatten ingredients. This makes it possible to use a key multiple times in one shape.
         var flattenShape = String.join("", this.shape);
-        Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Empty shape \"" + Arrays.toString(this.shape) + "\"!");
-        this.ingredientsFlat = flattenShape.chars().mapToObj(key -> getIngredients().getOrDefault((char) key, new Ingredient())).toList();
+        Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
+        this.ingredients = flattenShape.chars().mapToObj(key -> getMappedIngredients().getOrDefault((char) key, new Ingredient())).toList();
         //Create internal shape, which is more performant when used in checks later on.
         this.internalShape = new Shape();
     }
 
-    private String[] generateMissingShape() {
+    /**
+     * Generates the shape of the given keys.
+     *
+     * @param keys
+     * @return
+     */
+    private String[] generateMissingShape(List<Character> keys) {
         var genShape = new String[requiredGridSize];
         var index = 0;
         var row = 0;
         for (int i = 0; i < bookSquaredGrid; i++) {
             var ingrd = ICraftingRecipe.LETTERS.charAt(i);
-            var items = getIngredients().get(ingrd);
             final var current = genShape[row] != null ? genShape[row] : "";
-            if (items == null || items.isEmpty()) {
+            if (!keys.contains(ingrd)) {
                 genShape[row] = current + " ";
             } else {
                 genShape[row] = current + ingrd;
@@ -134,9 +174,27 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         return false;
     }
 
+    public void setIngredient(char key, @NotNull Ingredient ingredient) {
+        Preconditions.checkArgument(this.mappedIngredients.containsKey(key), "Invalid ingredient key! Shape does not contain key!");
+        Preconditions.checkArgument(ingredient != null && !ingredient.isEmpty(), "Invalid ingredient! Ingredient must not be null nor empty!");
+        ingredient.buildChoices();
+        this.mappedIngredients.put(key, ingredient);
+        createFlatIngredients();
+    }
+
+    public void setIngredients(Map<Character, Ingredient> ingredients) {
+        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o));
+        Preconditions.checkArgument(!this.mappedIngredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
+        createFlatIngredients();
+    }
+
+    public Map<Character, Ingredient> getMappedIngredients() {
+        return mappedIngredients;
+    }
+
     @Override
-    public boolean fitsDimensions(CraftManager.MatrixData matrixData) {
-        return ingredientsFlat.size() == matrixData.getMatrix().length && internalShape.height == matrixData.getHeight() && internalShape.width == matrixData.getWidth();
+    public boolean fitsDimensions(@NotNull CraftManager.MatrixData matrixData) {
+        return ingredients.size() == matrixData.getMatrix().length && internalShape.height == matrixData.getHeight() && internalShape.width == matrixData.getWidth();
     }
 
     @Override
@@ -148,14 +206,14 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         return null;
     }
 
-    protected CraftingData checkShape(CraftManager.MatrixData matrixData, int[] shape) {
+    protected CraftingData checkShape(@NotNull CraftManager.MatrixData matrixData, int[] shape) {
         Map<Integer, IngredientData> dataMap = new HashMap<>();
         var i = 0;
         for (ItemStack invItem : matrixData.getMatrix()) {
             int slot = shape[i];
             if (invItem != null) {
                 if (slot >= 0) {
-                    var ingredient = ingredientsFlat.get(slot);
+                    var ingredient = ingredients.get(slot);
                     if (ingredient != null) {
                         Optional<CustomItem> item = ingredient.check(invItem, this.exactMeta);
                         if (item.isPresent()) {
@@ -183,6 +241,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         gen.writeBooleanField("vertical", this.mirrorVertical);
         gen.writeBooleanField("rotation", this.mirrorRotation);
         gen.writeEndObject();
+        gen.writeObjectField(INGREDIENTS_KEY, this.mappedIngredients);
     }
 
     @Override
@@ -192,6 +251,14 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         for (String s : shape) {
             byteBuf.writeUtf(s, 3);
         }
+        byteBuf.writeVarInt(mappedIngredients.size());
+        mappedIngredients.forEach((key, ingredient) -> {
+            byteBuf.writeInt(LETTERS.indexOf(key));
+            byteBuf.writeVarInt(ingredient.size());
+            for (CustomItem choice : ingredient.getChoices()) {
+                byteBuf.writeItemStack(choice.create());
+            }
+        });
     }
 
     /**

@@ -80,8 +80,8 @@ public class ConfigHandler {
             ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
             var knowledgeBookCraft = new CraftingRecipeShapeless(CustomCrafting.RECIPE_BOOK);
-            knowledgeBookCraft.setIngredient('A', new Ingredient(Material.BOOK));
-            knowledgeBookCraft.setIngredient('B', new Ingredient(Material.CRAFTING_TABLE));
+            knowledgeBookCraft.addIngredient(new Ingredient(Material.BOOK));
+            knowledgeBookCraft.addIngredient(new Ingredient(Material.CRAFTING_TABLE));
             knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
             knowledgeBookCraft.save();
         }
@@ -96,9 +96,10 @@ public class ConfigHandler {
 
             var workbenchCraft = new CraftingRecipeShaped(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.setMirrorHorizontal(false);
-            workbenchCraft.setIngredient('B', new Ingredient(Material.GOLD_INGOT));
-            workbenchCraft.setIngredient('E', new Ingredient(Material.CRAFTING_TABLE));
-            workbenchCraft.setIngredient('H', new Ingredient(Material.GLOWSTONE_DUST));
+            workbenchCraft.setShape("G", "C", "D");
+            workbenchCraft.setIngredient('G', new Ingredient(Material.GOLD_INGOT));
+            workbenchCraft.setIngredient('C', new Ingredient(Material.CRAFTING_TABLE));
+            workbenchCraft.setIngredient('D', new Ingredient(Material.GLOWSTONE_DUST));
             Result result = workbenchCraft.getResult();
             result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE)));
             if (CustomCrafting.isDevEnv()) {

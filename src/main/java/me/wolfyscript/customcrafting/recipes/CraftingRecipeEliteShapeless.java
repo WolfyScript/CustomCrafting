@@ -18,10 +18,6 @@ public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<Crafti
         super(eliteCraftingRecipe);
     }
 
-    public CraftingRecipeEliteShapeless(CraftingRecipe<?, EliteRecipeSettings> craftingRecipe) {
-        super(craftingRecipe);
-    }
-
     @Override
     public RecipeType<CraftingRecipeEliteShapeless> getRecipeType() {
         return RecipeType.ELITE_WORKBENCH_SHAPELESS;

@@ -3,11 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public interface ICraftingRecipe {
 
@@ -22,7 +18,6 @@ public interface ICraftingRecipe {
     void constructRecipe();
 
     default void removeMatrix(Inventory inventory, int totalAmount, CraftingData craftingData) {
-
         craftingData.getIndexedBySlot().forEach((slot, data) -> {
             var item = data.customItem();
             if (item != null) {
@@ -47,15 +42,4 @@ public interface ICraftingRecipe {
         }
         return totalAmount;
     }
-
-    Map<Character, Ingredient> getIngredients();
-
-    @Nullable
-    default Ingredient getIngredients(char key) {
-        return getIngredients().get(key);
-    }
-
-    void setIngredient(char key, Ingredient ingredients);
-
-    void setIngredients(Map<Character, Ingredient> ingredients);
 }

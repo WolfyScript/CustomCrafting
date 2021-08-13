@@ -10,7 +10,6 @@ import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -198,33 +197,6 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          */
         private <T extends ICustomRecipe<?>> List<T> getAvailable(Stream<T> recipes) {
             return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(ICustomRecipe::getPriority)).collect(Collectors.toList());
-        }
-
-        /**
-         * @param items    The items of the matrix. Usually stripped to the smallest possible size.
-         * @param elite    include Elite crafting recipes.
-         * @param advanced include Advanced crafting recipes.
-         * @return The similar crafting recipes that match the size of the provided matrix items.
-         * @deprecated Replaced by {@link #getSimilarCraftingRecipes(me.wolfyscript.customcrafting.utils.CraftManager.MatrixData, boolean, boolean)}
-         */
-        @Deprecated
-        public Stream<CraftingRecipe<?, ?>> getSimilar(List<List<ItemStack>> items, boolean elite, boolean advanced) {
-            final long size = items.stream().flatMap(Collection::stream).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
-            List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
-            if (elite) {
-                craftingRecipes.addAll(get(RecipeType.ELITE_WORKBENCH));
-            }
-            if (advanced) {
-                craftingRecipes.addAll(get(RecipeType.WORKBENCH));
-            }
-            final int itemsSize = items.size();
-            final int items0Size = itemsSize > 0 ? items.get(0).size() : 0;
-            return craftingRecipes.stream().filter(recipe -> {
-                if (recipe instanceof AbstractRecipeShaped<?, ?> shapedRecipe) {
-                    return itemsSize > 0 && shapedRecipe.getShape().length > 0 && items0Size == shapedRecipe.getShape()[0].length() && itemsSize == shapedRecipe.getShape().length;
-                }
-                return recipe.getIngredients().keySet().size() == size;
-            }).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }
 
         public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
