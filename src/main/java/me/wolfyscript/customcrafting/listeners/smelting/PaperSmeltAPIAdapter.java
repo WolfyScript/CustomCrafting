@@ -20,7 +20,7 @@ public class PaperSmeltAPIAdapter extends SmeltAPIAdapter {
         var recipe = event.getRecipe();
         if (recipe != null) {
             var namespacedKey = NamespacedKey.fromBukkit(recipe.getKey());
-            if (!customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
+            if (!customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
                 processRecipe(event, NamespacedKeyUtils.toInternal(namespacedKey), block, inventory, currentResultItem);
             } else {
                 event.setCancelled(true);

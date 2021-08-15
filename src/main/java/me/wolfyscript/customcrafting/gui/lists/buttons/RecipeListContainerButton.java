@@ -96,11 +96,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 }
             } else {
                 if (customRecipe != null) {
-                    customCrafting.getDataHandler().toggleRecipe(customRecipe);
+                    customCrafting.getDisableRecipesHandler().toggleRecipe(customRecipe);
                 } else {
-                    customCrafting.getDataHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
+                    customCrafting.getDisableRecipesHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
                 }
-                customCrafting.getDataHandler().saveDisabledRecipes();
             }
         }
         return true;
@@ -113,9 +112,9 @@ public class RecipeListContainerButton extends Button<CCCache> {
             if (recipe != null) {
                 var itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
                 if (recipe.getResult().isEmpty()) {
-                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
+                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey());
                 }
-                itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
+                itemB.addLoreLine("§8" + recipe.getNamespacedKey());
                 if (recipe.isDisabled()) {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.disabled$"));
                 } else {
@@ -138,7 +137,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB = new ItemBuilder(recipe.getResult());
                 }
                 itemB.addLoreLine("§8" + ((Keyed) recipe).getKey());
-                if (customCrafting.getDataHandler().isBukkitRecipeDisabled(((Keyed) recipe).getKey())) {
+                if (customCrafting.getDisableRecipesHandler().isBukkitRecipeDisabled(((Keyed) recipe).getKey())) {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.disabled$"));
                 } else {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.enabled$"));

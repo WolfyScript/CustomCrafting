@@ -84,9 +84,6 @@ public class DataHandler {
     }
 
     public void loadRecipesAndItems() {
-        if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
-            getDisabledRecipes().addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
-        }
         load(true);
         categories.index();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();

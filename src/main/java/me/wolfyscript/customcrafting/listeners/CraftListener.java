@@ -73,7 +73,6 @@ public class CraftListener implements Listener {
     public void onPreCraft(PrepareItemCraftEvent e) {
         var player = (Player) e.getView().getPlayer();
         try {
-            var dataHandler = customCrafting.getDataHandler();
             ItemStack[] matrix = e.getInventory().getMatrix();
             ItemStack result = craftManager.preCheckRecipe(matrix, player, e.getInventory(), false, true);
             if (!ItemUtils.isAirOrNull(result)) {
@@ -86,7 +85,7 @@ public class CraftListener implements Listener {
             //Vanilla Recipe is available.
             //Check for custom recipe that overrides the vanilla recipe
             var namespacedKey = NamespacedKey.fromBukkit(((Keyed) e.getRecipe()).getKey());
-            if (dataHandler.getDisabledRecipes().contains(namespacedKey) || CCRegistry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey)) != null) {
+            if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey) || CCRegistry.RECIPES.getAdvancedCrafting(NamespacedKeyUtils.toInternal(namespacedKey)) != null) {
                 //Recipe is disabled or it is a custom recipe!
                 e.getInventory().setResult(ItemUtils.AIR);
                 Bukkit.getScheduler().runTask(customCrafting, player::updateInventory);
@@ -110,7 +109,7 @@ public class CraftListener implements Listener {
 
     @EventHandler
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
-        if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) || customCrafting.getDataHandler().isBukkitRecipeDisabled(event.getRecipe())) {
+        if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) || customCrafting.getDisableRecipesHandler().isBukkitRecipeDisabled(event.getRecipe())) {
             event.setCancelled(true);
         }
     }

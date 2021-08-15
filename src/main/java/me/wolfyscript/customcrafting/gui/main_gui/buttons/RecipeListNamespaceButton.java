@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.lists.RecipesList;
-import me.wolfyscript.customcrafting.handlers.DataHandler;
+import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -40,25 +40,25 @@ public class RecipeListNamespaceButton extends ActionButton<CCCache> {
                         cache.getRecipeList().setPage(0);
                     }
                 } else {
-                    DataHandler dataHandler = customCrafting.getDataHandler();
+                    DisableRecipesHandler disableRecipesHandler = customCrafting.getDisableRecipesHandler();
                     if (namespace.equalsIgnoreCase("minecraft")) {
                         if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
                             for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
-                                if (recipe instanceof Keyed) {
-                                    dataHandler.disableBukkitRecipe(((Keyed) recipe).getKey());
+                                if (recipe instanceof Keyed keyed) {
+                                    disableRecipesHandler.disableBukkitRecipe(keyed.getKey());
                                 }
                             }
                         } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
                             for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
-                                if (recipe instanceof Keyed) {
-                                    dataHandler.enableBukkitRecipe(((Keyed) recipe).getKey());
+                                if (recipe instanceof Keyed keyed) {
+                                    disableRecipesHandler.enableBukkitRecipe(keyed.getKey());
                                 }
                             }
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
-                        CCRegistry.RECIPES.get(namespace).forEach(dataHandler::disableRecipe);
+                        CCRegistry.RECIPES.get(namespace).forEach(disableRecipesHandler::disableRecipe);
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                        CCRegistry.RECIPES.get(namespace).forEach(dataHandler::enableRecipe);
+                        CCRegistry.RECIPES.get(namespace).forEach(disableRecipesHandler::enableRecipe);
                     }
                 }
             }

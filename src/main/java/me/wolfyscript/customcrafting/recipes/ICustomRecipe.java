@@ -91,7 +91,7 @@ public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
     void setHidden(boolean hidden);
 
     default boolean isDisabled() {
-        return CustomCrafting.inst().getDataHandler().getDisabledRecipes().contains(getNamespacedKey());
+        return CustomCrafting.inst().getDisableRecipesHandler().getRecipes().contains(getNamespacedKey());
     }
 
     C clone();

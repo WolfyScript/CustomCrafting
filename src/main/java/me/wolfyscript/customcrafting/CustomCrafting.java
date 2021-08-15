@@ -178,6 +178,7 @@ public class CustomCrafting extends JavaPlugin {
         configHandler.loadDefaults();
         dataHandler = new DataHandler(this);
         craftManager = new CraftManager(this);
+        disableRecipesHandler = new DisableRecipesHandler(this);
 
         writeSeparator();
         registerListeners();
@@ -390,5 +391,9 @@ public class CustomCrafting extends JavaPlugin {
 
     public WUVersion getVersion() {
         return version;
+    }
+
+    public DisableRecipesHandler getDisableRecipesHandler() {
+        return disableRecipesHandler;
     }
 }

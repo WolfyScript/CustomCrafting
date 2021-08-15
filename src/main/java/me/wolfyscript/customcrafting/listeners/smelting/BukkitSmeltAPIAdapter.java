@@ -32,7 +32,7 @@ public class BukkitSmeltAPIAdapter extends SmeltAPIAdapter {
             var recipe = recipeIterator.next();
             if (recipe instanceof Keyed keyed && recipe.getResult().isSimilar(event.getResult())) {
                 var namespacedKey = NamespacedKey.fromBukkit(keyed.getKey());
-                if (!customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
+                if (!customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
                     if (processRecipe(event, NamespacedKeyUtils.toInternal(namespacedKey), block, inventory, currentResultItem)) {
                         break;
                     }

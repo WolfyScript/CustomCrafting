@@ -28,12 +28,12 @@ public class ToggleSubCommand extends AbstractSubCommand {
             String id = args[0];
             if (id.contains(":")) {
                 var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
-                if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
+                if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
                     sender.sendMessage("Enabled recipe " + id);
-                    customCrafting.getDataHandler().getDisabledRecipes().remove(namespacedKey);
+                    customCrafting.getDisableRecipesHandler().getRecipes().remove(namespacedKey);
                 } else {
                     sender.sendMessage("Disabled recipe " + id);
-                    customCrafting.getDataHandler().getDisabledRecipes().add(namespacedKey);
+                    customCrafting.getDisableRecipesHandler().getRecipes().add(namespacedKey);
                     if (namespacedKey != null) {
                         Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(namespacedKey.toBukkit(customCrafting)));
                     }
