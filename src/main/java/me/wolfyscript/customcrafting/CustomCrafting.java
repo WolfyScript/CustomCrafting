@@ -13,13 +13,16 @@ import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.*;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
-import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
+import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
-import me.wolfyscript.customcrafting.utils.*;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
 import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
@@ -45,7 +48,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -53,7 +55,6 @@ public class CustomCrafting extends JavaPlugin {
 
     //Only used for displaying which version it is.
     private static final boolean PREMIUM = true;
-    private static final String ENVIRONMENT = System.getProperties().getProperty("com.wolfyscript.env", "PROD");
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
     public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
@@ -82,11 +83,12 @@ public class CustomCrafting extends JavaPlugin {
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
     private DataHandler dataHandler;
-    private DataBaseHandler dataBaseHandler = null;
     private Cauldrons cauldrons = null;
 
     private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
+
+    private DisableRecipesHandler disableRecipesHandler;
 
     private final boolean isPaper;
 
@@ -118,14 +120,10 @@ public class CustomCrafting extends JavaPlugin {
         return inst();
     }
 
-    public static boolean isDevEnv() {
-        return ENVIRONMENT.equalsIgnoreCase("DEV");
-    }
-
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
-        getLogger().info("Environment: " + ENVIRONMENT);
+        getLogger().info("Environment: " + WolfyUtilities.getENVIRONMENT());
         getLogger().info("Registering custom data");
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
@@ -168,15 +166,10 @@ public class CustomCrafting extends JavaPlugin {
         writeSeparator();
 
         configHandler = new ConfigHandler(this);
-        if (configHandler.getConfig().isDatabaseEnabled()) {
-            try {
-                dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-        configHandler.loadDefaults();
+        configHandler.loadRecipeBookConfig();
+        configHandler.renameOldRecipesFolder();
         dataHandler = new DataHandler(this);
+        configHandler.loadDefaults();
         craftManager = new CraftManager(this);
         disableRecipesHandler = new DisableRecipesHandler(this);
 
@@ -184,7 +177,7 @@ public class CustomCrafting extends JavaPlugin {
         registerListeners();
         registerCommands();
         registerInventories();
-        if (isDevEnv()) {
+        if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
 
@@ -197,12 +190,10 @@ public class CustomCrafting extends JavaPlugin {
         if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
             dataHandler.loadRecipesAndItems();
         }
-
         updateChecker.run(null);
 
         //Load Metrics
         var metrics = new Metrics(this, 3211);
-
         metrics.addCustomChart(new SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
         writeSeparator();
@@ -317,7 +308,6 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
         invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
         invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
-
     }
 
     public ConfigHandler getConfigHandler() {
@@ -336,32 +326,8 @@ public class CustomCrafting extends JavaPlugin {
         return dataHandler;
     }
 
-    /**
-     * @deprecated Replaced with {@link #getDataHandler()}
-     */
-    @Deprecated
-    public DataHandler getRecipeHandler() {
-        return getDataHandler();
-    }
-
-    public boolean hasDataBaseHandler() {
-        return dataBaseHandler != null;
-    }
-
-    public DataBaseHandler getDataBaseHandler() {
-        return dataBaseHandler;
-    }
-
     public CraftManager getCraftManager() {
         return craftManager;
-    }
-
-    /**
-     * @deprecated Replaced with {@link #getCraftManager()}
-     */
-    @Deprecated
-    public RecipeUtils getRecipeUtils() {
-        return craftManager.getRecipeUtils();
     }
 
     public ChatUtils getChatUtils() {
@@ -374,11 +340,6 @@ public class CustomCrafting extends JavaPlugin {
 
     public Patreon getPatreon() {
         return patreon;
-    }
-
-    @Deprecated
-    public boolean isOutdated() {
-        return getUpdateChecker().isOutdated();
     }
 
     public boolean isPaper() {

@@ -1,7 +1,6 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -17,9 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.io.IOException;
 
 public class ItemLoader {
 
@@ -113,19 +109,8 @@ public class ItemLoader {
     public static void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            if (CustomCrafting.inst().hasDataBaseHandler()) {
-                CustomCrafting.inst().getDataBaseHandler().updateItem(internalKey, customItem);
-            } else {
-                try {
-                    var file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
-                    file.getParentFile().mkdirs();
-                    if (file.exists() || file.createNewFile()) {
-                        JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, customItem);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            customItem.setNamespacedKey(internalKey);
+            CustomCrafting.inst().getDataHandler().getActiveLoader().save(customItem);
             Registry.CUSTOM_ITEMS.register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
         }
     }
@@ -136,24 +121,9 @@ public class ItemLoader {
                 if (player != null) CustomCrafting.inst().getApi().getChat().sendMessage(player, "error");
                 return false;
             }
+            CustomItem item = Registry.CUSTOM_ITEMS.get(namespacedKey);
             Registry.CUSTOM_ITEMS.remove(namespacedKey);
-            System.gc();
-            var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            if (CustomCrafting.inst().hasDataBaseHandler()) {
-                CustomCrafting.inst().getDataBaseHandler().removeItem(internalKey);
-                return true;
-            } else {
-                var file = new File(DataHandler.DATA_FOLDER + File.separator + internalKey.getNamespace() + File.separator + "items", internalKey.getKey() + ".json");
-                if (file.delete()) {
-                    if (player != null)
-                        CustomCrafting.inst().getApi().getChat().sendMessage(player, "&aCustomItem deleted!");
-                    return true;
-                } else {
-                    file.deleteOnExit();
-                    if (player != null)
-                        CustomCrafting.inst().getApi().getChat().sendMessage(player, "&cCouldn't delete CustomItem on runtime! File is being deleted on restart!");
-                }
-            }
+            CustomCrafting.inst().getDataHandler().getActiveLoader().delete(item);
         }
         return false;
     }

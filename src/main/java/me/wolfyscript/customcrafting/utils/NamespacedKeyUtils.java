@@ -21,7 +21,7 @@ public class NamespacedKeyUtils {
     }
 
     public static NamespacedKey toInternal(NamespacedKey namespacedKey) {
-        if (namespacedKey.getNamespace().equals(NAMESPACE)) {
+        if (namespacedKey != null && namespacedKey.getNamespace().equals(NAMESPACE)) {
             String[] values = namespacedKey.getKey().split("/", 2);
             if (values.length > 1) {
                 return new NamespacedKey(values[0], values[1]);

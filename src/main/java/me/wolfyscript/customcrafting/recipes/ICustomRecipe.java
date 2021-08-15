@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -20,14 +19,12 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -101,23 +98,12 @@ public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
      * It can also send a confirmation message to the player if the player is not null.
      */
     default boolean save(@Nullable Player player) {
-        try {
-            if (CustomCrafting.inst().hasDataBaseHandler()) {
-                CustomCrafting.inst().getDataBaseHandler().updateRecipe(this);
-            } else {
-                File file = new File(DataHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
-                file.getParentFile().mkdirs();
-                if (file.exists() || file.createNewFile()) {
-                    JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, this);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        if (CustomCrafting.inst().getDataHandler().getActiveLoader().save(this)) {
+            getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
+            getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
+            return true;
         }
-        getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
-        getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
-        return true;
+        return false;
     }
 
     default boolean save() {
@@ -125,26 +111,12 @@ public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
     }
 
     default boolean delete(@Nullable Player player) {
-        if (getNamespacedKey() != null) {
-            Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> CCRegistry.RECIPES.remove(getNamespacedKey()));
-            if (CustomCrafting.inst().hasDataBaseHandler()) {
-                CustomCrafting.inst().getDataBaseHandler().removeRecipe(getNamespacedKey().getNamespace(), getNamespacedKey().getKey());
-                getAPI().getChat().sendMessage(player, "§aRecipe deleted!");
-                return true;
-            } else {
-                File file = new File(DataHandler.DATA_FOLDER, getNamespacedKey().getNamespace() + File.separator + getRecipeType().getId() + File.separator + getNamespacedKey().getKey() + ".json");
-                System.gc();
-                if (file.delete()) {
-                    getAPI().getChat().sendMessage(player, "&aRecipe deleted!");
-                    return true;
-                } else {
-                    file.deleteOnExit();
-                    getAPI().getChat().sendMessage(player, "&cCouldn't delete recipe on runtime! File is being deleted on restart!");
-                }
-            }
-            return false;
+        Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> CCRegistry.RECIPES.remove(getNamespacedKey()));
+        if (CustomCrafting.inst().getDataHandler().getActiveLoader().delete(this)) {
+            getAPI().getChat().sendMessage(player, "§aRecipe deleted!");
+            return true;
         }
-        getAPI().getChat().sendMessage(player, "&c" + "Missing NamespacedKey!");
+        getAPI().getChat().sendMessage(player, "&cCouldn't delete recipe file!");
         return false;
     }
 

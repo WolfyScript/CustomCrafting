@@ -60,13 +60,16 @@ public class ConfigHandler {
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
     }
 
-    public void loadDefaults() {
+    public void renameOldRecipesFolder() {
         if (!DataHandler.DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
             var old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
             if (!old.renameTo(DataHandler.DATA_FOLDER)) {
                 customCrafting.getLogger().severe("Couldn't rename folder to the new required names!");
             }
         }
+    }
+
+    public void loadDefaults() {
         var enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
@@ -96,13 +99,13 @@ public class ConfigHandler {
 
             var workbenchCraft = new CraftingRecipeShaped(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.setMirrorHorizontal(false);
-            workbenchCraft.setShape("G", "C", "D");
+            workbenchCraft.setShape("G ", "C ", "DD");
             workbenchCraft.setIngredient('G', new Ingredient(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('C', new Ingredient(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredient('D', new Ingredient(Material.GLOWSTONE_DUST));
             Result result = workbenchCraft.getResult();
             result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE)));
-            if (CustomCrafting.isDevEnv()) {
+            if (WolfyUtilities.isDevEnv()) {
                 result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
                 result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
                 var extension = new MythicMobResultExtension("SkeletalKnight", 1);
@@ -110,8 +113,6 @@ public class ConfigHandler {
             }
             workbenchCraft.save();
         }
-
-        loadRecipeBookConfig();
     }
 
     public void loadRecipeBookConfig() {
@@ -148,7 +149,6 @@ public class ConfigHandler {
 
     public void save() throws IOException {
         recipeBookConfig.save(getConfig().isPrettyPrinting());
-        //getConfig().save();
     }
 
     public MainConfig getConfig() {

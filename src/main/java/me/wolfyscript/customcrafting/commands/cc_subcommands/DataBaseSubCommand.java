@@ -32,7 +32,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
             var chat = api.getChat();
             //give <player> <namespace:key> [amount]
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
-                if (!customCrafting.hasDataBaseHandler()) {
+                if (customCrafting.getDataHandler().getDatabaseLoader() != null) {
                     chat.sendMessage(p, "&4No Database found!");
                     return true;
                 }
@@ -41,16 +41,16 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                         case "export_recipes":
                             chat.sendMessage(p, "Exporting recipes to Database...");
                             new Thread(() -> {
-                                var dataBaseHandler = customCrafting.getDataBaseHandler();
-                                CCRegistry.RECIPES.values().forEach(dataBaseHandler::updateRecipe);
+                                var dataBaseHandler = customCrafting.getDataHandler().getDatabaseLoader();
+                                CCRegistry.RECIPES.values().forEach(dataBaseHandler::save);
                                 api.getConsole().fine("Successfully exported recipes to database");
                             }).start();
                             break;
                         case "export_items":
                             chat.sendMessage(p, "Exporting custom items to Database...");
                             new Thread(() -> {
-                                var dataBaseHandler = customCrafting.getDataBaseHandler();
-                                Registry.CUSTOM_ITEMS.forEach(item -> dataBaseHandler.updateItem(item.getNamespacedKey(), item));
+                                var dataBaseHandler = customCrafting.getDataHandler().getDatabaseLoader();
+                                Registry.CUSTOM_ITEMS.forEach(dataBaseHandler::save);
                                 api.getConsole().fine("Successfully exported custom items to database");
                             }).start();
                             break;
