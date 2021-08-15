@@ -1,7 +1,10 @@
 package me.wolfyscript.customcrafting;
 
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
@@ -55,9 +58,6 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
         @Override
         public void register(NamespacedKey namespacedKey, ICustomRecipe<?> value) {
             remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
-            if (value instanceof ICraftingRecipe craftingRecipe) {
-                craftingRecipe.constructRecipe();
-            }
             super.register(namespacedKey, value);
             if (value instanceof ICustomVanillaRecipe) {
                 try {
