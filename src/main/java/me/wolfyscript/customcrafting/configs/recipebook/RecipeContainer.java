@@ -82,7 +82,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
                         return false;
                     }
                     if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
-                        return shapeless.getFlatIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
+                        return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
                         CraftingRecipeEliteShaped recipe1 = (CraftingRecipeEliteShaped) cachedRecipe;
                         return recipe1.getShape().length <= cache.getCurrentGridSize() && recipe1.getShape()[0].length() <= cache.getCurrentGridSize();

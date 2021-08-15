@@ -96,15 +96,16 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     protected void checkIngredient(int pos, List<Integer> usedKeys, Map<Integer, IngredientData> dataMap, ItemStack item) {
         if (item == null) return;
         for (int i = 0; i < ingredients.size(); i++) {
-            if (usedKeys.contains(i)) continue;
-            Optional<CustomItem> validItem = ingredients.get(i).check(item, isExactMeta());
-            if (validItem.isPresent()) {
-                usedKeys.add(i);
-                var customItem = validItem.get().clone();
-                if (customItem != null) {
-                    dataMap.put(pos, new IngredientData(i, ingredients.get(i), customItem, item));
+            if (!usedKeys.contains(i)) {
+                Optional<CustomItem> validItem = ingredients.get(i).check(item, isExactMeta());
+                if (validItem.isPresent()) {
+                    usedKeys.add(i);
+                    var customItem = validItem.get().clone();
+                    if (customItem != null) {
+                        dataMap.put(pos, new IngredientData(i, ingredients.get(i), customItem, item));
+                    }
+                    return;
                 }
-                return;
             }
         }
     }

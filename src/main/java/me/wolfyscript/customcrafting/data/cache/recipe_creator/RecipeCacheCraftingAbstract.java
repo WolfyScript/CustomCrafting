@@ -1,14 +1,13 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
-import me.wolfyscript.customcrafting.recipes.AbstractRecipeShaped;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.ICraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettings<S>> extends RecipeCache<CraftingRecipe<?, S>> {
@@ -29,13 +28,15 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
     protected RecipeCacheCraftingAbstract(CraftingRecipe<?, S> recipe) {
         super(recipe);
         this.settings = recipe.getSettings().clone();
-        this.shapeless = RecipeType.WORKBENCH_SHAPED.isInstance(recipe) || RecipeType.ELITE_WORKBENCH_SHAPED.isInstance(recipe);
-        this.ingredients = recipe.getIngredients().entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.indexOf(entry.getKey()), Map.Entry::getValue));
-
+        this.shapeless = RecipeType.WORKBENCH_SHAPELESS.isInstance(recipe) || RecipeType.ELITE_WORKBENCH_SHAPELESS.isInstance(recipe);
         if (recipe instanceof AbstractRecipeShaped<?, ?> shaped) {
             this.mirrorHorizontal = shaped.mirrorHorizontal();
             this.mirrorVertical = shaped.mirrorVertical();
             this.mirrorRotation = shaped.mirrorRotation();
+            this.ingredients = shaped.getMappedIngredients().entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.indexOf(entry.getKey()), Map.Entry::getValue));
+        } else if (recipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
+            AtomicInteger index = new AtomicInteger();
+            this.ingredients = shapeless.getIngredients().stream().collect(Collectors.toMap(ingredient -> index.getAndIncrement(), ingredient -> ingredient));
         }
     }
 
@@ -101,12 +102,16 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
     @Override
     protected CraftingRecipe<?, S> create(CraftingRecipe<?, S> recipe) {
         CraftingRecipe<?, S> craftingRecipe = super.create(recipe);
-        if (craftingRecipe instanceof AbstractRecipeShaped<?, ?> shaped) {
+        if (craftingRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
+            shapeless.setIngredients(ingredients.values().stream());
+        } else if (craftingRecipe instanceof AbstractRecipeShaped<?, ?> shaped) {
             shaped.setMirrorHorizontal(isMirrorHorizontal());
             shaped.setMirrorVertical(isMirrorVertical());
             shaped.setMirrorRotation(isMirrorRotation());
+            Map<Character, Ingredient> ingredientMap = ingredients.entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue));
+            shaped.generateMissingShape(List.copyOf(ingredientMap.keySet()));
+            shaped.setIngredients(ingredientMap);
         }
-        craftingRecipe.setIngredients(ingredients.entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue)));
         return craftingRecipe;
     }
 }

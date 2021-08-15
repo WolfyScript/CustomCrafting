@@ -40,14 +40,15 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
         this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
         this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
+        this.mappedIngredients = Map.of();
 
-        Map<Character, Ingredient> mappedIngredients = Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue())));
+        Map<Character, Ingredient> loadedIngredients = Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue())));
         if (node.has("shape")) {
             setShape(mapper.convertValue(node.path("shape"), String[].class));
         } else {
-            setShape(generateMissingShape(List.copyOf(mappedIngredients.keySet())));
+            generateMissingShape(List.copyOf(loadedIngredients.keySet()));
         }
-        setIngredients(mappedIngredients);
+        setIngredients(loadedIngredients);
     }
 
     protected AbstractRecipeShaped(NamespacedKey key, int gridSize, S settings) {
@@ -55,6 +56,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         this.mirrorHorizontal = true;
         this.mirrorVertical = false;
         this.mirrorRotation = false;
+        this.mappedIngredients = new HashMap<>();
     }
 
     protected AbstractRecipeShaped(AbstractRecipeShaped<C, S> recipe) {
@@ -62,6 +64,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         this.mirrorHorizontal = recipe.mirrorHorizontal;
         this.mirrorVertical = recipe.mirrorVertical;
         this.mirrorRotation = recipe.mirrorRotation;
+        this.mappedIngredients = new HashMap<>();
         setShape(recipe.shape.clone());
         setIngredients(recipe.mappedIngredients.entrySet().stream().map(entry -> Map.entry(entry.getKey(), entry.getValue().clone())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
@@ -116,10 +119,9 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         this.shape = RecipeUtil.formatShape(shape).toArray(new String[0]);
         var flattenShape = String.join("", this.shape);
         Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
-        //
-        Map<Character, Ingredient> refreshedIngredients = new HashMap<>();
-        flattenShape.chars().mapToObj(char.class::cast).forEach(character -> refreshedIngredients.put(character, this.mappedIngredients.get(character)));
-        this.mappedIngredients = refreshedIngredients;
+        Map<Character, Ingredient> newIngredients = new HashMap<>();
+        flattenShape.chars().mapToObj(value -> (char) value).forEach(character -> newIngredients.put(character, this.mappedIngredients.get(character)));
+        this.mappedIngredients = newIngredients;
     }
 
     public Shape getInternalShape() {
@@ -138,7 +140,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         //Create flatten ingredients. This makes it possible to use a key multiple times in one shape.
         var flattenShape = String.join("", this.shape);
         Preconditions.checkArgument(!flattenShape.isEmpty() && !flattenShape.isBlank(), "Shape must not be empty! (Shape: \"" + Arrays.toString(this.shape) + "\")!");
-        this.ingredients = flattenShape.chars().mapToObj(key -> getMappedIngredients().getOrDefault((char) key, new Ingredient())).toList();
+        this.ingredients = flattenShape.chars().mapToObj(key -> mappedIngredients.getOrDefault((char) key, new Ingredient())).toList();
         //Create internal shape, which is more performant when used in checks later on.
         this.internalShape = new Shape();
     }
@@ -149,7 +151,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
      * @param keys
      * @return
      */
-    private String[] generateMissingShape(List<Character> keys) {
+    public void generateMissingShape(List<Character> keys) {
         var genShape = new String[requiredGridSize];
         var index = 0;
         var row = 0;
@@ -166,7 +168,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                 row++;
             }
         }
-        return genShape;
+        setShape(genShape);
     }
 
     @Override
@@ -183,13 +185,16 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     }
 
     public void setIngredients(Map<Character, Ingredient> ingredients) {
-        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (o, o2) -> o));
+        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Preconditions.checkArgument(!this.mappedIngredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
         createFlatIngredients();
     }
 
+    /**
+     * @return An unmodifiable Map copy of the Ingredients mapped to the character in the shape.
+     */
     public Map<Character, Ingredient> getMappedIngredients() {
-        return mappedIngredients;
+        return Map.copyOf(mappedIngredients);
     }
 
     @Override

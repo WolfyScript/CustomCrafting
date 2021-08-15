@@ -35,6 +35,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node);
+        this.ingredients = List.of();
         this.requiredGridSize = gridSize;
         this.bookSquaredGrid = requiredGridSize * requiredGridSize;
         this.settings = Objects.requireNonNullElseGet(mapper.convertValue(node.path("settings"), new TypeReference<>() {
@@ -49,6 +50,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     protected CraftingRecipe(NamespacedKey key, int gridSize, S settings) {
         super(key);
+        this.ingredients = List.of();
         this.requiredGridSize = gridSize;
         this.bookSquaredGrid = requiredGridSize * requiredGridSize;
         this.settings = settings;
@@ -56,7 +58,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     protected CraftingRecipe(CraftingRecipe<C, S> craftingRecipe) {
         super(craftingRecipe);
-        this.ingredients = craftingRecipe.ingredients != null ? craftingRecipe.ingredients.stream().map(Ingredient::clone).toList() : null;
+        this.ingredients = craftingRecipe.ingredients != null ? craftingRecipe.ingredients.stream().map(Ingredient::clone).toList() : List.of();
         this.requiredGridSize = craftingRecipe.requiredGridSize;
         this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
         this.settings = craftingRecipe.settings.clone();
@@ -72,12 +74,15 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     }
 
     /**
-     * The flat ingredients are created from the already shrunken shape, so the list might be smaller than 9 or 36 in case of elite crafting recipes.
+     * This method returns the ingredients of the recipe. The list is unmodifiable!<br>
+     * <br>
+     * <b>Shaped recipe:</b><br>
+     * The returned list contains the flattened ingredients, they are created from the already shrunken shape, so the list might be smaller than 9 or 36 in case of elite crafting recipes.
      * Slots that do not have an associated ingredient in the shape are filled with empty {@link Ingredient} objects.
      *
-     * @return An unmodifiable list presenting the flattened ingredients.
+     * @return An unmodifiable list of the ingredients.
      */
-    public List<Ingredient> getFlatIngredients() {
+    public List<Ingredient> getIngredients() {
         return ingredients;
     }
 

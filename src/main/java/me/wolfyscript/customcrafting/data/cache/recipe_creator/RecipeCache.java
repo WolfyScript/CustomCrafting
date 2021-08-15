@@ -151,12 +151,12 @@ public abstract class RecipeCache<R extends ICustomRecipe<?>> {
             });
         } catch (IllegalArgumentException ex) {
             //Invalid recipe values!
+            api.getChat().sendMessage(player, "&cError saving recipe!");
             return false;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
-        Bukkit.getScheduler().runTask(customCrafting, () -> guiHandler.openCluster("none"));
         return true;
     }
 }
