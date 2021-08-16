@@ -2,6 +2,8 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
@@ -9,6 +11,8 @@ import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
@@ -27,6 +31,12 @@ import java.util.stream.Stream;
 
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
+    private static final String SHAPE_KEY = "shape";
+    private static final String MIRROR_KEY = "mirror";
+    private static final String HORIZONTAL_KEY = "horizontal";
+    private static final String VERTICAL_KEY = "vertical";
+    private static final String ROTATION_KEY = "rotation";
+
     protected Map<Character, Ingredient> mappedIngredients;
     private String[] shape;
     private Shape internalShape;
@@ -36,15 +46,15 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
 
     protected AbstractRecipeShaped(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
-        JsonNode mirrorNode = node.path("mirror");
-        this.mirrorHorizontal = mirrorNode.path("horizontal").asBoolean(true);
-        this.mirrorVertical = mirrorNode.path("vertical").asBoolean(false);
-        this.mirrorRotation = mirrorNode.path("rotation").asBoolean(false);
+        JsonNode mirrorNode = node.path(MIRROR_KEY);
+        this.mirrorHorizontal = mirrorNode.path(HORIZONTAL_KEY).asBoolean(true);
+        this.mirrorVertical = mirrorNode.path(VERTICAL_KEY).asBoolean(false);
+        this.mirrorRotation = mirrorNode.path(ROTATION_KEY).asBoolean(false);
         this.mappedIngredients = Map.of();
 
         Map<Character, Ingredient> loadedIngredients = Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue())));
-        if (node.has("shape")) {
-            setShape(mapper.convertValue(node.path("shape"), String[].class));
+        if (node.has(SHAPE_KEY)) {
+            setShape(mapper.convertValue(node.path(SHAPE_KEY), String[].class));
         } else {
             generateMissingShape(List.copyOf(loadedIngredients.keySet()));
         }
@@ -109,10 +119,10 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
      */
     public void setShape(@NotNull String... shape) {
         Preconditions.checkArgument(shape != null && shape.length > 0, "Shape can not be null!");
-        Preconditions.checkArgument(shape.length <= requiredGridSize, "Shape must not have more than " + requiredGridSize + " rows!");
+        Preconditions.checkArgument(shape.length <= maxGridDimension, "Shape must not have more than " + maxGridDimension + " rows!");
         int currentWidth = -1;
         for (String row : shape) {
-            Preconditions.checkArgument(Objects.requireNonNull(row, "Shape row cannot be null!").length() <= requiredGridSize, "Shape row must not be longer than " + requiredGridSize + "!");
+            Preconditions.checkArgument(Objects.requireNonNull(row, "Shape row cannot be null!").length() <= maxGridDimension, "Shape row must not be longer than " + maxGridDimension + "!");
             Preconditions.checkArgument(currentWidth == -1 || currentWidth == row.length(), "Shape must be rectangular!");
             currentWidth = row.length();
         }
@@ -144,10 +154,10 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
      * @return
      */
     public void generateMissingShape(List<Character> keys) {
-        var genShape = new String[requiredGridSize];
+        var genShape = new String[maxGridDimension];
         var index = 0;
         var row = 0;
-        for (int i = 0; i < bookSquaredGrid; i++) {
+        for (int i = 0; i < maxIngredients; i++) {
             var ingrd = ICraftingRecipe.LETTERS.charAt(i);
             final var current = genShape[row] != null ? genShape[row] : "";
             if (!keys.contains(ingrd)) {
@@ -156,7 +166,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                 genShape[row] = current + ingrd;
             }
             index++;
-            if ((index % requiredGridSize) == 0) {
+            if ((index % maxGridDimension) == 0) {
                 row++;
             }
         }
@@ -230,13 +240,34 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     }
 
     @Override
+    public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
+        if (!ingredients.isEmpty()) {
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + maxIngredients)).setVariants(guiHandler, this.getResult());
+            int i = 0;
+            int ingredientIndex = 0;
+            for (int r = 0; r < maxGridDimension; r++) {
+                for (int c = 0; c < maxGridDimension; c++) {
+                    if (c < internalShape.width && r < internalShape.height && ingredientIndex < ingredients.size()) {
+                        var ingredient = ingredients.get(ingredientIndex);
+                        if (ingredient != null) {
+                            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
+                        }
+                        ingredientIndex++;
+                    }
+                    i++;
+                }
+            }
+        }
+    }
+
+    @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
-        gen.writeObjectField("shape", shape);
-        gen.writeObjectFieldStart("mirror");
-        gen.writeBooleanField("horizontal", this.mirrorHorizontal);
-        gen.writeBooleanField("vertical", this.mirrorVertical);
-        gen.writeBooleanField("rotation", this.mirrorRotation);
+        gen.writeObjectField(SHAPE_KEY, shape);
+        gen.writeObjectFieldStart(MIRROR_KEY);
+        gen.writeBooleanField(HORIZONTAL_KEY, this.mirrorHorizontal);
+        gen.writeBooleanField(VERTICAL_KEY, this.mirrorVertical);
+        gen.writeBooleanField(ROTATION_KEY, this.mirrorRotation);
         gen.writeEndObject();
         gen.writeObjectField(INGREDIENTS_KEY, this.mappedIngredients);
     }

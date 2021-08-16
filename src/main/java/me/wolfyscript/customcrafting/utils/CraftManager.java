@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.utils;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
@@ -28,11 +27,9 @@ public class CraftManager {
 
     private final Map<UUID, CraftingData> preCraftedRecipes = new HashMap<>();
     private final CustomCrafting customCrafting;
-    private final DataHandler dataHandler;
 
     public CraftManager(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.dataHandler = customCrafting.getDataHandler();
     }
 
     /**
@@ -179,6 +176,7 @@ public class CraftManager {
 
     private int gridSize(ItemStack[] ingredients) {
         return switch (ingredients.length) {
+            case 4 -> 2;
             case 9 -> 3;
             case 16 -> 4;
             case 25 -> 5;

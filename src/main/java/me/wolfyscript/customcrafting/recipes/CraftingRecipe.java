@@ -28,16 +28,16 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     protected List<Ingredient> ingredients;
 
-    protected int requiredGridSize;
-    protected int bookSquaredGrid;
+    protected int maxGridDimension;
+    protected int maxIngredients;
 
     private final S settings;
 
     protected CraftingRecipe(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node);
         this.ingredients = List.of();
-        this.requiredGridSize = gridSize;
-        this.bookSquaredGrid = requiredGridSize * requiredGridSize;
+        this.maxGridDimension = gridSize;
+        this.maxIngredients = maxGridDimension * maxGridDimension;
         this.settings = Objects.requireNonNullElseGet(mapper.convertValue(node.path("settings"), new TypeReference<>() {
         }), () -> {
             try {
@@ -51,16 +51,16 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     protected CraftingRecipe(NamespacedKey key, int gridSize, S settings) {
         super(key);
         this.ingredients = List.of();
-        this.requiredGridSize = gridSize;
-        this.bookSquaredGrid = requiredGridSize * requiredGridSize;
+        this.maxGridDimension = gridSize;
+        this.maxIngredients = maxGridDimension * maxGridDimension;
         this.settings = settings;
     }
 
     protected CraftingRecipe(CraftingRecipe<C, S> craftingRecipe) {
         super(craftingRecipe);
         this.ingredients = craftingRecipe.ingredients != null ? craftingRecipe.ingredients.stream().map(Ingredient::clone).toList() : List.of();
-        this.requiredGridSize = craftingRecipe.requiredGridSize;
-        this.bookSquaredGrid = craftingRecipe.bookSquaredGrid;
+        this.maxGridDimension = craftingRecipe.maxGridDimension;
+        this.maxIngredients = craftingRecipe.maxIngredients;
         this.settings = craftingRecipe.settings.clone();
     }
 
@@ -71,6 +71,14 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     public S getSettings() {
         return settings;
+    }
+
+    public int getMaxGridDimension() {
+        return maxGridDimension;
+    }
+
+    public int getMaxIngredients() {
+        return maxIngredients;
     }
 
     /**
@@ -89,8 +97,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + bookSquaredGrid)).setVariants(guiHandler, this.getResult());
-            for (int i = 0; i < bookSquaredGrid; i++) {
+            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + maxIngredients)).setVariants(guiHandler, this.getResult());
+            for (int i = 0; i < maxIngredients; i++) {
                 var ingredient = ingredients.get(i);
                 if (ingredient != null) {
                     ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
@@ -121,10 +129,10 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             boolean elite = RecipeType.ELITE_WORKBENCH.isInstance(this);
             event.setButton(elite ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             startSlot = elite ? 0 : 10;
-            for (int i = 0; i < bookSquaredGrid; i++) {
-                event.setButton(startSlot + i + (i / requiredGridSize) * (9 - requiredGridSize), new NamespacedKey("recipe_book", "ingredient.container_" + i));
+            for (int i = 0; i < maxIngredients; i++) {
+                event.setButton(startSlot + i + (i / maxGridDimension) * (9 - maxGridDimension), new NamespacedKey("recipe_book", "ingredient.container_" + i));
             }
-            event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_" + bookSquaredGrid));
+            event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_" + maxIngredients));
         }
     }
 
@@ -137,7 +145,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     @Override
     public void writeToBuf(MCByteBuf byteBuf) {
         super.writeToBuf(byteBuf);
-        byteBuf.writeInt(requiredGridSize);
+        byteBuf.writeInt(maxGridDimension);
     }
 
 }

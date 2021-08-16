@@ -43,14 +43,14 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
     }
 
     public void addIngredients(List<Ingredient> ingredients) {
-        Preconditions.checkArgument(this.ingredients.size() + ingredients.size() <= bookSquaredGrid, "Recipe cannot have more than " + bookSquaredGrid + " ingredients!");
+        Preconditions.checkArgument(this.ingredients.size() + ingredients.size() <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
         List<Ingredient> currentIngredients = new ArrayList<>(this.ingredients);
         currentIngredients.addAll(ingredients);
         setIngredients(currentIngredients);
     }
 
     public void addIngredient(int count, Ingredient ingredient) {
-        Preconditions.checkArgument(ingredients.size() + count <= bookSquaredGrid, "Recipe cannot have more than " + bookSquaredGrid + " ingredients!");
+        Preconditions.checkArgument(ingredients.size() + count <= maxIngredients, "Recipe cannot have more than " + maxIngredients + " ingredients!");
         List<Ingredient> currentIngredients = new ArrayList<>(this.ingredients);
         for (int i = 0; i < count; i++) {
             currentIngredients.add(ingredient);
