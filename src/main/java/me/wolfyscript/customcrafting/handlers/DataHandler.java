@@ -65,7 +65,7 @@ public class DataHandler {
         if (extensionPackLoader != null) {
             loaders.add(extensionPackLoader);
         }
-        loaders.sort(Comparator.comparingInt(ResourceLoader::getPriority));
+        loaders.sort(ResourceLoader::compareTo);
     }
 
     public void initCategories() {

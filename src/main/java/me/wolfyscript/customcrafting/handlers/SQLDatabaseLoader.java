@@ -24,7 +24,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     private final SQLDataBase dataBase;
 
     public SQLDatabaseLoader(CustomCrafting customCrafting) {
-        super(customCrafting);
+        super(customCrafting, new NamespacedKey(customCrafting, "database_loader"));
         this.dataBase = new SQLDataBase(api, config.getDatabaseHost(), config.getDatabaseSchema(), config.getDatabaseUsername(), config.getDatabasePassword(), config.getDatabasePort());
         init();
     }
@@ -45,8 +45,8 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public void load() {
         api.getConsole().info("- - - - [Database Storage] - - - -");
         loadItems();
-        api.getConsole().info("");
         loadRecipes();
+        api.getConsole().info("");
     }
 
     @Override

@@ -20,7 +20,7 @@ public class LocalStorageLoader extends ResourceLoader {
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
-        super(customCrafting);
+        super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
     }
 
     @Override

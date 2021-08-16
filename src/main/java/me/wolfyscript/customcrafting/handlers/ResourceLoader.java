@@ -8,17 +8,24 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
+import me.wolfyscript.utilities.util.Keyed;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class ResourceLoader {
+import java.util.Objects;
 
+public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keyed {
+
+    protected final NamespacedKey key;
     protected final CustomCrafting customCrafting;
     protected final MainConfig config;
     protected final WolfyUtilities api;
     protected final ObjectMapper objectMapper;
     private int priority = 0;
 
-    protected ResourceLoader(CustomCrafting customCrafting) {
+    protected ResourceLoader(CustomCrafting customCrafting, NamespacedKey key) {
+        this.key = key;
         this.api = WolfyUtilities.get(customCrafting);
         this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
@@ -56,5 +63,27 @@ public abstract class ResourceLoader {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public NamespacedKey getNamespacedKey() {
+        return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ResourceLoader that)) return false;
+        return priority == that.priority && Objects.equals(key, that.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, priority);
+    }
+
+    @Override
+    public int compareTo(@NotNull ResourceLoader other) {
+        return Integer.compare(other.priority, priority);
     }
 }
