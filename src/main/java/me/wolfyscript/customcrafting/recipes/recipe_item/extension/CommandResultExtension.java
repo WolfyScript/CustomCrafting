@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.utils.recipe_item.extension;
+package me.wolfyscript.customcrafting.recipes.recipe_item.extension;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.wolfyscript.utilities.api.WolfyUtilities;

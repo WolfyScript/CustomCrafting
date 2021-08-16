@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 
 import java.util.HashMap;
 import java.util.List;

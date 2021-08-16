@@ -78,6 +78,8 @@ public class PlaceHolder extends PlaceholderExpansion {
                                 return String.valueOf(CCRegistry.RECIPES.getAvailable(player).size());
                             }
                             break;
+                        default:
+                            //No type
                     }
                 }
                 break;
@@ -114,6 +116,9 @@ public class PlaceHolder extends PlaceholderExpansion {
                         default:
                     }
                 }
+                break;
+            default:
+                //No command
         }
         return "";
     }

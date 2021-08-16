@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
@@ -126,14 +126,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
 
     public Shape getInternalShape() {
         return internalShape;
-    }
-
-    /**
-     * Generates the shape if none is set. This
-     */
-    @Override
-    public void constructRecipe() {
-
     }
 
     private void createFlatIngredients() {

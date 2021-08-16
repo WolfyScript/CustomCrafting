@@ -160,10 +160,7 @@ public class NetworkHandler {
                 player.sendMessage("Complete recipe: " + key);
                 var stackedContents = new StackedContents(inventory);
                 player.getOpenInventory().getBottomInventory().forEach(stackedContents::accountItemStack);
-
-
             }
-
         }
     }
 }

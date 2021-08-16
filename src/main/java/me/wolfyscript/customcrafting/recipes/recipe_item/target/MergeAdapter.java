@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.utils.recipe_item.target;
+package me.wolfyscript.customcrafting.recipes.recipe_item.target;
 
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;

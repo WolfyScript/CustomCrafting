@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
 import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Color;
 import org.bukkit.potion.PotionEffect;

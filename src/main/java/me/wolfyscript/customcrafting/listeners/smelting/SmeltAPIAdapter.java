@@ -11,7 +11,7 @@ import me.wolfyscript.customcrafting.recipes.data.BlastingRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.FurnaceRecipeData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmokerRecipeData;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;

@@ -26,14 +26,14 @@ public class TagSettings extends CCWindow {
             return true;
         }));
         registerButton(new ActionButton<>("next_page", PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            int page = cache.getTagSettingsCache().getListPage();
-            cache.getTagSettingsCache().setListPage(++page);
+            int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
+            cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(++page);
             return true;
         }));
         registerButton(new ActionButton<>("previous_page", PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            int page = cache.getTagSettingsCache().getListPage();
+            int page = cache.getRecipeCreatorCache().getTagSettingsCache().getListPage();
             if (page > 0) {
-                cache.getTagSettingsCache().setListPage(--page);
+                cache.getRecipeCreatorCache().getTagSettingsCache().setListPage(--page);
             }
             return true;
         }));
@@ -42,7 +42,7 @@ public class TagSettings extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        var tagsCache = update.getGuiHandler().getCustomCache().getTagSettingsCache();
+        var tagsCache = update.getGuiHandler().getCustomCache().getRecipeCreatorCache().getTagSettingsCache();
         var recipeItemStack = tagsCache.getRecipeItemStack();
         update.setButton(0, MainCluster.BACK);
         if (recipeItemStack != null) {

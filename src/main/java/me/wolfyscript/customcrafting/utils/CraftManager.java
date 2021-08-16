@@ -9,7 +9,7 @@ import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -80,19 +80,6 @@ public class CraftManager {
             }
         }
         return null; //No longer call Event if recipe is disabled or invalid!
-    }
-
-    /**
-     * Consumes the active Recipe from the matrix and sets the correct item to the cursor.
-     *
-     * @param result The result {@link ItemStack} from the inventory.
-     * @param matrix The matrix of the crafting grid. <strong>The {@link ItemStack}s of the matrix will be edited directly! It will not add new instances!</strong>
-     * @param event  The {@link InventoryClickEvent} that caused this click.
-     * @deprecated This method no longer uses the passed in matrix! Instead it will use the cached {@link CraftingData} created when {@link #preCheckRecipe(ItemStack[], Player, Inventory, boolean, boolean)} is called. Use {@link #consumeRecipe(ItemStack, InventoryClickEvent)} instead!
-     */
-    @Deprecated
-    public void consumeRecipe(ItemStack result, ItemStack[] matrix, InventoryClickEvent event) {
-        consumeRecipe(result, event);
     }
 
     /**

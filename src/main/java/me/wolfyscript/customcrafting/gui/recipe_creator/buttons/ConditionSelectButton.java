@@ -10,7 +10,7 @@ public class ConditionSelectButton extends ActionButton<CCCache> {
 
     public ConditionSelectButton(NamespacedKey key) {
         super("icon_" + key.toString("_"), new ButtonState<>("select", Condition.getGuiComponent(key).getIcon(), (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getConditionsCache().setSelectedCondition(key);
+            cache.getRecipeCreatorCache().getConditionsCache().setSelectedCondition(key);
             return true;
         }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             var langAPI = guiHandler.getApi().getLanguageAPI();

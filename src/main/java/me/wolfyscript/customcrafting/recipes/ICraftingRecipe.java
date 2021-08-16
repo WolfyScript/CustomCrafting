@@ -15,8 +15,6 @@ public interface ICraftingRecipe {
 
     CraftingData check(CraftManager.MatrixData matrixData);
 
-    void constructRecipe();
-
     default void removeMatrix(Inventory inventory, int totalAmount, CraftingData craftingData) {
         craftingData.getIndexedBySlot().forEach((slot, data) -> {
             var item = data.customItem();

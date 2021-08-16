@@ -14,32 +14,29 @@ public class CategoryButton extends ActionButton<CCCache> {
 
     public CategoryButton(String categoryID, CustomCrafting customCrafting) {
         super("category_" + categoryID, new ButtonState<>("category", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
-            if (!categoryID.isEmpty()) {
+            if (!categoryID.isEmpty() && event instanceof InventoryClickEvent clickEvent) {
                 var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-                if (event instanceof InventoryClickEvent) {
-                    if (((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                        //Delete Category
-                        if (recipeBookEditor.isFilters()) {
-                            recipeBook.getCategories().removeFilter(categoryID);
-                        } else {
-                            recipeBook.getCategories().removeCategory(categoryID);
-                        }
-                        return true;
+                if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                    //Delete Category
+                    if (recipeBookEditor.isFilters()) {
+                        recipeBook.getCategories().removeFilter(categoryID);
+                    } else {
+                        recipeBook.getCategories().removeCategory(categoryID);
                     }
-                    if (((InventoryClickEvent) event).isLeftClick()) {
-                        //Edit Category
-                        CategorySettings category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
-                        recipeBookEditor.setCategoryID(categoryID);
-                        if (category instanceof CategoryFilter) {
-                            recipeBookEditor.setFilter(new CategoryFilter((CategoryFilter) category));
-                            guiHandler.openWindow("filter");
-                        } else {
-                            recipeBookEditor.setCategory(new Category((Category) category));
-                            guiHandler.openWindow("category");
-                        }
-                        return true;
+                    return true;
+                } else if (clickEvent.isLeftClick()) {
+                    //Edit Category
+                    CategorySettings category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
+                    recipeBookEditor.setCategoryID(categoryID);
+                    if (category instanceof CategoryFilter filter) {
+                        recipeBookEditor.setFilter(new CategoryFilter(filter));
+                        guiHandler.openWindow("filter");
+                    } else {
+                        recipeBookEditor.setCategory(new Category((Category) category));
+                        guiHandler.openWindow("category");
                     }
+                    return true;
                 }
             }
             return true;

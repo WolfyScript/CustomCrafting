@@ -8,21 +8,13 @@ import me.wolfyscript.customcrafting.data.cache.potions.ApplyPotionEffect;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCreatorCache;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.cache.CustomCache;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class CCCache extends CustomCache {
 
     private Setting setting;
-
-    //RECIPE_LIST OF ALL RECIPE SAVED IN CACHE
-    private final Map<RecipeType<?>, ICustomRecipe<?>> recipes = new HashMap<>();
 
     private final CustomCrafting customCrafting;
     private String subSetting;
@@ -86,16 +78,6 @@ public class CCCache extends CustomCache {
 
     public PotionEffects getPotionEffectCache() {
         return potionEffectCache;
-    }
-
-    @Deprecated
-    public TagSettingsCache getTagSettingsCache() {
-        return getRecipeCreatorCache().getTagSettingsCache();
-    }
-
-    @Deprecated
-    public ConditionsCache getConditionsCache() {
-        return getRecipeCreatorCache().getConditionsCache();
     }
 
     public void setApplyPotionEffect(ApplyPotionEffect applyPotionEffect) {

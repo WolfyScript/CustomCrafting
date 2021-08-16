@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeGrindstone;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
 
 public class RecipeCacheGrinding extends RecipeCache<CustomRecipeGrindstone> {
 

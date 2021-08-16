@@ -1,7 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.recipe_item.target.MergeOption;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Map;
  * <p>
  * It indexes at which place of the inventory which CustomItem is used, so it can use the CustomItem consume options, and other options a user might have saved in the item.
  * <br>
- * The indexed Ingredients are used to target specific items, which are then used inside the {@link me.wolfyscript.customcrafting.utils.recipe_item.target.MergeOption}s.
+ * The indexed Ingredients are used to target specific items, which are then used inside the {@link MergeOption}s.
  * </p>
  * <br>
  * Depending on the type of the recipe they might be:

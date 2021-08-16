@@ -62,8 +62,8 @@ public class SaveCategoryButton extends ActionButton<CCCache> {
         if (category.getIcon() == null) {
             return false;
         }
-        if (category instanceof CategoryFilter) {
-            recipeBook.getCategories().registerFilter(recipeBookEditor.getCategoryID(), (CategoryFilter) category);
+        if (category instanceof CategoryFilter filter) {
+            recipeBook.getCategories().registerFilter(recipeBookEditor.getCategoryID(), filter);
             recipeBookEditor.setFilter(null);
         } else {
             recipeBook.getCategories().registerCategory(recipeBookEditor.getCategoryID(), (Category) category);
