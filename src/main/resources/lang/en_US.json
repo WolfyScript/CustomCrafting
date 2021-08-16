@@ -285,6 +285,13 @@
             "&eSubscribe to me on YouTube"
           ]
         },
+        "github": {
+          "name": "&7&lGitHub",
+          "lore": [
+            "&eNeed a Wiki, tutorials, or wanna look into source-code?",
+            "&eHave a look at my GitHub repositories."
+          ]
+        },
         "discord": {
           "name": "&9&lDiscord",
           "lore": [

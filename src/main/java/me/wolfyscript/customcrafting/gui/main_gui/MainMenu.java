@@ -82,7 +82,7 @@ public class MainMenu extends CCWindow {
         event.setButton(8, MainCluster.GUI_HELP);
 
         event.setButton(4, MainCluster.PATREON);
-        event.setButton(48, MainCluster.INSTAGRAM);
+        event.setButton(48, MainCluster.GITHUB);
         event.setButton(49, MainCluster.YOUTUBE);
         event.setButton(50, MainCluster.DISCORD);
 
