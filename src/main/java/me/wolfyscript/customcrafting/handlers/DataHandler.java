@@ -1,18 +1,15 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import com.google.common.collect.Streams;
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Recipe;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -122,12 +119,7 @@ public class DataHandler {
 
     public List<Recipe> getMinecraftRecipes() {
         if (minecraftRecipes.isEmpty()) {
-            minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> {
-                if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || recipe instanceof SmithingRecipe) {
-                    return ((Keyed) recipe).getKey().getNamespace().equals("minecraft");
-                }
-                return false;
-            }).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).toList();
+            minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> recipe instanceof Keyed keyed && keyed.getKey().getNamespace().equals("minecraft")).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).toList();
         }
         return Collections.unmodifiableList(minecraftRecipes);
     }
