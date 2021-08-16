@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.handlers;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
@@ -30,6 +31,17 @@ public class DisableRecipesHandler {
 
         if (!config.getDisabledRecipes().isEmpty()) {
             recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
+            recipes.forEach(key -> {
+                if (CCRegistry.RECIPES.has(key)) {
+                    ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
+                    disableRecipe(customRecipe);
+                } else {
+                    org.bukkit.NamespacedKey bukkitKey = org.bukkit.NamespacedKey.fromString(key.toString());
+                    if (bukkitKey != null) {
+                        disableBukkitRecipe(bukkitKey);
+                    }
+                }
+            });
         }
     }
 
