@@ -38,7 +38,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
             customCrafting.getConfigHandler().loadRecipeBookConfig();
             var dataHandler = customCrafting.getDataHandler();
             dataHandler.initCategories();
-            dataHandler.load(false);
+            dataHandler.load();
             dataHandler.getCategories().index();
             api.getChat().sendMessage(p, "  - &aComplete");
             api.getChat().sendMessage(p, "&eReloading GUIs");

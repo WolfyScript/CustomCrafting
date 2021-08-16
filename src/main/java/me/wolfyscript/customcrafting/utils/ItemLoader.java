@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.utils;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -107,15 +108,19 @@ public class ItemLoader {
     }
 
     public static void saveItem(NamespacedKey namespacedKey, CustomItem customItem) {
+        saveItem(CustomCrafting.inst().getDataHandler().getActiveLoader(), namespacedKey, customItem);
+    }
+
+    public static void saveItem(ResourceLoader loader, NamespacedKey namespacedKey, CustomItem customItem) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
             customItem.setNamespacedKey(internalKey);
-            CustomCrafting.inst().getDataHandler().getActiveLoader().save(customItem);
+            loader.save(customItem);
             Registry.CUSTOM_ITEMS.register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
         }
     }
 
-    public static boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
+    public static boolean deleteItem(ResourceLoader loader, NamespacedKey namespacedKey, @Nullable Player player) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
                 if (player != null) CustomCrafting.inst().getApi().getChat().sendMessage(player, "error");
@@ -123,9 +128,13 @@ public class ItemLoader {
             }
             CustomItem item = Registry.CUSTOM_ITEMS.get(namespacedKey);
             Registry.CUSTOM_ITEMS.remove(namespacedKey);
-            CustomCrafting.inst().getDataHandler().getActiveLoader().delete(item);
+            loader.delete(item);
         }
         return false;
+    }
+
+    public static boolean deleteItem(NamespacedKey namespacedKey, @Nullable Player player) {
+        return deleteItem(CustomCrafting.inst().getDataHandler().getActiveLoader(), namespacedKey, player);
     }
 
     public static void updateItem(ItemStack stack) {

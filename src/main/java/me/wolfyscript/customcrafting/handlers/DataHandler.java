@@ -91,37 +91,25 @@ public class DataHandler {
         this.saveDestination = saveDestination;
     }
 
-    public void load(boolean update) {
+    public void load() {
         api.getConsole().info("$msg.startup.recipes.title$");
+        var lastBukkitVersion = config.getInt("data.bukkit_version");
+        var lastVersion = config.getInt("data.version");
+        boolean upgrade = lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION;
         for (ResourceLoader loader : loaders) {
-            loader.load();
+            loader.load(upgrade);
         }
-        if (update) {
-            var lastBukkitVersion = config.getInt("data.bukkit_version");
-            var lastVersion = config.getInt("data.version");
-            if (lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION) {
-                api.getConsole().info("[ Converting Items & Recipes to the latest Bukkit and Config format ]");
-                saveData();
-                api.getConsole().info("Loading Items & Recipes from updated configs...");
-                load(false);
-                api.getConsole().info("[ Conversion of Item & Recipes complete! ]");
-                config.set("data.version", CustomCrafting.CONFIG_VERSION);
-                config.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
-                config.reload();
-            }
+        if (upgrade) {
+            config.set("data.version", CustomCrafting.CONFIG_VERSION);
+            config.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
+            config.save();
         }
     }
 
     public void loadRecipesAndItems() {
-        load(true);
+        load();
         categories.index();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
-    }
-
-    public void saveData() {
-        api.getConsole().info("Saving Items & Recipes");
-        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> ItemLoader.saveItem(entry.getKey(), entry.getValue()));
-        CCRegistry.RECIPES.values().forEach(ICustomRecipe::save);
     }
 
     public ResourceLoader getActiveLoader() {

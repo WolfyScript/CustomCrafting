@@ -45,11 +45,6 @@ public class LocalStorageLoader extends ResourceLoader {
         }
     }
 
-    @Override
-    public void save() {
-
-    }
-
     private File getFileAt(String namespace, String typeId, String key) {
         return new File(DataHandler.DATA_FOLDER + File.separator + namespace + File.separator + typeId, key + ".json");
     }

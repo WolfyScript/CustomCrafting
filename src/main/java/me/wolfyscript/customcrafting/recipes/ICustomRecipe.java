@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
 import me.wolfyscript.customcrafting.utils.recipe_item.Result;
@@ -98,7 +99,11 @@ public interface ICustomRecipe<C extends ICustomRecipe<C>> extends Keyed {
      * It can also send a confirmation message to the player if the player is not null.
      */
     default boolean save(@Nullable Player player) {
-        if (CustomCrafting.inst().getDataHandler().getActiveLoader().save(this)) {
+        return save(CustomCrafting.inst().getDataHandler().getActiveLoader(), player);
+    }
+
+    default boolean save(ResourceLoader loader, @Nullable Player player) {
+        if (loader.save(this)) {
             getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
             getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
             return true;
