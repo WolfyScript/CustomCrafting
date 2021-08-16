@@ -99,8 +99,6 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 ICustomRecipe<?> recipe = getRecipe(namespacedKey);
                 if (recipe != null) {
                     CCRegistry.RECIPES.register(recipe);
-                } else {
-                    api.getConsole().info("Error loading recipe \"" + namespacedKey + "\". Couldn't find recipe in DataBase!");
                 }
             }
         } catch (SQLException ex) {

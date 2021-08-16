@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -130,7 +131,7 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private void loadRecipe(String subFolder, RecipeType<?> type) {
-        for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
+        for (File file : getFiles(subFolder, type.getId())) {
             String name = file.getName();
             if (checkForOldCraftingRecipes(RecipeType.WORKBENCH, subFolder, name) || checkForOldCraftingRecipes(RecipeType.ELITE_WORKBENCH, subFolder, name)) {
                 continue;
@@ -139,9 +140,7 @@ public class LocalStorageLoader extends ResourceLoader {
             try {
                 CCRegistry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                customCrafting.getLogger().severe(String.format("Could not load recipe '%s':", namespacedKey));
-                e.printStackTrace();
-                customCrafting.getLogger().severe("----------------------");
+                ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), type.getId(), e);
             }
         }
     }
