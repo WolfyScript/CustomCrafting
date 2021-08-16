@@ -26,12 +26,16 @@ public class LocalStorageLoader extends ResourceLoader {
     @Override
     public void load() {
         api.getConsole().info("- - - - [Local Storage] - - - -");
+        api.getConsole().info("Searching for namespaces...");
         String[] dirs = DATA_FOLDER.list();
         if (dirs != null) {
+            api.getConsole().info("Namespaces: [" + String.join(", ", dirs) + "]");
+            api.getConsole().info(" - ");
+            api.getConsole().info("Loading items...");
             for (String dir : dirs) {
-                api.getConsole().info("> " + dir);
                 loadItems(dir);
             }
+            api.getConsole().info("Loading recipes...");
             for (String dir : dirs) {
                 for (RecipeType<? extends ICustomRecipe<?>> type : RecipeType.values()) {
                     loadRecipe(dir, type);
