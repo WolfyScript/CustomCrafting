@@ -33,10 +33,24 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
             this.mirrorHorizontal = shaped.mirrorHorizontal();
             this.mirrorVertical = shaped.mirrorVertical();
             this.mirrorRotation = shaped.mirrorRotation();
-            this.ingredients = shaped.getMappedIngredients().entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.indexOf(entry.getKey()), Map.Entry::getValue));
-        } else if (recipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
+            this.ingredients = new HashMap<>();
+            int i = 0;
+            int ingredientIndex = 0;
+            for (int r = 0; r < shaped.getMaxGridDimension(); r++) {
+                for (int c = 0; c < shaped.getMaxGridDimension(); c++) {
+                    if (c < shaped.getInternalShape().getWidth() && r < shaped.getInternalShape().getHeight() && ingredientIndex < shaped.getIngredients().size()) {
+                        var ingredient = shaped.getIngredients().get(ingredientIndex);
+                        if (ingredient != null) {
+                            this.ingredients.put(i, ingredient.clone());
+                        }
+                        ingredientIndex++;
+                    }
+                    i++;
+                }
+            }
+        } else {
             AtomicInteger index = new AtomicInteger();
-            this.ingredients = shapeless.getIngredients().stream().collect(Collectors.toMap(ingredient -> index.getAndIncrement(), ingredient -> ingredient));
+            this.ingredients = recipe.getIngredients().stream().collect(Collectors.toMap(ingredient -> index.getAndIncrement(), ingredient -> ingredient));
         }
     }
 
