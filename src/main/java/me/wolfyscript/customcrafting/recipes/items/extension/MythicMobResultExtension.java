@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.recipes.recipe_item.extension;
+package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;

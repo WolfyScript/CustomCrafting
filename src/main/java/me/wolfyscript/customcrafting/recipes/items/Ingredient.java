@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.recipes.recipe_item;
+package me.wolfyscript.customcrafting.recipes.items;
 
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;

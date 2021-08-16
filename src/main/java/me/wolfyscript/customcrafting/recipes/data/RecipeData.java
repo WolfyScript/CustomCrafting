@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
-import me.wolfyscript.customcrafting.recipes.recipe_item.target.MergeOption;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
-package me.wolfyscript.customcrafting.recipes.recipe_item.target.adapters;
+package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
-import me.wolfyscript.customcrafting.recipes.recipe_item.target.MergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;

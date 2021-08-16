@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
-import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 
 public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {

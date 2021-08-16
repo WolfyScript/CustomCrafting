@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.recipes.recipe_item.RecipeItemStack;
+import me.wolfyscript.customcrafting.recipes.items.RecipeItemStack;
 
 public class TagSettingsCache {
 

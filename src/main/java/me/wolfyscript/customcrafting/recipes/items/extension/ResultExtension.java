@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.recipes.recipe_item.extension;
+package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;

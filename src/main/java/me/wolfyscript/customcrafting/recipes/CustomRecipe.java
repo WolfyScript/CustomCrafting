@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;

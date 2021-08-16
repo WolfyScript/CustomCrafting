@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
-import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
 public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 

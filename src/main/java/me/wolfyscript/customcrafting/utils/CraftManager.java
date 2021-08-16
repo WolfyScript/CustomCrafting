@@ -8,7 +8,7 @@ import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.CraftDelayCondition;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.RandomCollection;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;

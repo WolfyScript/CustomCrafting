@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
 import me.wolfyscript.customcrafting.recipes.CustomRecipeStonecutter;
-import me.wolfyscript.customcrafting.recipes.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 
 public class RecipeCacheStonecutting extends RecipeCache<CustomRecipeStonecutter> {
 

@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ApplyItem;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
-import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;

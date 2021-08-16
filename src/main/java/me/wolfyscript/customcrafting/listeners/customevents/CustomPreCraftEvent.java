@@ -13,7 +13,7 @@ import java.util.List;
 public class CustomPreCraftEvent extends CustomCraftEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    private me.wolfyscript.customcrafting.recipes.recipe_item.Result result;
+    private me.wolfyscript.customcrafting.recipes.items.Result result;
     private List<List<ItemStack>> ingredients;
     private final CraftManager.MatrixData matrix;
 
@@ -24,11 +24,11 @@ public class CustomPreCraftEvent extends CustomCraftEvent {
         this.matrix = matrix;
     }
 
-    public @NotNull me.wolfyscript.customcrafting.recipes.recipe_item.Result getResult() {
+    public @NotNull me.wolfyscript.customcrafting.recipes.items.Result getResult() {
         return result;
     }
 
-    public void setResult(@NotNull me.wolfyscript.customcrafting.recipes.recipe_item.Result result) {
+    public void setResult(@NotNull me.wolfyscript.customcrafting.recipes.items.Result result) {
         this.result = result;
     }
 

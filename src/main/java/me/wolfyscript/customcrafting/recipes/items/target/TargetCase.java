@@ -1,6 +1,6 @@
-package me.wolfyscript.customcrafting.recipes.recipe_item.target;
+package me.wolfyscript.customcrafting.recipes.items.target;
 
-import me.wolfyscript.customcrafting.recipes.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonCreator;

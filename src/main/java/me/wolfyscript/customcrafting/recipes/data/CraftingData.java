@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.recipe_item.target.MergeOption;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 
 import java.util.Map;
 

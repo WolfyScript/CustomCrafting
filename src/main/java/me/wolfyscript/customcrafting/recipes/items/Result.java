@@ -1,9 +1,9 @@
-package me.wolfyscript.customcrafting.recipes.recipe_item;
+package me.wolfyscript.customcrafting.recipes.items;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
-import me.wolfyscript.customcrafting.recipes.recipe_item.extension.ResultExtension;
-import me.wolfyscript.customcrafting.recipes.recipe_item.target.ResultTarget;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
