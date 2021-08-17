@@ -28,7 +28,7 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
     protected RecipeCacheCraftingAbstract(CraftingRecipe<?, S> recipe) {
         super(recipe);
         this.settings = recipe.getSettings().clone();
-        this.shapeless = RecipeType.WORKBENCH_SHAPELESS.isInstance(recipe) || RecipeType.ELITE_WORKBENCH_SHAPELESS.isInstance(recipe);
+        this.shapeless = RecipeType.CRAFTING_SHAPELESS.isInstance(recipe) || RecipeType.ELITE_CRAFTING_SHAPELESS.isInstance(recipe);
         if (recipe instanceof AbstractRecipeShaped<?, ?> shaped) {
             this.mirrorHorizontal = shaped.mirrorHorizontal();
             this.mirrorVertical = shaped.mirrorVertical();

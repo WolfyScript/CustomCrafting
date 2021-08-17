@@ -133,7 +133,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private void loadRecipe(String subFolder, RecipeType<?> type) {
         for (File file : getFiles(subFolder, type.getId())) {
             String name = file.getName();
-            if (checkForOldCraftingRecipes(RecipeType.WORKBENCH, subFolder, name) || checkForOldCraftingRecipes(RecipeType.ELITE_WORKBENCH, subFolder, name)) {
+            if (checkForOldCraftingRecipes(RecipeType.CRAFTING, subFolder, name) || checkForOldCraftingRecipes(RecipeType.ELITE_CRAFTING, subFolder, name)) {
                 continue;
             }
             var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
@@ -146,10 +146,10 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private boolean checkForOldCraftingRecipes(RecipeType<? extends CraftingRecipe<?, ?>> type, String namespace, String key) {
-        if (type.equals(RecipeType.WORKBENCH)) {
-            return hasOldCraftingRecipe(RecipeType.WORKBENCH_SHAPELESS, namespace, key) || hasOldCraftingRecipe(RecipeType.WORKBENCH_SHAPED, namespace, key);
-        } else if (type.equals(RecipeType.ELITE_WORKBENCH)) {
-            return hasOldCraftingRecipe(RecipeType.ELITE_WORKBENCH_SHAPELESS, namespace, key) || hasOldCraftingRecipe(RecipeType.ELITE_WORKBENCH_SHAPED, namespace, key);
+        if (type.equals(RecipeType.CRAFTING)) {
+            return hasOldCraftingRecipe(RecipeType.CRAFTING_SHAPELESS, namespace, key) || hasOldCraftingRecipe(RecipeType.CRAFTING_SHAPED, namespace, key);
+        } else if (type.equals(RecipeType.ELITE_CRAFTING)) {
+            return hasOldCraftingRecipe(RecipeType.ELITE_CRAFTING_SHAPELESS, namespace, key) || hasOldCraftingRecipe(RecipeType.ELITE_CRAFTING_SHAPED, namespace, key);
         }
         return false;
     }

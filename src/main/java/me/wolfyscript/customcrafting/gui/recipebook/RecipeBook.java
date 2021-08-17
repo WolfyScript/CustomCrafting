@@ -164,7 +164,7 @@ public class RecipeBook extends CCWindow {
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
                 ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
                 customRecipe.renderMenu(this, event);
-                boolean elite = RecipeType.ELITE_WORKBENCH.isInstance(customRecipe);
+                boolean elite = RecipeType.ELITE_CRAFTING.isInstance(customRecipe);
                 if (knowledgeBook.getSubFolderPage() > 0) {
                     event.setButton(elite ? 51 : 48, PREVIOUS_RECIPE);
                 }

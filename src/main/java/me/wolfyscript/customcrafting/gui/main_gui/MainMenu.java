@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends CCWindow {
 
-    private static final String WORKBENCH = RecipeType.WORKBENCH.getId();
+    private static final String WORKBENCH = RecipeType.CRAFTING.getId();
     private static final String FURNACE = RecipeType.FURNACE.getId();
     private static final String ANVIL = RecipeType.ANVIL.getId();
     private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.getId();
@@ -27,7 +27,7 @@ public class MainMenu extends CCWindow {
     private static final String STONECUTTER = RecipeType.STONECUTTER.getId();
     private static final String GRINDSTONE = RecipeType.GRINDSTONE.getId();
     private static final String BREWING_STAND = RecipeType.BREWING_STAND.getId();
-    private static final String ELITE_WORKBENCH = RecipeType.ELITE_WORKBENCH.getId();
+    private static final String ELITE_WORKBENCH = RecipeType.ELITE_CRAFTING.getId();
     private static final String CAULDRON = RecipeType.CAULDRON.getId();
     private static final String SMITHING = RecipeType.SMITHING.getId();
 
@@ -42,7 +42,7 @@ public class MainMenu extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new RecipeTypeButton(RecipeType.WORKBENCH, Material.CRAFTING_TABLE));
+        registerButton(new RecipeTypeButton(RecipeType.CRAFTING, Material.CRAFTING_TABLE));
         registerButton(new RecipeTypeButton(RecipeType.FURNACE, Material.FURNACE));
         registerButton(new RecipeTypeButton(RecipeType.ANVIL, Material.ANVIL));
         registerButton(new RecipeTypeButton(RecipeType.BLAST_FURNACE, Material.BLAST_FURNACE));
@@ -51,7 +51,7 @@ public class MainMenu extends CCWindow {
         registerButton(new RecipeTypeButton(RecipeType.STONECUTTER, Material.STONECUTTER));
         registerButton(new RecipeTypeButton(RecipeType.GRINDSTONE, Material.GRINDSTONE));
         registerButton(new RecipeTypeButton(RecipeType.BREWING_STAND, Material.BREWING_STAND));
-        registerButton(new RecipeTypeButton(RecipeType.ELITE_WORKBENCH, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
+        registerButton(new RecipeTypeButton(RecipeType.ELITE_CRAFTING, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
         registerButton(new RecipeTypeButton(RecipeType.CAULDRON, Material.CAULDRON));
         registerButton(new RecipeTypeButton(RecipeType.SMITHING, Material.SMITHING_TABLE));
 

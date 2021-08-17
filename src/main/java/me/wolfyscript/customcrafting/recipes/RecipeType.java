@@ -16,13 +16,12 @@ public class RecipeType<C extends ICustomRecipe<?>> {
     static final Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
 
     //Crafting recipes
-    public static final RecipeType<CraftingRecipeShaped> WORKBENCH_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, CraftingRecipeShaped.class);
-    public static final RecipeType<CraftingRecipeShapeless> WORKBENCH_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, CraftingRecipeShapeless.class);
-    public static final RecipeType<CraftingRecipeEliteShaped> ELITE_WORKBENCH_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, CraftingRecipeEliteShaped.class);
-    public static final RecipeType<CraftingRecipe<?, AdvancedRecipeSettings>> WORKBENCH = new RecipeType<>(Type.WORKBENCH, (Class<CraftingRecipe<?, AdvancedRecipeSettings>>) (Object) CraftingRecipe.class) {
+    public static final RecipeType<CraftingRecipeShaped> CRAFTING_SHAPED = new RecipeType<>(Type.WORKBENCH_SHAPED, CraftingRecipeShaped.class);
+    public static final RecipeType<CraftingRecipeShapeless> CRAFTING_SHAPELESS = new RecipeType<>(Type.WORKBENCH_SHAPELESS, CraftingRecipeShapeless.class);
+    public static final RecipeType<CraftingRecipe<?, AdvancedRecipeSettings>> CRAFTING = new RecipeType<>(Type.WORKBENCH, (Class<CraftingRecipe<?, AdvancedRecipeSettings>>) (Object) CraftingRecipe.class) {
         @Override
         public CraftingRecipe<?, AdvancedRecipeSettings> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-            return node.path("shapeless").asBoolean() ? WORKBENCH_SHAPELESS.getInstance(namespacedKey, node) : WORKBENCH_SHAPED.getInstance(namespacedKey, node);
+            return node.path("shapeless").asBoolean() ? CRAFTING_SHAPELESS.getInstance(namespacedKey, node) : CRAFTING_SHAPED.getInstance(namespacedKey, node);
         }
 
         @Override
@@ -30,11 +29,12 @@ public class RecipeType<C extends ICustomRecipe<?>> {
             return recipe instanceof CraftingRecipe<?, ?> craftingRecipe && craftingRecipe.getSettings() instanceof AdvancedRecipeSettings;
         }
     };
-    public static final RecipeType<CraftingRecipeEliteShapeless> ELITE_WORKBENCH_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, CraftingRecipeEliteShapeless.class);
-    public static final RecipeType<CraftingRecipe<?, EliteRecipeSettings>> ELITE_WORKBENCH = new RecipeType<>(Type.ELITE_WORKBENCH, (Class<CraftingRecipe<?, EliteRecipeSettings>>) (Object) CraftingRecipe.class) {
+    public static final RecipeType<CraftingRecipeEliteShaped> ELITE_CRAFTING_SHAPED = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPED, CraftingRecipeEliteShaped.class);
+    public static final RecipeType<CraftingRecipeEliteShapeless> ELITE_CRAFTING_SHAPELESS = new RecipeType<>(Type.ELITE_WORKBENCH_SHAPELESS, CraftingRecipeEliteShapeless.class);
+    public static final RecipeType<CraftingRecipe<?, EliteRecipeSettings>> ELITE_CRAFTING = new RecipeType<>(Type.ELITE_WORKBENCH, (Class<CraftingRecipe<?, EliteRecipeSettings>>) (Object) CraftingRecipe.class) {
         @Override
         public CraftingRecipe<?, EliteRecipeSettings> getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-            return node.path("shapeless").asBoolean() ? ELITE_WORKBENCH_SHAPELESS.getInstance(namespacedKey, node) : ELITE_WORKBENCH_SHAPED.getInstance(namespacedKey, node);
+            return node.path("shapeless").asBoolean() ? ELITE_CRAFTING_SHAPELESS.getInstance(namespacedKey, node) : ELITE_CRAFTING_SHAPED.getInstance(namespacedKey, node);
         }
 
         @Override

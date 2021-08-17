@@ -75,8 +75,8 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     public boolean isValid(EliteWorkbench cache) {
         var data = cache.getEliteWorkbenchData();
         return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
-            if (cachedRecipe instanceof CraftingRecipe && (RecipeType.ELITE_WORKBENCH.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
-                if (RecipeType.ELITE_WORKBENCH.isInstance(cachedRecipe)) {
+            if (cachedRecipe instanceof CraftingRecipe && (RecipeType.ELITE_CRAFTING.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
+                if (RecipeType.ELITE_CRAFTING.isInstance(cachedRecipe)) {
                     EliteWorkbenchCondition condition = cachedRecipe.getConditions().getEliteCraftingTableCondition();
                     if (condition != null && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;

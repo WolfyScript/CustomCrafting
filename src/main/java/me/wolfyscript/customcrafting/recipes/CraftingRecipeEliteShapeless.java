@@ -20,7 +20,7 @@ public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<Crafti
 
     @Override
     public RecipeType<CraftingRecipeEliteShapeless> getRecipeType() {
-        return RecipeType.ELITE_WORKBENCH_SHAPELESS;
+        return RecipeType.ELITE_CRAFTING_SHAPELESS;
     }
 
     @Override

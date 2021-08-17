@@ -23,7 +23,7 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
 
     @Override
     public RecipeType<CraftingRecipeShaped> getRecipeType() {
-        return RecipeType.WORKBENCH_SHAPED;
+        return RecipeType.CRAFTING_SHAPED;
     }
 
     @Override

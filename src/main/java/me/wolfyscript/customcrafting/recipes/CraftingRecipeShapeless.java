@@ -24,7 +24,7 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
 
     @Override
     public RecipeType<CraftingRecipeShapeless> getRecipeType() {
-        return RecipeType.WORKBENCH_SHAPELESS;
+        return RecipeType.CRAFTING_SHAPELESS;
     }
 
     @Override

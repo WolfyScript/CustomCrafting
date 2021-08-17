@@ -110,7 +110,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         if (!ingredients.isEmpty()) {
-            if (RecipeType.WORKBENCH.isInstance(this) && getConditions().has(AdvancedWorkbenchCondition.KEY)) {
+            if (RecipeType.CRAFTING.isInstance(this) && getConditions().has(AdvancedWorkbenchCondition.KEY)) {
                 var glass = new NamespacedKey("none", "glass_purple");
                 for (int i = 0; i < 9; i++) {
                     event.setButton(i, glass);
@@ -126,7 +126,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
                 event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getNamespacedKey().toString("__")));
                 slot += 2;
             }
-            boolean elite = RecipeType.ELITE_WORKBENCH.isInstance(this);
+            boolean elite = RecipeType.ELITE_CRAFTING.isInstance(this);
             event.setButton(elite ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             startSlot = elite ? 0 : 10;
             for (int i = 0; i < maxIngredients; i++) {

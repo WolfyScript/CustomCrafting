@@ -74,10 +74,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
             if (clickEvent.isShiftClick() && customRecipe != null) {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
-                    if (RecipeType.WORKBENCH.isInstance(customRecipe)) {
-                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.WORKBENCH);
-                    } else if (RecipeType.ELITE_WORKBENCH.isInstance(customRecipe)) {
-                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.ELITE_WORKBENCH);
+                    if (RecipeType.CRAFTING.isInstance(customRecipe)) {
+                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.CRAFTING);
+                    } else if (RecipeType.ELITE_CRAFTING.isInstance(customRecipe)) {
+                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.ELITE_CRAFTING);
                     } else {
                         cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
                     }

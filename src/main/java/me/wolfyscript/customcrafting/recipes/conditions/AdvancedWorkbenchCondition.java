@@ -33,7 +33,7 @@ public class AdvancedWorkbenchCondition extends Condition<AdvancedWorkbenchCondi
 
     @Override
     public boolean isApplicable(ICustomRecipe<?> recipe) {
-        return RecipeType.WORKBENCH.isInstance(recipe);
+        return RecipeType.CRAFTING.isInstance(recipe);
     }
 
     public static class GUIComponent extends IconGUIComponent<AdvancedWorkbenchCondition> {
@@ -44,7 +44,7 @@ public class AdvancedWorkbenchCondition extends Condition<AdvancedWorkbenchCondi
 
         @Override
         public boolean shouldRender(ICustomRecipe<?> recipe) {
-            return RecipeType.WORKBENCH.isInstance(recipe);
+            return RecipeType.CRAFTING.isInstance(recipe);
         }
     }
 }
