@@ -161,8 +161,8 @@ public abstract class CustomRecipe<C extends ICustomRecipe<C>> implements ICusto
     }
 
     @Override
-    public void setResult(Result result) {
-        Preconditions.checkArgument(!result.isEmpty(), "Invalid result! Recipe must have a non-air result!");
+    public void setResult(@NotNull Result result) {
+        Preconditions.checkArgument(result != null && !result.isEmpty(), "Invalid result! Recipe must have a non-air result!");
         this.result = result;
     }
 

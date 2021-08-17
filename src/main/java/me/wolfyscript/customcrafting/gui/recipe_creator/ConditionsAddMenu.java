@@ -27,7 +27,6 @@ public class ConditionsAddMenu extends CCWindow {
     @Override
     public void onInit() {
 
-
     }
 
     @Override

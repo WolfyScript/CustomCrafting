@@ -17,8 +17,6 @@ import org.bukkit.entity.Player;
 
 public abstract class RecipeCache<R extends ICustomRecipe<?>> {
 
-    protected RecipeCreatorCache creatorCache;
-
     protected NamespacedKey key;
     protected boolean exactMeta;
     protected boolean hidden;

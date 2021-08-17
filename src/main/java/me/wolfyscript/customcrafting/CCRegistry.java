@@ -6,8 +6,6 @@ import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
-import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -28,11 +26,6 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
      * This Registry contains all the recipes of this plugin.
      */
     RecipeRegistry RECIPES = new RecipeRegistry();
-    /**
-     * This Registry contains all the custom Result Extensions that can be saved to a Result.
-     */
-    SimpleRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleRegistry<>();
-    SimpleRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleRegistry<>();
     ItemCreatorTabRegistry ITEM_CREATOR_TABS = new ItemCreatorTabRegistry();
 
     /**
@@ -126,7 +119,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
 
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
             ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(recipeKey);
-            return RecipeType.WORKBENCH.isInstance(customRecipe) ? RecipeType.WORKBENCH.cast(customRecipe) : null;
+            return RecipeType.CRAFTING.isInstance(customRecipe) ? RecipeType.CRAFTING.cast(customRecipe) : null;
         }
 
         /**
@@ -202,10 +195,10 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
         public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
             List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
             if (elite) {
-                craftingRecipes.addAll(get(RecipeType.ELITE_WORKBENCH));
+                craftingRecipes.addAll(get(RecipeType.ELITE_CRAFTING));
             }
             if (advanced) {
-                craftingRecipes.addAll(get(RecipeType.WORKBENCH));
+                craftingRecipes.addAll(get(RecipeType.CRAFTING));
             }
             return craftingRecipes.stream().filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }

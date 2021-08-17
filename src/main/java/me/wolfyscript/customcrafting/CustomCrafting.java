@@ -130,31 +130,32 @@ public class CustomCrafting extends JavaPlugin {
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
 
         getLogger().info("Registering Result Extensions");
-        CCRegistry.RESULT_EXTENSIONS.register(new CommandResultExtension());
-        CCRegistry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
-        CCRegistry.RESULT_EXTENSIONS.register(new SoundResultExtension());
+        CCClassRegistry.RESULT_EXTENSIONS.register(new CommandResultExtension());
+        CCClassRegistry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
+        CCClassRegistry.RESULT_EXTENSIONS.register(new SoundResultExtension());
+
         CustomPlayerData.register(new CCPlayerData.Provider());
 
         getLogger().info("Registering Result Merge Adapters");
-        CCRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
-        CCRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
-        CCRegistry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
-        CCRegistry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
 
         getLogger().info("Registering Recipe Conditions");
-        CCClassRegistry.RECIPE_CONDITIONS.register(new AdvancedWorkbenchCondition(), new AdvancedWorkbenchCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new CraftDelayCondition(), new CraftDelayCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new CraftLimitCondition(), new CraftLimitCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new EliteWorkbenchCondition(), new EliteWorkbenchCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new ExperienceCondition(), new ExperienceCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new PermissionCondition(), new PermissionCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new WeatherCondition(), new WeatherCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new WorldBiomeCondition(), new WorldBiomeCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new WorldNameCondition(), new WorldNameCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(new WorldTimeCondition(), new WorldTimeCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(AdvancedWorkbenchCondition.KEY, AdvancedWorkbenchCondition.class, new AdvancedWorkbenchCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(CraftDelayCondition.KEY, CraftDelayCondition.class, new CraftDelayCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(CraftLimitCondition.KEY, CraftLimitCondition.class, new CraftLimitCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(EliteWorkbenchCondition.KEY, EliteWorkbenchCondition.class, new EliteWorkbenchCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(ExperienceCondition.KEY, ExperienceCondition.class, new ExperienceCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(PermissionCondition.KEY, PermissionCondition.class, new PermissionCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WeatherCondition.KEY, WeatherCondition.class, new WeatherCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WorldBiomeCondition.KEY, WorldBiomeCondition.class, new WorldBiomeCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
 
-        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, CCRegistry.RESULT_EXTENSIONS);
-        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, CCRegistry.RESULT_MERGE_ADAPTERS);
+        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, CCClassRegistry.RESULT_EXTENSIONS);
+        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, CCClassRegistry.RESULT_MERGE_ADAPTERS);
         KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, CCClassRegistry.RECIPE_CONDITIONS);
     }
 

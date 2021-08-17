@@ -1,8 +1,12 @@
 package me.wolfyscript.customcrafting;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.utilities.util.ClassRegistry;
 import me.wolfyscript.utilities.util.Keyed;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -10,6 +14,8 @@ import java.util.Objects;
 public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
 
     RecipeConditionsRegistry RECIPE_CONDITIONS = new RecipeConditionsRegistry();
+    SimpleClassRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleClassRegistry<>();
+    SimpleClassRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleClassRegistry<>();
 
     class RecipeConditionsRegistry extends SimpleClassRegistry<Condition<?>> {
 
@@ -20,10 +26,10 @@ public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
          * @param component An optional {@link Condition.AbstractGUIComponent}, to edit settings inside the GUI.
          * @param <C>       The type of the {@link Condition}
          */
-        public <C extends Condition<C>> void register(Condition<C> condition, @Nullable Condition.AbstractGUIComponent<C> component) {
-            var key = Objects.requireNonNull(condition, "Can't register condition! Condition must not be null!").getNamespacedKey();
-            Condition.registerGUIComponent(key, component);
-            super.register(condition);
+        public <C extends Condition<C>> void register(NamespacedKey key, Class<C> condition, @Nullable Condition.AbstractGUIComponent<C> component) {
+            Preconditions.checkArgument(condition != null, "Condition must not be null!");
+            Condition.registerGUIComponent(Objects.requireNonNull(key, "Invalid NamespacedKey! Key cannot be null!"), component);
+            super.register(key, (Class<Condition<?>>) condition);
         }
 
         /**
@@ -33,9 +39,20 @@ public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
          */
         @Override
         public void register(Condition<?> condition) {
-            register(condition, null);
+            this.register(condition.getNamespacedKey(), condition.getClass(), null);
         }
 
+        @Override
+        public void register(NamespacedKey key, Class<Condition<?>> value) {
+            Condition.registerGUIComponent(Objects.requireNonNull(key, "Invalid NamespacedKey! Key cannot be null!"), null);
+            super.register(key, value);
+        }
+
+        @Override
+        public void register(NamespacedKey key, Condition<?> value) {
+            Condition.registerGUIComponent(Objects.requireNonNull(key, "Invalid NamespacedKey! Key cannot be null!"), null);
+            super.register(key, value);
+        }
     }
 
 }
