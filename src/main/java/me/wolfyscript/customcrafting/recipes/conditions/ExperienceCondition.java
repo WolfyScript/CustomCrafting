@@ -16,7 +16,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
 
     static boolean valid(ICustomRecipe<?> recipe) {
         return switch (recipe.getRecipeType().getType()) {
-            case WORKBENCH, ELITE_WORKBENCH, BREWING_STAND, GRINDSTONE -> true;
+            case CRAFTING, ELITE_CRAFTING, BREWING_STAND, GRINDSTONE -> true;
             default -> false;
         };
     }

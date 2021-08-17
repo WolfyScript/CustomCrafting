@@ -150,7 +150,7 @@ public class NetworkHandler {
         if (recipe != null) {
             var inventory = player.getOpenInventory().getTopInventory();
             boolean validInv = switch (recipe.getRecipeType().getType()) {
-                case WORKBENCH -> inventory instanceof CraftingInventory;
+                case CRAFTING -> inventory instanceof CraftingInventory;
                 case FURNACE -> inventory.getHolder() instanceof Furnace;
                 case BLAST_FURNACE -> inventory.getHolder() instanceof BlastFurnace;
                 case SMOKER -> inventory.getHolder() instanceof Smoker;

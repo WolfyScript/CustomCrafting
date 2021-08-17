@@ -50,8 +50,7 @@ public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
 
         @Override
         public void register(NamespacedKey key, Condition<?> value) {
-            Condition.registerGUIComponent(Objects.requireNonNull(key, "Invalid NamespacedKey! Key cannot be null!"), null);
-            super.register(key, value);
+            this.register(key, value.getClass(), null);
         }
     }
 

@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends CCWindow {
 
-    private static final String WORKBENCH = RecipeType.CRAFTING.getId();
+    private static final String CRAFTING = RecipeType.CRAFTING.getId();
     private static final String FURNACE = RecipeType.FURNACE.getId();
     private static final String ANVIL = RecipeType.ANVIL.getId();
     private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.getId();
@@ -27,7 +27,7 @@ public class MainMenu extends CCWindow {
     private static final String STONECUTTER = RecipeType.STONECUTTER.getId();
     private static final String GRINDSTONE = RecipeType.GRINDSTONE.getId();
     private static final String BREWING_STAND = RecipeType.BREWING_STAND.getId();
-    private static final String ELITE_WORKBENCH = RecipeType.ELITE_CRAFTING.getId();
+    private static final String ELITE_CRAFTING = RecipeType.ELITE_CRAFTING.getId();
     private static final String CAULDRON = RecipeType.CAULDRON.getId();
     private static final String SMITHING = RecipeType.SMITHING.getId();
 
@@ -86,7 +86,7 @@ public class MainMenu extends CCWindow {
         event.setButton(49, MainCluster.YOUTUBE);
         event.setButton(50, MainCluster.DISCORD);
 
-        event.setButton(10, WORKBENCH);
+        event.setButton(10, CRAFTING);
         event.setButton(12, FURNACE);
         event.setButton(14, ANVIL);
         event.setButton(16, CAULDRON);
@@ -98,11 +98,11 @@ public class MainMenu extends CCWindow {
         if (customCrafting.getConfigHandler().getConfig().isBrewingRecipes()) {
             event.setButton(28, GRINDSTONE);
             event.setButton(30, BREWING_STAND);
-            event.setButton(32, ELITE_WORKBENCH);
+            event.setButton(32, ELITE_CRAFTING);
             event.setButton(34, SMITHING);
         } else {
             event.setButton(29, GRINDSTONE);
-            event.setButton(31, ELITE_WORKBENCH);
+            event.setButton(31, ELITE_CRAFTING);
             event.setButton(33, SMITHING);
         }
 

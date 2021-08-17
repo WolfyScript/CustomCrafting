@@ -36,9 +36,9 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
             }
             WolfyUtilities api = customCrafting.getApi();
             var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).isRightClick()) {
-                    if (((InventoryClickEvent) event).isShiftClick()) {
+            if (event instanceof InventoryClickEvent clickEvent) {
+                if (clickEvent.isRightClick()) {
+                    if (clickEvent.isShiftClick()) {
                         api.getChat().sendKey(player, MainCluster.ITEM_LIST, "delete.confirm", new Pair<>("%item%", customItem.getNamespacedKey().toString()));
                         api.getChat().sendActionMessage(player, new ClickData("$inventories.none.item_list.messages.delete.confirmed$", (wolfyUtilities, player1) -> {
                             guiHandler.openCluster();
@@ -49,7 +49,7 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                         api.getInventoryAPI().getGuiWindow(RecipeCreatorCluster.ITEM_EDITOR).sendMessage(player, "item_editable");
                         guiHandler.openWindow(ItemCreatorCluster.MAIN_MENU);
                     }
-                } else if (((InventoryClickEvent) event).isLeftClick()) {
+                } else if (clickEvent.isLeftClick()) {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {
                         cache.applyItem(customItem);
                         api.getInventoryAPI().getGuiWindow(RecipeCreatorCluster.ITEM_EDITOR).sendMessage(player, "item_applied");
@@ -58,14 +58,14 @@ public class CustomItemSelectButton extends ActionButton<CCCache> {
                         guiHandler.openCluster(RecipeCreatorCluster.KEY);
                     } else if (ChatUtils.checkPerm(player, "customcrafting.cmd.give")) {
                         var itemStack = customItem.create();
-                        int amount = ((InventoryClickEvent) event).isShiftClick() ? itemStack.getMaxStackSize() : 1;
+                        int amount = clickEvent.isShiftClick() ? itemStack.getMaxStackSize() : 1;
                         itemStack.setAmount(amount);
                         if (InventoryUtils.hasInventorySpace(player, itemStack)) {
                             player.getInventory().addItem(itemStack);
                         } else {
                             player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
                         }
-                        if (((InventoryClickEvent) event).isShiftClick()) {
+                        if (clickEvent.isShiftClick()) {
                             api.getChat().sendMessage(player, "$commands.give.success_amount$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()), new Pair<>("%AMOUNT%", String.valueOf(amount)));
                         } else {
                             api.getChat().sendMessage(player, "$commands.give.success$", new Pair<>("%PLAYER%", player.getDisplayName()), new Pair<>("%ITEM%", namespacedKey.toString()));
