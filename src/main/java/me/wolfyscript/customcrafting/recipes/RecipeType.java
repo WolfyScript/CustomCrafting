@@ -67,27 +67,10 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
 
     String name();
 
-    enum Type {
-        CRAFTING_SHAPED,
-        CRAFTING_SHAPELESS,
-        ELITE_CRAFTING_SHAPED,
-        ELITE_CRAFTING_SHAPELESS,
-        ANVIL,
-        FURNACE,
-        BLAST_FURNACE,
-        SMOKER,
-        CAMPFIRE,
-        STONECUTTER,
-        CAULDRON,
-        GRINDSTONE,
-        BREWING_STAND,
-        SMITHING
-    }
-
     interface Container<C extends ICustomRecipe<?>> {
 
-        Container<CraftingRecipe<?, AdvancedRecipeSettings>> CRAFTING = new CraftingRecipeType<>("crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
-        Container<CraftingRecipe<?, EliteRecipeSettings>> ELITE_CRAFTING = new CraftingRecipeType<>("elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
+        Container<CraftingRecipe<?, AdvancedRecipeSettings>> CRAFTING = new CraftingContainer<>("crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
+        Container<CraftingRecipe<?, EliteRecipeSettings>> ELITE_CRAFTING = new CraftingContainer<>("elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
         Container<CustomRecipeCooking<?, ?>> COOKING = new ContainerImpl<>((Class<CustomRecipeCooking<?, ?>>) (Object) CustomRecipeCooking.class, "cooking", List.of(FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE));
 
         List<RecipeType<? extends C>> getTypes();
@@ -129,9 +112,9 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
             throw new UnsupportedOperationException("Cannot get Instance of abstract recipe types!");
         }
 
-        class CraftingRecipeType<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> {
+        final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> {
 
-            protected CraftingRecipeType(String creatorID, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
+            private CraftingContainer(String creatorID, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
                 super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, creatorID, List.of(shaped, shapeless));
             }
 
@@ -148,7 +131,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
             private final String creatorID;
             private final Class<C> clazz;
 
-            protected ContainerImpl(Class<C> clazz, String id, List<RecipeType<? extends C>> types) {
+            private ContainerImpl(Class<C> clazz, String id, List<RecipeType<? extends C>> types) {
                 this.types = types;
                 for (RecipeType<? extends C> type : this.types) {
                     if (type instanceof RecipeTypeImpl<?> recipeTypeImpl) {
@@ -203,20 +186,38 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
         }
     }
 
+    enum Type {
+        CRAFTING_SHAPED,
+        CRAFTING_SHAPELESS,
+        ELITE_CRAFTING_SHAPED,
+        ELITE_CRAFTING_SHAPELESS,
+        ANVIL,
+        FURNACE,
+        BLAST_FURNACE,
+        SMOKER,
+        CAMPFIRE,
+        STONECUTTER,
+        CAULDRON,
+        GRINDSTONE,
+        BREWING_STAND,
+        SMITHING
+    }
+
     class RecipeTypeImpl<C extends ICustomRecipe<?>> implements RecipeType<C> {
 
         static Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
+
         private final String id;
         private final Type type;
         private final String creatorID;
         private final Class<C> clazz;
         private Container<? super C> parent;
 
-        protected RecipeTypeImpl(Type type, Class<C> clazz) {
+        private RecipeTypeImpl(Type type, Class<C> clazz) {
             this(type, clazz, type.toString().toLowerCase(Locale.ROOT));
         }
 
-        protected RecipeTypeImpl(Type type, Class<C> clazz, String creatorID) {
+        private RecipeTypeImpl(Type type, Class<C> clazz, String creatorID) {
             this.type = type;
             this.clazz = clazz;
             this.id = type.toString().toLowerCase(Locale.ROOT);

@@ -131,7 +131,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private void loadRecipe(String subFolder, RecipeType<?> type) {
         for (File file : getFiles(subFolder, type.getId())) {
             String name = file.getName();
-            if (type.getParent() instanceof RecipeType.Container.CraftingRecipeType<?> craftingRecipeType && new File(DATA_FOLDER, subFolder + "/" + craftingRecipeType.getCreatorID() + "/" + key).isFile()) {
+            if (type.getParent() instanceof RecipeType.Container.CraftingContainer<?> craftingContainer && new File(DATA_FOLDER, subFolder + "/" + craftingContainer.getCreatorID() + "/" + key).isFile()) {
                 continue;
             }
             var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
