@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -61,8 +62,8 @@ public class PermissionCondition extends Condition<PermissionCondition> {
         }
 
         @Override
-        public boolean shouldRender(ICustomRecipe<?> recipe) {
-            return ExperienceCondition.valid(recipe);
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE;
         }
     }
 }

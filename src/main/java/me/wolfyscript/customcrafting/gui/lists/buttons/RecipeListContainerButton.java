@@ -6,7 +6,6 @@ import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -74,13 +73,8 @@ public class RecipeListContainerButton extends Button<CCCache> {
             if (clickEvent.isShiftClick() && customRecipe != null) {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
-                    if (RecipeType.CRAFTING.isInstance(customRecipe)) {
-                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.CRAFTING);
-                    } else if (RecipeType.ELITE_CRAFTING.isInstance(customRecipe)) {
-                        cache.getRecipeCreatorCache().setRecipeType(RecipeType.ELITE_CRAFTING);
-                    } else {
-                        cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
-                    }
+                    cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
+
                     try {
                         cache.getRecipeCreatorCache().loadRecipeIntoCache(customRecipe);
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(RecipeCreatorCluster.KEY, cache.getRecipeCreatorCache().getRecipeType().getCreatorID())), 1);

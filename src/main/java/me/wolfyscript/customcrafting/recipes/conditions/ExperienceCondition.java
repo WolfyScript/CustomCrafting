@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,8 +16,8 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience");
 
     static boolean valid(ICustomRecipe<?> recipe) {
-        return switch (recipe.getRecipeType().getType()) {
-            case CRAFTING, ELITE_CRAFTING, BREWING_STAND, GRINDSTONE -> true;
+        return RecipeType.Container.CRAFTING.isInstance(recipe) || RecipeType.Container.ELITE_CRAFTING.isInstance(recipe) || switch (recipe.getRecipeType().getType()) {
+            case BREWING_STAND, GRINDSTONE -> true;
             default -> false;
         };
     }
@@ -86,8 +87,8 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
         }
 
         @Override
-        public boolean shouldRender(ICustomRecipe<?> recipe) {
-            return valid(recipe);
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE;
         }
     }
 }

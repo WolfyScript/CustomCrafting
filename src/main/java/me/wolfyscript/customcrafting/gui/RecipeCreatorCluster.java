@@ -35,10 +35,10 @@ public class RecipeCreatorCluster extends CCCluster {
     public static final NamespacedKey PRIORITY = new NamespacedKey(KEY, "priority");
     public static final NamespacedKey EXACT_META = new NamespacedKey(KEY, "exact_meta");
     public static final NamespacedKey HIDDEN = new NamespacedKey(KEY, "hidden");
-    public static final String SHAPELESS = "workbench.shapeless";
-    public static final String MIRROR_VERTICAL = "workbench.mirror_vertical";
-    public static final String MIRROR_HORIZONTAL = "workbench.mirror_horizontal";
-    public static final String MIRROR_ROTATION = "workbench.mirror_rotation";
+    public static final String SHAPELESS = "crafting.shapeless";
+    public static final String MIRROR_VERTICAL = "crafting.mirror_vertical";
+    public static final String MIRROR_HORIZONTAL = "crafting.mirror_horizontal";
+    public static final String MIRROR_ROTATION = "crafting.mirror_rotation";
     //Language Keys
     private static final String ENABLED = ".enabled";
     public static final NamespacedKey EXACT_META_ENABLED = enabledKey(EXACT_META.getKey());
@@ -72,14 +72,14 @@ public class RecipeCreatorCluster extends CCCluster {
 
     @Override
     public void onInit() {
-        registerGuiWindow(new WorkbenchCreator(this, customCrafting));
+        registerGuiWindow(new CraftingCreator(this, customCrafting));
         registerGuiWindow(new CookingCreator(this, customCrafting));
         registerGuiWindow(new AnvilCreator(this, customCrafting));
         registerGuiWindow(new CauldronCreator(this, customCrafting));
         registerGuiWindow(new StonecutterCreator(this, customCrafting));
         registerGuiWindow(new GrindstoneCreator(this, customCrafting));
-        registerGuiWindow(new EliteWorkbenchCreator(this, customCrafting));
-        registerGuiWindow(new EliteWorkbenchCreatorSettings(this, customCrafting));
+        registerGuiWindow(new CraftingEliteCreator(this, customCrafting));
+        registerGuiWindow(new CraftingEliteCreatorSettings(this, customCrafting));
         registerGuiWindow(new BrewingCreator(this, customCrafting));
         registerGuiWindow(new SmithingCreator(this, customCrafting));
         //Other Menus

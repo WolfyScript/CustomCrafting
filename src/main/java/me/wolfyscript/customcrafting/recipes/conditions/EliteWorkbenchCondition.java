@@ -41,12 +41,12 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
 
     @Override
     public boolean isApplicable(ICustomRecipe<?> recipe) {
-        return RecipeType.ELITE_CRAFTING.isInstance(recipe);
+        return RecipeType.Container.ELITE_CRAFTING.isInstance(recipe);
     }
 
     @Override
     public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
-        if (RecipeType.ELITE_CRAFTING.isInstance(recipe)) {
+        if (RecipeType.Container.ELITE_CRAFTING.isInstance(recipe)) {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
                 if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilsRef) {
@@ -136,8 +136,8 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
         }
 
         @Override
-        public boolean shouldRender(ICustomRecipe<?> recipe) {
-            return RecipeType.ELITE_CRAFTING.isInstance(recipe);
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.ELITE_CRAFTING.has(type);
         }
     }
 }

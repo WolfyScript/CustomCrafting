@@ -7,10 +7,12 @@ import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
-public class EliteWorkbenchCreatorSettings extends RecipeCreator {
+public class CraftingEliteCreatorSettings extends RecipeCreator {
 
-    public EliteWorkbenchCreatorSettings(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "elite_workbench_settings", 27, customCrafting);
+    public static final String KEY = "elite_crafting_settings";
+
+    public CraftingEliteCreatorSettings(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, "elite_crafting_settings", 27, customCrafting);
     }
 
     @Override

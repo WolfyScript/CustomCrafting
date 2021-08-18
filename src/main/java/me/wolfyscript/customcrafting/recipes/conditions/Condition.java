@@ -6,6 +6,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
@@ -159,7 +160,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
             return description;
         }
 
-        public boolean shouldRender(ICustomRecipe<?> recipe) {
+        public boolean shouldRender(RecipeType<?> type) {
             return true;
         }
     }

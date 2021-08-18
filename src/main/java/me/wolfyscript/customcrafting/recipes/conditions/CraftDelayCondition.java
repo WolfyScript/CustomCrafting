@@ -2,6 +2,7 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.recipes.ICraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -88,8 +89,8 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
         }
 
         @Override
-        public boolean shouldRender(ICustomRecipe<?> recipe) {
-            return recipe instanceof ICraftingRecipe;
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.CRAFTING.has(type);
         }
     }
 

@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemFlag;
 
 public class MainMenu extends CCWindow {
 
-    private static final String CRAFTING = RecipeType.CRAFTING.getId();
+    private static final String CRAFTING = RecipeType.Container.CRAFTING.getId();
     private static final String FURNACE = RecipeType.FURNACE.getId();
     private static final String ANVIL = RecipeType.ANVIL.getId();
     private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.getId();
@@ -27,7 +27,7 @@ public class MainMenu extends CCWindow {
     private static final String STONECUTTER = RecipeType.STONECUTTER.getId();
     private static final String GRINDSTONE = RecipeType.GRINDSTONE.getId();
     private static final String BREWING_STAND = RecipeType.BREWING_STAND.getId();
-    private static final String ELITE_CRAFTING = RecipeType.ELITE_CRAFTING.getId();
+    private static final String ELITE_CRAFTING = RecipeType.Container.ELITE_CRAFTING.getId();
     private static final String CAULDRON = RecipeType.CAULDRON.getId();
     private static final String SMITHING = RecipeType.SMITHING.getId();
 
@@ -42,18 +42,18 @@ public class MainMenu extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new RecipeTypeButton(RecipeType.CRAFTING, Material.CRAFTING_TABLE));
-        registerButton(new RecipeTypeButton(RecipeType.FURNACE, Material.FURNACE));
-        registerButton(new RecipeTypeButton(RecipeType.ANVIL, Material.ANVIL));
-        registerButton(new RecipeTypeButton(RecipeType.BLAST_FURNACE, Material.BLAST_FURNACE));
-        registerButton(new RecipeTypeButton(RecipeType.SMOKER, Material.SMOKER));
-        registerButton(new RecipeTypeButton(RecipeType.CAMPFIRE, Material.CAMPFIRE));
-        registerButton(new RecipeTypeButton(RecipeType.STONECUTTER, Material.STONECUTTER));
-        registerButton(new RecipeTypeButton(RecipeType.GRINDSTONE, Material.GRINDSTONE));
-        registerButton(new RecipeTypeButton(RecipeType.BREWING_STAND, Material.BREWING_STAND));
-        registerButton(new RecipeTypeButton(RecipeType.ELITE_CRAFTING, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
-        registerButton(new RecipeTypeButton(RecipeType.CAULDRON, Material.CAULDRON));
-        registerButton(new RecipeTypeButton(RecipeType.SMITHING, Material.SMITHING_TABLE));
+        registerButton(new RecipeTypeButton(CRAFTING, RecipeType.CRAFTING_SHAPED, Material.CRAFTING_TABLE));
+        registerButton(new RecipeTypeButton(FURNACE, RecipeType.FURNACE, Material.FURNACE));
+        registerButton(new RecipeTypeButton(ANVIL, RecipeType.ANVIL, Material.ANVIL));
+        registerButton(new RecipeTypeButton(BLAST_FURNACE, RecipeType.BLAST_FURNACE, Material.BLAST_FURNACE));
+        registerButton(new RecipeTypeButton(SMOKER, RecipeType.SMOKER, Material.SMOKER));
+        registerButton(new RecipeTypeButton(CAMPFIRE, RecipeType.CAMPFIRE, Material.CAMPFIRE));
+        registerButton(new RecipeTypeButton(STONECUTTER, RecipeType.STONECUTTER, Material.STONECUTTER));
+        registerButton(new RecipeTypeButton(GRINDSTONE, RecipeType.GRINDSTONE, Material.GRINDSTONE));
+        registerButton(new RecipeTypeButton(BREWING_STAND, RecipeType.BREWING_STAND, Material.BREWING_STAND));
+        registerButton(new RecipeTypeButton(ELITE_CRAFTING, RecipeType.ELITE_CRAFTING_SHAPED, new ItemBuilder(Material.CRAFTING_TABLE).addItemFlags(ItemFlag.HIDE_ENCHANTS).addUnsafeEnchantment(Enchantment.DURABILITY, 0).create()));
+        registerButton(new RecipeTypeButton(CAULDRON, RecipeType.CAULDRON, Material.CAULDRON));
+        registerButton(new RecipeTypeButton(SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE));
 
         registerButton(new ActionButton<>(ITEM_EDITOR, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             cache.setSetting(Setting.ITEMS);

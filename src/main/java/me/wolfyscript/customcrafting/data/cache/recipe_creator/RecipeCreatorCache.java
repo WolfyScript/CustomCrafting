@@ -47,13 +47,13 @@ public class RecipeCreatorCache {
             case BLAST_FURNACE -> blastingCache;
             case SMOKER -> smokerCache;
             case CAMPFIRE -> campfireCache;
-            case CRAFTING, CRAFTING_SHAPED, CRAFTING_SHAPELESS -> craftingCache;
+            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> craftingCache;
             case CAULDRON -> cauldronCache;
             case SMITHING -> smithingCache;
             case GRINDSTONE -> grindingCache;
             case STONECUTTER -> stonecuttingCache;
             case BREWING_STAND -> brewingCache;
-            case ELITE_CRAFTING, ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> eliteCraftingCache;
+            case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> eliteCraftingCache;
         };
     }
 
@@ -74,13 +74,13 @@ public class RecipeCreatorCache {
             case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting((CustomRecipeBlasting) recipe));
             case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire((CustomRecipeCampfire) recipe));
             case SMOKER -> setSmokerCache(new RecipeCacheSmoking((CustomRecipeSmoking) recipe));
-            case CRAFTING, CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting((CraftingRecipe<?, AdvancedRecipeSettings>) recipe));
+            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting((CraftingRecipe<?, AdvancedRecipeSettings>) recipe));
             case CAULDRON -> setCauldronCache(new RecipeCacheCauldron((CustomRecipeCauldron) recipe));
             case SMITHING -> setSmithingCache(new RecipeCacheSmithing((CustomRecipeSmithing) recipe));
             case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding((CustomRecipeGrindstone) recipe));
             case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting((CustomRecipeStonecutter) recipe));
             case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing((CustomRecipeBrewing) recipe));
-            case ELITE_CRAFTING, ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite((CraftingRecipe<?, EliteRecipeSettings>) recipe));
+            case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite((CraftingRecipe<?, EliteRecipeSettings>) recipe));
             default -> throw new IllegalArgumentException("Unsupported recipe type \"" + recipe.getRecipeType().name() + "\"!");
         }
     }
@@ -92,13 +92,13 @@ public class RecipeCreatorCache {
             case BLAST_FURNACE -> setBlastingCache(new RecipeCacheBlasting());
             case CAMPFIRE -> setCampfireCache(new RecipeCacheCampfire());
             case SMOKER -> setSmokerCache(new RecipeCacheSmoking());
-            case CRAFTING, CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting());
+            case CRAFTING_SHAPED, CRAFTING_SHAPELESS -> setCraftingCache(new RecipeCacheCrafting());
             case CAULDRON -> setCauldronCache(new RecipeCacheCauldron());
             case SMITHING -> setSmithingCache(new RecipeCacheSmithing());
             case GRINDSTONE -> setGrindingCache(new RecipeCacheGrinding());
             case STONECUTTER -> setStonecuttingCache(new RecipeCacheStonecutting());
             case BREWING_STAND -> setBrewingCache(new RecipeCacheBrewing());
-            case ELITE_CRAFTING, ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite());
+            case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> setEliteCraftingCache(new RecipeCacheCraftingElite());
             default -> throw new IllegalArgumentException("Unsupported recipe type \"" + getRecipeType().name() + "\"!");
         }
     }

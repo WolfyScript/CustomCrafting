@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.recipes.ICraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
@@ -77,8 +78,8 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
         }
 
         @Override
-        public boolean shouldRender(ICustomRecipe<?> recipe) {
-            return recipe instanceof ICraftingRecipe;
+        public boolean shouldRender(RecipeType<?> type) {
+            return type instanceof ICraftingRecipe;
         }
     }
 }

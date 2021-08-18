@@ -117,9 +117,18 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
             return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
+        /**
+         * @param type The type of the recipe.
+         * @param <T>  The type passed via the {@link RecipeType}
+         * @return A list including the {@link ICustomRecipe}s of the specified {@link RecipeType}
+         */
+        public <T extends ICustomRecipe<?>> List<T> get(RecipeType.Container<T> type) {
+            return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+        }
+
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
             ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(recipeKey);
-            return RecipeType.CRAFTING.isInstance(customRecipe) ? RecipeType.CRAFTING.cast(customRecipe) : null;
+            return RecipeType.Container.CRAFTING.isInstance(customRecipe) ? RecipeType.Container.CRAFTING.cast(customRecipe) : null;
         }
 
         /**
@@ -195,10 +204,10 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
         public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
             List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
             if (elite) {
-                craftingRecipes.addAll(get(RecipeType.ELITE_CRAFTING));
+                craftingRecipes.addAll(get(RecipeType.Container.ELITE_CRAFTING));
             }
             if (advanced) {
-                craftingRecipes.addAll(get(RecipeType.CRAFTING));
+                craftingRecipes.addAll(get(RecipeType.Container.CRAFTING));
             }
             return craftingRecipes.stream().filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(ICustomRecipe::getPriority));
         }

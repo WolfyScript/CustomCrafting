@@ -11,10 +11,12 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 
-public class WorkbenchCreator extends RecipeCreator {
+public class CraftingCreator extends RecipeCreator {
 
-    public WorkbenchCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "workbench", 45, customCrafting);
+    public static final String KEY = "crafting";
+
+    public CraftingCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, KEY, 45, customCrafting);
     }
 
     @Override

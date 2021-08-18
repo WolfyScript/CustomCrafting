@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -14,7 +13,6 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -133,7 +131,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private void loadRecipe(String subFolder, RecipeType<?> type) {
         for (File file : getFiles(subFolder, type.getId())) {
             String name = file.getName();
-            if (checkForOldCraftingRecipes(RecipeType.CRAFTING, subFolder, name) || checkForOldCraftingRecipes(RecipeType.ELITE_CRAFTING, subFolder, name)) {
+            if (type.getParent() instanceof RecipeType.Container.CraftingRecipeType<?> craftingRecipeType && new File(DATA_FOLDER, subFolder + "/" + craftingRecipeType.getCreatorID() + "/" + key).isFile()) {
                 continue;
             }
             var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
@@ -145,16 +143,4 @@ public class LocalStorageLoader extends ResourceLoader {
         }
     }
 
-    private boolean checkForOldCraftingRecipes(RecipeType<? extends CraftingRecipe<?, ?>> type, String namespace, String key) {
-        if (type.equals(RecipeType.CRAFTING)) {
-            return hasOldCraftingRecipe(RecipeType.CRAFTING_SHAPELESS, namespace, key) || hasOldCraftingRecipe(RecipeType.CRAFTING_SHAPED, namespace, key);
-        } else if (type.equals(RecipeType.ELITE_CRAFTING)) {
-            return hasOldCraftingRecipe(RecipeType.ELITE_CRAFTING_SHAPELESS, namespace, key) || hasOldCraftingRecipe(RecipeType.ELITE_CRAFTING_SHAPED, namespace, key);
-        }
-        return false;
-    }
-
-    private boolean hasOldCraftingRecipe(RecipeType<?> type, String folder, String name) {
-        return new File(DATA_FOLDER, folder + "/" + type.toString().toLowerCase(Locale.ROOT) + "/" + name).isFile();
-    }
 }

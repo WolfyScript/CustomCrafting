@@ -13,12 +13,14 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
-public class EliteWorkbenchCreator extends RecipeCreator {
+public class CraftingEliteCreator extends RecipeCreator {
+
+    public static final String KEY = "elite_crafting";
 
     private static final String SETTINGS = "settings";
 
-    public EliteWorkbenchCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "elite_workbench", 54, customCrafting);
+    public CraftingEliteCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+        super(cluster, KEY, 54, customCrafting);
     }
 
     @Override
@@ -31,7 +33,7 @@ public class EliteWorkbenchCreator extends RecipeCreator {
         registerButton(new ButtonRecipeResult());
 
         registerButton(new ActionButton<>(SETTINGS, Material.REDSTONE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            guiHandler.openWindow("elite_workbench_settings");
+            guiHandler.openWindow(CraftingEliteCreatorSettings.KEY);
             return true;
         }));
 
