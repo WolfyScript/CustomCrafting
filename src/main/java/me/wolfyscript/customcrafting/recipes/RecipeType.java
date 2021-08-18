@@ -53,8 +53,6 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
 
     boolean isInstance(ICustomRecipe<?> recipe);
 
-    boolean isTypeOf(RecipeType<?> type);
-
     /**
      * Casts the recipe to the type of this RecipeType.
      * Make sure that the recipe is actually a type of this type using {@link #isInstance(ICustomRecipe)}.
@@ -267,11 +265,6 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
         @Override
         public boolean isInstance(ICustomRecipe<?> recipe) {
             return clazz.isInstance(recipe);
-        }
-
-        @Override
-        public boolean isTypeOf(RecipeType<?> type) {
-            return type == this || (parent != null && parent.has(type));
         }
 
         @Override
