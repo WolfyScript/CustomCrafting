@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -67,7 +68,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
         public GUIComponent() {
             super(Material.EXPERIENCE_BOTTLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
-                        menu.registerButton(new ChatInputButton<>("conditions.player_experience", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.player_experience.set", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(ExperienceCondition.class).getExpLevel());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
@@ -81,8 +82,8 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
                         }));
                     },
                     (update, cache, condition, recipe) -> {
-
-
+                        update.setButton(30, "conditions.player_experience.set");
+                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
                     });
         }
 

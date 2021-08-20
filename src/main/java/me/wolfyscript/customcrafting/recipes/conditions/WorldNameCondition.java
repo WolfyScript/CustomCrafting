@@ -9,6 +9,8 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonP
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +100,12 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
                                 return false;
                             }
                             return true;
+                        }, (guiHandler, player, args) -> {
+                            List<String> results = new ArrayList<>();
+                            if (args.length > 0) {
+                                StringUtil.copyPartialMatches(args[0], Bukkit.getWorlds().stream().map(World::getName).toList(), results);
+                            }
+                            return results;
                         }));
                     },
                     (update, cache, condition, recipe) -> {

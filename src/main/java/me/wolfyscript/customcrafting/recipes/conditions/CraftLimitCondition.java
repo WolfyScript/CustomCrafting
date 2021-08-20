@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.data.CCPlayerData;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -21,7 +22,7 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
 
     public CraftLimitCondition() {
         super(KEY);
-        setAvailableOptions(Conditions.Option.LOWER_EXACT, Conditions.Option.LOWER);
+        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.LOWER_EXACT, Conditions.Option.LOWER);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
         public GUIComponent() {
             super(Material.BARRIER, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
-                        menu.registerButton(new ChatInputButton<>("conditions.craft_limit", Material.BARRIER, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.craft_limit.set", Material.BARRIER, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftLimitCondition.class).getLimit());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
@@ -73,13 +74,14 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
                         }));
                     },
                     (update, cache, condition, recipe) -> {
-
+                        update.setButton(30, "conditions.craft_limit.set");
+                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
                     });
         }
 
         @Override
         public boolean shouldRender(RecipeType<?> type) {
-            return type instanceof ICraftingRecipe;
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type);
         }
     }
 }

@@ -69,7 +69,7 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
         public GUIComponent() {
             super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
-                        menu.registerButton(new ChatInputButton<>("conditions.craft_delay", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.craft_delay.set", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
@@ -84,13 +84,13 @@ public class CraftDelayCondition extends Condition<CraftDelayCondition> {
                         }));
                     },
                     (update, cache, condition, recipe) -> {
-                        update.setButton(31, "conditions.craft_delay");
+                        update.setButton(31, "conditions.craft_delay.set");
                     });
         }
 
         @Override
         public boolean shouldRender(RecipeType<?> type) {
-            return RecipeType.Container.CRAFTING.has(type);
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type);
         }
     }
 

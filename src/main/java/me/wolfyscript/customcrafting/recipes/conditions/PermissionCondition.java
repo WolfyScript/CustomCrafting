@@ -49,7 +49,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
         public GUIComponent() {
             super(Material.REDSTONE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, wolfyUtilities) -> {
-                        menu.registerButton(new ChatInputButton<>("conditions.permission", Material.REDSTONE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.permission.set", Material.REDSTONE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).getPermission());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
@@ -58,6 +58,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
                         }));
                     },
                     (update, cache, condition, recipe) -> {
+                        update.setButton(31, "conditions.permission.set");
                     });
         }
 

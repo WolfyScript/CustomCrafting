@@ -161,15 +161,15 @@
     "world_time": {
       "name": "Time",
       "description": [
-        "&eSet the world time in which ",
-        "&ethe recipe can be crafted."
+        "&7Set the world time in which ",
+        "&7the recipe can be crafted."
       ]
     },
     "player_experience": {
       "name": "Player Experience",
       "description": [
-        "&Set the levels a player has",
-        "&eto have to craft the recipe."
+        "&7Set the levels a player has",
+        "&7to have to craft the recipe."
       ]
     },
     "world_name": {
@@ -183,8 +183,8 @@
     "weather": {
       "name": "Weather",
       "description": [
-        "&eSet the weather in which the",
-        "&erecipe can be crafted in."
+        "&7Set the weather in which the",
+        "&7recipe can be crafted in."
       ],
       "modes": {
         "storm": "&eRain/Snow",
@@ -196,8 +196,8 @@
     "advanced_crafting_table": {
       "name": "Advanced Crafting Table",
       "description": [
-        "&eEnable recipe to only work in the ",
-        "&eAdvanced Crafting Table."
+        "&7Enable recipe to only work in the ",
+        "&7Advanced Crafting Table."
       ]
     },
     "elite_crafting_table": {
@@ -208,22 +208,22 @@
     "permission": {
       "name": "Permission",
       "description": [
-        "&Set a permission players need ",
-        "&eneed to have to craft the recipe."
+        "&7Set a permission players needs ",
+        "&7to have to craft the recipe."
       ]
     },
     "craft_delay": {
       "name": "Craft Delay",
       "description": [
-        "&eSet a delay, that the player",
-        "&eneeds to wait for to craft again."
+        "&7Set a delay, that the player",
+        "&7needs to wait for to craft again."
       ]
     },
     "craft_limit": {
       "name": "Craft Limit",
       "description": [
-        "&eLimit the amount of times",
-        "&ethe recipe can be crafted."
+        "&7Limit the amount of times",
+        "&7the recipe can be crafted."
       ]
     }
   },
@@ -1981,110 +1981,157 @@
           "page_down": {
             "name": "&7&lDown"
           },
-          "world_time": {
-            "name": "&7- World Time - ",
+          "toggle_mode": {
+            "name": "&6&lToggle Mode",
             "lore": [
-              "&7Time:&e %VALUE%",
-              "&7Mode:&e %MODE%",
-              "&8[&aRight Click&8] &7toggle Mode",
-              "&8[&aLeft Click&8] &7set Time"
+              "&7Mode: %mode%",
+              "",
+              "&8[&aClick&8] &7Toggle mode"
             ]
           },
-          "player_experience": {
-            "name": "&7- Player Experience - ",
-            "lore": [
-              "&7Experience:&e %VALUE%",
-              "&7Mode:&e %MODE%",
-              "&8[&aRight Click&8] &7toggle Mode",
-              "&8[&aLeft Click&8] &7set Experience Level"
-            ]
-          },
-          "world_name": {
-            "name": "&7- World Name -",
-            "lore": [
-              "&7Mode:&e %MODE%",
-              "&7Values:",
-              "&7 - &e%var0%",
-              "&7 - &e%var1%",
-              "&7 - &e%var2%",
-              "&7 - &e%var3%",
-              "&8[&aRight Click&8] &7toggle on/off",
-              "&8[&aLeft Click&8] &7Add World Name",
-              "&8[&aShift Left Click&8] &7remove last entry"
-            ]
-          },
-          "world_biome": {
-            "name": "&7- World Biome -",
-            "lore": [
-              "&7Mode:&e %MODE%",
-              "&7Biomes:",
-              "&7 - &e%var0%",
-              "&7 - &e%var1%",
-              "&7 - &e%var2%",
-              "&7 - &e%var3%",
-              "&8[&aRight Click&8] &7toggle on/off",
-              "&8[&aLeft Click&8] &7Add Biome",
-              "&8[&aShift Left Click&8] &7remove last entry"
-            ]
-          },
-          "weather": {
-            "modes": {
-              "storm": "&eRain/Snow",
-              "thunder": "&eThunder",
-              "storm_thunder": "&eRain/Snow &7+ &eThunder",
-              "none": "&eSunshine"
+          "conditions": {
+            "world_time": {
+              "set": {
+                "name": "&a&lSet Time",
+                "lore": [
+                  "&7Time:&e %VALUE%ticks",
+                  "&8[&aClick&8] &7Set time"
+                ],
+                "message": "&eType in the time in ticks."
+              }
             },
-            "name": "World Weather",
-            "description": [
-            ]
-          },
-          "advanced_workbench": {
-            "name": "Advanced Crafting Table",
-            "description": [
-              "&eEnable recipe to only work in the ",
-              "&eAdvanced Crafting Table."
-            ]
-          },
-          "elite_workbench": {
-            "name": "&7- Elite Workbench -",
-            "lore": [
-              "&7Mode:&e %MODE%",
-              "&7Values:",
-              "&7 - &e%var0%",
-              "&7 - &e%var1%",
-              "&7 - &e%var2%",
-              "&7 - &e%var3%",
-              "&8[&aRight Click&8] &7toggle on/off",
-              "&8[&aLeft Click&8] &7configure Elite Workbenches",
-              "&8[&aShift Left Click&8] &7remove last entry"
-            ]
-          },
-          "permission": {
-            "name": "&7- Permission - ",
-            "lore": [
-              "&7Permission:&e %VALUE%",
-              "&7Mode:&e %MODE%",
-              "&8[&aRight Click&8] &7toggle Mode",
-              "&8[&aLeft Click&8] &7change Permission"
-            ]
-          },
-          "craft_delay": {
-            "name": "&7- Craft Delay - ",
-            "lore": [
-              "&7Delay:&e %VALUE%ms",
-              "&7Mode:&e %MODE%",
-              "&8[&aRight Click&8] &7Toggle Mode",
-              "&8[&aLeft Click&8] &7Set Delay"
-            ]
-          },
-          "craft_limit": {
-            "name": "&7- Craft Limit - ",
-            "lore": [
-              "&7Limit:&e %VALUE%ms",
-              "&7Mode:&e %MODE%",
-              "&8[&aRight Click&8] &7Toggle Mode",
-              "&8[&aLeft Click&8] &7Set Limit"
-            ]
+            "player_experience": {
+              "set": {
+                "name": "&a&lSet Experience",
+                "lore": [
+                  "&7Experience:&e %VALUE%",
+                  "",
+                  "&8[&aClick&8] &7Set Experience Level"
+                ],
+                "message": "&eType in the experience levels."
+              }
+            },
+            "world_name": {
+              "add": {
+                "name": "&a&lAdd World",
+                "lore": [
+                  "",
+                  "&8[&aClick&8] &7Add World Name"
+                ],
+                "message": "&eType in the world name to add."
+              },
+              "list": {
+                "name": "&6&lValues",
+                "lore": [
+                  "&7 - &e%var0%",
+                  "&7 - &e%var1%",
+                  "&7 - &e%var2%",
+                  "&7 - &e%var3%"
+                ]
+              },
+              "remove": {
+                "name": "&c&lRemove World",
+                "lore": [
+                  "&7Remove the last world of the values.",
+                  "",
+                  "&8[&aClick&8] &7Remove World Name"
+                ]
+              }
+            },
+            "world_biome": {
+              "add": {
+                "name": "&a&lAdd Biome",
+                "lore": [
+                  "",
+                  "&8[&aClick&8] &7Add Biome"
+                ],
+                "message": "&eType in the Biome you want to add! Usage: &6<biome_name>"
+              },
+              "list": {
+                "name": "&6&lValues",
+                "lore": [
+                  "&7 - &e%var0%",
+                  "&7 - &e%var1%",
+                  "&7 - &e%var2%",
+                  "&7 - &e%var3%"
+                ]
+              },
+              "remove": {
+                "name": "&c&lRemove Biome",
+                "lore": [
+                  "",
+                  "&8[&aClick&8] &7Remove Biome"
+                ]
+              }
+            },
+            "weather": {
+              "set": {
+                "name": "&6&lWorld Weather",
+                "lore": [
+                  "&7Weather: %weather%",
+                  "",
+                  "&8[&aClick&8] &7Change weather"
+                ]
+              }
+            },
+            "elite_crafting_table": {
+              "add": {
+                "name": "&a&lAdd Elite Crafting Table",
+                "lore": [
+                  "&8[&aClick&8] &7Add Elite Workbenches"
+                ],
+                "message": "&eType in the namespaced key of the elite crafting table item! Usage: &6<namespace> <key>"
+              },
+              "list": {
+                "name": "&6&lValues",
+                "lore": [
+                  "&7 - &e%var0%",
+                  "&7 - &e%var1%",
+                  "&7 - &e%var2%",
+                  "&7 - &e%var3%"
+                ]
+              },
+              "remove": {
+                "name": "&c&lRemove Elite Crafting Table",
+                "lore": [
+                  "",
+                  "&8[&aClick&8] &7Remove Elite Crafting Table"
+                ]
+              }
+            },
+            "permission": {
+              "set": {
+                "name": "&6&lSet Permission",
+                "lore": [
+                  "&7Permission:&e %VALUE%",
+                  "",
+                  "&8[&aLeft Click&8] &7Set Permission"
+                ],
+                "message": "&eType in the permission! Usage: &6<permission>"
+              }
+            },
+            "craft_delay": {
+              "set": {
+                "name": "&a&lSet Craft Delay",
+                "lore": [
+                  "&7Delay:&e %VALUE%ms",
+                  "",
+                  "&8[&aClick&8] &7Set Delay"
+                ],
+                "message": "&eType in the craft delay in milliseconds! Usage: &6<craft_delay>"
+              }
+            },
+            "craft_limit": {
+              "set": {
+                "name": "&l&7Set Craft Limit",
+                "lore": [
+                  "&7Limit:&e %VALUE%",
+                  "",
+                  "&8[&aClick&8] &7Set Limit"
+                ]
+              },
+              "message": "&eType in the craft limit! Usage: &6<craft_limit>"
+            }
           }
         },
         "messages": {

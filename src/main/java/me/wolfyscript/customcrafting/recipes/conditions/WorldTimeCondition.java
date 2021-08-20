@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
+import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
@@ -46,7 +47,7 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
         public GUIComponent() {
             super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
-                        menu.registerButton(new ChatInputButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.world_time.set", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
                             hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).getTime());
                             return itemStack;
                         }, (guiHandler, player, s, strings) -> {
@@ -60,7 +61,8 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
                         }));
                     },
                     (update, cache, condition, recipe) -> {
-
+                        update.setButton(30, "conditions.world_time.set");
+                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
                     });
         }
     }

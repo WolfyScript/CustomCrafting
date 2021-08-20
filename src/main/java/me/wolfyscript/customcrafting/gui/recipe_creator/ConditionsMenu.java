@@ -25,7 +25,7 @@ public class ConditionsMenu extends CCWindow {
     private static final String PAGE_DOWN = "page_down";
     private static final String ADD = "add";
     private static final String REMOVE = "remove";
-    private static final String TOGGLE_MODE = "toggle_mode";
+    public static final String TOGGLE_MODE = "toggle_mode";
 
     public ConditionsMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "conditions", 54, customCrafting);
@@ -56,7 +56,7 @@ public class ConditionsMenu extends CCWindow {
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
             if (condition != null) {
-                hashMap.put("%MODE%", condition.getOption().getDisplayString(api));
+                hashMap.put("%mode%", condition.getOption().getDisplayString(api));
             }
             return itemStack;
         }));

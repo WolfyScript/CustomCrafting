@@ -59,7 +59,7 @@ public class WeatherCondition extends Condition<WeatherCondition> {
         private final String display;
 
         Weather() {
-            this.display = "$inventories.recipe_creator.conditions.items.weather.modes." + super.toString().toLowerCase(Locale.ROOT) + "$";
+            this.display = "$recipe_conditions.weather.modes." + super.toString().toLowerCase(Locale.ROOT) + "$";
         }
 
         public String getDisplay(WolfyUtilities api) {
@@ -72,16 +72,16 @@ public class WeatherCondition extends Condition<WeatherCondition> {
         public GUIComponent() {
             super(Material.WATER_BUCKET, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
                     (menu, api) -> {
-                        menu.registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                        menu.registerButton(new ActionButton<>("conditions.weather.set", Material.WATER_BUCKET, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
                             cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).toggleWeather();
                             return true;
                         }, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
-                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
+                            hashMap.put("%weather%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
                             return itemStack;
                         }));
                     },
                     (update, cache, condition, recipe) -> {
-
+                        update.setButton(31, "conditions.weather.set");
                     });
         }
     }
