@@ -9,7 +9,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public interface RecipeType<C extends ICustomRecipe<?>> {
+public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> {
 
     //Crafting recipes
     RecipeType<CraftingRecipeShaped> CRAFTING_SHAPED = new RecipeTypeImpl<>(Type.CRAFTING_SHAPED, CraftingRecipeShaped.class);
@@ -43,8 +43,6 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
 
     Type getType();
 
-    String getId();
-
     String getCreatorID();
 
     Container<? super C> getParent();
@@ -63,15 +61,21 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
      */
     C cast(ICustomRecipe<?> recipe);
 
-    C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException;
-
     String name();
 
     interface Container<C extends ICustomRecipe<?>> {
 
-        Container<CraftingRecipe<?, AdvancedRecipeSettings>> CRAFTING = new CraftingContainer<>("crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
-        Container<CraftingRecipe<?, EliteRecipeSettings>> ELITE_CRAFTING = new CraftingContainer<>("elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
+        CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
+        CraftingContainer<EliteRecipeSettings> ELITE_CRAFTING = new CraftingContainer<>("elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
         Container<CustomRecipeCooking<?, ?>> COOKING = new ContainerImpl<>((Class<CustomRecipeCooking<?, ?>>) (Object) CustomRecipeCooking.class, "cooking", List.of(FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE));
+
+        static Collection<Container<? extends ICustomRecipe<?>>> values() {
+            return ContainerImpl.values.values();
+        }
+
+        static Container<?> valueOf(String id) {
+            return ContainerImpl.values.get(id);
+        }
 
         List<RecipeType<? extends C>> getTypes();
 
@@ -103,16 +107,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
          */
         C cast(ICustomRecipe<?> recipe);
 
-        /**
-         * @param namespacedKey
-         * @param node
-         * @return
-         */
-        default C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-            throw new UnsupportedOperationException("Cannot get Instance of abstract recipe types!");
-        }
-
-        final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> {
+        final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> implements RecipeLoader<CraftingRecipe<?, S>> {
 
             private CraftingContainer(String creatorID, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
                 super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, creatorID, List.of(shaped, shapeless));
@@ -125,6 +120,8 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
         }
 
         class ContainerImpl<C extends ICustomRecipe<?>> implements Container<C> {
+
+            static final Map<String, Container<?>> values = new HashMap<>();
 
             protected final List<RecipeType<? extends C>> types;
             private final String id;
@@ -141,6 +138,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
                 this.clazz = clazz;
                 this.id = id;
                 this.creatorID = id;
+                values.putIfAbsent(id, this);
             }
 
             @Override
@@ -176,11 +174,6 @@ public interface RecipeType<C extends ICustomRecipe<?>> {
             @Override
             public C cast(ICustomRecipe<?> recipe) {
                 return clazz.cast(recipe);
-            }
-
-            @Override
-            public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-                throw new UnsupportedOperationException("Cannot get Instance of abstract recipe types!");
             }
 
         }

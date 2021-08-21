@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -13,6 +14,9 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -36,8 +40,12 @@ public class LocalStorageLoader extends ResourceLoader {
             }
             api.getConsole().info("Loading recipes...");
             for (String dir : dirs) {
+                //Required to load the old recipes.
+                loadAndRegisterRecipe(RecipeType.Container.CRAFTING, dir);
+                loadAndRegisterRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
+
                 for (RecipeType<? extends ICustomRecipe<?>> type : RecipeType.values()) {
-                    loadRecipe(dir, type);
+                    loadAndRegisterRecipe(type, dir);
                 }
             }
             api.getConsole().info("");
@@ -108,10 +116,11 @@ public class LocalStorageLoader extends ResourceLoader {
         return false;
     }
 
-    private File[] getFiles(String subFolder, String type) {
+    private List<File> getFiles(String subFolder, String type) {
         var data = new File(DATA_FOLDER, subFolder + File.separator + type);
-        if (!data.exists()) return new File[0];
-        return data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
+        if (!data.exists()) return new ArrayList<>();
+        File[] files = data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
+        return files != null ? Arrays.stream(files).toList() : new ArrayList<>();
     }
 
     private void loadItems(String subFolder) {
@@ -128,17 +137,13 @@ public class LocalStorageLoader extends ResourceLoader {
         }
     }
 
-    private void loadRecipe(String subFolder, RecipeType<?> type) {
-        for (File file : getFiles(subFolder, type.getId())) {
-            String name = file.getName();
-            if (type.getParent() instanceof RecipeType.Container.CraftingContainer<?> craftingContainer && new File(DATA_FOLDER, subFolder + "/" + craftingContainer.getCreatorID() + "/" + key).isFile()) {
-                continue;
-            }
-            var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
+    private void loadAndRegisterRecipe(RecipeLoader<?> loader, String namespace) {
+        for (File file : getFiles(namespace, loader.getId())) {
+            var namespacedKey = new NamespacedKey(namespace, file.getName().replace(".json", ""));
             try {
-                CCRegistry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
+                CCRegistry.RECIPES.register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), type.getId(), e);
+                ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), loader.getId(), e);
             }
         }
     }
