@@ -208,7 +208,7 @@
     "permission": {
       "name": "Permission",
       "description": [
-        "&7Set a permission players needs ",
+        "&7Set a permission players need ",
         "&7to have to craft the recipe."
       ]
     },
@@ -1994,7 +1994,7 @@
               "set": {
                 "name": "&a&lSet Time",
                 "lore": [
-                  "&7Time:&e %VALUE%ticks",
+                  "&7Time:&e %VALUE% ticks",
                   "&8[&aClick&8] &7Set time"
                 ],
                 "message": "&eType in the time in ticks."
