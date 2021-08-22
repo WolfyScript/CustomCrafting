@@ -115,7 +115,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
 
             @Override
             public CraftingRecipe<?, S> getInstance(NamespacedKey namespacedKey, JsonNode node) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-                return node.path("shapeless").asBoolean() ? types.get(0).getInstance(namespacedKey, node) : types.get(1).getInstance(namespacedKey, node);
+                return !node.path("shapeless").asBoolean() ? types.get(0).getInstance(namespacedKey, node) : types.get(1).getInstance(namespacedKey, node);
             }
         }
 
