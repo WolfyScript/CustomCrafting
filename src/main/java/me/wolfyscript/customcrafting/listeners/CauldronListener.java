@@ -119,7 +119,8 @@ public class CauldronListener implements Listener {
                                     Location loc = entry.getKey();
                                     List<Item> items = loc.getWorld().getNearbyEntities(loc.clone().add(0.5, 0.4, 0.5), 0.5, 0.4, 0.5, Item.class::isInstance).stream().map(Item.class::cast).toList();
                                     if (!items.isEmpty()) {
-                                        int level = Cauldrons.getLevel(loc.getBlock());
+                                        var cauldronBlock = loc.getBlock();
+                                        int level = Cauldrons.getLevel(cauldronBlock);
                                         List<CustomRecipeCauldron> recipes = CCRegistry.RECIPES.get(RecipeType.CAULDRON);
                                         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
                                         for (CustomRecipeCauldron recipe : recipes) {
@@ -128,7 +129,7 @@ public class CauldronListener implements Listener {
                                                     List<Item> validItems = recipe.checkRecipe(items);
                                                     if (!validItems.isEmpty()) {
                                                         //Do something with the items! e.g. consume!
-                                                        var cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player);
+                                                        var cauldronPreCookEvent = new CauldronPreCookEvent(recipe, player, cauldronBlock);
                                                         Bukkit.getPluginManager().callEvent(cauldronPreCookEvent);
                                                         if (!cauldronPreCookEvent.isCancelled()) {
                                                             synchronized (cauldrons.getCauldrons()) {

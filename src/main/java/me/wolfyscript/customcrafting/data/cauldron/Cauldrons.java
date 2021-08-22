@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -67,32 +66,31 @@ public class Cauldrons {
                             Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
                                 if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {
                                     cauldron.setDone(true);
-                                    Future<Boolean> checkCauldron = Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
-                                        var event = new CauldronCookEvent(cauldron);
-                                        Bukkit.getPluginManager().callEvent(event);
-                                        if (event.isCancelled()) {
-                                            cauldron.setDone(false);
-                                            cauldron.setPassedTicks(0);
-                                        } else {
-                                            if (event.getRecipe().getWaterLevel() > 0 && block.getBlockData() instanceof Levelled levelled) {
-                                                int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
-                                                if (newLevel <= 0) {
-                                                    block.setType(Material.CAULDRON);
-                                                } else {
-                                                    levelled.setLevel(newLevel);
-                                                    loc.getBlock().setBlockData(levelled);
+                                    try {
+                                        cauldron.setForRemoval(Bukkit.getScheduler().callSyncMethod(customCrafting, () -> {
+                                            var event = new CauldronCookEvent(cauldron);
+                                            Bukkit.getPluginManager().callEvent(event);
+                                            if (event.isCancelled()) {
+                                                cauldron.setDone(false);
+                                                cauldron.setPassedTicks(0);
+                                            } else {
+                                                if (event.getRecipe().getWaterLevel() > 0 && block.getBlockData() instanceof Levelled levelled) {
+                                                    int newLevel = levelled.getLevel() - event.getRecipe().getWaterLevel();
+                                                    if (newLevel <= 0) {
+                                                        block.setType(Material.CAULDRON);
+                                                    } else {
+                                                        levelled.setLevel(newLevel);
+                                                        block.setBlockData(levelled);
+                                                    }
+                                                }
+                                                recipe.getResult().executeExtensions(loc.clone(), true, null);
+                                                if (event.dropItems()) {
+                                                    world.dropItemNaturally(loc.clone().add(0.0, 0.5, 0.0), event.getResult().create());
+                                                    return true;
                                                 }
                                             }
-                                            recipe.getResult().executeExtensions(loc.clone(), true, null);
-                                            if (event.dropItems()) {
-                                                world.dropItemNaturally(loc.clone().add(0.0, 0.5, 0.0), event.getResult().create());
-                                                return true;
-                                            }
-                                        }
-                                        return false;
-                                    });
-                                    try {
-                                        cauldron.setForRemoval(checkCauldron.get());
+                                            return false;
+                                        }).get());
                                     } catch (InterruptedException | ExecutionException e) {
                                         e.printStackTrace();
                                         Thread.currentThread().interrupt();
