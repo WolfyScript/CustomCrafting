@@ -167,7 +167,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
 
             @Override
             public boolean isInstance(ICustomRecipe<?> recipe) {
-                return clazz.isInstance(recipe);
+                return types.get(0).isInstance(recipe) || types.get(1).isInstance(recipe);
             }
 
             @Override
