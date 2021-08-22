@@ -15,11 +15,11 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
     private boolean needsFire;
     private boolean needsWater;
 
-    public RecipeCacheCauldron() {
+    RecipeCacheCauldron() {
         super();
     }
 
-    public RecipeCacheCauldron(CustomRecipeCauldron recipe) {
+    RecipeCacheCauldron(CustomRecipeCauldron recipe) {
         super(recipe);
         this.cookingTime = recipe.getCookingTime();
         this.waterLevel = recipe.getWaterLevel();

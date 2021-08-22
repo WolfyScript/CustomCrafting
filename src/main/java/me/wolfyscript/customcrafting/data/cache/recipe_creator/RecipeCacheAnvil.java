@@ -18,11 +18,11 @@ public class RecipeCacheAnvil extends RecipeCache<CustomRecipeAnvil> {
     private Ingredient base;
     private Ingredient addition;
 
-    public RecipeCacheAnvil() {
+    RecipeCacheAnvil() {
         super();
     }
 
-    public RecipeCacheAnvil(CustomRecipeAnvil recipe) {
+    RecipeCacheAnvil(CustomRecipeAnvil recipe) {
         super(recipe);
         this.blockRepair = recipe.isBlockRepair();
         this.blockRename = recipe.isBlockRename();

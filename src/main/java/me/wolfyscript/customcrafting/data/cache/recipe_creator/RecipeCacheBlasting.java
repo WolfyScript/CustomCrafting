@@ -4,11 +4,11 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
 
 public class RecipeCacheBlasting extends RecipeCacheCooking<CustomRecipeBlasting> {
 
-    protected RecipeCacheBlasting() {
+    RecipeCacheBlasting() {
         super();
     }
 
-    protected RecipeCacheBlasting(CustomRecipeBlasting recipe) {
+    RecipeCacheBlasting(CustomRecipeBlasting recipe) {
         super(recipe);
     }
 

@@ -7,11 +7,11 @@ public class RecipeCacheStonecutting extends RecipeCache<CustomRecipeStonecutter
 
     private Ingredient source;
 
-    public RecipeCacheStonecutting() {
+    RecipeCacheStonecutting() {
         super();
     }
 
-    public RecipeCacheStonecutting(CustomRecipeStonecutter recipe) {
+    RecipeCacheStonecutting(CustomRecipeStonecutter recipe) {
         super(recipe);
         this.source = recipe.getSource().clone();
     }

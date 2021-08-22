@@ -9,11 +9,11 @@ public class RecipeCacheGrinding extends RecipeCache<CustomRecipeGrindstone> {
     private Ingredient inputBottom;
     private int xp;
 
-    public RecipeCacheGrinding() {
+    RecipeCacheGrinding() {
         super();
     }
 
-    public RecipeCacheGrinding(CustomRecipeGrindstone recipe) {
+    RecipeCacheGrinding(CustomRecipeGrindstone recipe) {
         super(recipe);
         this.inputTop = recipe.getInputTop().clone();
         this.inputBottom = recipe.getInputBottom().clone();

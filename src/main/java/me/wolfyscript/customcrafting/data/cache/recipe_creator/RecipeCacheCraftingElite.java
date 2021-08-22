@@ -7,11 +7,11 @@ import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 
 public class RecipeCacheCraftingElite extends RecipeCacheCraftingAbstract<EliteRecipeSettings> {
 
-    public RecipeCacheCraftingElite() {
+    RecipeCacheCraftingElite() {
         super();
     }
 
-    public RecipeCacheCraftingElite(CraftingRecipe<?, EliteRecipeSettings> recipe) {
+    RecipeCacheCraftingElite(CraftingRecipe<?, EliteRecipeSettings> recipe) {
         super(recipe);
     }
 

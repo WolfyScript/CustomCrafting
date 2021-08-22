@@ -4,11 +4,11 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipeFurnace;
 
 public class RecipeCacheFurnace extends RecipeCacheCooking<CustomRecipeFurnace> {
 
-    protected RecipeCacheFurnace() {
+    RecipeCacheFurnace() {
         super();
     }
 
-    protected RecipeCacheFurnace(CustomRecipeFurnace recipe) {
+    RecipeCacheFurnace(CustomRecipeFurnace recipe) {
         super(recipe);
     }
 

@@ -32,11 +32,11 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
     //Conditions for the Potions inside the 3 slots at the bottom
     private Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects; //The effects that are required with the current Duration and amplitude. Integer values == 0 will be ignored and any value will be allowed.
 
-    public RecipeCacheBrewing() {
+    RecipeCacheBrewing() {
         super();
     }
 
-    public RecipeCacheBrewing(CustomRecipeBrewing recipe) {
+    RecipeCacheBrewing(CustomRecipeBrewing recipe) {
         super();
         this.allowedItems = recipe.getAllowedItems().clone();
         this.ingredients = recipe.getIngredient().clone();

@@ -4,11 +4,11 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipeCampfire;
 
 public class RecipeCacheCampfire extends RecipeCacheCooking<CustomRecipeCampfire> {
 
-    protected RecipeCacheCampfire() {
+    RecipeCacheCampfire() {
         super();
     }
 
-    protected RecipeCacheCampfire(CustomRecipeCampfire recipe) {
+    RecipeCacheCampfire(CustomRecipeCampfire recipe) {
         super(recipe);
     }
 

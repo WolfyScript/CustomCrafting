@@ -4,11 +4,11 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipeSmoking;
 
 public class RecipeCacheSmoking extends RecipeCacheCooking<CustomRecipeSmoking> {
 
-    protected RecipeCacheSmoking() {
+    RecipeCacheSmoking() {
         super();
     }
 
-    protected RecipeCacheSmoking(CustomRecipeSmoking recipe) {
+    RecipeCacheSmoking(CustomRecipeSmoking recipe) {
         super(recipe);
     }
 
