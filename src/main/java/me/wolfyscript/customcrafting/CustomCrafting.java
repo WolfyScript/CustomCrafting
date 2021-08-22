@@ -13,21 +13,25 @@ import me.wolfyscript.customcrafting.data.patreon.Patron;
 import me.wolfyscript.customcrafting.gui.*;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
-import me.wolfyscript.customcrafting.handlers.DataBaseHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
+import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
-import me.wolfyscript.customcrafting.utils.*;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.ResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.MergeAdapter;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.DamageMergeAdapter;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantMergeAdapter;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.EnchantedBookMergeAdapter;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.adapters.PlaceholderAPIMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.conditions.*;
+import me.wolfyscript.customcrafting.recipes.items.extension.CommandResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.MythicMobResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -44,7 +48,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -52,7 +55,6 @@ public class CustomCrafting extends JavaPlugin {
 
     //Only used for displaying which version it is.
     private static final boolean PREMIUM = true;
-    private static final String ENVIRONMENT = System.getProperties().getProperty("com.wolfyscript.env", "PROD");
 
     public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
     public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
@@ -81,11 +83,12 @@ public class CustomCrafting extends JavaPlugin {
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
     private DataHandler dataHandler;
-    private DataBaseHandler dataBaseHandler = null;
     private Cauldrons cauldrons = null;
 
     private final UpdateChecker updateChecker;
     private final NetworkHandler networkHandler;
+
+    private DisableRecipesHandler disableRecipesHandler;
 
     private final boolean isPaper;
 
@@ -93,7 +96,7 @@ public class CustomCrafting extends JavaPlugin {
         super();
         instance = this;
         currentVersion = instance.getDescription().getVersion();
-        this.version = WUVersion.parse(getDescription().getVersion());
+        this.version = WUVersion.parse(currentVersion.split("-")[0]);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilities.get(this, false);
         this.chat = api.getChat();
@@ -117,33 +120,43 @@ public class CustomCrafting extends JavaPlugin {
         return inst();
     }
 
-    public static boolean isDevEnv() {
-        return ENVIRONMENT.equalsIgnoreCase("DEV");
-    }
-
     @Override
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
-        getLogger().info("Environment: " + ENVIRONMENT);
+        getLogger().info("Environment: " + WolfyUtilities.getENVIRONMENT());
         getLogger().info("Registering custom data");
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
         me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
 
         getLogger().info("Registering Result Extensions");
-        Registry.RESULT_EXTENSIONS.register(new CommandResultExtension());
-        Registry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
-        Registry.RESULT_EXTENSIONS.register(new SoundResultExtension());
+        CCClassRegistry.RESULT_EXTENSIONS.register(new CommandResultExtension());
+        CCClassRegistry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
+        CCClassRegistry.RESULT_EXTENSIONS.register(new SoundResultExtension());
+
         CustomPlayerData.register(new CCPlayerData.Provider());
 
         getLogger().info("Registering Result Merge Adapters");
-        Registry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
-        Registry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
-        Registry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
-        Registry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
 
-        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, Registry.RESULT_EXTENSIONS);
-        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, Registry.RESULT_MERGE_ADAPTERS);
+        getLogger().info("Registering Recipe Conditions");
+        CCClassRegistry.RECIPE_CONDITIONS.register(AdvancedWorkbenchCondition.KEY, AdvancedWorkbenchCondition.class, new AdvancedWorkbenchCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(CraftDelayCondition.KEY, CraftDelayCondition.class, new CraftDelayCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(CraftLimitCondition.KEY, CraftLimitCondition.class, new CraftLimitCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(EliteWorkbenchCondition.KEY, EliteWorkbenchCondition.class, new EliteWorkbenchCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(ExperienceCondition.KEY, ExperienceCondition.class, new ExperienceCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(PermissionCondition.KEY, PermissionCondition.class, new PermissionCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WeatherCondition.KEY, WeatherCondition.class, new WeatherCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WorldBiomeCondition.KEY, WorldBiomeCondition.class, new WorldBiomeCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
+
+        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, CCClassRegistry.RESULT_EXTENSIONS);
+        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, CCClassRegistry.RESULT_MERGE_ADAPTERS);
+        KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, CCClassRegistry.RECIPE_CONDITIONS);
     }
 
     @Override
@@ -154,22 +167,18 @@ public class CustomCrafting extends JavaPlugin {
         writeSeparator();
 
         configHandler = new ConfigHandler(this);
-        if (configHandler.getConfig().isDatabaseEnabled()) {
-            try {
-                dataBaseHandler = new DataBaseHandler(api, configHandler.getConfig(), this);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-        configHandler.loadDefaults();
+        configHandler.loadRecipeBookConfig();
+        configHandler.renameOldRecipesFolder();
         dataHandler = new DataHandler(this);
+        configHandler.loadDefaults();
         craftManager = new CraftManager(this);
+        disableRecipesHandler = new DisableRecipesHandler(this);
 
         writeSeparator();
         registerListeners();
         registerCommands();
         registerInventories();
-        if (isDevEnv()) {
+        if (WolfyUtilities.isDevEnv()) {
             this.networkHandler.registerPackets();
         }
 
@@ -182,12 +191,10 @@ public class CustomCrafting extends JavaPlugin {
         if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
             dataHandler.loadRecipesAndItems();
         }
-
         updateChecker.run(null);
 
         //Load Metrics
         var metrics = new Metrics(this, 3211);
-
         metrics.addCustomChart(new SimplePie("used_language", () -> getConfigHandler().getConfig().getString("language")));
         metrics.addCustomChart(new SimplePie("advanced_workbench", () -> configHandler.getConfig().isAdvancedWorkbenchEnabled() ? "enabled" : "disabled"));
         writeSeparator();
@@ -271,28 +278,28 @@ public class CustomCrafting extends JavaPlugin {
     private void registerInventories() {
         InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
         api.getConsole().info("$msg.startup.inventories$");
-        Registry.ITEM_CREATOR_TABS.register(new TabArmorSlots());
-        Registry.ITEM_CREATOR_TABS.register(new TabAttributes());
-        Registry.ITEM_CREATOR_TABS.register(new TabConsume());
-        Registry.ITEM_CREATOR_TABS.register(new TabCustomDurability());
-        Registry.ITEM_CREATOR_TABS.register(new TabCustomModelData());
-        Registry.ITEM_CREATOR_TABS.register(new TabDamage());
-        Registry.ITEM_CREATOR_TABS.register(new TabDisplayName());
-        Registry.ITEM_CREATOR_TABS.register(new TabEliteCraftingTable());
-        Registry.ITEM_CREATOR_TABS.register(new TabEnchants());
-        Registry.ITEM_CREATOR_TABS.register(new TabFlags());
-        Registry.ITEM_CREATOR_TABS.register(new TabFuel());
-        Registry.ITEM_CREATOR_TABS.register(new TabLocalizedName());
-        Registry.ITEM_CREATOR_TABS.register(new TabLore());
-        Registry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
-        Registry.ITEM_CREATOR_TABS.register(new TabPermission());
-        Registry.ITEM_CREATOR_TABS.register(new TabPlayerHead());
-        Registry.ITEM_CREATOR_TABS.register(new TabPotion());
-        Registry.ITEM_CREATOR_TABS.register(new TabRarity());
-        Registry.ITEM_CREATOR_TABS.register(new TabRecipeBook());
-        Registry.ITEM_CREATOR_TABS.register(new TabRepairCost());
-        Registry.ITEM_CREATOR_TABS.register(new TabVanilla());
-        Registry.ITEM_CREATOR_TABS.register(new TabUnbreakable());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabArmorSlots());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabAttributes());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabConsume());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabCustomDurability());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabCustomModelData());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabDamage());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabDisplayName());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabEliteCraftingTable());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabEnchants());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabFlags());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabFuel());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabLocalizedName());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabLore());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabPermission());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabPlayerHead());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabPotion());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabRarity());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabRecipeBook());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabRepairCost());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabVanilla());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabUnbreakable());
 
         invAPI.registerCluster(new MainCluster(invAPI, this));
         invAPI.registerCluster(new RecipeCreatorCluster(invAPI, this));
@@ -302,7 +309,6 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
         invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
         invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
-
     }
 
     public ConfigHandler getConfigHandler() {
@@ -321,32 +327,8 @@ public class CustomCrafting extends JavaPlugin {
         return dataHandler;
     }
 
-    /**
-     * @deprecated Replaced with {@link #getDataHandler()}
-     */
-    @Deprecated
-    public DataHandler getRecipeHandler() {
-        return getDataHandler();
-    }
-
-    public boolean hasDataBaseHandler() {
-        return dataBaseHandler != null;
-    }
-
-    public DataBaseHandler getDataBaseHandler() {
-        return dataBaseHandler;
-    }
-
     public CraftManager getCraftManager() {
         return craftManager;
-    }
-
-    /**
-     * @deprecated Replaced with {@link #getCraftManager()}
-     */
-    @Deprecated
-    public RecipeUtils getRecipeUtils() {
-        return craftManager.getRecipeUtils();
     }
 
     public ChatUtils getChatUtils() {
@@ -361,11 +343,6 @@ public class CustomCrafting extends JavaPlugin {
         return patreon;
     }
 
-    @Deprecated
-    public boolean isOutdated() {
-        return getUpdateChecker().isOutdated();
-    }
-
     public boolean isPaper() {
         return isPaper;
     }
@@ -376,5 +353,9 @@ public class CustomCrafting extends JavaPlugin {
 
     public WUVersion getVersion() {
         return version;
+    }
+
+    public DisableRecipesHandler getDisableRecipesHandler() {
+        return disableRecipesHandler;
     }
 }

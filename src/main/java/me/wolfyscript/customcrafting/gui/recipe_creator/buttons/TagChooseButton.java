@@ -11,7 +11,7 @@ public class TagChooseButton extends ActionButton<CCCache> {
 
     public TagChooseButton(Tag<Material> tag) {
         super("tag." + NamespacedKey.fromBukkit(tag.getKey()).toString("."), new ButtonState<>("tag", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, slot, event) -> {
-            var recipeItemStack = cache.getTagSettingsCache().getRecipeItemStack();
+            var recipeItemStack = cache.getRecipeCreatorCache().getTagSettingsCache().getRecipeItemStack();
             if (recipeItemStack != null) {
                 recipeItemStack.getTags().add(NamespacedKey.fromBukkit(tag.getKey()));
             }

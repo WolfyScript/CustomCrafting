@@ -4,16 +4,15 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeBookConfig;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapedCraftRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.ShapelessCraftRecipe;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipeShaped;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipeShapeless;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.recipes.items.extension.CommandResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.MythicMobResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.CommandResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.MythicMobResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.extension.SoundResultExtension;
-import me.wolfyscript.customcrafting.utils.recipe_item.target.SlotResultTarget;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
@@ -61,13 +60,16 @@ public class ConfigHandler {
         api.getConfigAPI().setPrettyPrinting(mainConfig.isPrettyPrinting());
     }
 
-    public void loadDefaults() {
+    public void renameOldRecipesFolder() {
         if (!DataHandler.DATA_FOLDER.exists()) { //Check for the old recipes folder and rename it to the new data folder.
             var old = new File(customCrafting.getDataFolder() + File.separator + "recipes");
             if (!old.renameTo(DataHandler.DATA_FOLDER)) {
                 customCrafting.getLogger().severe("Couldn't rename folder to the new required names!");
             }
         }
+    }
+
+    public void loadDefaults() {
         var enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
@@ -80,11 +82,10 @@ public class ConfigHandler {
             ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
             ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
-            var knowledgeBookCraft = new ShapelessCraftRecipe();
-            knowledgeBookCraft.setIngredient('A', new Ingredient(Material.BOOK));
-            knowledgeBookCraft.setIngredient('B', new Ingredient(Material.CRAFTING_TABLE));
+            var knowledgeBookCraft = new CraftingRecipeShapeless(CustomCrafting.RECIPE_BOOK);
+            knowledgeBookCraft.addIngredient(new Ingredient(Material.BOOK));
+            knowledgeBookCraft.addIngredient(new Ingredient(Material.CRAFTING_TABLE));
             knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
-            knowledgeBookCraft.setNamespacedKey(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.save();
         }
         if (mainConfig.resetAdvancedWorkbench()) {
@@ -96,24 +97,22 @@ public class ConfigHandler {
             advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, CustomCrafting.ADVANCED_CRAFTING_TABLE);
             ItemLoader.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
 
-            var workbenchCraft = new ShapedCraftRecipe();
+            var workbenchCraft = new CraftingRecipeShaped(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.setMirrorHorizontal(false);
-            workbenchCraft.setIngredient('B', new Ingredient(Material.GOLD_INGOT));
-            workbenchCraft.setIngredient('E', new Ingredient(Material.CRAFTING_TABLE));
-            workbenchCraft.setIngredient('H', new Ingredient(Material.GLOWSTONE_DUST));
-            Result<SlotResultTarget> result = workbenchCraft.getResult();
+            workbenchCraft.setShape("G ", "C ", "DD");
+            workbenchCraft.setIngredient('G', new Ingredient(Material.GOLD_INGOT));
+            workbenchCraft.setIngredient('C', new Ingredient(Material.CRAFTING_TABLE));
+            workbenchCraft.setIngredient('D', new Ingredient(Material.GLOWSTONE_DUST));
+            Result result = workbenchCraft.getResult();
             result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE)));
-            if (CustomCrafting.isDevEnv()) {
+            if (WolfyUtilities.isDevEnv()) {
                 result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
                 result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
                 var extension = new MythicMobResultExtension("SkeletalKnight", 1);
                 result.addExtension(extension);
             }
-            workbenchCraft.setNamespacedKey(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.save();
         }
-
-        loadRecipeBookConfig();
     }
 
     public void loadRecipeBookConfig() {
@@ -150,7 +149,6 @@ public class ConfigHandler {
 
     public void save() throws IOException {
         recipeBookConfig.save(getConfig().isPrettyPrinting());
-        //getConfig().save();
     }
 
     public MainConfig getConfig() {

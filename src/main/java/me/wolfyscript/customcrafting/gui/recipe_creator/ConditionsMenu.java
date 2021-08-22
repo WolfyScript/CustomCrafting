@@ -4,222 +4,108 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.MainCluster;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.EliteWorkbenchConditionButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.WorldBiomeConditionButton;
-import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.conditions.WorldNameConditionButton;
-import me.wolfyscript.customcrafting.recipes.conditions.*;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.gui.recipe_creator.buttons.ConditionSelectButton;
+import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ConditionsMenu extends CCWindow {
 
     private static final String BACK = "back";
+    private static final String PAGE_UP = "page_up";
+    private static final String PAGE_DOWN = "page_down";
+    private static final String ADD = "add";
+    private static final String REMOVE = "remove";
+    public static final String TOGGLE_MODE = "toggle_mode";
 
     public ConditionsMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "conditions", 45, customCrafting);
+        super(cluster, "conditions", 54, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(BACK, new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK, new ButtonState<>(MainCluster.BACK_BOTTOM, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.openPreviousWindow();
             return true;
         })));
-
-        registerButton(new ActionButton<>("conditions.world_time", new ButtonState<>("world_time", Material.CLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
-            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
-                    //Change Mode
-                    conditions.getByType(WorldTimeCondition.class).toggleOption();
-                } else {
-                    //Change Value
-                    openChat("world_time", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        try {
-                            long value = Long.parseLong(s);
-                            conditions.getByType(WorldTimeCondition.class).setTime(value);
-                        } catch (NumberFormatException ex) {
-                            api.getChat().sendKey(player1, "recipe_creator", "valid_number");
-                        }
-                        return false;
-                    });
-                }
+        registerButton(new ActionButton<>(ADD, PlayerHeadUtils.getViaURL("10c97e4b68aaaae8472e341b1d872b93b36d4eb6ea89ecec26a66e6c4e178"), (cache, guiHandler, player, inventory, slot, event) -> {
+            guiHandler.openWindow(ConditionsAddMenu.KEY);
+            return true;
+        }));
+        registerButton(new ActionButton<>(PAGE_UP, PlayerHeadUtils.getViaURL("3f46abad924b22372bc966a6d517d2f1b8b57fdd262b4e04f48352e683fff92"), (cache, guiHandler, player, inventory, slot, event) -> {
+            return true;
+        }));
+        registerButton(new ActionButton<>(PAGE_DOWN, PlayerHeadUtils.getViaURL("be9ae7a4be65fcbaee65181389a2f7d47e2e326db59ea3eb789a92c85ea46"), (cache, guiHandler, player, inventory, slot, event) -> {
+            return true;
+        }));
+        registerButton(new ActionButton<>(TOGGLE_MODE, Material.LEVER, (cache, guiHandler, player, inventory, slot, event) -> {
+            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
+            if (condition != null) {
+                condition.toggleOption();
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(WorldTimeCondition.class).getTime());
-            hashMap.put("%MODE%", recipeConfig.getConditions().getByType(WorldTimeCondition.class).getOption().getDisplayString(api));
+            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByKey(cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition());
+            if (condition != null) {
+                hashMap.put("%mode%", condition.getOption().getDisplayString(api));
+            }
             return itemStack;
-        })));
+        }));
 
-        registerButton(new ActionButton<>("conditions.player_experience", new ButtonState<>("player_experience", Material.EXPERIENCE_BOTTLE, (cache, guiHandler, player, inventory, slot, event) -> {
-            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
-                    //Change Mode
-                    conditions.getByType(ExperienceCondition.class).toggleOption();
-                } else {
-                    //Change Value
-                    openChat("player_experience", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        try {
-                            int value = Integer.parseInt(s);
-                            conditions.getByType(ExperienceCondition.class).setExpLevel(value);
-                        } catch (NumberFormatException ex) {
-                            api.getChat().sendKey(player1, "recipe_creator", "valid_number");
-                        }
-                        return false;
-                    });
-                }
+        registerButton(new ActionButton<>(REMOVE, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+            var condition = cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition();
+            if (condition != null) {
+                cache.getRecipeCreatorCache().getRecipeCache().getConditions().removeCondition(condition);
             }
             return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(ExperienceCondition.class).getExpLevel());
-            hashMap.put("%MODE%", recipeConfig.getConditions().getByType(ExperienceCondition.class).getOption().getDisplayString(api));
-            return itemStack;
-        })));
-
-        registerButton(new ActionButton<>("conditions.weather", new ButtonState<>("weather", Material.WATER_BUCKET, (cache, guiHandler, player, inventory, slot, event) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            var conditions = recipeConfig.getConditions();
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
-                    //Change Mode
-                    conditions.getByType(WeatherCondition.class).toggleOption();
-                } else {
-                    //Change Value
-                    conditions.getByType(WeatherCondition.class).toggleWeather();
-                }
-            }
-            return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(api));
-            hashMap.put("%MODE%", recipeConfig.getConditions().getByType(WeatherCondition.class).getOption().getDisplayString(api));
-            return itemStack;
-        })));
-
-        registerButton(new ActionButton<>("conditions.advanced_workbench", new ButtonState<>("advanced_workbench", Material.CRAFTING_TABLE, (cache, guiHandler, player, inventory, slot, event) -> {
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().isLeftClick()) {
-                //Change Mode
-                guiHandler.getCustomCache().getRecipe().getConditions().getByType(AdvancedWorkbenchCondition.class).toggleOption();
-            }
-            return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%MODE%", guiHandler.getCustomCache().getRecipe().getConditions().getByType(AdvancedWorkbenchCondition.class).getOption().getDisplayString(api));
-            return itemStack;
-        })));
-
-        registerButton(new EliteWorkbenchConditionButton());
-        registerButton(new WorldBiomeConditionButton());
-        registerButton(new WorldNameConditionButton());
-
-        registerButton(new ActionButton<>("conditions.permission", new ButtonState<>("permission", Material.REDSTONE, (cache, guiHandler, player, inventory, slot, event) -> {
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
-                    //Change Mode
-                    guiHandler.getCustomCache().getRecipe().getConditions().getByType(PermissionCondition.class).toggleOption();
-                } else {
-                    //SET Custom Permission String
-                    openChat("permission", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        guiHandler.getCustomCache().getRecipe().getConditions().getByType(PermissionCondition.class).setPermission(s.trim());
-                        return false;
-                    });
-                }
-            }
-            return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(PermissionCondition.class).getPermission());
-            hashMap.put("%MODE%", recipeConfig.getConditions().getByType(PermissionCondition.class).getOption().getDisplayString(api));
-            return itemStack;
-        })));
-
-        registerButton(new ActionButton<>("conditions.craft_delay", new ButtonState<>("craft_delay", Material.CLOCK, (cache, guiHandler, player, inventory, slot, event) -> {
-            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
-                    //Change Mode
-                    conditions.getByType(CraftDelayCondition.class).toggleOption();
-                } else {
-                    //Change Value
-                    openChat("craft_delay", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        try {
-                            long value = Long.parseLong(s);
-                            conditions.getByType(CraftDelayCondition.class).setDelay(value);
-                        } catch (NumberFormatException ex) {
-                            api.getChat().sendKey(player1, "recipe_creator", "valid_number");
-                        }
-                        return false;
-                    });
-                }
-
-            }
-            return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(CraftDelayCondition.class).getDelay());
-            hashMap.put("%MODE%", recipeConfig.getConditions().getByType(CraftDelayCondition.class).getOption().getDisplayString(api));
-            return itemStack;
-        })));
-
-        registerButton(new ActionButton<>("conditions.craft_limit", new ButtonState<>("craft_limit", Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
-            var conditions = guiHandler.getCustomCache().getRecipe().getConditions();
-            if (event instanceof InventoryClickEvent) {
-                if (((InventoryClickEvent) event).getClick().isRightClick()) {
-                    //Change Mode
-                    conditions.getByType(CraftLimitCondition.class).toggleOption();
-                } else {
-                    //Change Value
-                    openChat("craft_limit", guiHandler, (guiHandler1, player1, s, strings) -> {
-                        try {
-                            conditions.getByType(CraftLimitCondition.class).setLimit(Long.parseLong(s));
-                        } catch (NumberFormatException ex) {
-                            api.getChat().sendKey(player1, "recipe_creator", "valid_number");
-                        }
-                        return false;
-                    });
-                }
-
-            }
-            return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipeConfig = guiHandler.getCustomCache().getRecipe();
-            hashMap.put("%VALUE%", recipeConfig.getConditions().getByType(CraftLimitCondition.class).getLimit());
-            hashMap.put("%MODE%", recipeConfig.getConditions().getByType(CraftLimitCondition.class).getOption().getDisplayString(api));
-            return itemStack;
-        })));
+        }));
+        Condition.getGuiComponents().forEach((key, abstractGUIComponent) -> abstractGUIComponent.init(this, api));
     }
 
     @Override
-    public void onUpdateAsync(GuiUpdate<CCCache> event) {
-        super.onUpdateAsync(event);
-        CCCache cache = event.getGuiHandler().getCustomCache();
-        event.setButton(0, BACK);
-        List<String> values = new ArrayList<>();
-        values.add("conditions.world_time");
-        values.add("conditions.world_name");
-        values.add("conditions.world_biome");
-        values.add("conditions.weather");
-        switch (cache.getRecipeType().getType()) {
-            case WORKBENCH -> values.addAll(Arrays.asList("conditions.permission", "conditions.player_experience", "conditions.advanced_workbench", "conditions.craft_delay", "conditions.craft_limit"));
-            case ELITE_WORKBENCH -> values.addAll(Arrays.asList("conditions.permission", "conditions.player_experience", "conditions.elite_workbench", "conditions.craft_delay", "conditions.craft_limit"));
-            case BREWING_STAND, GRINDSTONE -> values.addAll(Arrays.asList("conditions.permission", "conditions.player_experience"));
-            default -> {/*No special conditions!*/}
+    public void onUpdateAsync(GuiUpdate<CCCache> update) {
+        super.onUpdateAsync(update);
+        CCCache cache = update.getGuiHandler().getCustomCache();
+        NamespacedKey background = PlayerUtil.getStore(update.getPlayer()).getLightBackground();
+        for (int i = 8; i < 16; i++) {
+            update.setButton(i, background);
         }
-        for (int i = 0, item = 9; i < values.size() && item < 45; i++, item++) {
-            event.setButton(item, values.get(i));
+        update.setButton(45, BACK);
+        update.setButton(7, PAGE_UP);
+        update.setButton(16, PAGE_DOWN);
+        update.setButton(17, ADD);
+
+        Conditions conditions = cache.getRecipeCreatorCache().getRecipeCache().getConditions();
+
+        List<NamespacedKey> values = List.copyOf(conditions.keySet());
+        int size = values.size();
+        int maxPages = (int) Math.floor(size / 16d);
+        int page = cache.getRecipeCreatorCache().getConditionsCache().getPage();
+
+        for (int i = page * 16, slot = 0; i < values.size(); i++, slot++) {
+            if (slot == 7) {
+                slot += 2;
+            }
+            var button = new ConditionSelectButton(values.get(i));
+            registerButton(button);
+            update.setButton(slot, button);
+        }
+
+        NamespacedKey key = cache.getRecipeCreatorCache().getConditionsCache().getSelectedCondition();
+
+        Condition<?> selectedCondition = conditions.getByKey(key);
+        if (selectedCondition != null) {
+            selectedCondition.render(update, cache, cache.getRecipeCreatorCache().getRecipeCache());
+            update.setButton(53, REMOVE);
         }
     }
 }

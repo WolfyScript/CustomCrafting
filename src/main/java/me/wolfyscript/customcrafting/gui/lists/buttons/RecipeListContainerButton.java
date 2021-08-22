@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -36,7 +36,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
     private final HashMap<GuiHandler<CCCache>, Recipe> recipes = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, ICustomRecipe<?,?>> customRecipes = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, ICustomRecipe<?>> customRecipes = new HashMap<>();
     private final WolfyUtilities api;
 
     public RecipeListContainerButton(int slot, CustomCrafting customCrafting) {
@@ -69,15 +69,17 @@ public class RecipeListContainerButton extends Button<CCCache> {
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
         if (event instanceof InventoryClickEvent clickEvent) {
-            ICustomRecipe<?, ?> customRecipe = getCustomRecipe(guiHandler);
+            ICustomRecipe<?> customRecipe = getCustomRecipe(guiHandler);
             if (clickEvent.isShiftClick() && customRecipe != null) {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
-                    cache.setRecipeType(customRecipe.getRecipeType());
-                    if (customCrafting.getDataHandler().loadRecipeIntoCache(customRecipe, guiHandler)) {
-                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(RecipeCreatorCluster.KEY, guiHandler.getCustomCache().getRecipeType().getCreatorID())), 1);
-                    } else {
-                        api.getChat().sendKey(player, MainCluster.RECIPE_LIST, "invalid_recipe", new Pair<>("%recipe_type%", guiHandler.getCustomCache().getRecipeType().name()));
+                    cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
+
+                    try {
+                        cache.getRecipeCreatorCache().loadRecipeIntoCache(customRecipe);
+                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(RecipeCreatorCluster.KEY, cache.getRecipeCreatorCache().getRecipeType().getCreatorID())), 1);
+                    } catch (IllegalArgumentException ex) {
+                        api.getChat().sendKey(player, MainCluster.RECIPE_LIST, "invalid_recipe", new Pair<>("%recipe_type%", cache.getRecipeCreatorCache().getRecipeType().name()));
                     }
                 } else {
                     api.getChat().sendKey(player, MainCluster.RECIPE_LIST, "delete.confirm", new Pair<>("%recipe%", customRecipe.getNamespacedKey().toString()));
@@ -88,11 +90,10 @@ public class RecipeListContainerButton extends Button<CCCache> {
                 }
             } else {
                 if (customRecipe != null) {
-                    customCrafting.getDataHandler().toggleRecipe(customRecipe);
+                    customCrafting.getDisableRecipesHandler().toggleRecipe(customRecipe);
                 } else {
-                    customCrafting.getDataHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
+                    customCrafting.getDisableRecipesHandler().toggleBukkitRecipe(((Keyed) getRecipe(guiHandler)).getKey());
                 }
-                customCrafting.getDataHandler().saveDisabledRecipes();
             }
         }
         return true;
@@ -101,13 +102,13 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         if (getCustomRecipe(guiHandler) != null) {
-            ICustomRecipe<?,?> recipe = getCustomRecipe(guiHandler);
+            ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
-                ItemBuilder itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
+                var itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
                 if (recipe.getResult().isEmpty()) {
-                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey().toString());
+                    itemB.setType(Material.STONE).addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 0).addItemFlags(ItemFlag.HIDE_ENCHANTS).setDisplayName("§r§7" + recipe.getNamespacedKey());
                 }
-                itemB.addLoreLine("§8" + recipe.getNamespacedKey().toString());
+                itemB.addLoreLine("§8" + recipe.getNamespacedKey());
                 if (recipe.isDisabled()) {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.disabled$"));
                 } else {
@@ -130,7 +131,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
                     itemB = new ItemBuilder(recipe.getResult());
                 }
                 itemB.addLoreLine("§8" + ((Keyed) recipe).getKey());
-                if (customCrafting.getDataHandler().isBukkitRecipeDisabled(((Keyed) recipe).getKey())) {
+                if (customCrafting.getDisableRecipesHandler().isBukkitRecipeDisabled(((Keyed) recipe).getKey())) {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.disabled$"));
                 } else {
                     itemB.addLoreLine(api.getLanguageAPI().replaceColoredKeys("$inventories.none.recipe_list.items.lores.enabled$"));
@@ -140,11 +141,11 @@ public class RecipeListContainerButton extends Button<CCCache> {
         }
     }
 
-    public ICustomRecipe<?,?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
+    public ICustomRecipe<?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
         return customRecipes.getOrDefault(guiHandler, null);
     }
 
-    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, ICustomRecipe<?,?> recipe) {
+    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
         customRecipes.put(guiHandler, recipe);
     }
 

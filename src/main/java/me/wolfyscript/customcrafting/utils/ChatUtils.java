@@ -173,18 +173,23 @@ public class ChatUtils {
         api.getConsole().severe("-------------------------------------------------");
         api.getConsole().severe("Error loading Contents for: " + namespace + ":" + key);
         api.getConsole().severe("    Type: " + type);
-        api.getConsole().severe("    Message: " + ex.getMessage());
+        if (ex.getMessage() != null) {
+            api.getConsole().severe("    Message: " + ex.getMessage());
+        }
         if (ex.getCause() != null) {
             api.getConsole().severe("    Cause: " + ex.getCause().getMessage());
         }
-        api.getConsole().severe("You should check the config for empty settings ");
-        api.getConsole().severe("e.g. No set Result or Source Item!");
-        api.getConsole().severe("------------------[StackTrace]-------------------");
-        ex.printStackTrace();
-        if (ex.getCause() != null) {
-            api.getConsole().severe("Caused StackTrace: ");
-            ex.getCause().printStackTrace();
+        api.getConsole().severe("Please check the config of the recipe.");
+        if (CustomCrafting.inst().getConfigHandler().getConfig().isPrintingStacktrace()) {
+            api.getConsole().severe("------------------[StackTrace]-------------------");
+            ex.printStackTrace();
+            if (ex.getCause() != null) {
+                api.getConsole().severe("Caused StackTrace: ");
+                ex.getCause().printStackTrace();
+            }
+        } else {
+            api.getConsole().severe("For more info enable stacktraces in the config ('data.print_stacktrace')");
         }
-        api.getConsole().severe("------------------[StackTrace]-------------------");
+        api.getConsole().severe("-------------------------------------------------");
     }
 }

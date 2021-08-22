@@ -1,13 +1,13 @@
 package me.wolfyscript.customcrafting.listeners;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldron;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
-import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -113,8 +113,7 @@ public class CauldronListener implements Listener {
         Bukkit.getScheduler().runTaskLater(api.getPlugin(),
                 () -> {
                     if (cauldrons != null && cauldrons.getCauldrons() != null) {
-                        cauldrons.getCauldrons().entrySet().stream()
-                                .filter(entry -> entry.getKey().getWorld() != null)
+                        cauldrons.getCauldrons().entrySet().stream().filter(entry -> entry.getKey().getWorld() != null)
                                 .filter(entry -> entry.getKey().getWorld().equals(itemDrop.getLocation().getWorld()) && entry.getKey().clone().add(0.5, 0.4, 0.5).distance(itemDrop.getLocation()) <= 0.4)
                                 .forEach(entry -> {
                                     Location loc = entry.getKey();
@@ -122,9 +121,9 @@ public class CauldronListener implements Listener {
                                     if (!items.isEmpty()) {
                                         var cauldronBlock = loc.getBlock();
                                         int level = Cauldrons.getLevel(cauldronBlock);
-                                        List<CauldronRecipe> recipes = Registry.RECIPES.get(Types.CAULDRON);
+                                        List<CustomRecipeCauldron> recipes = CCRegistry.RECIPES.get(RecipeType.CAULDRON);
                                         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-                                        for (CauldronRecipe recipe : recipes) {
+                                        for (CustomRecipeCauldron recipe : recipes) {
                                             if (entry.getValue().isEmpty() || entry.getValue().get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {
                                                 if (level >= recipe.getWaterLevel() && (level == 0 || recipe.needsWater()) && (!recipe.needsFire() || cauldrons.isCustomCauldronLit(loc.getBlock()))) {
                                                     List<Item> validItems = recipe.checkRecipe(items);

@@ -12,8 +12,8 @@ public class TagContainerButton extends ActionButton<CCCache> {
 
     public TagContainerButton(NamespacedKey namespacedKey) {
         super("tag." + namespacedKey.toString("."), new ButtonState<>("tag_container", Material.NAME_TAG, (cache, guiHandler, player, guiInventory, slot, event) -> {
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                var recipeItemStack = cache.getTagSettingsCache().getRecipeItemStack();
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT)) {
+                var recipeItemStack = cache.getRecipeCreatorCache().getTagSettingsCache().getRecipeItemStack();
                 if (recipeItemStack != null) {
                     recipeItemStack.getTags().remove(namespacedKey);
                 }

@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.data.cauldron;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.version.MinecraftVersions;
@@ -61,7 +61,7 @@ public class Cauldrons {
                     Iterator<Cauldron> cauldronItr = entry.getValue().iterator();
                     while (cauldronItr.hasNext()) {
                         var cauldron = cauldronItr.next();
-                        CauldronRecipe recipe = cauldron.getRecipe();
+                        CustomRecipeCauldron recipe = cauldron.getRecipe();
                         if (level >= recipe.getWaterLevel() && (block.getType().equals(Material.CAULDRON) || recipe.needsWater()) && (!recipe.needsFire() || isLit)) {
                             Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
                                 if (cauldron.getPassedTicks() >= cauldron.getCookingTime() && !cauldron.isDone()) {

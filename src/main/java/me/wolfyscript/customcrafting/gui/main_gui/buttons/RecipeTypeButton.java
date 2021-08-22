@@ -10,16 +10,16 @@ import org.bukkit.inventory.ItemStack;
 
 public class RecipeTypeButton extends ActionButton<CCCache> {
 
-    public RecipeTypeButton(RecipeType<?> recipeType, ItemStack icon) {
-        super(recipeType.getId(), icon, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.getCustomCache().setRecipeType(recipeType);
-            guiHandler.getCustomCache().setSetting(Setting.RECIPE_CREATOR);
-            guiHandler.openWindow(new NamespacedKey("recipe_creator", guiHandler.getCustomCache().getRecipeType().getCreatorID()));
+    public RecipeTypeButton(String key, RecipeType<?> recipeType, ItemStack icon) {
+        super(key, icon, (cache, guiHandler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().setRecipeType(recipeType);
+            cache.setSetting(Setting.RECIPE_CREATOR);
+            guiHandler.openWindow(new NamespacedKey("recipe_creator", recipeType.getCreatorID()));
             return true;
         });
     }
 
-    public RecipeTypeButton(RecipeType<?> recipeType, Material icon) {
-        this(recipeType, new ItemStack(icon));
+    public RecipeTypeButton(String key, RecipeType<?> recipeType, Material icon) {
+        this(key, recipeType, new ItemStack(icon));
     }
 }

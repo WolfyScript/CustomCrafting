@@ -1,9 +1,9 @@
 package me.wolfyscript.customcrafting.commands.recipes;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -28,12 +28,12 @@ public class ToggleSubCommand extends AbstractSubCommand {
             String id = args[0];
             if (id.contains(":")) {
                 var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);
-                if (customCrafting.getDataHandler().getDisabledRecipes().contains(namespacedKey)) {
+                if (customCrafting.getDisableRecipesHandler().getRecipes().contains(namespacedKey)) {
                     sender.sendMessage("Enabled recipe " + id);
-                    customCrafting.getDataHandler().getDisabledRecipes().remove(namespacedKey);
+                    customCrafting.getDisableRecipesHandler().getRecipes().remove(namespacedKey);
                 } else {
                     sender.sendMessage("Disabled recipe " + id);
-                    customCrafting.getDataHandler().getDisabledRecipes().add(namespacedKey);
+                    customCrafting.getDisableRecipesHandler().getRecipes().add(namespacedKey);
                     if (namespacedKey != null) {
                         Bukkit.getOnlinePlayers().forEach(player -> player.undiscoverRecipe(namespacedKey.toBukkit(customCrafting)));
                     }
@@ -48,7 +48,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
         List<String> recipes = customCrafting.getDataHandler().getBukkitNamespacedKeys();
-        recipes.addAll(Registry.RECIPES.get(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
+        recipes.addAll(CCRegistry.RECIPES.get(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
         StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
         return results;
     }

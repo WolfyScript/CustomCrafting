@@ -1,13 +1,10 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.customcrafting.recipes.Conditions;
+import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.ShapedEliteCraftRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -20,7 +17,7 @@ import java.util.*;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
-    private final List<ICustomRecipe<?, ?>> cachedRecipes;
+    private final List<ICustomRecipe<?>> cachedRecipes;
     //private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
     private final Map<UUID, List<ItemStack>> cachedPlayerItemStacks = new HashMap<>();
 
@@ -30,16 +27,16 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     public RecipeContainer(String group) {
         this.group = group;
         this.recipe = null;
-        this.cachedRecipes = Registry.RECIPES.getGroup(group);
+        this.cachedRecipes = CCRegistry.RECIPES.getGroup(group);
     }
 
     public RecipeContainer(NamespacedKey recipe) {
         this.group = null;
         this.recipe = recipe;
-        this.cachedRecipes = Collections.singletonList(Registry.RECIPES.get(recipe));
+        this.cachedRecipes = Collections.singletonList(CCRegistry.RECIPES.get(recipe));
     }
 
-    public RecipeContainer(ICustomRecipe<?, ?> recipe) {
+    public RecipeContainer(ICustomRecipe<?> recipe) {
         this.group = null;
         this.recipe = recipe.getNamespacedKey();
         this.cachedRecipes = Collections.singletonList(recipe);
@@ -49,8 +46,8 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
      * @param player The player to get the recipes for.
      * @return The recipes of this container the player has access to.
      */
-    public List<ICustomRecipe<?, ?>> getRecipes(Player player) {
-        return Registry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
+    public List<ICustomRecipe<?>> getRecipes(Player player) {
+        return CCRegistry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 
     /**
@@ -78,17 +75,17 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     public boolean isValid(EliteWorkbench cache) {
         var data = cache.getEliteWorkbenchData();
         return cachedRecipes.parallelStream().anyMatch(cachedRecipe -> {
-            if (cachedRecipe instanceof CraftingRecipe && (cachedRecipe instanceof EliteCraftingRecipe || data.isAdvancedRecipes())) {
-                if (cachedRecipe instanceof EliteCraftingRecipe) {
+            if (cachedRecipe instanceof CraftingRecipe<?, ?> && (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe) || data.isAdvancedRecipes())) {
+                if (RecipeType.Container.ELITE_CRAFTING.isInstance(cachedRecipe)) {
                     EliteWorkbenchCondition condition = cachedRecipe.getConditions().getEliteCraftingTableCondition();
-                    if (condition != null && !condition.getOption().equals(Conditions.Option.IGNORE) && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
+                    if (condition != null && !condition.getEliteWorkbenches().contains(data.getNamespacedKey())) {
                         return false;
                     }
-                    if (((EliteCraftingRecipe) cachedRecipe).isShapeless()) {
-                        return ((EliteCraftingRecipe) cachedRecipe).getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
+                    if (cachedRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
+                        return shapeless.getIngredients().size() <= cache.getCurrentGridSize() * cache.getCurrentGridSize();
                     } else {
-                        ShapedEliteCraftRecipe recipe1 = (ShapedEliteCraftRecipe) cachedRecipe;
-                        return recipe1.getHeight() <= cache.getCurrentGridSize() && recipe1.getWidth() <= cache.getCurrentGridSize();
+                        CraftingRecipeEliteShaped recipe1 = (CraftingRecipeEliteShaped) cachedRecipe;
+                        return recipe1.getShape().length <= cache.getCurrentGridSize() && recipe1.getShape()[0].length() <= cache.getCurrentGridSize();
                     }
                 }
                 return true;

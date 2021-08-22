@@ -12,6 +12,7 @@ import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 public class MainMenu extends CCWindow {
@@ -31,12 +32,14 @@ public class MainMenu extends CCWindow {
             registerButton(new MainCategoryButton(categoryId, customCrafting));
         }
         registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>(MainCluster.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
-            if (cache.getKnowledgeBook().hasEliteCraftingTable()) {
-                guiHandler.openCluster(EliteCraftingCluster.KEY);
-            } else {
-                guiHandler.close();
-            }
-            cache.getKnowledgeBook().setEliteCraftingTable(null);
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                if (cache.getKnowledgeBook().hasEliteCraftingTable()) {
+                    guiHandler.openCluster(EliteCraftingCluster.KEY);
+                } else {
+                    guiHandler.close();
+                }
+                cache.getKnowledgeBook().setEliteCraftingTable(null);
+            });
             return true;
         })));
     }

@@ -37,6 +37,7 @@ public class MainCluster extends CCCluster {
     public static final NamespacedKey INSTAGRAM = new NamespacedKey(KEY, "instagram");
     public static final NamespacedKey YOUTUBE = new NamespacedKey(KEY, "youtube");
     public static final NamespacedKey DISCORD = new NamespacedKey(KEY, "discord");
+    public static final NamespacedKey GITHUB = new NamespacedKey(KEY, "github");
 
     //Language keys
     public static final NamespacedKey BACKGROUND = new NamespacedKey(KEY, "background");
@@ -85,6 +86,10 @@ public class MainCluster extends CCCluster {
         }));
         registerButton(new ActionButton<>(INSTAGRAM.getKey(), PlayerHeadUtils.getViaURL("ac88d6163fabe7c5e62450eb37a074e2e2c88611c998536dbd8429faa0819453"), (cache, guiHandler, player, inventory, slot, event) -> {
             wolfyUtilities.getChat().sendActionMessage(player, new ClickData("&7[&3Click here to go to Instagram&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.instagram.com/wolfyscript/")));
+            return true;
+        }));
+        registerButton(new ActionButton<>(GITHUB.getKey(), PlayerHeadUtils.getViaURL("26e27da12819a8b053da0cc2b62dec4cda91de6eeec21ccf3bfe6dd8d4436a7"), (cache, guiHandler, player, inventory, slot, event) -> {
+            wolfyUtilities.getChat().sendActionMessage(player, new ClickData("&7[&3Click here to go to GitHub&7]", null, new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.github.com/WolfyScript/")));
             return true;
         }));
         registerButton(new ActionButton<>(YOUTUBE.getKey(), PlayerHeadUtils.getViaURL("b4353fd0f86314353876586075b9bdf0c484aab0331b872df11bd564fcb029ed"), (cache, guiHandler, player, inventory, slot, event) -> {

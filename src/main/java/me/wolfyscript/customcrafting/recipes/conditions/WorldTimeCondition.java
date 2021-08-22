@@ -1,26 +1,27 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.recipes.Condition;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import org.jetbrains.annotations.NotNull;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 
-import java.io.IOException;
+import java.util.List;
 
-public class WorldTimeCondition extends Condition {
+public class WorldTimeCondition extends Condition<WorldTimeCondition> {
 
-    long time = 0;
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "world_time");
+
+    private long time = 0;
 
     public WorldTimeCondition() {
-        super("world_time");
-        setOption(Conditions.Option.IGNORE);
-        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
+        super(KEY);
+        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.LOWER, Conditions.Option.LOWER_EXACT, Conditions.Option.HIGHER, Conditions.Option.HIGHER_EXACT, Conditions.Option.HIGHER_LOWER);
     }
 
     @Override
-    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         long currentTime = data.getBlock().getWorld().getTime();
         return switch (option) {
             case EXACT -> currentTime == time;
@@ -33,21 +34,36 @@ public class WorldTimeCondition extends Condition {
         };
     }
 
-    @Override
-    public void readFromJson(JsonNode node) {
-        this.time = node.get("time").asInt();
-    }
-
-    @Override
-    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        gen.writeNumberField("time", time);
-    }
-
     public void setTime(long time) {
         this.time = time;
     }
 
     public long getTime() {
         return time;
+    }
+
+    public static class GUIComponent extends FunctionalGUIComponent<WorldTimeCondition> {
+
+        public GUIComponent() {
+            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+                    (menu, api) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.world_time.set", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).getTime());
+                            return itemStack;
+                        }, (guiHandler, player, s, strings) -> {
+                            try {
+                                long value = Long.parseLong(s);
+                                guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(WorldTimeCondition.class).setTime(value);
+                            } catch (NumberFormatException ex) {
+                                api.getChat().sendKey(player, "recipe_creator", "valid_number");
+                            }
+                            return false;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+                        update.setButton(30, "conditions.world_time.set");
+                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
+                    });
+        }
     }
 }

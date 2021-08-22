@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.data.cauldron;
 
-import me.wolfyscript.customcrafting.Registry;
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 
 public class Cauldron implements Listener {
 
-    private CauldronRecipe recipe;
+    private CustomRecipeCauldron recipe;
     private final int cookingTime;
     private int passedTicks;
     private boolean done;
@@ -30,7 +30,7 @@ public class Cauldron implements Listener {
         this.forRemoval = false;
     }
 
-    public Cauldron(CauldronRecipe recipe, int passedTicks, int cookingTime, boolean done, boolean dropItems) {
+    public Cauldron(CustomRecipeCauldron recipe, int passedTicks, int cookingTime, boolean done, boolean dropItems) {
         this.recipe = recipe;
         this.passedTicks = passedTicks;
         this.done = done;
@@ -42,7 +42,7 @@ public class Cauldron implements Listener {
         if (data == null || data.isEmpty())
             return null;
         String[] args = data.split(";");
-        CauldronRecipe recipe = (CauldronRecipe) Registry.RECIPES.get(NamespacedKey.of(args[0]));
+        CustomRecipeCauldron recipe = (CustomRecipeCauldron) CCRegistry.RECIPES.get(NamespacedKey.of(args[0]));
         if (recipe == null) {
             return null;
         }
@@ -70,11 +70,11 @@ public class Cauldron implements Listener {
         return done;
     }
 
-    public CauldronRecipe getRecipe() {
+    public CustomRecipeCauldron getRecipe() {
         return recipe;
     }
 
-    public void setRecipe(CauldronRecipe recipe) {
+    public void setRecipe(CustomRecipeCauldron recipe) {
         this.recipe = recipe;
     }
 

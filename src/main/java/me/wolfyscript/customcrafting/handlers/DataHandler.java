@@ -2,306 +2,130 @@ package me.wolfyscript.customcrafting.handlers;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomVanillaRecipe;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import me.wolfyscript.utilities.util.inventory.ItemUtils;
-import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Recipe;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class DataHandler {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
     private Categories categories;
-    private final Set<NamespacedKey> disabledRecipes = new HashSet<>();
     private List<Recipe> minecraftRecipes = new ArrayList<>();
 
-
-    private final MainConfig mainConfig;
+    private final MainConfig config;
     private final WolfyUtilities api;
-    private final ObjectMapper objectMapper;
+    private final DatabaseLoader databaseLoader;
+    private final LocalStorageLoader localStorageLoader;
+    private final ExtensionPackLoader extensionPackLoader;
+    private final List<ResourceLoader> loaders = new ArrayList<>();
+    private SaveDestination saveDestination = SaveDestination.LOCAL;
 
     public DataHandler(CustomCrafting customCrafting) {
         this.api = WolfyUtilities.get(customCrafting);
-        this.mainConfig = customCrafting.getConfigHandler().getConfig();
+        this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
         initCategories();
-        this.objectMapper = JacksonUtil.getObjectMapper();
+
+        if (customCrafting.getConfigHandler().getConfig().isDatabaseEnabled()) {
+            //Currently, there is only support for SQL. MongoDB is planned!
+            this.databaseLoader = new SQLDatabaseLoader(customCrafting);
+            this.databaseLoader.setPriority(2);
+            if (config.isLocalStorageEnabled()) {
+                this.localStorageLoader = new LocalStorageLoader(customCrafting);
+                this.localStorageLoader.setPriority(config.isLocalStorageBeforeDatabase() ? 3 : 1);
+            } else {
+                this.localStorageLoader = null;
+            }
+        } else {
+            this.databaseLoader = null;
+            this.localStorageLoader = new LocalStorageLoader(customCrafting);
+        }
+        this.extensionPackLoader = null; //No extension pack implementation yet. TODO
+
+        initLoaders();
+    }
+
+    private void initLoaders() {
+        loaders.add(localStorageLoader);
+        if (databaseLoader != null) {
+            loaders.add(databaseLoader);
+        }
+        if (extensionPackLoader != null) {
+            loaders.add(extensionPackLoader);
+        }
+        loaders.sort(ResourceLoader::compareTo);
     }
 
     public void initCategories() {
         this.categories = customCrafting.getConfigHandler().getRecipeBookConfig().getCategories();
     }
 
-    public void load(boolean update) {
+    public DatabaseLoader getDatabaseLoader() {
+        return databaseLoader;
+    }
+
+    public LocalStorageLoader getLocalStorageLoader() {
+        return localStorageLoader;
+    }
+
+    public SaveDestination getSaveDestination() {
+        return saveDestination;
+    }
+
+    public void setSaveDestination(SaveDestination saveDestination) {
+        this.saveDestination = saveDestination;
+    }
+
+    public void load() {
         api.getConsole().info("$msg.startup.recipes.title$");
-        if (CustomCrafting.inst().hasDataBaseHandler()) {
-            if (mainConfig.isLocalStorageEnabled()) {
-                if (mainConfig.isLocalStorageBeforeDatabase()) {
-                    loadConfigs();
-                    loadDataBase();
-                } else {
-                    loadDataBase();
-                    loadConfigs();
-                }
-            } else {
-                loadDataBase();
-            }
-        } else {
-            loadConfigs();
+        var lastBukkitVersion = config.getInt("data.bukkit_version");
+        var lastVersion = config.getInt("data.version");
+        boolean upgrade = lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION;
+        for (ResourceLoader loader : loaders) {
+            loader.load(upgrade);
         }
-        if (update) {
-            int lastBukkitVersion = mainConfig.getInt("data.bukkit_version");
-            int lastVersion = mainConfig.getInt("data.version");
-            if (lastBukkitVersion < CustomCrafting.BUKKIT_VERSION || lastVersion < CustomCrafting.CONFIG_VERSION) {
-                api.getConsole().info("[ Converting Items & Recipes to the latest Bukkit and Config format ]");
-                saveData();
-                api.getConsole().info("Loading Items & Recipes from updated configs...");
-                load(false);
-                api.getConsole().info("[ Conversion of Item & Recipes complete! ]");
-                mainConfig.set("data.version", CustomCrafting.CONFIG_VERSION);
-                mainConfig.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
-                mainConfig.reload();
-            }
+        if (upgrade) {
+            config.set("data.version", CustomCrafting.CONFIG_VERSION);
+            config.set("data.bukkit_version", CustomCrafting.BUKKIT_VERSION);
+            config.save();
         }
     }
 
     public void loadRecipesAndItems() {
-        if (!customCrafting.getConfigHandler().getConfig().getDisabledRecipes().isEmpty()) {
-            getDisabledRecipes().addAll(customCrafting.getConfigHandler().getConfig().getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
-        }
-        load(true);
+        load();
         categories.index();
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 
-    private void loadDataBase() {
-        var dataBaseHandler = CustomCrafting.inst().getDataBaseHandler();
-        api.getConsole().info("- - - - [Database Storage] - - - -");
-        dataBaseHandler.loadItems();
-        api.getConsole().info("");
-        dataBaseHandler.loadRecipes();
-    }
-
-    private void loadConfigs() {
-        api.getConsole().info("- - - - [Local Storage] - - - -");
-        String[] dirs = DATA_FOLDER.list();
-        if (dirs != null) {
-            for (String dir : dirs) {
-                api.getConsole().info("> " + dir);
-                loadItems(dir);
-            }
-            for (String dir : dirs) {
-                for (RecipeType<? extends ICustomRecipe<?, ?>> type : Types.values()) {
-                    loadRecipe(dir, type);
-                }
-            }
-            api.getConsole().info("");
-        }
-    }
-
-    public void saveData() {
-        api.getConsole().info("Saving Items & Recipes");
-        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> ItemLoader.saveItem(entry.getKey(), entry.getValue()));
-        Registry.RECIPES.values().forEach(ICustomRecipe::save);
-    }
-
-    private File[] getFiles(String subFolder, String type) {
-        File data = new File(DATA_FOLDER, subFolder + File.separator + type);
-        if (!data.exists()) return new File[0];
-        return data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
-    }
-
-    private void loadItems(String subFolder) {
-        for (File file : getFiles(subFolder, "items")) {
-            String name = file.getName();
-            var namespacedKey = new NamespacedKey(customCrafting, subFolder + "/" + name.substring(0, name.lastIndexOf(".")));
-            try {
-                me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
-            } catch (IOException e) {
-                customCrafting.getLogger().severe(String.format("Could not load item '%s':", namespacedKey));
-                e.printStackTrace();
-                customCrafting.getLogger().severe("----------------------");
-            }
-        }
-    }
-
-    private void loadRecipe(String subFolder, RecipeType<? extends ICustomRecipe<?, ?>> type) {
-        for (File file : getFiles(subFolder, type.getType().toString().toLowerCase(Locale.ROOT))) {
-            String name = file.getName();
-            var namespacedKey = new NamespacedKey(subFolder, name.substring(0, name.lastIndexOf(".")));
-            try {
-                Registry.RECIPES.register(type.getInstance(namespacedKey, objectMapper.readTree(file)));
-            } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                customCrafting.getLogger().severe(String.format("Could not load recipe '%s':", namespacedKey));
-                e.printStackTrace();
-                customCrafting.getLogger().severe("----------------------");
-            }
-        }
-    }
-
-    public void saveDisabledRecipes() {
-        customCrafting.getConfigHandler().getConfig().setDisabledRecipes(disabledRecipes);
-        customCrafting.getConfigHandler().getConfig().save();
-    }
-
-    /**
-     * @return A list of recipes that are disabled.
-     */
-    public Set<NamespacedKey> getDisabledRecipes() {
-        return disabledRecipes;
-    }
-
-    /**
-     * @param recipe The recipe to check.
-     * @return if the recipe is disabled.
-     * @deprecated Replaced by {@link ICustomRecipe#isDisabled()}
-     */
-    @Deprecated
-    public boolean isRecipeDisabled(ICustomRecipe<?, ?> recipe) {
-        return disabledRecipes.contains(recipe.getNamespacedKey());
-    }
-
-    public void toggleRecipe(ICustomRecipe<?, ?> recipe) {
-        if (recipe.isDisabled()) {
-            enableRecipe(recipe);
+    public ResourceLoader getActiveLoader() {
+        if (saveDestination == SaveDestination.LOCAL) {
+            return localStorageLoader;
         } else {
-            disableRecipe(recipe);
+            return databaseLoader;
         }
-    }
-
-    public void disableRecipe(ICustomRecipe<?, ?> recipe) {
-        var namespacedKey = recipe.getNamespacedKey();
-        disabledRecipes.add(namespacedKey);
-        if (recipe instanceof ICustomVanillaRecipe<?>) {
-            disableBukkitRecipe(namespacedKey.toBukkit(customCrafting));
-        }
-    }
-
-    public void enableRecipe(ICustomRecipe<?, ?> recipe) {
-        var namespacedKey = recipe.getNamespacedKey();
-        if (recipe instanceof ICustomVanillaRecipe) {
-            enableBukkitRecipe(namespacedKey.toBukkit(customCrafting));
-        }
-        disabledRecipes.remove(namespacedKey);
-    }
-
-    public boolean isBukkitRecipeDisabled(org.bukkit.NamespacedKey namespacedKey) {
-        return disabledRecipes.contains(NamespacedKey.fromBukkit(namespacedKey));
-    }
-
-    public void toggleBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
-        if (isBukkitRecipeDisabled(namespacedKey)) {
-            enableBukkitRecipe(namespacedKey);
-        } else {
-            disableBukkitRecipe(namespacedKey);
-        }
-    }
-
-    public void disableBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
-        disabledRecipes.add(NamespacedKey.fromBukkit(namespacedKey));
-        for (Player player1 : Bukkit.getOnlinePlayers()) {
-            player1.undiscoverRecipe(namespacedKey);
-        }
-    }
-
-    public void enableBukkitRecipe(org.bukkit.NamespacedKey namespacedKey) {
-        disabledRecipes.remove(NamespacedKey.fromBukkit(namespacedKey));
     }
 
     public List<Recipe> getMinecraftRecipes() {
         if (minecraftRecipes.isEmpty()) {
-            minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> {
-                if (recipe instanceof ComplexRecipe || recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe || recipe instanceof CookingRecipe || recipe instanceof SmithingRecipe) {
-                    return ((Keyed) recipe).getKey().getNamespace().equals("minecraft");
-                }
-                return false;
-            }).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).toList();
+            minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> recipe instanceof Keyed keyed && keyed.getKey().getNamespace().equals("minecraft")).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).toList();
         }
         return Collections.unmodifiableList(minecraftRecipes);
     }
 
     public List<String> getBukkitNamespacedKeys() {
-        return getMinecraftRecipes().stream().filter(recipe -> recipe instanceof Keyed).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).toList();
-    }
-
-    private int gridSize(ItemStack[] ingredients) {
-        return switch (ingredients.length) {
-            case 9 -> 3;
-            case 16 -> 4;
-            case 25 -> 5;
-            case 36 -> 6;
-            default -> (int) Math.sqrt(ingredients.length);
-        };
-    }
-
-    public List<List<ItemStack>> getIngredients(ItemStack[] ingredients) {
-        List<List<ItemStack>> items = new ArrayList<>();
-        int gridSize = gridSize(ingredients);
-        for (int y = 0; y < gridSize; y++) {
-            items.add(new ArrayList<>(Arrays.asList(ingredients).subList(y * gridSize, gridSize + y * gridSize)));
-        }
-        ListIterator<List<ItemStack>> iterator = items.listIterator();
-        while (iterator.hasNext()) {
-            if (!iterator.next().parallelStream().allMatch(Objects::isNull)) break;
-            iterator.remove();
-        }
-        iterator = items.listIterator(items.size());
-        while (iterator.hasPrevious()) {
-            if (!iterator.previous().parallelStream().allMatch(Objects::isNull)) break;
-            iterator.remove();
-        }
-        if (!items.isEmpty()) {
-            isColumnOccupied(items, 0);
-            isColumnOccupied(items, items.get(0).size());
-        }
-        return items;
-    }
-
-    private void isColumnOccupied(List<List<ItemStack>> items, int column) {
-        int columnToCheck = Math.max(0, --column);
-        if (!items.isEmpty() && columnToCheck < items.get(0).size() && items.parallelStream().allMatch(item -> ItemUtils.isAirOrNull(item.get(columnToCheck)))) {
-            items.forEach(item -> item.remove(columnToCheck));
-            isColumnOccupied(items, columnToCheck);
-        }
-    }
-
-    /**
-     * Loads a recipe copy into the {@link CCCache} of the {@link GuiHandler}.
-     *
-     * @param recipe     The recipe to load.
-     * @param guiHandler The {@link GuiHandler} to load into.
-     * @return If the recipe was successfully loaded into cache.
-     */
-    public boolean loadRecipeIntoCache(ICustomRecipe<?, ?> recipe, GuiHandler<CCCache> guiHandler) {
-        if (guiHandler.getCustomCache().getRecipeType().equals(recipe.getRecipeType())) {
-            ICustomRecipe<?, ?> recipeCopy = recipe.clone();
-            recipeCopy.setNamespacedKey(recipe.getNamespacedKey());
-            guiHandler.getCustomCache().setCustomRecipe(recipeCopy);
-            return true;
-        }
-        return false;
+        return getMinecraftRecipes().stream().filter(Keyed.class::isInstance).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).toList();
     }
 
     public Categories getCategories() {

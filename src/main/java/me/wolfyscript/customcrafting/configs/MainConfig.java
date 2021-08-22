@@ -84,6 +84,10 @@ public class MainConfig extends YamlConfiguration {
         return getBoolean("data.auto_save.message");
     }
 
+    public boolean isPrintingStacktrace() {
+        return getBoolean("data.print_stacktrace");
+    }
+
     public Set<String> getDisabledRecipes() {
         return new HashSet<>(getStringList("recipes.disabled_recipes"));
     }

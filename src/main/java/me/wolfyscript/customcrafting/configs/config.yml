@@ -67,6 +67,7 @@ recipes:
   disabled_recipes: [ ]   # The vanilla or custom recipes that are blocked from crafting.
 
 data:
+  print_stacktrace: false # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
   bukkit_version: 0              # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up to date.
   version: 0                     # Do not change this number! It is used to update configs of recipes and items to new formats!
   auto_save:

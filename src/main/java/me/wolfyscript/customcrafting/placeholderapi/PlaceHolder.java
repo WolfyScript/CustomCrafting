@@ -1,12 +1,12 @@
 package me.wolfyscript.customcrafting.placeholderapi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
@@ -71,13 +71,15 @@ public class PlaceHolder extends PlaceholderExpansion {
                         case "vanilla":
                             return String.valueOf(customCrafting.getDataHandler().getMinecraftRecipes().size());
                         case "custom":
-                            return String.valueOf(Registry.RECIPES.size());
+                            return String.valueOf(CCRegistry.RECIPES.size());
                         case "available":
                             if (p.isOnline()) {
                                 Player player = Bukkit.getPlayer(p.getUniqueId());
-                                return String.valueOf(Registry.RECIPES.getAvailable(player).size());
+                                return String.valueOf(CCRegistry.RECIPES.getAvailable(player).size());
                             }
                             break;
+                        default:
+                            //No type
                     }
                 }
                 break;
@@ -88,7 +90,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                         recipeID.append(args[i]);
                     }
                     NamespacedKey recipeKey = NamespacedKey.of(recipeID.toString());
-                    ICustomRecipe<?, ?> recipe = Registry.RECIPES.get(recipeKey);
+                    ICustomRecipe<?> recipe = CCRegistry.RECIPES.get(recipeKey);
                     switch (args[1]) {
                         case "type":
                             return recipe.getRecipeType().toString();
@@ -114,6 +116,9 @@ public class PlaceHolder extends PlaceholderExpansion {
                         default:
                     }
                 }
+                break;
+            default:
+                //No command
         }
         return "";
     }

@@ -1,10 +1,10 @@
 package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.utils.recipe_item.RecipeItemStack;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.items.RecipeItemStack;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -25,9 +25,9 @@ import java.util.*;
 
 public class IngredientContainerButton extends Button<CCCache> {
 
-    private final HashMap<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
 
     public IngredientContainerButton(int slot) {
         super("ingredient.container_" + slot, ButtonType.DUMMY);
@@ -56,12 +56,13 @@ public class IngredientContainerButton extends Button<CCCache> {
     }
 
     public static void resetButtons(GuiHandler<CCCache> guiHandler) {
-        removeTasks(guiHandler);
         GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 54; i++) {
             Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
             if (btn != null) {
                 IngredientContainerButton button = (IngredientContainerButton) btn;
+                button.removeTask(guiHandler);
+                button.setTiming(guiHandler, 0);
                 button.removeVariants(guiHandler);
             }
         }
@@ -84,7 +85,7 @@ public class IngredientContainerButton extends Button<CCCache> {
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
-                List<ICustomRecipe<?, ?>> recipes = Registry.RECIPES.getAvailable(customItem.create(), player);
+                List<ICustomRecipe<?>> recipes = CCRegistry.RECIPES.getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
                     book.setSubFolderPage(0);
@@ -102,9 +103,11 @@ public class IngredientContainerButton extends Button<CCCache> {
         List<CustomItem> variants = getVariantsMap(guiHandler);
         inventory.setItem(slot, variants.isEmpty() ? ItemUtils.AIR : variants.get(getTiming(guiHandler)).create());
         if (variants.size() > 1) {
-            final int openedPage = guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage();
+            final int openPage = guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage();
+            final var openRecipe = guiHandler.getCustomCache().getKnowledgeBook().getCurrentRecipe().getNamespacedKey();
             Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> {
-                if (guiHandler.getCustomCache().getKnowledgeBook().getSubFolder() != 0 && openedPage == guiHandler.getCustomCache().getKnowledgeBook().getSubFolderPage()) {
+                var recipeBook = guiHandler.getCustomCache().getKnowledgeBook();
+                if (recipeBook.getSubFolder() != 0 && openPage == recipeBook.getSubFolderPage() && openRecipe.equals(recipeBook.getCurrentRecipe().getNamespacedKey())) {
                     synchronized (tasks) {
                         tasks.computeIfAbsent(guiHandler, ccCacheGuiHandler -> () -> {
                             if (player != null && slot < inventory.getSize() && !variants.isEmpty()) {

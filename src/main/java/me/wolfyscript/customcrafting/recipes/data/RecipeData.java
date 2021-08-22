@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Map;
  * <p>
  * It indexes at which place of the inventory which CustomItem is used, so it can use the CustomItem consume options, and other options a user might have saved in the item.
  * <br>
- * The indexed Ingredients are used to target specific items, which are then used inside the {@link me.wolfyscript.customcrafting.utils.recipe_item.target.MergeOption}s.
+ * The indexed Ingredients are used to target specific items, which are then used inside the {@link MergeOption}s.
  * </p>
  * <br>
  * Depending on the type of the recipe they might be:
@@ -28,15 +28,16 @@ import java.util.Map;
  *     </ul>
  *     </li>
  *     <li>{@link SmithingData}</li>
+ *     <li>{@link AnvilData}</li>
  * </ul>
  *
  * @param <R> The type of the Recipe which this data stores.
  */
-public abstract class RecipeData<R extends ICustomRecipe<?, ?>> {
+public abstract class RecipeData<R extends ICustomRecipe<?>> {
 
     protected final R recipe;
     protected final Map<Integer, IngredientData> indexedBySlot;
-    protected Result<?> result;
+    protected Result result;
 
     protected RecipeData(R recipe, Map<Integer, IngredientData> indexedBySlot) {
         this.result = recipe.getResult();
@@ -48,12 +49,16 @@ public abstract class RecipeData<R extends ICustomRecipe<?, ?>> {
         return recipe;
     }
 
-    public Result<?> getResult() {
+    public Result getResult() {
         return result;
     }
 
-    public void setResult(Result<?> result) {
+    public void setResult(Result result) {
         this.result = result;
+    }
+
+    public Map<Integer, IngredientData> getIndexedBySlot() {
+        return Map.copyOf(indexedBySlot);
     }
 
     /**

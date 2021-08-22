@@ -1,13 +1,13 @@
 package me.wolfyscript.customcrafting.listeners;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.anvil.AnvilData;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.data.AnvilData;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -48,9 +48,9 @@ public class AnvilListener implements Listener {
             event.setResult(null);
             return;
         }
-        List<CustomAnvilRecipe> recipes = Registry.RECIPES.getAvailable(Types.ANVIL, player);
+        List<CustomRecipeAnvil> recipes = CCRegistry.RECIPES.getAvailable(RecipeType.ANVIL, player);
         recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
-        for (CustomAnvilRecipe recipe : recipes) {
+        for (CustomRecipeAnvil recipe : recipes) {
             Optional<CustomItem> finalInputLeft = Optional.empty();
             Optional<CustomItem> finalInputRight = Optional.empty();
             if ((recipe.hasInputLeft() && (inputLeft == null || (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isExactMeta())).isEmpty())) || (recipe.hasInputRight() && (inputRight == null || (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isExactMeta())).isEmpty()))) {
@@ -60,7 +60,7 @@ public class AnvilListener implements Listener {
             final CustomItem result;
             AnvilData anvilData = new AnvilData(recipe, Map.of(0, new IngredientData(0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft), 1, new IngredientData(1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)));
             //Set the result depending on what is configured!
-            if (recipe.getMode().equals(CustomAnvilRecipe.Mode.RESULT)) {
+            if (recipe.getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
                 //Recipe has a plain result set that we can use.
                 result = recipe.getResult().getItem(player).orElse(new CustomItem(Material.AIR));
                 anvilData.setUsedResult(true);
@@ -107,7 +107,7 @@ public class AnvilListener implements Listener {
                         }
                     }
                 }
-                if (recipe.getMode().equals(CustomAnvilRecipe.Mode.DURABILITY)) {
+                if (recipe.getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
                     //Durability mode is set.
                     if (result.hasCustomDurability()) {
                         result.setCustomDamage(Math.max(0, result.getCustomDamage() - recipe.getDurability()));
@@ -125,9 +125,9 @@ public class AnvilListener implements Listener {
                 //Configure the Repair cost
                 if (inputMeta instanceof Repairable repairable) {
                     int itemRepairCost = repairable.getRepairCost();
-                    if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.ADD)) {
+                    if (recipe.getRepairCostMode().equals(CustomRecipeAnvil.RepairCostMode.ADD)) {
                         repairCost = repairCost + itemRepairCost;
-                    } else if (recipe.getRepairCostMode().equals(CustomAnvilRecipe.RepairCostMode.MULTIPLY)) {
+                    } else if (recipe.getRepairCostMode().equals(CustomRecipeAnvil.RepairCostMode.MULTIPLY)) {
                         repairCost = recipe.getRepairCost() * (itemRepairCost > 0 ? itemRepairCost : 1);
                     }
                 }
@@ -146,7 +146,6 @@ public class AnvilListener implements Listener {
             final ItemStack finalResult = result.getItemStack();
 
             inventory.setRepairCost(repairCost);
-
             event.setResult(repairCost > 0 ? finalResult : null);
             player.updateInventory();
             int finalRepairCost = repairCost;
@@ -186,7 +185,7 @@ public class AnvilListener implements Listener {
                         return;
                     }
                     if (anvilData.isUsedResult()) {
-                        Result<?> recipeResult = anvilData.getResult();
+                        Result recipeResult = anvilData.getResult();
                         recipeResult.executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
                         recipeResult.removeCachedItem(player);
                     }

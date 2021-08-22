@@ -13,23 +13,20 @@ public class FilterButton extends ActionButton<CCCache> {
 
     public FilterButton(String id, CustomCrafting customCrafting) {
         super("filter_" + id, new ButtonState<>("filter", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
-            if (!id.isEmpty()) {
+            if (!id.isEmpty() && event instanceof InventoryClickEvent clickEvent) {
                 var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-                if (event instanceof InventoryClickEvent) {
-                    if (((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                        //Delete Category
-                        recipeBook.getCategories().removeFilter(id);
-                        return true;
-                    }
-                    if (((InventoryClickEvent) event).isLeftClick()) {
-                        //Edit Category
-                        CategoryFilter category = recipeBook.getCategories().getFilter(id);
-                        recipeBookEditor.setCategoryID(id);
-                        recipeBookEditor.setFilter(new CategoryFilter(category));
-                        guiHandler.openWindow("filter");
-                        return true;
-                    }
+                if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                    //Delete Category
+                    recipeBook.getCategories().removeFilter(id);
+                    return true;
+                } else if (clickEvent.isLeftClick()) {
+                    //Edit Category
+                    CategoryFilter category = recipeBook.getCategories().getFilter(id);
+                    recipeBookEditor.setCategoryID(id);
+                    recipeBookEditor.setFilter(new CategoryFilter(category));
+                    guiHandler.openWindow("filter");
+                    return true;
                 }
             }
             return true;

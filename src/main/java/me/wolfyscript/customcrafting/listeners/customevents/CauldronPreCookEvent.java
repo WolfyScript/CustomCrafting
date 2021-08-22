@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.listeners.customevents;
 
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -15,9 +15,9 @@ public class CauldronPreCookEvent extends Event implements Cancellable {
     private boolean dropItems;
     private final Block cauldron;
     private final Player player;
-    private CauldronRecipe recipe;
+    private CustomRecipeCauldron recipe;
 
-    public CauldronPreCookEvent(CauldronRecipe recipe, Player player, Block cauldron) {
+    public CauldronPreCookEvent(CustomRecipeCauldron recipe, Player player, Block cauldron) {
         this.dropItems = recipe.dropItems();
         this.recipe = recipe;
         this.cookingTime = recipe.getCookingTime();
@@ -65,11 +65,11 @@ public class CauldronPreCookEvent extends Event implements Cancellable {
         this.dropItems = dropItems;
     }
 
-    public CauldronRecipe getRecipe() {
+    public CustomRecipeCauldron getRecipe() {
         return recipe;
     }
 
-    public void setRecipe(CauldronRecipe recipe) {
+    public void setRecipe(CustomRecipeCauldron recipe) {
         this.recipe = recipe;
     }
 

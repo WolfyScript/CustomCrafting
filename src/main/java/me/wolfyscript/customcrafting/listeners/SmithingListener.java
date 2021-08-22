@@ -1,19 +1,18 @@
 package me.wolfyscript.customcrafting.listeners;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.Types;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.SmithingData;
-import me.wolfyscript.customcrafting.recipes.types.smithing.CustomSmithingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
-import me.wolfyscript.customcrafting.utils.recipe_item.Result;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,12 +44,12 @@ public class SmithingListener implements Listener {
         var base = inv.getItem(0);
         var addition = inv.getItem(1);
         if (!ItemUtils.isAirOrNull(event.getResult())) {
-            if (Stream.of(inv.getStorageContents()).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes()) || Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof SmithingRecipe && customCrafting.getDataHandler().getDisabledRecipes().contains(NamespacedKey.fromBukkit(((Keyed) recipe).getKey())))) {
+            if (Stream.of(inv.getStorageContents()).map(CustomItem::getByItemStack).anyMatch(i -> i != null && i.isBlockVanillaRecipes()) || Bukkit.getRecipesFor(event.getResult()).stream().anyMatch(recipe -> recipe instanceof SmithingRecipe smithingRecipe && customCrafting.getDisableRecipesHandler().getRecipes().contains(NamespacedKey.fromBukkit(smithingRecipe.getKey())))) {
                 event.setResult(null);
             }
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
-        for (CustomSmithingRecipe recipe : Registry.RECIPES.getAvailable(Types.SMITHING, player)) {
+        for (CustomRecipeSmithing recipe : CCRegistry.RECIPES.getAvailable(RecipeType.SMITHING, player)) {
             if (recipe.checkConditions(new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
                 Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isExactMeta());
                 if (optionalBase.isPresent()) {
@@ -59,7 +58,7 @@ public class SmithingListener implements Listener {
                         //Recipe is valid
                         assert base != null;
                         assert addition != null;
-                        Result<?> result = recipe.getResult();
+                        Result result = recipe.getResult();
                         SmithingData data = new SmithingData(recipe, Map.of(
                                 0, new IngredientData(0, recipe.getBase(), optionalBase.get(), inv.getItem(0)),
                                 1, new IngredientData(1, recipe.getAddition(), optionalAddition.get(), inv.getItem(1))

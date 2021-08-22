@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.gui.item_creator;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
@@ -131,7 +132,7 @@ public class ItemCreator extends CCWindow {
         }));
         registerReferences();
         tabs.clear();
-        me.wolfyscript.customcrafting.Registry.ITEM_CREATOR_TABS.forEach(tab -> tab.register(this, api));
+        CCRegistry.ITEM_CREATOR_TABS.forEach(tab -> tab.register(this, api));
 
         Registry.META_PROVIDER.keySet().forEach(namespacedKey -> registerButton(new MetaIgnoreButton(namespacedKey)));
     }
@@ -153,7 +154,7 @@ public class ItemCreator extends CCWindow {
     }
 
     private void orderTabs() {
-        me.wolfyscript.customcrafting.Registry.ItemCreatorTabRegistry registry = me.wolfyscript.customcrafting.Registry.ITEM_CREATOR_TABS;
+        CCRegistry.ItemCreatorTabRegistry registry = CCRegistry.ITEM_CREATOR_TABS;
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabDisplayName.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLocalizedName.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLore.KEY)));
@@ -176,7 +177,7 @@ public class ItemCreator extends CCWindow {
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabEliteCraftingTable.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabRecipeBook.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabVanilla.KEY)));
-        me.wolfyscript.customcrafting.Registry.ITEM_CREATOR_TABS.values().forEach(tab -> {
+        CCRegistry.ITEM_CREATOR_TABS.values().forEach(tab -> {
             if (!tabs.contains(tab)) {
                 tabs.add(tab);
             }
@@ -186,7 +187,7 @@ public class ItemCreator extends CCWindow {
     private boolean saveItem(Items items, Player player, NamespacedKey namespacedKey) {
         if (namespacedKey != null) {
             var customItem = items.getItem();
-            if (customItem.getApiReference() instanceof WolfyUtilitiesRef && ((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey().equals(namespacedKey)) {
+            if (customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilitiesRef && wolfyUtilitiesRef.getNamespacedKey().equals(namespacedKey)) {
                 api.getChat().sendMessage(player, "&cError saving item! Cannot override original CustomItem &4" + namespacedKey + "&c! Save it under another NamespacedKey or Edit the original!");
                 return false;
             }
@@ -272,11 +273,11 @@ public class ItemCreator extends CCWindow {
     }
 
     private List<ItemCreatorTab> constructOptions(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        if (tabs.size() != me.wolfyscript.customcrafting.Registry.ITEM_CREATOR_TABS.values().size()) {
+        if (tabs.size() != CCRegistry.ITEM_CREATOR_TABS.values().size()) {
             if (tabs.isEmpty()) {
                 orderTabs();
             } else {
-                me.wolfyscript.customcrafting.Registry.ITEM_CREATOR_TABS.values().forEach(tab -> {
+                CCRegistry.ITEM_CREATOR_TABS.values().forEach(tab -> {
                     if (!tabs.contains(tab)) {
                         tabs.add(tab);
                     }

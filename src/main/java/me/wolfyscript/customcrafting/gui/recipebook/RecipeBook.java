@@ -11,8 +11,8 @@ import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
-import me.wolfyscript.customcrafting.recipes.Types;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -25,6 +25,7 @@ import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,12 @@ public class RecipeBook extends CCWindow {
     private static final String BACK = "back";
     private static final String NEXT_RECIPE = "next_recipe";
     private static final String PREVIOUS_RECIPE = "previous_recipe";
+    private final BukkitTask ingredientTask;
+    private final BukkitTask containerTask;
 
     public RecipeBook(RecipeBookCluster cluster, CustomCrafting customCrafting) {
         super(cluster, RecipeBookCluster.RECIPE_BOOK.getKey(), 54, customCrafting);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        this.ingredientTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
                 Button<CCCache> btn = cluster.getButton("ingredient.container_" + i);
                 if (btn instanceof IngredientContainerButton cBtn) {
@@ -49,7 +52,7 @@ public class RecipeBook extends CCWindow {
                 }
             }
         }, 1, 30);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
+        this.containerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 45; i++) {
                 Button<CCCache> mainContainerBtn = cluster.getButton("recipe_book.container_" + i);
                 if (mainContainerBtn instanceof RecipeBookContainerButton cBtn) {
@@ -60,7 +63,12 @@ public class RecipeBook extends CCWindow {
                     });
                 }
             }
-        }, 1, 20);
+        }, 1, 30);
+    }
+
+    public void reset() {
+        this.containerTask.cancel();
+        this.ingredientTask.cancel();
     }
 
     @Override
@@ -142,7 +150,7 @@ public class RecipeBook extends CCWindow {
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, grayBtnKey);
             }
-            List<ICustomRecipe<?, ?>> recipes = knowledgeBook.getSubFolderRecipes();
+            List<ICustomRecipe<?>> recipes = knowledgeBook.getSubFolderRecipes();
             for (int i = 1; i < 9; i++) {
                 event.setButton(i, grayBtnKey);
             }
@@ -154,9 +162,9 @@ public class RecipeBook extends CCWindow {
                 knowledgeBook.setSubFolderPage(0);
             }
             if (knowledgeBook.getSubFolderPage() < recipes.size()) {
-                ICustomRecipe<?, ?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
+                ICustomRecipe<?> customRecipe = recipes.get(knowledgeBook.getSubFolderPage());
                 customRecipe.renderMenu(this, event);
-                boolean elite = customRecipe.getRecipeType().equals(Types.ELITE_WORKBENCH);
+                boolean elite = RecipeType.Container.ELITE_CRAFTING.isInstance(customRecipe);
                 if (knowledgeBook.getSubFolderPage() > 0) {
                     event.setButton(elite ? 51 : 48, PREVIOUS_RECIPE);
                 }

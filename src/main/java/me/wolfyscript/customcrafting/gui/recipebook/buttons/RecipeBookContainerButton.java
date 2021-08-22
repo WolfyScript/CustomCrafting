@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecipeBookContainerButton extends Button<CCCache> {
 
-    private final HashMap<GuiHandler<?>, CustomItem> recipes = new HashMap<>();
-    private final HashMap<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
+    private final Map<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
+    private final Map<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
 
     public RecipeBookContainerButton(int slot) {
         super("recipe_book.container_" + slot, null);
@@ -70,7 +70,7 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         var cache = guiHandler.getCustomCache();
         var book = cache.getKnowledgeBook();
         var customItem = new CustomItem(Material.AIR);
-        List<ICustomRecipe<?, ?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
+        List<ICustomRecipe<?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
         if (!recipes.isEmpty()) {
             book.setSubFolderPage(0);
             book.addResearchItem(customItem);
@@ -104,10 +104,6 @@ public class RecipeBookContainerButton extends Button<CCCache> {
             }, 20);
 
         }
-    }
-
-    public void setRecipeItem(GuiHandler<CCCache> guiHandler, CustomItem item) {
-        recipes.put(guiHandler, item);
     }
 
     public RecipeContainer getRecipeContainer(GuiHandler<CCCache> guiHandler) {

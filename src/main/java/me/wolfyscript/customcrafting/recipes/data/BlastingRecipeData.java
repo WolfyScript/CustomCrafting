@@ -1,11 +1,10 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.types.blast_furnace.CustomBlastRecipe;
-import me.wolfyscript.customcrafting.recipes.types.workbench.IngredientData;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
 
-public class BlastingRecipeData extends CookingRecipeData<CustomBlastRecipe> {
+public class BlastingRecipeData extends CookingRecipeData<CustomRecipeBlasting> {
 
-    public BlastingRecipeData(CustomBlastRecipe recipe, IngredientData source) {
+    public BlastingRecipeData(CustomRecipeBlasting recipe, IngredientData source) {
         super(recipe, source);
     }
 

@@ -2,67 +2,64 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.recipes.Condition;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.elite_workbench.EliteCraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAlias;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
+import me.wolfyscript.utilities.util.Registry;
+import org.bukkit.Material;
+import org.bukkit.util.StringUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public class EliteWorkbenchCondition extends Condition {
+public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
+
+    private static final String PARENT_LANG = "conditions.elite_crafting_table";
+    private static final String ADD = PARENT_LANG + ".add";
+    private static final String LIST = PARENT_LANG + ".list";
+    private static final String REMOVE = PARENT_LANG + ".remove";
+
+    @JsonAlias({"elite_crafting_tables", "elite_workbenches"})
+    @JsonProperty
     private final List<NamespacedKey> eliteWorkbenches;
 
     public EliteWorkbenchCondition() {
-        super("elite_crafting_table");
-        setOption(Conditions.Option.IGNORE);
-        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
+        super(KEY);
+        setAvailableOptions(Conditions.Option.EXACT);
         this.eliteWorkbenches = new ArrayList<>();
     }
 
     @Override
-    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
-        if (option.equals(Conditions.Option.IGNORE)) {
-            return true;
-        }
-        if (recipe instanceof EliteCraftingRecipe) {
+    public boolean isApplicable(ICustomRecipe<?> recipe) {
+        return RecipeType.Container.ELITE_CRAFTING.isInstance(recipe);
+    }
+
+    @Override
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+        if (RecipeType.Container.ELITE_CRAFTING.isInstance(recipe)) {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
-                if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef) {
-                    return eliteWorkbenches.contains(((WolfyUtilitiesRef) customItem.getApiReference()).getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled();
+                if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilsRef) {
+                    return eliteWorkbenches.contains(wolfyUtilsRef.getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled();
                 }
             }
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        gen.writeArrayFieldStart("elite_crafting_tables");
-        for (NamespacedKey s : eliteWorkbenches) {
-            gen.writeString(s.toString());
-        }
-        gen.writeEndArray();
-    }
-
-    @Override
-    public void readFromJson(JsonNode node) {
-        JsonNode array = node.has("elite_crafting_tables") ? node.get("elite_crafting_tables") : node.get("elite_workbenches");
-        array.elements().forEachRemaining(element -> {
-            if (element.isValueNode()) {
-                addEliteWorkbenches(NamespacedKey.of(element.asText()));
-            }
-        });
     }
 
     public void addEliteWorkbenches(NamespacedKey eliteWorkbenches) {
@@ -71,6 +68,7 @@ public class EliteWorkbenchCondition extends Condition {
         }
     }
 
+    @JsonIgnore
     public List<NamespacedKey> getEliteWorkbenches() {
         return eliteWorkbenches;
     }
@@ -83,5 +81,83 @@ public class EliteWorkbenchCondition extends Condition {
             stringBuilder.append(eliteWorkbench.toString()).append(",");
         }
         return stringBuilder.toString();
+    }
+
+    public static class GUIComponent extends FunctionalGUIComponent<EliteWorkbenchCondition> {
+
+        public GUIComponent() {
+            super(Material.CRAFTING_TABLE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+                    (menu, api) -> {
+                        menu.registerButton(new ChatInputButton<>(ADD, Material.GREEN_CONCRETE, (guiHandler, player, s, args) -> {
+                            if (args.length > 1) {
+                                var namespacedKey = ChatUtils.getNamespacedKey(player, "", args);
+                                if (namespacedKey != null) {
+                                    var condition = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(EliteWorkbenchCondition.class);
+                                    if (condition.getEliteWorkbenches().contains(namespacedKey)) {
+                                        menu.sendMessage(player, "already_existing");
+                                        return true;
+                                    }
+                                    var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
+                                    if (customItem == null) {
+                                        menu.sendMessage(player, "error");
+                                        return true;
+                                    }
+                                    EliteWorkbenchData data = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
+                                    if (data != null && !data.isEnabled()) {
+                                        menu.sendMessage(player, "not_elite_workbench");
+                                        return true;
+                                    }
+                                    condition.addEliteWorkbenches(namespacedKey);
+                                    return false;
+                                }
+                            }
+                            menu.sendMessage(player, "no_name");
+                            return true;
+                        }, (guiHandler, player, args) -> {
+                            Set<NamespacedKey> entries = Registry.CUSTOM_ITEMS.entrySet().stream().filter(entry -> {
+                                EliteWorkbenchData data = (EliteWorkbenchData) entry.getValue().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
+                                return data != null && data.isEnabled();
+                            }).map(entry -> NamespacedKeyUtils.toInternal(entry.getKey())).collect(Collectors.toSet());
+                            List<String> results = new ArrayList<>();
+                            if (args.length > 0) {
+                                if (args.length == 1) {
+                                    StringUtil.copyPartialMatches(args[0], entries.stream().map(NamespacedKey::getNamespace).distinct().toList(), results);
+                                } else if (args.length == 2) {
+                                    StringUtil.copyPartialMatches(args[1], entries.stream().filter(key -> key.getNamespace().equals(args[0])).map(NamespacedKey::getKey).distinct().toList(), results);
+                                }
+                                return results;
+                            }
+                            return results;
+                        }));
+                        menu.registerButton(new DummyButton<>(LIST, Material.BOOK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, slot, b) -> {
+                            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getEliteCraftingTableCondition();
+                            for (int i = 0; i < 4; i++) {
+                                if (i < condition.getEliteWorkbenches().size()) {
+                                    hashMap.put("%var" + i + "%", condition.getEliteWorkbenches().get(i));
+                                } else {
+                                    hashMap.put("%var" + i + "%", "...");
+                                }
+                            }
+                            return itemStack;
+                        }));
+                        menu.registerButton(new ActionButton<>(REMOVE, Material.RED_CONCRETE, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+                            var condition = cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(EliteWorkbenchCondition.class);
+                            if (!condition.getEliteWorkbenches().isEmpty()) {
+                                condition.getEliteWorkbenches().remove(condition.getEliteWorkbenches().size() - 1);
+                            }
+                            return true;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+                        update.setButton(29, ADD);
+                        update.setButton(31, LIST);
+                        update.setButton(33, REMOVE);
+                    });
+        }
+
+        @Override
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.ELITE_CRAFTING.has(type);
+        }
     }
 }

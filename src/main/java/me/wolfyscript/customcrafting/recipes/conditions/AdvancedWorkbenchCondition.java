@@ -1,25 +1,26 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.Condition;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 
-public class AdvancedWorkbenchCondition extends Condition {
+import java.util.List;
+
+public class AdvancedWorkbenchCondition extends Condition<AdvancedWorkbenchCondition> {
+
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_workbench");
 
     public AdvancedWorkbenchCondition() {
-        super("advanced_workbench");
-        setOption(Conditions.Option.IGNORE);
-        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
+        super(KEY);
+        setAvailableOptions(Conditions.Option.EXACT);
     }
 
     @Override
-    public boolean check(ICustomRecipe<?,?> recipe, Conditions.Data data) {
-        if (option.equals(Conditions.Option.IGNORE)) {
-            return true;
-        }
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         if (recipe instanceof CraftingRecipe) {
             if (data.getBlock() != null) {
                 var customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
@@ -28,5 +29,22 @@ public class AdvancedWorkbenchCondition extends Condition {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean isApplicable(ICustomRecipe<?> recipe) {
+        return RecipeType.Container.CRAFTING.isInstance(recipe);
+    }
+
+    public static class GUIComponent extends IconGUIComponent<AdvancedWorkbenchCondition> {
+
+        public GUIComponent() {
+            super(Material.CRAFTING_TABLE, getLangKey("advanced_crafting_table", "name"), List.of(getLangKey("advanced_crafting_table", "description")));
+        }
+
+        @Override
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.CRAFTING.has(type);
+        }
     }
 }

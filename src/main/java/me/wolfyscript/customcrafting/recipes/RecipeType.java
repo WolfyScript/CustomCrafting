@@ -1,100 +1,294 @@
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.recipes.types.CraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
+import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
+import java.util.*;
 
-public class RecipeType<C extends ICustomRecipe<?, ?>> {
+public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> {
+
+    //Crafting recipes
+    RecipeType<CraftingRecipeShaped> CRAFTING_SHAPED = new RecipeTypeImpl<>(Type.CRAFTING_SHAPED, CraftingRecipeShaped.class);
+    RecipeType<CraftingRecipeShapeless> CRAFTING_SHAPELESS = new RecipeTypeImpl<>(Type.CRAFTING_SHAPELESS, CraftingRecipeShapeless.class);
+    RecipeType<CraftingRecipeEliteShaped> ELITE_CRAFTING_SHAPED = new RecipeTypeImpl<>(Type.ELITE_CRAFTING_SHAPED, CraftingRecipeEliteShaped.class);
+    RecipeType<CraftingRecipeEliteShapeless> ELITE_CRAFTING_SHAPELESS = new RecipeTypeImpl<>(Type.ELITE_CRAFTING_SHAPELESS, CraftingRecipeEliteShapeless.class);
+    //Cooking recipes
+    RecipeType<CustomRecipeFurnace> FURNACE = new RecipeTypeImpl<>(Type.FURNACE, CustomRecipeFurnace.class);
+    RecipeType<CustomRecipeBlasting> BLAST_FURNACE = new RecipeTypeImpl<>(Type.BLAST_FURNACE, CustomRecipeBlasting.class);
+    RecipeType<CustomRecipeSmoking> SMOKER = new RecipeTypeImpl<>(Type.SMOKER, CustomRecipeSmoking.class);
+    RecipeType<CustomRecipeCampfire> CAMPFIRE = new RecipeTypeImpl<>(Type.CAMPFIRE, CustomRecipeCampfire.class);
+    //Misc recipes
+    RecipeType<CustomRecipeAnvil> ANVIL = new RecipeTypeImpl<>(Type.ANVIL, CustomRecipeAnvil.class);
+    RecipeType<CustomRecipeStonecutter> STONECUTTER = new RecipeTypeImpl<>(Type.STONECUTTER, CustomRecipeStonecutter.class);
+    RecipeType<CustomRecipeCauldron> CAULDRON = new RecipeTypeImpl<>(Type.CAULDRON, CustomRecipeCauldron.class);
+    RecipeType<CustomRecipeGrindstone> GRINDSTONE = new RecipeTypeImpl<>(Type.GRINDSTONE, CustomRecipeGrindstone.class);
+    RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeTypeImpl<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
+    RecipeType<CustomRecipeSmithing> SMITHING = new RecipeTypeImpl<>(Type.SMITHING, CustomRecipeSmithing.class);
+
+    static Set<RecipeType<? extends ICustomRecipe<?>>> values() {
+        return Collections.unmodifiableSet(RecipeTypeImpl.values);
+    }
+
+    static RecipeType<?> valueOf(String id) {
+        return RecipeTypeImpl.values.stream().filter(rType -> rType.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
+    }
+
+    static RecipeType<?> valueOf(Type type) {
+        return RecipeTypeImpl.values.stream().filter(rType -> rType.getType().equals(type)).findFirst().orElse(null);
+    }
+
+    Type getType();
+
+    String getCreatorID();
+
+    Container<? super C> getParent();
+
+    Class<C> getClazz();
+
+    boolean isInstance(ICustomRecipe<?> recipe);
 
     /**
-     * This is the RecipeType object.
+     * Casts the recipe to the type of this RecipeType.
+     * Make sure that the recipe is actually a type of this type using {@link #isInstance(ICustomRecipe)}.
+     * If the recipe is not a type of this recipe type this method will throw a {@link ClassCastException}.
+     *
+     * @param recipe The recipe to cast.
+     * @return The recipe cast to the type of this RecipeType.
      */
-    private final String id;
-    private final String creatorID;
-    private final Class<C> clazz;
-    private final Types.Type type;
+    C cast(ICustomRecipe<?> recipe);
 
-    public RecipeType(Types.Type type, Class<C> clazz) {
-        this(type, clazz, type.toString().toLowerCase(Locale.ROOT));
-    }
+    String name();
 
-    public RecipeType(Types.Type type, Class<C> clazz, String creatorID) {
-        this.type = type;
-        this.clazz = clazz;
-        this.id = type.toString().toLowerCase(Locale.ROOT);
-        this.creatorID = creatorID;
-        Types.values.add(this);
-    }
+    interface Container<C extends ICustomRecipe<?>> {
 
-    public String getId() {
-        return id;
-    }
+        CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("workbench", "crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
+        CraftingContainer<EliteRecipeSettings> ELITE_CRAFTING = new CraftingContainer<>("elite_workbench", "elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
+        Container<CustomRecipeCooking<?, ?>> COOKING = new ContainerImpl<>((Class<CustomRecipeCooking<?, ?>>) (Object) CustomRecipeCooking.class, "cooking", List.of(FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE));
 
-    public String getCreatorID() {
-        return creatorID;
-    }
+        static Collection<Container<? extends ICustomRecipe<?>>> values() {
+            return ContainerImpl.values.values();
+        }
 
-    public Class<C> getClazz() {
-        return clazz;
-    }
+        static Container<?> valueOf(String id) {
+            return ContainerImpl.values.get(id);
+        }
 
-    public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        return clazz.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
-    }
+        List<RecipeType<? extends C>> getTypes();
 
-    public Types.Type getType() {
-        return type;
-    }
+        String getId();
 
-    public String name() {
-        return getType().toString();
-    }
+        String getCreatorID();
 
-    @Override
-    public String toString() {
-        return "RecipeType{" +
-                "id='" + id + '\'' +
-                ", creatorID='" + creatorID + '\'' +
-                ", clazz=" + clazz +
-                ", type=" + type +
-                '}';
-    }
+        Class<C> getClazz();
 
-    public static final class CookingRecipeType<C extends CustomCookingRecipe<?, ?>> extends RecipeType<C> {
+        /**
+         * @param recipe The recipe to check.
+         * @return if the recipe is an instance of the included types.
+         */
+        boolean isInstance(ICustomRecipe<?> recipe);
 
-        public CookingRecipeType(Types.Type type, Class<C> clazz) {
-            super(type, clazz, "cooking");
+        /**
+         * @param type The type to check for.
+         * @return True if the type is included in the container.
+         */
+        boolean has(RecipeType<?> type);
+
+        /**
+         * Casts the recipe to the type of this Container.
+         * Make sure that the recipe is actually a type of this type using {@link #isInstance(ICustomRecipe)}.
+         * If the recipe is not a type of this container this method will throw a {@link ClassCastException}.
+         *
+         * @param recipe The recipe to cast.
+         * @return The recipe cast to the type of this RecipeType.
+         */
+        C cast(ICustomRecipe<?> recipe);
+
+        final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> implements RecipeLoader<CraftingRecipe<?, S>> {
+
+            private CraftingContainer(String folderID, String creatorID, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
+                super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, folderID, creatorID, List.of(shaped, shapeless));
+            }
+
+            @Override
+            public CraftingRecipe<?, S> getInstance(NamespacedKey namespacedKey, JsonNode node) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+                return !node.path("shapeless").asBoolean() ? types.get(0).getInstance(namespacedKey, node) : types.get(1).getInstance(namespacedKey, node);
+            }
+        }
+
+        class ContainerImpl<C extends ICustomRecipe<?>> implements Container<C> {
+
+            static final Map<String, Container<?>> values = new HashMap<>();
+
+            protected final List<RecipeType<? extends C>> types;
+            private final String id;
+            private final String creatorID;
+            private final Class<C> clazz;
+
+            private ContainerImpl(Class<C> clazz, String id, List<RecipeType<? extends C>> types) {
+                this(clazz, id, id, types);
+            }
+
+            private ContainerImpl(Class<C> clazz, String id, String creatorID, List<RecipeType<? extends C>> types) {
+                this.types = types;
+                for (RecipeType<? extends C> type : this.types) {
+                    if (type instanceof RecipeTypeImpl<?> recipeTypeImpl) {
+                        ((RecipeTypeImpl<C>) recipeTypeImpl).setParent(this);
+                    }
+                }
+                this.clazz = clazz;
+                this.id = id;
+                this.creatorID = creatorID;
+                values.putIfAbsent(id, this);
+            }
+
+            @Override
+            public List<RecipeType<? extends C>> getTypes() {
+                return types;
+            }
+
+            @Override
+            public String getId() {
+                return id;
+            }
+
+            @Override
+            public String getCreatorID() {
+                return creatorID;
+            }
+
+            @Override
+            public Class<C> getClazz() {
+                return clazz;
+            }
+
+            @Override
+            public boolean isInstance(ICustomRecipe<?> recipe) {
+                return types.get(0).isInstance(recipe) || types.get(1).isInstance(recipe);
+            }
+
+            @Override
+            public boolean has(RecipeType<?> type) {
+                return types.contains(type);
+            }
+
+            @Override
+            public C cast(ICustomRecipe<?> recipe) {
+                return clazz.cast(recipe);
+            }
+
         }
     }
 
-    public static final class CraftingRecipeType<C extends CraftingRecipe<?>, SHAPELESS extends C, SHAPED extends C> extends RecipeType<C> {
+    enum Type {
+        CRAFTING_SHAPED,
+        CRAFTING_SHAPELESS,
+        ELITE_CRAFTING_SHAPED,
+        ELITE_CRAFTING_SHAPELESS,
+        ANVIL,
+        FURNACE,
+        BLAST_FURNACE,
+        SMOKER,
+        CAMPFIRE,
+        STONECUTTER,
+        CAULDRON,
+        GRINDSTONE,
+        BREWING_STAND,
+        SMITHING
+    }
 
-        private final Class<SHAPELESS> shapelessClass;
-        private final Class<SHAPED> shapedClass;
+    class RecipeTypeImpl<C extends ICustomRecipe<?>> implements RecipeType<C> {
 
-        public CraftingRecipeType(Types.Type type, Class<C> clazz, Class<SHAPELESS> shapelessClass, Class<SHAPED> shapedClass) {
-            super(type, clazz);
-            this.shapelessClass = shapelessClass;
-            this.shapedClass = shapedClass;
+        static Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
+
+        private final String id;
+        private final Type type;
+        private final String creatorID;
+        private final Class<C> clazz;
+        private Container<? super C> parent;
+
+        private RecipeTypeImpl(Type type, Class<C> clazz) {
+            this(type, clazz, type.toString().toLowerCase(Locale.ROOT));
+        }
+
+        private RecipeTypeImpl(Type type, Class<C> clazz, String creatorID) {
+            this.type = type;
+            this.clazz = clazz;
+            this.id = type.toString().toLowerCase(Locale.ROOT);
+            this.creatorID = creatorID;
+            this.parent = null;
+            values.add(this);
+        }
+
+        public static RecipeType<?> valueOf(String id) {
+            return values.stream().filter(rType -> rType.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
+        }
+
+        public static RecipeType<?> valueOf(Type type) {
+            return values.stream().filter(rType -> rType.getType().equals(type)).findFirst().orElse(null);
+        }
+
+        @Override
+        public Type getType() {
+            return type;
+        }
+
+        @Override
+        public String getId() {
+            return id;
+        }
+
+        @Override
+        public String getCreatorID() {
+            return parent == null ? creatorID : parent.getCreatorID();
+        }
+
+        @Override
+        public Class<C> getClazz() {
+            return clazz;
+        }
+
+        @Override
+        public Container<? super C> getParent() {
+            return parent;
+        }
+
+        void setParent(Container<? super C> parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public boolean isInstance(ICustomRecipe<?> recipe) {
+            return clazz.isInstance(recipe);
+        }
+
+        @Override
+        public C cast(ICustomRecipe<?> recipe) {
+            return clazz.cast(recipe);
         }
 
         @Override
         public C getInstance(NamespacedKey namespacedKey, JsonNode node) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-            Class<? extends C> recipeClass = node.path("shapeless").asBoolean() ? shapelessClass : shapedClass;
-            return recipeClass.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
+            return clazz.getDeclaredConstructor(NamespacedKey.class, JsonNode.class).newInstance(namespacedKey, node);
+        }
+
+        @Override
+        public String name() {
+            return getType().toString();
         }
 
         @Override
         public String toString() {
-            return "CraftingRecipeType{" +
-                    "shapelessClass=" + shapelessClass +
-                    ", shapedClass=" + shapedClass +
-                    "} " + super.toString();
+            return "RecipeType{" +
+                    "id='" + id + '\'' +
+                    ", creatorID='" + creatorID + '\'' +
+                    ", clazz=" + clazz +
+                    ", type=" + type +
+                    '}';
         }
+
     }
 }

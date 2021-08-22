@@ -1,30 +1,40 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.recipes.Condition;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.customcrafting.recipes.ICraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
-public class CraftDelayCondition extends Condition {
+public class CraftDelayCondition extends Condition<CraftDelayCondition> {
 
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "craft_delay");
+
+    @JsonIgnore
     private final HashMap<UUID, Long> playerCraftTimeMap = new HashMap<>();
-    long delay = 0;
+
+    private long delay = 0;
 
     public CraftDelayCondition() {
-        super("craft_delay");
-        setOption(Conditions.Option.IGNORE);
-        setAvailableOptions(Conditions.Option.IGNORE, Conditions.Option.EXACT);
+        super(KEY);
+        setAvailableOptions(Conditions.Option.EXACT);
     }
 
     @Override
-    public boolean check(ICustomRecipe<?, ?> recipe, Conditions.Data data) {
+    public boolean isApplicable(ICustomRecipe<?> recipe) {
+        return recipe instanceof ICraftingRecipe;
+    }
+
+    @Override
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
         Player player = data.getPlayer();
         if (player != null) {
             long timeSince = System.currentTimeMillis() - playerCraftTimeMap.getOrDefault(player.getUniqueId(), 0L);
@@ -38,23 +48,10 @@ public class CraftDelayCondition extends Condition {
     }
 
     private boolean checkDelay(long timeSinceLastCraft) {
-        return switch (option) {
-            case IGNORE -> true;
-            case EXACT -> timeSinceLastCraft >= delay;
-            default -> false;
-        };
+        return timeSinceLastCraft >= delay;
     }
 
-    @Override
-    public void readFromJson(JsonNode node) {
-        this.delay = node.path("delay").asLong();
-    }
-
-    @Override
-    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        gen.writeNumberField("delay", delay);
-    }
-
+    @JsonIgnore
     public void setPlayerCraftTime(Player player) {
         playerCraftTimeMap.put(player.getUniqueId(), System.currentTimeMillis());
     }
@@ -66,4 +63,35 @@ public class CraftDelayCondition extends Condition {
     public void setDelay(long delay) {
         this.delay = delay;
     }
+
+    public static class GUIComponent extends FunctionalGUIComponent<CraftDelayCondition> {
+
+        public GUIComponent() {
+            super(Material.CLOCK, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+                    (menu, api) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.craft_delay.set", Material.CLOCK, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(CraftDelayCondition.class).getDelay());
+                            return itemStack;
+                        }, (guiHandler, player, s, strings) -> {
+                            var conditions = guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions();
+                            try {
+                                long value = Long.parseLong(s);
+                                conditions.getByType(CraftDelayCondition.class).setDelay(value);
+                            } catch (NumberFormatException ex) {
+                                api.getChat().sendKey(player, "recipe_creator", "valid_number");
+                            }
+                            return false;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+                        update.setButton(31, "conditions.craft_delay.set");
+                    });
+        }
+
+        @Override
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type);
+        }
+    }
+
 }

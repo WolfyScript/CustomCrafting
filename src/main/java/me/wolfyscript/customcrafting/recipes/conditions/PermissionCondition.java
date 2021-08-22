@@ -1,24 +1,30 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.Condition;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import org.jetbrains.annotations.NotNull;
+import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
+import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
+import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Material;
 
-import java.io.IOException;
+import java.util.List;
 
-public class PermissionCondition extends Condition {
+public class PermissionCondition extends Condition<PermissionCondition> {
+
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "permission");
 
     private String permission = "customcrafting.craft.%namespace%.%recipe_name%";
 
     public PermissionCondition() {
-        super("permission");
-        setOption(Conditions.Option.IGNORE);
-        setAvailableOptions(Conditions.Option.EXACT, Conditions.Option.IGNORE);
+        super(KEY);
+        setAvailableOptions(Conditions.Option.EXACT);
+    }
+
+    @Override
+    public boolean isApplicable(ICustomRecipe<?> recipe) {
+        return ExperienceCondition.valid(recipe);
     }
 
     public void setPermission(String permission) {
@@ -30,23 +36,35 @@ public class PermissionCondition extends Condition {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?,?> recipe, Conditions.Data data) {
-        if (recipe instanceof CustomCookingRecipe && data.getPlayer() == null) {
+    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+        if (recipe instanceof CustomRecipeCooking && data.getPlayer() == null) {
             return true;
         }
-        if (option.equals(Conditions.Option.IGNORE)) return true;
         if (data.getPlayer() == null) return false;
         return CustomCrafting.inst().getApi().getPermissions().hasPermission(data.getPlayer(), permission.replace("%namespace%", recipe.getNamespacedKey().getNamespace()).replace("%recipe_name%", recipe.getNamespacedKey().getKey()));
     }
 
-    @Override
-    public void writeJson(@NotNull JsonGenerator gen) throws IOException {
-        super.writeJson(gen);
-        gen.writeStringField("permission", permission);
-    }
+    public static class GUIComponent extends FunctionalGUIComponent<PermissionCondition> {
 
-    @Override
-    public void readFromJson(JsonNode node) {
-        this.permission = node.get("permission").asText();
+        public GUIComponent() {
+            super(Material.REDSTONE, getLangKey(KEY.getKey(), "name"), List.of(getLangKey(KEY.getKey(), "description")),
+                    (menu, wolfyUtilities) -> {
+                        menu.registerButton(new ChatInputButton<>("conditions.permission.set", Material.REDSTONE, (hashMap, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
+                            hashMap.put("%VALUE%", cache.getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).getPermission());
+                            return itemStack;
+                        }, (guiHandler, player, s, strings) -> {
+                            guiHandler.getCustomCache().getRecipeCreatorCache().getRecipeCache().getConditions().getByType(PermissionCondition.class).setPermission(s.trim());
+                            return false;
+                        }));
+                    },
+                    (update, cache, condition, recipe) -> {
+                        update.setButton(31, "conditions.permission.set");
+                    });
+        }
+
+        @Override
+        public boolean shouldRender(RecipeType<?> type) {
+            return RecipeType.Container.CRAFTING.has(type) || RecipeType.Container.ELITE_CRAFTING.has(type) || type == RecipeType.BREWING_STAND || type == RecipeType.GRINDSTONE;
+        }
     }
 }

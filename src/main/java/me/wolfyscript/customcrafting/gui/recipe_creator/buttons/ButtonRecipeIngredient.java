@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.gui.recipe_creator.buttons;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.utils.recipe_item.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
@@ -15,17 +15,17 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
 
     public ButtonRecipeIngredient(int recipeSlot) {
         super("recipe.ingredient_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
-            var ingredient = cache.getRecipe().getIngredient(recipeSlot);
-            if (event instanceof InventoryClickEvent && ((InventoryClickEvent) event).isRightClick() && ((InventoryClickEvent) event).isShiftClick()) {
-                cache.getIngredientData().setSlot(recipeSlot);
-                cache.getIngredientData().setIngredient(ingredient != null ? ingredient : new Ingredient());
+            var ingredient = cache.getRecipeCreatorCache().getRecipeCache().getIngredient(recipeSlot);
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                cache.getRecipeCreatorCache().getIngredientCache().setSlot(recipeSlot);
+                cache.getRecipeCreatorCache().getIngredientCache().setIngredient(ingredient != null ? ingredient : new Ingredient());
                 guiHandler.openWindow("ingredient");
                 return true;
             }
             return ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty();
         }, (cache, guiHandler, player, inventory, itemStack, i, event) -> {
-            var ingredient = cache.getRecipe().getIngredient(recipeSlot);
-            if ((ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty()) || event instanceof InventoryClickEvent && ((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(((InventoryClickEvent) event).getClickedInventory())) {
+            var ingredient = cache.getRecipeCreatorCache().getRecipeCache().getIngredient(recipeSlot);
+            if ((ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty()) || event instanceof InventoryClickEvent clickEvent && clickEvent.getClick().equals(ClickType.SHIFT_RIGHT) && event.getView().getTopInventory().equals(clickEvent.getClickedInventory())) {
                 return;
             }
             if (ingredient == null) {
@@ -33,9 +33,9 @@ public class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             }
             ingredient.put(0, !ItemUtils.isAirOrNull(itemStack) ? CustomItem.getReferenceByItemStack(itemStack) : null);
             ingredient.buildChoices();
-            cache.getRecipe().setIngredient(recipeSlot, ingredient);
+            cache.getRecipeCreatorCache().getRecipeCache().setIngredient(recipeSlot, ingredient);
         }, null, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var ingredient = cache.getRecipe().getIngredient(recipeSlot);
+            var ingredient = cache.getRecipeCreatorCache().getRecipeCache().getIngredient(recipeSlot);
             return ingredient != null ? ingredient.getItemStack() : new ItemStack(Material.AIR);
         }));
     }

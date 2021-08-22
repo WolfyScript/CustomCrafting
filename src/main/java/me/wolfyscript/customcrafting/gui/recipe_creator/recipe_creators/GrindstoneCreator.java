@@ -28,7 +28,7 @@ public class GrindstoneCreator extends RecipeCreator {
         registerButton(new DummyButton<>("grindstone", Material.GRINDSTONE));
 
         registerButton(new ChatInputButton<>("xp", Material.EXPERIENCE_BOTTLE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%xp%", guiHandler.getCustomCache().getGrindstoneRecipe().getXp());
+            hashMap.put("%xp%", cache.getRecipeCreatorCache().getGrindingCache().getXp());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
             int xp;
@@ -38,7 +38,7 @@ public class GrindstoneCreator extends RecipeCreator {
                 api.getChat().sendKey(player, "recipe_creator", "valid_number");
                 return true;
             }
-            guiHandler.getCustomCache().getGrindstoneRecipe().setXp(xp);
+            guiHandler.getCustomCache().getRecipeCreatorCache().getGrindingCache().setXp(xp);
             return false;
         }));
     }
@@ -48,7 +48,7 @@ public class GrindstoneCreator extends RecipeCreator {
         super.onUpdateAsync(update);
         update.setButton(0, BACK);
         CCCache cache = update.getGuiHandler().getCustomCache();
-        var grindstoneRecipe = cache.getGrindstoneRecipe();
+        var grindstoneRecipe = cache.getRecipeCreatorCache().getGrindingCache();
 
         update.setButton(1, RecipeCreatorCluster.HIDDEN);
         update.setButton(3, RecipeCreatorCluster.CONDITIONS);
@@ -63,7 +63,7 @@ public class GrindstoneCreator extends RecipeCreator {
         update.setButton(25, "recipe.result");
 
         update.setButton(42, RecipeCreatorCluster.GROUP);
-        if (grindstoneRecipe.hasNamespacedKey()) {
+        if (grindstoneRecipe.isSaved()) {
             update.setButton(43, RecipeCreatorCluster.SAVE);
         }
         update.setButton(44, RecipeCreatorCluster.SAVE_AS);
@@ -72,7 +72,7 @@ public class GrindstoneCreator extends RecipeCreator {
 
     @Override
     public boolean validToSave(CCCache cache) {
-        var recipe = cache.getGrindstoneRecipe();
+        var recipe = cache.getRecipeCreatorCache().getGrindingCache();
         if (!recipe.getInputTop().isEmpty() || !recipe.getInputBottom().isEmpty()) {
             return !recipe.getResult().isEmpty();
         }

@@ -1,23 +1,18 @@
 package me.wolfyscript.customcrafting.gui;
 
+import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.Registry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook.MainMenu;
 import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
-import me.wolfyscript.customcrafting.recipes.Conditions;
-import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WeatherCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.WorldTimeCondition;
-import me.wolfyscript.customcrafting.recipes.types.CustomCookingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.ICustomRecipe;
-import me.wolfyscript.customcrafting.recipes.types.anvil.CustomAnvilRecipe;
-import me.wolfyscript.customcrafting.recipes.types.brewing.BrewingRecipe;
-import me.wolfyscript.customcrafting.recipes.types.cauldron.CauldronRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -85,7 +80,7 @@ public class RecipeBookCluster extends CCCluster {
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
                         if (book.getSubFolderRecipes().isEmpty()) {
-                            book.setSubFolderRecipes(item, Registry.RECIPES.get(item));
+                            book.setSubFolderRecipes(item, CCRegistry.RECIPES.get(item));
                         }
                         if (!book.getSubFolderRecipes().isEmpty()) {
                             book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
@@ -116,7 +111,7 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>("workbench.shapeless_off", Material.CRAFTING_TABLE));
 
         registerButton(new DummyButton<>("anvil.durability", Material.ANVIL, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%var%", ((CustomAnvilRecipe) guiHandler.getCustomCache().getKnowledgeBook().getCurrentRecipe()).getDurability());
+            hashMap.put("%var%", ((CustomRecipeAnvil) guiHandler.getCustomCache().getKnowledgeBook().getCurrentRecipe()).getDurability());
             return itemStack;
         }));
         registerButton(new DummyButton<>("anvil.result", Material.ANVIL));
@@ -125,7 +120,7 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>("cooking.icon", Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var knowledgeBook = cache.getKnowledgeBook();
             RecipeType<?> recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
-            CustomCookingRecipe<?, ?> cookingRecipe = ((CustomCookingRecipe<?, ?>) knowledgeBook.getCurrentRecipe());
+            CustomRecipeCooking<?, ?> cookingRecipe = ((CustomRecipeCooking<?, ?>) knowledgeBook.getCurrentRecipe());
             itemStack.setType(Material.matchMaterial(recipeType.name()));
             hashMap.put("%type%", "&7" + StringUtils.capitalize(recipeType.getId().replace("_", " ")));
             hashMap.put("%time%", cookingRecipe.getCookingTime());
@@ -143,24 +138,24 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>("cauldron.water.disabled", Material.CAULDRON));
         registerButton(new DummyButton<>("cauldron.water.enabled", new ButtonState<>("cauldron.water.enabled", PlayerHeadUtils.getViaURL("848a19cdf42d748b41b72fb4376ae3f63c1165d2dce0651733df263446c77ba6"), (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var knowledgeBook = cache.getKnowledgeBook();
-            hashMap.put("%lvl%", ((CauldronRecipe) knowledgeBook.getCurrentRecipe()).getWaterLevel());
+            hashMap.put("%lvl%", ((CustomRecipeCauldron) knowledgeBook.getCurrentRecipe()).getWaterLevel());
             return itemStack;
         })));
         registerButton(new DummyButton<>("cauldron.fire.disabled", Material.FLINT));
         registerButton(new DummyButton<>("cauldron.fire.enabled", Material.FLINT_AND_STEEL));
         registerButton(new DummyButton<>("brewing.icon", Material.BREWING_STAND, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            BrewingRecipe cookingRecipe = (BrewingRecipe) (guiHandler.getCustomCache().getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (guiHandler.getCustomCache().getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%time%", cookingRecipe.getBrewTime());
             hashMap.put("%cost%", cookingRecipe.getFuelCost());
             return itemStack;
         }));
         registerButton(new DummyButton<>("brewing.potion_duration", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            BrewingRecipe cookingRecipe = (BrewingRecipe) (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", cookingRecipe.getDurationChange());
             return itemStack;
         }));
         registerButton(new DummyButton<>("brewing.potion_amplifier", Material.IRON_SWORD, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            BrewingRecipe cookingRecipe = (BrewingRecipe) (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipeBrewing cookingRecipe = (CustomRecipeBrewing) (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", cookingRecipe.getAmplifierChange());
             return itemStack;
         }));
@@ -168,7 +163,7 @@ public class RecipeBookCluster extends CCCluster {
 
     private void registerConditionDisplays() {
         registerButton(new DummyButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?, ?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            ICustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WorldTimeCondition.class).getTime());
             if (recipe.getConditions().getByType(WorldTimeCondition.class).getOption().equals(Conditions.Option.EXACT)) {
                 hashMap.put("%mode%", "");
@@ -179,13 +174,13 @@ public class RecipeBookCluster extends CCCluster {
         }));
 
         registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?,?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            ICustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(wolfyUtilities));
             return itemStack;
         }));
 
         registerButton(new ActionButton<>("conditions.permission", Material.REDSTONE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?,?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            ICustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(PermissionCondition.class).getPermission());
             return itemStack;
         }));

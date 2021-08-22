@@ -31,7 +31,7 @@ public class ResultMenu extends CCWindow {
             return true;
         })));
         registerButton(new ActionButton<>("tags", new ButtonState<>(RecipeCreatorCluster.TAGS, Material.NAME_TAG, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            cache.getTagSettingsCache().setRecipeItemStack(cache.getRecipe().getResult());
+            cache.getRecipeCreatorCache().getTagSettingsCache().setRecipeItemStack(cache.getRecipeCreatorCache().getRecipeCache().getResult());
             guiHandler.openWindow("tag_settings");
             return true;
         })));

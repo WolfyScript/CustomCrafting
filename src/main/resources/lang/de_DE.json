@@ -1756,7 +1756,7 @@
             ]
           }
         },
-        "workbench": {
+        "crafting": {
           "shapeless": {
             "enabled": {
               "name": "&3Formloses Rezept",
@@ -1953,7 +1953,7 @@
           "already_existing": "&cDu hast dieses Item schon hinzugefügt!"
         }
       },
-      "workbench": {
+      "crafting": {
         "gui_name": "&4&lCreator &7[&8Werkbank&7]",
         "gui_help": [
           "&7Tipp:",
@@ -1979,7 +1979,7 @@
           }
         }
       },
-      "elite_workbench": {
+      "elite_crafting": {
         "gui_name": "&4&lCreator &7[&8Elite Werkbank&7]",
         "gui_help": [
           "&7Tipp:",
