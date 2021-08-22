@@ -65,8 +65,8 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
 
     interface Container<C extends ICustomRecipe<?>> {
 
-        CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
-        CraftingContainer<EliteRecipeSettings> ELITE_CRAFTING = new CraftingContainer<>("elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
+        CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("workbench", "crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
+        CraftingContainer<EliteRecipeSettings> ELITE_CRAFTING = new CraftingContainer<>("elite_workbench", "elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
         Container<CustomRecipeCooking<?, ?>> COOKING = new ContainerImpl<>((Class<CustomRecipeCooking<?, ?>>) (Object) CustomRecipeCooking.class, "cooking", List.of(FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE));
 
         static Collection<Container<? extends ICustomRecipe<?>>> values() {
@@ -109,8 +109,8 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
 
         final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> implements RecipeLoader<CraftingRecipe<?, S>> {
 
-            private CraftingContainer(String creatorID, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
-                super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, creatorID, List.of(shaped, shapeless));
+            private CraftingContainer(String folderID, String creatorID, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
+                super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, folderID, creatorID, List.of(shaped, shapeless));
             }
 
             @Override
@@ -129,6 +129,10 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
             private final Class<C> clazz;
 
             private ContainerImpl(Class<C> clazz, String id, List<RecipeType<? extends C>> types) {
+                this(clazz, id, id, types);
+            }
+
+            private ContainerImpl(Class<C> clazz, String id, String creatorID, List<RecipeType<? extends C>> types) {
                 this.types = types;
                 for (RecipeType<? extends C> type : this.types) {
                     if (type instanceof RecipeTypeImpl<?> recipeTypeImpl) {
@@ -137,7 +141,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
                 }
                 this.clazz = clazz;
                 this.id = id;
-                this.creatorID = id;
+                this.creatorID = creatorID;
                 values.putIfAbsent(id, this);
             }
 

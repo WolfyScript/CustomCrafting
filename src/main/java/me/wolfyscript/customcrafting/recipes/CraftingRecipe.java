@@ -98,7 +98,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
             ((IngredientContainerButton) cluster.getButton("ingredient.container_" + maxIngredients)).setVariants(guiHandler, this.getResult());
-            for (int i = 0; i < maxIngredients; i++) {
+            for (int i = 0; i < maxIngredients && i < ingredients.size(); i++) {
                 var ingredient = ingredients.get(i);
                 if (ingredient != null) {
                     ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);

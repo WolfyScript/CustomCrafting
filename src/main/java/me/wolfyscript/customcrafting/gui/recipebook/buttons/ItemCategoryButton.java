@@ -64,11 +64,11 @@ public class ItemCategoryButton extends Button<CCCache> {
 
     @Override
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
-        if (event instanceof InventoryClickEvent) {
+        if (event instanceof InventoryClickEvent clickEvent) {
             RecipeBookContainerButton.resetButtons(guiHandler);
             if (!categories.getSortedFilters().isEmpty()) {
                 int currentIndex = categoryMap.getOrDefault(guiHandler, 0);
-                if (((InventoryClickEvent) event).isLeftClick()) {
+                if (clickEvent.isLeftClick()) {
                     if (currentIndex < categories.getSortedFilters().size() - 1) {
                         categoryMap.put(guiHandler, currentIndex + 1);
                     } else {
