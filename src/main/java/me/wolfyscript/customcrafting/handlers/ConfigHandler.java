@@ -126,6 +126,15 @@ public class ConfigHandler {
             customCrafting.saveResource("recipe_book.json", false);
         }
         this.recipeBookConfig = new RecipeBookConfig(customCrafting);
+        //Fix recipe book config if broken!
+        if (recipeBookConfig.getCategories() == null) {
+            customCrafting.saveResource("recipe_book.json", true);
+            try {
+                this.recipeBookConfig.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void loadLang() {
