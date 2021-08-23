@@ -99,7 +99,7 @@ public class ConfigHandler {
 
             var workbenchCraft = new CraftingRecipeShaped(CustomCrafting.ADVANCED_CRAFTING_TABLE);
             workbenchCraft.setMirrorHorizontal(false);
-            workbenchCraft.setShape("G ", "C ", "DD");
+            workbenchCraft.setShape("G", "C", "D");
             workbenchCraft.setIngredient('G', new Ingredient(Material.GOLD_INGOT));
             workbenchCraft.setIngredient('C', new Ingredient(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredient('D', new Ingredient(Material.GLOWSTONE_DUST));
