@@ -41,8 +41,8 @@ public class Category extends CategorySettings {
         containers.clear();
         List<RecipeContainer> recipeContainers = new ArrayList<>();
         recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).toList());
-        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> CCRegistry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
-        recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
+        recipeContainers.addAll(this.namespaces.parallelStream().flatMap(s -> CCRegistry.RECIPES.get(s).parallelStream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
+        recipeContainers.addAll(this.recipes.parallelStream().map(namespacedKey -> {
             ICustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(recipe);
         }).filter(Objects::nonNull).toList());
@@ -50,7 +50,7 @@ public class Category extends CategorySettings {
     }
 
     public void indexFilters(CategoryFilter filter) {
-        indexedFilters.put(filter, containers.stream().filter(filter::filter).toList());
+        indexedFilters.put(filter, containers.parallelStream().filter(filter::filter).toList());
     }
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {

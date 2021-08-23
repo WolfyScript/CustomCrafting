@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
@@ -97,11 +98,11 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + maxIngredients)).setVariants(guiHandler, this.getResult());
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(maxIngredients))).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < maxIngredients && i < ingredients.size(); i++) {
                 var ingredient = ingredients.get(i);
                 if (ingredient != null) {
-                    ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
+                    ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(i))).setVariants(guiHandler, ingredient);
                 }
             }
         }
@@ -130,9 +131,9 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             event.setButton(elite ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             startSlot = elite ? 0 : 10;
             for (int i = 0; i < maxIngredients; i++) {
-                event.setButton(startSlot + i + (i / maxGridDimension) * (9 - maxGridDimension), new NamespacedKey("recipe_book", "ingredient.container_" + i));
+                event.setButton(startSlot + i + (i / maxGridDimension) * (9 - maxGridDimension), new NamespacedKey(RecipeBookCluster.KEY, IngredientContainerButton.key(i)));
             }
-            event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_" + maxIngredients));
+            event.setButton(25, IngredientContainerButton.namespacedKey(maxIngredients));
         }
     }
 

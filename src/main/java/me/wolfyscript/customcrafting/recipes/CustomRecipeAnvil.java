@@ -227,21 +227,21 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         Ingredient inputLeft = getInputLeft();
         Ingredient inputRight = getInputRight();
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, inputLeft);
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, inputRight);
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(10))).setVariants(guiHandler, inputLeft);
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(13))).setVariants(guiHandler, inputRight);
         if (getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, getResult());
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(34))).setVariants(guiHandler, getResult());
         } else if (getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, inputLeft);
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(34))).setVariants(guiHandler, inputLeft);
         } else {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_34")).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(34))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
         }
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(10, new NamespacedKey("recipe_book", "ingredient.container_10"));
-        event.setButton(13, new NamespacedKey("recipe_book", "ingredient.container_13"));
+        event.setButton(10, IngredientContainerButton.namespacedKey(10));
+        event.setButton(13, IngredientContainerButton.namespacedKey(13));
         NamespacedKey glass = MainCluster.GLASS_GREEN;
         event.setButton(19, glass);
         event.setButton(22, glass);
@@ -257,7 +257,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         } else {
             event.setButton(31, new NamespacedKey("recipe_book", "anvil.none"));
         }
-        event.setButton(34, new NamespacedKey("recipe_book", "ingredient.container_34"));
+        event.setButton(34, IngredientContainerButton.namespacedKey(34));
     }
 
     public enum Mode {

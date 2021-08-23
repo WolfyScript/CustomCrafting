@@ -242,7 +242,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + maxIngredients)).setVariants(guiHandler, this.getResult());
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(maxIngredients))).setVariants(guiHandler, this.getResult());
             int i = 0;
             int ingredientIndex = 0;
             for (int r = 0; r < maxGridDimension; r++) {
@@ -250,7 +250,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     if (c < internalShape.width && r < internalShape.height && ingredientIndex < ingredients.size()) {
                         var ingredient = ingredients.get(ingredientIndex);
                         if (ingredient != null) {
-                            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
+                            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(i))).setVariants(guiHandler, ingredient);
                         }
                         ingredientIndex++;
                     }

@@ -111,8 +111,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         var player = guiHandler.getPlayer();
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getSource().getChoices(player));
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(11))).setVariants(guiHandler, getSource().getChoices(player));
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(24))).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
     }
 
     @Override
@@ -127,8 +127,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         }
         event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
         event.setButton(20, data.getLightBackground());
-        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
-        event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
+        event.setButton(11, IngredientContainerButton.namespacedKey(11));
+        event.setButton(24, IngredientContainerButton.namespacedKey(24));
     }
 
     @Override

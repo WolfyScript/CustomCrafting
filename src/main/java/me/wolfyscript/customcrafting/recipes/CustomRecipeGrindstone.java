@@ -97,20 +97,20 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getInputTop());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_29")).setVariants(guiHandler, getInputBottom());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResult());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(11))).setVariants(guiHandler, getInputTop());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(29))).setVariants(guiHandler, getInputBottom());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(24))).setVariants(guiHandler, getResult());
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
+        event.setButton(11, IngredientContainerButton.namespacedKey(11));
         event.setButton(12, MainCluster.GLASS_GREEN);
         event.setButton(21, MainCluster.GLASS_GREEN);
         event.setButton(22, new NamespacedKey("recipe_book", "grindstone"));
         event.setButton(23, MainCluster.GLASS_GREEN);
-        event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
-        event.setButton(29, new NamespacedKey("recipe_book", "ingredient.container_29"));
+        event.setButton(24, IngredientContainerButton.namespacedKey(24));
+        event.setButton(29, IngredientContainerButton.namespacedKey(29));
         event.setButton(30, MainCluster.GLASS_GREEN);
     }
 }

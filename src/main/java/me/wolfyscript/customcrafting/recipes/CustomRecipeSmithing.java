@@ -93,17 +93,17 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, getBase());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, getAddition());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_23")).setVariants(guiHandler, this.getResult());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(10))).setVariants(guiHandler, getBase());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(13))).setVariants(guiHandler, getAddition());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(23))).setVariants(guiHandler, this.getResult());
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(19, new NamespacedKey("recipe_book", "ingredient.container_10"));
-        event.setButton(21, new NamespacedKey("recipe_book", "ingredient.container_13"));
+        event.setButton(19, IngredientContainerButton.namespacedKey(10));
+        event.setButton(21, IngredientContainerButton.namespacedKey(13));
         event.setButton(23, new NamespacedKey("recipe_book", "smithing"));
-        event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_23"));
+        event.setButton(25, IngredientContainerButton.namespacedKey(23));
     }
 
     @Override

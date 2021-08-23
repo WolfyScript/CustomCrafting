@@ -334,14 +334,14 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_3")).setVariants(guiHandler, getIngredient());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(3))).setVariants(guiHandler, getIngredient());
         if (!getAllowedItems().isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_0")).setVariants(guiHandler, getAllowedItems());
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(0))).setVariants(guiHandler, getAllowedItems());
         } else {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_0")).setVariants(guiHandler, Collections.singletonList(placeHolderPotion));
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(0))).setVariants(guiHandler, Collections.singletonList(placeHolderPotion));
         }
         if (!this.getResult().isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_1")).setVariants(guiHandler, this.getResult());
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(1))).setVariants(guiHandler, this.getResult());
         } else {
             CustomItem modifications = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
             modifications.addLoreLine("");
@@ -380,20 +380,20 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
                     }
                 }
             }
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_1")).setVariants(guiHandler, Collections.singletonList(modifications));
+            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(1))).setVariants(guiHandler, Collections.singletonList(modifications));
         }
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(12, new NamespacedKey("recipe_book", "ingredient.container_3"));
+        event.setButton(12, IngredientContainerButton.namespacedKey(3));
         event.setButton(20, new NamespacedKey("recipe_book", "brewing.icon"));
         event.setButton(21, MainCluster.GLASS_GREEN);
 
-        event.setButton(30, new NamespacedKey("recipe_book", "ingredient.container_0"));
+        event.setButton(30, IngredientContainerButton.namespacedKey(0));
         event.setButton(31, MainCluster.GLASS_GREEN);
         event.setButton(32, MainCluster.GLASS_GREEN);
-        event.setButton(33, new NamespacedKey("recipe_book", "ingredient.container_1"));
+        event.setButton(33, IngredientContainerButton.namespacedKey(1));
 
 
     }

@@ -85,15 +85,15 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_20")).setVariants(guiHandler, getSource());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, getResult());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(20))).setVariants(guiHandler, getSource());
+        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(24))).setVariants(guiHandler, getResult());
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         NamespacedKey glass = MainCluster.GLASS_GREEN;
-        event.setButton(20, new NamespacedKey(RecipeBookCluster.KEY, "ingredient.container_20"));
-        event.setButton(24, new NamespacedKey(RecipeBookCluster.KEY, "ingredient.container_24"));
+        event.setButton(20, new NamespacedKey(RecipeBookCluster.KEY, IngredientContainerButton.key(20)));
+        event.setButton(24, new NamespacedKey(RecipeBookCluster.KEY, IngredientContainerButton.key(24)));
         event.setButton(29, glass);
         event.setButton(30, glass);
         event.setButton(31, RecipeBookCluster.STONECUTTER);
