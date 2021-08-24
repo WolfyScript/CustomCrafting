@@ -17,6 +17,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
@@ -197,7 +198,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      *
      * @param id   The id of the Condition.
      * @param data The data to check the condition against.
-     * @return True if condition is valid or non existent.
+     * @return True if condition is valid or nonexistent.
      */
     public boolean checkCondition(String id, Conditions.Data data) {
         return getConditions().check(id, this, data);
@@ -264,7 +265,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     public abstract void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster);
 
-    public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
+    public void writeToJson(JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStringField(KEY_GROUP, group);
         gen.writeBooleanField(KEY_HIDDEN, hidden);
         gen.writeStringField(KEY_PRIORITY, priority.toString());
@@ -283,13 +284,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         }
     }
 
-    static class Serializer extends StdSerializer<CustomRecipe> {
+    static class Serializer extends StdSerializer<CustomRecipe<?>> {
 
         public Serializer() {
-            super(CustomRecipe.class);
+            super((Class<CustomRecipe<?>>) new TypeReference<>() {
+            }.getType());
         }
 
-        protected Serializer(Class<CustomRecipe> vc) {
+        public Serializer(Class<CustomRecipe<?>> vc) {
             super(vc);
         }
 
