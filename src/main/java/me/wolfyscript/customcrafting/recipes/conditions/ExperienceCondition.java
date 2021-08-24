@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
@@ -16,7 +16,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
 
     public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "player_experience");
 
-    static boolean valid(ICustomRecipe<?> recipe) {
+    static boolean valid(CustomRecipe<?> recipe) {
         return RecipeType.Container.CRAFTING.isInstance(recipe) || RecipeType.Container.ELITE_CRAFTING.isInstance(recipe) || switch (recipe.getRecipeType().getType()) {
             case BREWING_STAND, GRINDSTONE -> true;
             default -> false;
@@ -32,12 +32,12 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
     }
 
     @Override
-    public boolean isApplicable(ICustomRecipe<?> recipe) {
+    public boolean isApplicable(CustomRecipe<?> recipe) {
         return valid(recipe);
     }
 
     @Override
-    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+    public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         if (data.getPlayer() != null) {
             int currentExp = data.getPlayer().getLevel();
             return switch (option) {

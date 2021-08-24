@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
@@ -34,7 +34,7 @@ public class WorldNameCondition extends Condition<WorldNameCondition> {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+    public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         if (data.getBlock() != null) {
             return worldNames.contains(data.getBlock().getLocation().getWorld().getName());
         }

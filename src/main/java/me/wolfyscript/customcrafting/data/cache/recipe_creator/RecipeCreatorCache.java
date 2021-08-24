@@ -67,7 +67,7 @@ public class RecipeCreatorCache {
         };
     }
 
-    public void loadRecipeIntoCache(ICustomRecipe<?> recipe) throws IllegalArgumentException {
+    public void loadRecipeIntoCache(CustomRecipe<?> recipe) throws IllegalArgumentException {
         switch (recipe.getRecipeType().getType()) {
             case ANVIL -> setAnvilCache(new RecipeCacheAnvil((CustomRecipeAnvil) recipe));
             case FURNACE -> setFurnaceCache(new RecipeCacheFurnace((CustomRecipeFurnace) recipe));

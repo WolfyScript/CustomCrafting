@@ -163,7 +163,7 @@ public class RecipeBookCluster extends CCCluster {
 
     private void registerConditionDisplays() {
         registerButton(new DummyButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WorldTimeCondition.class).getTime());
             if (recipe.getConditions().getByType(WorldTimeCondition.class).getOption().equals(Conditions.Option.EXACT)) {
                 hashMap.put("%mode%", "");
@@ -174,13 +174,13 @@ public class RecipeBookCluster extends CCCluster {
         }));
 
         registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(wolfyUtilities));
             return itemStack;
         }));
 
         registerButton(new ActionButton<>("conditions.permission", Material.REDSTONE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            ICustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
+            CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(PermissionCondition.class).getPermission());
             return itemStack;
         }));

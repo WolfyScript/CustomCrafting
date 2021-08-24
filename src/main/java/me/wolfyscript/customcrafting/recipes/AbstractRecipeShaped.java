@@ -158,7 +158,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         var index = 0;
         var row = 0;
         for (int i = 0; i < maxIngredients; i++) {
-            var ingrd = ICraftingRecipe.LETTERS.charAt(i);
+            var ingrd = CraftingRecipe.LETTERS.charAt(i);
             final var current = genShape[row] != null ? genShape[row] : "";
             if (!keys.contains(ingrd)) {
                 genShape[row] = current + " ";
@@ -173,7 +173,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         setShape(genShape);
     }
 
-    @Override
     public boolean isShapeless() {
         return false;
     }

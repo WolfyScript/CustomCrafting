@@ -9,7 +9,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> {
+public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
 
     //Crafting recipes
     RecipeType<CraftingRecipeShaped> CRAFTING_SHAPED = new RecipeTypeImpl<>(Type.CRAFTING_SHAPED, CraftingRecipeShaped.class);
@@ -29,7 +29,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
     RecipeType<CustomRecipeBrewing> BREWING_STAND = new RecipeTypeImpl<>(Type.BREWING_STAND, CustomRecipeBrewing.class);
     RecipeType<CustomRecipeSmithing> SMITHING = new RecipeTypeImpl<>(Type.SMITHING, CustomRecipeSmithing.class);
 
-    static Set<RecipeType<? extends ICustomRecipe<?>>> values() {
+    static Set<RecipeType<? extends CustomRecipe<?>>> values() {
         return Collections.unmodifiableSet(RecipeTypeImpl.values);
     }
 
@@ -49,27 +49,27 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
 
     Class<C> getClazz();
 
-    boolean isInstance(ICustomRecipe<?> recipe);
+    boolean isInstance(CustomRecipe<?> recipe);
 
     /**
      * Casts the recipe to the type of this RecipeType.
-     * Make sure that the recipe is actually a type of this type using {@link #isInstance(ICustomRecipe)}.
+     * Make sure that the recipe is actually a type of this type using {@link #isInstance(CustomRecipe)}.
      * If the recipe is not a type of this recipe type this method will throw a {@link ClassCastException}.
      *
      * @param recipe The recipe to cast.
      * @return The recipe cast to the type of this RecipeType.
      */
-    C cast(ICustomRecipe<?> recipe);
+    C cast(CustomRecipe<?> recipe);
 
     String name();
 
-    interface Container<C extends ICustomRecipe<?>> {
+    interface Container<C extends CustomRecipe<?>> {
 
         CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("workbench", "crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);
         CraftingContainer<EliteRecipeSettings> ELITE_CRAFTING = new CraftingContainer<>("elite_workbench", "elite_crafting", ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS);
         Container<CustomRecipeCooking<?, ?>> COOKING = new ContainerImpl<>((Class<CustomRecipeCooking<?, ?>>) (Object) CustomRecipeCooking.class, "cooking", List.of(FURNACE, BLAST_FURNACE, SMOKER, CAMPFIRE));
 
-        static Collection<Container<? extends ICustomRecipe<?>>> values() {
+        static Collection<Container<? extends CustomRecipe<?>>> values() {
             return ContainerImpl.values.values();
         }
 
@@ -89,7 +89,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
          * @param recipe The recipe to check.
          * @return if the recipe is an instance of the included types.
          */
-        boolean isInstance(ICustomRecipe<?> recipe);
+        boolean isInstance(CustomRecipe<?> recipe);
 
         /**
          * @param type The type to check for.
@@ -99,13 +99,13 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
 
         /**
          * Casts the recipe to the type of this Container.
-         * Make sure that the recipe is actually a type of this type using {@link #isInstance(ICustomRecipe)}.
+         * Make sure that the recipe is actually a type of this type using {@link #isInstance(CustomRecipe)}.
          * If the recipe is not a type of this container this method will throw a {@link ClassCastException}.
          *
          * @param recipe The recipe to cast.
          * @return The recipe cast to the type of this RecipeType.
          */
-        C cast(ICustomRecipe<?> recipe);
+        C cast(CustomRecipe<?> recipe);
 
         final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> implements RecipeLoader<CraftingRecipe<?, S>> {
 
@@ -119,7 +119,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
             }
         }
 
-        class ContainerImpl<C extends ICustomRecipe<?>> implements Container<C> {
+        class ContainerImpl<C extends CustomRecipe<?>> implements Container<C> {
 
             static final Map<String, Container<?>> values = new HashMap<>();
 
@@ -166,7 +166,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
             }
 
             @Override
-            public boolean isInstance(ICustomRecipe<?> recipe) {
+            public boolean isInstance(CustomRecipe<?> recipe) {
                 return types.get(0).isInstance(recipe) || types.get(1).isInstance(recipe);
             }
 
@@ -176,7 +176,7 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
             }
 
             @Override
-            public C cast(ICustomRecipe<?> recipe) {
+            public C cast(CustomRecipe<?> recipe) {
                 return clazz.cast(recipe);
             }
 
@@ -200,9 +200,9 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
         SMITHING
     }
 
-    class RecipeTypeImpl<C extends ICustomRecipe<?>> implements RecipeType<C> {
+    class RecipeTypeImpl<C extends CustomRecipe<?>> implements RecipeType<C> {
 
-        static Set<RecipeType<? extends ICustomRecipe<?>>> values = new HashSet<>();
+        static Set<RecipeType<? extends CustomRecipe<?>>> values = new HashSet<>();
 
         private final String id;
         private final Type type;
@@ -261,12 +261,12 @@ public interface RecipeType<C extends ICustomRecipe<?>> extends RecipeLoader<C> 
         }
 
         @Override
-        public boolean isInstance(ICustomRecipe<?> recipe) {
+        public boolean isInstance(CustomRecipe<?> recipe) {
             return clazz.isInstance(recipe);
         }
 
         @Override
-        public C cast(ICustomRecipe<?> recipe) {
+        public C cast(CustomRecipe<?> recipe) {
             return clazz.cast(recipe);
         }
 

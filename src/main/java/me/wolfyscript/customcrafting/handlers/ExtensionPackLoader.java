@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
@@ -22,7 +22,7 @@ public class ExtensionPackLoader extends ResourceLoader {
     }
 
     @Override
-    public boolean save(ICustomRecipe<?> recipe) {
+    public boolean save(CustomRecipe<?> recipe) {
         return false;
     }
 
@@ -32,7 +32,7 @@ public class ExtensionPackLoader extends ResourceLoader {
     }
 
     @Override
-    public boolean delete(ICustomRecipe<?> recipe) {
+    public boolean delete(CustomRecipe<?> recipe) {
         return false;
     }
 

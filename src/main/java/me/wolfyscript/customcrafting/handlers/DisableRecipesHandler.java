@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -33,7 +33,7 @@ public class DisableRecipesHandler {
             recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
             recipes.forEach(key -> {
                 if (CCRegistry.RECIPES.has(key)) {
-                    ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
+                    CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
                     disableRecipe(customRecipe);
                 } else {
                     org.bukkit.NamespacedKey bukkitKey = org.bukkit.NamespacedKey.fromString(key.toString());
@@ -57,7 +57,7 @@ public class DisableRecipesHandler {
         return recipes;
     }
 
-    public void toggleRecipe(ICustomRecipe<?> recipe) {
+    public void toggleRecipe(CustomRecipe<?> recipe) {
         if (recipe.isDisabled()) {
             enableRecipe(recipe);
         } else {
@@ -66,11 +66,11 @@ public class DisableRecipesHandler {
     }
 
     /**
-     * Disables the {@link ICustomRecipe} and removes it's bukkit counterpart if it is an instance of {@link ICustomVanillaRecipe}.
+     * Disables the {@link CustomRecipe} and removes it's bukkit counterpart if it is an instance of {@link ICustomVanillaRecipe}.
      *
      * @param recipe The recipe to disable.
      */
-    public void disableRecipe(ICustomRecipe<?> recipe) {
+    public void disableRecipe(CustomRecipe<?> recipe) {
         var namespacedKey = recipe.getNamespacedKey();
         recipes.add(namespacedKey);
         if (recipe instanceof ICustomVanillaRecipe<?>) {
@@ -84,7 +84,7 @@ public class DisableRecipesHandler {
      *
      * @param recipe The recipe to enable.
      */
-    public void enableRecipe(ICustomRecipe<?> recipe) {
+    public void enableRecipe(CustomRecipe<?> recipe) {
         var namespacedKey = recipe.getNamespacedKey();
         if (recipe instanceof ICustomVanillaRecipe<?> customVanillaRecipe) {
             Bukkit.addRecipe(customVanillaRecipe.getVanillaRecipe());

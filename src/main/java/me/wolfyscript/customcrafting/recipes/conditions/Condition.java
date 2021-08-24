@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.CCClassRegistry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -99,7 +99,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         this.option = availableOptions.get(index);
     }
 
-    public abstract boolean check(ICustomRecipe<?> recipe, Conditions.Data data);
+    public abstract boolean check(CustomRecipe<?> recipe, Conditions.Data data);
 
     @JsonIgnore
     @Override
@@ -112,7 +112,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         return key.toString();
     }
 
-    public boolean isApplicable(ICustomRecipe<?> recipe) {
+    public boolean isApplicable(CustomRecipe<?> recipe) {
         return true;
     }
 

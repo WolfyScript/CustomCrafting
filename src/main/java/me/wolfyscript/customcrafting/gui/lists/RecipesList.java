@@ -8,7 +8,7 @@ import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.lists.buttons.RecipeListContainerButton;
 import me.wolfyscript.customcrafting.gui.main_gui.buttons.RecipeListNamespaceButton;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -97,7 +97,7 @@ public class RecipesList extends CCWindow {
                     event.setButton(9 + slot, button);
                 }
             } else {
-                List<ICustomRecipe<?>> recipes = CCRegistry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).toList();
+                List<CustomRecipe<?>> recipes = CCRegistry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).toList();
                 maxPages = recipeList.getMaxPages(recipes.size());
                 page = recipeList.getPage(maxPages);
                 for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {

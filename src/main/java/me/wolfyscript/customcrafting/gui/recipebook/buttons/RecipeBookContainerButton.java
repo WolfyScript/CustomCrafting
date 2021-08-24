@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipebook.buttons;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -70,7 +70,7 @@ public class RecipeBookContainerButton extends Button<CCCache> {
         var cache = guiHandler.getCustomCache();
         var book = cache.getKnowledgeBook();
         var customItem = new CustomItem(Material.AIR);
-        List<ICustomRecipe<?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
+        List<CustomRecipe<?>> recipes = getRecipeContainer(guiHandler).getRecipes(player);
         if (!recipes.isEmpty()) {
             book.setSubFolderPage(0);
             book.addResearchItem(customItem);

@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -33,7 +33,7 @@ public class EditSubCommand extends AbstractSubCommand {
             WolfyUtilities api = customCrafting.getApi();
             NamespacedKey key = NamespacedKey.of(args[0]);
             if (key != null) {
-                ICustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
+                CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
                 if (customRecipe != null) {
                     GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
                     CCCache cache = guiHandler.getCustomCache();

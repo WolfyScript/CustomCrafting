@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.*;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.buttons.SaveCategoryButton;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -110,7 +110,7 @@ public class RecipeBookEditorCluster extends CCCluster {
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         var namespacedKey = new NamespacedKey(args[0], args[1]);
-                        ICustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
+                        CustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
                         if (recipe == null) {
                             wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                             return true;

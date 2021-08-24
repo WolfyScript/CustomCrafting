@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -36,7 +36,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
     private final HashMap<GuiHandler<CCCache>, Recipe> recipes = new HashMap<>();
-    private final HashMap<GuiHandler<CCCache>, ICustomRecipe<?>> customRecipes = new HashMap<>();
+    private final HashMap<GuiHandler<CCCache>, CustomRecipe<?>> customRecipes = new HashMap<>();
     private final WolfyUtilities api;
 
     public RecipeListContainerButton(int slot, CustomCrafting customCrafting) {
@@ -69,7 +69,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
     public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
         CCCache cache = guiHandler.getCustomCache();
         if (event instanceof InventoryClickEvent clickEvent) {
-            ICustomRecipe<?> customRecipe = getCustomRecipe(guiHandler);
+            CustomRecipe<?> customRecipe = getCustomRecipe(guiHandler);
             if (clickEvent.isShiftClick() && customRecipe != null) {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
@@ -102,7 +102,7 @@ public class RecipeListContainerButton extends Button<CCCache> {
     @Override
     public void render(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> guiInventory, Inventory inventory, ItemStack itemStack, int slot, boolean help) {
         if (getCustomRecipe(guiHandler) != null) {
-            ICustomRecipe<?> recipe = getCustomRecipe(guiHandler);
+            CustomRecipe<?> recipe = getCustomRecipe(guiHandler);
             if (recipe != null) {
                 var itemB = new ItemBuilder(recipe.getResult().getItemStack().clone());
                 if (recipe.getResult().isEmpty()) {
@@ -141,11 +141,11 @@ public class RecipeListContainerButton extends Button<CCCache> {
         }
     }
 
-    public ICustomRecipe<?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
+    public CustomRecipe<?> getCustomRecipe(GuiHandler<CCCache> guiHandler) {
         return customRecipes.getOrDefault(guiHandler, null);
     }
 
-    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
+    public void setCustomRecipe(GuiHandler<CCCache> guiHandler, CustomRecipe<?> recipe) {
         customRecipes.put(guiHandler, recipe);
     }
 

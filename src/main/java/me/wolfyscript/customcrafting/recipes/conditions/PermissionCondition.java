@@ -1,8 +1,8 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
@@ -23,7 +23,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
     }
 
     @Override
-    public boolean isApplicable(ICustomRecipe<?> recipe) {
+    public boolean isApplicable(CustomRecipe<?> recipe) {
         return ExperienceCondition.valid(recipe);
     }
 
@@ -36,7 +36,7 @@ public class PermissionCondition extends Condition<PermissionCondition> {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+    public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         if (recipe instanceof CustomRecipeCooking && data.getPlayer() == null) {
             return true;
         }

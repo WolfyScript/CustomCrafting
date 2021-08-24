@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,7 +43,7 @@ public class Category extends CategorySettings {
         recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).toList());
         recipeContainers.addAll(this.namespaces.parallelStream().flatMap(s -> CCRegistry.RECIPES.get(s).parallelStream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
         recipeContainers.addAll(this.recipes.parallelStream().map(namespacedKey -> {
-            ICustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
+            CustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(recipe);
         }).filter(Objects::nonNull).toList());
         containers.addAll(recipeContainers.stream().distinct().sorted().toList());

@@ -1,6 +1,9 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.AbstractRecipeShaped;
+import me.wolfyscript.customcrafting.recipes.AbstractRecipeShapeless;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 
@@ -122,7 +125,7 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
             shaped.setMirrorHorizontal(isMirrorHorizontal());
             shaped.setMirrorVertical(isMirrorVertical());
             shaped.setMirrorRotation(isMirrorRotation());
-            Map<Character, Ingredient> ingredientMap = ingredients.entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue));
+            Map<Character, Ingredient> ingredientMap = ingredients.entrySet().stream().collect(Collectors.toMap(entry -> CraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue));
             shaped.generateMissingShape(List.copyOf(ingredientMap.keySet()));
             shaped.setIngredients(ingredientMap);
         }

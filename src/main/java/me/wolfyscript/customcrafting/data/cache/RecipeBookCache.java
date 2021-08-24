@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.data.cache;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import org.bukkit.Bukkit;
@@ -21,7 +21,7 @@ public class RecipeBookCache {
 
     private int page;
     private int subFolderPage;
-    private Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes;
+    private Map<CustomItem, List<CustomRecipe<?>>> cachedSubFolderRecipes;
     private List<CustomItem> researchItems;
 
     public RecipeBookCache() {
@@ -34,7 +34,7 @@ public class RecipeBookCache {
         this.eliteCraftingTable = null;
     }
 
-    public ICustomRecipe<?> getCurrentRecipe() {
+    public CustomRecipe<?> getCurrentRecipe() {
         if (getSubFolderPage() >= 0 && getSubFolderPage() < getSubFolderRecipes().size()) {
             return getSubFolderRecipes().get(getSubFolderPage());
         }
@@ -77,11 +77,11 @@ public class RecipeBookCache {
         return researchItems.size();
     }
 
-    public List<ICustomRecipe<?>> getSubFolderRecipes() {
+    public List<CustomRecipe<?>> getSubFolderRecipes() {
         return this.cachedSubFolderRecipes.getOrDefault(getResearchItem(), new ArrayList<>());
     }
 
-    public void setSubFolderRecipes(CustomItem customItem, List<ICustomRecipe<?>> subFolderRecipes) {
+    public void setSubFolderRecipes(CustomItem customItem, List<CustomRecipe<?>> subFolderRecipes) {
         this.cachedSubFolderRecipes.put(customItem, subFolderRecipes);
     }
 
@@ -115,11 +115,11 @@ public class RecipeBookCache {
         return getResearchItems().get(0);
     }
 
-    public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, ICustomRecipe<?> recipe) {
+    public void applyRecipeToButtons(GuiHandler<CCCache> guiHandler, CustomRecipe<?> recipe) {
         recipe.prepareMenu(guiHandler, guiHandler.getInvAPI().getGuiCluster("recipe_book"));
     }
 
-    public void setCachedSubFolderRecipes(Map<CustomItem, List<ICustomRecipe<?>>> cachedSubFolderRecipes) {
+    public void setCachedSubFolderRecipes(Map<CustomItem, List<CustomRecipe<?>>> cachedSubFolderRecipes) {
         this.cachedSubFolderRecipes = cachedSubFolderRecipes;
     }
 }
