@@ -42,9 +42,6 @@ public abstract class SmeltAPIAdapter {
                 Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isExactMeta());
                 if (customSource.isPresent()) {
                     return applyResult(event, cookingRecipe, result, customSource.get(), block, inventory, currentResultItem);
-                } else {
-                    event.setCancelled(true);
-                    return false;
                 }
             }
             event.setCancelled(true);
@@ -61,9 +58,8 @@ public abstract class SmeltAPIAdapter {
             default -> null;
         }, null, block);
         if (currentResultItem != null) {
-            if (!itemResult.isSimilar(currentResultItem)) {
-                event.setCancelled(true);
-            } else {
+            event.setCancelled(true);
+            if (itemResult.isSimilar(currentResultItem)) {
                 int nextAmount = currentResultItem.getAmount() + itemResult.getAmount();
                 if (nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
                     inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
