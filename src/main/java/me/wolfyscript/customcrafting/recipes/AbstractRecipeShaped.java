@@ -276,16 +276,9 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         super.writeToBuf(byteBuf);
         byteBuf.writeVarInt(shape.length);
         for (String s : shape) {
-            byteBuf.writeUtf(s, 3);
+            byteBuf.writeUtf(s, maxGridDimension);
         }
-        byteBuf.writeVarInt(mappedIngredients.size());
-        mappedIngredients.forEach((key, ingredient) -> {
-            byteBuf.writeInt(LETTERS.indexOf(key));
-            byteBuf.writeVarInt(ingredient.size());
-            for (CustomItem choice : ingredient.getChoices()) {
-                byteBuf.writeItemStack(choice.create());
-            }
-        });
+        internalShape.writeToBuf(byteBuf);
     }
 
     /**
@@ -376,6 +369,13 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             return "Shape{" +
                     "entries=" + entries +
                     '}';
+        }
+
+        public void writeToBuf(MCByteBuf byteBuf) {
+            byteBuf.writeInt(width);
+            byteBuf.writeInt(height);
+            byteBuf.writeVarInt(entries.size());
+            entries.forEach(byteBuf::writeVarIntArray);
         }
 
     }

@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -194,6 +195,13 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     public void writeToBuf(MCByteBuf byteBuf) {
         super.writeToBuf(byteBuf);
         byteBuf.writeInt(maxGridDimension);
+        byteBuf.writeVarInt(ingredients.size());
+        ingredients.forEach(ingredient -> {
+            byteBuf.writeVarInt(ingredient.size());
+            for (CustomItem choice : ingredient.getChoices()) {
+                byteBuf.writeItemStack(choice.create());
+            }
+        });
     }
 
 }
