@@ -128,11 +128,8 @@ public class RecipeCreatorCluster extends CCCluster {
 
     private void registerSaveButtons() {
         registerButton(new ActionButton<>(SAVE.getKey(), Material.WRITABLE_BOOK, (cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
-            if (guiHandler.getWindow() instanceof RecipeCreator) {
-                if (cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
-                    guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
-                    return false;
-                }
+            if (guiHandler.getWindow() instanceof RecipeCreator && !cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
+                guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
             }
             return true;
         }));
@@ -156,7 +153,7 @@ public class RecipeCreatorCluster extends CCCluster {
                     var namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
                     if (namespacedKey != null) {
                         cache.getRecipeCreatorCache().getRecipeCache().setKey(namespacedKey);
-                        if (cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
+                        if (!cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
                             guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
                             return false;
                         }

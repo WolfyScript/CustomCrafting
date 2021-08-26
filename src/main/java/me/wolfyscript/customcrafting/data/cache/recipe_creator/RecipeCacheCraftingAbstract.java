@@ -119,8 +119,8 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
     @Override
     protected CraftingRecipe<?, S> create(CraftingRecipe<?, S> recipe) {
         CraftingRecipe<?, S> craftingRecipe = super.create(recipe);
-        if (craftingRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
-            shapeless.setIngredients(ingredients.values().stream());
+        if (craftingRecipe instanceof AbstractRecipeShapeless<?, ?> shapelessRecipe) {
+            shapelessRecipe.setIngredients(ingredients.values().stream());
         } else if (craftingRecipe instanceof AbstractRecipeShaped<?, ?> shaped) {
             shaped.setMirrorHorizontal(isMirrorHorizontal());
             shaped.setMirrorVertical(isMirrorVertical());
