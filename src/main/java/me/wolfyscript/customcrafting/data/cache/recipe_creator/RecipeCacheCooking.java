@@ -30,17 +30,21 @@ public abstract class RecipeCacheCooking<R extends CustomRecipeCooking<R, ?>> ex
         return getSource();
     }
 
-    @Override
-    protected R constructRecipe() {
-        return null;
-    }
-
     public Ingredient getSource() {
         return source;
     }
 
     public void setSource(Ingredient source) {
         this.source = source;
+    }
+
+    @Override
+    protected R create(R recipe) {
+        R cookingRecipe = super.create(recipe);
+        cookingRecipe.setCookingTime(cookingTime);
+        cookingRecipe.setSource(source);
+        cookingRecipe.setExp(exp);
+        return cookingRecipe;
     }
 
     public float getExp() {

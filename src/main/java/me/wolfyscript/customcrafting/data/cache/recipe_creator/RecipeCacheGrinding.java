@@ -36,7 +36,16 @@ public class RecipeCacheGrinding extends RecipeCache<CustomRecipeGrindstone> {
 
     @Override
     protected CustomRecipeGrindstone constructRecipe() {
-        return null;
+        return create(new CustomRecipeGrindstone(key));
+    }
+
+    @Override
+    protected CustomRecipeGrindstone create(CustomRecipeGrindstone recipe) {
+        CustomRecipeGrindstone recipeGrinding = super.create(recipe);
+        recipeGrinding.setInputTop(inputTop);
+        recipeGrinding.setInputBottom(inputBottom);
+        recipeGrinding.setXp(xp);
+        return recipeGrinding;
     }
 
     public Ingredient getInputTop() {
