@@ -152,11 +152,4 @@ public class AnvilCreator extends RecipeCreator {
         event.setButton(53, RecipeCreatorCluster.SAVE_AS);
     }
 
-    @Override
-    public boolean validToSave(CCCache cache) {
-        var anvilRecipe = cache.getRecipeCreatorCache().getAnvilCache();
-        if (anvilRecipe.getBase().isEmpty() && anvilRecipe.getAddition().isEmpty())
-            return false;
-        return !anvilRecipe.getMode().equals(CustomRecipeAnvil.Mode.RESULT) || anvilRecipe.getResult() != null && !anvilRecipe.getResult().isEmpty();
-    }
 }

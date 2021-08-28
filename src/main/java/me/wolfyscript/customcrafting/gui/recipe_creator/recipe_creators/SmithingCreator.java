@@ -44,9 +44,4 @@ public class SmithingCreator extends RecipeCreator {
         event.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
-    @Override
-    public boolean validToSave(CCCache cache) {
-        var smithingRecipe = cache.getRecipeCreatorCache().getSmithingCache();
-        return !smithingRecipe.getBase().isEmpty() && !smithingRecipe.getAddition().isEmpty() && !smithingRecipe.getResult().isEmpty();
-    }
 }

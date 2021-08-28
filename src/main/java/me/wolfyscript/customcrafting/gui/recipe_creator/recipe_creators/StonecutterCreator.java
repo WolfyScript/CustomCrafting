@@ -37,9 +37,4 @@ public class StonecutterCreator extends RecipeCreator {
         update.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
-    @Override
-    public boolean validToSave(CCCache cache) {
-        var recipe = cache.getRecipeCreatorCache().getStonecuttingCache();
-        return !recipe.getResult().isEmpty() && !recipe.getSource().isEmpty();
-    }
 }

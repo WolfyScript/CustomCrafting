@@ -25,11 +25,4 @@ public abstract class RecipeCreator extends CCWindow {
         })));
     }
 
-    /**
-     * @param cache
-     * @return
-     * @deprecated To be removed by exception handling.
-     */
-    @Deprecated
-    public abstract boolean validToSave(CCCache cache);
 }

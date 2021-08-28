@@ -164,9 +164,4 @@ public class CauldronCreator extends RecipeCreator {
         update.setButton(44, RecipeCreatorCluster.SAVE_AS);
     }
 
-    @Override
-    public boolean validToSave(CCCache cache) {
-        var config = cache.getRecipeCreatorCache().getCauldronCache();
-        return !config.getIngredients().isEmpty() && !config.getResult().isEmpty();
-    }
 }

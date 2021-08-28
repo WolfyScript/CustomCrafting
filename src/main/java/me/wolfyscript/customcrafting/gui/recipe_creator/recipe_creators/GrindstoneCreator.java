@@ -70,12 +70,4 @@ public class GrindstoneCreator extends RecipeCreator {
 
     }
 
-    @Override
-    public boolean validToSave(CCCache cache) {
-        var recipe = cache.getRecipeCreatorCache().getGrindingCache();
-        if (!recipe.getInputTop().isEmpty() || !recipe.getInputBottom().isEmpty()) {
-            return !recipe.getResult().isEmpty();
-        }
-        return false;
-    }
 }

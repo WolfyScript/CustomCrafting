@@ -99,9 +99,4 @@ public class CraftingEliteCreator extends RecipeCreator {
         update.setButton(53, RecipeCreatorCluster.SAVE_AS);
     }
 
-    @Override
-    public boolean validToSave(CCCache cache) {
-        var workbench = cache.getRecipeCreatorCache().getEliteCraftingCache();
-        return workbench.getIngredients() != null && !workbench.getResult().isEmpty();
-    }
 }

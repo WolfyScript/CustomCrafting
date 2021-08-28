@@ -412,8 +412,4 @@ public class BrewingCreator extends RecipeCreator {
         update.setButton(53, RecipeCreatorCluster.SAVE_AS);
     }
 
-    @Override
-    public boolean validToSave(CCCache cache) {
-        return !cache.getRecipeCreatorCache().getBrewingCache().getIngredients().isEmpty();
-    }
 }
