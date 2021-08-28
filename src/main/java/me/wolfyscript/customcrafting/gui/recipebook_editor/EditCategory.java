@@ -27,7 +27,6 @@ public class EditCategory extends EditCategorySetting {
             cache.getRecipeBookEditor().getCategory().setAuto(true);
             return true;
         })));
-
     }
 
     @Override

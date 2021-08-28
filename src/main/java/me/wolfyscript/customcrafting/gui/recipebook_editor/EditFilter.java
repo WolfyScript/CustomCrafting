@@ -18,6 +18,5 @@ public class EditFilter extends EditCategorySetting {
         update.setButton(29, RecipeBookEditorCluster.RECIPES);
         update.setButton(33, RecipeBookEditorCluster.NAMESPACES);
         update.setButton(40, RecipeBookEditorCluster.GROUPS);
-
     }
 }

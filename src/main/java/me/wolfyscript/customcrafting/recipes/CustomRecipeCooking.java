@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -111,8 +111,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         var player = guiHandler.getPlayer();
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(11))).setVariants(guiHandler, getSource().getChoices(player));
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(24))).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11))).setVariants(guiHandler, getSource().getChoices(player));
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24))).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
     }
 
     @Override
@@ -127,8 +127,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         }
         event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
         event.setButton(20, data.getLightBackground());
-        event.setButton(11, IngredientContainerButton.namespacedKey(11));
-        event.setButton(24, IngredientContainerButton.namespacedKey(24));
+        event.setButton(11, ButtonContainerIngredient.namespacedKey(11));
+        event.setButton(24, ButtonContainerIngredient.namespacedKey(24));
     }
 
     @Override

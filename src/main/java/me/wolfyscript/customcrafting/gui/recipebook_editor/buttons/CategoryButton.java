@@ -15,7 +15,7 @@ public class CategoryButton extends ActionButton<CCCache> {
     public CategoryButton(String categoryID, CustomCrafting customCrafting) {
         super("category_" + categoryID, new ButtonState<>("category", Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             if (!categoryID.isEmpty() && event instanceof InventoryClickEvent clickEvent) {
-                var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
+                var recipeBookEditor = cache.getRecipeBookEditor();
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
                 if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                     //Delete Category
@@ -41,7 +41,7 @@ public class CategoryButton extends ActionButton<CCCache> {
             }
             return true;
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var recipeBookEditor = guiHandler.getCustomCache().getRecipeBookEditor();
+            var recipeBookEditor = cache.getRecipeBookEditor();
             var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
             CategorySettings category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
             itemStack.setType(category.getIcon());

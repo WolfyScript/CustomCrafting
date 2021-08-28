@@ -1,13 +1,9 @@
-package me.wolfyscript.customcrafting.gui;
+package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipebook.MainMenu;
-import me.wolfyscript.customcrafting.gui.recipebook.RecipeBook;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.ItemCategoryButton;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.RecipeBookContainerButton;
+import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
@@ -27,7 +23,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.ArrayList;
 
-public class RecipeBookCluster extends CCCluster {
+public class ClusterRecipeBook extends CCCluster {
 
     public static final String KEY = "recipe_book";
 
@@ -40,42 +36,42 @@ public class RecipeBookCluster extends CCCluster {
     public static final NamespacedKey ITEM_CATEGORY = new NamespacedKey(KEY, "item_category");
     public static final NamespacedKey PERMISSION = new NamespacedKey(KEY, "permission");
 
-    public static final NamespacedKey STONECUTTER = new NamespacedKey(RecipeBookCluster.KEY, "stonecutter");
-    public static final NamespacedKey FURNACE = new NamespacedKey(RecipeBookCluster.KEY, "furnace");
-    public static final NamespacedKey BLAST_FURNACE = new NamespacedKey(RecipeBookCluster.KEY, "blast_furnace");
-    public static final NamespacedKey CAMPFIRE = new NamespacedKey(RecipeBookCluster.KEY, "campfire");
-    public static final NamespacedKey GRINDSTONE = new NamespacedKey(RecipeBookCluster.KEY, "grindstone");
-    public static final NamespacedKey SMOKER = new NamespacedKey(RecipeBookCluster.KEY, "smoker");
-    public static final NamespacedKey SMITHING = new NamespacedKey(RecipeBookCluster.KEY, "smithing");
+    public static final NamespacedKey STONECUTTER = new NamespacedKey(ClusterRecipeBook.KEY, "stonecutter");
+    public static final NamespacedKey FURNACE = new NamespacedKey(ClusterRecipeBook.KEY, "furnace");
+    public static final NamespacedKey BLAST_FURNACE = new NamespacedKey(ClusterRecipeBook.KEY, "blast_furnace");
+    public static final NamespacedKey CAMPFIRE = new NamespacedKey(ClusterRecipeBook.KEY, "campfire");
+    public static final NamespacedKey GRINDSTONE = new NamespacedKey(ClusterRecipeBook.KEY, "grindstone");
+    public static final NamespacedKey SMOKER = new NamespacedKey(ClusterRecipeBook.KEY, "smoker");
+    public static final NamespacedKey SMITHING = new NamespacedKey(ClusterRecipeBook.KEY, "smithing");
 
-    public RecipeBookCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
+    public ClusterRecipeBook(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerGuiWindow(new RecipeBook(this, customCrafting));
-        registerGuiWindow(new MainMenu(this, customCrafting));
+        registerGuiWindow(new MenuRecipeBook(this, customCrafting));
+        registerGuiWindow(new MenuMain(this, customCrafting));
         setEntry(MAIN_MENU);
 
-        registerButton(new ItemCategoryButton(customCrafting));
+        registerButton(new ButtonCategoryItem(customCrafting));
         registerButton(new ActionButton<>(NEXT_PAGE.getKey(), PlayerHeadUtils.getViaURL("c86185b1d519ade585f184c34f3f3e20bb641deb879e81378e4eaf209287"), (cache, guiHandler, player, inventory, slot, event) -> {
-            RecipeBookContainerButton.resetButtons(guiHandler);
+            ButtonContainerRecipeBook.resetButtons(guiHandler);
             var book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() + 1);
             return true;
         }));
         registerButton(new ActionButton<>(PREVIOUS_PAGE.getKey(), PlayerHeadUtils.getViaURL("ad73cf66d31b83cd8b8644c15958c1b73c8d97323b801170c1d8864bb6a846d"), (cache, guiHandler, player, inventory, slot, event) -> {
-            RecipeBookContainerButton.resetButtons(guiHandler);
+            ButtonContainerRecipeBook.resetButtons(guiHandler);
             var book = guiHandler.getCustomCache().getKnowledgeBook();
             book.setPage(book.getPage() > 0 ? book.getPage() - 1 : 0);
             return true;
         }));
         registerButton(new ActionButton<>(BACK_TO_LIST.getKey(), Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
-            if (event instanceof InventoryClickEvent) {
+            if (event instanceof InventoryClickEvent clickEvent) {
                 var book = cache.getKnowledgeBook();
-                IngredientContainerButton.resetButtons(guiHandler);
-                if (((InventoryClickEvent) event).isLeftClick()) {
+                ButtonContainerIngredient.resetButtons(guiHandler);
+                if (clickEvent.isLeftClick()) {
                     book.removePreviousResearchItem();
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
@@ -98,10 +94,10 @@ public class RecipeBookCluster extends CCCluster {
 
         registerRecipeIcons();
         for (int i = 0; i < 37; i++) {
-            registerButton(new IngredientContainerButton(i));
+            registerButton(new ButtonContainerIngredient(i));
         }
         for (int i = 0; i < 45; i++) {
-            registerButton(new RecipeBookContainerButton(i));
+            registerButton(new ButtonContainerRecipeBook(i));
         }
         registerConditionDisplays();
     }
@@ -116,7 +112,6 @@ public class RecipeBookCluster extends CCCluster {
         }));
         registerButton(new DummyButton<>("anvil.result", Material.ANVIL));
         registerButton(new DummyButton<>("anvil.none", Material.ANVIL));
-
         registerButton(new DummyButton<>("cooking.icon", Material.FURNACE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var knowledgeBook = cache.getKnowledgeBook();
             RecipeType<?> recipeType = knowledgeBook.getCurrentRecipe().getRecipeType();
@@ -165,20 +160,15 @@ public class RecipeBookCluster extends CCCluster {
         registerButton(new DummyButton<>("conditions.world_time", Material.CLOCK, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WorldTimeCondition.class).getTime());
-            if (recipe.getConditions().getByType(WorldTimeCondition.class).getOption().equals(Conditions.Option.EXACT)) {
-                hashMap.put("%mode%", "");
-            } else {
-                hashMap.put("%mode%", recipe.getConditions().getByType(WorldTimeCondition.class).getOption().getDisplayString(wolfyUtilities));
-            }
+            var option = recipe.getConditions().getByType(WorldTimeCondition.class).getOption();
+            hashMap.put("%mode%", option.equals(Conditions.Option.EXACT) ? "" : option.getDisplayString(wolfyUtilities));
             return itemStack;
         }));
-
         registerButton(new ActionButton<>("conditions.weather", Material.WATER_BUCKET, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(WeatherCondition.class).getWeather().getDisplay(wolfyUtilities));
             return itemStack;
         }));
-
         registerButton(new ActionButton<>("conditions.permission", Material.REDSTONE, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             CustomRecipe<?> recipe = (cache.getKnowledgeBook()).getCurrentRecipe();
             hashMap.put("%value%", recipe.getConditions().getByType(PermissionCondition.class).getPermission());

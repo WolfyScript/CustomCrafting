@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -334,14 +334,14 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(3))).setVariants(guiHandler, getIngredient());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(3))).setVariants(guiHandler, getIngredient());
         if (!getAllowedItems().isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(0))).setVariants(guiHandler, getAllowedItems());
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(0))).setVariants(guiHandler, getAllowedItems());
         } else {
-            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(0))).setVariants(guiHandler, Collections.singletonList(placeHolderPotion));
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(0))).setVariants(guiHandler, Collections.singletonList(placeHolderPotion));
         }
         if (!this.getResult().isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(1))).setVariants(guiHandler, this.getResult());
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(1))).setVariants(guiHandler, this.getResult());
         } else {
             CustomItem modifications = new CustomItem(Material.POTION).setDisplayName(ChatColor.convert("&6&lResulting Potion"));
             modifications.addLoreLine("");
@@ -380,20 +380,20 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
                     }
                 }
             }
-            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(1))).setVariants(guiHandler, Collections.singletonList(modifications));
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(1))).setVariants(guiHandler, Collections.singletonList(modifications));
         }
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(12, IngredientContainerButton.namespacedKey(3));
+        event.setButton(12, ButtonContainerIngredient.namespacedKey(3));
         event.setButton(20, new NamespacedKey("recipe_book", "brewing.icon"));
         event.setButton(21, MainCluster.GLASS_GREEN);
 
-        event.setButton(30, IngredientContainerButton.namespacedKey(0));
+        event.setButton(30, ButtonContainerIngredient.namespacedKey(0));
         event.setButton(31, MainCluster.GLASS_GREEN);
         event.setButton(32, MainCluster.GLASS_GREEN);
-        event.setButton(33, IngredientContainerButton.namespacedKey(1));
+        event.setButton(33, ButtonContainerIngredient.namespacedKey(1));
 
 
     }

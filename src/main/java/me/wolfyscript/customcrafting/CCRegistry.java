@@ -160,7 +160,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list only including the {@link CustomRecipe}s of the specified {@link RecipeType}, which are enabled and visible.
          */
         public <T extends CustomRecipe<?>> List<T> getAvailable(RecipeType<T> type) {
-            return getAvailable(get(type.getClazz()).parallelStream());
+            return getAvailable(get(type.getRecipeClass()).parallelStream());
         }
 
         /**

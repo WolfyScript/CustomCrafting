@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -227,21 +227,21 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         Ingredient inputLeft = getInputLeft();
         Ingredient inputRight = getInputRight();
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(10))).setVariants(guiHandler, inputLeft);
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(13))).setVariants(guiHandler, inputRight);
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(10))).setVariants(guiHandler, inputLeft);
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(13))).setVariants(guiHandler, inputRight);
         if (getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
-            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(34))).setVariants(guiHandler, getResult());
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, getResult());
         } else if (getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
-            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(34))).setVariants(guiHandler, inputLeft);
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, inputLeft);
         } else {
-            ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(34))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(34))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
         }
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(10, IngredientContainerButton.namespacedKey(10));
-        event.setButton(13, IngredientContainerButton.namespacedKey(13));
+        event.setButton(10, ButtonContainerIngredient.namespacedKey(10));
+        event.setButton(13, ButtonContainerIngredient.namespacedKey(13));
         NamespacedKey glass = MainCluster.GLASS_GREEN;
         event.setButton(19, glass);
         event.setButton(22, glass);
@@ -257,7 +257,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         } else {
             event.setButton(31, new NamespacedKey("recipe_book", "anvil.none"));
         }
-        event.setButton(34, IngredientContainerButton.namespacedKey(34));
+        event.setButton(34, ButtonContainerIngredient.namespacedKey(34));
     }
 
     public enum Mode {

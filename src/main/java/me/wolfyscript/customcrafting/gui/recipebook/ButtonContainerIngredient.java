@@ -1,9 +1,8 @@
-package me.wolfyscript.customcrafting.gui.recipebook.buttons;
+package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.RecipeBookCluster;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.RecipeItemStack;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -25,16 +24,16 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.*;
 
-public class IngredientContainerButton extends Button<CCCache> {
+public class ButtonContainerIngredient extends Button<CCCache> {
 
     private static final String KEY = "ingredient.container_";
 
-    public IngredientContainerButton(int slot) {
-        super(key(slot), ButtonType.DUMMY);
-    }
-
     public static String key(int slot) {
         return KEY + slot;
+    }
+
+    ButtonContainerIngredient(int slot) {
+        super(key(slot), ButtonType.DUMMY);
     }
 
     private final Map<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
@@ -42,7 +41,7 @@ public class IngredientContainerButton extends Button<CCCache> {
     private final Map<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
 
     public static NamespacedKey namespacedKey(int slot) {
-        return new NamespacedKey(RecipeBookCluster.KEY, IngredientContainerButton.key(slot));
+        return new NamespacedKey(ClusterRecipeBook.KEY, key(slot));
     }
 
     @Override
@@ -58,7 +57,7 @@ public class IngredientContainerButton extends Button<CCCache> {
     public static void removeTasks(GuiHandler<CCCache> guiHandler) {
         GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 54; i++) {
-            if (cluster.getButton(key(i)) instanceof IngredientContainerButton button) {
+            if (cluster.getButton(key(i)) instanceof ButtonContainerIngredient button) {
                 button.removeTask(guiHandler);
                 button.setTiming(guiHandler, 0);
             }
@@ -68,7 +67,7 @@ public class IngredientContainerButton extends Button<CCCache> {
     public static void resetButtons(GuiHandler<CCCache> guiHandler) {
         GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 54; i++) {
-            if (cluster.getButton(key(i)) instanceof IngredientContainerButton button) {
+            if (cluster.getButton(key(i)) instanceof ButtonContainerIngredient button) {
                 button.removeTask(guiHandler);
                 button.setTiming(guiHandler, 0);
                 button.removeVariants(guiHandler);

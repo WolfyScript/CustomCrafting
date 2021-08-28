@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.MainCluster;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -97,20 +97,20 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(11))).setVariants(guiHandler, getInputTop());
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(29))).setVariants(guiHandler, getInputBottom());
-        ((IngredientContainerButton) cluster.getButton(IngredientContainerButton.key(24))).setVariants(guiHandler, getResult());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11))).setVariants(guiHandler, getInputTop());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(29))).setVariants(guiHandler, getInputBottom());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24))).setVariants(guiHandler, getResult());
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(11, IngredientContainerButton.namespacedKey(11));
+        event.setButton(11, ButtonContainerIngredient.namespacedKey(11));
         event.setButton(12, MainCluster.GLASS_GREEN);
         event.setButton(21, MainCluster.GLASS_GREEN);
         event.setButton(22, new NamespacedKey("recipe_book", "grindstone"));
         event.setButton(23, MainCluster.GLASS_GREEN);
-        event.setButton(24, IngredientContainerButton.namespacedKey(24));
-        event.setButton(29, IngredientContainerButton.namespacedKey(29));
+        event.setButton(24, ButtonContainerIngredient.namespacedKey(24));
+        event.setButton(29, ButtonContainerIngredient.namespacedKey(29));
         event.setButton(30, MainCluster.GLASS_GREEN);
     }
 }

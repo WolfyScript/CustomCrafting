@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.recipebook.buttons;
+package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
@@ -10,6 +10,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.Button;
 import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,22 +24,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecipeBookContainerButton extends Button<CCCache> {
+public class ButtonContainerRecipeBook extends Button<CCCache> {
 
     private final Map<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Runnable> tasks = new HashMap<>();
 
-    public RecipeBookContainerButton(int slot) {
-        super("recipe_book.container_" + slot, null);
+    private static final String KEY = "recipe_book.container_";
+
+    ButtonContainerRecipeBook(int slot) {
+        super(key(slot), null);
+    }
+
+    static String key(int slot) {
+        return KEY + slot;
+    }
+
+    static NamespacedKey namespacedKey(int slot) {
+        return new NamespacedKey(ClusterRecipeBook.KEY, key(slot));
     }
 
     public static void resetButtons(GuiHandler<CCCache> guiHandler) {
-        GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
         for (int i = 0; i < 54; i++) {
-            Button<CCCache> btn = cluster.getButton("recipe_book.container_" + i);
-            if (btn != null) {
-                RecipeBookContainerButton button = (RecipeBookContainerButton) btn;
+            if (guiHandler.getInvAPI().getButton(namespacedKey(i)) instanceof ButtonContainerRecipeBook button) {
                 button.removeTask(guiHandler);
                 button.setTiming(guiHandler, 0);
             }
@@ -47,7 +55,6 @@ public class RecipeBookContainerButton extends Button<CCCache> {
 
     @Override
     public void init(GuiWindow guiWindow) {
-
     }
 
     @Override

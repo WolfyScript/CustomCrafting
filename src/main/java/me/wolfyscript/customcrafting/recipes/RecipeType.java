@@ -45,9 +45,9 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
 
     String getCreatorID();
 
-    Container<? super C> getParent();
+    Container<? super C> getContainer();
 
-    Class<C> getClazz();
+    Class<C> getRecipeClass();
 
     boolean isInstance(CustomRecipe<?> recipe);
 
@@ -82,8 +82,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         String getId();
 
         String getCreatorID();
-
-        Class<C> getClazz();
 
         /**
          * @param recipe The recipe to check.
@@ -158,11 +156,6 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
             @Override
             public String getCreatorID() {
                 return creatorID;
-            }
-
-            @Override
-            public Class<C> getClazz() {
-                return clazz;
             }
 
             @Override
@@ -247,12 +240,12 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         }
 
         @Override
-        public Class<C> getClazz() {
+        public Class<C> getRecipeClass() {
             return clazz;
         }
 
         @Override
-        public Container<? super C> getParent() {
+        public Container<? super C> getContainer() {
             return parent;
         }
 

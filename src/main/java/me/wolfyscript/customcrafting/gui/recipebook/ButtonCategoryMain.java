@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.recipebook.buttons;
+package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
@@ -17,18 +17,27 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
-public class MainCategoryButton extends Button<CCCache> {
+public class ButtonCategoryMain extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
     private final Categories categories;
-
     private final Category category;
 
-    public MainCategoryButton(String categoryId, CustomCrafting customCrafting) {
+    ButtonCategoryMain(String categoryId, CustomCrafting customCrafting) {
         super("main_category." + categoryId, ButtonType.NORMAL);
         this.customCrafting = customCrafting;
         this.categories = customCrafting.getDataHandler().getCategories();
         this.category = categories.getCategory(categoryId);
+    }
+
+    @Override
+    public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
+        if (category != null) {
+            var knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
+            knowledgeBook.setCategory(category);
+            guiHandler.openWindow("recipe_book");
+        }
+        return true;
     }
 
     @Override
@@ -56,15 +65,5 @@ public class MainCategoryButton extends Button<CCCache> {
     @Override
     public void preRender(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, ItemStack itemStack, int slot, boolean help) {
 
-    }
-
-    @Override
-    public boolean execute(GuiHandler<CCCache> guiHandler, Player player, GUIInventory<CCCache> inventory, int slot, InventoryInteractEvent event) {
-        if (category != null) {
-            var knowledgeBook = guiHandler.getCustomCache().getKnowledgeBook();
-            knowledgeBook.setCategory(category);
-            guiHandler.openWindow("recipe_book");
-        }
-        return true;
     }
 }

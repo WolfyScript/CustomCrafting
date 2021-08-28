@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.gui.elite_crafting.CraftingWindow3;
 import me.wolfyscript.customcrafting.gui.elite_crafting.CraftingWindow4;
 import me.wolfyscript.customcrafting.gui.elite_crafting.CraftingWindow5;
 import me.wolfyscript.customcrafting.gui.elite_crafting.CraftingWindow6;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -30,7 +30,7 @@ public class EliteCraftingCluster extends CCCluster {
         setEntry(new NamespacedKey(KEY, "crafting_3"));
 
         registerButton(new ActionButton<>(RECIPE_BOOK.getKey(), Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
-            IngredientContainerButton.resetButtons(guiHandler);
+            ButtonContainerIngredient.resetButtons(guiHandler);
             cache.getKnowledgeBook().setEliteCraftingTable(cache.getEliteWorkbench());
             guiHandler.openCluster("recipe_book");
             return true;

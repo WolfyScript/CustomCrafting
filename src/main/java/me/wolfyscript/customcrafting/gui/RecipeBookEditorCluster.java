@@ -133,8 +133,8 @@ public class RecipeBookEditorCluster extends CCCluster {
 
         registerButton(new ActionButton<>(NAMESPACES.getKey(), Material.ENDER_CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
-            if (event instanceof InventoryClickEvent) {
-                boolean remove = ((InventoryClickEvent) event).isRightClick();
+            if (event instanceof InventoryClickEvent clickEvent) {
+                boolean remove = clickEvent.isRightClick();
                 List<String> namespaces = CCRegistry.RECIPES.namespaces();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();

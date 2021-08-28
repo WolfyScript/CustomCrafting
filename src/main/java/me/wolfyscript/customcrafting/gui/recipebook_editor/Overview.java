@@ -31,7 +31,5 @@ public abstract class Overview extends CCWindow {
         update.setButton(0, MainCluster.BACK);
         update.setButton(47, PREVIOUS);
         update.setButton(51, NEXT);
-
-
     }
 }
