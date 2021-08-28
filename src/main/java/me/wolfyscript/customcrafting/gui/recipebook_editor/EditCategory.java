@@ -2,7 +2,6 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.RecipeBookEditorCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -36,9 +35,9 @@ public class EditCategory extends EditCategorySetting {
 
         update.setButton(22, AUTO);
         if (!update.getGuiHandler().getCustomCache().getRecipeBookEditor().getCategory().isAuto()) {
-            update.setButton(29, RecipeBookEditorCluster.RECIPES);
-            update.setButton(33, RecipeBookEditorCluster.NAMESPACES);
-            update.setButton(40, RecipeBookEditorCluster.GROUPS);
+            update.setButton(29, ClusterRecipeBookEditor.RECIPES);
+            update.setButton(33, ClusterRecipeBookEditor.NAMESPACES);
+            update.setButton(40, ClusterRecipeBookEditor.GROUPS);
         }
     }
 }

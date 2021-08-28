@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
@@ -141,7 +141,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
             CCRegistry.RECIPES.register(recipe);
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (player != null) {
-                    api.getChat().sendKey(player, RecipeCreatorCluster.KEY, "loading.success");
+                    api.getChat().sendKey(player, ClusterRecipeCreator.KEY, "loading.success");
                 }
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                     guiHandler.getCustomCache().getRecipeCreatorCache().reset();

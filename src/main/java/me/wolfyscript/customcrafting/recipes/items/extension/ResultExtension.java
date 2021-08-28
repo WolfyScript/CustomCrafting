@@ -92,7 +92,7 @@ public abstract class ResultExtension implements Keyed {
     /**
      * Called whenever the result is crafted in workstations or inventories without block.
      * <p>
-     * Crafted for different workstations means:
+     * Crafted for different workstations' means:
      * - Furnaces: the ingredient is smelted and the result is put into the result slot.
      * - Other Recipes: the result is taken out of the inventory and the ingredients are consumed.
      *

@@ -7,9 +7,9 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.MainCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.buttons.MetaIgnoreButton;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -62,7 +62,7 @@ public class ItemCreator extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(BACK, new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, i, event) -> {
+        registerButton(new ActionButton<>(BACK, new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, i, event) -> {
             if (cache.getItems().isRecipeItem()) {
                 guiHandler.openCluster("recipe_creator");
             } else {

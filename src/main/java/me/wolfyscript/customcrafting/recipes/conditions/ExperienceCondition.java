@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
+import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -83,7 +83,7 @@ public class ExperienceCondition extends Condition<ExperienceCondition> {
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(30, "conditions.player_experience.set");
-                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
+                        update.setButton(32, MenuConditions.TOGGLE_MODE);
                     });
         }
 

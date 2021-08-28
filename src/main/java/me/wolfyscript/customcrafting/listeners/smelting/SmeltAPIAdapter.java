@@ -25,7 +25,7 @@ import java.util.Optional;
 
 public abstract class SmeltAPIAdapter {
 
-    protected CustomCrafting customCrafting;
+    protected final CustomCrafting customCrafting;
 
     protected SmeltAPIAdapter(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettings<S>> extends RecipeCache<CraftingRecipe<?, S>> {
 
     protected boolean shapeless;
-    protected Map<Integer, Ingredient> ingredients;
+    protected final Map<Integer, Ingredient> ingredients;
     private S settings;
     private boolean mirrorHorizontal;
     private boolean mirrorVertical;

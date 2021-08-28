@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ButtonContainerRecipeBook extends Button<CCCache> {
+class ButtonContainerRecipeBook extends Button<CCCache> {
 
     private final Map<GuiHandler<?>, RecipeContainer> containers = new HashMap<>();
     private final Map<GuiHandler<CCCache>, Integer> timings = new HashMap<>();

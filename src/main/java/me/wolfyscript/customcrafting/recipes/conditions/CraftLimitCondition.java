@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
+import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -75,7 +75,7 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(30, "conditions.craft_limit.set");
-                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
+                        update.setButton(32, MenuConditions.TOGGLE_MODE);
                     });
         }
 

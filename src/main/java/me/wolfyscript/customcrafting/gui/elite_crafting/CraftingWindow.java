@@ -4,9 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.MainCluster;
-import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.CraftingSlotButton;
-import me.wolfyscript.customcrafting.gui.elite_crafting.buttons.ResultSlotButton;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -18,11 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class CraftingWindow extends CCWindow {
+abstract class CraftingWindow extends CCWindow {
 
     protected static final String RESULT = "result_slot";
     protected final int gridSize;
-
 
     protected CraftingWindow(GuiCluster<CCCache> cluster, String namespace, int size, CustomCrafting customCrafting, int gridSize) {
         super(cluster, namespace, size, customCrafting);
@@ -33,11 +30,11 @@ public abstract class CraftingWindow extends CCWindow {
     @Override
     public void onInit() {
         for (int i = 0; i < gridSize * gridSize; i++) {
-            registerButton(new CraftingSlotButton(i, customCrafting));
+            registerButton(new ButtonSlotCrafting(i, customCrafting));
         }
-        registerButton(new ResultSlotButton(customCrafting));
-        registerButton(new DummyButton<>("texture_dark", new ButtonState<>(MainCluster.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
-        registerButton(new DummyButton<>("texture_light", new ButtonState<>(MainCluster.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new ButtonSlotResult(customCrafting));
+        registerButton(new DummyButton<>("texture_dark", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
+        registerButton(new DummyButton<>("texture_light", new ButtonState<>(ClusterMain.BACKGROUND, Material.BLACK_STAINED_GLASS_PANE)));
     }
 
     @Override
@@ -48,16 +45,14 @@ public abstract class CraftingWindow extends CCWindow {
     @Override
     public void onUpdateSync(GuiUpdate<CCCache> event) {
         for (int i = 0; i < getSize(); i++) {
-            event.setButton(i, MainCluster.GLASS_BLACK);
+            event.setButton(i, ClusterMain.GLASS_BLACK);
         }
-
         CCCache cache = event.getGuiHandler().getCustomCache();
         EliteWorkbench eliteWorkbench = cache.getEliteWorkbench();
         if (eliteWorkbench.getContents() == null || eliteWorkbench.getCurrentGridSize() <= 0) {
             eliteWorkbench.setCurrentGridSize((byte) gridSize);
             eliteWorkbench.setContents(new ItemStack[gridSize * gridSize]);
         }
-
         int slot;
         for (int i = 0; i < gridSize * gridSize; i++) {
             slot = getGridX() + i + (i / gridSize) * (9 - gridSize);

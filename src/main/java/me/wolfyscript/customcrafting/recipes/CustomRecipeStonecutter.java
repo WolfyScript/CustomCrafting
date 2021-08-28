@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -91,7 +91,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        NamespacedKey glass = MainCluster.GLASS_GREEN;
+        NamespacedKey glass = ClusterMain.GLASS_GREEN;
         event.setButton(20, new NamespacedKey(ClusterRecipeBook.KEY, ButtonContainerIngredient.key(20)));
         event.setButton(24, new NamespacedKey(ClusterRecipeBook.KEY, ButtonContainerIngredient.key(24)));
         event.setButton(29, glass);

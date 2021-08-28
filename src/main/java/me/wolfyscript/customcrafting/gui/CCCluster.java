@@ -7,7 +7,7 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 
 public abstract class CCCluster extends GuiCluster<CCCache> {
 
-    protected CustomCrafting customCrafting;
+    protected final CustomCrafting customCrafting;
 
     protected CCCluster(InventoryAPI<CCCache> inventoryAPI, String id, CustomCrafting customCrafting) {
         super(inventoryAPI, id);

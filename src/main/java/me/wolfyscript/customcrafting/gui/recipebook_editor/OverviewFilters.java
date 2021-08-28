@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipebook_editor.buttons.FilterButton;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -37,7 +36,7 @@ public class OverviewFilters extends Overview {
         List<String> categories = recipeBook.getCategories().getSortedFilters();
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
             String id = categories.get(i);
-            registerButton(new FilterButton(id, customCrafting));
+            registerButton(new ButtonFilter(id, customCrafting));
             update.setButton(i + 9, "filter_" + id);
         }
     }

@@ -6,7 +6,7 @@ import me.wolfyscript.customcrafting.configs.recipebook.RecipeContainer;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
@@ -34,7 +34,7 @@ public class MenuRecipeBook extends CCWindow {
     private final BukkitTask ingredientTask;
     private final BukkitTask containerTask;
 
-    public MenuRecipeBook(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
+    MenuRecipeBook(ClusterRecipeBook cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterRecipeBook.RECIPE_BOOK.getKey(), 54, customCrafting);
         this.ingredientTask = Bukkit.getScheduler().runTaskTimerAsynchronously(customCrafting, () -> {
             for (int i = 0; i < 37; i++) {
@@ -69,7 +69,7 @@ public class MenuRecipeBook extends CCWindow {
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>(BACK, new ButtonState<>(MainCluster.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK, new ButtonState<>(ClusterMain.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             ButtonContainerIngredient.resetButtons(guiHandler);
             ButtonContainerRecipeBook.resetButtons(guiHandler);
             guiHandler.openPreviousWindow();

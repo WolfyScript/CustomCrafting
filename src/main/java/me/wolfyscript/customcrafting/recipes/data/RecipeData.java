@@ -63,8 +63,8 @@ public abstract class RecipeData<R extends CustomRecipe<?>> {
 
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.
-     * For normal recipes that means from 0 - 9.
-     * For Elite recipes the range is from 0 - 36.
+     * For normal recipes that means from 0 to 9.
+     * For Elite recipes the range is from 0 to 36.
      * <p>
      * For the correct position open the in-game Recipe Creator GUI and see in which slot the ingredient is.
      * You may take the character saved in the config and use the index of it inside this String "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -79,8 +79,8 @@ public abstract class RecipeData<R extends CustomRecipe<?>> {
 
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.
-     * For normal recipes that means from 0 - 9.
-     * For Elite recipes the range is from 0 - 36.
+     * For normal recipes that means from 0 to 9.
+     * For Elite recipes the range is from 0 to 36.
      * <p>
      * For the correct position open the in-game Recipe Creator GUI and see in which slot the ingredient is.
      * You may take the character saved in the config and use the index of it inside this String "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

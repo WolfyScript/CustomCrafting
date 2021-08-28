@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
-public class ButtonCategoryMain extends Button<CCCache> {
+class ButtonCategoryMain extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
     private final Categories categories;

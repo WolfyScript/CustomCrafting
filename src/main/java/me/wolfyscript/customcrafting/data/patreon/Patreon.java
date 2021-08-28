@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Patreon {
 
-    List<Patron> patronList = new ArrayList<>();
+    final List<Patron> patronList = new ArrayList<>();
 
     public Patreon() {
     }

@@ -11,15 +11,15 @@
 #   - %customcrafting_recipe_[option]_[namespaced_key]%
 #       - %customcrafting_recipe_type_[namespaced_key]%         > The type of the recipe
 #       - %customcrafting_recipe_crafts_[namespaced_key]%       > How often the player has crafted the recipe
-#       - %customcrafting_recipe_advanced_[namespaced_key]%     > If the recipe is a advanced crafting table recipe
+#       - %customcrafting_recipe_advanced_[namespaced_key]%     > If the recipe is an advanced crafting table recipe
 #       - %customcrafting_recipe_permission_[namespaced_key]%   > If the recipe requires a permission
 #       - %customcrafting_recipe_available_[namespaced_key]%    > If the recipe is available for the player
 
 debug: false              # Debug should be disabled! That are a lot of Messages!
 
-language: en_US           # The language you want use. The context: <language>_<country> Available languages en_US, de_DE, zh_CN.
-  # If you want to edit a language copy it and rename it.
-  # After renaming you can just use your language file name instead and it will also be available in the in-game settings.
+language: en_US           # The language you want use. The context: <language>_<country> Available languages' en_US, de_DE, zh_CN.
+# If you want to edit a language copy it and rename it.
+# After renaming you can just use your language file name instead, and it will also be available in the in-game settings.
 # If you have any language file you would like to add to this plugin, then feel free to contact me.
 
 creator:
@@ -27,7 +27,7 @@ creator:
 
 commands:
   alias: [ "cc" ]         # Aliases for the main command of the plugin.
-  # This is often used to prevent incompatibility with other plugins that use the same alias like ChatClear, etc.
+  # This is often used to prevent incompatibility with other plugins that use the same alias as ChatClear, etc.
 
 local_storage:
   load: true              # this should always be true if you don't use a database or want to export your data to the database.
@@ -43,7 +43,7 @@ local_storage:
   # The recipes can only be replaced in Minecraft 1.15+, because the API pre 1.15 is unstable.
 database:
   enabled: false          # If the database feature should be used or not.
-  type: MYSQL             # The type of the database. Currently only MYSQL
+  type: MYSQL             # The type of the database. Currently, only MYSQL
   host: "localhost"       # The ip or hostname of the data bank
   port: 3306              # The port of the data bank
   schema: "mc_plugins"    # The name of the schema
@@ -72,5 +72,5 @@ data:
   version: 0                     # Do not change this number! It is used to update configs of recipes and items to new formats!
   auto_save:
     interval: 30          # Interval in minutes to save data.
-    # Currently used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
+    # Currently, used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
     message: true         # Save message that is printed into the console.

@@ -36,8 +36,8 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
 
     protected List<Ingredient> ingredients;
 
-    protected int maxGridDimension;
-    protected int maxIngredients;
+    protected final int maxGridDimension;
+    protected final int maxIngredients;
 
     private final S settings;
 

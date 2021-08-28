@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class ButtonCategoryItem extends Button<CCCache> {
+class ButtonCategoryItem extends Button<CCCache> {
 
     private final CustomCrafting customCrafting;
     private final Categories categories;

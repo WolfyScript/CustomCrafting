@@ -4,8 +4,8 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.EliteCraftingCluster;
-import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -13,7 +13,7 @@ import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
-public class MenuMain extends CCWindow {
+class MenuMain extends CCWindow {
 
     private static final String BACK_BOTTOM = "back_bottom";
 
@@ -29,7 +29,7 @@ public class MenuMain extends CCWindow {
         for (String categoryId : categories.getSortedCategories()) {
             registerButton(new ButtonCategoryMain(categoryId, customCrafting));
         }
-        registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>(MainCluster.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>(BACK_BOTTOM, new ButtonState<>(ClusterMain.BACK_BOTTOM, Material.BARRIER, (cache, guiHandler, player, inventory, slot, event) -> {
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (cache.getKnowledgeBook().hasEliteCraftingTable()) {
                     guiHandler.openCluster(EliteCraftingCluster.KEY);

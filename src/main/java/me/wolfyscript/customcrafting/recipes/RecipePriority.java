@@ -8,7 +8,7 @@ public enum RecipePriority {
     LOW(1),
     LOWEST(2);
 
-    int order;
+    final int order;
 
     RecipePriority(int order) {
         this.order = order;

@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -242,7 +242,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(10, ButtonContainerIngredient.namespacedKey(10));
         event.setButton(13, ButtonContainerIngredient.namespacedKey(13));
-        NamespacedKey glass = MainCluster.GLASS_GREEN;
+        NamespacedKey glass = ClusterMain.GLASS_GREEN;
         event.setButton(19, glass);
         event.setButton(22, glass);
         event.setButton(28, glass);

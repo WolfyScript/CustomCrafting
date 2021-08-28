@@ -4,9 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.MainCluster;
-import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
-import me.wolfyscript.customcrafting.gui.potion_creator.buttons.PotionEffectTypeSelectButton;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
@@ -18,12 +16,12 @@ import org.bukkit.potion.PotionEffectType;
 public class PotionEffectTypeSelection extends CCWindow {
 
     public PotionEffectTypeSelection(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION.getKey(), 54, customCrafting);
+        super(cluster, ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION.getKey(), 54, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerButton(new ActionButton<>("back", new ButtonState<>(MainCluster.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+        registerButton(new ActionButton<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
             PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
             if (!potionEffectCache.getOpenedFromCluster().isEmpty()) {
                 guiHandler.openWindow(new NamespacedKey(potionEffectCache.getOpenedFromCluster(), potionEffectCache.getOpenedFromWindow()));

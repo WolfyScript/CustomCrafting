@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
@@ -37,16 +37,16 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     private int fuelCost; //The fuel cost of recipe
     private int brewTime; //The brew time in ticks
 
-    //These options are for general changes made to the potions, if advanced features are not required or you want to edit all effects before editing them further in detail.
+    //These options are for general changes made to the potions, if advanced features are not required, or you want to edit all effects before editing them further in detail.
     private int durationChange; //added to the Duration. if <0 it will be subtracted
     private int amplifierChange; //added to the Amplifier. if <0 it will be subtracted
     private boolean resetEffects; //If true resets all the effects
     private Color effectColor; //Alternative to colorChange
 
-    //These options are more precise and you can specify the exact effect you want to edit.
+    //These options are more precise, and you can specify the exact effect you want to edit.
     private List<PotionEffectType> effectRemovals; //These effects will be removed from the potions
     private Map<PotionEffect, Boolean> effectAdditions; //These effects will be added with an option if they should be replaced if they are already present
-    private Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the the values of these PotionEffects will added to the existing effects and boolean values will be replaced.
+    private Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the values of these PotionEffects will add to the existing effects and boolean values will be replaced.
     //Instead of all these options you can use a set result.
 
     //Conditions for the Potions inside the 3 slots at the bottom
@@ -388,11 +388,11 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         event.setButton(12, ButtonContainerIngredient.namespacedKey(3));
         event.setButton(20, new NamespacedKey("recipe_book", "brewing.icon"));
-        event.setButton(21, MainCluster.GLASS_GREEN);
+        event.setButton(21, ClusterMain.GLASS_GREEN);
 
         event.setButton(30, ButtonContainerIngredient.namespacedKey(0));
-        event.setButton(31, MainCluster.GLASS_GREEN);
-        event.setButton(32, MainCluster.GLASS_GREEN);
+        event.setButton(31, ClusterMain.GLASS_GREEN);
+        event.setButton(32, ClusterMain.GLASS_GREEN);
         event.setButton(33, ButtonContainerIngredient.namespacedKey(1));
 
 

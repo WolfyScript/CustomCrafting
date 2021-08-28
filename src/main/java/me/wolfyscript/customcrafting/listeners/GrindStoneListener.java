@@ -234,8 +234,7 @@ public class GrindStoneListener implements Listener {
                 } else {
                     finalInputTop = optionalOther.get();
                 }
-            } else if (!otherInput.isEmpty()) { //Other slot is empty! check if current item is in a recipe
-                //Recipe has other input! This recipe is not yet valid!
+            } else if (!otherInput.isEmpty()) { //Other slot is empty! check if current item is in a recipe has other input! This recipe is not yet valid!
                 validItem = true;
                 break;
             }

@@ -195,7 +195,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
 
     class RecipeTypeImpl<C extends CustomRecipe<?>> implements RecipeType<C> {
 
-        static Set<RecipeType<? extends CustomRecipe<?>>> values = new HashSet<>();
+        static final Set<RecipeType<? extends CustomRecipe<?>>> values = new HashSet<>();
 
         private final String id;
         private final Type type;
