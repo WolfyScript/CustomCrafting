@@ -20,7 +20,8 @@ import org.bukkit.inventory.ItemFlag;
 
 public class MenuMain extends CCWindow {
 
-    private static final String CRAFTING = RecipeType.Container.CRAFTING.getId();
+    private static final String CRAFTING = RecipeType.Container.CRAFTING.getCreatorID();
+    private static final String ELITE_CRAFTING = RecipeType.Container.ELITE_CRAFTING.getCreatorID();
     private static final String FURNACE = RecipeType.FURNACE.getId();
     private static final String ANVIL = RecipeType.ANVIL.getId();
     private static final String BLAST_FURNACE = RecipeType.BLAST_FURNACE.getId();
@@ -29,7 +30,6 @@ public class MenuMain extends CCWindow {
     private static final String STONECUTTER = RecipeType.STONECUTTER.getId();
     private static final String GRINDSTONE = RecipeType.GRINDSTONE.getId();
     private static final String BREWING_STAND = RecipeType.BREWING_STAND.getId();
-    private static final String ELITE_CRAFTING = RecipeType.Container.ELITE_CRAFTING.getId();
     private static final String CAULDRON = RecipeType.CAULDRON.getId();
     private static final String SMITHING = RecipeType.SMITHING.getId();
 
@@ -38,7 +38,7 @@ public class MenuMain extends CCWindow {
     private static final String RECIPE_BOOK_EDITOR = "recipe_book_editor";
     private static final String ITEM_EDITOR = "item_editor";
 
-    public MenuMain(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+    MenuMain(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
     }
 

@@ -259,13 +259,13 @@
               "&eangezeigt werden, welche Materialien hinzugefügt werden, etc."
             ]
           },
-          "workbench": {
+          "crafting": {
             "name": "&6Werkbank Rezepte",
             "help": [
               "&7Erstelle Werkbank Rezepte."
             ]
           },
-          "elite_workbench": {
+          "elite_crafting": {
             "name": "&6Elite Werkbank &8[&7Beta&8]",
             "help": [
               ""

@@ -231,13 +231,13 @@
               "&e切换配方生成器保存"
             ]
           },
-          "workbench": {
+          "crafting": {
             "name": "&6工作台配方",
             "help": [
               ""
             ]
           },
-          "elite_workbench": {
+          "elite_crafting": {
             "name": "&6精英工作台 &8[&7测试&8]",
             "help": [
               ""
