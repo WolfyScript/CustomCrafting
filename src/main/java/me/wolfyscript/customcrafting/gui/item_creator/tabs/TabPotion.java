@@ -4,9 +4,9 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
-import me.wolfyscript.customcrafting.gui.PotionCreatorCluster;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
+import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -27,8 +27,8 @@ public class TabPotion extends ItemCreatorTabVanilla {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.POTION, this));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.POTION, this));
         creator.registerButton(new ActionButton<>("potion.add", PlayerHeadUtils.getViaURL("9a2d891c6ae9f6baa040d736ab84d48344bb6b70d7f1a280dd12cbac4d777"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             cache.getPotionEffectCache().setApplyPotionEffect((potionEffectCache1, cache1, potionEffect) -> {
                 var itemMeta = items.getItem().getItemMeta();
@@ -38,7 +38,7 @@ public class TabPotion extends ItemCreatorTabVanilla {
                 items.getItem().setItemMeta(itemMeta);
             });
             cache.getPotionEffectCache().setRecipePotionEffect(false);
-            guiHandler.openWindow(PotionCreatorCluster.POTION_CREATOR);
+            guiHandler.openWindow(ClusterPotionCreator.POTION_CREATOR);
             return true;
         }));
         creator.registerButton(new ActionButton<>("potion.remove", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
@@ -51,7 +51,7 @@ public class TabPotion extends ItemCreatorTabVanilla {
                 items.getItem().setItemMeta(itemMeta);
             });
             potionEffectCache.setOpenedFrom("item_creator", "main_menu");
-            guiHandler.openWindow(PotionCreatorCluster.POTION_EFFECT_TYPE_SELECTION);
+            guiHandler.openWindow(ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION);
             return true;
         }));
     }

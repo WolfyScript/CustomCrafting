@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class MergeAdapter implements Keyed {
 
     @JsonProperty("key")
-    protected NamespacedKey key;
+    protected final NamespacedKey key;
 
     /**
      * These are the slots selected by the merge option.

@@ -10,8 +10,15 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cauldron.Cauldrons;
 import me.wolfyscript.customcrafting.data.patreon.Patreon;
 import me.wolfyscript.customcrafting.data.patreon.Patron;
-import me.wolfyscript.customcrafting.gui.*;
+import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
+import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.gui.particle_creator.ClusterParticleCreator;
+import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.gui.recipebook_editor.ClusterRecipeBookEditor;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
@@ -301,14 +308,14 @@ public class CustomCrafting extends JavaPlugin {
         CCRegistry.ITEM_CREATOR_TABS.register(new TabVanilla());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabUnbreakable());
 
-        invAPI.registerCluster(new MainCluster(invAPI, this));
-        invAPI.registerCluster(new RecipeCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new RecipeBookCluster(invAPI, this));
+        invAPI.registerCluster(new ClusterMain(invAPI, this));
+        invAPI.registerCluster(new ClusterRecipeCreator(invAPI, this));
+        invAPI.registerCluster(new ClusterRecipeBook(invAPI, this));
         invAPI.registerCluster(new EliteCraftingCluster(invAPI, this));
-        invAPI.registerCluster(new ItemCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new ParticleCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new PotionCreatorCluster(invAPI, this));
-        invAPI.registerCluster(new RecipeBookEditorCluster(invAPI, this));
+        invAPI.registerCluster(new ClusterItemCreator(invAPI, this));
+        invAPI.registerCluster(new ClusterParticleCreator(invAPI, this));
+        invAPI.registerCluster(new ClusterPotionCreator(invAPI, this));
+        invAPI.registerCluster(new ClusterRecipeBookEditor(invAPI, this));
     }
 
     public ConfigHandler getConfigHandler() {

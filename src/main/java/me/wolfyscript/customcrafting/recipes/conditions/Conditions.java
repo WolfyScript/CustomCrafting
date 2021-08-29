@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonCreator;
@@ -46,12 +46,12 @@ public class Conditions {
         }
     }
 
-    public boolean check(String id, ICustomRecipe<?> customRecipe, Data data) {
+    public boolean check(String id, CustomRecipe<?> customRecipe, Data data) {
         var condition = getByID(id);
         return condition == null || condition.check(customRecipe, data);
     }
 
-    public boolean checkConditions(ICustomRecipe<?> customRecipe, Data data) {
+    public boolean checkConditions(CustomRecipe<?> customRecipe, Data data) {
         return valuesMap.values().stream().allMatch(condition -> condition.check(customRecipe, data));
     }
 

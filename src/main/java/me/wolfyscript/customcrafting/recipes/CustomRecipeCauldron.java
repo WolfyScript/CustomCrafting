@@ -1,8 +1,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.conditions.PermissionCondition;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -197,12 +198,12 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         for (int i = 0; i < 6; i++) {
             invSlot = 10 + i + (i / 3) * 6;
             if (i < ingredients.size()) {
-                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(ingredients.getChoices().get(i)));
+                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(invSlot))).setVariants(guiHandler, Collections.singletonList(ingredients.getChoices().get(i)));
             } else {
-                ((IngredientContainerButton) cluster.getButton("ingredient.container_" + invSlot)).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
+                ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(invSlot))).setVariants(guiHandler, Collections.singletonList(new CustomItem(Material.AIR)));
             }
         }
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_25")).setVariants(guiHandler, getResult());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(25))).setVariants(guiHandler, getResult());
     }
 
     @Override
@@ -210,9 +211,9 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         int invSlot;
         for (int i = 0; i < 6; i++) {
             invSlot = 10 + i + (i / 3) * 6;
-            event.setButton(invSlot, new NamespacedKey("recipe_book", "ingredient.container_" + invSlot));
+            event.setButton(invSlot, ButtonContainerIngredient.namespacedKey(invSlot));
         }
-        List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getId().equals("permission")).toList();
+        List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getNamespacedKey().equals(PermissionCondition.KEY)).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
         for (Condition<?> condition : conditions) {
@@ -221,6 +222,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         }
         event.setButton(23, new NamespacedKey("recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled"));
         event.setButton(32, new NamespacedKey("recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
-        event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_25"));
+        event.setButton(25, ButtonContainerIngredient.namespacedKey(25));
     }
 }

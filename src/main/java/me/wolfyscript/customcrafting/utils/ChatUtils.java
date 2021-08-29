@@ -108,7 +108,6 @@ public class ChatUtils {
         List<String> lore;
         if (itemMeta != null && itemMeta.hasLore()) {
             lore = itemMeta.getLore() == null ? new ArrayList<>() : itemMeta.getLore();
-
             int i = 0;
             for (String line : lore) {
                 int finalI = i;

@@ -2,8 +2,8 @@ package me.wolfyscript.customcrafting.listeners;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeAnvil;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.data.AnvilData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
@@ -49,7 +49,7 @@ public class AnvilListener implements Listener {
             return;
         }
         List<CustomRecipeAnvil> recipes = CCRegistry.RECIPES.getAvailable(RecipeType.ANVIL, player);
-        recipes.sort(Comparator.comparing(ICustomRecipe::getPriority));
+        recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
         for (CustomRecipeAnvil recipe : recipes) {
             Optional<CustomItem> finalInputLeft = Optional.empty();
             Optional<CustomItem> finalInputRight = Optional.empty();

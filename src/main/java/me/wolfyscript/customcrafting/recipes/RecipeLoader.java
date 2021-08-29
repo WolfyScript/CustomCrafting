@@ -5,7 +5,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.lang.reflect.InvocationTargetException;
 
-public interface RecipeLoader<C extends ICustomRecipe<?>> {
+public interface RecipeLoader<C extends CustomRecipe<?>> {
 
     String getId();
 

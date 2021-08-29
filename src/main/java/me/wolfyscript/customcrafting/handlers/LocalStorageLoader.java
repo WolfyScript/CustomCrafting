@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -21,6 +21,7 @@ import java.util.List;
 public class LocalStorageLoader extends ResourceLoader {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
+    private static final String ITEMS_FOLDER = "items";
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
@@ -43,8 +44,7 @@ public class LocalStorageLoader extends ResourceLoader {
                 //Required to load the old recipes.
                 loadAndRegisterRecipe(RecipeType.Container.CRAFTING, dir);
                 loadAndRegisterRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
-
-                for (RecipeType<? extends ICustomRecipe<?>> type : RecipeType.values()) {
+                for (RecipeType<? extends CustomRecipe<?>> type : RecipeType.values()) {
                     loadAndRegisterRecipe(type, dir);
                 }
             }
@@ -57,7 +57,7 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     @Override
-    public boolean save(ICustomRecipe<?> recipe) {
+    public boolean save(CustomRecipe<?> recipe) {
         File file = getFileAt(recipe.getNamespacedKey().getNamespace(), recipe.getRecipeType().getId(), recipe.getNamespacedKey().getKey());
         if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
             try {
@@ -76,7 +76,7 @@ public class LocalStorageLoader extends ResourceLoader {
     public boolean save(CustomItem item) {
         if (item.getNamespacedKey() != null) {
             var internalKey = NamespacedKeyUtils.toInternal(item.getNamespacedKey());
-            var file = getFileAt(internalKey.getNamespace(), "items", internalKey.getKey());
+            var file = getFileAt(internalKey.getNamespace(), ITEMS_FOLDER, internalKey.getKey());
             if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
                 try {
                     if (file.exists() || file.createNewFile()) {
@@ -92,7 +92,7 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     @Override
-    public boolean delete(ICustomRecipe<?> recipe) {
+    public boolean delete(CustomRecipe<?> recipe) {
         File file = getFileAt(recipe.getNamespacedKey().getNamespace(), recipe.getRecipeType().getId(), recipe.getNamespacedKey().getKey());
         System.gc();
         if (file.delete()) {
@@ -107,7 +107,7 @@ public class LocalStorageLoader extends ResourceLoader {
     public boolean delete(CustomItem item) {
         System.gc();
         var internalKey = NamespacedKeyUtils.toInternal(item.getNamespacedKey());
-        var file = getFileAt(internalKey.getNamespace(), "items", internalKey.getKey());
+        var file = getFileAt(internalKey.getNamespace(), ITEMS_FOLDER, internalKey.getKey());
         if (file.delete()) {
             return true;
         } else {
@@ -124,7 +124,7 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private void loadItems(String subFolder) {
-        for (File file : getFiles(subFolder, "items")) {
+        for (File file : getFiles(subFolder, ITEMS_FOLDER)) {
             String name = file.getName();
             var namespacedKey = new NamespacedKey(customCrafting, subFolder + "/" + name.substring(0, name.lastIndexOf(".")));
             try {

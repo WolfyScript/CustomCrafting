@@ -5,8 +5,8 @@ import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -26,8 +26,8 @@ public class TabRecipeBook extends ItemCreatorTab {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.KNOWLEDGE_BOOK, this));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.KNOWLEDGE_BOOK, this));
         creator.registerButton(new ToggleButton<>("knowledge_book.toggle", (cache, guiHandler, player, guiInventory, i) -> ((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).isEnabled(), new ButtonState<>("knowledge_book.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(false);
             return true;

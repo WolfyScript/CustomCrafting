@@ -37,7 +37,16 @@ public class RecipeCacheSmithing extends RecipeCache<CustomRecipeSmithing> {
 
     @Override
     protected CustomRecipeSmithing constructRecipe() {
-        return null;
+        return create(new CustomRecipeSmithing(key));
+    }
+
+    @Override
+    protected CustomRecipeSmithing create(CustomRecipeSmithing recipe) {
+        CustomRecipeSmithing recipeSmithing = super.create(recipe);
+        recipeSmithing.setBase(base);
+        recipeSmithing.setAddition(addition);
+        recipeSmithing.setPreserveEnchants(preserveEnchants);
+        return recipeSmithing;
     }
 
     public Ingredient getBase() {

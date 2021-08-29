@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -24,7 +24,7 @@ public class TabUnbreakable extends ItemCreatorTabVanilla {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ToggleButton<>(KEY, (cache, guiHandler, player, guiInventory, i) -> {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().isUnbreakable();

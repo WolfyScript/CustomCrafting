@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,16 +41,16 @@ public class Category extends CategorySettings {
         containers.clear();
         List<RecipeContainer> recipeContainers = new ArrayList<>();
         recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).toList());
-        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> CCRegistry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
-        recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
-            ICustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
+        recipeContainers.addAll(this.namespaces.parallelStream().flatMap(s -> CCRegistry.RECIPES.get(s).parallelStream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
+        recipeContainers.addAll(this.recipes.parallelStream().map(namespacedKey -> {
+            CustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(recipe);
         }).filter(Objects::nonNull).toList());
         containers.addAll(recipeContainers.stream().distinct().sorted().toList());
     }
 
     public void indexFilters(CategoryFilter filter) {
-        indexedFilters.put(filter, containers.stream().filter(filter::filter).toList());
+        indexedFilters.put(filter, containers.parallelStream().filter(filter::filter).toList());
     }
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {

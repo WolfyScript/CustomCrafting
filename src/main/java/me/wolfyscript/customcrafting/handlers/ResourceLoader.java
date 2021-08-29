@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.handlers;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -49,11 +49,11 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
         CCRegistry.RECIPES.values().forEach(recipe -> recipe.save(this, null));
     }
 
-    public abstract boolean save(ICustomRecipe<?> recipe);
+    public abstract boolean save(CustomRecipe<?> recipe);
 
     public abstract boolean save(CustomItem item);
 
-    public abstract boolean delete(ICustomRecipe<?> recipe);
+    public abstract boolean delete(CustomRecipe<?> recipe);
 
     public abstract boolean delete(CustomItem item);
 

@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CCClassRegistry;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;
-import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -99,7 +99,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         this.option = availableOptions.get(index);
     }
 
-    public abstract boolean check(ICustomRecipe<?> recipe, Conditions.Data data);
+    public abstract boolean check(CustomRecipe<?> recipe, Conditions.Data data);
 
     @JsonIgnore
     @Override
@@ -112,7 +112,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         return key.toString();
     }
 
-    public boolean isApplicable(ICustomRecipe<?> recipe) {
+    public boolean isApplicable(CustomRecipe<?> recipe) {
         return true;
     }
 
@@ -144,7 +144,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
             this.description = description;
         }
 
-        public abstract void init(ConditionsMenu menu, WolfyUtilities api);
+        public abstract void init(MenuConditions menu, WolfyUtilities api);
 
         public abstract void renderMenu(GuiUpdate<CCCache> update, CCCache cache, C condition, RecipeCache<?> recipe);
 
@@ -172,7 +172,7 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
         }
 
         @Override
-        public void init(ConditionsMenu menu, WolfyUtilities api) {
+        public void init(MenuConditions menu, WolfyUtilities api) {
             //We only have an icon!
         }
 
@@ -184,17 +184,17 @@ public abstract class Condition<C extends Condition<C>> implements Keyed {
 
     public static class FunctionalGUIComponent<C extends Condition<C>> extends AbstractGUIComponent<C> {
 
-        private final BiConsumer<ConditionsMenu, WolfyUtilities> initConsumer;
+        private final BiConsumer<MenuConditions, WolfyUtilities> initConsumer;
         private final RenderConsumer<C> renderConsumer;
 
-        protected FunctionalGUIComponent(Material icon, String name, List<String> description, BiConsumer<ConditionsMenu, WolfyUtilities> init, RenderConsumer<C> render) {
+        protected FunctionalGUIComponent(Material icon, String name, List<String> description, BiConsumer<MenuConditions, WolfyUtilities> init, RenderConsumer<C> render) {
             super(icon, name, description);
             this.initConsumer = init;
             this.renderConsumer = render;
         }
 
         @Override
-        public void init(ConditionsMenu menu, WolfyUtilities api) {
+        public void init(MenuConditions menu, WolfyUtilities api) {
             if (initConsumer != null) {
                 initConsumer.accept(menu, api);
             }

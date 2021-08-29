@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -44,12 +44,12 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
     }
 
     @Override
-    public boolean isApplicable(ICustomRecipe<?> recipe) {
+    public boolean isApplicable(CustomRecipe<?> recipe) {
         return RecipeType.Container.ELITE_CRAFTING.isInstance(recipe);
     }
 
     @Override
-    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+    public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         if (RecipeType.Container.ELITE_CRAFTING.isInstance(recipe)) {
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());

@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.MainCluster;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -28,10 +28,8 @@ public abstract class Overview extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-        update.setButton(0, MainCluster.BACK);
+        update.setButton(0, ClusterMain.BACK);
         update.setButton(47, PREVIOUS);
         update.setButton(51, NEXT);
-
-
     }
 }

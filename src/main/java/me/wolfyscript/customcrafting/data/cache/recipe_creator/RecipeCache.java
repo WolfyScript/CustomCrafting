@@ -3,8 +3,8 @@ package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.RecipeCreatorCluster;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -15,7 +15,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public abstract class RecipeCache<R extends ICustomRecipe<?>> {
+public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
     protected NamespacedKey key;
     protected boolean exactMeta;
@@ -136,12 +136,12 @@ public abstract class RecipeCache<R extends ICustomRecipe<?>> {
         }
         WolfyUtilities api = customCrafting.getApi();
         try {
-            ICustomRecipe<?> recipe = constructRecipe();
+            CustomRecipe<?> recipe = constructRecipe();
             recipe.save(player);
             CCRegistry.RECIPES.register(recipe);
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (player != null) {
-                    api.getChat().sendKey(player, RecipeCreatorCluster.KEY, "loading.success");
+                    api.getChat().sendKey(player, ClusterRecipeCreator.KEY, "loading.success");
                 }
                 if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
                     guiHandler.getCustomCache().getRecipeCreatorCache().reset();

@@ -12,8 +12,8 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 
 public abstract class CCWindow extends GuiWindow<CCCache> {
 
-    protected CustomCrafting customCrafting;
-    protected WolfyUtilities api = CustomCrafting.inst().getApi();
+    protected final CustomCrafting customCrafting;
+    protected final WolfyUtilities api = CustomCrafting.inst().getApi();
 
     protected CCWindow(GuiCluster<CCCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
         super(guiCluster, namespace, size);

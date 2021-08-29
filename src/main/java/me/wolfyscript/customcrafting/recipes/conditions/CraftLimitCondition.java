@@ -1,9 +1,9 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
-import me.wolfyscript.customcrafting.recipes.ICraftingRecipe;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
@@ -26,12 +26,12 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
     }
 
     @Override
-    public boolean isApplicable(ICustomRecipe<?> recipe) {
-        return recipe instanceof ICraftingRecipe;
+    public boolean isApplicable(CustomRecipe<?> recipe) {
+        return recipe instanceof CraftingRecipe;
     }
 
     @Override
-    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+    public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         Player player = data.getPlayer();
         if (player != null) {
             CCPlayerData playerStore = PlayerUtil.getStore(player);
@@ -75,7 +75,7 @@ public class CraftLimitCondition extends Condition<CraftLimitCondition> {
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(30, "conditions.craft_limit.set");
-                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
+                        update.setButton(32, MenuConditions.TOGGLE_MODE);
                     });
         }
 

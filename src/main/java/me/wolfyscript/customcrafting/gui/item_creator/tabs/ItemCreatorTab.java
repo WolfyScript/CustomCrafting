@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -18,7 +18,7 @@ public abstract class ItemCreatorTab implements Keyed {
         this.key = key;
     }
 
-    public abstract void register(ItemCreator creator, WolfyUtilities api);
+    public abstract void register(MenuItemCreator creator, WolfyUtilities api);
 
     public abstract void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item);
 

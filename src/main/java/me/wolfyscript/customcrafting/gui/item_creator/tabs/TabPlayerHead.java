@@ -3,8 +3,8 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -31,8 +31,8 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.PLAYER_HEAD, this));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.PLAYER_HEAD, this));
         creator.registerButton(new ItemInputButton<>("player_head.texture.input", Material.AIR, (cache, guiHandler, player, inventory, i, event) -> {
             if (event instanceof InventoryClickEvent) {
                 return ((InventoryClickEvent) event).getCurrentItem().getType().equals(Material.PLAYER_HEAD);

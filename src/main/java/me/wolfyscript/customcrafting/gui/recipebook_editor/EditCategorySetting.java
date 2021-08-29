@@ -3,7 +3,6 @@ package me.wolfyscript.customcrafting.gui.recipebook_editor;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.RecipeBookEditorCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 
@@ -22,16 +21,14 @@ public abstract class EditCategorySetting extends CCWindow {
     @Override
     public void onUpdateAsync(GuiUpdate<CCCache> update) {
         super.onUpdateAsync(update);
-
-        update.setButton(0, RecipeBookEditorCluster.BACK);
-        update.setButton(11, RecipeBookEditorCluster.NAME);
-        update.setButton(13, RecipeBookEditorCluster.ICON);
-        update.setButton(15, RecipeBookEditorCluster.DESCRIPTION_ADD);
-        update.setButton(16, RecipeBookEditorCluster.DESCRIPTION_REMOVE);
-
+        update.setButton(0, ClusterRecipeBookEditor.BACK);
+        update.setButton(11, ClusterRecipeBookEditor.NAME);
+        update.setButton(13, ClusterRecipeBookEditor.ICON);
+        update.setButton(15, ClusterRecipeBookEditor.DESCRIPTION_ADD);
+        update.setButton(16, ClusterRecipeBookEditor.DESCRIPTION_REMOVE);
         if (update.getGuiHandler().getCustomCache().getRecipeBookEditor().hasCategoryID()) {
-            update.setButton(52, RecipeBookEditorCluster.SAVE);
+            update.setButton(52, ClusterRecipeBookEditor.SAVE);
         }
-        update.setButton(53, RecipeBookEditorCluster.SAVE_AS);
+        update.setButton(53, ClusterRecipeBookEditor.SAVE_AS);
     }
 }

@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -14,6 +14,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -64,18 +65,18 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         return addition;
     }
 
-    public void setAddition(Ingredient addition) {
+    public void setAddition(@NotNull Ingredient addition) {
+        Preconditions.checkArgument(!addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
         this.addition = addition;
-        Preconditions.checkArgument(!this.addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
     }
 
     public Ingredient getBase() {
         return base;
     }
 
-    public void setBase(Ingredient base) {
+    public void setBase(@NotNull Ingredient base) {
+        Preconditions.checkArgument(!base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
         this.base = base;
-        Preconditions.checkArgument(!this.base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
     }
 
     public boolean isPreserveEnchants() {
@@ -93,17 +94,17 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_10")).setVariants(guiHandler, getBase());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_13")).setVariants(guiHandler, getAddition());
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_23")).setVariants(guiHandler, this.getResult());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(10))).setVariants(guiHandler, getBase());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(13))).setVariants(guiHandler, getAddition());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(23))).setVariants(guiHandler, this.getResult());
     }
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(19, new NamespacedKey("recipe_book", "ingredient.container_10"));
-        event.setButton(21, new NamespacedKey("recipe_book", "ingredient.container_13"));
+        event.setButton(19, ButtonContainerIngredient.namespacedKey(10));
+        event.setButton(21, ButtonContainerIngredient.namespacedKey(13));
         event.setButton(23, new NamespacedKey("recipe_book", "smithing"));
-        event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_23"));
+        event.setButton(25, ButtonContainerIngredient.namespacedKey(23));
     }
 
     @Override

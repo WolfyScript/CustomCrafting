@@ -2,7 +2,7 @@ package me.wolfyscript.customcrafting.handlers;
 
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -56,7 +56,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     }
 
     @Override
-    public boolean save(ICustomRecipe<?> recipe) {
+    public boolean save(CustomRecipe<?> recipe) {
         updateRecipe(recipe);
         return true;
     }
@@ -72,7 +72,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     }
 
     @Override
-    public boolean delete(ICustomRecipe<?> recipe) {
+    public boolean delete(CustomRecipe<?> recipe) {
         removeRecipe(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey());
         return true;
     }
@@ -97,7 +97,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String namespace = resultSet.getString("rNamespace");
                 String key = resultSet.getString("rKey");
                 NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
-                ICustomRecipe<?> recipe = getRecipe(namespacedKey);
+                CustomRecipe<?> recipe = getRecipe(namespacedKey);
                 if (recipe != null) {
                     CCRegistry.RECIPES.register(recipe);
                 }
@@ -157,7 +157,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         return null;
     }
 
-    public ICustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
+    public CustomRecipe<?> getRecipe(NamespacedKey namespacedKey) {
         ResultSet resultSet = getRecipeData(namespacedKey);
         try {
             while (resultSet.next()) {
@@ -182,7 +182,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         return null;
     }
 
-    public void addRecipe(ICustomRecipe<?> data) {
+    public void addRecipe(CustomRecipe<?> data) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) VALUES (?, ?, ?, ?)");
             pState.setString(1, data.getNamespacedKey().getNamespace());
@@ -195,7 +195,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         }
     }
 
-    public void updateRecipe(ICustomRecipe<?> data) {
+    public void updateRecipe(CustomRecipe<?> data) {
         if (hasRecipe(data.getNamespacedKey())) {
             try {
                 PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");

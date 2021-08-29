@@ -1,6 +1,9 @@
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
-import me.wolfyscript.customcrafting.recipes.*;
+import me.wolfyscript.customcrafting.recipes.AbstractRecipeShaped;
+import me.wolfyscript.customcrafting.recipes.AbstractRecipeShapeless;
+import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 
@@ -13,7 +16,7 @@ import java.util.stream.Collectors;
 public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettings<S>> extends RecipeCache<CraftingRecipe<?, S>> {
 
     protected boolean shapeless;
-    protected Map<Integer, Ingredient> ingredients;
+    protected final Map<Integer, Ingredient> ingredients;
     private S settings;
     private boolean mirrorHorizontal;
     private boolean mirrorVertical;
@@ -116,13 +119,13 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
     @Override
     protected CraftingRecipe<?, S> create(CraftingRecipe<?, S> recipe) {
         CraftingRecipe<?, S> craftingRecipe = super.create(recipe);
-        if (craftingRecipe instanceof AbstractRecipeShapeless<?, ?> shapeless) {
-            shapeless.setIngredients(ingredients.values().stream());
+        if (craftingRecipe instanceof AbstractRecipeShapeless<?, ?> shapelessRecipe) {
+            shapelessRecipe.setIngredients(ingredients.values().stream());
         } else if (craftingRecipe instanceof AbstractRecipeShaped<?, ?> shaped) {
             shaped.setMirrorHorizontal(isMirrorHorizontal());
             shaped.setMirrorVertical(isMirrorVertical());
             shaped.setMirrorRotation(isMirrorRotation());
-            Map<Character, Ingredient> ingredientMap = ingredients.entrySet().stream().collect(Collectors.toMap(entry -> ICraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue));
+            Map<Character, Ingredient> ingredientMap = ingredients.entrySet().stream().collect(Collectors.toMap(entry -> CraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue));
             shaped.generateMissingShape(List.copyOf(ingredientMap.keySet()));
             shaped.setIngredients(ingredientMap);
         }

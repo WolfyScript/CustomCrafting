@@ -67,8 +67,7 @@ public class FurnaceListener implements Listener {
         var block = event.getBlock();
         var furnace = (Furnace) block.getState();
         FurnaceInventory inventory = furnace.getInventory();
-        ItemStack currentResultItem = inventory.getResult();
-        smeltAPIAdapter.process(event, block, furnace, inventory, currentResultItem);
+        smeltAPIAdapter.process(event, block, furnace, inventory, inventory.getResult());
     }
 
 }

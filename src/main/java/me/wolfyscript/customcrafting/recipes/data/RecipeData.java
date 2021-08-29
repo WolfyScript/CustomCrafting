@@ -1,6 +1,6 @@
 package me.wolfyscript.customcrafting.recipes.data;
 
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeOption;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @param <R> The type of the Recipe which this data stores.
  */
-public abstract class RecipeData<R extends ICustomRecipe<?>> {
+public abstract class RecipeData<R extends CustomRecipe<?>> {
 
     protected final R recipe;
     protected final Map<Integer, IngredientData> indexedBySlot;
@@ -63,8 +63,8 @@ public abstract class RecipeData<R extends ICustomRecipe<?>> {
 
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.
-     * For normal recipes that means from 0 - 9.
-     * For Elite recipes the range is from 0 - 36.
+     * For normal recipes that means from 0 to 9.
+     * For Elite recipes the range is from 0 to 36.
      * <p>
      * For the correct position open the in-game Recipe Creator GUI and see in which slot the ingredient is.
      * You may take the character saved in the config and use the index of it inside this String "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -79,8 +79,8 @@ public abstract class RecipeData<R extends ICustomRecipe<?>> {
 
     /**
      * The slots indicate the index (position) of the Ingredient inside the recipe.
-     * For normal recipes that means from 0 - 9.
-     * For Elite recipes the range is from 0 - 36.
+     * For normal recipes that means from 0 to 9.
+     * For Elite recipes the range is from 0 to 36.
      * <p>
      * For the correct position open the in-game Recipe Creator GUI and see in which slot the ingredient is.
      * You may take the character saved in the config and use the index of it inside this String "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

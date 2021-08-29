@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -21,6 +21,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -65,9 +66,9 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         return this.source;
     }
 
-    public void setSource(Ingredient source) {
-        this.source = source;
+    public void setSource(@NotNull Ingredient source) {
         Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
+        this.source = source;
     }
 
     @Override
@@ -111,8 +112,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         var player = guiHandler.getPlayer();
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_11")).setVariants(guiHandler, getSource().getChoices(player));
-        ((IngredientContainerButton) cluster.getButton("ingredient.container_24")).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(11))).setVariants(guiHandler, getSource().getChoices(player));
+        ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(24))).setVariants(guiHandler, this.getResult().getChoices().stream().filter(customItem -> !customItem.hasPermission() || player.hasPermission(customItem.getPermission())).toList());
     }
 
     @Override
@@ -127,8 +128,8 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         }
         event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
         event.setButton(20, data.getLightBackground());
-        event.setButton(11, new NamespacedKey("recipe_book", "ingredient.container_11"));
-        event.setButton(24, new NamespacedKey("recipe_book", "ingredient.container_24"));
+        event.setButton(11, ButtonContainerIngredient.namespacedKey(11));
+        event.setButton(24, ButtonContainerIngredient.namespacedKey(24));
     }
 
     @Override

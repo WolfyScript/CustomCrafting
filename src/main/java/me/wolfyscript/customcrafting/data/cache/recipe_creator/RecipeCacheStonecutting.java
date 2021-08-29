@@ -28,7 +28,14 @@ public class RecipeCacheStonecutting extends RecipeCache<CustomRecipeStonecutter
 
     @Override
     protected CustomRecipeStonecutter constructRecipe() {
-        return null;
+        return new CustomRecipeStonecutter(key);
+    }
+
+    @Override
+    protected CustomRecipeStonecutter create(CustomRecipeStonecutter recipe) {
+        CustomRecipeStonecutter recipeStonecutter = super.create(recipe);
+        recipeStonecutter.setSource(source);
+        return recipeStonecutter;
     }
 
     public Ingredient getSource() {

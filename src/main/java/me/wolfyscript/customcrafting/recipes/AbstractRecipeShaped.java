@@ -3,7 +3,7 @@ package me.wolfyscript.customcrafting.recipes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -158,7 +158,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         var index = 0;
         var row = 0;
         for (int i = 0; i < maxIngredients; i++) {
-            var ingrd = ICraftingRecipe.LETTERS.charAt(i);
+            var ingrd = CraftingRecipe.LETTERS.charAt(i);
             final var current = genShape[row] != null ? genShape[row] : "";
             if (!keys.contains(ingrd)) {
                 genShape[row] = current + " ";
@@ -173,7 +173,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         setShape(genShape);
     }
 
-    @Override
     public boolean isShapeless() {
         return false;
     }
@@ -242,7 +241,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + maxIngredients)).setVariants(guiHandler, this.getResult());
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(maxIngredients))).setVariants(guiHandler, this.getResult());
             int i = 0;
             int ingredientIndex = 0;
             for (int r = 0; r < maxGridDimension; r++) {
@@ -250,7 +249,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     if (c < internalShape.width && r < internalShape.height && ingredientIndex < ingredients.size()) {
                         var ingredient = ingredients.get(ingredientIndex);
                         if (ingredient != null) {
-                            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
+                            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredient);
                         }
                         ingredientIndex++;
                     }
@@ -277,16 +276,9 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         super.writeToBuf(byteBuf);
         byteBuf.writeVarInt(shape.length);
         for (String s : shape) {
-            byteBuf.writeUtf(s, 3);
+            byteBuf.writeUtf(s, maxGridDimension);
         }
-        byteBuf.writeVarInt(mappedIngredients.size());
-        mappedIngredients.forEach((key, ingredient) -> {
-            byteBuf.writeInt(LETTERS.indexOf(key));
-            byteBuf.writeVarInt(ingredient.size());
-            for (CustomItem choice : ingredient.getChoices()) {
-                byteBuf.writeItemStack(choice.create());
-            }
-        });
+        internalShape.writeToBuf(byteBuf);
     }
 
     /**
@@ -377,6 +369,13 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             return "Shape{" +
                     "entries=" + entries +
                     '}';
+        }
+
+        public void writeToBuf(MCByteBuf byteBuf) {
+            byteBuf.writeInt(width);
+            byteBuf.writeInt(height);
+            byteBuf.writeVarInt(entries.size());
+            entries.forEach(byteBuf::writeVarIntArray);
         }
 
     }

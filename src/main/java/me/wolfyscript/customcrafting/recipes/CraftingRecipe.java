@@ -1,11 +1,16 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.recipebook.buttons.IngredientContainerButton;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.recipes.conditions.AdvancedWorkbenchCondition;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
+import me.wolfyscript.customcrafting.recipes.data.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
+import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -16,20 +21,23 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeRe
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.inventory.Inventory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings<S>> extends CustomRecipe<C> implements ICraftingRecipe {
+public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends CraftingRecipeSettings<S>> extends CustomRecipe<C> {
+
+    public static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     protected static final String INGREDIENTS_KEY = "ingredients";
 
     protected List<Ingredient> ingredients;
 
-    protected int maxGridDimension;
-    protected int maxIngredients;
+    protected final int maxGridDimension;
+    protected final int maxIngredients;
 
     private final S settings;
 
@@ -69,14 +77,29 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         return ingredients.get(slot);
     }
 
+    public abstract boolean isShapeless();
+
+    public abstract boolean fitsDimensions(CraftManager.MatrixData matrixData);
+
+    public abstract CraftingData check(CraftManager.MatrixData matrixData);
+
+    /**
+     * @return The type specific settings. {@link me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings}, {@link me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings}
+     */
     public S getSettings() {
         return settings;
     }
 
+    /**
+     * @return The max grid dimensions of the crafting recipe type.
+     */
     public int getMaxGridDimension() {
         return maxGridDimension;
     }
 
+    /**
+     * @return The maximum ingredients of the crafting recipe type. Usually the maxGridDimension squared (9, 16, 25, 36).
+     */
     public int getMaxIngredients() {
         return maxIngredients;
     }
@@ -94,14 +117,40 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         return ingredients;
     }
 
+    public void removeMatrix(Inventory inventory, int totalAmount, CraftingData craftingData) {
+        craftingData.getIndexedBySlot().forEach((slot, data) -> {
+            var item = data.customItem();
+            if (item != null) {
+                item.remove(data.itemStack(), totalAmount, inventory, null, data.ingredient().isReplaceWithRemains());
+            }
+        });
+    }
+
+    public int getAmountCraftable(CraftingData craftingData) {
+        int totalAmount = -1;
+        for (IngredientData value : craftingData.getIndexedBySlot().values()) {
+            var item = value.customItem();
+            if (item != null) {
+                var input = value.itemStack();
+                if (input != null) {
+                    int possible = input.getAmount() / item.getAmount();
+                    if (possible < totalAmount || totalAmount == -1) {
+                        totalAmount = possible;
+                    }
+                }
+            }
+        }
+        return totalAmount;
+    }
+
     @Override
     public void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster) {
         if (!ingredients.isEmpty()) {
-            ((IngredientContainerButton) cluster.getButton("ingredient.container_" + maxIngredients)).setVariants(guiHandler, this.getResult());
+            ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(maxIngredients))).setVariants(guiHandler, this.getResult());
             for (int i = 0; i < maxIngredients && i < ingredients.size(); i++) {
                 var ingredient = ingredients.get(i);
                 if (ingredient != null) {
-                    ((IngredientContainerButton) cluster.getButton("ingredient.container_" + i)).setVariants(guiHandler, ingredient);
+                    ((ButtonContainerIngredient) cluster.getButton(ButtonContainerIngredient.key(i))).setVariants(guiHandler, ingredient);
                 }
             }
         }
@@ -119,7 +168,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
                     event.setButton(i, glass);
                 }
             }
-            List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getId().equals("advanced_workbench") && !condition.getId().equals("permission")).toList();
+            List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getNamespacedKey().equals(AdvancedWorkbenchCondition.KEY) && !condition.getNamespacedKey().equals("permission")).toList();
             int startSlot = 9 / (conditions.size() + 1);
             int slot = 0;
             for (Condition<?> condition : conditions) {
@@ -130,9 +179,9 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
             event.setButton(elite ? 24 : 23, new NamespacedKey("recipe_book", isShapeless() ? "workbench.shapeless_on" : "workbench.shapeless_off"));
             startSlot = elite ? 0 : 10;
             for (int i = 0; i < maxIngredients; i++) {
-                event.setButton(startSlot + i + (i / maxGridDimension) * (9 - maxGridDimension), new NamespacedKey("recipe_book", "ingredient.container_" + i));
+                event.setButton(startSlot + i + (i / maxGridDimension) * (9 - maxGridDimension), new NamespacedKey(ClusterRecipeBook.KEY, ButtonContainerIngredient.key(i)));
             }
-            event.setButton(25, new NamespacedKey("recipe_book", "ingredient.container_" + maxIngredients));
+            event.setButton(25, ButtonContainerIngredient.namespacedKey(maxIngredients));
         }
     }
 
@@ -146,6 +195,13 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     public void writeToBuf(MCByteBuf byteBuf) {
         super.writeToBuf(byteBuf);
         byteBuf.writeInt(maxGridDimension);
+        byteBuf.writeVarInt(ingredients.size());
+        ingredients.forEach(ingredient -> {
+            byteBuf.writeVarInt(ingredient.size());
+            for (CustomItem choice : ingredient.getChoices()) {
+                byteBuf.writeItemStack(choice.create());
+            }
+        });
     }
 
 }

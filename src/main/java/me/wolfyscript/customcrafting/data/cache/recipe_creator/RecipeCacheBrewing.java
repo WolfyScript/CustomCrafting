@@ -17,16 +17,16 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
     private int fuelCost; //The fuel cost of recipe
     private int brewTime; //The brew time in ticks
 
-    //These options are for general changes made to the potions, if advanced features are not required or you want to edit all effects before editing them further in detail.
+    //These options are for general changes made to the potions, if advanced features are not required, or you want to edit all effects before editing them further in detail.
     private int durationChange; //added to the Duration. if <0 it will be subtracted
     private int amplifierChange; //added to the Amplifier. if <0 it will be subtracted
     private boolean resetEffects; //If true resets all the effects
     private Color effectColor; //Alternative to colorChange
 
-    //These options are more precise and you can specify the exact effect you want to edit.
+    //These options are more precise, and you can specify the exact effect you want to edit.
     private List<PotionEffectType> effectRemovals; //These effects will be removed from the potions
     private Map<PotionEffect, Boolean> effectAdditions; //These effects will be added with an option if they should be replaced if they are already present
-    private Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the the values of these PotionEffects will added to the existing effects and boolean values will be replaced.
+    private Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the values of these PotionEffects will add to the existing effects and boolean values will be replaced.
     //Instead of all these options you can use a set result.
 
     //Conditions for the Potions inside the 3 slots at the bottom

@@ -3,11 +3,7 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.AttributeCategoryButton;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.AttributeModeButton;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.AttributeSlotButton;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
+import me.wolfyscript.customcrafting.gui.item_creator.*;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -49,31 +45,31 @@ public class TabAttributes extends ItemCreatorTabVanilla {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.ENCHANTED_GOLDEN_APPLE, this));
-        creator.registerButton(new AttributeCategoryButton(MAX_HEALTH, Material.ENCHANTED_GOLDEN_APPLE));
-        creator.registerButton(new AttributeCategoryButton(FOLLOW_RANGE, Material.ENDER_EYE));
-        creator.registerButton(new AttributeCategoryButton(KNOCKBACK_RESISTANCE, Material.STICK));
-        creator.registerButton(new AttributeCategoryButton(MOVEMENT_SPEED, Material.IRON_BOOTS));
-        creator.registerButton(new AttributeCategoryButton(FLYING_SPEED, Material.FIREWORK_ROCKET));
-        creator.registerButton(new AttributeCategoryButton(ATTACK_DAMAGE, Material.DIAMOND_SWORD));
-        creator.registerButton(new AttributeCategoryButton(ATTACK_SPEED, Material.DIAMOND_AXE));
-        creator.registerButton(new AttributeCategoryButton(ARMOR, Material.CHAINMAIL_CHESTPLATE));
-        creator.registerButton(new AttributeCategoryButton(ARMOR_TOUGHNESS, Material.DIAMOND_CHESTPLATE));
-        creator.registerButton(new AttributeCategoryButton(LUCK, Material.NETHER_STAR));
-        creator.registerButton(new AttributeCategoryButton(HORSE_JUMB_STRENGTH, Material.DIAMOND_HORSE_ARMOR));
-        creator.registerButton(new AttributeCategoryButton(ZOMBIE_SPAWN_REINFORCEMENTS, Material.ZOMBIE_HEAD));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.ENCHANTED_GOLDEN_APPLE, this));
+        creator.registerButton(new ButtonAttributeCategory(MAX_HEALTH, Material.ENCHANTED_GOLDEN_APPLE));
+        creator.registerButton(new ButtonAttributeCategory(FOLLOW_RANGE, Material.ENDER_EYE));
+        creator.registerButton(new ButtonAttributeCategory(KNOCKBACK_RESISTANCE, Material.STICK));
+        creator.registerButton(new ButtonAttributeCategory(MOVEMENT_SPEED, Material.IRON_BOOTS));
+        creator.registerButton(new ButtonAttributeCategory(FLYING_SPEED, Material.FIREWORK_ROCKET));
+        creator.registerButton(new ButtonAttributeCategory(ATTACK_DAMAGE, Material.DIAMOND_SWORD));
+        creator.registerButton(new ButtonAttributeCategory(ATTACK_SPEED, Material.DIAMOND_AXE));
+        creator.registerButton(new ButtonAttributeCategory(ARMOR, Material.CHAINMAIL_CHESTPLATE));
+        creator.registerButton(new ButtonAttributeCategory(ARMOR_TOUGHNESS, Material.DIAMOND_CHESTPLATE));
+        creator.registerButton(new ButtonAttributeCategory(LUCK, Material.NETHER_STAR));
+        creator.registerButton(new ButtonAttributeCategory(HORSE_JUMB_STRENGTH, Material.DIAMOND_HORSE_ARMOR));
+        creator.registerButton(new ButtonAttributeCategory(ZOMBIE_SPAWN_REINFORCEMENTS, Material.ZOMBIE_HEAD));
 
-        creator.registerButton(new AttributeModeButton(AttributeModifier.Operation.ADD_NUMBER, "60b55f74681c68283a1c1ce51f1c83b52e2971c91ee34efcb598df3990a7e7"));
-        creator.registerButton(new AttributeModeButton(AttributeModifier.Operation.ADD_SCALAR, "57b1791bdc46d8a5c51729e8982fd439bb40513f64b5babee93294efc1c7"));
-        creator.registerButton(new AttributeModeButton(AttributeModifier.Operation.MULTIPLY_SCALAR_1, "a9f27d54ec5552c2ed8f8e1917e8a21cb98814cbb4bc3643c2f561f9e1e69f"));
+        creator.registerButton(new ButtonAttributeMode(AttributeModifier.Operation.ADD_NUMBER, "60b55f74681c68283a1c1ce51f1c83b52e2971c91ee34efcb598df3990a7e7"));
+        creator.registerButton(new ButtonAttributeMode(AttributeModifier.Operation.ADD_SCALAR, "57b1791bdc46d8a5c51729e8982fd439bb40513f64b5babee93294efc1c7"));
+        creator.registerButton(new ButtonAttributeMode(AttributeModifier.Operation.MULTIPLY_SCALAR_1, "a9f27d54ec5552c2ed8f8e1917e8a21cb98814cbb4bc3643c2f561f9e1e69f"));
 
-        creator.registerButton(new AttributeSlotButton(EquipmentSlot.HAND, Material.IRON_SWORD));
-        creator.registerButton(new AttributeSlotButton(EquipmentSlot.OFF_HAND, Material.SHIELD));
-        creator.registerButton(new AttributeSlotButton(EquipmentSlot.FEET, Material.IRON_BOOTS));
-        creator.registerButton(new AttributeSlotButton(EquipmentSlot.LEGS, Material.IRON_LEGGINGS));
-        creator.registerButton(new AttributeSlotButton(EquipmentSlot.CHEST, Material.IRON_CHESTPLATE));
-        creator.registerButton(new AttributeSlotButton(EquipmentSlot.HEAD, Material.IRON_HELMET));
+        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.HAND, Material.IRON_SWORD));
+        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.OFF_HAND, Material.SHIELD));
+        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.FEET, Material.IRON_BOOTS));
+        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.LEGS, Material.IRON_LEGGINGS));
+        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.CHEST, Material.IRON_CHESTPLATE));
+        creator.registerButton(new ButtonAttributeSlot(EquipmentSlot.HEAD, Material.IRON_HELMET));
         creator.registerButton(new ChatInputButton<>("attribute.set_amount", PlayerHeadUtils.getViaURL("461c8febcac21b9f63d87f9fd933589fe6468e93aa81cfcf5e52a4322e16e6"), (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             values.put("%NUMBER%", guiHandler.getCustomCache().getItems().getAttribAmount());
             return itemStack;

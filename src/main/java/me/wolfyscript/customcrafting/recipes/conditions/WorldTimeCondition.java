@@ -1,7 +1,7 @@
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import me.wolfyscript.customcrafting.gui.recipe_creator.ConditionsMenu;
-import me.wolfyscript.customcrafting.recipes.ICustomRecipe;
+import me.wolfyscript.customcrafting.gui.recipe_creator.MenuConditions;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -21,7 +21,7 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
     }
 
     @Override
-    public boolean check(ICustomRecipe<?> recipe, Conditions.Data data) {
+    public boolean check(CustomRecipe<?> recipe, Conditions.Data data) {
         long currentTime = data.getBlock().getWorld().getTime();
         return switch (option) {
             case EXACT -> currentTime == time;
@@ -62,7 +62,7 @@ public class WorldTimeCondition extends Condition<WorldTimeCondition> {
                     },
                     (update, cache, condition, recipe) -> {
                         update.setButton(30, "conditions.world_time.set");
-                        update.setButton(32, ConditionsMenu.TOGGLE_MODE);
+                        update.setButton(32, MenuConditions.TOGGLE_MODE);
                     });
         }
     }

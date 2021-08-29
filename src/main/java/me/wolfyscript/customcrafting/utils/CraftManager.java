@@ -229,7 +229,7 @@ public class CraftManager {
     }
 
     /**
-     * This object contains all necessary data of the crafting matrix like the width and height of the ingredients area. <br>
+     * This object contains all necessary data of the crafting matrix like the width and height of the ingredients' area. <br>
      * <p>
      * The contained matrix is already stripped down to the smallest possible dimensions.<br>
      * Which means that it can be smaller than the actual grid!<br>
