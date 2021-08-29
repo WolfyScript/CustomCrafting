@@ -2,9 +2,9 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.ParticleEffectSelectButton;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonParticleEffectSelect;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -24,22 +24,22 @@ public class TabParticleEffects extends ItemCreatorTab {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.FIREWORK_ROCKET, this));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.FIREWORK_ROCKET, this));
         creator.registerButton(new DummyButton<>("particle_effects.head", Material.IRON_HELMET));
-        creator.registerButton(new ParticleEffectSelectButton(ParticleLocation.HEAD));
+        creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.HEAD));
         creator.registerButton(new DummyButton<>("particle_effects.chest", Material.IRON_CHESTPLATE));
-        creator.registerButton(new ParticleEffectSelectButton(ParticleLocation.CHEST));
+        creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.CHEST));
         creator.registerButton(new DummyButton<>("particle_effects.legs", Material.IRON_LEGGINGS));
-        creator.registerButton(new ParticleEffectSelectButton(ParticleLocation.LEGS));
+        creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.LEGS));
         creator.registerButton(new DummyButton<>("particle_effects.feet", Material.IRON_BOOTS));
-        creator.registerButton(new ParticleEffectSelectButton(ParticleLocation.FEET));
+        creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.FEET));
         creator.registerButton(new DummyButton<>("particle_effects.hand", Material.IRON_SWORD));
-        creator.registerButton(new ParticleEffectSelectButton(ParticleLocation.HAND));
+        creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.HAND));
         creator.registerButton(new DummyButton<>("particle_effects.off_hand", Material.SHIELD));
-        creator.registerButton(new ParticleEffectSelectButton(ParticleLocation.OFF_HAND));
+        creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.OFF_HAND));
         creator.registerButton(new DummyButton<>("particle_effects.block", Material.GRASS_BLOCK));
-        creator.registerButton(new ParticleEffectSelectButton(ParticleLocation.BLOCK));
+        creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.BLOCK));
     }
 
     @Override

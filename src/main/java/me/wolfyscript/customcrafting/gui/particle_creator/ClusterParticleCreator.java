@@ -15,6 +15,6 @@ public class ClusterParticleCreator extends CCCluster {
 
     @Override
     public void onInit() {
-        registerGuiWindow(new MainMenu(this, customCrafting));
+        registerGuiWindow(new MenuMain(this, customCrafting));
     }
 }

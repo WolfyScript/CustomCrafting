@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreatorCluster;
+import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
@@ -46,7 +46,7 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
                     } else if (customItem != null) {
                         items.setItem(items.isRecipeItem(), customItem.clone());
                         api.getInventoryAPI().getGuiWindow(ClusterRecipeCreator.ITEM_EDITOR).sendMessage(player, "item_editable");
-                        guiHandler.openWindow(ItemCreatorCluster.MAIN_MENU);
+                        guiHandler.openWindow(ClusterItemCreator.MAIN_MENU);
                     }
                 } else if (clickEvent.isLeftClick()) {
                     if (cache.getSetting().equals(Setting.RECIPE_CREATOR)) {

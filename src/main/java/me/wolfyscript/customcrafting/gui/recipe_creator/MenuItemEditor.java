@@ -4,7 +4,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreatorCluster;
+import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
@@ -32,7 +32,7 @@ public class MenuItemEditor extends CCWindow {
             return true;
         })));
         registerButton(new ActionButton<>("create_item", Material.ITEM_FRAME, (cache, guiHandler, player, inventory, slot, event) -> {
-            guiHandler.openWindow(ItemCreatorCluster.MAIN_MENU);
+            guiHandler.openWindow(ClusterItemCreator.MAIN_MENU);
             return true;
         }));
         registerButton(new ActionButton<>(ClusterMain.ITEM_LIST.getKey(), new ButtonState<>(ClusterMain.ITEM_LIST, Material.BOOKSHELF, (cache, guiHandler, player, guiInventory, i, event) -> {

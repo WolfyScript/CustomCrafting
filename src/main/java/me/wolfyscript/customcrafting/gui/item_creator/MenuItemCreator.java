@@ -7,7 +7,6 @@ import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
 import me.wolfyscript.customcrafting.gui.CCWindow;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.MetaIgnoreButton;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
@@ -39,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ItemCreator extends CCWindow {
+public class MenuItemCreator extends CCWindow {
 
     private final List<ItemCreatorTab> tabs = new ArrayList<>();
 
@@ -56,7 +55,7 @@ public class ItemCreator extends CCWindow {
     private static final String REFERENCE_ITEMSADDER = "reference.itemsadder";
     private static final String REFERENCE_MYTHICMOBS = "reference.mythicmobs";
 
-    public ItemCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+    public MenuItemCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
     }
 
@@ -134,7 +133,7 @@ public class ItemCreator extends CCWindow {
         tabs.clear();
         CCRegistry.ITEM_CREATOR_TABS.forEach(tab -> tab.register(this, api));
 
-        Registry.META_PROVIDER.keySet().forEach(namespacedKey -> registerButton(new MetaIgnoreButton(namespacedKey)));
+        Registry.META_PROVIDER.keySet().forEach(namespacedKey -> registerButton(new ButtonMetaIgnore(namespacedKey)));
     }
 
     private void registerReferences() {

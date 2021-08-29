@@ -2,9 +2,9 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.ArmorSlotToggleButton;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonArmorSlotToggle;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -23,12 +23,12 @@ public class TabArmorSlots extends ItemCreatorTab {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.IRON_HELMET, this));
-        creator.registerButton(new ArmorSlotToggleButton(EquipmentSlot.HEAD, Material.DIAMOND_HELMET));
-        creator.registerButton(new ArmorSlotToggleButton(EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE));
-        creator.registerButton(new ArmorSlotToggleButton(EquipmentSlot.LEGS, Material.DIAMOND_LEGGINGS));
-        creator.registerButton(new ArmorSlotToggleButton(EquipmentSlot.FEET, Material.DIAMOND_BOOTS));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.IRON_HELMET, this));
+        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.HEAD, Material.DIAMOND_HELMET));
+        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.CHEST, Material.DIAMOND_CHESTPLATE));
+        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.LEGS, Material.DIAMOND_LEGGINGS));
+        creator.registerButton(new ButtonArmorSlotToggle(EquipmentSlot.FEET, Material.DIAMOND_BOOTS));
     }
 
     @Override

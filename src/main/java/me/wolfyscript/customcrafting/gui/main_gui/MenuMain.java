@@ -5,7 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.gui.Setting;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreatorCluster;
+import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.ClusterRecipeBookEditor;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
@@ -62,7 +62,7 @@ public class MenuMain extends CCWindow {
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
             cache.getItems().setNamespacedKey(null);
-            guiHandler.openCluster(ItemCreatorCluster.KEY);
+            guiHandler.openCluster(ClusterItemCreator.KEY);
             return true;
         }));
 

@@ -6,18 +6,18 @@ import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
-public class ItemCreatorCluster extends CCCluster {
+public class ClusterItemCreator extends CCCluster {
 
     public static final String KEY = "item_creator";
 
     public static final NamespacedKey MAIN_MENU = new NamespacedKey(KEY, "main_menu");
 
-    public ItemCreatorCluster(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
+    public ClusterItemCreator(InventoryAPI<CCCache> inventoryAPI, CustomCrafting customCrafting) {
         super(inventoryAPI, KEY, customCrafting);
     }
 
     @Override
     public void onInit() {
-        registerGuiWindow(new ItemCreator(this, customCrafting));
+        registerGuiWindow(new MenuItemCreator(this, customCrafting));
     }
 }

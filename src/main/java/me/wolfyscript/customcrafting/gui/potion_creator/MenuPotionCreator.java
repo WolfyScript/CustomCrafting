@@ -23,9 +23,9 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.Locale;
 
-public class PotionCreator extends CCWindow {
+public class MenuPotionCreator extends CCWindow {
 
-    public PotionCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+    public MenuPotionCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterPotionCreator.POTION_CREATOR.getKey(), 54, customCrafting);
     }
 

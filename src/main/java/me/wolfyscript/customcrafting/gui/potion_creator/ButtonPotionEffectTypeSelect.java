@@ -16,11 +16,11 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Locale;
 import java.util.Random;
 
-public class PotionEffectTypeSelectButton extends ActionButton<CCCache> {
+public class ButtonPotionEffectTypeSelect extends ActionButton<CCCache> {
 
     private static final Random random = new Random(System.currentTimeMillis());
 
-    public PotionEffectTypeSelectButton(PotionEffectType effectType) {
+    public ButtonPotionEffectTypeSelect(PotionEffectType effectType) {
         super("potion_effect_type_" + effectType.getName().toLowerCase(), new ButtonState<>("effect_type", Material.POTION, (cache, guiHandler, player, inventory, slot, event) -> {
             PotionEffects potionEffectCache = guiHandler.getCustomCache().getPotionEffectCache();
             if (potionEffectCache.getApplyPotionEffectType() != null) {

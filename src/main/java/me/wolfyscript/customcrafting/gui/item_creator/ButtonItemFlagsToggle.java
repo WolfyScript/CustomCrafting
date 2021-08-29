@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.item_creator.buttons;
+package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -8,9 +8,9 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 
-public class ItemFlagsToggleButton extends ToggleButton<CCCache> {
+public class ButtonItemFlagsToggle extends ToggleButton<CCCache> {
 
-    public ItemFlagsToggleButton(String flagId, ItemFlag itemFlag, Material material) {
+    public ButtonItemFlagsToggle(String flagId, ItemFlag itemFlag, Material material) {
         super("flags." + flagId, (cache, guiHandler, player, guiInventory, i) -> {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.getItemMeta().hasItemFlag(itemFlag);

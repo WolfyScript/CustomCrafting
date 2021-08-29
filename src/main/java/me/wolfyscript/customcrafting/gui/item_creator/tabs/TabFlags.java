@@ -2,9 +2,9 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.ItemFlagsToggleButton;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonItemFlagsToggle;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -25,16 +25,16 @@ public class TabFlags extends ItemCreatorTabVanilla {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.WRITTEN_BOOK, this));
-        creator.registerButton(new ItemFlagsToggleButton("enchants", ItemFlag.HIDE_ENCHANTS, Material.ENCHANTING_TABLE));
-        creator.registerButton(new ItemFlagsToggleButton("attributes", ItemFlag.HIDE_ATTRIBUTES, Material.ENCHANTED_GOLDEN_APPLE));
-        creator.registerButton(new ItemFlagsToggleButton("unbreakable", ItemFlag.HIDE_UNBREAKABLE, Material.BEDROCK));
-        creator.registerButton(new ItemFlagsToggleButton("destroys", ItemFlag.HIDE_DESTROYS, Material.TNT));
-        creator.registerButton(new ItemFlagsToggleButton("placed_on", ItemFlag.HIDE_PLACED_ON, Material.GRASS_BLOCK));
-        creator.registerButton(new ItemFlagsToggleButton("potion_effects", ItemFlag.HIDE_POTION_EFFECTS, Material.POTION));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.WRITTEN_BOOK, this));
+        creator.registerButton(new ButtonItemFlagsToggle("enchants", ItemFlag.HIDE_ENCHANTS, Material.ENCHANTING_TABLE));
+        creator.registerButton(new ButtonItemFlagsToggle("attributes", ItemFlag.HIDE_ATTRIBUTES, Material.ENCHANTED_GOLDEN_APPLE));
+        creator.registerButton(new ButtonItemFlagsToggle("unbreakable", ItemFlag.HIDE_UNBREAKABLE, Material.BEDROCK));
+        creator.registerButton(new ButtonItemFlagsToggle("destroys", ItemFlag.HIDE_DESTROYS, Material.TNT));
+        creator.registerButton(new ButtonItemFlagsToggle("placed_on", ItemFlag.HIDE_PLACED_ON, Material.GRASS_BLOCK));
+        creator.registerButton(new ButtonItemFlagsToggle("potion_effects", ItemFlag.HIDE_POTION_EFFECTS, Material.POTION));
         if (ServerVersion.isAfterOrEq(MinecraftVersion.of(1, 16, 2))) {
-            creator.registerButton(new ItemFlagsToggleButton("dye", ItemFlag.HIDE_DYE, Material.YELLOW_DYE));
+            creator.registerButton(new ButtonItemFlagsToggle("dye", ItemFlag.HIDE_DYE, Material.YELLOW_DYE));
         }
     }
 

@@ -14,11 +14,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.HashMap;
 
-public class ParticleEffectButton extends ActionButton<CCCache> {
+class ButtonParticleEffect extends ActionButton<CCCache> {
 
     private final HashMap<GuiHandler<CCCache>, Pair<NamespacedKey, ParticleEffect>> particleEffects = new HashMap<>();
 
-    public ParticleEffectButton(int slot) {
+    ButtonParticleEffect(int slot) {
         super("particle_effect.slot" + slot, new ButtonState<>("particle_effect.select", Material.BARRIER));
         set();
     }

@@ -19,9 +19,9 @@ import me.wolfyscript.utilities.util.particles.ParticleEffect;
 import java.util.Collection;
 import java.util.Map;
 
-public class MainMenu extends CCWindow {
+class MenuMain extends CCWindow {
 
-    public MainMenu(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+    MenuMain(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
     }
 
@@ -47,7 +47,7 @@ public class MainMenu extends CCWindow {
             return true;
         }));
         for (int i = 0; i < 45; i++) {
-            registerButton(new ParticleEffectButton(i));
+            registerButton(new ButtonParticleEffect(i));
         }
     }
 
@@ -77,7 +77,7 @@ public class MainMenu extends CCWindow {
         for (Map.Entry<NamespacedKey, ParticleEffect> entry : Registry.PARTICLE_EFFECTS.entrySet()) {
             int item = 9 + i;
             if (item < 54) {
-                ParticleEffectButton button = (ParticleEffectButton) getButton("particle_effect.slot" + item);
+                ButtonParticleEffect button = (ButtonParticleEffect) getButton("particle_effect.slot" + item);
                 button.setParticleEffect(guiHandler, new Pair<>(entry.getKey(), entry.getValue()));
                 event.setButton(item, button);
                 i++;

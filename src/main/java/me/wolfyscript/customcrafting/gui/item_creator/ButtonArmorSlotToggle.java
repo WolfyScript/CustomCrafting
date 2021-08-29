@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.item_creator.buttons;
+package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
@@ -14,16 +14,20 @@ import org.bukkit.inventory.ItemFlag;
 
 import java.util.Locale;
 
-public class ArmorSlotToggleButton extends ToggleButton<CCCache> {
+public class ButtonArmorSlotToggle extends ToggleButton<CCCache> {
 
-    public ArmorSlotToggleButton(EquipmentSlot slot, Material material) {
-        super("armor_slots." + slot.toString().toLowerCase(Locale.ROOT), (cache, guiHandler, player, guiInventory, i) -> {
+    private static String key(EquipmentSlot slot) {
+        return "armor_slots." + slot.toString().toLowerCase(Locale.ROOT);
+    }
+
+    public ButtonArmorSlotToggle(EquipmentSlot slot, Material material) {
+        super(key(slot), (cache, guiHandler, player, guiInventory, i) -> {
             CustomItem item = cache.getItems().getItem();
             return !ItemUtils.isAirOrNull(item) && item.hasEquipmentSlot(slot);
-        }, new ButtonState<>("armor_slots." + slot.toString().toLowerCase(Locale.ROOT) + ".enabled", new ItemBuilder(material).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        }, new ButtonState<>(key(slot) + ".enabled", new ItemBuilder(material).addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS).create(), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().removeEquipmentSlots(slot);
             return true;
-        }), new ButtonState<>("armor_slots." + slot.toString().toLowerCase(Locale.ROOT) + ".disabled", material, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+        }), new ButtonState<>(key(slot) + ".disabled", material, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().addEquipmentSlots(slot);
             return true;
         }));

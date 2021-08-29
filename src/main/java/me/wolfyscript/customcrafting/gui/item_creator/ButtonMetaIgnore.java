@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.item_creator.buttons;
+package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.custom_items.meta.Meta;
@@ -10,9 +10,9 @@ import org.bukkit.Material;
 
 import java.util.List;
 
-public class MetaIgnoreButton extends ActionButton<CCCache> {
+public class ButtonMetaIgnore extends ActionButton<CCCache> {
 
-    public MetaIgnoreButton(NamespacedKey metaKey) {
+    public ButtonMetaIgnore(NamespacedKey metaKey) {
         super("meta_ignore." + metaKey.toString("."), new ButtonState<>("meta_ignore", Material.CYAN_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
             Meta meta = guiHandler.getCustomCache().getItems().getItem().getMetaSettings().get(metaKey);
             List<MetaSettings.Option> options = meta.getAvailableOptions();

@@ -1,4 +1,4 @@
-package me.wolfyscript.customcrafting.gui.item_creator.buttons;
+package me.wolfyscript.customcrafting.gui.item_creator;
 
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
@@ -11,9 +11,9 @@ import org.bukkit.inventory.ItemFlag;
 
 import java.util.Locale;
 
-public class AttributeSlotButton extends ActionButton<CCCache> {
+public class ButtonAttributeSlot extends ActionButton<CCCache> {
 
-    public AttributeSlotButton(EquipmentSlot equipmentSlot, Material material) {
+    public ButtonAttributeSlot(EquipmentSlot equipmentSlot, Material material) {
         super("attribute.slot_"+equipmentSlot.toString().toLowerCase(Locale.ROOT), material, (cache, guiHandler, player, inventory, slot, event) -> {
             Items items = guiHandler.getCustomCache().getItems();
             items.setAttributeSlot(items.getAttributeSlot() == null ? equipmentSlot : (items.getAttributeSlot().equals(equipmentSlot) ? null : equipmentSlot));

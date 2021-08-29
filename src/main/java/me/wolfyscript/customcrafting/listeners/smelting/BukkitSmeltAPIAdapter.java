@@ -22,12 +22,11 @@ public class BukkitSmeltAPIAdapter extends SmeltAPIAdapter {
 
     @Override
     public void process(FurnaceSmeltEvent event, Block block, Furnace furnace, FurnaceInventory inventory, ItemStack currentResultItem) {
-        final RecipeType type = switch (furnace.getType()) {
+        Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(switch (furnace.getType()) {
             case BLAST_FURNACE -> RecipeType.BLASTING;
             case SMOKER -> RecipeType.SMOKING;
             default -> RecipeType.SMELTING;
-        };
-        Iterator<Recipe> recipeIterator = customCrafting.getApi().getNmsUtil().getRecipeUtil().recipeIterator(type);
+        });
         while (recipeIterator.hasNext()) {
             var recipe = recipeIterator.next();
             if (recipe instanceof Keyed keyed && recipe.getResult().isSimilar(event.getResult())) {

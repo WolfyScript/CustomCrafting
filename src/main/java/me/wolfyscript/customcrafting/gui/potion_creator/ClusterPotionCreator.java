@@ -19,7 +19,7 @@ public class ClusterPotionCreator extends CCCluster {
 
     @Override
     public void onInit() {
-        registerGuiWindow(new PotionCreator(this, customCrafting));
-        registerGuiWindow(new PotionEffectTypeSelection(this, customCrafting));
+        registerGuiWindow(new MenuPotionCreator(this, customCrafting));
+        registerGuiWindow(new MenuPotionEffectTypeSelection(this, customCrafting));
     }
 }

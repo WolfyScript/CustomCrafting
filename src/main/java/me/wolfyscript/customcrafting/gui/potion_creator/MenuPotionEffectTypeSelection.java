@@ -13,9 +13,9 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.potion.PotionEffectType;
 
-public class PotionEffectTypeSelection extends CCWindow {
+public class MenuPotionEffectTypeSelection extends CCWindow {
 
-    public PotionEffectTypeSelection(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
+    public MenuPotionEffectTypeSelection(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION.getKey(), 54, customCrafting);
     }
 
@@ -32,7 +32,7 @@ public class PotionEffectTypeSelection extends CCWindow {
         })));
 
         for (PotionEffectType type : PotionEffectType.values()) {
-            registerButton(new PotionEffectTypeSelectButton(type));
+            registerButton(new ButtonPotionEffectTypeSelect(type));
         }
     }
 

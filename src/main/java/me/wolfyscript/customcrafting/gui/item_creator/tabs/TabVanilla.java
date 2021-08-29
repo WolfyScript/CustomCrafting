@@ -3,8 +3,8 @@ package me.wolfyscript.customcrafting.gui.item_creator.tabs;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.items.Items;
 import me.wolfyscript.customcrafting.data.cache.items.ItemsButtonAction;
-import me.wolfyscript.customcrafting.gui.item_creator.ItemCreator;
-import me.wolfyscript.customcrafting.gui.item_creator.buttons.OptionButton;
+import me.wolfyscript.customcrafting.gui.item_creator.ButtonOption;
+import me.wolfyscript.customcrafting.gui.item_creator.MenuItemCreator;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -24,8 +24,8 @@ public class TabVanilla extends ItemCreatorTab {
     }
 
     @Override
-    public void register(ItemCreator creator, WolfyUtilities api) {
-        creator.registerButton(new OptionButton(Material.GRASS_BLOCK, this));
+    public void register(MenuItemCreator creator, WolfyUtilities api) {
+        creator.registerButton(new ButtonOption(Material.GRASS_BLOCK, this));
         creator.registerButton(new ToggleButton<>("vanilla.block_recipes", (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().isBlockVanillaRecipes(), new ButtonState<>("vanilla.block_recipes.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().setBlockVanillaRecipes(false);
             return true;
