@@ -21,6 +21,7 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.RecipeChoice;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -65,9 +66,9 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         return this.source;
     }
 
-    public void setSource(Ingredient source) {
-        this.source = source;
+    public void setSource(@NotNull Ingredient source) {
         Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
+        this.source = source;
     }
 
     @Override

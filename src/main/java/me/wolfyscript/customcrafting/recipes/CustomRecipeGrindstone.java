@@ -15,6 +15,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -60,7 +61,8 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
         return inputTop;
     }
 
-    public void setInputTop(Ingredient inputTop) {
+    public void setInputTop(@NotNull Ingredient inputTop) {
+        Preconditions.checkArgument(!inputTop.isEmpty() || !inputBottom.isEmpty(), "Recipe must have at least one non-air top or bottom ingredient!");
         this.inputTop = inputTop;
     }
 
@@ -68,9 +70,9 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
         return inputBottom;
     }
 
-    public void setInputBottom(Ingredient inputBottom) {
+    public void setInputBottom(@NotNull Ingredient inputBottom) {
+        Preconditions.checkArgument(!inputBottom.isEmpty() || !inputTop.isEmpty(), "Recipe must have at least one non-air top or bottom ingredient!");
         this.inputBottom = inputBottom;
-        Preconditions.checkArgument(!inputBottom.isEmpty(), "Invalid Bottom ingredient! Recipe must have non-air base ingredient!");
     }
 
     public int getXp() {

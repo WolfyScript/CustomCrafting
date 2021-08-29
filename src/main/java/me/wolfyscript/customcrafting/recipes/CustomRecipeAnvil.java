@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
@@ -15,6 +16,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNod
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.blockRename = node.path("block_rename").asBoolean(false);
         this.blockRepair = node.path("block_repair").asBoolean(false);
         JsonNode repairNode = node.path("repair_cost");
-        this.repairCost = repairNode.path("amount").asInt(1);
+        setRepairCost(repairNode.path("amount").asInt(1));
         this.applyRepairCost = repairNode.path("apply_to_result").asBoolean(true);
         this.repairCostMode = RepairCostMode.valueOf(repairNode.path("mode").asText("NONE"));
     }
@@ -70,8 +72,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     public CustomRecipeAnvil(NamespacedKey key) {
         super(key);
         this.mode = Mode.RESULT;
-        this.base = new Ingredient();
-        this.addition = new Ingredient();
         this.durability = 0;
         this.repairCost = 1;
         this.applyRepairCost = false;
@@ -83,11 +83,11 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     private void readInput(JsonNode node) {
         if (node.has("input_left") || node.has("input_right")) {
-            this.base = ItemLoader.loadIngredient(node.path("input_left"));
-            this.addition = ItemLoader.loadIngredient(node.path("input_right"));
+            setBase(ItemLoader.loadIngredient(node.path("input_left")));
+            setAddition(ItemLoader.loadIngredient(node.path("input_right")));
         } else {
-            this.base = ItemLoader.loadIngredient(node.path("base"));
-            this.addition = ItemLoader.loadIngredient(node.path("addition"));
+            setBase(ItemLoader.loadIngredient(node.path("base")));
+            setAddition(ItemLoader.loadIngredient(node.path("addition")));
         }
     }
 
@@ -108,6 +108,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     }
 
     public void setRepairCost(int repairCost) {
+        Preconditions.checkArgument(repairCost > 0, "Invalid repair cost! Repair cost must be bigger than 0!");
         this.repairCost = repairCost;
     }
 
@@ -176,11 +177,13 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         return RecipeType.ANVIL;
     }
 
-    public void setBase(Ingredient base) {
+    public void setBase(@NotNull Ingredient base) {
+        Preconditions.checkArgument(!base.isEmpty() || !addition.isEmpty(), "Recipe must have at least one non-air base or addition!");
         this.base = base;
     }
 
-    public void setAddition(Ingredient addition) {
+    public void setAddition(@NotNull Ingredient addition) {
+        Preconditions.checkArgument(!addition.isEmpty() || !base.isEmpty(), "Recipe must have at least one non-air base or addition!");
         this.addition = addition;
     }
 

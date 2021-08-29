@@ -14,6 +14,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerat
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -64,18 +65,18 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         return addition;
     }
 
-    public void setAddition(Ingredient addition) {
+    public void setAddition(@NotNull Ingredient addition) {
+        Preconditions.checkArgument(!addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
         this.addition = addition;
-        Preconditions.checkArgument(!this.addition.isEmpty(), "Invalid Addition! Recipe must have non-air addition!");
     }
 
     public Ingredient getBase() {
         return base;
     }
 
-    public void setBase(Ingredient base) {
+    public void setBase(@NotNull Ingredient base) {
+        Preconditions.checkArgument(!base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
         this.base = base;
-        Preconditions.checkArgument(!this.base.isEmpty(), "Invalid Base ingredient! Recipe must have non-air base ingredient!");
     }
 
     public boolean isPreserveEnchants() {

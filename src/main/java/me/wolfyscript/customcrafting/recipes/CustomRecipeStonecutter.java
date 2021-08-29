@@ -22,6 +22,7 @@ import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.StonecuttingRecipe;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -56,9 +57,9 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         return source;
     }
 
-    public void setSource(Ingredient source) {
-        this.source = source;
+    public void setSource(@NotNull Ingredient source) {
         Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
+        this.source = source;
     }
 
     @Override
