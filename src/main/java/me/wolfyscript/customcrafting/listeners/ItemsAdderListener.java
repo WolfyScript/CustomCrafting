@@ -15,9 +15,9 @@ public class ItemsAdderListener implements Listener {
 
     @EventHandler
     public void onLoadComplete(ItemsAdderFirstLoadEvent event) {
-        System.out.println("--------------------------------------------------------------------");
+        customCrafting.writeSeparator();
         CustomCrafting.inst().getDataHandler().loadRecipesAndItems();
-        System.out.println("--------------------------------------------------------------------");
+        customCrafting.writeSeparator();
     }
 
 }
