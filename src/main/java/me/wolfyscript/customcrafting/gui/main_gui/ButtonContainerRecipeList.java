@@ -34,19 +34,21 @@ import java.util.HashMap;
 class ButtonContainerRecipeList extends Button<CCCache> {
 
     private static final String KEY = "recipe_list.container_";
+
+    static String key(int slot) {
+        return KEY + slot;
+    }
+
     private final CustomCrafting customCrafting;
     private final HashMap<GuiHandler<CCCache>, Recipe> recipes = new HashMap<>();
     private final HashMap<GuiHandler<CCCache>, CustomRecipe<?>> customRecipes = new HashMap<>();
+
     private final WolfyUtilities api;
 
     ButtonContainerRecipeList(int slot, CustomCrafting customCrafting) {
         super(key(slot), null);
         this.customCrafting = customCrafting;
         this.api = CustomCrafting.inst().getApi();
-    }
-
-    static String key(int slot) {
-        return KEY + slot;
     }
 
     @Override

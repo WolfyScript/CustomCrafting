@@ -79,7 +79,7 @@ public class MenuListRecipes extends CCWindow {
             maxPages = recipeList.getMaxPages(namespaceList.size());
             page = recipeList.getPage(maxPages);
             for (int i = 45 * page, slot = 0; slot < 45 && i < namespaceList.size(); i++, slot++) {
-                ButtonNamespaceRecipe button = (ButtonNamespaceRecipe) getButton(ButtonContainerRecipeList.key(slot));
+                ButtonNamespaceRecipe button = (ButtonNamespaceRecipe) getButton(ButtonNamespaceRecipe.key(slot));
                 button.setNamespace(guiHandler, namespaceList.get(i));
                 event.setButton(9 + slot, button);
             }

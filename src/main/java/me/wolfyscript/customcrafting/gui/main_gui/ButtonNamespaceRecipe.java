@@ -18,13 +18,18 @@ import java.util.HashMap;
 
 public class ButtonNamespaceRecipe extends ActionButton<CCCache> {
 
+    private static final String KEY = "recipe_list.namespace_";
+
+    public ButtonNamespaceRecipe(int slot, CustomCrafting customCrafting) {
+        super(key(slot), new ButtonState<>("namespace", Material.CHEST));
+        this.customCrafting = customCrafting;
+    }
+
     private final CustomCrafting customCrafting;
     private final HashMap<GuiHandler<CCCache>, String> namespaces = new HashMap<>();
 
-
-    public ButtonNamespaceRecipe(int slot, CustomCrafting customCrafting) {
-        super("recipe_list.namespace_" + slot, new ButtonState<>("namespace", Material.CHEST));
-        this.customCrafting = customCrafting;
+    static String key(int slot) {
+        return KEY + slot;
     }
 
     @Override
