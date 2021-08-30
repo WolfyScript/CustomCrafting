@@ -160,6 +160,7 @@ public class CustomCrafting extends JavaPlugin {
         CCClassRegistry.RECIPE_CONDITIONS.register(WorldBiomeCondition.KEY, WorldBiomeCondition.class, new WorldBiomeCondition.GUIComponent());
         CCClassRegistry.RECIPE_CONDITIONS.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
         CCClassRegistry.RECIPE_CONDITIONS.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
+        CCClassRegistry.RECIPE_CONDITIONS.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
 
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, CCClassRegistry.RESULT_EXTENSIONS);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, CCClassRegistry.RESULT_MERGE_ADAPTERS);

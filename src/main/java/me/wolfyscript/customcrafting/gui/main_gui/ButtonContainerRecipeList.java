@@ -80,7 +80,6 @@ class ButtonContainerRecipeList extends Button<CCCache> {
                 if (clickEvent.isLeftClick()) {
                     cache.setSetting(Setting.RECIPE_CREATOR);
                     cache.getRecipeCreatorCache().setRecipeType(customRecipe.getRecipeType());
-
                     try {
                         cache.getRecipeCreatorCache().loadRecipeIntoCache(customRecipe);
                         Bukkit.getScheduler().runTaskLater(customCrafting, () -> guiHandler.openWindow(new NamespacedKey(ClusterRecipeCreator.KEY, cache.getRecipeCreatorCache().getRecipeType().getCreatorID())), 1);

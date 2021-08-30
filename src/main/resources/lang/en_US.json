@@ -225,6 +225,13 @@
         "&7Limit the amount of times",
         "&7the recipe can be crafted."
       ]
+    },
+    "player_advancements": {
+      "name": "Advancements",
+      "description": [
+        "&7Set the advancements a player",
+        "&7requires to craft the recipe."
+      ]
     }
   },
   "inventories": {
@@ -2131,6 +2138,33 @@
                 ]
               },
               "message": "&eType in the craft limit! Usage: &6<craft_limit>"
+            },
+            "player_advancements": {
+              "add": {
+                "name": "&a&lAdd Advancement",
+                "lore": [
+                  "",
+                  "&8[&aClick&8] &7Add Advancement"
+                ],
+                "message": "&eType in the advancement namespace and key! &7/wui &6for tab-completion!"
+              },
+              "list": {
+                "name": "&6&lValues",
+                "lore": [
+                  "&7 - &e%var0%",
+                  "&7 - &e%var1%",
+                  "&7 - &e%var2%",
+                  "&7 - &e%var3%"
+                ]
+              },
+              "remove": {
+                "name": "&c&lRemove Advancement",
+                "lore": [
+                  "&7Remove the last advancement of the values.",
+                  "",
+                  "&8[&aClick&8] &7Remove Advancement"
+                ]
+              }
             }
           }
         },
