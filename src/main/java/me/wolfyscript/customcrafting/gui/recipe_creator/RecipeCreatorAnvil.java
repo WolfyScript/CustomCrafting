@@ -65,10 +65,10 @@ public class RecipeCreatorAnvil extends RecipeCreator {
             return true;
         })));
         registerButton(new ToggleButton<>(BLOCK_REPAIR, false, new ButtonState<>("block_repair.true", Material.IRON_SWORD, (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getAnvilCache().setBlockEnchant(false);
+            cache.getRecipeCreatorCache().getAnvilCache().setBlockRepair(false);
             return true;
         }), new ButtonState<>("block_repair.false", Material.IRON_SWORD, (cache, guiHandler, player, inventory, slot, event) -> {
-            cache.getRecipeCreatorCache().getAnvilCache().setBlockEnchant(true);
+            cache.getRecipeCreatorCache().getAnvilCache().setBlockRepair(true);
             return true;
         })));
         registerButton(new ToggleButton<>(BLOCK_RENAME, false, new ButtonState<>("block_rename.true", Material.WRITABLE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
