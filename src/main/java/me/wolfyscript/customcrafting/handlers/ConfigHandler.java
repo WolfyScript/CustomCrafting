@@ -110,8 +110,7 @@ public class ConfigHandler {
             if (WolfyUtilities.isDevEnv()) {
                 result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
                 result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
-                var extension = new MythicMobResultExtension("SkeletalKnight", 1);
-                result.addExtension(extension);
+                result.addExtension(new MythicMobResultExtension("SkeletalKnight", 1));
                 result.addExtension(new ResultExtensionAdvancement(NamespacedKey.minecraft("husbandry/tactical_fishing"), false, null, false, false));
             }
             workbenchCraft.save();

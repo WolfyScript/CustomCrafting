@@ -3,6 +3,7 @@ package me.wolfyscript.customcrafting.recipes.items.extension;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
@@ -22,7 +23,7 @@ public class MythicMobResultExtension extends ResultExtension {
     private Vector offset = new Vector(0.5, 1, 0.5);
 
     public MythicMobResultExtension() {
-        super(new NamespacedKey("customcrafting", "mythicmobs/mob_spawn"));
+        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "mythicmobs/mob_spawn"));
     }
 
     public MythicMobResultExtension(MythicMobResultExtension extension) {
