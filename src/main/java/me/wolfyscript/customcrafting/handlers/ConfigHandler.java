@@ -10,6 +10,7 @@ import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.recipes.items.extension.CommandResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.extension.MythicMobResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtensionAdvancement;
 import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
@@ -24,6 +25,7 @@ import me.wolfyscript.utilities.util.particles.ParticleEffect;
 import me.wolfyscript.utilities.util.particles.ParticleLocation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -110,6 +112,7 @@ public class ConfigHandler {
                 result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
                 var extension = new MythicMobResultExtension("SkeletalKnight", 1);
                 result.addExtension(extension);
+                result.addExtension(new ResultExtensionAdvancement(NamespacedKey.minecraft("husbandry/tactical_fishing"), false, null, false, false));
             }
             workbenchCraft.save();
         }

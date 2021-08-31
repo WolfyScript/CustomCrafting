@@ -26,10 +26,7 @@ import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
-import me.wolfyscript.customcrafting.recipes.items.extension.CommandResultExtension;
-import me.wolfyscript.customcrafting.recipes.items.extension.MythicMobResultExtension;
-import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
-import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.*;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
@@ -140,6 +137,7 @@ public class CustomCrafting extends JavaPlugin {
         CCClassRegistry.RESULT_EXTENSIONS.register(new CommandResultExtension());
         CCClassRegistry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
         CCClassRegistry.RESULT_EXTENSIONS.register(new SoundResultExtension());
+        CCClassRegistry.RESULT_EXTENSIONS.register(new ResultExtensionAdvancement());
 
         CustomPlayerData.register(new CCPlayerData.Provider());
 
