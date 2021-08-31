@@ -28,7 +28,7 @@ public class RecipeCacheStonecutting extends RecipeCache<CustomRecipeStonecutter
 
     @Override
     protected CustomRecipeStonecutter constructRecipe() {
-        return new CustomRecipeStonecutter(key);
+        return create(new CustomRecipeStonecutter(key));
     }
 
     @Override
