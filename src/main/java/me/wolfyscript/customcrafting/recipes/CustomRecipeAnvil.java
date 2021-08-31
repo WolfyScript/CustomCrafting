@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -88,6 +89,13 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         } else {
             setBase(ItemLoader.loadIngredient(node.path("base")));
             setAddition(ItemLoader.loadIngredient(node.path("addition")));
+        }
+    }
+
+    @Override
+    public void setResult(@NotNull Result result) {
+        if (mode.equals(Mode.RESULT)) {
+            super.setResult(result);
         }
     }
 

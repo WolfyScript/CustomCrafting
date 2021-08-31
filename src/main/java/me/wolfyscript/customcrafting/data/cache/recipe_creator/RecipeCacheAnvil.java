@@ -20,6 +20,17 @@ public class RecipeCacheAnvil extends RecipeCache<CustomRecipeAnvil> {
 
     RecipeCacheAnvil() {
         super();
+        this.blockRepair = false;
+        this.blockRename = false;
+        this.blockEnchant = false;
+
+        this.mode = CustomRecipeAnvil.Mode.RESULT;
+        this.repairCost = 1;
+        this.applyRepairCost = false;
+        this.repairCostMode = CustomRecipeAnvil.RepairCostMode.NONE;
+        this.durability = 0;
+        this.base = new Ingredient();
+        this.addition = new Ingredient();
     }
 
     RecipeCacheAnvil(CustomRecipeAnvil recipe) {
@@ -44,11 +55,11 @@ public class RecipeCacheAnvil extends RecipeCache<CustomRecipeAnvil> {
 
     @Override
     protected CustomRecipeAnvil create(CustomRecipeAnvil recipe) {
+        recipe.setMode(mode);
+        recipe.setBlockRepair(blockRepair);
+        recipe.setBlockRename(blockRename);
+        recipe.setBlockEnchant(blockEnchant);
         CustomRecipeAnvil anvil = super.create(recipe);
-        anvil.setBlockRepair(blockRepair);
-        anvil.setBlockRename(blockRename);
-        anvil.setBlockEnchant(blockEnchant);
-        anvil.setMode(mode);
         anvil.setRepairCost(repairCost);
         anvil.setApplyRepairCost(applyRepairCost);
         anvil.setRepairCostMode(repairCostMode);
