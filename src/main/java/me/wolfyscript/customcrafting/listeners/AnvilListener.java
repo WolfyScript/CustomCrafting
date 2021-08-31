@@ -95,15 +95,12 @@ public class AnvilListener implements Listener {
                                 result.setDisplayName(null);
                             }
                         }
-                        if (recipe.isBlockRepair()) {
+                        if (recipe.isBlockRepair() && result.getItemMeta() instanceof Damageable resultDamageable) {
                             //Block Repairing
-                            var itemMeta = result.getItemMeta();
-                            if (itemMeta instanceof Damageable resultDamageable) {
-                                if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
-                                    resultDamageable.setDamage(damageable.getDamage());
-                                }
-                                result.setItemMeta(itemMeta);
+                            if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
+                                resultDamageable.setDamage(damageable.getDamage());
                             }
+                            result.setItemMeta(resultDamageable);
                         }
                     }
                 }
