@@ -99,7 +99,7 @@ public class CustomCrafting extends JavaPlugin {
     public CustomCrafting() {
         super();
         instance = this;
-        currentVersion = instance.getDescription().getVersion();
+        currentVersion = getDescription().getVersion();
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilities.get(this, false);

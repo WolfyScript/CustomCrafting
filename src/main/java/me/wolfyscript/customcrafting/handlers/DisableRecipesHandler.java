@@ -13,6 +13,7 @@ import org.bukkit.inventory.Recipe;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class DisableRecipesHandler {
@@ -33,8 +34,7 @@ public class DisableRecipesHandler {
             recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
             recipes.forEach(key -> {
                 if (CCRegistry.RECIPES.has(key)) {
-                    CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
-                    disableRecipe(customRecipe);
+                    disableRecipe(Objects.requireNonNull(CCRegistry.RECIPES.get(key)));
                 } else {
                     org.bukkit.NamespacedKey bukkitKey = org.bukkit.NamespacedKey.fromString(key.toString());
                     if (bukkitKey != null) {
@@ -120,7 +120,7 @@ public class DisableRecipesHandler {
             }
             if (!namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
                 recipes.add(NamespacedKey.fromBukkit(namespacedKey));
-                //Cache the recipe if it is a Bukkit recipe, so we can add again at runtime, without the requirement to reload everything.
+                //Cache the recipe if it is a Bukkit recipe, so we can add it again at runtime, without the requirement to reload everything.
                 cachedRecipes.put(namespacedKey, bukkitRecipe);
             }
             Bukkit.removeRecipe(namespacedKey);
