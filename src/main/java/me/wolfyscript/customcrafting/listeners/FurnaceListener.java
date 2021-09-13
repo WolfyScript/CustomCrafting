@@ -31,7 +31,9 @@ public class FurnaceListener implements Listener {
     public FurnaceListener(CustomCrafting customCrafting, CookingManager manager) {
         this.manager = manager;
         this.customCrafting = customCrafting;
-        this.smeltAPIAdapter = customCrafting.isPaper() ? new PaperSmeltAPIAdapter(customCrafting) : new BukkitSmeltAPIAdapter(customCrafting);
+        if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17)) {
+            Bukkit.getPluginManager().registerEvents(new FurnaceListener1_17Adapter(customCrafting, manager), customCrafting);
+        }
     }
 
     @EventHandler
