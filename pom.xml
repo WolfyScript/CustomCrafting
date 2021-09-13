@@ -18,7 +18,7 @@
     <repositories>
         <repository>
             <id>wolfyscript-private</id>
-            <url>https://maven.wolfyscript.com/repository/public/</url>
+            <url>https://maven.wolfyscript.com/repository/private/</url>
         </repository>
     </repositories>
 
