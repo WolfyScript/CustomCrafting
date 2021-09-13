@@ -23,6 +23,8 @@ import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.particles.ParticleAnimation;
 import me.wolfyscript.utilities.util.particles.ParticleEffect;
 import me.wolfyscript.utilities.util.particles.ParticleLocation;
+import me.wolfyscript.utilities.util.particles.animators.AnimatorBasic;
+import me.wolfyscript.utilities.util.particles.timer.TimeSupplierLinear;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -72,7 +74,15 @@ public class ConfigHandler {
     }
 
     public void loadDefaults() {
-        var enchantAnimation = new ParticleAnimation(Material.ENCHANTING_TABLE, "Advanced Crafting Table", Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 2, new ParticleEffect(Particle.ENCHANTMENT_TABLE, 10, 0.5, null, new Vector(0.5, 1.3, 0.5)));
+        var enchantTableEffect = new ParticleEffect(Particle.ENCHANTMENT_TABLE, 2, new Vector(0,0,0), 0.75, null, new TimeSupplierLinear(1, 1), new AnimatorBasic());
+        Registry.PARTICLE_EFFECTS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantTableEffect);
+
+        var enchantAnimation = new ParticleAnimation(
+                Material.ENCHANTING_TABLE,
+                "Advanced Crafting Table",
+                Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 5, -1,
+                new ParticleAnimation.ParticleEffectSettings(enchantTableEffect, new Vector(0.5,1.25,0.5), 0)
+        );
         Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
         if (mainConfig.resetRecipeBook()) {
@@ -90,6 +100,7 @@ public class ConfigHandler {
             knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
             knowledgeBookCraft.save();
         }
+
         if (mainConfig.resetAdvancedWorkbench()) {
             var advancedWorkbench = new CustomItem(Material.CRAFTING_TABLE);
             advancedWorkbench.setDisplayName(ChatColor.GOLD + "Advanced Crafting Table");
