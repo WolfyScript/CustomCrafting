@@ -23,6 +23,7 @@ import me.wolfyscript.customcrafting.handlers.ConfigHandler;
 import me.wolfyscript.customcrafting.handlers.DataHandler;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
+import me.wolfyscript.customcrafting.listeners.FurnaceListener;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
@@ -32,10 +33,8 @@ import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAd
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
-import me.wolfyscript.customcrafting.utils.ChatUtils;
-import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.customcrafting.utils.UpdateChecker;
+import me.wolfyscript.customcrafting.utils.*;
+import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -83,7 +82,11 @@ public class CustomCrafting extends JavaPlugin {
     //The main WolfyUtilities instance
     private final WolfyUtilities api;
     private final Chat chat;
-    private CraftManager craftManager;
+
+    //Recipe Managers / API
+    private final CraftManager craftManager;
+    private final CookingManager cookingManager;
+
     //File Handlers to load, save or edit data
     private ConfigHandler configHandler;
     private DataHandler dataHandler;
@@ -110,6 +113,9 @@ public class CustomCrafting extends JavaPlugin {
         this.patreon = new Patreon();
         this.updateChecker = new UpdateChecker(this, 55883);
         this.networkHandler = new NetworkHandler(this, api);
+
+        this.craftManager = new CraftManager(this);
+        this.cookingManager = new CookingManager(this);
     }
 
     public static CustomCrafting inst() {
@@ -177,7 +183,6 @@ public class CustomCrafting extends JavaPlugin {
         configHandler.renameOldRecipesFolder();
         dataHandler = new DataHandler(this);
         configHandler.loadDefaults();
-        craftManager = new CraftManager(this);
         disableRecipesHandler = new DisableRecipesHandler(this);
 
         writeSeparator();
@@ -254,7 +259,7 @@ public class CustomCrafting extends JavaPlugin {
         var pM = Bukkit.getPluginManager();
         pM.registerEvents(new PlayerListener(this), this);
         pM.registerEvents(new CraftListener(this), this);
-        pM.registerEvents(new FurnaceListener(this), this);
+        pM.registerEvents(new FurnaceListener(this, cookingManager), this);
         pM.registerEvents(new AnvilListener(this), this);
         pM.registerEvents(new CauldronListener(this), this);
         pM.registerEvents(new EliteWorkbenchListener(api), this);
@@ -335,6 +340,10 @@ public class CustomCrafting extends JavaPlugin {
 
     public CraftManager getCraftManager() {
         return craftManager;
+    }
+
+    public CookingManager getCookingManager() {
+        return cookingManager;
     }
 
     public ChatUtils getChatUtils() {
