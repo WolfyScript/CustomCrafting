@@ -29,7 +29,7 @@ class ButtonParticleEffect extends ActionButton<CCCache> {
             ParticleCache particleCache = guiHandler.getCustomCache().getParticleCache();
             if (particleCache.getAction() != null && event instanceof InventoryClickEvent clickEvent && clickEvent.isRightClick()) {
                 Pair<NamespacedKey, ParticleEffect> particleEffect = getParticleEffect(guiHandler);
-                items.getItem().getParticleContent().put(particleCache.getAction(), particleEffect.getKey());
+                //TODO items.getItem().getParticleContent().put(particleCache.getAction(), particleEffect.getKey());
             }
             return true;
         });

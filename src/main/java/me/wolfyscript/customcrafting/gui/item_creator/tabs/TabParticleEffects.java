@@ -26,6 +26,7 @@ public class TabParticleEffects extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.FIREWORK_ROCKET, this));
+        /* TODO
         creator.registerButton(new DummyButton<>("particle_effects.head", Material.IRON_HELMET));
         creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.HEAD));
         creator.registerButton(new DummyButton<>("particle_effects.chest", Material.IRON_CHESTPLATE));
@@ -40,6 +41,8 @@ public class TabParticleEffects extends ItemCreatorTab {
         creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.OFF_HAND));
         creator.registerButton(new DummyButton<>("particle_effects.block", Material.GRASS_BLOCK));
         creator.registerButton(new ButtonParticleEffectSelect(ParticleLocation.BLOCK));
+
+         */
     }
 
     @Override

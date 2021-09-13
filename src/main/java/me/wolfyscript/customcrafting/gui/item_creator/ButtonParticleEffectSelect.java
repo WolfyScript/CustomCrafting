@@ -19,7 +19,7 @@ public class ButtonParticleEffectSelect extends ActionButton<CCCache> {
         super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState<>("particle_effects.input", Material.BARRIER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (event instanceof InventoryClickEvent clickEvent) {
                 if (clickEvent.getClick().isShiftClick()) {
-                    items.getItem().getParticleContent().remove(action);
+                    //TODO: items.getItem().getParticleContent().remove(action);
                 } else {
                     cache.getParticleCache().setAction(action);
                     guiHandler.openCluster("particle_creator");
