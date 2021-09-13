@@ -109,9 +109,8 @@ public class AnvilListener implements Listener {
                     if (result.hasCustomDurability()) {
                         result.setCustomDamage(Math.max(0, result.getCustomDamage() - recipe.getDurability()));
                     } else if (result.getItemMeta() instanceof Damageable damageable) {
-                        var itemMeta = result.getItemMeta();
                         damageable.setDamage(damageable.getDamage() - recipe.getDurability());
-                        result.setItemMeta(itemMeta);
+                        result.setItemMeta(damageable);
                     }
                 }
             }
