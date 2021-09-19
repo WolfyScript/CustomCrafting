@@ -14,7 +14,6 @@ import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
 import me.wolfyscript.customcrafting.gui.item_creator.ClusterItemCreator;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import me.wolfyscript.customcrafting.gui.particle_creator.ClusterParticleCreator;
 import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
@@ -302,7 +301,7 @@ public class CustomCrafting extends JavaPlugin {
         CCRegistry.ITEM_CREATOR_TABS.register(new TabFuel());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabLocalizedName());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabLore());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
+        //CCRegistry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabPermission());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabPlayerHead());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabPotion());

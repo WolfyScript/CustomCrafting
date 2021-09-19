@@ -19,7 +19,7 @@ public class ButtonParticleEffectSelect extends ActionButton<CCCache> {
         super("particle_effects." + action.toString().toLowerCase(Locale.ROOT) + ".input", new ButtonState<>("particle_effects.input", Material.BARRIER, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
             if (event instanceof InventoryClickEvent clickEvent) {
                 if (clickEvent.getClick().isShiftClick()) {
-                    //TODO: items.getItem().getParticleContent().remove(action);
+                    //TODO: new particle system. items.getItem().getParticleContent().set(action);
                 } else {
                     cache.getParticleCache().setAction(action);
                     guiHandler.openCluster("particle_creator");
@@ -28,6 +28,7 @@ public class ButtonParticleEffectSelect extends ActionButton<CCCache> {
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             Items items = guiHandler.getCustomCache().getItems();
+            /*
             ParticleEffect particleEffect = Registry.PARTICLE_EFFECTS.get(items.getItem().getParticleContent().getParticleEffect(action));
             if (particleEffect != null) {
                 itemStack.setType(particleEffect.getIcon());
@@ -36,6 +37,8 @@ public class ButtonParticleEffectSelect extends ActionButton<CCCache> {
             } else {
                 itemStack.setType(Material.AIR);
             }
+
+             */
             return itemStack;
         }));
     }
