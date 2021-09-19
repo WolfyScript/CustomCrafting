@@ -317,7 +317,6 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new ClusterRecipeBook(invAPI, this));
         invAPI.registerCluster(new EliteCraftingCluster(invAPI, this));
         invAPI.registerCluster(new ClusterItemCreator(invAPI, this));
-        invAPI.registerCluster(new ClusterParticleCreator(invAPI, this));
         invAPI.registerCluster(new ClusterPotionCreator(invAPI, this));
         invAPI.registerCluster(new ClusterRecipeBookEditor(invAPI, this));
     }
