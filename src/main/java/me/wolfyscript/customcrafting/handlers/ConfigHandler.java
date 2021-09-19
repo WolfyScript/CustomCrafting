@@ -16,15 +16,14 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
+import me.wolfyscript.utilities.api.inventory.custom_items.ParticleContent;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.language.Language;
 import me.wolfyscript.utilities.api.language.LanguageAPI;
-import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.particles.ParticleAnimation;
 import me.wolfyscript.utilities.util.particles.ParticleEffect;
-import me.wolfyscript.utilities.util.particles.ParticleLocation;
 import me.wolfyscript.utilities.util.particles.animators.AnimatorBasic;
-import me.wolfyscript.utilities.util.particles.timer.TimeSupplierLinear;
+import me.wolfyscript.utilities.util.particles.timer.TimerLinear;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -74,8 +73,8 @@ public class ConfigHandler {
     }
 
     public void loadDefaults() {
-        var enchantTableEffect = new ParticleEffect(Particle.ENCHANTMENT_TABLE, 2, new Vector(0,0,0), 0.75, null, new TimeSupplierLinear(1, 1), new AnimatorBasic());
-        Registry.PARTICLE_EFFECTS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantTableEffect);
+        var enchantTableEffect = new ParticleEffect(Particle.ENCHANTMENT_TABLE, 2, new Vector(0,0,0), 0.75, null, new TimerLinear(1, 1), new AnimatorBasic());
+        //Registry.PARTICLE_EFFECTS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantTableEffect);
 
         var enchantAnimation = new ParticleAnimation(
                 Material.ENCHANTING_TABLE,
@@ -83,7 +82,7 @@ public class ConfigHandler {
                 Arrays.asList("This is the default effect for the advanced crafting table", ""), 0, 5, -1,
                 new ParticleAnimation.ParticleEffectSettings(enchantTableEffect, new Vector(0.5,1.25,0.5), 0)
         );
-        Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
+        //Registry.PARTICLE_ANIMATIONS.register(CustomCrafting.ADVANCED_CRAFTING_TABLE, enchantAnimation);
 
         if (mainConfig.resetRecipeBook()) {
             var knowledgeBook = new CustomItem(Material.KNOWLEDGE_BOOK);
@@ -107,7 +106,10 @@ public class ConfigHandler {
             advancedWorkbench.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Crafting Table for advanced recipes"));
             advancedWorkbench.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             advancedWorkbench.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            advancedWorkbench.getParticleContent().addParticleEffect(ParticleLocation.BLOCK, CustomCrafting.ADVANCED_CRAFTING_TABLE);
+
+            //advancedWorkbench.getParticleContent().setBlock(new ParticleContent.Settings(CustomCrafting.ADVANCED_CRAFTING_TABLE));
+            advancedWorkbench.getParticleContent().setBlock(new ParticleContent.Settings(enchantAnimation));
+
             ItemLoader.saveItem(CustomCrafting.ADVANCED_CRAFTING_TABLE, advancedWorkbench);
 
             var workbenchCraft = new CraftingRecipeShaped(CustomCrafting.ADVANCED_CRAFTING_TABLE);

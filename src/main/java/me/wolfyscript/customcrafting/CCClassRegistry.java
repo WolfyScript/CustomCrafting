@@ -29,7 +29,7 @@ public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
         public <C extends Condition<C>> void register(NamespacedKey key, Class<C> condition, @Nullable Condition.AbstractGUIComponent<C> component) {
             Preconditions.checkArgument(condition != null, "Condition must not be null!");
             Condition.registerGUIComponent(Objects.requireNonNull(key, "Invalid NamespacedKey! Key cannot be null!"), component);
-            super.register(key, (Class<Condition<?>>) condition);
+            super.register(key, condition);
         }
 
         /**
@@ -43,7 +43,7 @@ public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
         }
 
         @Override
-        public void register(NamespacedKey key, Class<Condition<?>> value) {
+        public void register(NamespacedKey key, Class<? extends Condition<?>> value) {
             Condition.registerGUIComponent(Objects.requireNonNull(key, "Invalid NamespacedKey! Key cannot be null!"), null);
             super.register(key, value);
         }

@@ -196,8 +196,8 @@ public class AnvilListener implements Listener {
                     event.setCurrentItem(null);
                     player.updateInventory();
 
-                    CustomItem inputLeft = anvilData.getInputLeft();
-                    CustomItem inputRight = anvilData.getInputRight();
+                    CustomItem inputLeft = anvilData.getLeftIngredient().customItem();
+                    CustomItem inputRight = anvilData.getRightIngredient().customItem();
 
                     if (inputLeft != null && inventory.getItem(0) != null) {
                         ItemStack itemLeft = anvilData.getLeftIngredient().itemStack().clone();
