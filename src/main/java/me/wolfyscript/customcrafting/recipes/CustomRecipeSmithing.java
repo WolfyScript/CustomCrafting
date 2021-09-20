@@ -27,12 +27,14 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     private Ingredient addition;
 
     private boolean preserveEnchants;
+    private boolean onlyChangeMaterial; //Only changes the material of the item. Useful to make vanilla style recipes.
 
     public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
         base = ItemLoader.loadIngredient(node.path(KEY_BASE));
         addition = ItemLoader.loadIngredient(node.path(KEY_ADDITION));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
+        preserveEnchants = node.path("onlyChangeMaterial").asBoolean(false);
     }
 
     public CustomRecipeSmithing(NamespacedKey key) {
@@ -41,6 +43,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         this.addition = new Ingredient();
         this.result = new Result();
         this.preserveEnchants = true;
+        this.onlyChangeMaterial = false;
     }
 
     public CustomRecipeSmithing(CustomRecipeSmithing customRecipeSmithing) {
@@ -49,6 +52,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         this.base = customRecipeSmithing.getBase();
         this.addition = customRecipeSmithing.getAddition();
         this.preserveEnchants = customRecipeSmithing.isPreserveEnchants();
+        this.onlyChangeMaterial = customRecipeSmithing.isOnlyChangeMaterial();
     }
 
     @Override
@@ -85,6 +89,14 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public void setPreserveEnchants(boolean preserveEnchants) {
         this.preserveEnchants = preserveEnchants;
+    }
+
+    public boolean isOnlyChangeMaterial() {
+        return onlyChangeMaterial;
+    }
+
+    public void setOnlyChangeMaterial(boolean onlyChangeMaterial) {
+        this.onlyChangeMaterial = onlyChangeMaterial;
     }
 
     @Override

@@ -66,8 +66,19 @@ public class SmithingListener implements Listener {
                         preCraftedRecipes.put(player.getUniqueId(), data);
                         //Process result
                         ItemStack endResult = result.getItem(data, player, inv.getLocation() != null ? inv.getLocation().getBlock() : null);
-                        endResult.addUnsafeEnchantments(base.getEnchantments());
-                        event.setResult(endResult);
+                        if (recipe.isOnlyChangeMaterial()) {
+                            //Take the base item and just change the material.
+                            var baseCopy = base.clone();
+                            baseCopy.setType(endResult.getType());
+                            baseCopy.setAmount(endResult.getAmount());
+                            event.setResult(baseCopy);
+                        } else {
+                            //Manual result processing & transferring data.
+                            if(recipe.isPreserveEnchants()) {
+                                endResult.addUnsafeEnchantments(base.getEnchantments());
+                            }
+                            event.setResult(endResult);
+                        }
                         break;
                     }
                 }
@@ -88,7 +99,7 @@ public class SmithingListener implements Listener {
                 //Vanilla Recipe
                 return;
             }
-            ItemStack resultStack = event.getCurrentItem().clone();
+            var resultStack = event.getCurrentItem().clone();
             if (event.isShiftClick()) {
                 if (InventoryUtils.hasInventorySpace(player, resultStack)) {
                     player.getInventory().addItem(resultStack);
@@ -99,11 +110,11 @@ public class SmithingListener implements Listener {
             } else {
                 event.getView().setCursor(resultStack);
             }
-            final ItemStack baseItem = Objects.requireNonNull(inventory.getItem(0)).clone();
-            final ItemStack additionItem = Objects.requireNonNull(inventory.getItem(1)).clone();
+            final var baseItem = Objects.requireNonNull(inventory.getItem(0)).clone();
+            final var additionItem = Objects.requireNonNull(inventory.getItem(1)).clone();
             var smithingData = preCraftedRecipes.get(player.getUniqueId());
-            CustomItem base = smithingData.getBase();
-            CustomItem addition = smithingData.getAddition();
+            var base = smithingData.getBase();
+            var addition = smithingData.getAddition();
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
             base.remove(baseItem, 1, inventory);
             addition.remove(additionItem, 1, inventory);

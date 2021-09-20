@@ -4,8 +4,14 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
+import org.bukkit.Material;
 
 public class RecipeCreatorSmithing extends RecipeCreator {
+
+    private static final String CHANGE_MATERIAL = "change_material";
 
     public RecipeCreatorSmithing(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "smithing", 45, customCrafting);
@@ -18,6 +24,13 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
         registerButton(new ButtonRecipeResult());
+        registerButton(new ToggleButton<>(CHANGE_MATERIAL, (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getSmithingCache().isOnlyChangeMaterial(), new ButtonState<>(CHANGE_MATERIAL + ".enabled", Material.LIME_CONCRETE, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            customCache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(false);
+            return true;
+        }), new ButtonState<>(CHANGE_MATERIAL + ".disabled", Material.RED_CONCRETE, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            customCache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(true);
+            return true;
+        })));
     }
 
     @Override
@@ -33,6 +46,8 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         event.setButton(19, "recipe.ingredient_0");
         event.setButton(22, "recipe.ingredient_1");
         event.setButton(25, "recipe.result");
+
+        event.setButton(39, CHANGE_MATERIAL);
 
         event.setButton(42, ClusterRecipeCreator.GROUP);
         if (smithingRecipe.isSaved()) {

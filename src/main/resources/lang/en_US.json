@@ -2734,6 +2734,28 @@
       "smithing": {
         "gui_name": "&4&lCreator &7[&8Smithing Table&7]",
         "items": {
+          "change_material": {
+            "enabled": {
+              "name": "&6&lMaterial Only",
+              "lore": [
+                "&eThis will take the base item",
+                "&eand change the material to the",
+                "&ematerial of the result.",
+                "&cAny nbt of the result is ignored!",
+                "",
+                "&8[&aClick&8] &eUse full result item"
+              ]
+            },
+            "disabled": {
+              "name": "&6&lUse Result Item",
+              "lore": [
+                "&eUses the set result item",
+                "&ewith all their NBT data.",
+                "",
+                "&8[&aClick&8] &eMaterial Only"
+              ]
+            }
+          }
         }
       },
       "variants": {
