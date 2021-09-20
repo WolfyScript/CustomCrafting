@@ -28,10 +28,7 @@ import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.items.extension.*;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.DamageMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.EnchantedBookMergeAdapter;
-import me.wolfyscript.customcrafting.recipes.items.target.adapters.PlaceholderAPIMergeAdapter;
+import me.wolfyscript.customcrafting.recipes.items.target.adapters.*;
 import me.wolfyscript.customcrafting.utils.*;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -149,6 +146,7 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("Registering Result Merge Adapters");
         CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
         CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DisplayNameMergeAdapter());
         CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
         CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
 
