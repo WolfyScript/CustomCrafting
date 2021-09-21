@@ -45,7 +45,7 @@ public class PlayerListener implements Listener {
             var customItem = CustomItem.getByItemStack(itemStack);
             if (customItem != null) {
                 RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
-                if (knowledgeBook.isEnabled()) {
+                if (knowledgeBook != null && knowledgeBook.isEnabled()) {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);
                     event.getPlayer().closeInventory();
