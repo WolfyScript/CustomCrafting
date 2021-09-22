@@ -74,7 +74,7 @@ public abstract class RecipeData<R extends CustomRecipe<?>> {
      */
     @Nullable
     public IngredientData getBySlot(int slot) {
-        return indexedBySlot.get(slot);
+        return indexedBySlot.values().stream().filter(data -> data.recipeSlot() == slot).findFirst().orElse(null);
     }
 
     /**
