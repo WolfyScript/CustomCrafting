@@ -149,6 +149,7 @@ public class CustomCrafting extends JavaPlugin {
         CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DisplayNameMergeAdapter());
         CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
         CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
+        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new FireworkRocketMergeAdapter());
 
         getLogger().info("Registering Recipe Conditions");
         CCClassRegistry.RECIPE_CONDITIONS.register(AdvancedWorkbenchCondition.KEY, AdvancedWorkbenchCondition.class, new AdvancedWorkbenchCondition.GUIComponent());
