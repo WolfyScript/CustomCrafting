@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 
 public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
+    private List<Integer> indexes;
+
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
 
@@ -70,6 +72,18 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         List<Ingredient> ingredientsNew = ingredients.filter(ingredient -> ingredient != null && !ingredient.isEmpty()).toList();
         Preconditions.checkArgument(!ingredientsNew.isEmpty(), "Invalid ingredients! Recipe requires non-air ingredients!");
         this.ingredients = ingredientsNew;
+        this.indexes = new ArrayList<>();
+        for (int i = 0; i < this.ingredients.size(); i++) {
+            indexes.add(i);
+        }
+        indexes.sort((index, index1) -> {
+            var ingredient = this.ingredients.get(index);
+            var ingredient1 = this.ingredients.get(index1);
+            if(ingredient.getChoices().size() > 1) {
+                return ingredient1.getChoices().size() > 1 ? 0 : 1;
+            }
+            return ingredient1.getChoices().size() > 1 ? -1 : 0;
+        });
     }
 
     @Override
@@ -79,30 +93,30 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
-        List<Integer> usedKeys = new ArrayList<>();
+        List<Integer> keys = new ArrayList<>(this.indexes);
         Map<Integer, IngredientData> dataMap = new HashMap<>();
         ItemStack[] matrix = matrixData.getMatrix();
         for (int i = 0; i < matrix.length; i++) {
-            checkIngredient(i, usedKeys, dataMap, matrix[i]);
+            var key = checkIngredient(i, keys, dataMap, matrix[i]);
+            if(key >= 0) {
+                keys.remove(key);
+            }
         }
-        return usedKeys.size() == ingredients.size() ? new CraftingData(this, dataMap) : null;
+        return keys.isEmpty() ? new CraftingData(this, dataMap) : null;
     }
 
-    protected void checkIngredient(int pos, List<Integer> usedKeys, Map<Integer, IngredientData> dataMap, ItemStack item) {
-        if (item == null) return;
-        for (int i = 0; i < ingredients.size(); i++) {
-            if (!usedKeys.contains(i)) {
-                Optional<CustomItem> validItem = ingredients.get(i).check(item, isExactMeta());
+    protected Integer checkIngredient(int pos, List<Integer> keys, Map<Integer, IngredientData> dataMap, ItemStack item) {
+        if (item != null) {
+            for (Integer key : keys) {
+                var ingredient = ingredients.get(key);
+                Optional<CustomItem> validItem = ingredient.check(item, isExactMeta());
                 if (validItem.isPresent()) {
-                    usedKeys.add(i);
-                    var customItem = validItem.get().clone();
-                    if (customItem != null) {
-                        dataMap.put(pos, new IngredientData(i, ingredients.get(i), customItem, item));
-                    }
-                    return;
+                    dataMap.put(pos, new IngredientData(key, ingredient, validItem.get(), item));
+                    return key;
                 }
             }
         }
+        return -1;
     }
 
     @Override
