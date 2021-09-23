@@ -56,6 +56,6 @@ public class FireworkRocketMergeAdapter extends MergeAdapter {
 
     @Override
     public MergeAdapter clone() {
-        return new FireworkRocketMergeAdapter();
+        return new FireworkRocketMergeAdapter(this);
     }
 }
