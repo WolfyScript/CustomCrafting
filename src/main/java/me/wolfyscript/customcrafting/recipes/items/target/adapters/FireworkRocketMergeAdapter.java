@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,10 +39,14 @@ public class FireworkRocketMergeAdapter extends MergeAdapter {
         if(result.getType().equals(Material.FIREWORK_ROCKET)) {
             if (result.getItemMeta() instanceof FireworkMeta meta) {
                 for (IngredientData bySlot : recipeData.getBySlots(slots)) {
-                    if (bySlot.itemStack().getType().equals(Material.GUNPOWDER)) {
+                    var item = bySlot.itemStack();
+                    if (item.getType().equals(Material.GUNPOWDER)) {
                         meta.setPower(meta.getPower() + powerIncrement);
+                    } else if(item.getItemMeta() instanceof FireworkEffectMeta effectMeta) {
+                        if (effectMeta.hasEffect()) {
+                            meta.addEffect(effectMeta.getEffect());
+                        }
                     }
-                    //TODO: Merge FireworkEffects
                 }
                 result.setItemMeta(meta);
             }
