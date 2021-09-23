@@ -23,6 +23,8 @@ import java.util.stream.Stream;
 public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
     private List<Integer> indexes;
+    private int nonEmptyIngredientSize;
+    private boolean hasAllowedEmptyIngredient;
 
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
@@ -72,6 +74,8 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         List<Ingredient> ingredientsNew = ingredients.filter(ingredient -> ingredient != null && !ingredient.isEmpty()).toList();
         Preconditions.checkArgument(!ingredientsNew.isEmpty(), "Invalid ingredients! Recipe requires non-air ingredients!");
         this.ingredients = ingredientsNew;
+        this.nonEmptyIngredientSize = (int) this.ingredients.stream().filter(ingredient -> !ingredient.isAllowEmpty()).count();
+        this.hasAllowedEmptyIngredient = this.nonEmptyIngredientSize != this.ingredients.size();
         this.indexes = new ArrayList<>();
         for (int i = 0; i < this.ingredients.size(); i++) {
             indexes.add(i);
@@ -88,7 +92,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public boolean fitsDimensions(CraftManager.MatrixData matrixData) {
-        return ingredients.size() == matrixData.getStrippedSize();
+        return hasAllowedEmptyIngredient ? ( matrixData.getStrippedSize() >= nonEmptyIngredientSize && matrixData.getStrippedSize() <= ingredients.size() ) : matrixData.getStrippedSize() == nonEmptyIngredientSize;
     }
 
     @Override
@@ -102,7 +106,15 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
                 keys.remove(key);
             }
         }
-        return keys.isEmpty() ? new CraftingData(this, dataMap) : null;
+        if(keys.isEmpty()) {
+            return new CraftingData(this, dataMap);
+        } else if (hasAllowedEmptyIngredient && keys.stream().allMatch(index -> ingredients.get(index).isAllowEmpty())) {
+            int maxSize = ingredients.size() - keys.size();
+            if (matrixData.getStrippedSize() == maxSize) {
+                return new CraftingData(this, dataMap);
+            }
+        }
+        return null;
     }
 
     protected Integer checkIngredient(int pos, List<Integer> keys, Map<Integer, IngredientData> dataMap, ItemStack item) {

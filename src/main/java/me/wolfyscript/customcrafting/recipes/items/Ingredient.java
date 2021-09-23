@@ -13,6 +13,7 @@ import java.util.Set;
 public class Ingredient extends RecipeItemStack {
 
     private boolean replaceWithRemains = true;
+    private boolean allowEmpty = false;
 
     public Ingredient() {
         super();
@@ -49,6 +50,14 @@ public class Ingredient extends RecipeItemStack {
 
     public void setReplaceWithRemains(boolean replaceWithRemains) {
         this.replaceWithRemains = replaceWithRemains;
+    }
+
+    public boolean isAllowEmpty() {
+        return allowEmpty;
+    }
+
+    public void setAllowEmpty(boolean allowEmpty) {
+        this.allowEmpty = allowEmpty;
     }
 
     @Override
