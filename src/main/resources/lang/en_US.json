@@ -479,6 +479,12 @@
           "next_page": {
             "name": "&2Next Page",
             "help": []
+          },
+          "workstation_filter": {
+            "name": "&6&lType: &e%type%",
+            "lore": [
+              "&7[&aClick&7] Next type"
+            ]
           }
         },
         "messages": {

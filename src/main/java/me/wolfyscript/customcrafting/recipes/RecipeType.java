@@ -63,6 +63,11 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
 
     String name();
 
+    /**
+     * The Container can hold multiple RecipeTypes and is used to group similar or related recipe types together.
+     *
+     * @param <C> The type of the {@link CustomRecipe}, that all recipes in the collection must match.
+     */
     interface Container<C extends CustomRecipe<?>> {
 
         CraftingContainer<AdvancedRecipeSettings> CRAFTING = new CraftingContainer<>("workbench", "crafting", CRAFTING_SHAPED, CRAFTING_SHAPELESS);

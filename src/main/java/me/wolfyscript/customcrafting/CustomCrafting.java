@@ -36,6 +36,7 @@ import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
+import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.WUVersion;
@@ -131,9 +132,9 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
         getLogger().info("Environment: " + WolfyUtilities.getENVIRONMENT());
         getLogger().info("Registering custom data");
-        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
-        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
-        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
+        Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
+        Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
+        Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
 
         getLogger().info("Registering Result Extensions");
         CCClassRegistry.RESULT_EXTENSIONS.register(new CommandResultExtension());

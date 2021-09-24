@@ -11,16 +11,21 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Keyed;
+import org.bukkit.Material;
 import org.bukkit.inventory.Recipe;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MenuListRecipes extends CCWindow {
+
+    private static final String FILTER = "workstation_filter";
 
     public MenuListRecipes(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "recipe_list", 54, customCrafting);
@@ -54,6 +59,8 @@ public class MenuListRecipes extends CCWindow {
             return true;
         }));
 
+        registerButton(new ButtonRecipeListWorkstationFilter());
+
         for (int i = 0; i < 45; i++) {
             registerButton(new ButtonContainerRecipeList(i, customCrafting));
             registerButton(new ButtonNamespaceRecipe(i, customCrafting));
@@ -83,30 +90,31 @@ public class MenuListRecipes extends CCWindow {
                 button.setNamespace(guiHandler, namespaceList.get(i));
                 event.setButton(9 + slot, button);
             }
+        } else if (namespace.equalsIgnoreCase("minecraft")) {
+            List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).collect(Collectors.toList());
+            recipeList.filterVanillaRecipes(recipes);
+            maxPages = recipeList.getMaxPages(recipes.size());
+            page = recipeList.getPage(maxPages);
+            for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
+                ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
+                button.setRecipe(event.getGuiHandler(), recipes.get(i));
+                event.setButton(9 + slot, button);
+            }
         } else {
-            if (namespace.equalsIgnoreCase("minecraft")) {
-                List<Recipe> recipes = customCrafting.getDataHandler().getMinecraftRecipes().stream().sorted(Comparator.comparing(o -> ((Keyed) o).getKey().getKey())).toList();
-                maxPages = recipeList.getMaxPages(recipes.size());
-                page = recipeList.getPage(maxPages);
-                for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
-                    ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
-                    button.setRecipe(event.getGuiHandler(), recipes.get(i));
-                    event.setButton(9 + slot, button);
-                }
-            } else {
-                List<CustomRecipe<?>> recipes = CCRegistry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).toList();
-                maxPages = recipeList.getMaxPages(recipes.size());
-                page = recipeList.getPage(maxPages);
-                for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
-                    ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
-                    button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));
-                    event.setButton(9 + slot, button);
-                }
+            List<CustomRecipe<?>> recipes = CCRegistry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
+            recipeList.filterCustomRecipes(recipes);
+            maxPages = recipeList.getMaxPages(recipes.size());
+            page = recipeList.getPage(maxPages);
+            for (int i = 45 * page, slot = 0; slot < 45 && i < recipes.size(); i++, slot++) {
+                ButtonContainerRecipeList button = (ButtonContainerRecipeList) getButton(ButtonContainerRecipeList.key(slot));
+                button.setCustomRecipe(event.getGuiHandler(), recipes.get(i));
+                event.setButton(9 + slot, button);
             }
         }
         if (page != 0) {
             event.setButton(2, "previous_page");
         }
+        event.setButton(4, ButtonRecipeListWorkstationFilter.KEY);
         if (page + 1 < maxPages) {
             event.setButton(6, "next_page");
         }
