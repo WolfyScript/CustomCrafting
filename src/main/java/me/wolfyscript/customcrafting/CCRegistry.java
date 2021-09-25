@@ -36,6 +36,8 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
 
         private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
         private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
+        private final Set<String> NAMESPACES = new HashSet<>();
+        private final Set<String> GROUPS = new HashSet<>();
 
         private RecipeRegistry() {
         }
@@ -49,6 +51,11 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
                 removeBukkitRecipe(namespacedKey);
             }
             this.map.remove(namespacedKey);
+            //Clear cache
+            BY_NAMESPACE.remove(namespacedKey.getNamespace());
+            BY_GROUP.clear();
+            NAMESPACES.clear();
+            GROUPS.clear();
         }
 
         @Override
@@ -64,7 +71,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
             }
             //Clear cache if changed
             BY_NAMESPACE.remove(namespacedKey.getNamespace());
+            NAMESPACES.add(namespacedKey.getNamespace());
             BY_GROUP.remove(value.getGroup());
+            GROUPS.add(value.getGroup());
         }
 
         @Override
@@ -76,14 +85,20 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list of all available namespaces.
          */
         public List<String> namespaces() {
-            return keySet().stream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
+            if(NAMESPACES.isEmpty()) {
+                NAMESPACES.addAll(keySet().stream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList()));
+            }
+            return new ArrayList<>(NAMESPACES);
         }
 
         /**
          * @return A list of all available groups.
          */
         public List<String> groups() {
-            return values().stream().map(CustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList());
+            if (GROUPS.isEmpty()) {
+                GROUPS.addAll(values().stream().map(CustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList()));
+            }
+            return new ArrayList<>(GROUPS);
         }
 
         /**

@@ -209,7 +209,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     }
 
     public boolean findResultItem(ItemStack result) {
-        return getResult().getChoices().parallelStream().anyMatch(customItem -> customItem.create().isSimilar(result));
+        return getResult().getChoices().stream().anyMatch(customItem -> customItem.create().isSimilar(result));
     }
 
     /**
