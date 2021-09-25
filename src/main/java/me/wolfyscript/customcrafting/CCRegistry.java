@@ -71,9 +71,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
             }
             //Clear cache if changed
             BY_NAMESPACE.remove(namespacedKey.getNamespace());
-            NAMESPACES.add(namespacedKey.getNamespace());
+            NAMESPACES.clear();
             BY_GROUP.remove(value.getGroup());
-            GROUPS.add(value.getGroup());
+            GROUPS.clear();
         }
 
         @Override
