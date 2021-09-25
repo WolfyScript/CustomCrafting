@@ -119,11 +119,11 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
-        List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getId().equals("permission")).toList();
+        List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getNamespacedKey().getKey().equals("permission")).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
         for (Condition<?> condition : conditions) {
-            event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
+            event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getNamespacedKey().toString("_")));
             slot += 2;
         }
         event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
