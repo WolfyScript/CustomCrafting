@@ -483,7 +483,9 @@
           "workstation_filter": {
             "name": "&6&lType: &e%type%",
             "lore": [
-              "&7[&aClick&7] Next type"
+              "",
+              "&7[&aLeft-Click&7] &eNext type",
+              "&7[&aRight-Click&7] &ePrevious type"
             ]
           }
         },

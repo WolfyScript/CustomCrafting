@@ -4,6 +4,7 @@ import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.*;
 
 import java.util.*;
@@ -33,15 +34,21 @@ public class ButtonRecipeListWorkstationFilter extends ActionButton<CCCache> {
     ButtonRecipeListWorkstationFilter() {
         super(KEY, Material.COMPASS, (cache, guiHandler, player, guiInventory, i, event) -> {
             var currentType = cache.getRecipeList().getFilterType();
-            var nextIndex = FILTER_KEYS.indexOf(currentType) + 1;
-            if (nextIndex >= FILTER_KEYS.size()) {
-                nextIndex = 0;
+            if (event instanceof InventoryClickEvent clickEvent) {
+                var nextIndex = FILTER_KEYS.indexOf(currentType);
+                if (clickEvent.isLeftClick()) {
+                    if (++nextIndex >= FILTER_KEYS.size()) {
+                        nextIndex = 0;
+                    }
+                } else if (--nextIndex < 0) {
+                    nextIndex = FILTER_KEYS.size() - 1;
+                }
+                cache.getRecipeList().setFilterType(FILTER_KEYS.get(nextIndex));
             }
-            cache.getRecipeList().setFilterType(FILTER_KEYS.get(nextIndex));
             return true;
         }, (values, cache, guiHandler, player, guiInventory, itemStack, i, b) -> {
             RecipeType<?> type = cache.getRecipeList().getFilterType();
-            values.put("%type%", type != null ? type.getType().toString().replace("_", " ").replace("crafting", "") : "ALL");
+            values.put("%type%", type != null ? type.getType().toString().replace("CRAFTING", "").replace("_CRAFTING", "").replace("_", " ") : "ALL");
             itemStack.setType(FILTERS.get(type).getType());
             return itemStack;
         });
