@@ -35,6 +35,7 @@ public class Patreon {
         addPatron(new Patron("Stanislav Novotný", Tier.WOLFRAM));
         addPatron(new Patron("王聪聪", Tier.WOLFRAM));
         addPatron(new Patron("安田 安田", Tier.WOLFRAM));
+        addPatron(new Patron("Vladyslav Kharchuk", Tier.WOLFRAM));
         /*
         addPatron(new Patron("Leo", Tier.WOLFRAM));
         addPatron(new Patron("Matchman", Tier.WOLFRAM));
