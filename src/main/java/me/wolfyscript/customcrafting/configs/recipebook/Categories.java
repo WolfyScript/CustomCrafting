@@ -14,10 +14,7 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonSerialize(using = Categories.Serializer.class)
 @JsonDeserialize(using = Categories.Deserializer.class)
@@ -109,10 +106,9 @@ public class Categories {
 
     public void index() {
         CustomCrafting.inst().getApi().getConsole().info("Indexing Recipe Book...");
-        this.categoryMap.values().forEach(category -> {
-            category.index();
-            this.filters.values().forEach(category::indexFilters);
-        });
+        Collection<CategoryFilter> filterValues = this.filters.values();
+        this.categoryMap.values().forEach(category -> category.index(filterValues));
+        CustomCrafting.inst().getApi().getConsole().info("Indexed Recipe Book!");
     }
 
     @Override

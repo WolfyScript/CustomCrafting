@@ -31,7 +31,7 @@ public class Category extends CategorySettings {
         this.containers = new ArrayList<>();
     }
 
-    public void index() {
+    void index(Collection<CategoryFilter> filters) {
         if (auto) {
             this.namespaces.clear();
             this.groups.clear();
@@ -39,14 +39,17 @@ public class Category extends CategorySettings {
             this.groups.addAll(CCRegistry.RECIPES.groups());
         }
         containers.clear();
+        //Construct containers based on settings
         List<RecipeContainer> recipeContainers = new ArrayList<>();
         recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).toList());
-        recipeContainers.addAll(this.namespaces.parallelStream().flatMap(s -> CCRegistry.RECIPES.get(s).parallelStream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
-        recipeContainers.addAll(this.recipes.parallelStream().map(namespacedKey -> {
+        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> CCRegistry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
+        recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
             CustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
             return recipe == null ? null : new RecipeContainer(recipe);
         }).filter(Objects::nonNull).toList());
         containers.addAll(recipeContainers.stream().distinct().sorted().toList());
+        //Index filters for quick filtering on runtime.
+        filters.forEach(this::indexFilters);
     }
 
     public void indexFilters(CategoryFilter filter) {
@@ -54,23 +57,18 @@ public class Category extends CategorySettings {
     }
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {
-        return getContainers(filter).stream().filter(container -> container.canView(player)).toList();
+        return getRecipeList(player, filter, null);
     }
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter, EliteWorkbench eliteWorkbench) {
         if (eliteWorkbench != null) {
             return getContainers(filter).stream().filter(container -> container.canView(player) && container.isValid(eliteWorkbench)).toList();
         }
-        return getRecipeList(player, filter);
+        return getContainers(filter).stream().filter(container -> container.canView(player)).toList();
     }
 
     private List<RecipeContainer> getContainers(CategoryFilter filter) {
         return indexedFilters.getOrDefault(filter, new ArrayList<>());
-    }
-
-    @JsonIgnore
-    public Map<CategoryFilter, List<RecipeContainer>> getIndexedFilters() {
-        return indexedFilters;
     }
 
     @JsonGetter("auto")
@@ -90,7 +88,5 @@ public class Category extends CategorySettings {
         if (!auto) {
             writeData(byteBuf);
         }
-
-
     }
 }

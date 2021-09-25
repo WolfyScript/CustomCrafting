@@ -34,6 +34,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
      */
     class RecipeRegistry extends SimpleRegistry<CustomRecipe<?>> {
 
+        private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
+        private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
+
         private RecipeRegistry() {
         }
 
@@ -59,6 +62,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
                     CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
             }
+            //Clear cache if changed
+            BY_NAMESPACE.remove(namespacedKey.getNamespace());
+            BY_GROUP.remove(value.getGroup());
         }
 
         @Override
@@ -70,14 +76,14 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list of all available namespaces.
          */
         public List<String> namespaces() {
-            return keySet().parallelStream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
+            return keySet().stream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList());
         }
 
         /**
          * @return A list of all available groups.
          */
         public List<String> groups() {
-            return values().parallelStream().map(CustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList());
+            return values().stream().map(CustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList());
         }
 
         /**
@@ -87,7 +93,12 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes contained in the group.
          */
         public List<CustomRecipe<?>> getGroup(String group) {
-            return CCRegistry.RECIPES.values().parallelStream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
+            if (!BY_GROUP.containsKey(group)) {
+                List<CustomRecipe<?>> recipes = values().stream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
+                BY_GROUP.put(group, recipes);
+                return recipes;
+            }
+            return BY_GROUP.get(group);
         }
 
         /**
@@ -97,15 +108,20 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes contained in the namespace.
          */
         public List<CustomRecipe<?>> get(String namespace) {
-            return entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
+            if (!BY_NAMESPACE.containsKey(namespace)) {
+                List<CustomRecipe<?>> recipes = entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
+                BY_NAMESPACE.put(namespace, recipes);
+                return recipes;
+            }
+            return BY_NAMESPACE.get(namespace);
         }
 
         public List<CustomRecipe<?>> get(CustomItem result) {
-            return values().parallelStream().filter(recipe -> recipe.getResult().getChoices().contains(result)).collect(Collectors.toList());
+            return values().stream().filter(recipe -> recipe.getResult().getChoices().contains(result)).collect(Collectors.toList());
         }
 
         public <T extends CustomRecipe<?>> List<T> get(Class<T> type) {
-            return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+            return values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
         /**
@@ -114,7 +130,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list including the {@link CustomRecipe}s of the specified {@link RecipeType}
          */
         public <T extends CustomRecipe<?>> List<T> get(RecipeType<T> type) {
-            return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+            return values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
         /**
@@ -123,7 +139,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list including the {@link CustomRecipe}s of the specified {@link RecipeType}
          */
         public <T extends CustomRecipe<?>> List<T> get(RecipeType.Container<T> type) {
-            return values().parallelStream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+            return values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
         }
 
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
@@ -138,7 +154,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes that are available and are not hidden or disabled.
          */
         public List<CustomRecipe<?>> getAvailable() {
-            return getAvailable(values().parallelStream());
+            return getAvailable(values().stream());
         }
 
         /**
@@ -160,7 +176,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list only including the {@link CustomRecipe}s of the specified {@link RecipeType}, which are enabled and visible.
          */
         public <T extends CustomRecipe<?>> List<T> getAvailable(RecipeType<T> type) {
-            return getAvailable(get(type.getRecipeClass()).parallelStream());
+            return getAvailable(get(type.getRecipeClass()).stream());
         }
 
         /**
@@ -183,7 +199,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return All the recipes, that have the specified Result, are not hidden, and the player has permission to view.
          */
         public List<CustomRecipe<?>> getAvailable(ItemStack result, Player player) {
-            return getAvailable(player).parallelStream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
+            return getAvailable(player).stream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
         }
 
         public synchronized <T extends CustomRecipe<?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
