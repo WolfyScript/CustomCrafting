@@ -5,6 +5,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.Setting;
+import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -31,22 +32,25 @@ public class EditSubCommand extends AbstractSubCommand {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes.edit") && args.length > 0) {
             WolfyUtilities api = customCrafting.getApi();
-            NamespacedKey key = NamespacedKey.of(args[0]);
-            if (key != null) {
-                CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
-                if (customRecipe != null) {
-                    GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
-                    CCCache cache = guiHandler.getCustomCache();
-                    cache.setSetting(Setting.RECIPE_CREATOR);
-                    var creatorCache = cache.getRecipeCreatorCache();
-                    creatorCache.setRecipeType(customRecipe.getRecipeType());
-                    try {
-                        creatorCache.loadRecipeIntoCache(customRecipe);
-                    } catch (IllegalArgumentException ex) {
-                        Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey("recipe_creator", creatorCache.getRecipeType().getCreatorID())), 1);
+            if (args[0].contains(":")) {
+                NamespacedKey key = NamespacedKey.of(args[0]);
+                if (key != null) {
+                    CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
+                    if (customRecipe != null) {
+                        GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
+                        CCCache cache = guiHandler.getCustomCache();
+                        cache.setSetting(Setting.RECIPE_CREATOR);
+                        var creatorCache = cache.getRecipeCreatorCache();
+                        creatorCache.setRecipeType(customRecipe.getRecipeType());
+                        try {
+                            creatorCache.loadRecipeIntoCache(customRecipe);
+                            Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey(ClusterRecipeCreator.KEY, creatorCache.getRecipeType().getCreatorID())), 1);
+                        } catch (IllegalArgumentException ex) {
+                            api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
+                        }
+                    } else {
+                        api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
                     }
-                } else {
-                    api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
                 }
             }
         }
