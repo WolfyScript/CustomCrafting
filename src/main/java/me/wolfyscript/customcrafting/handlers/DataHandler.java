@@ -13,9 +13,9 @@ import org.bukkit.inventory.Recipe;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataHandler {
 
@@ -121,11 +121,11 @@ public class DataHandler {
         if (minecraftRecipes.isEmpty()) {
             minecraftRecipes = Streams.stream(Bukkit.recipeIterator()).filter(recipe -> recipe instanceof Keyed keyed && keyed.getKey().getNamespace().equals("minecraft")).sorted(Comparator.comparing(recipe -> ((Keyed) recipe).getKey().toString())).toList();
         }
-        return Collections.unmodifiableList(minecraftRecipes);
+        return minecraftRecipes;
     }
 
     public List<String> getBukkitNamespacedKeys() {
-        return getMinecraftRecipes().stream().filter(Keyed.class::isInstance).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).toList();
+        return getMinecraftRecipes().stream().filter(Keyed.class::isInstance).map(recipe -> NamespacedKey.fromBukkit(((Keyed) recipe).getKey()).toString()).collect(Collectors.toList());
     }
 
     public Categories getCategories() {
