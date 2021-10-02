@@ -37,12 +37,12 @@ public class Patron {
         Bukkit.getScheduler().runTaskAsynchronously(CustomCrafting.inst(), () -> {
             try {
                 if (!uuid.isEmpty()) {
-                    URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
-                    InputStreamReader reader = new InputStreamReader(url.openStream());
-                    JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
-                    String minecraftName = object.get("name").getAsString();
-                    JsonObject textureProperty = object.get("properties").getAsJsonArray().get(0).getAsJsonObject();
-                    this.head = PlayerHeadUtils.getViaValue(textureProperty.get("value").getAsString());
+                    var url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
+                    var reader = new InputStreamReader(url.openStream());
+                    var jsonObject = new JsonParser().parse(reader).getAsJsonObject();
+                    var minecraftName = jsonObject.get("name").getAsString();
+                    var properties = jsonObject.get("properties").getAsJsonArray().get(0).getAsJsonObject();
+                    this.head = PlayerHeadUtils.getViaValue(properties.get("value").getAsString());
                     ItemMeta meta = this.head.getItemMeta();
                     if (!minecraftName.isEmpty()) {
                         meta.setLore(Collections.singletonList("§7aka. " + minecraftName));

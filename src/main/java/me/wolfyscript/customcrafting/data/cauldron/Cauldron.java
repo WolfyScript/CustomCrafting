@@ -51,7 +51,7 @@ public class Cauldron implements Listener {
 
     @Override
     public String toString() {
-        return recipe.getNamespacedKey() + ";" + passedTicks + ";" + cookingTime + ";" + done + ";" + dropItems;
+        return String.format("%s;%s;%s;%s;%s", recipe.getNamespacedKey(), passedTicks, cookingTime, done, dropItems);
     }
 
     public void increasePassedTicks() {

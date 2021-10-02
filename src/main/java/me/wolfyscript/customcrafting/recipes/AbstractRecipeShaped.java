@@ -158,15 +158,14 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         var index = 0;
         var row = 0;
         for (int i = 0; i < maxIngredients; i++) {
-            var ingrd = CraftingRecipe.LETTERS.charAt(i);
+            final var ingrd = CraftingRecipe.LETTERS.charAt(i);
             final var current = genShape[row] != null ? genShape[row] : "";
             if (!keys.contains(ingrd)) {
                 genShape[row] = current + " ";
             } else {
                 genShape[row] = current + ingrd;
             }
-            index++;
-            if ((index % maxGridDimension) == 0) {
+            if (++index % maxGridDimension == 0) {
                 row++;
             }
         }
@@ -223,8 +222,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                     if (ingredient != null) {
                         Optional<CustomItem> item = ingredient.check(invItem, this.exactMeta);
                         if (item.isPresent()) {
-                            dataMap.put(i, new IngredientData(slot, ingredient, item.get(), invItem));
-                            i++;
+                            dataMap.put(i++, new IngredientData(slot, ingredient, item.get(), invItem));
                             continue;
                         }
                     }

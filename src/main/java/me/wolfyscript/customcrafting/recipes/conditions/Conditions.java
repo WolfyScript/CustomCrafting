@@ -99,7 +99,7 @@ public class Conditions {
 
     public enum Option {
         EXACT,
-        @Deprecated IGNORE,
+        @Deprecated /*Ignore is no longer used! Previous conditions using it will no longer be loaded!*/ IGNORE,
         HIGHER,
         HIGHER_EXACT,
         LOWER,

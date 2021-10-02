@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Campfire;
+import org.bukkit.util.Vector;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -20,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -48,13 +50,13 @@ public class Cauldrons {
             }
             synchronized (cauldrons) {
                 cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null && entry.getKey().getWorld() != null && entry.getKey().getWorld().isChunkLoaded(entry.getKey().getBlockX() >> 4, entry.getKey().getBlockZ() >> 4) && Cauldrons.isCauldron(entry.getKey().getBlock().getType())).forEach(entry -> {
-                    final Location loc = entry.getKey();
+                    final var loc = entry.getKey();
                     final var world = loc.getWorld();
                     final var block = loc.getBlock();
-                    int level = getLevel(block);
-                    final boolean isLit = isCustomCauldronLit(block);
+                    final var level = getLevel(block);
+                    final var isLit = isCustomCauldronLit(block);
                     if (spawnParticles && isLit && level > 0) {
-                        world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
+                        spawnBubbles(world, loc, level);
                     }
                     entry.getValue().removeIf(Cauldron::isForRemoval);
                     if (entry.getValue().isEmpty()) return;
@@ -97,8 +99,8 @@ public class Cauldrons {
                                     }
                                 } else {
                                     Bukkit.getScheduler().runTask(customCrafting, () -> {
-                                        world.spawnParticle(Particle.BUBBLE_POP, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.15, 0.1, 0.15, 0.0000000001);
-                                        world.spawnParticle(Particle.REDSTONE, loc.clone().add(0.5, 0.35 + level * 0.2, 0.5), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
+                                        spawnBubbles(world, loc, level);
+                                        world.spawnParticle(Particle.REDSTONE, loc.clone().add(particleLevel(level)), 1, 0.17, 0.2, 0.17, 4.0, new Particle.DustOptions(Color.fromBGR(random.nextInt(255), random.nextInt(255), random.nextInt(255)), random.nextInt(2)));
                                     });
                                     if (!cauldron.isDone()) {
                                         cauldron.increasePassedTicks();
@@ -106,6 +108,7 @@ public class Cauldrons {
                                 }
                             });
                         } else {
+                            //The cauldron doesn't fulfill the requirements of the recipe. Perhaps water level changed or the campfire was extinguished.
                             cauldron.decreasePassedTicks(2);
                             if (cauldron.getPassedTicks() <= 0) {
                                 for (CustomItem customItem : recipe.getIngredient().getChoices()) {
@@ -119,6 +122,14 @@ public class Cauldrons {
                 });
             }
         }, 20, 1);
+    }
+
+    private Vector particleLevel(int level) {
+        return new Vector(0.5, 0.35 + level * 0.2, 0.5);
+    }
+
+    private void spawnBubbles(World world, Location location, int level) {
+        world.spawnParticle(Particle.BUBBLE_POP, location.clone().add(particleLevel(level)), 1, 0.15, 0.1, 0.15, 0.0000000001);
     }
 
     public boolean isCustomCauldronLit(Block block) {
@@ -149,8 +160,7 @@ public class Cauldrons {
     }
 
     private String locationToString(Location location) {
-        if (location == null || location.getWorld() == null) return null;
-        return location.getWorld().getUID() + ";" + location.getBlockX() + ";" + location.getBlockY() + ";" + location.getBlockZ();
+        return location == null || location.getWorld() == null ? null : String.format("%s;%s;%s;%s", location.getWorld().getUID(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     public static boolean isCauldron(Material type) {
@@ -165,7 +175,7 @@ public class Cauldrons {
         if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
             api.getConsole().info("Saving Cauldrons");
         }
-        try (var fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"); BukkitObjectOutputStream oos = new BukkitObjectOutputStream(fos)) {
+        try (var fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"); var oos = new BukkitObjectOutputStream(fos)) {
             Map<String, List<String>> saveMap = new HashMap<>();
             synchronized (cauldrons) {
                 cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {

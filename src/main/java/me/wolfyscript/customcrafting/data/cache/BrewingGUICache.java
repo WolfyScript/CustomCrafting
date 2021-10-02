@@ -19,10 +19,8 @@ public class BrewingGUICache {
     public BrewingGUICache() {
         this.page = 0;
         this.option = "";
-
         this.potionEffectAddition = null;
         this.replacePotionEffectAddition = false;
-
         this.upgradePotionEffectType = null;
         this.upgradeValues = new Pair<>(0, 0);
     }

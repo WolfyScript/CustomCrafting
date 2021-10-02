@@ -105,8 +105,7 @@ public class CCPlayerData extends CustomPlayerData {
         totalCrafts = node.path("total_crafts").asInt(0);
         advancedCrafts = node.path("advanced_crafts").asInt(0);
         normalCrafts = node.path("normal_crafts").asInt(0);
-        crafts = JacksonUtil.getObjectMapper().convertValue(node.path("crafts"), new TypeReference<Map<NamespacedKey, Integer>>() {
-        });
+        crafts = JacksonUtil.getObjectMapper().convertValue(node.path("crafts"), new TypeReference<>() {});
     }
 
     @Override
