@@ -124,6 +124,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
     protected R create(R recipe) {
         recipe.setResult(result);
         recipe.setConditions(conditions);
+        recipe.setGroup(group);
         recipe.setHidden(hidden);
         recipe.setExactMeta(exactMeta);
         recipe.setPriority(priority);
