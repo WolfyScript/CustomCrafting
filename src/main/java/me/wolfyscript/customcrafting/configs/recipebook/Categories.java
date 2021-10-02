@@ -1,7 +1,9 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonParser;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
@@ -10,14 +12,15 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.Seriali
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.node.ObjectNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-@JsonSerialize(using = Categories.Serializer.class)
-@JsonDeserialize(using = Categories.Deserializer.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Categories {
 
@@ -121,73 +124,38 @@ public class Categories {
                 '}';
     }
 
-    public static class Serializer extends StdSerializer<Categories> {
-
-        public Serializer() {
-            super(Categories.class);
-        }
-
-        protected Serializer(Class<Categories> t) {
-            super(t);
-        }
-
-        @Override
-        public void serialize(Categories categories, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-            gen.writeStartObject();
-            gen.writeObjectFieldStart("categories");
-            gen.writeObjectField("sort", categories.getSortedCategories());
-            gen.writeObjectField("options", categories.categoryMap.values());
-            gen.writeEndObject();
-            gen.writeObjectFieldStart("filters");
-            gen.writeObjectField("sort", categories.getSortedFilters());
-            gen.writeObjectField("options", categories.filters.values());
-            gen.writeEndObject();
-            gen.writeEndObject();
-        }
+    @JsonGetter("categories")
+    private Map<String, Object> getCategoriesSettings() {
+        return getSettingsMap(getSortedCategories(), categoryMap.values());
     }
 
-    public static class Deserializer extends StdDeserializer<Categories> {
+    @JsonSetter("categories")
+    private void setCategoriesSettings(ObjectNode node) {
+        applySettings(node, Category.class, category -> registerCategory(category.getId(), category), s -> sortedCategories.add(s));
+    }
 
-        public Deserializer() {
-            super(Categories.class);
-        }
+    @JsonGetter("filters")
+    private Map<String, Object> getFiltersSettings() {
+        return getSettingsMap(getSortedFilters(), filters.values());
+    }
 
-        protected Deserializer(Class<?> vc) {
-            super(vc);
-        }
+    @JsonSetter("filters")
+    private void setFilters(ObjectNode node) {
+        applySettings(node, CategoryFilter.class, filter -> registerFilter(filter.getId(), filter), s -> sortedFilters.add(s));
+    }
 
-        @Override
-        public Categories deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.readValueAsTree();
-            var categories = new Categories();
-            if (node.has("categories")) {
-                JsonNode mainCategories = node.path("categories");
-                ArrayList<String> sortedMainList = new ArrayList<>();
-                if (mainCategories.has("sort")) {
-                    JsonNode sortedMain = mainCategories.path("sort");
-                    sortedMain.elements().forEachRemaining(element -> sortedMainList.add(element.asText()));
-                }
-                categories.setSortedCategories(sortedMainList);
-                mainCategories.path("options").elements().forEachRemaining(element -> {
-                    var category = JacksonUtil.getObjectMapper().convertValue(element, Category.class);
-                    categories.registerCategory(category.getId(), category);
-                });
-            }
-            if (node.has("filters")) {
-                JsonNode switchCategories = node.path("filters");
-                ArrayList<String> sortedSwitchList = new ArrayList<>();
-                if (switchCategories.has("sort")) {
-                    JsonNode sortedSwitch = switchCategories.path("sort");
-                    sortedSwitch.elements().forEachRemaining(jsonElement -> sortedSwitchList.add(jsonElement.asText()));
-                }
-                categories.setSortedFilters(sortedSwitchList);
-                switchCategories.path("options").elements().forEachRemaining(element -> {
-                    CategoryFilter category = JacksonUtil.getObjectMapper().convertValue(element, CategoryFilter.class);
-                    categories.registerFilter(category.getId(), category);
-                });
-            }
-            return categories;
+    private <T extends CategorySettings> void applySettings(ObjectNode node, Class<T> type, Consumer<T> settings, Consumer<String> sort) {
+        if (node.has("sort")) {
+            node.path("sort").elements().forEachRemaining(element -> sort.accept(element.asText()));
         }
+        node.path("options").elements().forEachRemaining(element -> settings.accept(JacksonUtil.getObjectMapper().convertValue(element, type)));
+    }
+
+    private <T extends CategorySettings> Map<String, Object> getSettingsMap(List<String> sortedList, Collection<T> settings) {
+        return Map.of(
+                "sort", sortedList,
+                "options", settings
+        );
     }
 
 }
