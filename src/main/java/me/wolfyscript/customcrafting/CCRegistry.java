@@ -55,7 +55,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
                 removeBukkitRecipe(namespacedKey);
             }
             this.map.remove(namespacedKey);
-            clearCache(namespacedKey);//Clear cache
+            clearCache(namespacedKey);
         }
 
         /**
@@ -82,14 +82,14 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
         public void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
             remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
             super.register(namespacedKey, value);
-            if (value instanceof ICustomVanillaRecipe) {
+            if (value instanceof ICustomVanillaRecipe vanillaRecipe) {
                 try {
-                    Bukkit.addRecipe(((ICustomVanillaRecipe<?>) value).getVanillaRecipe());
+                    Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe());
                 } catch (IllegalArgumentException ex) {
                     CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
             }
-            clearCache(namespacedKey); //Clear cache if changed
+            clearCache(namespacedKey);
         }
 
         @Override
@@ -102,7 +102,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          */
         public List<String> namespaces() {
             if(NAMESPACES.isEmpty()) {
-                NAMESPACES.addAll(keySet().stream().map(NamespacedKey::getNamespace).distinct().collect(Collectors.toList()));
+                NAMESPACES.addAll(keySet().stream().map(NamespacedKey::getNamespace).distinct().toList());
             }
             return new ArrayList<>(NAMESPACES);
         }
@@ -112,7 +112,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          */
         public List<String> groups() {
             if (GROUPS.isEmpty()) {
-                GROUPS.addAll(values().stream().map(CustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().collect(Collectors.toList()));
+                GROUPS.addAll(values().stream().map(CustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().toList());
             }
             return new ArrayList<>(GROUPS);
         }

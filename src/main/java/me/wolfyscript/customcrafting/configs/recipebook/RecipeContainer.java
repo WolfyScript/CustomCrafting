@@ -69,7 +69,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     }
 
     public boolean isValid(Set<Material> materials) {
-        return materials.isEmpty() || cachedRecipes.parallelStream().anyMatch(recipe1 -> recipe1.getResult().getChoices().parallelStream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
+        return materials.isEmpty() || cachedRecipes.stream().anyMatch(recipe1 -> recipe1.getResult().getChoices().stream().anyMatch(customItem -> materials.contains(customItem.getItemStack().getType())));
     }
 
     public boolean isValid(EliteWorkbench cache) {
