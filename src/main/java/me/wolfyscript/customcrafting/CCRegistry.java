@@ -111,12 +111,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes contained in the group.
          */
         public List<CustomRecipe<?>> getGroup(String group) {
-            if (!BY_GROUP.containsKey(group)) {
-                List<CustomRecipe<?>> recipes = values().stream().filter(r -> r.getGroup().equals(group)).collect(Collectors.toList());
-                BY_GROUP.put(group, recipes);
-                return recipes;
-            }
-            return BY_GROUP.get(group);
+            return BY_GROUP.computeIfAbsent(group, s -> values().stream().filter(r -> r.getGroup().equals(s)).collect(Collectors.toList()));
         }
 
         /**
@@ -126,12 +121,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes contained in the namespace.
          */
         public List<CustomRecipe<?>> get(String namespace) {
-            if (!BY_NAMESPACE.containsKey(namespace)) {
-                List<CustomRecipe<?>> recipes = entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(namespace)).map(Map.Entry::getValue).collect(Collectors.toList());
-                BY_NAMESPACE.put(namespace, recipes);
-                return recipes;
-            }
-            return BY_NAMESPACE.get(namespace);
+            return BY_NAMESPACE.computeIfAbsent(namespace, s -> entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(s)).map(Map.Entry::getValue).collect(Collectors.toList()));
         }
 
         public List<CustomRecipe<?>> get(CustomItem result) {
