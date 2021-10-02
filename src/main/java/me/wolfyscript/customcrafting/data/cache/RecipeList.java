@@ -12,6 +12,7 @@ public class RecipeList {
     private String namespace;
     private int page;
     private RecipeType<?> filterType;
+    private Class<? extends Recipe> filterClass;
 
     public RecipeList() {
         this.namespace = null;
@@ -47,6 +48,17 @@ public class RecipeList {
 
     public void setFilterType(RecipeType<?> filterType) {
         this.filterType = filterType;
+        this.filterClass = switch (filterType.getType()) {
+            case CRAFTING_SHAPED -> ShapedRecipe.class;
+            case CRAFTING_SHAPELESS -> ShapelessRecipe.class;
+            case SMOKER -> SmokingRecipe.class;
+            case FURNACE -> FurnaceRecipe.class;
+            case BLAST_FURNACE -> BlastingRecipe.class;
+            case CAMPFIRE -> CampfireRecipe.class;
+            case SMITHING -> SmithingRecipe.class;
+            case STONECUTTER -> StonecuttingRecipe.class;
+            default -> null;
+        };
     }
 
     public RecipeType<?> getFilterType() {
@@ -60,21 +72,8 @@ public class RecipeList {
     }
 
     public void filterVanillaRecipes(List<Recipe> recipes) {
-        if (filterType != null) {
-            Class<? extends Recipe> recipeClass = switch (filterType.getType()) {
-                case CRAFTING_SHAPED -> ShapedRecipe.class;
-                case CRAFTING_SHAPELESS -> ShapelessRecipe.class;
-                case SMOKER -> SmokingRecipe.class;
-                case FURNACE -> FurnaceRecipe.class;
-                case BLAST_FURNACE -> BlastingRecipe.class;
-                case CAMPFIRE -> CampfireRecipe.class;
-                case SMITHING -> SmithingRecipe.class;
-                case STONECUTTER -> StonecuttingRecipe.class;
-                default -> null;
-            };
-            if(recipeClass != null) {
-                recipes.removeIf(recipe -> !recipeClass.isInstance(recipe));
-            }
+        if (filterClass != null) {
+            recipes.removeIf(recipe -> !filterClass.isInstance(recipe));
         }
     }
 }
