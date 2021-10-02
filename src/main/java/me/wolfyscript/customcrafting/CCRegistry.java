@@ -37,6 +37,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
         private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
         private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
         private final Map<CustomItem, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
+        private final Map<Class<?>, List<CustomRecipe<?>>> BY_CLASS_TYPE = new HashMap<>();
+        private final Map<RecipeType<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE = new HashMap<>();
+        private final Map<RecipeType.Container<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE_CONTAINER = new HashMap<>();
         private final Set<String> NAMESPACES = new HashSet<>();
         private final Set<String> GROUPS = new HashSet<>();
 
@@ -52,12 +55,27 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
                 removeBukkitRecipe(namespacedKey);
             }
             this.map.remove(namespacedKey);
-            //Clear cache
-            BY_NAMESPACE.remove(namespacedKey.getNamespace());
+            clearCache(namespacedKey);//Clear cache
+        }
+
+        /**
+         * Clears the cache, so it can update with the added/removed value.<br>
+         * <br>
+         * This is needed as the cache needs to be updated with the possible new values.<br>
+         * Of course, you could check if the specific caches must be cleared, but that would be at the cost of register/remove performance.<br>
+         * (Most servers have a fixed set of recipes that they use and don't frequently change in production... well at least they shouldn't)
+         *
+         * @param key The key of the recipe that caused the reset.
+         */
+        private void clearCache(NamespacedKey key) {
+            BY_NAMESPACE.remove(key.getNamespace());
             BY_GROUP.clear();
             NAMESPACES.clear();
             GROUPS.clear();
             BY_RESULT.clear();
+            BY_CLASS_TYPE.clear();
+            BY_RECIPE_TYPE.clear();
+            BY_RECIPE_TYPE_CONTAINER.clear();
         }
 
         @Override
@@ -71,12 +89,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
                     CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
             }
-            //Clear cache if changed
-            BY_NAMESPACE.remove(namespacedKey.getNamespace());
-            NAMESPACES.clear();
-            BY_GROUP.remove(value.getGroup());
-            GROUPS.clear();
-            BY_RESULT.clear();
+            clearCache(namespacedKey); //Clear cache if changed
         }
 
         @Override
@@ -128,8 +141,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
             return BY_RESULT.computeIfAbsent(result, item -> values().stream().filter(recipe -> recipe.getResult().getChoices().contains(item)).collect(Collectors.toList()));
         }
 
+        @SuppressWarnings("unchecked")
         public <T extends CustomRecipe<?>> List<T> get(Class<T> type) {
-            return values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+            return (List<T>) BY_CLASS_TYPE.computeIfAbsent(type, aClass -> (List<CustomRecipe<?>>) values().stream().filter(aClass::isInstance).map(aClass::cast).collect(Collectors.toList()));
         }
 
         /**
@@ -137,8 +151,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @param <T>  The type passed via the {@link RecipeType}
          * @return A list including the {@link CustomRecipe}s of the specified {@link RecipeType}
          */
+        @SuppressWarnings("unchecked")
         public <T extends CustomRecipe<?>> List<T> get(RecipeType<T> type) {
-            return values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+            return (List<T>) BY_RECIPE_TYPE.computeIfAbsent(type, recipeType -> values().stream().filter(recipeType::isInstance).map(recipeType::cast).collect(Collectors.toList()));
         }
 
         /**
@@ -146,8 +161,9 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @param <T>  The type passed via the {@link RecipeType}
          * @return A list including the {@link CustomRecipe}s of the specified {@link RecipeType}
          */
+        @SuppressWarnings("unchecked")
         public <T extends CustomRecipe<?>> List<T> get(RecipeType.Container<T> type) {
-            return values().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+            return (List<T>) BY_RECIPE_TYPE_CONTAINER.computeIfAbsent(type, container -> values().stream().filter(container::isInstance).map(container::cast).collect(Collectors.toList()));
         }
 
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
