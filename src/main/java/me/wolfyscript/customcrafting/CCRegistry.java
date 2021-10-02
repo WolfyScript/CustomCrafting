@@ -36,6 +36,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
 
         private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
         private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
+        private final Map<CustomItem, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
         private final Set<String> NAMESPACES = new HashSet<>();
         private final Set<String> GROUPS = new HashSet<>();
 
@@ -56,6 +57,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
             BY_GROUP.clear();
             NAMESPACES.clear();
             GROUPS.clear();
+            BY_RESULT.clear();
         }
 
         @Override
@@ -74,6 +76,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
             NAMESPACES.clear();
             BY_GROUP.remove(value.getGroup());
             GROUPS.clear();
+            BY_RESULT.clear();
         }
 
         @Override
@@ -132,7 +135,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
         }
 
         public List<CustomRecipe<?>> get(CustomItem result) {
-            return values().stream().filter(recipe -> recipe.getResult().getChoices().contains(result)).collect(Collectors.toList());
+            return BY_RESULT.computeIfAbsent(result, item -> values().stream().filter(recipe -> recipe.getResult().getChoices().contains(item)).collect(Collectors.toList()));
         }
 
         public <T extends CustomRecipe<?>> List<T> get(Class<T> type) {
