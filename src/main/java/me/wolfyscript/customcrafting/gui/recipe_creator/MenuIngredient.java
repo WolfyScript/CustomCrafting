@@ -14,10 +14,11 @@ import org.bukkit.Material;
 
 public class MenuIngredient extends CCWindow {
 
+    static final String KEY = "ingredient";
     private static final String REPLACE_WITH_REMAINS = "replace_with_remains";
 
     public MenuIngredient(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
-        super(cluster, "ingredient", 54, customCrafting);
+        super(cluster, KEY, 54, customCrafting);
         setForceSyncUpdate(true);
     }
 

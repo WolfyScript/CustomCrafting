@@ -73,7 +73,7 @@ public class RecipeCreatorCrafting extends RecipeCreator {
         }
 
         for (int i = 0; i < 9; i++) {
-            update.setButton(10 + i + (i / 3) * 6, "recipe.ingredient_" + i);
+            update.setButton(10 + i + (i / 3) * 6, ButtonRecipeIngredient.getKey(i));
         }
         update.setButton(22, ClusterRecipeCreator.SHAPELESS);
         update.setButton(24, "recipe.result");

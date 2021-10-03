@@ -14,12 +14,13 @@ import org.bukkit.inventory.ItemStack;
 class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
 
     ButtonRecipeIngredient(int recipeSlot) {
-        super("recipe.ingredient_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
+        super("recipe.ingredient_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, guiInventory, slot, event) -> {
             var ingredient = cache.getRecipeCreatorCache().getRecipeCache().getIngredient(recipeSlot);
-            if (event instanceof InventoryClickEvent clickEvent && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == slot && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                //Since shift clicking now updates all the available ItemInputButtons we only use the first button that was clicked.
                 cache.getRecipeCreatorCache().getIngredientCache().setSlot(recipeSlot);
                 cache.getRecipeCreatorCache().getIngredientCache().setIngredient(ingredient != null ? ingredient : new Ingredient());
-                guiHandler.openWindow("ingredient");
+                guiHandler.openWindow(MenuIngredient.KEY);
                 return true;
             }
             return ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty();
@@ -38,6 +39,10 @@ class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
             var ingredient = cache.getRecipeCreatorCache().getRecipeCache().getIngredient(recipeSlot);
             return ingredient != null ? ingredient.getItemStack() : new ItemStack(Material.AIR);
         }));
+    }
+
+    static String getKey(int recipeSlot) {
+        return "recipe.ingredient_" + recipeSlot;
     }
 
 }

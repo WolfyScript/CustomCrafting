@@ -16,7 +16,8 @@ class ButtonRecipeResult extends ItemInputButton<CCCache> {
     ButtonRecipeResult() {
         super("recipe.result", new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {
             Result result = cache.getRecipeCreatorCache().getRecipeCache().getResult();
-            if (event instanceof InventoryClickEvent clickEvent && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == slot && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                //Since shift clicking now updates all the available ItemInputButtons we only use the first button that was clicked.
                 guiHandler.openWindow("result");
                 return true;
             }
