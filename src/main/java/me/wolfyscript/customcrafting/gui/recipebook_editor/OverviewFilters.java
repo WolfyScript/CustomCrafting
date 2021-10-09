@@ -35,9 +35,9 @@ public class OverviewFilters extends Overview {
 
         List<String> categories = recipeBook.getCategories().getSortedFilters();
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
-            String id = categories.get(i);
-            registerButton(new ButtonFilter(id, customCrafting));
-            update.setButton(i + 9, "filter_" + id);
+            var filter = recipeBook.getCategories().getFilter(categories.get(i));
+            registerButton(new ButtonFilter(filter, customCrafting));
+            update.setButton(i + 9, "filter_" + filter.getId());
         }
     }
 }

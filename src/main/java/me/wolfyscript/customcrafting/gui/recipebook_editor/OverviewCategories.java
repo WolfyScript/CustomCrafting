@@ -35,9 +35,11 @@ public class OverviewCategories extends Overview {
 
         List<String> categories = recipeBook.getCategories().getSortedCategories();
         for (int i = 0; i < categories.size() && i + 9 < 45; i++) {
-            String categoryID = categories.get(i);
-            registerButton(new ButtonCategory(categoryID, customCrafting));
-            update.setButton(i + 9, "category_" + categoryID);
+            var category = recipeBook.getCategories().getCategory(categories.get(i));
+            if(category != null) {
+                registerButton(new ButtonCategory(category, customCrafting));
+                update.setButton(i + 9, "category_" + category.getId());
+            }
         }
     }
 }

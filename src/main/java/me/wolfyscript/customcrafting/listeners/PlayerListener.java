@@ -40,16 +40,14 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
         if (event.hasItem() && (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR))) {
-            var p = event.getPlayer();
-            var itemStack = event.getItem();
-            var customItem = CustomItem.getByItemStack(itemStack);
+            var customItem = CustomItem.getByItemStack(event.getItem());
             if (customItem != null) {
                 RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
                 if (knowledgeBook != null && knowledgeBook.isEnabled()) {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);
                     event.getPlayer().closeInventory();
-                    CustomCrafting.inst().getApi().getInventoryAPI().openCluster(p, "recipe_book");
+                    CustomCrafting.inst().getApi().getInventoryAPI().openCluster(event.getPlayer(), "recipe_book");
                 }
             }
         }
