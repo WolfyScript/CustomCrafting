@@ -2,23 +2,13 @@ package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonParser;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.DeserializationContext;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.node.ObjectNode;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -83,26 +73,32 @@ public class Categories {
         return getCategory(getSortedCategories().get(index));
     }
 
+    @JsonIgnore
     public List<String> getSortedFilters() {
         return sortedFilters;
     }
 
+    @JsonIgnore
     public void setSortedFilters(List<String> sortedSwitchCategories) {
         this.sortedFilters = sortedSwitchCategories;
     }
 
+    @JsonIgnore
     public List<String> getSortedCategories() {
         return sortedCategories;
     }
 
+    @JsonIgnore
     public void setSortedCategories(List<String> sortedMainCategories) {
         this.sortedCategories = sortedMainCategories;
     }
 
+    @JsonIgnore
     public Map<String, Category> getCategories() {
         return categoryMap;
     }
 
+    @JsonIgnore
     public Map<String, CategoryFilter> getFilters() {
         return filters;
     }
