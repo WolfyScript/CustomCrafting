@@ -137,6 +137,8 @@
       "disabled": "&cDisabled Dark Mode for the GUIs!"
     },
     "give": {
+      "invalid_usage": "&4Usage: &c/cc give <player> <item> [<amount> <drop_items>]",
+      "invalid_target": "&cThe target \"%target%\" does not exist!",
       "player_offline": "&cThe player &4%PLAYER% &cis not online!",
       "invalid_amount": "&cInvalid amount! Is it a number?",
       "success": "&aGave &e%ITEM%&a to &e%PLAYER%",

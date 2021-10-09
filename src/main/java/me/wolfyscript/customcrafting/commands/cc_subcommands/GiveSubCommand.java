@@ -9,7 +9,10 @@ import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
+import net.kyori.adventure.pointer.Pointers;
 import org.bukkit.Bukkit;
+import org.bukkit.block.CommandBlock;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -21,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class GiveSubCommand extends AbstractSubCommand {
 
@@ -39,88 +43,111 @@ public class GiveSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = customCrafting.getApi();
-        if (args.length >= 2 && ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
-            var target = Bukkit.getPlayer(args[0]);
-            Pair<String, String> playerValue = new Pair<>("%PLAYER%", args[0]);
-            if (target == null) {
-                if (sender instanceof Player) {
-                    api.getChat().sendMessage((Player) sender, "$commands.give.player_offline$", playerValue);
-                } else {
-                    api.getConsole().log(Level.INFO, "$commands.give.player_offline$", args[0]);
-                }
-                return true;
-            }
-            var namespacedKey = NamespacedKey.of(args[1]);
-            Pair<String, String> itemValue = new Pair<>("%ITEM%", args[1]);
-            //not required values ---------------------------------------
-            var amount = 1;
-            if (args.length > 2) {
-                try {
-                    amount = Integer.parseInt(args[2]);
-                } catch (NumberFormatException ex) {
+        if(ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
+            if (args.length >= 2) {
+
+                String giveTarget = args[0];
+                Player target = switch (giveTarget) {
+                    case "@s" -> sender instanceof Player player ? player : null;
+                    default -> Bukkit.getPlayer(giveTarget);
+                };
+
+                if (target == null) {
+                    Pair<String, String> playerValue = new Pair<>("%target%", giveTarget);
                     if (sender instanceof Player) {
-                        api.getChat().sendMessage((Player) sender, "$commands.give.invalid_amount$");
+                        api.getChat().sendMessage((Player) sender, "$commands.give.invalid_target$", playerValue);
                     } else {
-                        api.getConsole().info("$commands.give.invalid_amount$");
+                        api.getConsole().log(Level.INFO, "$commands.give.invalid_target$", giveTarget);
                     }
                     return true;
                 }
-            }
-            Pair<String, String> amountValue = new Pair<>("%AMOUNT%", String.valueOf(amount));
-            var dropItems = true;
-            if (args.length > 3) {
-                dropItems = Boolean.parseBoolean(args[3]);
-            }
-            //------------------------------------------------------------
-            if (namespacedKey != null) {
-                var customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
-                if (customItem != null) {
-                    var itemStack = customItem.create(amount);
-                    if (InventoryUtils.hasInventorySpace(target, itemStack)) {
-                        target.getInventory().addItem(itemStack);
-                    } else if (dropItems && target.getLocation().getWorld() != null) {
-                        target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
-                    } else {
+
+                var namespacedKey = NamespacedKey.of(args[1]);
+                Pair<String, String> itemValue = new Pair<>("%ITEM%", args[1]);
+
+                //not required values ---------------------------------------
+                var amount = 1;
+                if (args.length > 2) {
+                    try {
+                        amount = Integer.parseInt(args[2]);
+                    } catch (NumberFormatException ex) {
                         if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
+                            api.getChat().sendMessage((Player) sender, "$commands.give.invalid_amount$");
                         } else {
-                            api.getConsole().log(Level.INFO, "$commands.give.no_inv_space$", args[1]);
+                            api.getConsole().info("$commands.give.invalid_amount$");
                         }
                         return true;
                     }
-                    if (amount > 1) {
-                        if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
+                }
+                Pair<String, String> amountValue = new Pair<>("%AMOUNT%", String.valueOf(amount));
+                var dropItems = true;
+                if (args.length > 3) {
+                    dropItems = Boolean.parseBoolean(args[3]);
+                }
+                //------------------------------------------------------------
+
+                if (namespacedKey != null) {
+                    var customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
+                    if (customItem != null) {
+                        Pair<String, String> playerValue = new Pair<>("%PLAYER%", target.getDisplayName());
+                        var itemStack = customItem.create(amount);
+                        if (InventoryUtils.hasInventorySpace(target, itemStack)) {
+                            target.getInventory().addItem(itemStack);
+                        } else if (dropItems && target.getLocation().getWorld() != null) {
+                            target.getLocation().getWorld().dropItem(target.getLocation(), itemStack);
                         } else {
-                            api.getConsole().log(Level.INFO, "$commands.give.success_amount$", args[2], args[1], args[0]);
+                            if (sender instanceof Player) {
+                                api.getChat().sendMessage((Player) sender, "$commands.give.no_inv_space$", itemValue);
+                            } else {
+                                api.getConsole().log(Level.INFO, "$commands.give.no_inv_space$", args[1]);
+                            }
+                            return true;
                         }
-                    } else {
-                        if (sender instanceof Player) {
-                            api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
+                        if (amount > 1) {
+                            if (sender instanceof Player) {
+                                api.getChat().sendMessage((Player) sender, "$commands.give.success_amount$", amountValue, itemValue, playerValue);
+                            } else {
+                                api.getConsole().log(Level.INFO, "$commands.give.success_amount$", args[2], args[1], target.getDisplayName());
+                            }
                         } else {
-                            api.getConsole().log(Level.INFO, "$commands.give.success$", args[1], args[0]);
+                            if (sender instanceof Player) {
+                                api.getChat().sendMessage((Player) sender, "$commands.give.success$", playerValue, itemValue);
+                            } else {
+                                api.getConsole().log(Level.INFO, "$commands.give.success$", args[1], target.getDisplayName());
+                            }
                         }
+                        return true;
                     }
-                    return true;
+                }
+                if (sender instanceof Player) {
+                    api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
+                } else {
+                    api.getConsole().log(Level.INFO, "$commands.give.invalid_item$", args[1]);
+                }
+            } else {
+                if (sender instanceof Player) {
+                    api.getChat().sendMessage((Player) sender, "$commands.give.invalid_usage$");
                 }
             }
-            if (sender instanceof Player) {
-                api.getChat().sendMessage((Player) sender, "$commands.give.invalid_item$", itemValue);
-            } else {
-                api.getConsole().log(Level.INFO, "$commands.give.invalid_item$", args[1]);
-            }
+
         }
         return true;
     }
 
     @Override
-    protected @Nullable List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] strings) {
+    protected @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] strings) {
         List<String> results = new ArrayList<>();
         if (strings.length > 0) {
             StringUtil.copyPartialMatches(
                     strings[strings.length - 1],
                     switch (strings.length) {
-                        case 1 -> Bukkit.getOnlinePlayers().stream().map(Player::getName).toList(); //Player completion
+                        case 1 -> {
+                            List<String> players = Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()); //Player completion
+                            if(sender instanceof Player) {
+                                players.add("@s");
+                            }
+                            yield players;
+                        }
                         case 2 -> Registry.CUSTOM_ITEMS.keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).toList(); //Item completion
                         case 3 -> NUMBERS;
                         case 4 -> Arrays.asList("true", "false"); //Drop Items
