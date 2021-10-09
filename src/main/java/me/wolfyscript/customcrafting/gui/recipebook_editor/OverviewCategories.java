@@ -25,7 +25,6 @@ public class OverviewCategories extends Overview {
             guiHandler.openWindow("category");
             return true;
         }));
-
     }
 
     @Override

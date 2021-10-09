@@ -213,7 +213,7 @@ public class Cauldrons {
         api.getConsole().info("Loading Cauldrons");
         var file = new File(customCrafting.getDataFolder() + File.separator + "cauldrons.dat");
         if (file.exists()) {
-            try (var fis = new FileInputStream(file); BukkitObjectInputStream ois = new BukkitObjectInputStream(fis)) {
+            try (var fis = new FileInputStream(file); var ois = new BukkitObjectInputStream(fis)) {
                 var object = ois.readObject();
                 this.cauldrons.clear();
                 Map<String, List<String>> loadMap = (Map<String, List<String>>) object;

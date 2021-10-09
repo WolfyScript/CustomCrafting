@@ -85,17 +85,17 @@ public class GrindStoneListener implements Listener {
             }
 
             //Custom Recipe
-            final ItemStack itemTop = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
-            final ItemStack itemBottom = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
-
             CustomItem inputTop = grindstoneData.getInputTop();
             CustomItem inputBottom = grindstoneData.getInputBottom();
+
             if (inputTop != null) {
-                inputTop.consumeItem(itemTop, 1, inventory);
+                final ItemStack itemTop = inventory.getItem(0) == null ? null : inventory.getItem(0).clone();
+                inputTop.remove(itemTop, 1, inventory);
                 inventory.setItem(0, itemTop);
             }
             if (inputBottom != null) {
-                inputBottom.consumeItem(itemBottom, 1, inventory);
+                final ItemStack itemBottom = inventory.getItem(1) == null ? null : inventory.getItem(1).clone();
+                inputBottom.remove(itemBottom, 1, inventory);
                 inventory.setItem(1, itemBottom);
             }
             player.updateInventory();

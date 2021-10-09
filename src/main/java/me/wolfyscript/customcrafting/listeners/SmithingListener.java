@@ -113,11 +113,9 @@ public class SmithingListener implements Listener {
             final var baseItem = Objects.requireNonNull(inventory.getItem(0)).clone();
             final var additionItem = Objects.requireNonNull(inventory.getItem(1)).clone();
             var smithingData = preCraftedRecipes.get(player.getUniqueId());
-            var base = smithingData.getBase();
-            var addition = smithingData.getAddition();
             smithingData.getResult().executeExtensions(inventory.getLocation() != null ? inventory.getLocation() : player.getLocation(), inventory.getLocation() != null, player);
-            base.remove(baseItem, 1, inventory);
-            addition.remove(additionItem, 1, inventory);
+            smithingData.getBase().remove(baseItem, 1, inventory);
+            smithingData.getAddition().remove(additionItem, 1, inventory);
             inventory.setItem(0, baseItem);
             inventory.setItem(1, additionItem);
             preCraftedRecipes.remove(player.getUniqueId());

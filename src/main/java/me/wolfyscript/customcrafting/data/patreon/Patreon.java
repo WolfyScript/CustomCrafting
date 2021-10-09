@@ -13,8 +13,8 @@ public class Patreon {
     }
 
     public void initialize() {
+        addPatron(new Patron("柏潭", Tier.LEGEND));
         addPatron(new Patron("Nat R", "956faa3f-df9e-402b-bc13-39c03d4b4a5b", Tier.ELITE));
-        addPatron(new Patron("柏潭 吳", Tier.ELITE));
         addPatron(new Patron("Junye Zhou", Tier.DIAMOND));
         addPatron(new Patron("Jack Bruton", Tier.DIAMOND));
         addPatron(new Patron("Apprehentice", "db61eab0-7fb1-48db-986f-125e73787976", Tier.WOLFRAM));

@@ -26,6 +26,7 @@ class ButtonSlotCrafting extends ItemInputButton<CCCache> {
                         return slotItem == null ? new ItemStack(Material.AIR) : slotItem;
                     }
                     return new ItemStack(Material.AIR);
-                }));
+                })
+        );
     }
 }

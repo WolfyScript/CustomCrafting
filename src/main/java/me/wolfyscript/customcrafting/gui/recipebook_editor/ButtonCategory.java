@@ -19,11 +19,7 @@ class ButtonCategory extends ActionButton<CCCache> {
                 var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
                 if (clickEvent.isRightClick() && clickEvent.isShiftClick()) {
                     //Delete Category
-                    if (recipeBookEditor.isFilters()) {
-                        recipeBook.getCategories().removeFilter(categoryID);
-                    } else {
-                        recipeBook.getCategories().removeCategory(categoryID);
-                    }
+                    recipeBook.getCategories().removeCategory(categoryID);
                     return true;
                 } else if (clickEvent.isLeftClick()) {
                     //Edit Category
@@ -43,7 +39,7 @@ class ButtonCategory extends ActionButton<CCCache> {
         }, (values, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
             var recipeBookEditor = cache.getRecipeBookEditor();
             var recipeBook = customCrafting.getConfigHandler().getRecipeBookConfig();
-            CategorySettings category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
+            var category = recipeBookEditor.isFilters() ? recipeBook.getCategories().getFilter(categoryID) : recipeBook.getCategories().getCategory(categoryID);
             itemStack.setType(category.getIcon());
             values.put("%name%", category.getName());
             values.put("%description%", category.getDescription());

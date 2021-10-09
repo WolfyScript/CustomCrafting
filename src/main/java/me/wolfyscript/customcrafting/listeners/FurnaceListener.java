@@ -11,7 +11,7 @@ import me.wolfyscript.utilities.util.version.MinecraftVersions;
 import me.wolfyscript.utilities.util.version.ServerVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Furnace;
+import org.bukkit.block.data.type.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
@@ -26,7 +26,6 @@ public class FurnaceListener implements Listener {
 
     protected final CustomCrafting customCrafting;
     protected final CookingManager manager;
-    private final List<InventoryType> invs = Arrays.asList(InventoryType.FURNACE, InventoryType.BLAST_FURNACE, InventoryType.SMOKER);
 
     public FurnaceListener(CustomCrafting customCrafting, CookingManager manager) {
         this.manager = manager;
@@ -38,11 +37,11 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() != null && invs.contains(event.getClickedInventory().getType()) && event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
-            var location = event.getInventory().getLocation();
+        if (event.getClickedInventory() != null && event.getClickedInventory() instanceof FurnaceInventory && event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
             if (event.getCursor() == null) return;
-            Optional<CustomItem> fuelItem = me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.values().parallelStream().filter(customItem -> customItem.getFuelSettings().getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
+            Optional<CustomItem> fuelItem = me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.values().stream().filter(customItem -> customItem.getFuelSettings().getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
             if (fuelItem.isPresent()) {
+                var location = event.getInventory().getLocation();
                 if (fuelItem.get().getFuelSettings().getAllowedBlocks().contains(location != null ? location.getBlock().getType() : Material.FURNACE)) {
                     InventoryUtils.calculateClickedSlot(event);
                 } else {
