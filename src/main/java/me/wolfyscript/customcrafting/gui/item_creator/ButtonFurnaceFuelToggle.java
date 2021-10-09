@@ -9,7 +9,7 @@ import org.bukkit.Material;
 public class ButtonFurnaceFuelToggle extends ToggleButton<CCCache> {
 
     public ButtonFurnaceFuelToggle(String id, Material material) {
-        super("fuel." + id, (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().getFuelSettings().getAllowedBlocks().contains(Material.FURNACE), new ButtonState<>("fuel." + id + ".enabled", material, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
+        super("fuel." + id, (cache, guiHandler, player, guiInventory, i) -> cache.getItems().getItem().getFuelSettings().getAllowedBlocks().contains(material), new ButtonState<>("fuel." + id + ".enabled", material, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
             items.getItem().getFuelSettings().getAllowedBlocks().remove(material);
             return true;
         }), new ButtonState<>("fuel." + id + ".disabled", material, (ItemsButtonAction) (testCache, items, guiHandler, player, inventory, i, event) -> {
