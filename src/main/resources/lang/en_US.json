@@ -96,18 +96,7 @@
         "&cThe namespace and key must be lowercase and must only",
         "&ccontain the following characters [a-z 0-9 _ -]!",
         "&ePlease retype the namespace and key!"
-      ],
-      "error": {
-        "loading": {
-          "msg": "&cPlugin Disabled! The Plugin won't work!",
-          "msg1": "Make sure you have the latest Spigot or Paper build!",
-          "msg2": "&7If using 1.13.x make sure to get the latest build!",
-          "msg3": "&7More Information on how to get these builds here:",
-          "msg4": "   &7[&6Spigot&7]",
-          "msg5": "   &7[&3Paper&7]",
-          "msg6": "&cIf this solution doesn't work and you get error messages on startup please contact me on Discord or SpigotMC!"
-        }
-      }
+      ]
     }
   },
   "commands": {
@@ -1947,7 +1936,10 @@
         "override": "&3type the namespace and key from the recipe!",
         "valid_number": "&cType in a valid number!",
         "save": {
-          "input": "&eType in the namespace and key!",
+          "input": "&eType in the namespaced key! Use &6/wui &efor better input!",
+          "key": {
+            "invalid": "&cThe input is not a valid namespaced key! \nMake sure it only contains: \n - lowercase letters,\n - numbers,\n - underscores, \n - or dashes!\n&cUse &4/wui &cto get input assistance, like tab completion!"
+          },
           "empty": "&cCannot save a empty recipe! Check the Result and the source/ingredients",
           "success": "&aRecipe successfully saved to:"
         },

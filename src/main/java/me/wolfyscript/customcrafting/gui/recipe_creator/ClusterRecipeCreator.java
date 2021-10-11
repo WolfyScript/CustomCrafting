@@ -153,6 +153,9 @@ public class ClusterRecipeCreator extends CCCluster {
                             guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
                             return false;
                         }
+                    } else {
+                        guiHandler.getApi().getChat().sendKey(player, KEY, "save.key.invalid");
+                        return false;
                     }
                     return true;
                 });
