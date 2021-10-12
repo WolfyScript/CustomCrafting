@@ -48,17 +48,19 @@ public class RecipeList {
 
     public void setFilterType(RecipeType<?> filterType) {
         this.filterType = filterType;
-        this.filterClass = switch (filterType.getType()) {
-            case CRAFTING_SHAPED -> ShapedRecipe.class;
-            case CRAFTING_SHAPELESS -> ShapelessRecipe.class;
-            case SMOKER -> SmokingRecipe.class;
-            case FURNACE -> FurnaceRecipe.class;
-            case BLAST_FURNACE -> BlastingRecipe.class;
-            case CAMPFIRE -> CampfireRecipe.class;
-            case SMITHING -> SmithingRecipe.class;
-            case STONECUTTER -> StonecuttingRecipe.class;
-            default -> null;
-        };
+        if(filterType != null) {
+            this.filterClass = switch (filterType.getType()) {
+                case CRAFTING_SHAPED -> ShapedRecipe.class;
+                case CRAFTING_SHAPELESS -> ShapelessRecipe.class;
+                case SMOKER -> SmokingRecipe.class;
+                case FURNACE -> FurnaceRecipe.class;
+                case BLAST_FURNACE -> BlastingRecipe.class;
+                case CAMPFIRE -> CampfireRecipe.class;
+                case SMITHING -> SmithingRecipe.class;
+                case STONECUTTER -> StonecuttingRecipe.class;
+                default -> null;
+            };
+        }
     }
 
     public RecipeType<?> getFilterType() {
