@@ -50,13 +50,11 @@ class MenuMain extends CCWindow {
 
         var dataHandler = customCrafting.getDataHandler();
         var categories = dataHandler.getCategories();
+        var sorted = categories.getSortedCategories();
 
-        int slot = 0;
-        for (String categoryId : categories.getSortedCategories()) {
-            event.setButton(slot, "main_category." + categoryId);
-            slot++;
+        for (int i = 0; i < sorted.size() && i < getSize(); i++) {
+            event.setButton(i, "main_category." + sorted.get(i));
         }
-
         event.setButton(22, BACK_BOTTOM);
     }
 }
