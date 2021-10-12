@@ -1938,7 +1938,7 @@
         "save": {
           "input": "&eType in the namespaced key! Use &6/wui &efor better input!",
           "key": {
-            "invalid": "&cThe input is not a valid namespaced key! \nMake sure it only contains: \n - lowercase letters,\n - numbers,\n - underscores, \n - or dashes!\n&cUse &4/wui &cto get input assistance, like tab completion!"
+            "invalid": "&cThe input is not a valid namespaced key! \nMake sure it only contains: \n - lowercase letters,\n - numbers,\n - underscores, \n - or dashes!\n&cUse &e/wui &cto get input assistance, like tab completion!"
           },
           "empty": "&cCannot save a empty recipe! Check the Result and the source/ingredients",
           "success": "&aRecipe successfully saved to:"
