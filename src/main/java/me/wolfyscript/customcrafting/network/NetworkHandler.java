@@ -1,5 +1,6 @@
 package me.wolfyscript.customcrafting.network;
 
+import io.netty.buffer.ByteBufAllocator;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
@@ -19,10 +20,14 @@ import org.bukkit.block.Furnace;
 import org.bukkit.block.Smoker;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.plugin.messaging.MessageTooLargeException;
 
+import java.io.IOException;
 import java.util.*;
 
 public class NetworkHandler {
+
+    private static final int MAX_PACKET_SIZE = 29696;
 
     private static final String KEY = NamespacedKeyUtils.NAMESPACE;
     private static final NamespacedKey DATA_REQUEST = new NamespacedKey(KEY, "data_request");
@@ -103,7 +108,30 @@ public class NetworkHandler {
         for (CustomRecipe<?> recipe : recipes) {
             var recipeBuf = networkUtil.buffer();
             recipe.writeToBuf(recipeBuf);
-            api.send(RECIPE_LIST, player, recipeBuf);
+
+            int readableBytes = recipeBuf.readableBytes();
+            int slices = (int) Math.floor((double) readableBytes / (double) MAX_PACKET_SIZE);
+
+            recipeBuf.readerIndex(0);
+            for (int slice = 0; slice < slices; slice++) {
+                //Getting the bounds of the slice
+                int index = recipeBuf.readerIndex();
+                int nextIndex = Math.min(index + MAX_PACKET_SIZE, readableBytes);
+                //creating a new buffer for the slice.
+                if (slice == 0) { //If it is the first slice send the amount of slices first.
+                    api.send(RECIPE_LIST, player, networkUtil.buffer().writeVarInt(slices));
+                }
+                api.send(RECIPE_LIST, player, networkUtil.buffer(recipeBuf.copy(index, nextIndex)));
+                recipeBuf.readerIndex(nextIndex);
+            }
+            /*
+            try {
+                api.send(RECIPE_LIST, player, recipeBuf);
+            } catch (MessageTooLargeException e) {
+                wolfyUtilities.getConsole().getLogger().severe("Failed to send recipe \"" + recipe.getNamespacedKey() + "\" to client!");
+            }
+
+             */
         }
         //Send end packet
         api.send(RECIPE_LIST_END, player);
