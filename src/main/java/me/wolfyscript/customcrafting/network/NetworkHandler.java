@@ -1,6 +1,7 @@
 package me.wolfyscript.customcrafting.network;
 
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
@@ -108,21 +109,21 @@ public class NetworkHandler {
         for (CustomRecipe<?> recipe : recipes) {
             var recipeBuf = networkUtil.buffer();
             recipe.writeToBuf(recipeBuf);
-
             int readableBytes = recipeBuf.readableBytes();
-            int slices = (int) Math.floor((double) readableBytes / (double) MAX_PACKET_SIZE);
-
+            int fullSlices = readableBytes / MAX_PACKET_SIZE;
+            int bytesLeft = readableBytes % MAX_PACKET_SIZE;
+            int slices = fullSlices + (bytesLeft > 0 ? 1 : 0);
             recipeBuf.readerIndex(0);
             for (int slice = 0; slice < slices; slice++) {
-                //Getting the bounds of the slice
-                int index = recipeBuf.readerIndex();
-                int nextIndex = Math.min(index + MAX_PACKET_SIZE, readableBytes);
+                readableBytes = recipeBuf.readableBytes();
                 //creating a new buffer for the slice.
                 if (slice == 0) { //If it is the first slice send the amount of slices first.
-                    api.send(RECIPE_LIST, player, networkUtil.buffer().writeVarInt(slices));
+                    api.send(RECIPE_LIST, player, networkUtil.buffer().writeVarInt(slices).writeVarInt(fullSlices * MAX_PACKET_SIZE).writeVarInt(bytesLeft));
                 }
-                api.send(RECIPE_LIST, player, networkUtil.buffer(recipeBuf.copy(index, nextIndex)));
-                recipeBuf.readerIndex(nextIndex);
+                var length = Math.min(MAX_PACKET_SIZE, readableBytes);
+                var buf = Unpooled.buffer(length, length);
+                recipeBuf.readBytes(buf, length);
+                api.send(RECIPE_LIST, player, networkUtil.buffer(buf));
             }
             /*
             try {
