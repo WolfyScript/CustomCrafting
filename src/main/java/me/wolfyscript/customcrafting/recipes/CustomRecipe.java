@@ -278,10 +278,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         byteBuf.writeUtf(namespacedKey.toString());
         byteBuf.writeBoolean(exactMeta);
         byteBuf.writeUtf(group);
-        byteBuf.writeVarInt(result.getChoices().size());
-        for (CustomItem choice : result.getChoices()) {
-            byteBuf.writeItemStack(choice.create());
-        }
+        byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
     }
 
     static class Serializer extends StdSerializer<CustomRecipe<?>> {
