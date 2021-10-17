@@ -104,7 +104,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
         public void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
             remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
             super.register(namespacedKey, value);
-            if (value instanceof ICustomVanillaRecipe vanillaRecipe) {
+            if (value instanceof ICustomVanillaRecipe vanillaRecipe && !value.isDisabled()) {
                 try {
                     Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe());
                 } catch (IllegalArgumentException ex) {
