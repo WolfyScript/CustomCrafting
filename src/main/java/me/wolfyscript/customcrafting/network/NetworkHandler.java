@@ -111,28 +111,20 @@ public class NetworkHandler {
             recipe.writeToBuf(recipeBuf);
             int readableBytes = recipeBuf.readableBytes();
             int fullSlices = readableBytes / MAX_PACKET_SIZE;
-            int bytesLeft = readableBytes % MAX_PACKET_SIZE;
-            int slices = fullSlices + (bytesLeft > 0 ? 1 : 0);
+            int remainingBytes = readableBytes % MAX_PACKET_SIZE;
+            int slices = fullSlices + (remainingBytes > 0 ? 1 : 0);
             recipeBuf.readerIndex(0);
             for (int slice = 0; slice < slices; slice++) {
                 readableBytes = recipeBuf.readableBytes();
                 //creating a new buffer for the slice.
                 if (slice == 0) { //If it is the first slice send the amount of slices first.
-                    api.send(RECIPE_LIST, player, networkUtil.buffer().writeVarInt(slices).writeVarInt(fullSlices * MAX_PACKET_SIZE).writeVarInt(bytesLeft));
+                    api.send(RECIPE_LIST, player, networkUtil.buffer().writeVarInt(slices).writeVarInt(fullSlices * MAX_PACKET_SIZE + remainingBytes));
                 }
                 var length = Math.min(MAX_PACKET_SIZE, readableBytes);
                 var buf = Unpooled.buffer(length, length);
                 recipeBuf.readBytes(buf, length);
                 api.send(RECIPE_LIST, player, networkUtil.buffer(buf));
             }
-            /*
-            try {
-                api.send(RECIPE_LIST, player, recipeBuf);
-            } catch (MessageTooLargeException e) {
-                wolfyUtilities.getConsole().getLogger().severe("Failed to send recipe \"" + recipe.getNamespacedKey() + "\" to client!");
-            }
-
-             */
         }
         //Send end packet
         api.send(RECIPE_LIST_END, player);
