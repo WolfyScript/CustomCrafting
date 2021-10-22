@@ -172,4 +172,14 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
             byteBuf.writeItemStack(choice.create());
         }
     }
+
+    @Override
+    public boolean isVisibleVanillaBook() {
+        return vanillaBook;
+    }
+
+    @Override
+    public void setVisibleVanillaBook(boolean vanillaBook) {
+        this.vanillaBook = vanillaBook;
+    }
 }

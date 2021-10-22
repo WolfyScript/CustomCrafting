@@ -24,7 +24,6 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
@@ -63,5 +62,15 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
             return recipe;
         }
         return null;
+    }
+
+    @Override
+    public boolean isVisibleVanillaBook() {
+        return vanillaBook;
+    }
+
+    @Override
+    public void setVisibleVanillaBook(boolean vanillaBook) {
+        this.vanillaBook = vanillaBook;
     }
 }

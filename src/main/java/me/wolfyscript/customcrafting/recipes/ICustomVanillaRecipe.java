@@ -28,4 +28,8 @@ public interface ICustomVanillaRecipe<T extends Recipe> {
 
     T getVanillaRecipe();
 
+    boolean isVisibleVanillaBook();
+
+    void setVisibleVanillaBook(boolean vanillaBook);
+
 }

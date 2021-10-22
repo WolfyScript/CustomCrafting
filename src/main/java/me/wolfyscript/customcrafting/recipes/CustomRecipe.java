@@ -38,6 +38,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
+import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
@@ -63,6 +64,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     protected static final String KEY_RESULT = "result";
     protected static final String KEY_GROUP = "group";
+    protected static final String KEY_VANILLA_BOOK = "vanillaBook";
     protected static final String KEY_PRIORITY = "priority";
     protected static final String KEY_EXACT_META = "exactItemMeta";
     protected static final String KEY_CONDITIONS = "conditions";
@@ -72,6 +74,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected final NamespacedKey namespacedKey;
     protected boolean exactMeta;
     protected boolean hidden;
+    protected boolean vanillaBook;
 
     protected RecipePriority priority;
     protected Conditions conditions;
@@ -92,6 +95,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         if (this.conditions == null) {
             this.conditions = new Conditions();
         }
+        this.vanillaBook = node.path(KEY_VANILLA_BOOK).asBoolean(false);
         this.hidden = node.path(KEY_HIDDEN).asBoolean(false);
         //Sets the result of the recipe if one exists in the config
         if (node.has(KEY_RESULT) && !(this instanceof CustomRecipeStonecutter)) {
@@ -108,6 +112,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.group = "";
         this.priority = RecipePriority.NORMAL;
         this.exactMeta = true;
+        this.vanillaBook = false;
         this.conditions = new Conditions();
         this.hidden = false;
     }
@@ -123,6 +128,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = Objects.requireNonNull(customRecipe.namespacedKey, ERROR_MSG_KEY);
 
+        this.vanillaBook = customRecipe.vanillaBook;
         this.group = customRecipe.group;
         this.priority = customRecipe.priority;
         this.exactMeta = customRecipe.exactMeta;
@@ -290,6 +296,9 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     public void writeToJson(JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStringField(KEY_GROUP, group);
         gen.writeBooleanField(KEY_HIDDEN, hidden);
+        if (vanillaBook) {
+            gen.writeBooleanField(KEY_VANILLA_BOOK, true);
+        }
         gen.writeStringField(KEY_PRIORITY, priority.toString());
         gen.writeBooleanField(KEY_EXACT_META, exactMeta);
         gen.writeObjectField(KEY_CONDITIONS, conditions);

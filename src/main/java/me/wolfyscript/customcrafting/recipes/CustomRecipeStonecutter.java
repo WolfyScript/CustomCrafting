@@ -140,4 +140,14 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         }
         return null;
     }
+
+    @Override
+    public boolean isVisibleVanillaBook() {
+        return vanillaBook;
+    }
+
+    @Override
+    public void setVisibleVanillaBook(boolean vanillaBook) {
+        this.vanillaBook = vanillaBook;
+    }
 }

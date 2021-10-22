@@ -25,6 +25,8 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;
+import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -37,6 +39,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -131,8 +134,10 @@ public class CraftListener implements Listener {
 
     @EventHandler
     public void onRecipeDiscover(PlayerRecipeDiscoverEvent event) {
-        if (event.getRecipe().getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            event.setCancelled(true);
+        org.bukkit.NamespacedKey key = event.getRecipe();
+        if (key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
+            CustomRecipe<?> recipe = CCRegistry.RECIPES.get(NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(key)));
+            event.setCancelled(!(recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe) || !vanillaRecipe.isVisibleVanillaBook());
         }
     }
 }
