@@ -24,6 +24,7 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.RecipeChoice;
@@ -57,7 +58,7 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
         if (!getResult().isEmpty() && !ingredients.isEmpty()) {
             var recipe = new org.bukkit.inventory.ShapedRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
             recipe.shape(getShape());
-            mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.MaterialChoice(items.getChoices().stream().map(customItem -> customItem.getItemStack().getType()).distinct().toList())));
+            mappedIngredients.forEach((character, items) -> recipe.setIngredient(character, new RecipeChoice.ExactChoice(items.getChoices().stream().map(CustomItem::getItemStack).distinct().toList())));
             recipe.setGroup(getGroup());
             return recipe;
         }
