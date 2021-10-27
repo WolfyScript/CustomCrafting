@@ -1494,7 +1494,7 @@
               "name": "&6Partikel Effekte",
               "lore": [
                 "&eSetze Partikel für die Werkbank.",
-                "&7[&aKlicke&7] Öffne die Partikel Effekt Einstellungen"
+                "&cMuss in der json config eingestellt werden!"
               ]
             }
           },

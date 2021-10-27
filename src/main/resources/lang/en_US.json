@@ -1589,7 +1589,7 @@
               "name": "&6Particle Effects",
               "lore": [
                 "&eSet particles for the workbench.",
-                "&7[&aClick&7] Goto Particle Effects settings"
+                "&cMust be configured in the json config of the item!"
               ]
             }
           },

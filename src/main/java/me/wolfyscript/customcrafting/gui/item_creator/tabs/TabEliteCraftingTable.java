@@ -35,6 +35,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
+import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.MultipleChoiceButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -53,10 +54,7 @@ public class TabEliteCraftingTable extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.CRAFTING_TABLE, this));
-        creator.registerButton(new ActionButton<>("elite_workbench.particles", Material.FIREWORK_ROCKET, (cache, guiHandler, player, inventory, i, event) -> {
-            cache.setSubSetting(TabParticleEffects.KEY);
-            return true;
-        }));
+        creator.registerButton(new DummyButton<>("elite_workbench.particles", Material.FIREWORK_ROCKET));
         creator.registerButton(new MultipleChoiceButton<>("elite_workbench.grid_size", (cache, guiHandler, player, guiInventory, i) -> ((EliteWorkbenchData) cache.getItems().getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).getGridSize() - 3,
                 new ButtonState<>("elite_workbench.grid_size.size_3", PlayerHeadUtils.getViaURL("9e95293acbcd4f55faf5947bfc5135038b275a7ab81087341b9ec6e453e839"), (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
                     ((EliteWorkbenchData) items.getItem().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).setGridSize(4);

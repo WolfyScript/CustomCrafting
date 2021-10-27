@@ -323,7 +323,7 @@ public class CustomCrafting extends JavaPlugin {
         CCRegistry.ITEM_CREATOR_TABS.register(new TabFuel());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabLocalizedName());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabLore());
-        //CCRegistry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
+        CCRegistry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabPermission());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabPlayerHead());
         CCRegistry.ITEM_CREATOR_TABS.register(new TabPotion());
