@@ -146,6 +146,9 @@
       "delete": {
         "invalid": ""
       }
+    },
+    "database": {
+      "invalid_usage": "&cInvalid Usage: &4/cc database <export_items | export_recipes>"
     }
   },
   "recipe_conditions": {

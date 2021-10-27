@@ -75,8 +75,10 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                                 api.getConsole().fine("Successfully exported custom items to database");
                             }).start();
                         }
-                        default -> {}
+                        default -> chat.sendMessage(p, "commands.database.invalid_usage");
                     }
+                } else {
+                    chat.sendMessage(p, "commands.database.invalid_usage");
                 }
             }
         }
