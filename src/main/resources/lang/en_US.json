@@ -1699,37 +1699,8 @@
                 "&7Configure particle effects that",
                 "&7are spawned when holding, equipping",
                 "&7or placing this Custom Item.",
-                "&cRequires saved Item"
-              ]
-            },
-            "head": {
-              "name": "&6Head"
-            },
-            "chest": {
-              "name": "&6Chest"
-            },
-            "legs": {
-              "name": "&6Legs"
-            },
-            "feet": {
-              "name": "&6Feet"
-            },
-            "hand": {
-              "name": "&6Hand"
-            },
-            "off_hand": {
-              "name": "&6Off Hand"
-            },
-            "block": {
-              "name": "&6Block"
-            },
-            "input": {
-              "name": "%effect_name%",
-              "lore": [
-                "%effect_description%",
-                "",
-                "&7[&aClick&7] Change Effect",
-                "&7[&aShift Click&7] Remove Effect"
+                "&cRequires saved Item!",
+                "&cMust be configured in the json config!"
               ]
             }
           },

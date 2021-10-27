@@ -1604,37 +1604,8 @@
                 "&7Konfiguriere Partikeleffekte, die",
                 "&7gespawnt werden, wenn das Custom Item gehalten,",
                 "&7getragen oder platziert wird.",
-                "&cBenötigt gespeichertes Item"
-              ]
-            },
-            "head": {
-              "name": "&6Kopf"
-            },
-            "chest": {
-              "name": "&6Brust"
-            },
-            "legs": {
-              "name": "&6Beine"
-            },
-            "feet": {
-              "name": "&6Füße"
-            },
-            "hand": {
-              "name": "&6Hand"
-            },
-            "off_hand": {
-              "name": "&6Off-Hand"
-            },
-            "block": {
-              "name": "&6Block"
-            },
-            "input": {
-              "name": "%effect_name%",
-              "lore": [
-                "%effect_description%",
-                "",
-                "&7[&aKlicke&7] Ändere Effekt",
-                "&7[&aShift Click&7] Entferne Effekt"
+                "&cBenötigt gespeichertes Item!",
+                "&cMuss in der json config eingestellt werden!"
               ]
             }
           },
