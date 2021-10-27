@@ -137,7 +137,7 @@ public class CraftListener implements Listener {
         org.bukkit.NamespacedKey key = event.getRecipe();
         if (key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
             CustomRecipe<?> recipe = CCRegistry.RECIPES.get(NamespacedKeyUtils.toInternal(NamespacedKey.fromBukkit(key)));
-            event.setCancelled(!(recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe) || !vanillaRecipe.isVisibleVanillaBook());
+            event.setCancelled(!(recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe) || (!vanillaRecipe.isVisibleVanillaBook() || recipe.isHidden() || recipe.isDisabled()));
         }
     }
 }
