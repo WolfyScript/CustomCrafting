@@ -41,22 +41,22 @@ public class Patreon {
         addPatron(new Patron("Jack Bruton", Tier.DIAMOND));
         addPatron(new Patron("Apprehentice", "db61eab0-7fb1-48db-986f-125e73787976", Tier.WOLFRAM));
         addPatron(new Patron("Alex", "af1ef7e4-acc3-44a1-8323-8f50b92be2c9", Tier.WOLFRAM));
-        addPatron(new Patron("gizmonster", "e502d121-de9d-4f5d-b7e5-0da747c4e2e8", Tier.WOLFRAM));
+        addPatron(new Patron("PwassonDoDouce", Tier.WOLFRAM));
         addPatron(new Patron("Alexander", Tier.WOLFRAM));
-        addPatron(new Patron("OTZ", Tier.WOLFRAM));
-        addPatron(new Patron("The Hound Brothers", Tier.WOLFRAM));
-        addPatron(new Patron("Xwdit", Tier.WOLFRAM));
         addPatron(new Patron("Pixelcraftian", Tier.WOLFRAM));
         addPatron(new Patron("DTNTW", Tier.WOLFRAM));
         addPatron(new Patron("Mr_Mint_", Tier.WOLFRAM));
         addPatron(new Patron("Hugo Hronec", Tier.WOLFRAM));
-        addPatron(new Patron("Sundial Shark", Tier.WOLFRAM));
-        addPatron(new Patron("Marcin Pootski", Tier.WOLFRAM));
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
         addPatron(new Patron("Stanislav Novotný", Tier.WOLFRAM));
+        addPatron(new Patron("Vladyslav Kharchuk", Tier.WOLFRAM));
+        addPatron(new Patron("TimRambo", Tier.WOLFRAM));
+        addPatron(new Patron("OTZ", Tier.WOLFRAM));
+        addPatron(new Patron("The Hound Brothers", Tier.WOLFRAM));
+        addPatron(new Patron("Xwdit", Tier.WOLFRAM));
+        addPatron(new Patron("Sundial Shark", Tier.WOLFRAM));
         addPatron(new Patron("王聪聪", Tier.WOLFRAM));
         addPatron(new Patron("安田 安田", Tier.WOLFRAM));
-        addPatron(new Patron("Vladyslav Kharchuk", Tier.WOLFRAM));
     }
 
     private void addPatron(Patron patron) {
