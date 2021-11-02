@@ -36,6 +36,7 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,6 +64,7 @@ public class AnvilListener implements Listener {
     public void onCheck(PrepareAnvilEvent event) {
         var player = (Player) event.getView().getPlayer();
         AnvilInventory inventory = event.getInventory();
+        Block block = inventory.getLocation() != null ? inventory.getLocation().getBlock() : null;
         preCraftedRecipes.remove(player.getUniqueId());
         ItemStack inputLeft = inventory.getItem(0);
         ItemStack inputRight = inventory.getItem(1);
@@ -79,60 +81,61 @@ public class AnvilListener implements Listener {
                 continue;
             }
             //Recipe is valid at this point!
-            final CustomItem result;
+            final CustomItem resultItem;
+            final Result result = recipe.getResult();
             AnvilData anvilData = new AnvilData(recipe, Map.of(0, new IngredientData(0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft), 1, new IngredientData(1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)));
             //Set the result depending on what is configured!
             if (recipe.getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
                 //Recipe has a plain result set that we can use.
-                result = recipe.getResult().getItem(player).orElse(new CustomItem(Material.AIR));
+                resultItem = result.getItem(player, block).orElse(new CustomItem(Material.AIR));
                 anvilData.setUsedResult(true);
             } else {
                 //Either none or durability mode is set.
                 if (ItemUtils.isAirOrNull(event.getResult())) {
-                    result = new CustomItem(inputLeft).clone();
+                    resultItem = new CustomItem(inputLeft).clone();
                     if (!recipe.isBlockRename() && inventory.getRenameText() != null && !inventory.getRenameText().isEmpty()) {
-                        result.setDisplayName(inventory.getRenameText());
+                        resultItem.setDisplayName(inventory.getRenameText());
                     }
                 } else {
-                    result = new CustomItem(event.getResult());
-                    ItemStack resultStack = result.getItemStack();
-                    if (result.hasItemMeta()) {
+                    resultItem = new CustomItem(event.getResult());
+                    ItemStack resultStack = resultItem.getItemStack();
+                    if (resultItem.hasItemMeta()) {
                         //Further recipe options to block features.
-                        if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && result.getItemMeta().hasEnchants()) {
+                        if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && resultItem.getItemMeta().hasEnchants()) {
                             //Block Enchants
                             for (Enchantment enchantment : resultStack.getEnchantments().keySet()) {
-                                result.removeEnchantment(enchantment);
+                                resultItem.removeEnchantment(enchantment);
                             }
                             if (inputLeft != null) {
                                 for (Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()) {
-                                    result.addUnsafeEnchantment(entry.getKey(), entry.getValue());
+                                    resultItem.addUnsafeEnchantment(entry.getKey(), entry.getValue());
                                 }
                             }
                         }
                         if (recipe.isBlockRename()) {
                             //Block Renaming
                             if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
-                                result.setDisplayName(inputLeft.getItemMeta().getDisplayName());
+                                resultItem.setDisplayName(inputLeft.getItemMeta().getDisplayName());
                             } else {
-                                result.setDisplayName(null);
+                                resultItem.setDisplayName(null);
                             }
                         }
-                        if (recipe.isBlockRepair() && result.getItemMeta() instanceof Damageable resultDamageable) {
+                        if (recipe.isBlockRepair() && resultItem.getItemMeta() instanceof Damageable resultDamageable) {
                             //Block Repairing
                             if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
                                 resultDamageable.setDamage(damageable.getDamage());
                             }
-                            result.setItemMeta(resultDamageable);
+                            resultItem.setItemMeta(resultDamageable);
                         }
                     }
                 }
                 if (recipe.getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
                     //Durability mode is set.
-                    if (result.hasCustomDurability()) {
-                        result.setCustomDamage(Math.max(0, result.getCustomDamage() - recipe.getDurability()));
-                    } else if (result.getItemMeta() instanceof Damageable damageable) {
+                    if (resultItem.hasCustomDurability()) {
+                        resultItem.setCustomDamage(Math.max(0, resultItem.getCustomDamage() - recipe.getDurability()));
+                    } else if (resultItem.getItemMeta() instanceof Damageable damageable) {
                         damageable.setDamage(damageable.getDamage() - recipe.getDurability());
-                        result.setItemMeta(damageable);
+                        resultItem.setItemMeta(damageable);
                     }
                 }
             }
@@ -151,17 +154,17 @@ public class AnvilListener implements Listener {
                 }
                 //Apply the repair cost to the result.
                 if (recipe.isApplyRepairCost()) {
-                    var itemMeta = result.getItemMeta();
+                    var itemMeta = resultItem.getItemMeta();
                     if (itemMeta instanceof Repairable repairable) {
                         repairable.setRepairCost(repairCost);
-                        result.setItemMeta(itemMeta);
+                        resultItem.setItemMeta(itemMeta);
                     }
                 }
             }
 
             //Save current active recipe to consume correct item inputs!
             preCraftedRecipes.put(player.getUniqueId(), anvilData);
-            final ItemStack finalResult = result.getItemStack();
+            final ItemStack finalResult = recipe.getResult().getItem(anvilData, resultItem, player, null);
 
             inventory.setRepairCost(repairCost);
             event.setResult(repairCost > 0 ? finalResult : null);
