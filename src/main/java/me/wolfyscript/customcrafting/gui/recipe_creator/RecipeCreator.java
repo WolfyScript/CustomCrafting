@@ -37,6 +37,7 @@ public abstract class RecipeCreator extends CCWindow {
 
     protected RecipeCreator(GuiCluster<CCCache> guiCluster, String namespace, int size, CustomCrafting customCrafting) {
         super(guiCluster, namespace, size, customCrafting);
+        setForceSyncUpdate(true);
     }
 
     @Override
