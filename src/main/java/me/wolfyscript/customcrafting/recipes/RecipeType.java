@@ -52,15 +52,19 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
     RecipeType<CustomRecipeSmithing> SMITHING = new RecipeTypeImpl<>(Type.SMITHING, CustomRecipeSmithing.class);
 
     static Set<RecipeType<? extends CustomRecipe<?>>> values() {
-        return Collections.unmodifiableSet(RecipeTypeImpl.values);
+        return Set.copyOf(RecipeTypeImpl.values.values());
     }
 
+    /**
+     * @param id The id of the recipe type.
+     * @return The recipe type of the specified id; or null if non can be found.
+     */
     static RecipeType<?> valueOf(String id) {
-        return RecipeTypeImpl.values.stream().filter(rType -> rType.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
+        return RecipeTypeImpl.values.get(id.toLowerCase(Locale.ROOT));
     }
 
     static RecipeType<?> valueOf(Type type) {
-        return RecipeTypeImpl.values.stream().filter(rType -> rType.getType().equals(type)).findFirst().orElse(null);
+        return RecipeTypeImpl.values.get(type.toString().toLowerCase(Locale.ROOT));
     }
 
     Type getType();
@@ -232,6 +236,11 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         }
     }
 
+    /**
+     * Enum representation of all available {@link RecipeType}s.<br>
+     * This allows you to make use of switches and other enum only features.<br>
+     * Use {@link RecipeType#getType()} to get it's enum representation.
+     */
     enum Type {
         CRAFTING_SHAPED,
         CRAFTING_SHAPELESS,
@@ -251,7 +260,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
 
     class RecipeTypeImpl<C extends CustomRecipe<?>> implements RecipeType<C> {
 
-        static final Set<RecipeType<? extends CustomRecipe<?>>> values = new HashSet<>();
+        static final Map<String, RecipeType<? extends CustomRecipe<?>>> values = new HashMap<>();
 
         private final String id;
         private final Type type;
@@ -269,15 +278,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
             this.id = type.toString().toLowerCase(Locale.ROOT);
             this.creatorID = creatorID;
             this.parent = null;
-            values.add(this);
-        }
-
-        public static RecipeType<?> valueOf(String id) {
-            return values.stream().filter(rType -> rType.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
-        }
-
-        public static RecipeType<?> valueOf(Type type) {
-            return values.stream().filter(rType -> rType.getType().equals(type)).findFirst().orElse(null);
+            values.put(id, this);
         }
 
         @Override
