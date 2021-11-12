@@ -160,7 +160,8 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private void loadAndRegisterRecipe(RecipeLoader<?> loader, String namespace) {
-        for (File file : getFiles(namespace, loader.getId())) {
+        String id = loader instanceof RecipeType.Container<?> container && container.hasLegacy() ? container.getLegacyID() : loader.getId();
+        for (File file : getFiles(namespace, id)) {
             var namespacedKey = new NamespacedKey(namespace, file.getName().replace(".json", ""));
             try {
                 CCRegistry.RECIPES.register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
