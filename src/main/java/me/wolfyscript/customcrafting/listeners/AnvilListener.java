@@ -226,7 +226,7 @@ public class AnvilListener implements Listener {
 
                     if (inputLeft != null && inventory.getItem(0) != null) {
                         ItemStack itemLeft = anvilData.getLeftIngredient().itemStack().clone();
-                        inputLeft.remove(itemLeft, itemLeft.getAmount(), inventory);
+                        inputLeft.remove(itemLeft, 1, inventory);
                         inventory.setItem(0, itemLeft);
                     } else {
                         inventory.setItem(0, null);
