@@ -79,6 +79,7 @@ public class MenuItemCreator extends CCWindow {
 
     public MenuItemCreator(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "main_menu", 54, customCrafting);
+        setForceSyncUpdate(true);
     }
 
     @Override
