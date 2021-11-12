@@ -85,6 +85,7 @@ public class RecipeCreatorCooking extends RecipeCreator {
 
         CCPlayerData data = PlayerUtil.getStore(update.getPlayer());
 
+        update.setButton(1, ClusterRecipeCreator.VANILLA_BOOK);
         update.setButton(3, ClusterRecipeCreator.HIDDEN);
         update.setButton(5, ClusterRecipeCreator.CONDITIONS);
         update.setButton(20, data.getLightBackground());
