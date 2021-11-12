@@ -53,6 +53,7 @@ public class ClusterRecipeCreator extends CCCluster {
     public static final NamespacedKey PRIORITY = new NamespacedKey(KEY, "priority");
     public static final NamespacedKey EXACT_META = new NamespacedKey(KEY, "exact_meta");
     public static final NamespacedKey HIDDEN = new NamespacedKey(KEY, "hidden");
+    public static final NamespacedKey VANILLA_BOOK = new NamespacedKey(KEY, "vanilla_book");
     public static final String SHAPELESS = "crafting.shapeless";
     public static final String MIRROR_VERTICAL = "crafting.mirror_vertical";
     public static final String MIRROR_HORIZONTAL = "crafting.mirror_horizontal";
@@ -61,6 +62,7 @@ public class ClusterRecipeCreator extends CCCluster {
     private static final String ENABLED = ".enabled";
     public static final NamespacedKey EXACT_META_ENABLED = enabledKey(EXACT_META.getKey());
     public static final NamespacedKey HIDDEN_ENABLED = enabledKey(HIDDEN.getKey());
+    public static final NamespacedKey VANILLA_BOOK_ENABLED = enabledKey(VANILLA_BOOK.getKey());
     public static final NamespacedKey SHAPELESS_ENABLED = enabledKey(SHAPELESS);
     public static final NamespacedKey MIRROR_VERTICAL_ENABLED = enabledKey(MIRROR_VERTICAL);
     public static final NamespacedKey MIRROR_HORIZONTAL_ENABLED = enabledKey(MIRROR_HORIZONTAL);
@@ -68,6 +70,7 @@ public class ClusterRecipeCreator extends CCCluster {
     private static final String DISABLED = ".disabled";
     public static final NamespacedKey EXACT_META_DISABLED = disabledKey(EXACT_META.getKey());
     public static final NamespacedKey HIDDEN_DISABLED = disabledKey(HIDDEN.getKey());
+    public static final NamespacedKey VANILLA_BOOK_DISABLED = disabledKey(VANILLA_BOOK.getKey());
     public static final NamespacedKey SHAPELESS_DISABLED = disabledKey(SHAPELESS);
     public static final NamespacedKey MIRROR_VERTICAL_DISABLED = disabledKey(MIRROR_VERTICAL);
     public static final NamespacedKey MIRROR_HORIZONTAL_DISABLED = disabledKey(MIRROR_HORIZONTAL);
@@ -141,6 +144,7 @@ public class ClusterRecipeCreator extends CCCluster {
         registerButton(new ButtonExactMeta());
         registerButton(new ButtonPriority());
         registerButton(new ButtonHidden());
+        registerButton(new ButtonVanillaBook());
         registerSaveButtons();
     }
 

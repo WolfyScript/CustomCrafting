@@ -27,6 +27,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipePriority;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -42,6 +43,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
     protected NamespacedKey key;
     protected boolean exactMeta;
     protected boolean hidden;
+    protected boolean vanillaBook;
 
     protected RecipePriority priority;
     protected Conditions conditions;
@@ -52,6 +54,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         this.key = null;
         this.exactMeta = true;
         this.hidden = false;
+        this.vanillaBook = false;
         this.priority = RecipePriority.NORMAL;
         this.conditions = new Conditions();
         this.group = "";
@@ -62,6 +65,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         this.key = customRecipe.getNamespacedKey();
         this.exactMeta = customRecipe.isExactMeta();
         this.hidden = customRecipe.isHidden();
+        this.vanillaBook = customRecipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook();
         this.priority = customRecipe.getPriority();
         this.conditions = customRecipe.getConditions();
         this.group = customRecipe.getGroup();
@@ -94,6 +98,14 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    public void setVanillaBook(boolean vanillaBook) {
+        this.vanillaBook = vanillaBook;
+    }
+
+    public boolean isVanillaBook() {
+        return vanillaBook;
     }
 
     public RecipePriority getPriority() {
@@ -150,6 +162,9 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         recipe.setHidden(hidden);
         recipe.setExactMeta(exactMeta);
         recipe.setPriority(priority);
+        if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe) {
+            vanillaRecipe.setVisibleVanillaBook(vanillaBook);
+        }
         return recipe;
     }
 

@@ -1788,17 +1788,43 @@
         },
         "hidden": {
           "enabled": {
-            "name": "&6Hide Recipe",
+            "name": "&c❌ &6&lHide Recipe",
             "lore": [
-              "&eRecipe is hidden in the knowledgebook!",
-              "&7[&aClick&7] Toggle to show recipe"
+              "&eRecipe is hidden in both the ",
+              "&eplugin and vanilla recipe book!",
+              "",
+              "&7[&aClick&7] Show in plugin recipe book"
             ]
           },
           "disabled": {
-            "name": "&6Show Recipe",
+            "name": "&a✔ &6&lShow Recipe",
             "lore": [
-              "&eRecipe is shown in the knowledgebook!",
-              "&7[&aClick&7] Toggle to hide recipe"
+              "&eRecipe is shown in the plugin recipe book,",
+              "&eand, if enabled, inside the vanilla recipe book.",
+              "",
+              "&7[&aClick&7] Hide in plugin recipe book"
+            ]
+          }
+        },
+        "vanilla_book": {
+          "enabled": {
+            "name": "&a✔ &6&lVanilla Recipe Book",
+            "lore": [
+              "&eRecipe will be visible in the vanilla",
+              "&erecipe book. ",
+              "&cNBT for ingredients will not be displayed &",
+              "&cignored by the auto-completion!",
+              "",
+              "&8[&aClick&8] &eDisable Vanilla Recipe Book"
+            ]
+          },
+          "disabled": {
+            "name": "&4❌ &6&lVanilla Recipe Book",
+            "lore": [
+              "&eRecipe is not visible in the vanilla",
+              "&erecipe book. ",
+              "",
+              "&8[&aClick&8] &eEnable Vanilla Recipe Book"
             ]
           }
         },
