@@ -99,6 +99,10 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         static Collection<Container<? extends CustomRecipe<?>>> values() {
             return ContainerImpl.values.values();
         }
+        
+        static boolean isLegacy(String id) {
+            return !ContainerImpl.values.containsKey(id) && ContainerImpl.legacyValues.containsKey(id);
+        }
 
         static Container<?> valueOf(String id) {
             return ContainerImpl.values.get(id);
@@ -107,6 +111,10 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         List<RecipeType<? extends C>> getTypes();
 
         String getId();
+
+        String getLegacyID();
+
+        boolean hasLegacy();
 
         String getCreatorID();
 
@@ -134,8 +142,8 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
 
         final class CraftingContainer<S extends CraftingRecipeSettings<S>> extends Container.ContainerImpl<CraftingRecipe<?, S>> implements RecipeLoader<CraftingRecipe<?, S>> {
 
-            private CraftingContainer(String folderID, String creatorID, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
-                super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, folderID, creatorID, List.of(shaped, shapeless));
+            private CraftingContainer(String legacyID, String id, RecipeType<? extends CraftingRecipe<?, S>> shaped, RecipeType<? extends CraftingRecipe<?, S>> shapeless) {
+                super((Class<CraftingRecipe<?, S>>) (Object) CraftingRecipe.class, id, legacyID, id, List.of(shaped, shapeless));
             }
 
             @Override
@@ -147,9 +155,11 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         class ContainerImpl<C extends CustomRecipe<?>> implements Container<C> {
 
             static final Map<String, Container<?>> values = new HashMap<>();
+            static final Map<String, Container<?>> legacyValues = new HashMap<>();
 
             protected final List<RecipeType<? extends C>> types;
             private final String id;
+            private final String legacyID;
             private final String creatorID;
             private final Class<C> clazz;
 
@@ -158,6 +168,10 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
             }
 
             private ContainerImpl(Class<C> clazz, String id, String creatorID, List<RecipeType<? extends C>> types) {
+                this(clazz, id, null, creatorID, types);
+            }
+
+            private ContainerImpl(Class<C> clazz, String id, String legacyID, String creatorID, List<RecipeType<? extends C>> types) {
                 this.types = types;
                 for (RecipeType<? extends C> type : this.types) {
                     if (type instanceof RecipeTypeImpl<?> recipeTypeImpl) {
@@ -166,8 +180,10 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
                 }
                 this.clazz = clazz;
                 this.id = id;
+                this.legacyID = legacyID;
                 this.creatorID = creatorID;
                 values.putIfAbsent(id, this);
+                legacyValues.putIfAbsent(legacyID, this);
             }
 
             @Override
@@ -178,6 +194,16 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
             @Override
             public String getId() {
                 return id;
+            }
+
+            @Override
+            public String getLegacyID() {
+                return legacyID;
+            }
+
+            @Override
+            public boolean hasLegacy() {
+                return legacyID != null && !legacyID.isBlank();
             }
 
             @Override
