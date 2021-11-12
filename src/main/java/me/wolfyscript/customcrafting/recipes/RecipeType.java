@@ -105,7 +105,10 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         }
 
         static Container<?> valueOf(String id) {
-            return ContainerImpl.values.get(id);
+            if (ContainerImpl.values.containsKey(id)) {
+                return ContainerImpl.values.get(id);
+            }
+            return ContainerImpl.legacyValues.get(id);
         }
 
         List<RecipeType<? extends C>> getTypes();
