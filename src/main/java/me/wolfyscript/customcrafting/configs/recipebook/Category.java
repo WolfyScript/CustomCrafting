@@ -75,7 +75,7 @@ public class Category extends CategorySettings {
     }
 
     public void indexFilters(CategoryFilter filter) {
-        indexedFilters.put(filter, containers.parallelStream().filter(filter::filter).toList());
+        indexedFilters.put(filter, containers.stream().filter(filter::filter).toList());
     }
 
     public List<RecipeContainer> getRecipeList(Player player, CategoryFilter filter) {
