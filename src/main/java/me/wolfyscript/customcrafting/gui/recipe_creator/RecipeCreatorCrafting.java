@@ -100,9 +100,10 @@ public class RecipeCreatorCrafting extends RecipeCreator {
         update.setButton(22, ClusterRecipeCreator.SHAPELESS);
         update.setButton(24, "recipe.result");
 
-        update.setButton(1, ClusterRecipeCreator.HIDDEN);
-        update.setButton(3, ClusterRecipeCreator.CONDITIONS);
-        update.setButton(5, ClusterRecipeCreator.EXACT_META);
+        update.setButton(1, ClusterRecipeCreator.VANILLA_BOOK);
+        update.setButton(2, ClusterRecipeCreator.HIDDEN);
+        update.setButton(4, ClusterRecipeCreator.CONDITIONS);
+        update.setButton(6, ClusterRecipeCreator.EXACT_META);
         update.setButton(7, ClusterRecipeCreator.PRIORITY);
 
         update.setButton(42, ClusterRecipeCreator.GROUP);
