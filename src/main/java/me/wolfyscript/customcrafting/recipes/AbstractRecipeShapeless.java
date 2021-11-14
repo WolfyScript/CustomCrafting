@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Queues;
 import com.google.common.collect.Streams;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
@@ -119,36 +120,55 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
 
     @Override
     public CraftingData check(CraftManager.MatrixData matrixData) {
-        List<Integer> keys = new ArrayList<>(this.indexes);
         Map<Integer, IngredientData> dataMap = new HashMap<>();
-        ItemStack[] matrix = matrixData.getMatrix();
-        for (int i = 0; i < matrix.length; i++) {
-            var key = checkIngredient(i, keys, dataMap, matrix[i]);
-            if(key >= 0) {
-                keys.remove(key);
+        Deque<Integer> queue = Queues.newArrayDeque(this.indexes);
+        List<Integer> usedRecipeSlots = new ArrayList<>();
+        ItemStack[] matrix = matrixData.getItems();
+        /*
+        Previous implementation had the issue that it didn't go through all possible variations and therefore failed to verify the recipe if the items weren't arranged correctly.
+        The new implementation should fix that. Of course at the cost of more calculation time... For 9 ingredients not that big of a deal, but for 36, well... that's why 3x3 recipe grids should be the max size possible.
+         */
+        for (int i = 0; i < matrix.length; i++) { //First we go through all the items in the grid.
+            var recipeSlot = checkIngredientNew(i, queue, dataMap, matrix[i]); //Get the slot of the ingredient or -1 if non is found.
+            if (recipeSlot == -1) {
+                if (i == 0 || usedRecipeSlots.isEmpty()) { //We can directly end the check if it fails for the first slot.
+                    return null;
+                }
+                if (usedRecipeSlots.size() > i) {
+                    //Add the previous selected recipe slot back into the queue.
+                    queue.addLast(usedRecipeSlots.get(i));
+                    usedRecipeSlots.remove(i);
+                }
+                //Go back one inventory slot
+                i -= 2;
+                continue;
+            } else if (usedRecipeSlots.size() > i) {
+                //Add the previous selected recipe slot back into the queue, so we don't miss it.
+                queue.addLast(usedRecipeSlots.get(i));
+                usedRecipeSlots.remove(i);
             }
+            //Add the newly found slot to the used slots.
+            usedRecipeSlots.add(recipeSlot);
         }
-        if(keys.isEmpty()) {
+        if (queue.isEmpty() || (hasAllowedEmptyIngredient && (matrixData.getStrippedSize() == ingredients.size() - queue.size()) && queue.stream().allMatch(index -> ingredients.get(index).isAllowEmpty())) ) {
+            //The empty ingredients can be very tricky in shapeless recipes and shouldn't be used... but might as well implement it anyway.
             return new CraftingData(this, dataMap);
-        } else if (hasAllowedEmptyIngredient && keys.stream().allMatch(index -> ingredients.get(index).isAllowEmpty())) {
-            int maxSize = ingredients.size() - keys.size();
-            if (matrixData.getStrippedSize() == maxSize) {
-                return new CraftingData(this, dataMap);
-            }
         }
         return null;
     }
 
-    protected Integer checkIngredient(int pos, List<Integer> keys, Map<Integer, IngredientData> dataMap, ItemStack item) {
-        if (item != null) {
-            for (Integer key : keys) {
-                var ingredient = ingredients.get(key);
-                Optional<CustomItem> validItem = ingredient.check(item, isExactMeta());
-                if (validItem.isPresent()) {
-                    dataMap.put(pos, new IngredientData(key, ingredient, validItem.get(), item));
-                    return key;
-                }
+    protected Integer checkIngredientNew(int pos, Deque<Integer> deque, Map<Integer, IngredientData> dataMap, ItemStack item) {
+        int size = deque.size();
+        for (int qj = 0; qj < size; qj++) {
+            int key = deque.removeFirst(); //Take the first key out of the queue.
+            var ingredient = ingredients.get(key);
+            Optional<CustomItem> validItem = ingredient.check(item, isExactMeta());
+            if (validItem.isPresent()) {
+                dataMap.put(pos, new IngredientData(key, ingredient, validItem.get(), item));
+                return key;
             }
+            //Check failed. Let's add the key back into the queue. (To the end, so we don't check it again and again...)
+            deque.addLast(key);
         }
         return -1;
     }
