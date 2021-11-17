@@ -262,12 +262,14 @@ public class CraftManager {
         private final int height;
         private final int width;
         private final long strippedSize;
+        private final ItemStack[] items;
 
         public MatrixData(ItemStack[] matrix, int height, int width) {
             this.matrix = matrix;
             this.height = height;
             this.width = width;
-            this.strippedSize = Arrays.stream(matrix).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).count();
+            this.items = Arrays.stream(matrix).filter(itemStack -> !ItemUtils.isAirOrNull(itemStack)).toArray(ItemStack[]::new);
+            this.strippedSize = this.items.length;
         }
 
         /**
@@ -289,6 +291,10 @@ public class CraftManager {
          */
         public long getStrippedSize() {
             return strippedSize;
+        }
+
+        public ItemStack[] getItems() {
+            return items;
         }
 
         /**

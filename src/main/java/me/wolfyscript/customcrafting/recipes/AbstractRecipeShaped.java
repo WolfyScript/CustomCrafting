@@ -237,20 +237,21 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         Map<Integer, IngredientData> dataMap = new HashMap<>();
         var i = 0;
         for (ItemStack invItem : matrixData.getMatrix()) {
-            int slot = shape[i];
+            int recipeSlot = shape[i];
             if (invItem != null) {
-                if (slot >= 0) {
-                    var ingredient = ingredients.get(slot);
+                if (recipeSlot >= 0) {
+                    var ingredient = ingredients.get(recipeSlot);
                     if (ingredient != null) {
                         Optional<CustomItem> item = ingredient.check(invItem, this.exactMeta);
                         if (item.isPresent()) {
-                            dataMap.put(i++, new IngredientData(slot, ingredient, item.get(), invItem));
+                            dataMap.put(recipeSlot, new IngredientData(recipeSlot, ingredient, item.get(), invItem));
+                            i++;
                             continue;
                         }
                     }
                 }
                 return null;
-            } else if (slot >= 0) {
+            } else if (recipeSlot >= 0) {
                 return null;
             }
             i++;
