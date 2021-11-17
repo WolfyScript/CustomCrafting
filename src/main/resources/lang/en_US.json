@@ -1521,32 +1521,38 @@
             },
             "grid_size": {
               "size_3": {
-                "name": "&7Grid size: &73&8x&73",
+                "name": "&7&lGrid size: &r&73&8x&73 &8[&aRecommended&8]",
                 "lore": [
-                  "&7Vanilla style crafting in a 3x3 crafting table",
+                  "&eA 3x3 Crafting grid, for the normal crafting behaviour.",
+                  "",
                   "&7[&aClick&7] Toggle to 4x4 crafting grid"
                 ]
               },
               "size_4": {
-                "name": "&7Grid size: &e4&8x&e4",
+                "name": "&7&lGrid size: &r&e4&8x&e4",
                 "lore": [
                   "&eMore space for crafting. Create advanced items",
-                  "&ethat require more material to create.",
+                  "&ethat require more materials to create.",
+                  "",
                   "&7[&aClick&7] Toggle to 5x5 crafting grid"
                 ]
               },
               "size_5": {
-                "name": "&7Grid size: &65&8x&65",
+                "name": "&7&lGrid size: &r&65&8x&65 &8[&c&lDeprecated&r&8]",
                 "lore": [
                   "&eEven more slots... to create more complex recipes",
+                  "&cThis will most likely cause lag!",
+                  "",
                   "&7[&aClick&7] Toggle to 6x6 crafting grid"
                 ]
               },
               "size_6": {
-                "name": "&7Grid size: &46&8x&46",
+                "name": "&7&lGrid size: &r&46&8x&46 &8[&c&lDeprecated&r&8]",
                 "lore": [
                   "&eA very big crafting grid to create very complex recipes.",
-                  "&cThese recipes need more resources and may result in lag if used too often in a short time!",
+                  "&cThese recipes need more resources and ",
+                  "&cwill definitely result in lag if used too often in a short time!",
+                  "",
                   "&7[&aClick&7] Toggle to 3x3 crafting grid"
                 ]
               }
