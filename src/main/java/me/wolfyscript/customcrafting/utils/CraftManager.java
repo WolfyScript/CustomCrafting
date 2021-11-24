@@ -145,7 +145,7 @@ public class CraftManager {
 
     private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult, ItemStack result) {
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
-        recipe.removeMatrix(event.getClickedInventory(), possible, craftingData);
+        recipe.removeMatrix(player, event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {
             if (possible > 0) {
                 RandomCollection<CustomItem> results = recipeResult.getRandomChoices(player);
