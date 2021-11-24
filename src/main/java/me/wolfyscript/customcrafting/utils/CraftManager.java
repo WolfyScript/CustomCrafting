@@ -152,7 +152,13 @@ public class CraftManager {
                 for (int i = 0; i < possible; i++) {
                     var customItem = results.next();
                     if (customItem != null) {
-                        player.getInventory().addItem(recipeResult.getItem(craftingData, customItem, player, null));
+                        var item = recipeResult.getItem(craftingData, customItem, player, null);
+                        if (InventoryUtils.hasInventorySpace(player, item)) {
+                            player.getInventory().addItem(item);
+                        } else {
+                            var loc = player.getLocation();
+                            loc.getWorld().dropItem(loc, item);
+                        }
                     }
                 }
             }
