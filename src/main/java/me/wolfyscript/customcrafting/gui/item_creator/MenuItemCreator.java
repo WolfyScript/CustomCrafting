@@ -155,8 +155,6 @@ public class MenuItemCreator extends CCWindow {
         registerReferences();
         tabs.clear();
         CCRegistry.ITEM_CREATOR_TABS.forEach(tab -> tab.register(this, api));
-
-        Registry.META_PROVIDER.keySet().forEach(namespacedKey -> registerButton(new ButtonMetaIgnore(namespacedKey)));
     }
 
     private void registerReferences() {

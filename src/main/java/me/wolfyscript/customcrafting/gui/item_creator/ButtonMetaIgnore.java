@@ -35,18 +35,6 @@ import java.util.List;
 public class ButtonMetaIgnore extends ActionButton<CCCache> {
 
     public ButtonMetaIgnore(NamespacedKey metaKey) {
-        super("meta_ignore." + metaKey.toString("."), new ButtonState<>("meta_ignore", Material.CYAN_CONCRETE, (cache, guiHandler, player, guiInventory, slot, inventoryInteractEvent) -> {
-            Meta meta = guiHandler.getCustomCache().getItems().getItem().getMetaSettings().get(metaKey);
-            List<MetaSettings.Option> options = meta.getAvailableOptions();
-            int i = options.indexOf(meta.getOption()) + 1;
-            if (i >= options.size()) {
-                i = 0;
-            }
-            meta.setOption(options.get(i));
-            return true;
-        }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            hashMap.put("%VAR%", guiHandler.getCustomCache().getItems().getItem().getMetaSettings().get(metaKey).getOption().toString());
-            return itemStack;
-        }));
+        super("meta_ignore." + metaKey.toString("."), new ButtonState<>("meta_ignore", Material.CYAN_CONCRETE));
     }
 }
