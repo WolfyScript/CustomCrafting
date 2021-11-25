@@ -118,7 +118,7 @@ public class CraftManager {
                 editStatistics(player, inventory, recipe);
                 setPlayerCraftTime(player, recipe);
                 recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
-                calculateClick(player, event, craftingData, recipe, recipeResult, result);
+                calculateClick(player, event, craftingData, recipe, recipeResult);
             }
             remove(event.getWhoClicked().getUniqueId());
         }
@@ -143,7 +143,8 @@ public class CraftManager {
         }
     }
 
-    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult, ItemStack result) {
+    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult) {
+        ItemStack result = recipeResult.getItem(craftingData, player, null);
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
         recipe.removeMatrix(player, event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {
