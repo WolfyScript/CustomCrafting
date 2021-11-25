@@ -82,6 +82,5 @@ public class TabCustomModelData extends ItemCreatorTab {
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         update.setButton(30, "custom_model_data.set");
         update.setButton(32, "custom_model_data.reset");
-        update.setButton(36, "meta_ignore.wolfyutilities.customModelData");
     }
 }

@@ -98,7 +98,5 @@ public class TabCustomDurability extends ItemCreatorTab {
         update.setButton(31, "custom_durability.set_tag");
         update.setButton(33, "custom_durability.set_durability");
         update.setButton(40, "custom_durability.remove");
-        update.setButton(36, "meta_ignore.wolfyutilities.custom_damage");
-        update.setButton(44, "meta_ignore.wolfyutilities.custom_durability");
     }
 }

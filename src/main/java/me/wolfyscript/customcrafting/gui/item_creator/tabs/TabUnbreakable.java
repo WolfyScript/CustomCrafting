@@ -77,6 +77,5 @@ public class TabUnbreakable extends ItemCreatorTabVanilla {
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         update.setButton(30, KEY + ".set");
         update.setButton(32, KEY + ".remove");
-        update.setButton(36, "meta_ignore.wolfyutilities.name");
     }
 }
