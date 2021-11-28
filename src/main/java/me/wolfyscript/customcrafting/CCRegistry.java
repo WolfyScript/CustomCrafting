@@ -54,7 +54,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
      * The custom Registry for the Recipes of CustomCrafting.
      * Providing a lot of functionality to get the recipes you need.
      */
-    class RecipeRegistry extends SimpleRegistry<CustomRecipe<?>> {
+    class RecipeRegistry extends Registry.SimpleRegistry<CustomRecipe<?>> {
 
         private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
         private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
