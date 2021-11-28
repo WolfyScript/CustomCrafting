@@ -169,7 +169,6 @@ public class TabAttributes extends ItemCreatorTabVanilla {
         setSectionButton(update, 39, LUCK);
         setSectionButton(update, 40, HORSE_JUMB_STRENGTH);
         setSectionButton(update, 41, ZOMBIE_SPAWN_REINFORCEMENTS);
-        update.setButton(36, "meta_ignore.wolfyutilities.attributes_modifiers");
     }
 
     private void setSectionButton(GuiUpdate<CCCache> update, int slot, String section) {

@@ -64,6 +64,5 @@ public class TabLore extends ItemCreatorTabVanilla {
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         update.setButton(30, KEY + ".add");
         update.setButton(32, KEY + ".remove");
-        update.setButton(36, "meta_ignore.wolfyutilities.lore");
     }
 }

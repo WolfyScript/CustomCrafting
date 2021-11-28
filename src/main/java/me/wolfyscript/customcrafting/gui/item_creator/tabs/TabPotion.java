@@ -88,6 +88,5 @@ public class TabPotion extends ItemCreatorTabVanilla {
         update.setButton(30, "potion.add");
         update.setButton(31, "potion_beta.add");
         update.setButton(32, "potion.remove");
-        update.setButton(36, "meta_ignore.wolfyutilities.potion");
     }
 }
