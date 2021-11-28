@@ -42,6 +42,10 @@
             <id>wolfyscript-private</id>
             <url>https://maven.wolfyscript.com/repository/private/</url>
         </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -83,6 +87,11 @@
             <scope>provided</scope>
         </dependency>
         <!-- Plugin dependencies -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.7.0</version>
+        </dependency>
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
