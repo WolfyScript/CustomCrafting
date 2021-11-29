@@ -37,6 +37,7 @@ public class OtherPlugins {
 
     public void init() {
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
+            plugin.getLogger().info("Detected ProtocolLib... initiating additional features.");
             this.protocolLib = new ProtocolLib(plugin);
         }
     }

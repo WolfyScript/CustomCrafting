@@ -30,6 +30,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldUtils;
+import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.MinecraftKey;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -72,28 +73,13 @@ public class ProtocolLib {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
-                List<MinecraftKey> recipes = null;
-                List<MinecraftKey> highlightedRecipes = null;
-                try {
-                    recipes = (List<MinecraftKey>) FieldUtils.readField(packet.getHandle(), "b", true);
-                    highlightedRecipes = (List<MinecraftKey>) FieldUtils.readField(packet.getHandle(), "c", true);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                if(recipes != null) {
-                    try {
-                        FieldUtils.writeField(packet.getHandle(), "b", recipes.stream().filter(recipeFilter::apply).collect(Collectors.toList()));
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if(highlightedRecipes != null) {
-                    try {
-                        FieldUtils.writeField(packet.getHandle(), "c", highlightedRecipes.stream().filter(recipeFilter::apply).collect(Collectors.toList()));
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
+                StructureModifier<List<MinecraftKey>> lists = packet.getLists(MinecraftKey.getConverter());
+                lists.modify(0, input -> { //Modify the recipes
+                    return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
+                });
+                lists.modify(1, input -> { //Modify Highlighted recipes
+                    return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
+                });
             }
         });
 
