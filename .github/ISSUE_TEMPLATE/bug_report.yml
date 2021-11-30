@@ -1,0 +1,54 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - WolfyScript
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Before reporting make sure there isn't a similar open issue and that you read the Wiki, especially the FAQ.
+  - type: textarea
+    id: the-bug
+    attributes:
+      label: What happened?
+      description: What kind of bug did you encounter? You can also inlcude screenshots to explain the issue.
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How can the bug be reproduced?
+      description: This may include a video, or detailed instructions to help reconstruct the issue.
+      value: ""
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected Behaviour?
+      description: What is the expected behaviour?
+      value: ""
+    validations:
+      required: true
+  - type: dropdown
+    id: mc-version
+    attributes:
+      label: Minecraft Version
+      description: What version of Minecraft are you running?
+      options:
+        - 1.18
+        - 1.17.1
+        - 1.17
+        - 1.16.5
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
