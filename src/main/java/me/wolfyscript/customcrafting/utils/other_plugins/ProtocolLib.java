@@ -29,8 +29,14 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.FieldUtils;
+import com.comphenix.protocol.reflect.EquivalentConverter;
+import com.comphenix.protocol.reflect.FuzzyReflection;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.reflect.accessors.Accessors;
+import com.comphenix.protocol.reflect.accessors.MethodAccessor;
+import com.comphenix.protocol.reflect.fuzzy.FuzzyMethodContract;
+import com.comphenix.protocol.utility.MinecraftReflection;
+import com.comphenix.protocol.wrappers.Converters;
 import com.comphenix.protocol.wrappers.MinecraftKey;
 import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
@@ -82,8 +88,49 @@ public class ProtocolLib {
                 });
             }
         });
+        protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.RECIPE_UPDATE) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                PacketContainer packet = event.getPacket();
 
+                StructureModifier<List<RecipeWrapper>> lists = packet.getLists(getRecipeKeyConverter());
+                lists.modify(0, input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList()));
+            }
+        });
+    }
 
+    public EquivalentConverter<RecipeWrapper> getRecipeKeyConverter() {
+        return Converters.ignoreNull(new EquivalentConverter<>() {
+
+            public Object getGeneric(RecipeWrapper specific) {
+                return specific.getRecipe();
+            }
+
+            public RecipeWrapper getSpecific(Object generic) {
+                FuzzyReflection reflection = FuzzyReflection.fromClass(generic.getClass(), false);
+                MethodAccessor idAccessor = Accessors.getMethodAccessor(reflection.getMethod(FuzzyMethodContract.newBuilder().returnTypeExact(MinecraftReflection.getMinecraftKeyClass()).build()));
+                return new RecipeWrapper(MinecraftKey.fromHandle(idAccessor.invoke(generic)), generic);
+            }
+
+            public Class<RecipeWrapper> getSpecificType() {
+                return RecipeWrapper.class;
+            }
+        });
+    }
+
+    /**
+     * This wrapper contains data read from a packet using the {@link EquivalentConverter} from {@link #getRecipeKeyConverter()}.
+     * It will cache the handle of the recipe, and will be reapplied to the packet.
+     */
+    private record RecipeWrapper(MinecraftKey key, Object recipe) {
+
+        public MinecraftKey getKey() {
+            return key;
+        }
+
+        public Object getRecipe() {
+            return recipe;
+        }
     }
 
 }

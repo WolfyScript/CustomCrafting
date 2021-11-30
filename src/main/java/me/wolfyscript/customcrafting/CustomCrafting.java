@@ -156,7 +156,6 @@ public class CustomCrafting extends JavaPlugin {
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
         getLogger().info("Environment: " + WolfyUtilities.getENVIRONMENT());
-        this.otherPlugins.init();
 
         getLogger().info("Registering custom data");
         Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
@@ -203,6 +202,8 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
+
+        this.otherPlugins.init();
 
         configHandler = new ConfigHandler(this);
         configHandler.loadRecipeBookConfig();
