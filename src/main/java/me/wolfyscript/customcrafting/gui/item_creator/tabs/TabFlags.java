@@ -71,6 +71,5 @@ public class TabFlags extends ItemCreatorTabVanilla {
             update.setButton(40, "flags.dye");
         }
         update.setButton(42, "flags.enchants");
-        update.setButton(36, "meta_ignore.wolfyutilities.flags");
     }
 }

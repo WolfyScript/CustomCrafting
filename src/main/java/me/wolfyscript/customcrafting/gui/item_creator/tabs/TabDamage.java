@@ -80,6 +80,5 @@ public class TabDamage extends ItemCreatorTabVanilla {
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         update.setButton(30, "damage.set");
         update.setButton(32, "damage.reset");
-        update.setButton(36, "meta_ignore.wolfyutilities.damage");
     }
 }

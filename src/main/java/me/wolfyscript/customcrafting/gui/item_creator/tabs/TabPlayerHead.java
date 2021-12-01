@@ -93,6 +93,5 @@ public class TabPlayerHead extends ItemCreatorTabVanilla {
         update.setButton(29, "player_head.texture.input");
         update.setButton(30, "player_head.texture.apply");
         update.setButton(32, "player_head.owner");
-        update.setButton(36, "meta_ignore.wolfyutilities.playerHead");
     }
 }

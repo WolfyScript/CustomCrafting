@@ -77,6 +77,5 @@ public class TabRepairCost extends ItemCreatorTabVanilla {
     public void render(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
         update.setButton(30, "repair_cost.set");
         update.setButton(32, "repair_cost.reset");
-        update.setButton(36, "meta_ignore.wolfyutilities.repairCost");
     }
 }
