@@ -202,7 +202,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         super.writeToJson(gen, serializerProvider);
         gen.writeObjectFieldStart("dropItems");
         gen.writeBooleanField("enabled", dropItems);
-        gen.writeObjectField("handItem", handItem.getApiReference());
+        gen.writeObjectField("handItem", handItem != null ? handItem.getApiReference() : null);
         gen.writeEndObject();
         gen.writeNumberField("exp", xp);
         gen.writeNumberField("cookingTime", cookingTime);

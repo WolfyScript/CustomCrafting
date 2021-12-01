@@ -107,7 +107,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
             if (value instanceof ICustomVanillaRecipe vanillaRecipe && !value.isDisabled()) {
                 try {
                     Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe());
-                } catch (IllegalArgumentException ex) {
+                } catch (IllegalArgumentException | IllegalStateException ex) {
                     CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
                 }
             }
