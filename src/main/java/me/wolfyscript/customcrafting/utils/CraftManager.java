@@ -118,7 +118,7 @@ public class CraftManager {
                 editStatistics(player, inventory, recipe);
                 setPlayerCraftTime(player, recipe);
                 recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
-                calculateClick(player, event, craftingData, recipe, recipeResult, result);
+                calculateClick(player, event, craftingData, recipe, recipeResult);
             }
             remove(event.getWhoClicked().getUniqueId());
         }
@@ -143,16 +143,23 @@ public class CraftManager {
         }
     }
 
-    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult, ItemStack result) {
+    private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult) {
+        ItemStack result = recipeResult.getItem(craftingData, player, null);
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
-        recipe.removeMatrix(event.getClickedInventory(), possible, craftingData);
+        recipe.removeMatrix(player, event.getClickedInventory(), possible, craftingData);
         if (event.isShiftClick()) {
             if (possible > 0) {
                 RandomCollection<CustomItem> results = recipeResult.getRandomChoices(player);
                 for (int i = 0; i < possible; i++) {
                     var customItem = results.next();
                     if (customItem != null) {
-                        player.getInventory().addItem(recipeResult.getItem(craftingData, customItem, player, null));
+                        var item = recipeResult.getItem(craftingData, customItem, player, null);
+                        if (InventoryUtils.hasInventorySpace(player, item)) {
+                            player.getInventory().addItem(item);
+                        } else {
+                            var loc = player.getLocation();
+                            loc.getWorld().dropItem(loc, item);
+                        }
                     }
                 }
             }
