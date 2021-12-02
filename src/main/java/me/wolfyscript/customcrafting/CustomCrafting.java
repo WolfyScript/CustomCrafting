@@ -90,7 +90,7 @@ public class CustomCrafting extends JavaPlugin {
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
 
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
-    public static final int CONFIG_VERSION = 4;
+    public static final int CONFIG_VERSION = 5;
 
     //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
