@@ -53,6 +53,7 @@ import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.*;
 import me.wolfyscript.customcrafting.utils.*;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
+import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -89,7 +90,7 @@ public class CustomCrafting extends JavaPlugin {
     private static final String CONSOLE_SEPARATOR = "------------------------------------------------------------------------";
 
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
-    public static final int CONFIG_VERSION = 4;
+    public static final int CONFIG_VERSION = 5;
 
     //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
@@ -116,6 +117,7 @@ public class CustomCrafting extends JavaPlugin {
 
     private DisableRecipesHandler disableRecipesHandler;
 
+    private final OtherPlugins otherPlugins;
     private final boolean isPaper;
 
     public CustomCrafting() {
@@ -123,6 +125,7 @@ public class CustomCrafting extends JavaPlugin {
         instance = this;
         currentVersion = getDescription().getVersion();
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
+        this.otherPlugins = new OtherPlugins(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilities.get(this, false);
         this.chat = api.getChat();
@@ -153,6 +156,7 @@ public class CustomCrafting extends JavaPlugin {
     public void onLoad() {
         getLogger().info("WolfyUtilities API: " + Bukkit.getPluginManager().getPlugin("WolfyUtilities"));
         getLogger().info("Environment: " + WolfyUtilities.getENVIRONMENT());
+
         getLogger().info("Registering custom data");
         Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
         Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
@@ -198,6 +202,8 @@ public class CustomCrafting extends JavaPlugin {
         writeBanner();
         writePatreonCredits();
         writeSeparator();
+
+        this.otherPlugins.init();
 
         configHandler = new ConfigHandler(this);
         configHandler.loadRecipeBookConfig();

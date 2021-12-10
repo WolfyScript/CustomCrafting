@@ -65,7 +65,7 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
                 for (int c = 0; c < shaped.getMaxGridDimension(); c++) {
                     if (c < shaped.getInternalShape().getWidth() && r < shaped.getInternalShape().getHeight() && ingredientIndex < shaped.getIngredients().size()) {
                         var ingredient = shaped.getIngredients().get(ingredientIndex);
-                        if (ingredient != null) {
+                        if (ingredient != null && !ingredient.isEmpty()) {
                             this.ingredients.put(i, ingredient.clone());
                         }
                         ingredientIndex++;
@@ -147,7 +147,7 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
             shaped.setMirrorHorizontal(isMirrorHorizontal());
             shaped.setMirrorVertical(isMirrorVertical());
             shaped.setMirrorRotation(isMirrorRotation());
-            Map<Character, Ingredient> ingredientMap = ingredients.entrySet().stream().collect(Collectors.toMap(entry -> CraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue));
+            Map<Character, Ingredient> ingredientMap = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(entry -> CraftingRecipe.LETTERS.charAt(entry.getKey()), Map.Entry::getValue));
             shaped.generateMissingShape(List.copyOf(ingredientMap.keySet()));
             shaped.setIngredients(ingredientMap);
         }

@@ -43,7 +43,10 @@ import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.type.TypeRe
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -140,10 +143,14 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     }
 
     public void removeMatrix(Inventory inventory, int totalAmount, CraftingData craftingData) {
+        removeMatrix(null, inventory, totalAmount, craftingData);
+    }
+
+    public void removeMatrix(@Nullable Player player, @Nullable Inventory inventory, int totalAmount, CraftingData craftingData) {
         craftingData.getIndexedBySlot().forEach((slot, data) -> {
             var item = data.customItem();
             if (item != null) {
-                item.remove(data.itemStack(), totalAmount, inventory, null, data.ingredient().isReplaceWithRemains());
+                item.remove(data.itemStack(), totalAmount, inventory, player, player != null ? player.getLocation() : null, data.ingredient().isReplaceWithRemains());
             }
         });
     }
