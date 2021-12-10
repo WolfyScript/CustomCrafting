@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting;
 
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;

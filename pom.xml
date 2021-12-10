@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.wolfyscript.wolfyutilities</groupId>
             <artifactId>wolfyutilities</artifactId>
-            <version>1.8.0.0</version>
+            <version>1.8-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!--
