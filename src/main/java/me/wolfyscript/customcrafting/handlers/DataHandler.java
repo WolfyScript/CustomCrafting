@@ -27,10 +27,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.events.DependenciesLoadedEvent;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Recipe;
 
 import java.io.File;
@@ -39,7 +42,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DataHandler {
+public class DataHandler implements Listener {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
@@ -55,6 +58,7 @@ public class DataHandler {
     private SaveDestination saveDestination = SaveDestination.LOCAL;
 
     public DataHandler(CustomCrafting customCrafting) {
+        Bukkit.getPluginManager().registerEvents(this, customCrafting);
         this.api = WolfyUtilities.get(customCrafting);
         this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
@@ -108,6 +112,13 @@ public class DataHandler {
 
     public void setSaveDestination(SaveDestination saveDestination) {
         this.saveDestination = saveDestination;
+    }
+
+    @EventHandler
+    private void dependenciesLoaded(DependenciesLoadedEvent event) {
+        customCrafting.writeSeparator();
+        loadRecipesAndItems();
+        customCrafting.writeSeparator();
     }
 
     public void load() {
