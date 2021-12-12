@@ -110,11 +110,6 @@
             <version>2.2.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>dev.lone</groupId>
-            <artifactId>itemsadder</artifactId>
-            <version>2.1.5</version>
-        </dependency>
     </dependencies>
 
     <pluginRepositories>
