@@ -225,10 +225,6 @@ public class CustomCrafting extends JavaPlugin {
             api.getConsole().info("$msg.startup.placeholder$");
             new PlaceHolder(this).register();
         }
-        //This makes sure that the customItems and recipes are loaded after ItemsAdder, so that all items are loaded correctly!
-        if (!WolfyUtilities.hasPlugin("ItemsAdder")) {
-            dataHandler.loadRecipesAndItems();
-        }
         updateChecker.run(null);
 
         //Load Metrics
@@ -294,11 +290,6 @@ public class CustomCrafting extends JavaPlugin {
         pM.registerEvents(new BrewingStandListener(api, this), this);
         pM.registerEvents(new RecipeBookListener(), this);
         pM.registerEvents(new SmithingListener(this), this);
-
-        if (WolfyUtilities.hasPlugin("ItemsAdder")) {
-            getLogger().info("Detected ItemsAdder! CustomItems and Recipes will be loaded after ItemsAdder is successfully loaded!");
-            pM.registerEvents(new ItemsAdderListener(this), this);
-        }
     }
 
     private void registerCommands() {
