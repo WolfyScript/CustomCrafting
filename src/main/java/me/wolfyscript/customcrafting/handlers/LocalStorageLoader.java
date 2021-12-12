@@ -39,6 +39,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LocalStorageLoader extends ResourceLoader {
 
@@ -142,7 +143,7 @@ public class LocalStorageLoader extends ResourceLoader {
         var data = new File(DATA_FOLDER, subFolder + File.separator + type);
         if (!data.exists()) return new ArrayList<>();
         File[] files = data.listFiles(file -> file.isFile() && file.getName().endsWith(".json"));
-        return files != null ? Arrays.stream(files).toList() : new ArrayList<>();
+        return files != null ? Arrays.stream(files).collect(Collectors.toList()) : new ArrayList<>();
     }
 
     private void loadItems(String subFolder) {
@@ -160,8 +161,24 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private void loadAndRegisterRecipe(RecipeLoader<?> loader, String namespace) {
-        String id = loader instanceof RecipeType.Container<?> container && container.hasLegacy() ? container.getLegacyID() : loader.getId();
-        for (File file : getFiles(namespace, id)) {
+        if (loader instanceof RecipeType.Container<?> container && container.hasLegacy()) {
+            //Loading legacy recipes
+            String legacyId = container.getLegacyID();
+            List<File> legacyFiles = getFiles(namespace, legacyId);
+            if (!legacyFiles.isEmpty()) { //If there are no legacy recipes we can skip it.
+                for (RecipeType<?> type : container.getTypes()) {
+                    List<File> latestFiles = getFiles(namespace, type.getId());
+                    legacyFiles.removeIf(legacyFile -> latestFiles.stream().anyMatch(file -> file.getName().equals(legacyFile.getName()))); //Remove the files that are present in new recipe folders
+                }
+                loadRecipesFiles(loader, legacyFiles, namespace);
+            }
+            return;
+        }
+        loadRecipesFiles(loader, getFiles(namespace, loader.getId()), namespace);
+    }
+
+    private void loadRecipesFiles(RecipeLoader<?> loader, List<File> files, String namespace) {
+        for (File file : files) {
             var namespacedKey = new NamespacedKey(namespace, file.getName().replace(".json", ""));
             try {
                 CCRegistry.RECIPES.register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
