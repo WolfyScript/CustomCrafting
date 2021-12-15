@@ -191,7 +191,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                         loader = recipeLoader;
                     }
                     if (loader != null) {
-                        return RecipeType.valueOf(typeID).getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
+                        return loader.getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
                     }
                 } catch (JsonProcessingException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                     ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), typeID, e);
