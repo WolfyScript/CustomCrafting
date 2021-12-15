@@ -65,6 +65,7 @@ public class DataHandler implements Listener {
         initCategories();
 
         if (customCrafting.getConfigHandler().getConfig().isDatabaseEnabled()) {
+            setSaveDestination(SaveDestination.DATABASE);
             //Currently, there is only support for SQL. MongoDB is planned!
             this.databaseLoader = new SQLDatabaseLoader(customCrafting);
             this.databaseLoader.setPriority(2);
@@ -75,6 +76,7 @@ public class DataHandler implements Listener {
                 this.localStorageLoader = null;
             }
         } else {
+            setSaveDestination(SaveDestination.LOCAL);
             this.databaseLoader = null;
             this.localStorageLoader = new LocalStorageLoader(customCrafting);
         }
