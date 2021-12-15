@@ -22,27 +22,26 @@
 
 package me.wolfyscript.customcrafting;
 
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
-import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
-import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
+import me.wolfyscript.customcrafting.registry.RegistryItemCreatorTabs;
+import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.CraftManager;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Deprecated
 public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> extends Registry<T> {
 
     /**
@@ -55,89 +54,49 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
      * The custom Registry for the Recipes of CustomCrafting.
      * Providing a lot of functionality to get the recipes you need.
      */
-    class RecipeRegistry extends Registry.SimpleRegistry<CustomRecipe<?>> {
+    @Deprecated
+    class RecipeRegistry extends WrapperRegistry<CustomRecipe<?>> {
 
-        private final Map<String, List<CustomRecipe<?>>> BY_NAMESPACE = new HashMap<>();
-        private final Map<String, List<CustomRecipe<?>>> BY_GROUP = new HashMap<>();
-        private final Map<CustomItem, List<CustomRecipe<?>>> BY_RESULT = new HashMap<>();
-        private final Map<Class<?>, List<CustomRecipe<?>>> BY_CLASS_TYPE = new HashMap<>();
-        private final Map<RecipeType<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE = new HashMap<>();
-        private final Map<RecipeType.Container<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE_CONTAINER = new HashMap<>();
-        private final Set<String> NAMESPACES = new HashSet<>();
-        private final Set<String> GROUPS = new HashSet<>();
-
+        @Deprecated
         private RecipeRegistry() {
+            super(() -> CustomCrafting.inst().getRegistries().getRecipes());
+        }
+
+        @Override
+        protected RegistryRecipes getWrappedRegistry() {
+            return (RegistryRecipes) super.getWrappedRegistry();
         }
 
         public boolean has(NamespacedKey namespacedKey) {
-            return this.map.containsKey(namespacedKey);
+            return getWrappedRegistry().has(namespacedKey);
         }
 
         public void remove(NamespacedKey namespacedKey) {
-            if (get(namespacedKey) instanceof ICustomVanillaRecipe) {
-                removeBukkitRecipe(namespacedKey);
-            }
-            this.map.remove(namespacedKey);
-            clearCache(namespacedKey);
-        }
-
-        /**
-         * Clears the cache, so it can update with the added/removed value.<br>
-         * <br>
-         * This is needed as the cache needs to be updated with the possible new values.<br>
-         * Of course, you could check if the specific caches must be cleared, but that would be at the cost of register/remove performance.<br>
-         * (Most servers have a fixed set of recipes that they use and don't frequently change in production... well at least they shouldn't)
-         *
-         * @param key The key of the recipe that caused the reset.
-         */
-        private void clearCache(NamespacedKey key) {
-            BY_NAMESPACE.remove(key.getNamespace());
-            BY_GROUP.clear();
-            NAMESPACES.clear();
-            GROUPS.clear();
-            BY_RESULT.clear();
-            BY_CLASS_TYPE.clear();
-            BY_RECIPE_TYPE.clear();
-            BY_RECIPE_TYPE_CONTAINER.clear();
+            getWrappedRegistry().remove(namespacedKey);
         }
 
         @Override
         public void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
-            remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
-            super.register(namespacedKey, value);
-            if (value instanceof ICustomVanillaRecipe vanillaRecipe && !value.isDisabled()) {
-                try {
-                    Bukkit.addRecipe(vanillaRecipe.getVanillaRecipe());
-                } catch (IllegalArgumentException | IllegalStateException ex) {
-                    CustomCrafting.inst().getLogger().warning(String.format("Failed to add recipe '%s' to Bukkit: %s", namespacedKey, ex.getMessage()));
-                }
-            }
-            clearCache(namespacedKey);
+            getWrappedRegistry().register(namespacedKey, value);
         }
 
         @Override
         public void register(CustomRecipe<?> value) {
-            this.register(value.getNamespacedKey(), value);
+            getWrappedRegistry().register(value);
         }
 
         /**
          * @return A list of all available namespaces.
          */
         public List<String> namespaces() {
-            if(NAMESPACES.isEmpty()) {
-                NAMESPACES.addAll(keySet().stream().map(NamespacedKey::getNamespace).distinct().toList());
-            }
-            return new ArrayList<>(NAMESPACES);
+            return getWrappedRegistry().namespaces();
         }
 
         /**
          * @return A list of all available groups.
          */
         public List<String> groups() {
-            if (GROUPS.isEmpty()) {
-                GROUPS.addAll(values().stream().map(CustomRecipe::getGroup).filter(group -> !group.isEmpty()).distinct().toList());
-            }
-            return new ArrayList<>(GROUPS);
+            return getWrappedRegistry().groups();
         }
 
         /**
@@ -147,7 +106,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes contained in the group.
          */
         public List<CustomRecipe<?>> getGroup(String group) {
-            return BY_GROUP.computeIfAbsent(group, s -> values().stream().filter(r -> r.getGroup().equals(s)).collect(Collectors.toList()));
+            return getWrappedRegistry().getGroup(group);
         }
 
         /**
@@ -157,16 +116,16 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes contained in the namespace.
          */
         public List<CustomRecipe<?>> get(String namespace) {
-            return BY_NAMESPACE.computeIfAbsent(namespace, s -> entrySet().stream().filter(entry -> entry.getKey().getNamespace().equalsIgnoreCase(s)).map(Map.Entry::getValue).collect(Collectors.toList()));
+            return getWrappedRegistry().get(namespace);
         }
 
         public List<CustomRecipe<?>> get(CustomItem result) {
-            return BY_RESULT.computeIfAbsent(result, item -> values().stream().filter(recipe -> recipe.getResult().getChoices().contains(item)).collect(Collectors.toList()));
+            return getWrappedRegistry().get(result);
         }
 
         @SuppressWarnings("unchecked")
         public <T extends CustomRecipe<?>> List<T> get(Class<T> type) {
-            return (List<T>) BY_CLASS_TYPE.computeIfAbsent(type, aClass -> (List<CustomRecipe<?>>) values().stream().filter(aClass::isInstance).map(aClass::cast).collect(Collectors.toList()));
+            return getWrappedRegistry().get(type);
         }
 
         /**
@@ -176,7 +135,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          */
         @SuppressWarnings("unchecked")
         public <T extends CustomRecipe<?>> List<T> get(RecipeType<T> type) {
-            return (List<T>) BY_RECIPE_TYPE.computeIfAbsent(type, recipeType -> values().stream().filter(recipeType::isInstance).map(recipeType::cast).collect(Collectors.toList()));
+            return getWrappedRegistry().get(type);
         }
 
         /**
@@ -186,12 +145,11 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          */
         @SuppressWarnings("unchecked")
         public <T extends CustomRecipe<?>> List<T> get(RecipeType.Container<T> type) {
-            return (List<T>) BY_RECIPE_TYPE_CONTAINER.computeIfAbsent(type, container -> values().stream().filter(container::isInstance).map(container::cast).collect(Collectors.toList()));
+            return getWrappedRegistry().get(type);
         }
 
         public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
-            CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(recipeKey);
-            return RecipeType.Container.CRAFTING.isInstance(customRecipe) ? RecipeType.Container.CRAFTING.cast(customRecipe) : null;
+            return getWrappedRegistry().getAdvancedCrafting(recipeKey);
         }
 
         /**
@@ -201,7 +159,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes that are available and are not hidden or disabled.
          */
         public List<CustomRecipe<?>> getAvailable() {
-            return getAvailable(values().stream());
+            return getWrappedRegistry().getAvailable();
         }
 
         /**
@@ -212,7 +170,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return The recipes that are available and the player has permission to view.
          */
         public List<CustomRecipe<?>> getAvailable(Player player) {
-            return getAvailable(getAvailable(), player);
+            return getWrappedRegistry().getAvailable(player);
         }
 
         /**
@@ -223,7 +181,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list only including the {@link CustomRecipe}s of the specified {@link RecipeType}, which are enabled and visible.
          */
         public <T extends CustomRecipe<?>> List<T> getAvailable(RecipeType<T> type) {
-            return getAvailable(get(type.getRecipeClass()).stream());
+            return getWrappedRegistry().getAvailable(type);
         }
 
         /**
@@ -235,7 +193,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return A list only including the {@link CustomRecipe}s of the specified {@link RecipeType}, which are enabled, visible and the Player has permission to view.
          */
         public <T extends CustomRecipe<?>> List<T> getAvailable(RecipeType<T> type, Player player) {
-            return getAvailable(getAvailable(type), player);
+            return getWrappedRegistry().getAvailable(type, player);
         }
 
         /**
@@ -246,49 +204,29 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
          * @return All the recipes, that have the specified Result, are not hidden, and the player has permission to view.
          */
         public List<CustomRecipe<?>> getAvailable(ItemStack result, Player player) {
-            return getAvailable(player).stream().filter(recipe -> recipe.findResultItem(result)).collect(Collectors.toList());
+            return getWrappedRegistry().getAvailable(result, player);
         }
 
         public synchronized <T extends CustomRecipe<?>> List<T> getAvailable(List<T> recipes, @Nullable Player player) {
-            return getAvailable(recipes.stream().filter(recipe -> recipe.checkCondition("permission", new Conditions.Data(player))));
-        }
-
-        /**
-         * Filters the Recipes stream from disabled or hidden recipes, and sorts the list according to the {@link me.wolfyscript.customcrafting.recipes.RecipePriority}!
-         *
-         * @param recipes The Stream of Recipes to filter.
-         * @param <T>     The type of the {@link CustomRecipe}
-         * @return A filtered {@link List} containing only visible and enabled recipes.
-         */
-        private <T extends CustomRecipe<?>> List<T> getAvailable(Stream<T> recipes) {
-            return recipes.filter(recipe -> !recipe.isHidden() && !recipe.isDisabled()).sorted(Comparator.comparing(CustomRecipe::getPriority)).collect(Collectors.toList());
+            return getWrappedRegistry().getAvailable(recipes, player);
         }
 
         public Stream<CraftingRecipe<?, ?>> getSimilarCraftingRecipes(CraftManager.MatrixData matrixData, boolean elite, boolean advanced) {
-            List<CraftingRecipe<?, ?>> craftingRecipes = new ArrayList<>();
-            if (elite) {
-                craftingRecipes.addAll(get(RecipeType.Container.ELITE_CRAFTING));
-            }
-            if (advanced) {
-                craftingRecipes.addAll(get(RecipeType.Container.CRAFTING));
-            }
-            return craftingRecipes.stream().filter(recipe -> recipe.fitsDimensions(matrixData)).sorted(Comparator.comparing(CustomRecipe::getPriority));
+            return getWrappedRegistry().getSimilarCraftingRecipes(matrixData, elite, advanced);
         }
 
         public int size() {
-            return this.map.size();
+            return getWrappedRegistry().size();
         }
 
-        private void removeBukkitRecipe(NamespacedKey namespacedKey) {
-            Bukkit.removeRecipe(namespacedKey.toBukkit(CustomCrafting.inst()));
-        }
     }
 
-    class ItemCreatorTabRegistry extends SimpleRegistry<ItemCreatorTab> {
+    @Deprecated
+    class ItemCreatorTabRegistry extends WrapperRegistry<ItemCreatorTab> {
 
-        @Override
-        public void register(NamespacedKey namespacedKey, ItemCreatorTab value) {
-            super.register(namespacedKey, value);
+        public ItemCreatorTabRegistry() {
+            super(() -> CustomCrafting.inst().getRegistries().getItemCreatorTabs());
         }
+
     }
 }

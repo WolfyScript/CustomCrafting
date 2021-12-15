@@ -51,6 +51,7 @@ import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.items.extension.*;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.customcrafting.recipes.items.target.adapters.*;
+import me.wolfyscript.customcrafting.registry.CCRegistries;
 import me.wolfyscript.customcrafting.utils.*;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
@@ -59,7 +60,6 @@ import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
-import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.WUVersion;
@@ -102,6 +102,7 @@ public class CustomCrafting extends JavaPlugin {
     //The main WolfyUtilities instance
     private final WolfyUtilities api;
     private final Chat chat;
+    private final CCRegistries registries;
 
     //Recipe Managers / API
     private final CraftManager craftManager;
@@ -128,6 +129,9 @@ public class CustomCrafting extends JavaPlugin {
         this.otherPlugins = new OtherPlugins(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilities.get(this, false);
+
+        this.registries = new CCRegistries(this, api.getCore());
+
         this.chat = api.getChat();
         this.chat.setInGamePrefix("§7[§3CC§7] ");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
@@ -158,42 +162,46 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("Environment: " + WolfyUtilities.getENVIRONMENT());
 
         getLogger().info("Registering custom data");
-        Registry.CUSTOM_ITEM_DATA.register(new EliteWorkbenchData.Provider());
-        Registry.CUSTOM_ITEM_DATA.register(new RecipeBookData.Provider());
-        Registry.CUSTOM_ITEM_DATA.register(new CauldronData.Provider());
+        var customItemData = api.getRegistries().getCustomItemData();
+        customItemData.register(new EliteWorkbenchData.Provider());
+        customItemData.register(new RecipeBookData.Provider());
+        customItemData.register(new CauldronData.Provider());
 
         getLogger().info("Registering Result Extensions");
-        CCClassRegistry.RESULT_EXTENSIONS.register(new CommandResultExtension());
-        CCClassRegistry.RESULT_EXTENSIONS.register(new MythicMobResultExtension());
-        CCClassRegistry.RESULT_EXTENSIONS.register(new SoundResultExtension());
-        CCClassRegistry.RESULT_EXTENSIONS.register(new ResultExtensionAdvancement());
+        var resultExtensions = getRegistries().getRecipeResultExtensions();
+        resultExtensions.register(new CommandResultExtension());
+        resultExtensions.register(new MythicMobResultExtension());
+        resultExtensions.register(new SoundResultExtension());
+        resultExtensions.register(new ResultExtensionAdvancement());
 
         CustomPlayerData.register(new CCPlayerData.Provider());
 
         getLogger().info("Registering Result Merge Adapters");
-        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantMergeAdapter());
-        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new EnchantedBookMergeAdapter());
-        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DisplayNameMergeAdapter());
-        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new DamageMergeAdapter());
-        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new PlaceholderAPIMergeAdapter());
-        CCClassRegistry.RESULT_MERGE_ADAPTERS.register(new FireworkRocketMergeAdapter());
+        var resultMergeAdapters = getRegistries().getRecipeMergeAdapters();
+        resultMergeAdapters.register(new EnchantMergeAdapter());
+        resultMergeAdapters.register(new EnchantedBookMergeAdapter());
+        resultMergeAdapters.register(new DisplayNameMergeAdapter());
+        resultMergeAdapters.register(new DamageMergeAdapter());
+        resultMergeAdapters.register(new PlaceholderAPIMergeAdapter());
+        resultMergeAdapters.register(new FireworkRocketMergeAdapter());
 
         getLogger().info("Registering Recipe Conditions");
-        CCClassRegistry.RECIPE_CONDITIONS.register(AdvancedWorkbenchCondition.KEY, AdvancedWorkbenchCondition.class, new AdvancedWorkbenchCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(CraftDelayCondition.KEY, CraftDelayCondition.class, new CraftDelayCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(CraftLimitCondition.KEY, CraftLimitCondition.class, new CraftLimitCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(EliteWorkbenchCondition.KEY, EliteWorkbenchCondition.class, new EliteWorkbenchCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(ExperienceCondition.KEY, ExperienceCondition.class, new ExperienceCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(PermissionCondition.KEY, PermissionCondition.class, new PermissionCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(WeatherCondition.KEY, WeatherCondition.class, new WeatherCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(WorldBiomeCondition.KEY, WorldBiomeCondition.class, new WorldBiomeCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
-        CCClassRegistry.RECIPE_CONDITIONS.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
+        var recipeConditions = getRegistries().getRecipeConditions();
+        recipeConditions.register(AdvancedWorkbenchCondition.KEY, AdvancedWorkbenchCondition.class, new AdvancedWorkbenchCondition.GUIComponent());
+        recipeConditions.register(CraftDelayCondition.KEY, CraftDelayCondition.class, new CraftDelayCondition.GUIComponent());
+        recipeConditions.register(CraftLimitCondition.KEY, CraftLimitCondition.class, new CraftLimitCondition.GUIComponent());
+        recipeConditions.register(EliteWorkbenchCondition.KEY, EliteWorkbenchCondition.class, new EliteWorkbenchCondition.GUIComponent());
+        recipeConditions.register(ExperienceCondition.KEY, ExperienceCondition.class, new ExperienceCondition.GUIComponent());
+        recipeConditions.register(PermissionCondition.KEY, PermissionCondition.class, new PermissionCondition.GUIComponent());
+        recipeConditions.register(WeatherCondition.KEY, WeatherCondition.class, new WeatherCondition.GUIComponent());
+        recipeConditions.register(WorldBiomeCondition.KEY, WorldBiomeCondition.class, new WorldBiomeCondition.GUIComponent());
+        recipeConditions.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
+        recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
+        recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
 
-        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, CCClassRegistry.RESULT_EXTENSIONS);
-        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, CCClassRegistry.RESULT_MERGE_ADAPTERS);
-        KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, CCClassRegistry.RECIPE_CONDITIONS);
+        KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, resultExtensions);
+        KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
+        KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, recipeConditions);
     }
 
     @Override
@@ -305,31 +313,33 @@ public class CustomCrafting extends JavaPlugin {
     }
 
     private void registerInventories() {
-        InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
         api.getConsole().info("$msg.startup.inventories$");
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabArmorSlots());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabAttributes());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabConsume());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabCustomDurability());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabCustomModelData());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabDamage());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabDisplayName());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabEliteCraftingTable());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabEnchants());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabFlags());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabFuel());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabLocalizedName());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabLore());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabParticleEffects());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabPermission());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabPlayerHead());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabPotion());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabRarity());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabRecipeBook());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabRepairCost());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabVanilla());
-        CCRegistry.ITEM_CREATOR_TABS.register(new TabUnbreakable());
-
+        InventoryAPI<CCCache> invAPI = this.api.getInventoryAPI(CCCache.class);
+        var registry = getRegistries().getItemCreatorTabs();
+        //Register tabs for the item creator
+        registry.register(new TabArmorSlots());
+        registry.register(new TabAttributes());
+        registry.register(new TabConsume());
+        registry.register(new TabCustomDurability());
+        registry.register(new TabCustomModelData());
+        registry.register(new TabDamage());
+        registry.register(new TabDisplayName());
+        registry.register(new TabEliteCraftingTable());
+        registry.register(new TabEnchants());
+        registry.register(new TabFlags());
+        registry.register(new TabFuel());
+        registry.register(new TabLocalizedName());
+        registry.register(new TabLore());
+        registry.register(new TabParticleEffects());
+        registry.register(new TabPermission());
+        registry.register(new TabPlayerHead());
+        registry.register(new TabPotion());
+        registry.register(new TabRarity());
+        registry.register(new TabRecipeBook());
+        registry.register(new TabRepairCost());
+        registry.register(new TabVanilla());
+        registry.register(new TabUnbreakable());
+        //Register the GUIs
         invAPI.registerCluster(new ClusterMain(invAPI, this));
         invAPI.registerCluster(new ClusterRecipeCreator(invAPI, this));
         invAPI.registerCluster(new ClusterRecipeBook(invAPI, this));
@@ -389,5 +399,9 @@ public class CustomCrafting extends JavaPlugin {
 
     public DisableRecipesHandler getDisableRecipesHandler() {
         return disableRecipesHandler;
+    }
+
+    public CCRegistries getRegistries() {
+        return registries;
     }
 }

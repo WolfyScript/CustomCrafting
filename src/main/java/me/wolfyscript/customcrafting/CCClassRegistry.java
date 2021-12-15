@@ -26,13 +26,16 @@ import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.util.ClassRegistry;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+@Deprecated
 public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
 
     RecipeConditionsRegistry RECIPE_CONDITIONS = new RecipeConditionsRegistry();
