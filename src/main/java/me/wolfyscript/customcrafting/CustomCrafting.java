@@ -55,6 +55,7 @@ import me.wolfyscript.customcrafting.registry.CCRegistries;
 import me.wolfyscript.customcrafting.utils.*;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
@@ -128,7 +129,7 @@ public class CustomCrafting extends JavaPlugin {
         this.version = WUVersion.parse(currentVersion.split("-")[0]);
         this.otherPlugins = new OtherPlugins(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
-        api = WolfyUtilities.get(this, false);
+        api = WolfyUtilCore.getInstance().getAPI(this, false);
 
         this.registries = new CCRegistries(this, api.getCore());
 
