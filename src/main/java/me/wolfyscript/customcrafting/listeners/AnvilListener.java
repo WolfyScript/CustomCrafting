@@ -217,7 +217,7 @@ public class AnvilListener implements Listener {
                         var location = inventory.getLocation();
                         location.getWorld().playEffect(location, Effect.ANVIL_USE, 0);
                     }
-
+                    player.setLevel(player.getLevel() - inventory.getRepairCost());
                     event.setCurrentItem(null);
                     player.updateInventory();
 
