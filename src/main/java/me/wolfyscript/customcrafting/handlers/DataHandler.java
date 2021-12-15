@@ -79,12 +79,13 @@ public class DataHandler implements Listener {
             this.localStorageLoader = new LocalStorageLoader(customCrafting);
         }
         this.extensionPackLoader = null; //No extension pack implementation yet. TODO
-
         initLoaders();
     }
 
     private void initLoaders() {
-        loaders.add(localStorageLoader);
+        if(localStorageLoader != null) {
+            loaders.add(localStorageLoader);
+        }
         if (databaseLoader != null) {
             loaders.add(databaseLoader);
         }
