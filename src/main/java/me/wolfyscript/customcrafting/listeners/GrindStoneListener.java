@@ -209,7 +209,7 @@ public class GrindStoneListener implements Listener {
                 event.getWhoClicked().setItemOnCursor(calculatedCursor);
             }
             if (foundRecipe == null) {
-                if (ItemUtils.isAirOrNull(cursor) || allowedInGrindstone(cursor.getType())) {
+                if (ItemUtils.isAirOrNull(cursor) || ItemUtils.isAllowedInGrindStone(cursor.getType())) {
                     event.setCancelled(false);
                 }
                 return; //Returns and uses Vanilla recipe instead
@@ -276,23 +276,6 @@ public class GrindStoneListener implements Listener {
             resultItem = result.getItem(player).orElse(new CustomItem(Material.AIR));
         }
         return new Pair<>(resultItem, new GrindstoneData(foundRecipe, result, validItem, finalInputTop, finalInputBottom));
-    }
-
-    private boolean isTool(Material material) {
-        String name = material.name();
-        return name.endsWith("AXE") || name.endsWith("HOE") || name.endsWith("SWORD") || name.endsWith("SHOVEL") || name.endsWith("PICKAXE");
-    }
-
-    private boolean allowedInGrindstone(Material material) {
-        if (isTool(material)) return true;
-        String name = material.name();
-        if (name.endsWith("BOOTS") || name.endsWith("HELMET") || name.endsWith("LEGGINGS") || name.endsWith("CHESTPLATE") || name.endsWith("_ON_A_STICK")) {
-            return true;
-        }
-        return switch (material) {
-            case BOW, ENCHANTED_BOOK, CROSSBOW, TRIDENT, SHIELD, ELYTRA, FISHING_ROD, SHEARS, FLINT_AND_STEEL -> true;
-            default -> false;
-        };
     }
 
 }
