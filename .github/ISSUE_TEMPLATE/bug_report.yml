@@ -9,6 +9,7 @@ body:
       value: |
         Thanks for taking the time to fill out this bug report!  
         Before reporting make sure there isn't a similar open issue and that you read the Wiki, especially the FAQ.
+        If you think you have a bug, but are not sure, feel free to ask in the `#support` channel on [Discord](https://discord.gg/qGhDTSr)
   - type: textarea
     id: the-bug
     attributes:
@@ -64,6 +65,3 @@ body:
           required: true
         - label: "are running the latest version of your server software (Spigot, Paper, etc.), and plugins (WolfyUtilities, CustomCrafting)."
           required: true
-  - type: markdown
-    attributes:
-      value: "If you think you have a bug, but are not sure, feel free to ask in the `#support` channel on [Discord](https://discord.gg/qGhDTSr)"

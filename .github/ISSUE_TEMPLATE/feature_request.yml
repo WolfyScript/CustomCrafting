@@ -6,62 +6,36 @@ assignees:
 body:
   - type: markdown
     attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!  
-        Before reporting make sure there isn't a similar open issue and that you read the Wiki, especially the FAQ.
+      value: | 
+      Thank you for filling out a feature request for CustomCrafting!  
+      Please describe everything as detailed as possible, so it is easier to understand.  
+      Before submitting the issue please make sure, that you searched for and ensured there isn't a duplicate issue.  
+      Additionally, please make sure that you are using the latest plugin version and the feature isn't already implemented!
+      If you think you have a good feature request, but are not sure if you should post it, feel free to ask in the `#support` channel on [Discord](https://discord.gg/qGhDTSr)
   - type: textarea
-    id: the-bug
     attributes:
       label: The Problem
       description: Is your feature request related to a problem? Please describe.
     validations:
       required: true
   - type: textarea
-    id: reproduce
     attributes:
       label: Solution
       description: Describe the solution you would like.
     validations:
       required: true
   - type: textarea
-    id: expected-behaviour
     attributes:
       label: Alternatives
       description: Describe alternatives you've considered.
     validations:
       required: true
-  - type: input
-    attributes:
-      label: Plugin version
-      description: What version of CustomCrafting and WolfyUtilities do you use? **latest is not a version!**
-      placeholder: "e.g. CustomCrafting 1.7.1.3, WolfyUtilities v1.8.0.0"
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: Server software
-      description: What server software do you use? (Spigot, Paper, etc.) and on which version of Minecraft?
-      placeholder: "e.g. Spigot 1.17.1"
-    validations:
-      required: true
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
   - type: checkboxes
-    id: submit
     attributes:
       label: Submit issue
       description: "By submitting this issue you made sure that you,"
       options:
-        - label: "read the Wiki and especially the FaQ, and made sure there is no fix to your issue,"
-          required: true
         - label: "searched for and ensured there isn't already an open issue regarding this,"
           required: true
         - label: "are running the latest version of your server software (Spigot, Paper, etc.), and plugins (WolfyUtilities, CustomCrafting)."
           required: true
-  - type: markdown
-    attributes:
-      value: "If you think you have a bug, but are not sure, feel free to ask in the `#support` channel on [Discord](https://discord.gg/qGhDTSr)"
