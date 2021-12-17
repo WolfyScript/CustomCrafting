@@ -22,8 +22,7 @@ body:
     id: reproduce
     attributes:
       label: How can the bug be reproduced?
-      description: This may include a video, or detailed instructions to help reconstruct the issue.
-      value: ""
+      description: How do you trigger this bug? Please walk us through it step by step. | This may include a video, or detailed instructions to help reconstruct the issue.
     validations:
       required: true
   - type: textarea
@@ -31,19 +30,21 @@ body:
     attributes:
       label: Expected Behaviour?
       description: What is the expected behaviour?
-      value: ""
     validations:
       required: true
-  - type: dropdown
+  - type: input
     id: mc-version
     attributes:
       label: Minecraft Version
       description: What version of Minecraft are you running?
-      options:
-        - 1.18
-        - 1.17.1
-        - 1.17
-        - 1.16.5
+      placeholder: "1.18"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: CustomCrafting and WolfyUtilities version.
+      description: What version of CustomCrafting and WolfyUtilities do you use? **latest is not a version!**
+      placeholder: "CustomCrafting 1.7.1.3; WolfyUtilities v1.8.0.0"
     validations:
       required: true
   - type: textarea
@@ -52,3 +53,22 @@ body:
       label: Relevant log output
       description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
       render: shell
+  - type: checkboxes
+    id: submit
+    attributes:
+      label: Checklist TODO before you submit.
+      description: "By submitting this issue you made sure that you, "
+      options:
+        - label: "You read the Wiki and especially the FaQ, and made sure there is no fix to your issue."
+          required: true
+        - label: "You are running the latest version of your server software (Spigot, Paper, etc.)."
+          required: true
+        - label: "You are running the latest version of CustomCrafting and WolfyUtilities."
+          required: true
+        - label: "You searched for and ensured there isn't already an open issue regarding this."
+          required: true
+        - label: "Your Minecraft version is supported by CustomCrafting (1.16.x, 1.17.x, 1.18.x)"
+          required: true
+  - type: markdown
+    attributes:
+      value: "If you think you have a bug, but are not sure, feel free to ask in the `#support` channel on [Discord](https://discord.gg/qGhDTSr)"
