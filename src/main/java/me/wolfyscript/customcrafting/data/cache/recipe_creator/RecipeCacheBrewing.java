@@ -29,10 +29,7 @@ import org.bukkit.Color;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
 
@@ -48,7 +45,7 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
     private Color effectColor; //Alternative to colorChange
 
     //These options are more precise, and you can specify the exact effect you want to edit.
-    private List<PotionEffectType> effectRemovals = new ArrayList<>(); //These effects will be removed from the potions
+    private List<PotionEffectType> effectRemovals; //These effects will be removed from the potions
     private Map<PotionEffect, Boolean> effectAdditions; //These effects will be added with an option if they should be replaced if they are already present
     private Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the values of these PotionEffects will add to the existing effects and boolean values will be replaced.
     //Instead of all these options you can use a set result.
@@ -58,7 +55,18 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
 
     RecipeCacheBrewing() {
         super();
-
+        allowedItems = new Ingredient();
+        ingredients = new Ingredient();
+        fuelCost = 1;
+        brewTime = 80;
+        durationChange = 0;
+        amplifierChange = 0;
+        resetEffects = false;
+        effectColor = null;
+        effectRemovals = List.of();
+        effectAdditions = new HashMap<>();
+        effectUpgrades = new HashMap<>();
+        requiredEffects = new HashMap<>();
     }
 
     RecipeCacheBrewing(CustomRecipeBrewing recipe) {
