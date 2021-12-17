@@ -1,6 +1,6 @@
-name: Bug Report
-description: File a bug report.
-labels: ["bug", "triage"]
+name: Feature Request/Improvement
+description: Suggest a new feature or improvements to existing ones.
+labels: ["enhancement"]
 assignees:
   - WolfyScript
 body:
@@ -12,24 +12,22 @@ body:
   - type: textarea
     id: the-bug
     attributes:
-      label: What happened?
-      description: What kind of bug did you encounter? You can also inlcude screenshots to explain the issue.
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
+      label: The Problem
+      description: Is your feature request related to a problem? Please describe.
     validations:
       required: true
   - type: textarea
     id: reproduce
     attributes:
-      label: How can the bug be reproduced?
-      description: How do you trigger this bug? Please walk us through it step by step. This may include a video, or detailed instructions to help reconstruct the issue.
+      label: Solution
+      description: Describe the solution you would like.
     validations:
       required: true
   - type: textarea
     id: expected-behaviour
     attributes:
-      label: Expected Behaviour?
-      description: What is the expected behaviour?
+      label: Alternatives
+      description: Describe alternatives you've considered.
     validations:
       required: true
   - type: input
