@@ -7,11 +7,11 @@ body:
   - type: markdown
     attributes:
       value: | 
-      Thank you for filling out a feature request for CustomCrafting!  
-      Please describe everything as detailed as possible, so it is easier to understand.  
-      Before submitting the issue please make sure, that you searched for and ensured there isn't a duplicate issue.  
-      Additionally, please make sure that you are using the latest plugin version and the feature isn't already implemented!
-      If you think you have a good feature request, but are not sure if you should post it, feel free to ask in the `#support` channel on [Discord](https://discord.gg/qGhDTSr)
+        Thank you for filling out a feature request for CustomCrafting!  
+        Please describe everything as detailed as possible, so it is easier to understand.  
+        Before submitting the issue please make sure, that you searched for and ensured there isn't a duplicate issue.  
+        Additionally, please make sure that you are using the latest plugin version and the feature isn't already implemented!
+        If you think you have a good feature request, but are not sure if you should post it, feel free to ask in the `#support` channel on [Discord](https://discord.gg/qGhDTSr)
   - type: textarea
     attributes:
       label: The Problem
