@@ -46,6 +46,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
@@ -176,6 +177,12 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     public void setIngredient(Ingredient ingredient) {
         setIngredient(0, ingredient);
+    }
+
+    @Override
+    public void setResult(@NotNull Result result) {
+        Objects.requireNonNull(result, "Invalid result! Result must not be null!");
+        this.result = result;
     }
 
     public Ingredient getAllowedItems() {
