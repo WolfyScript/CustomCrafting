@@ -110,6 +110,7 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
     @Override
     protected CustomRecipeBrewing create(CustomRecipeBrewing recipe) {
         CustomRecipeBrewing brewing = super.create(recipe);
+        brewing.setIngredient(ingredients);
         brewing.setAllowedItems(allowedItems);
         brewing.setFuelCost(fuelCost);
         brewing.setBrewTime(brewTime);
