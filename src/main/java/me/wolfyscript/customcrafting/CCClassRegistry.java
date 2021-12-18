@@ -39,10 +39,14 @@ import java.util.Objects;
 public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
 
     RecipeConditionsRegistry RECIPE_CONDITIONS = new RecipeConditionsRegistry();
-    SimpleClassRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleClassRegistry<>();
-    SimpleClassRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleClassRegistry<>();
+    SimpleClassRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new WrapperClassRegistry<>(() -> CustomCrafting.inst().getRegistries().getRecipeMergeAdapters());
+    SimpleClassRegistry<ResultExtension> RESULT_EXTENSIONS = new WrapperClassRegistry<>(() -> CustomCrafting.inst().getRegistries().getRecipeResultExtensions());
 
-    class RecipeConditionsRegistry extends SimpleClassRegistry<Condition<?>> {
+    class RecipeConditionsRegistry extends WrapperClassRegistry<Condition<?>> {
+
+        public RecipeConditionsRegistry() {
+            super(() -> CustomCrafting.inst().getRegistries().getRecipeConditions());
+        }
 
         /**
          * Registers the {@link Condition} and it's optional {@link Condition.AbstractGUIComponent} for the GUI settings.
