@@ -59,7 +59,7 @@ public class DataHandler implements Listener {
 
     public DataHandler(CustomCrafting customCrafting) {
         Bukkit.getPluginManager().registerEvents(this, customCrafting);
-        this.api = WolfyUtilities.get(customCrafting);
+        this.api = customCrafting.getApi();
         this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
         initCategories();
