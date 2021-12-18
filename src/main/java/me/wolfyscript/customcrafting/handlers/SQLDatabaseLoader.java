@@ -142,7 +142,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String data = resultSet.getString("rData");
                 if (namespace != null && key != null && data != null && !data.equals("{}")) {
                     try {
-                        Registry.CUSTOM_ITEMS.register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                        api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                     } catch (JsonProcessingException e) {
                         api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                     }

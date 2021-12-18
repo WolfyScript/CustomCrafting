@@ -119,7 +119,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                                         menu.sendMessage(player, "already_existing");
                                         return true;
                                     }
-                                    var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
+                                    var customItem = api.getRegistries().getCustomItems().get(namespacedKey);
                                     if (customItem == null) {
                                         menu.sendMessage(player, "error");
                                         return true;
@@ -136,7 +136,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             menu.sendMessage(player, "no_name");
                             return true;
                         }, (guiHandler, player, args) -> {
-                            Set<NamespacedKey> entries = Registry.CUSTOM_ITEMS.entrySet().stream().filter(entry -> {
+                            Set<NamespacedKey> entries = api.getRegistries().getCustomItems().entrySet().stream().filter(entry -> {
                                 EliteWorkbenchData data = (EliteWorkbenchData) entry.getValue().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
                                 return data != null && data.isEnabled();
                             }).map(entry -> NamespacedKeyUtils.toInternal(entry.getKey())).collect(Collectors.toSet());

@@ -64,7 +64,6 @@ public class GiveSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        WolfyUtilities api = customCrafting.getApi();
         if(ChatUtils.checkPerm(sender, "customcrafting.cmd.give")) {
             if (args.length >= 2) {
 
@@ -109,7 +108,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                 //------------------------------------------------------------
 
                 if (namespacedKey != null) {
-                    var customItem = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.fromInternal(namespacedKey));
+                    var customItem = api.getRegistries().getCustomItems().get(NamespacedKeyUtils.fromInternal(namespacedKey));
                     if (customItem != null) {
                         Pair<String, String> playerValue = new Pair<>("%PLAYER%", target.getDisplayName());
                         var itemStack = customItem.create(amount);
@@ -170,7 +169,7 @@ public class GiveSubCommand extends AbstractSubCommand {
                             }
                             yield players;
                         }
-                        case 2 -> Registry.CUSTOM_ITEMS.keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).toList(); //Item completion
+                        case 2 -> api.getRegistries().getCustomItems().keySet().stream().map(namespacedKey -> NamespacedKeyUtils.toInternal(namespacedKey).toString()).toList(); //Item completion
                         case 3 -> NUMBERS;
                         case 4 -> Arrays.asList("true", "false"); //Drop Items
                         default -> new ArrayList<String>();

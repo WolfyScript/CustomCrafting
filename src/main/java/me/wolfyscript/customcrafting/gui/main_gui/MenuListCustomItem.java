@@ -83,8 +83,9 @@ public class MenuListCustomItem extends CCWindow {
         int maxPages;
         int page;
         String namespace = items.getListNamespace();
+        var registry = api.getRegistries().getCustomItems();
         if (namespace == null) {
-            List<String> namespaceList = Registry.CUSTOM_ITEMS.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().filter(Objects::nonNull).sorted(String::compareToIgnoreCase).toList();
+            List<String> namespaceList = registry.keySet().parallelStream().filter(key -> key.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).map(NamespacedKeyUtils::getInternalNamespace).distinct().filter(Objects::nonNull).sorted(String::compareToIgnoreCase).toList();
             maxPages = namespaceList.size() / 45 + (namespaceList.size() % 45 > 0 ? 1 : 0);
             page = items.getListPage(maxPages);
 
@@ -96,7 +97,7 @@ public class MenuListCustomItem extends CCWindow {
                 update.setButton(item, btnID);
             }
         } else {
-            List<CustomItem> customItems = Registry.CUSTOM_ITEMS.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && namespace.equals(NamespacedKeyUtils.getInternalNamespace(entry.getKey()))).map(Map.Entry::getValue).toList();
+            List<CustomItem> customItems = registry.entrySet().parallelStream().filter(entry -> entry.getKey().getNamespace().equals(NamespacedKeyUtils.NAMESPACE) && namespace.equals(NamespacedKeyUtils.getInternalNamespace(entry.getKey()))).map(Map.Entry::getValue).toList();
             maxPages = customItems.size() / 45 + (customItems.size() % 45 > 0 ? 1 : 0);
             page = items.getListPage(maxPages);
 

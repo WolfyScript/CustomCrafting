@@ -26,6 +26,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
 import me.wolfyscript.customcrafting.utils.cooking.FurnaceListener1_17Adapter;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
+import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -47,11 +48,13 @@ import java.util.Optional;
 public class FurnaceListener implements Listener {
 
     protected final CustomCrafting customCrafting;
+    protected final WolfyUtilities api;
     protected final CookingManager manager;
 
     public FurnaceListener(CustomCrafting customCrafting, CookingManager manager) {
         this.manager = manager;
         this.customCrafting = customCrafting;
+        this.api = customCrafting.getApi();
         if (ServerVersion.isAfterOrEq(MinecraftVersions.v1_17)) {
             Bukkit.getPluginManager().registerEvents(new FurnaceListener1_17Adapter(customCrafting, manager), customCrafting);
         }
@@ -61,7 +64,7 @@ public class FurnaceListener implements Listener {
     public void onInvClick(InventoryClickEvent event) {
         if (event.getClickedInventory() != null && event.getClickedInventory() instanceof FurnaceInventory && event.getSlotType().equals(InventoryType.SlotType.FUEL)) {
             if (event.getCursor() == null) return;
-            Optional<CustomItem> fuelItem = me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.values().stream().filter(customItem -> customItem.getFuelSettings().getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
+            Optional<CustomItem> fuelItem = api.getRegistries().getCustomItems().values().stream().filter(customItem -> customItem.getFuelSettings().getBurnTime() > 0 && customItem.isSimilar(event.getCursor())).findFirst();
             if (fuelItem.isPresent()) {
                 var location = event.getInventory().getLocation();
                 if (fuelItem.get().getFuelSettings().getAllowedBlocks().contains(location != null ? location.getBlock().getType() : Material.FURNACE)) {
@@ -76,7 +79,7 @@ public class FurnaceListener implements Listener {
     @EventHandler
     public void onBurn(FurnaceBurnEvent event) {
         ItemStack input = event.getFuel();
-        for (CustomItem customItem : me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.values()) {
+        for (CustomItem customItem : api.getRegistries().getCustomItems().values()) {
             var fuelSettings = customItem.getFuelSettings();
             if (fuelSettings.getBurnTime() > 0 && customItem.isSimilar(input) && fuelSettings.getAllowedBlocks().contains(event.getBlock().getType())) {
                 event.setCancelled(false);

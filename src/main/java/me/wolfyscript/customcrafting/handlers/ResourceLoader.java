@@ -27,6 +27,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +49,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
 
     protected ResourceLoader(CustomCrafting customCrafting, NamespacedKey key) {
         this.key = key;
-        this.api = WolfyUtilities.get(customCrafting);
+        this.api = customCrafting.getApi();
         this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
         this.objectMapper = JacksonUtil.getObjectMapper();
@@ -67,8 +68,8 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     }
 
     public void save() {
-        me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.entrySet().forEach(entry -> ItemLoader.saveItem(this, entry.getKey(), entry.getValue()));
-        CCRegistry.RECIPES.values().forEach(recipe -> recipe.save(this, null));
+        api.getRegistries().getCustomItems().entrySet().forEach(entry -> ItemLoader.saveItem(this, entry.getKey(), entry.getValue()));
+        customCrafting.getRegistries().getRecipes().values().forEach(recipe -> recipe.save(this, null));
     }
 
     public abstract boolean save(CustomRecipe<?> recipe);

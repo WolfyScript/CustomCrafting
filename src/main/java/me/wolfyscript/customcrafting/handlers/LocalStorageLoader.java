@@ -151,7 +151,7 @@ public class LocalStorageLoader extends ResourceLoader {
             String name = file.getName();
             var namespacedKey = new NamespacedKey(customCrafting, subFolder + "/" + name.substring(0, name.lastIndexOf(".")));
             try {
-                me.wolfyscript.utilities.util.Registry.CUSTOM_ITEMS.register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
+                customCrafting.getApi().getRegistries().getCustomItems().register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
             } catch (IOException e) {
                 customCrafting.getLogger().severe(String.format("Could not load item '%s':", namespacedKey));
                 e.printStackTrace();
@@ -181,7 +181,7 @@ public class LocalStorageLoader extends ResourceLoader {
         for (File file : files) {
             var namespacedKey = new NamespacedKey(namespace, file.getName().replace(".json", ""));
             try {
-                CCRegistry.RECIPES.register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
+                customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), loader.getId(), e);
             }

@@ -108,7 +108,7 @@ public class MenuItemCreator extends CCWindow {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
-                List<String[]> namespacedKeys = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
+                List<String[]> namespacedKeys = api.getRegistries().getCustomItems().get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
                 List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).toList();
                 List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).toList();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
@@ -135,7 +135,7 @@ public class MenuItemCreator extends CCWindow {
                 var customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
                     ItemLoader.saveItem(items.getNamespacedKey(), customItem);
-                    customItem = Registry.CUSTOM_ITEMS.get(items.getNamespacedKey());
+                    customItem = api.getRegistries().getCustomItems().get(items.getNamespacedKey());
                 }
                 cache.applyItem(customItem);
                 guiHandler.openCluster("recipe_creator");

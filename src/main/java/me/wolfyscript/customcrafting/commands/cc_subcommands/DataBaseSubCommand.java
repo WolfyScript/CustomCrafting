@@ -50,7 +50,6 @@ public class DataBaseSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         if (sender instanceof Player p) {
-            WolfyUtilities api = customCrafting.getApi();
             var chat = api.getChat();
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
                 if (customCrafting.getDataHandler().getDatabaseLoader() != null) {
@@ -63,7 +62,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                             chat.sendMessage(p, "Exporting recipes to Database...");
                             new Thread(() -> {
                                 var dataBaseHandler = customCrafting.getDataHandler().getDatabaseLoader();
-                                CCRegistry.RECIPES.values().forEach(dataBaseHandler::save);
+                                customCrafting.getRegistries().getRecipes().values().forEach(dataBaseHandler::save);
                                 api.getConsole().fine("Successfully exported recipes to database");
                             }).start();
                         }
@@ -71,7 +70,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
                             chat.sendMessage(p, "Exporting custom items to Database...");
                             new Thread(() -> {
                                 var dataBaseHandler = customCrafting.getDataHandler().getDatabaseLoader();
-                                Registry.CUSTOM_ITEMS.forEach(dataBaseHandler::save);
+                                api.getRegistries().getCustomItems().forEach(dataBaseHandler::save);
                                 api.getConsole().fine("Successfully exported custom items to database");
                             }).start();
                         }

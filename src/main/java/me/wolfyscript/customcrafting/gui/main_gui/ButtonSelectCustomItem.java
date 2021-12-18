@@ -52,11 +52,12 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
 
     ButtonSelectCustomItem(CustomCrafting customCrafting, NamespacedKey namespacedKey) {
         super("item_" + namespacedKey.toString("__"), new ButtonState<>("custom_item_error", Material.STONE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            if (!Registry.CUSTOM_ITEMS.has(namespacedKey) || ItemUtils.isAirOrNull(Registry.CUSTOM_ITEMS.get(namespacedKey))) {
+            var registry = guiHandler.getApi().getRegistries().getCustomItems();
+            if (!registry.has(namespacedKey) || ItemUtils.isAirOrNull(registry.get(namespacedKey))) {
                 return true;
             }
             WolfyUtilities api = customCrafting.getApi();
-            var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
+            var customItem = registry.get(namespacedKey);
             if (event instanceof InventoryClickEvent clickEvent) {
                 if (clickEvent.isRightClick()) {
                     if (clickEvent.isShiftClick()) {
@@ -96,7 +97,7 @@ class ButtonSelectCustomItem extends ActionButton<CCCache> {
             }
             return true;
         }, (hashMap, cache, guiHandler, player, inventory, itemStack, slot, help) -> {
-            var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
+            var customItem = guiHandler.getApi().getRegistries().getCustomItems().get(namespacedKey);
             if (!ItemUtils.isAirOrNull(customItem)) {
                 var itemB = new ItemBuilder(customItem.create());
                 itemB.addLoreLine("");
