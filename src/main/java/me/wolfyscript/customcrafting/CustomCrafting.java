@@ -234,6 +234,9 @@ public class CustomCrafting extends JavaPlugin {
             api.getConsole().info("$msg.startup.placeholder$");
             new PlaceHolder(this).register();
         }
+        if (api.getCore().getCompatibilityManager().getPlugins().isDoneLoading()) {
+            dataHandler.loadRecipesAndItems();
+        }
         updateChecker.run(null);
 
         //Load Metrics
