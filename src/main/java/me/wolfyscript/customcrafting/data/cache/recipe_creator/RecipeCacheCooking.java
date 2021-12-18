@@ -33,6 +33,9 @@ public abstract class RecipeCacheCooking<R extends CustomRecipeCooking<R, ?>> ex
 
     protected RecipeCacheCooking() {
         super();
+        this.source = new Ingredient();
+        this.exp = 0;
+        this.cookingTime = 80;
     }
 
     protected RecipeCacheCooking(R recipe) {

@@ -54,7 +54,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.cookingTime = recipe.getCookingTime();
         this.waterLevel = recipe.getWaterLevel();
         this.xp = recipe.getXp();
-        this.handItem = recipe.getHandItem().clone();
+        this.handItem = recipe.getHandItem() != null ? recipe.getHandItem().clone() : null;
         this.ingredients = recipe.getIngredient().clone();
         this.dropItems = recipe.dropItems();
         this.needsFire = recipe.needsFire();

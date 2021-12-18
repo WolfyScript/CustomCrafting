@@ -48,6 +48,9 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
         super();
         this.shapeless = false;
         this.ingredients = new HashMap<>();
+        this.mirrorHorizontal = false;
+        this.mirrorVertical = false;
+        this.mirrorRotation = false;
     }
 
     protected RecipeCacheCraftingAbstract(CraftingRecipe<?, S> recipe) {

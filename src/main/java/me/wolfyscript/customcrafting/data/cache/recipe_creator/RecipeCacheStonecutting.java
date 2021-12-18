@@ -31,6 +31,7 @@ public class RecipeCacheStonecutting extends RecipeCache<CustomRecipeStonecutter
 
     RecipeCacheStonecutting() {
         super();
+        this.source = new Ingredient();
     }
 
     RecipeCacheStonecutting(CustomRecipeStonecutter recipe) {
