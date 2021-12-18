@@ -26,20 +26,27 @@ import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.util.ClassRegistry;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+@Deprecated
 public interface CCClassRegistry<T extends Keyed> extends ClassRegistry<T> {
 
     RecipeConditionsRegistry RECIPE_CONDITIONS = new RecipeConditionsRegistry();
-    SimpleClassRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new SimpleClassRegistry<>();
-    SimpleClassRegistry<ResultExtension> RESULT_EXTENSIONS = new SimpleClassRegistry<>();
+    SimpleClassRegistry<MergeAdapter> RESULT_MERGE_ADAPTERS = new WrapperClassRegistry<>(() -> CustomCrafting.inst().getRegistries().getRecipeMergeAdapters());
+    SimpleClassRegistry<ResultExtension> RESULT_EXTENSIONS = new WrapperClassRegistry<>(() -> CustomCrafting.inst().getRegistries().getRecipeResultExtensions());
 
-    class RecipeConditionsRegistry extends SimpleClassRegistry<Condition<?>> {
+    class RecipeConditionsRegistry extends WrapperClassRegistry<Condition<?>> {
+
+        public RecipeConditionsRegistry() {
+            super(() -> CustomCrafting.inst().getRegistries().getRecipeConditions());
+        }
 
         /**
          * Registers the {@link Condition} and it's optional {@link Condition.AbstractGUIComponent} for the GUI settings.

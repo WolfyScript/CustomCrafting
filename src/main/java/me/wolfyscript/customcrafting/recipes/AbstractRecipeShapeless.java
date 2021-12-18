@@ -32,9 +32,9 @@ import me.wolfyscript.customcrafting.utils.CraftManager;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 

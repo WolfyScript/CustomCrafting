@@ -39,6 +39,14 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
 
     RecipeCacheCauldron() {
         super();
+        this.xp = 0;
+        this.cookingTime = 60;
+        this.waterLevel = 1;
+        this.needsWater = true;
+        this.needsFire = true;
+        this.dropItems = true;
+        this.handItem = null;
+        this.ingredients = new Ingredient();
     }
 
     RecipeCacheCauldron(CustomRecipeCauldron recipe) {
@@ -46,6 +54,11 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.cookingTime = recipe.getCookingTime();
         this.waterLevel = recipe.getWaterLevel();
         this.xp = recipe.getXp();
+        this.handItem = recipe.getHandItem() != null ? recipe.getHandItem().clone() : null;
+        this.ingredients = recipe.getIngredient().clone();
+        this.dropItems = recipe.dropItems();
+        this.needsFire = recipe.needsFire();
+        this.needsWater = recipe.needsWater();
     }
 
     @Override

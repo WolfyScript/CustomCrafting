@@ -48,6 +48,9 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
         super();
         this.shapeless = false;
         this.ingredients = new HashMap<>();
+        this.mirrorHorizontal = false;
+        this.mirrorVertical = false;
+        this.mirrorRotation = false;
     }
 
     protected RecipeCacheCraftingAbstract(CraftingRecipe<?, S> recipe) {
@@ -81,10 +84,12 @@ public abstract class RecipeCacheCraftingAbstract<S extends CraftingRecipeSettin
 
     @Override
     public void setIngredient(int slot, Ingredient ingredients) {
+        if(ingredients != null) {
+            ingredients.buildChoices();
+        }
         if (ingredients == null || ingredients.isEmpty()) {
             this.ingredients.remove(slot);
         } else {
-            ingredients.buildChoices();
             this.ingredients.put(slot, ingredients);
         }
     }

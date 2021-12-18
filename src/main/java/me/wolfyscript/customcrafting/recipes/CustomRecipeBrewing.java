@@ -34,9 +34,9 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import me.wolfyscript.utilities.util.chat.ChatColor;
@@ -46,6 +46,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
@@ -176,6 +177,12 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     public void setIngredient(Ingredient ingredient) {
         setIngredient(0, ingredient);
+    }
+
+    @Override
+    public void setResult(@NotNull Result result) {
+        Objects.requireNonNull(result, "Invalid result! Result must not be null!");
+        this.result = result;
     }
 
     public Ingredient getAllowedItems() {

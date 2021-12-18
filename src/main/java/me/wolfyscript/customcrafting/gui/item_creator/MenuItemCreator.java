@@ -36,9 +36,6 @@ import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.ItemsAdderRef;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.MythicMobsRef;
-import me.wolfyscript.utilities.api.inventory.custom_items.references.OraxenRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -47,6 +44,9 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
+import me.wolfyscript.utilities.compatibility.plugins.itemsadder.ItemsAdderRef;
+import me.wolfyscript.utilities.compatibility.plugins.mythicmobs.MythicMobsRef;
+import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
@@ -108,7 +108,7 @@ public class MenuItemCreator extends CCWindow {
             var items = cache.getItems();
             if (!items.getItem().getItemStack().getType().equals(Material.AIR)) {
                 sendMessage(player, "save.input.line1");
-                List<String[]> namespacedKeys = Registry.CUSTOM_ITEMS.get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
+                List<String[]> namespacedKeys = api.getRegistries().getCustomItems().get(NamespacedKeyUtils.NAMESPACE).stream().map(customItem -> customItem.getNamespacedKey().getKey().split("/")).toList();
                 List<String> namespaces = namespacedKeys.stream().filter(strings -> strings.length > 0).map(strings -> strings[0]).toList();
                 List<String> keys = namespacedKeys.stream().filter(strings -> strings.length > 1).map(strings -> strings[1]).toList();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
@@ -135,7 +135,7 @@ public class MenuItemCreator extends CCWindow {
                 var customItem = cache.getItems().getItem();
                 if (items.isSaved()) {
                     ItemLoader.saveItem(items.getNamespacedKey(), customItem);
-                    customItem = Registry.CUSTOM_ITEMS.get(items.getNamespacedKey());
+                    customItem = api.getRegistries().getCustomItems().get(items.getNamespacedKey());
                 }
                 cache.applyItem(customItem);
                 guiHandler.openCluster("recipe_creator");

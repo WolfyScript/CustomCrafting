@@ -26,10 +26,10 @@ import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonGetter;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.bukkit.entity.Player;
 
 import java.util.*;

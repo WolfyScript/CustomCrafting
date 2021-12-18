@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingRecipeEliteShaped, EliteRecipeSettings> {

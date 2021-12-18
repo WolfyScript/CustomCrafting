@@ -33,9 +33,9 @@ import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtili
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ChatInputButton;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.DummyButton;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonAlias;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import org.bukkit.Material;
@@ -119,7 +119,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                                         menu.sendMessage(player, "already_existing");
                                         return true;
                                     }
-                                    var customItem = Registry.CUSTOM_ITEMS.get(namespacedKey);
+                                    var customItem = api.getRegistries().getCustomItems().get(namespacedKey);
                                     if (customItem == null) {
                                         menu.sendMessage(player, "error");
                                         return true;
@@ -136,7 +136,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             menu.sendMessage(player, "no_name");
                             return true;
                         }, (guiHandler, player, args) -> {
-                            Set<NamespacedKey> entries = Registry.CUSTOM_ITEMS.entrySet().stream().filter(entry -> {
+                            Set<NamespacedKey> entries = api.getRegistries().getCustomItems().entrySet().stream().filter(entry -> {
                                 EliteWorkbenchData data = (EliteWorkbenchData) entry.getValue().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
                                 return data != null && data.isEnabled();
                             }).map(entry -> NamespacedKeyUtils.toInternal(entry.getKey())).collect(Collectors.toSet());

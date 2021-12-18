@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.*;
 import me.wolfyscript.utilities.util.inventory.CreativeModeTab;
 import org.bukkit.Material;
 

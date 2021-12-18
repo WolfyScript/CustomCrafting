@@ -22,11 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
-import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
-import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
+import me.wolfyscript.utilities.compatibility.plugins.MythicMobsIntegration;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -36,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ThreadLocalRandom;
-
 
 public class MythicMobResultExtension extends ResultExtension {
 
@@ -89,23 +86,16 @@ public class MythicMobResultExtension extends ResultExtension {
     }
 
     protected void spawnMob(Location origin) {
-        if (WolfyUtilities.hasMythicMobs()) {
+        WolfyUtilCore.getInstance().getCompatibilityManager().getPlugins().runIfAvailable("MythicMobs", MythicMobsIntegration.class, integration -> {
             ThreadLocalRandom random = ThreadLocalRandom.current();
-            MythicMob mythicMob = MythicMobs.inst().getMobManager().getMythicMob(mobName);
-
             Vector innerRange = getInnerRadius();
             Vector outerRange = getOuterRadius();
-
             double x = (random.nextBoolean() ? 1 : -1) * random.nextDouble(innerRange.getX(), outerRange.getX());
             double y = (random.nextBoolean() ? 1 : -1) * random.nextDouble(innerRange.getY(), outerRange.getY());
             double z = (random.nextBoolean() ? 1 : -1) * random.nextDouble(innerRange.getZ(), outerRange.getZ());
-
             origin.add(x, y, z);
-
-            if (mythicMob != null) {
-                origin.add(offset);
-                mythicMob.spawn(BukkitAdapter.adapt(origin), mobLevel);
-            }
-        }
+            origin.add(offset);
+            integration.spawnMob(mobName, origin, mobLevel);
+        });
     }
 }

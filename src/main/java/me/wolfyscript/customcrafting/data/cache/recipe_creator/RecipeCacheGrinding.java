@@ -33,6 +33,8 @@ public class RecipeCacheGrinding extends RecipeCache<CustomRecipeGrindstone> {
 
     RecipeCacheGrinding() {
         super();
+        this.inputTop = new Ingredient();
+        this.inputBottom = new Ingredient();
     }
 
     RecipeCacheGrinding(CustomRecipeGrindstone recipe) {

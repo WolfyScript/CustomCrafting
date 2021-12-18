@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.*;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;

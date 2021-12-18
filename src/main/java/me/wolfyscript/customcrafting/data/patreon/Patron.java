@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.data.patreon;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.RandomCollection;
@@ -61,7 +60,7 @@ public class Patron {
                 if (!uuid.isEmpty()) {
                     var url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
                     var reader = new InputStreamReader(url.openStream());
-                    var jsonObject = new JsonParser().parse(reader).getAsJsonObject();
+                    var jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
                     var minecraftName = jsonObject.get("name").getAsString();
                     var properties = jsonObject.get("properties").getAsJsonArray().get(0).getAsJsonObject();
                     this.head = PlayerHeadUtils.getViaValue(properties.get("value").getAsString());

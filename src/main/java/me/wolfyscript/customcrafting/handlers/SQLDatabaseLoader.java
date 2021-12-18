@@ -31,7 +31,7 @@ import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
@@ -142,7 +142,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String data = resultSet.getString("rData");
                 if (namespace != null && key != null && data != null && !data.equals("{}")) {
                     try {
-                        Registry.CUSTOM_ITEMS.register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                        api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
                     } catch (JsonProcessingException e) {
                         api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
                     }
@@ -191,7 +191,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                         loader = recipeLoader;
                     }
                     if (loader != null) {
-                        return RecipeType.valueOf(typeID).getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
+                        return loader.getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
                     }
                 } catch (JsonProcessingException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
                     ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), typeID, e);

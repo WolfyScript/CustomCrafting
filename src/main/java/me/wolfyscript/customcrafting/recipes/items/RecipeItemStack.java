@@ -23,12 +23,13 @@
 package me.wolfyscript.customcrafting.recipes.items;
 
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.tags.CustomTag;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonIgnore;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -125,7 +126,7 @@ public abstract class RecipeItemStack {
                     return tag.getValues().stream().map(CustomItem::new).collect(Collectors.toSet());
                 }
             } else {
-                CustomTag<CustomItem> tag = Registry.ITEM_TAGS.getTag(namespacedKey);
+                CustomTag<CustomItem> tag = WolfyUtilCore.getInstance().getRegistries().getItemTags().getTag(namespacedKey);
                 if (tag != null) {
                     return tag.getValues();
                 }

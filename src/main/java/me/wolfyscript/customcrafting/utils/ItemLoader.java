@@ -26,12 +26,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.VanillaRef;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.WolfyUtilitiesRef;
-import me.wolfyscript.utilities.libraries.com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
@@ -103,9 +104,10 @@ public class ItemLoader {
             //Update NamespacedKey of old WolfyUtilityReference
             if (reference instanceof WolfyUtilitiesRef wolfyUtilitiesRef) {
                 var oldNamespacedKey = wolfyUtilitiesRef.getNamespacedKey();
-                if (!oldNamespacedKey.getKey().contains("/") && !Registry.CUSTOM_ITEMS.has(oldNamespacedKey)) {
+                var registry = WolfyUtilCore.getInstance().getRegistries().getCustomItems();
+                if (!oldNamespacedKey.getKey().contains("/") && !registry.has(oldNamespacedKey)) {
                     var namespacedKey = NamespacedKeyUtils.fromInternal(wolfyUtilitiesRef.getNamespacedKey());
-                    if (Registry.CUSTOM_ITEMS.has(namespacedKey)) {
+                    if (registry.has(namespacedKey)) {
                         var wuRef = new WolfyUtilitiesRef(namespacedKey);
                         wuRef.setAmount(wolfyUtilitiesRef.getAmount());
                         return wuRef;
@@ -138,18 +140,19 @@ public class ItemLoader {
             var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
             customItem.setNamespacedKey(internalKey);
             loader.save(customItem);
-            Registry.CUSTOM_ITEMS.register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
+            WolfyUtilCore.getInstance().getRegistries().getCustomItems().register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
         }
     }
 
     public static boolean deleteItem(ResourceLoader loader, NamespacedKey namespacedKey, @Nullable Player player) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            if (!Registry.CUSTOM_ITEMS.has(namespacedKey)) {
+            var registry = WolfyUtilCore.getInstance().getRegistries().getCustomItems();
+            if (!registry.has(namespacedKey)) {
                 if (player != null) CustomCrafting.inst().getApi().getChat().sendMessage(player, "error");
                 return false;
             }
-            CustomItem item = Registry.CUSTOM_ITEMS.get(namespacedKey);
-            Registry.CUSTOM_ITEMS.remove(namespacedKey);
+            CustomItem item = registry.get(namespacedKey);
+            registry.remove(namespacedKey);
             loader.delete(item);
         }
         return false;
@@ -166,9 +169,10 @@ public class ItemLoader {
                 var container = itemMeta.getPersistentDataContainer();
                 if (container.has(customItemContainerKey, PersistentDataType.STRING)) {
                     var itemKey = NamespacedKey.of(container.get(customItemContainerKey, PersistentDataType.STRING));
-                    if (itemKey != null && !Registry.CUSTOM_ITEMS.has(itemKey)) {
+                    var registry = WolfyUtilCore.getInstance().getRegistries().getCustomItems();
+                    if (itemKey != null && !registry.has(itemKey)) {
                         var updatedKey = NamespacedKeyUtils.fromInternal(itemKey);
-                        if (Registry.CUSTOM_ITEMS.has(updatedKey)) {
+                        if (registry.has(updatedKey)) {
                             container.set(customItemContainerKey, PersistentDataType.STRING, updatedKey.toString());
                         }
                     }

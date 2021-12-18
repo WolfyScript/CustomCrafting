@@ -27,10 +27,13 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.configs.recipebook.Categories;
 import me.wolfyscript.utilities.api.WolfyUtilities;
+import me.wolfyscript.utilities.events.DependenciesLoadedEvent;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Recipe;
 
 import java.io.File;
@@ -39,7 +42,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DataHandler {
+public class DataHandler implements Listener {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private final CustomCrafting customCrafting;
@@ -55,12 +58,14 @@ public class DataHandler {
     private SaveDestination saveDestination = SaveDestination.LOCAL;
 
     public DataHandler(CustomCrafting customCrafting) {
-        this.api = WolfyUtilities.get(customCrafting);
+        Bukkit.getPluginManager().registerEvents(this, customCrafting);
+        this.api = customCrafting.getApi();
         this.config = customCrafting.getConfigHandler().getConfig();
         this.customCrafting = customCrafting;
         initCategories();
 
         if (customCrafting.getConfigHandler().getConfig().isDatabaseEnabled()) {
+            setSaveDestination(SaveDestination.DATABASE);
             //Currently, there is only support for SQL. MongoDB is planned!
             this.databaseLoader = new SQLDatabaseLoader(customCrafting);
             this.databaseLoader.setPriority(2);
@@ -71,16 +76,18 @@ public class DataHandler {
                 this.localStorageLoader = null;
             }
         } else {
+            setSaveDestination(SaveDestination.LOCAL);
             this.databaseLoader = null;
             this.localStorageLoader = new LocalStorageLoader(customCrafting);
         }
         this.extensionPackLoader = null; //No extension pack implementation yet. TODO
-
         initLoaders();
     }
 
     private void initLoaders() {
-        loaders.add(localStorageLoader);
+        if(localStorageLoader != null) {
+            loaders.add(localStorageLoader);
+        }
         if (databaseLoader != null) {
             loaders.add(databaseLoader);
         }
@@ -108,6 +115,13 @@ public class DataHandler {
 
     public void setSaveDestination(SaveDestination saveDestination) {
         this.saveDestination = saveDestination;
+    }
+
+    @EventHandler
+    private void dependenciesLoaded(DependenciesLoadedEvent event) {
+        customCrafting.writeSeparator();
+        loadRecipesAndItems();
+        customCrafting.writeSeparator();
     }
 
     public void load() {

@@ -63,7 +63,7 @@ public class MenuConditionsAdd extends CCWindow {
             int page = cache.getRecipeCreatorCache().getConditionsCache().getSelectNewPage();
             for (int i = page * CONDITIONS_PER_PAGE, slot = 0; i < size && slot < CONDITIONS_PER_PAGE; i++, slot++) {
                 Map.Entry<NamespacedKey, Condition.AbstractGUIComponent<?>> entry = conditions.get(i);
-                var button = new ButtonConditionAdd(entry.getKey(), entry.getValue());
+                var button = new ButtonConditionAdd(customCrafting, entry.getKey(), entry.getValue());
                 registerButton(button);
                 update.setButton(slot, button);
             }

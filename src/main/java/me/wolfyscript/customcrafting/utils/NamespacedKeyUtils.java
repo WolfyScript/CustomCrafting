@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
@@ -74,7 +75,7 @@ public class NamespacedKeyUtils {
         if (store != null) {
             var customItem = store.getCustomItem();
             if (customItem == null) {
-                customItem = Registry.CUSTOM_ITEMS.get(fromInternal(store.getCustomItemKey()));
+                customItem = WolfyUtilCore.getInstance().getRegistries().getCustomItems().get(fromInternal(store.getCustomItemKey()));
             }
             return customItem;
         }

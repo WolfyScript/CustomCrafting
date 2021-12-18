@@ -28,6 +28,7 @@ import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ItemInputButton;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -38,11 +39,13 @@ class ButtonRecipeIngredient extends ItemInputButton<CCCache> {
     ButtonRecipeIngredient(int recipeSlot) {
         super("recipe.ingredient_" + recipeSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, guiInventory, slot, event) -> {
             var ingredient = cache.getRecipeCreatorCache().getRecipeCache().getIngredient(recipeSlot);
-            if (event instanceof InventoryClickEvent clickEvent && clickEvent.getSlot() == slot && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
-                //Since shift clicking now updates all the available ItemInputButtons we only use the first button that was clicked.
-                cache.getRecipeCreatorCache().getIngredientCache().setSlot(recipeSlot);
-                cache.getRecipeCreatorCache().getIngredientCache().setIngredient(ingredient != null ? ingredient : new Ingredient());
-                guiHandler.openWindow(MenuIngredient.KEY);
+            if (event instanceof InventoryClickEvent clickEvent && clickEvent.isRightClick() && clickEvent.isShiftClick()) {
+                if (clickEvent.getSlot() == slot) {
+                    //Since shift clicking now updates all the available ItemInputButtons we only use the first button that was clicked.
+                    cache.getRecipeCreatorCache().getIngredientCache().setSlot(recipeSlot);
+                    cache.getRecipeCreatorCache().getIngredientCache().setIngredient(ingredient != null ? ingredient : new Ingredient());
+                    guiHandler.openWindow(MenuIngredient.KEY);
+                }
                 return true;
             }
             return ingredient != null && ingredient.getItems().isEmpty() && !ingredient.getTags().isEmpty();
