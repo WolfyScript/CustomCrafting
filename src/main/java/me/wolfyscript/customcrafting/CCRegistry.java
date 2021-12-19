@@ -55,7 +55,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
      * Providing a lot of functionality to get the recipes you need.
      */
     @Deprecated
-    class RecipeRegistry extends WrapperRegistry<CustomRecipe<?>> {
+    final class RecipeRegistry extends WrapperRegistry<CustomRecipe<?>> {
 
         @Deprecated
         private RecipeRegistry() {
@@ -222,7 +222,7 @@ public interface CCRegistry<T extends me.wolfyscript.utilities.util.Keyed> exten
     }
 
     @Deprecated
-    class ItemCreatorTabRegistry extends WrapperRegistry<ItemCreatorTab> {
+    final class ItemCreatorTabRegistry extends WrapperRegistry<ItemCreatorTab> {
 
         public ItemCreatorTabRegistry() {
             super(() -> CustomCrafting.inst().getRegistries().getItemCreatorTabs());

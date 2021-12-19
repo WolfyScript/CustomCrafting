@@ -28,7 +28,7 @@ import me.wolfyscript.utilities.registry.Registries;
 import me.wolfyscript.utilities.registry.RegistrySimple;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
-public class RegistryItemCreatorTabs extends RegistrySimple<ItemCreatorTab> {
+public final class RegistryItemCreatorTabs extends RegistrySimple<ItemCreatorTab> {
 
     RegistryItemCreatorTabs(CustomCrafting customCrafting, Registries registries) {
         super(new NamespacedKey(customCrafting, "item_creator_tabs"), registries, ItemCreatorTab.class);
