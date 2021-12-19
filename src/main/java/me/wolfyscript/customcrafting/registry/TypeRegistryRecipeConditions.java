@@ -33,9 +33,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class ClassRegistryRecipeConditions extends TypeRegistrySimple<Condition<?>> {
+public final class TypeRegistryRecipeConditions extends TypeRegistrySimple<Condition<?>> {
 
-    ClassRegistryRecipeConditions(CustomCrafting customCrafting, Registries registries) {
+    TypeRegistryRecipeConditions(CustomCrafting customCrafting, Registries registries) {
         super(new NamespacedKey(customCrafting, "recipe/conditions"), registries);
     }
 
@@ -53,7 +53,7 @@ public class ClassRegistryRecipeConditions extends TypeRegistrySimple<Condition<
     }
 
     /**
-     * Registers a {@link Condition} into the {@link CCClassRegistry#RECIPE_CONDITIONS} without an additional GUI component.
+     * Registers a {@link Condition} without an additional GUI component.
      *
      * @param condition The {@link Condition} to register.
      */

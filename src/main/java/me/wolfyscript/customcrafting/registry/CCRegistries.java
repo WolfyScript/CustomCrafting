@@ -36,7 +36,7 @@ public class CCRegistries {
 
     private final RegistryRecipes recipes;
     private final Registry<ItemCreatorTab> itemCreatorTabs;
-    private final ClassRegistryRecipeConditions recipeConditions;
+    private final TypeRegistryRecipeConditions recipeConditions;
     private final TypeRegistry<MergeAdapter> recipeMergeAdapters;
     private final TypeRegistry<ResultExtension> recipeResultExtensions;
 
@@ -44,12 +44,12 @@ public class CCRegistries {
         var registries = core.getRegistries();
         this.recipes = new RegistryRecipes(customCrafting, registries);
         this.itemCreatorTabs = new RegistryItemCreatorTabs(customCrafting, registries);
-        this.recipeConditions = new ClassRegistryRecipeConditions(customCrafting, registries);
+        this.recipeConditions = new TypeRegistryRecipeConditions(customCrafting, registries);
         this.recipeMergeAdapters = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
         this.recipeResultExtensions = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/result_extensions"), registries);
     }
 
-    public ClassRegistryRecipeConditions getRecipeConditions() {
+    public TypeRegistryRecipeConditions getRecipeConditions() {
         return recipeConditions;
     }
 
