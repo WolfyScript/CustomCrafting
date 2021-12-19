@@ -71,7 +71,7 @@ public class CraftManager {
         }
         var matrixData = getIngredients(matrix);
         var targetBlock = inventory.getLocation() != null ? inventory.getLocation().getBlock() : player.getTargetBlockExact(5);
-        return CCRegistry.RECIPES.getSimilarCraftingRecipes(matrixData, elite, advanced).map(recipe -> checkRecipe(recipe, matrixData, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
+        return customCrafting.getRegistries().getRecipes().getSimilarCraftingRecipes(matrixData, elite, advanced).map(recipe -> checkRecipe(recipe, matrixData, player, targetBlock, inventory)).filter(Objects::nonNull).findFirst().orElse(null);
     }
 
     /**

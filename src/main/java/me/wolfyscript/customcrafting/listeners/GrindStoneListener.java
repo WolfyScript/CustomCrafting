@@ -236,7 +236,11 @@ public class GrindStoneListener implements Listener {
         CustomRecipeGrindstone foundRecipe = null;
         boolean validItem = false;
 
-        for (CustomRecipeGrindstone customRecipeGrindstone : CCRegistry.RECIPES.getAvailable(RecipeType.GRINDSTONE, player).stream().filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView))).toList()) {
+        for (CustomRecipeGrindstone customRecipeGrindstone : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.GRINDSTONE, player)
+                .stream()
+                .filter(grindstoneRecipe -> grindstoneRecipe.checkConditions(new Conditions.Data(player, player.getTargetBlock(null, 5), inventoryView)))
+                .toList()
+        ) {
             Ingredient input = slot == 0 ? customRecipeGrindstone.getInputTop() : customRecipeGrindstone.getInputBottom();
             Ingredient otherInput = slot == 0 ? customRecipeGrindstone.getInputBottom() : customRecipeGrindstone.getInputTop();
             Optional<CustomItem> optional = input.check(item, customRecipeGrindstone.isExactMeta());

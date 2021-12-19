@@ -154,7 +154,7 @@ public class MenuItemCreator extends CCWindow {
         }));
         registerReferences();
         tabs.clear();
-        CCRegistry.ITEM_CREATOR_TABS.forEach(tab -> tab.register(this, api));
+        customCrafting.getRegistries().getItemCreatorTabs().forEach(tab -> tab.register(this, api));
     }
 
     private void registerReferences() {
@@ -174,7 +174,7 @@ public class MenuItemCreator extends CCWindow {
     }
 
     private void orderTabs() {
-        CCRegistry.ItemCreatorTabRegistry registry = CCRegistry.ITEM_CREATOR_TABS;
+        var registry = customCrafting.getRegistries().getItemCreatorTabs();
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabDisplayName.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLocalizedName.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabLore.KEY)));
@@ -197,7 +197,7 @@ public class MenuItemCreator extends CCWindow {
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabEliteCraftingTable.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabRecipeBook.KEY)));
         tabs.add(registry.get(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, TabVanilla.KEY)));
-        CCRegistry.ITEM_CREATOR_TABS.values().forEach(tab -> {
+        registry.values().forEach(tab -> {
             if (!tabs.contains(tab)) {
                 tabs.add(tab);
             }
@@ -293,11 +293,11 @@ public class MenuItemCreator extends CCWindow {
     }
 
     private List<ItemCreatorTab> constructOptions(GuiUpdate<CCCache> update, CCCache cache, Items items, CustomItem customItem, ItemStack item) {
-        if (tabs.size() != CCRegistry.ITEM_CREATOR_TABS.values().size()) {
+        if (tabs.size() != customCrafting.getRegistries().getItemCreatorTabs().values().size()) {
             if (tabs.isEmpty()) {
                 orderTabs();
             } else {
-                CCRegistry.ITEM_CREATOR_TABS.values().forEach(tab -> {
+                customCrafting.getRegistries().getItemCreatorTabs().values().forEach(tab -> {
                     if (!tabs.contains(tab)) {
                         tabs.add(tab);
                     }

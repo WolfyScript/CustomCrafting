@@ -185,7 +185,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     public CraftingRecipe<?, AdvancedRecipeSettings> getAdvancedCrafting(NamespacedKey recipeKey) {
-        CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(recipeKey);
+        CustomRecipe<?> customRecipe = get(recipeKey);
         return RecipeType.Container.CRAFTING.isInstance(customRecipe) ? RecipeType.Container.CRAFTING.cast(customRecipe) : null;
     }
 

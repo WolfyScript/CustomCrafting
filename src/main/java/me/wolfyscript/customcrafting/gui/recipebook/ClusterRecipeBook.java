@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
@@ -98,7 +97,7 @@ public class ClusterRecipeBook extends CCCluster {
                     if (book.getSubFolder() > 0) {
                         CustomItem item = book.getResearchItem();
                         if (book.getSubFolderRecipes().isEmpty()) {
-                            book.setSubFolderRecipes(item, CCRegistry.RECIPES.get(item));
+                            book.setSubFolderRecipes(item, customCrafting.getRegistries().getRecipes().get(item));
                         }
                         if (!book.getSubFolderRecipes().isEmpty()) {
                             book.applyRecipeToButtons(guiHandler, book.getSubFolderRecipes().get(0));
@@ -116,7 +115,7 @@ public class ClusterRecipeBook extends CCCluster {
 
         registerRecipeIcons();
         for (int i = 0; i < 37; i++) {
-            registerButton(new ButtonContainerIngredient(i));
+            registerButton(new ButtonContainerIngredient(customCrafting, i));
         }
         for (int i = 0; i < 45; i++) {
             registerButton(new ButtonContainerRecipeBook(i));

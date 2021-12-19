@@ -176,7 +176,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         try {
             CustomRecipe<?> recipe = constructRecipe();
             recipe.save(player);
-            CCRegistry.RECIPES.register(recipe);
+            customCrafting.getRegistries().getRecipes().register(recipe);
             Bukkit.getScheduler().runTask(customCrafting, () -> {
                 if (player != null) {
                     api.getChat().sendKey(player, ClusterRecipeCreator.KEY, "loading.success");

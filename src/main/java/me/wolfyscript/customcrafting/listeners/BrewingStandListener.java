@@ -121,7 +121,7 @@ public class BrewingStandListener implements Listener {
                         //Check if at least one slot contains an item
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
-                            CCRegistry.RECIPES.getAvailable(RecipeType.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
+                            customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
                                 Optional<CustomItem> optional = recipe.getIngredient().check(ingredient, recipe.isExactMeta());
                                 if (optional.isPresent()) {
                                     //Ingredient is valid

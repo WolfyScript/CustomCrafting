@@ -61,7 +61,7 @@ public class ReloadSubCommand extends AbstractSubCommand {
             var dataHandler = customCrafting.getDataHandler();
             dataHandler.initCategories();
             dataHandler.load();
-            dataHandler.getCategories().index();
+            dataHandler.getCategories().index(customCrafting);
             api.getChat().sendMessage(p, "  - &aComplete");
             api.getChat().sendMessage(p, "&eReloading GUIs");
             ((MenuRecipeBook) invAPI.getGuiWindow(ClusterRecipeBook.RECIPE_BOOK)).reset();

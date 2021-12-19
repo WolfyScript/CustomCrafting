@@ -52,8 +52,8 @@ public class DisableRecipesHandler {
         if (!config.getDisabledRecipes().isEmpty()) {
             recipes.addAll(config.getDisabledRecipes().parallelStream().map(NamespacedKey::of).toList());
             recipes.forEach(key -> {
-                if (CCRegistry.RECIPES.has(key)) {
-                    disableRecipe(Objects.requireNonNull(CCRegistry.RECIPES.get(key)));
+                if (customCrafting.getRegistries().getRecipes().has(key)) {
+                    disableRecipe(Objects.requireNonNull(customCrafting.getRegistries().getRecipes().get(key)));
                 } else {
                     org.bukkit.NamespacedKey bukkitKey = org.bukkit.NamespacedKey.fromString(key.toString());
                     if (bukkitKey != null) {

@@ -81,9 +81,9 @@ public class ButtonNamespaceRecipe extends ActionButton<CCCache> {
                             }
                         }
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
-                        CCRegistry.RECIPES.get(namespace).forEach(disableRecipesHandler::disableRecipe);
+                        customCrafting.getRegistries().getRecipes().get(namespace).forEach(disableRecipesHandler::disableRecipe);
                     } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                        CCRegistry.RECIPES.get(namespace).forEach(disableRecipesHandler::enableRecipe);
+                        customCrafting.getRegistries().getRecipes().get(namespace).forEach(disableRecipesHandler::enableRecipe);
                     }
                 }
             }

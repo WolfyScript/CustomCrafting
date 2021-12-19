@@ -102,7 +102,7 @@ public class MenuListRecipes extends CCWindow {
 
         String namespace = recipeList.getNamespace();
         if (namespace == null) {
-            List<String> namespaceList = new ArrayList<>(CCRegistry.RECIPES.namespaces());
+            List<String> namespaceList = new ArrayList<>(customCrafting.getRegistries().getRecipes().namespaces());
             namespaceList.add("minecraft");
             namespaceList.sort(String::compareToIgnoreCase);
             maxPages = recipeList.getMaxPages(namespaceList.size());
@@ -124,7 +124,7 @@ public class MenuListRecipes extends CCWindow {
                 event.setButton(9 + slot, button);
             }
         } else {
-            List<CustomRecipe<?>> recipes = CCRegistry.RECIPES.get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
+            List<CustomRecipe<?>> recipes = customCrafting.getRegistries().getRecipes().get(namespace).stream().filter(Objects::nonNull).sorted(Comparator.comparing(o -> o.getNamespacedKey().getKey())).collect(Collectors.toList());
             recipeList.filterCustomRecipes(recipes);
             maxPages = recipeList.getMaxPages(recipes.size());
             page = recipeList.getPage(maxPages);

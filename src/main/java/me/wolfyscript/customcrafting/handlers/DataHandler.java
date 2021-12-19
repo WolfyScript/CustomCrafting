@@ -141,7 +141,7 @@ public class DataHandler implements Listener {
 
     public void loadRecipesAndItems() {
         load();
-        categories.index();
+        categories.index(customCrafting);
         WorldUtils.getWorldCustomItemStore().initiateMissingBlockEffects();
     }
 

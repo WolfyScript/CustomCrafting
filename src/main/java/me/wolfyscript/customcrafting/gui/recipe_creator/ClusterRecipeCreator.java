@@ -138,7 +138,7 @@ public class ClusterRecipeCreator extends CCCluster {
             return false;
         }, (guiHandler, player, args) -> {
             List<String> results = new ArrayList<>();
-            StringUtil.copyPartialMatches(args[0], CCRegistry.RECIPES.groups(), results);
+            StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().groups(), results);
             return results;
         }));
         registerButton(new ButtonExactMeta());
@@ -162,10 +162,10 @@ public class ClusterRecipeCreator extends CCCluster {
                     if (args.length > 0) {
                         if (args.length == 1) {
                             results.add("<namespace>");
-                            StringUtil.copyPartialMatches(args[0], CCRegistry.RECIPES.namespaces(), results);
+                            StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().namespaces(), results);
                         } else if (args.length == 2) {
                             results.add("<key>");
-                            StringUtil.copyPartialMatches(args[1], CCRegistry.RECIPES.get(args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
+                            StringUtil.copyPartialMatches(args[1], customCrafting.getRegistries().getRecipes().get(args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
                         }
                     }
                     Collections.sort(results);

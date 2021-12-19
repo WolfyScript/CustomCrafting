@@ -57,7 +57,7 @@ public class EditSubCommand extends AbstractSubCommand {
             if (args[0].contains(":")) {
                 NamespacedKey key = NamespacedKey.of(args[0]);
                 if (key != null) {
-                    CustomRecipe<?> customRecipe = CCRegistry.RECIPES.get(key);
+                    CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
                     if (customRecipe != null) {
                         GuiHandler<CCCache> guiHandler = api.getInventoryAPI(CCCache.class).getGuiHandler(player);
                         CCCache cache = guiHandler.getCustomCache();
@@ -79,11 +79,11 @@ public class EditSubCommand extends AbstractSubCommand {
         return true;
     }
 
+    @Nullable
     @Override
-    protected @Nullable
-    List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
+    protected List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
-        StringUtil.copyPartialMatches(args[args.length - 1], CCRegistry.RECIPES.keySet().stream().map(NamespacedKey::toString).toList(), results);
+        StringUtil.copyPartialMatches(args[args.length - 1], customCrafting.getRegistries().getRecipes().keySet().stream().map(NamespacedKey::toString).toList(), results);
         return results;
     }
 }

@@ -123,7 +123,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
-                List<String> recipeKeys = CCRegistry.RECIPES.keySet().stream().map(NamespacedKey::toString).toList();
+                List<String> recipeKeys = customCrafting.getRegistries().getRecipes().keySet().stream().map(NamespacedKey::toString).toList();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     StringUtil.copyPartialMatches(args[0], recipeKeys, results);
@@ -132,7 +132,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
                 guiHandler.setChatInputAction((guiHandler1, player1, s, args) -> {
                     if (args.length > 1) {
                         var namespacedKey = new NamespacedKey(args[0], args[1]);
-                        CustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
+                        CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(namespacedKey);
                         if (recipe == null) {
                             wolfyUtilities.getChat().sendKey(player, new NamespacedKey("none", "recipe_editor"), "not_existing", new Pair<>("%recipe%", args[0] + ":" + args[1]));
                             return true;
@@ -157,7 +157,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
-                List<String> namespaces = CCRegistry.RECIPES.namespaces();
+                List<String> namespaces = customCrafting.getRegistries().getRecipes().namespaces();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     StringUtil.copyPartialMatches(args[0], namespaces, results);
@@ -189,7 +189,7 @@ public class ClusterRecipeBookEditor extends CCCluster {
             guiHandler.getCustomCache().getChatLists().setCurrentPageRecipes(1);
             if (event instanceof InventoryClickEvent clickEvent) {
                 boolean remove = clickEvent.isRightClick();
-                List<String> groups = CCRegistry.RECIPES.groups();
+                List<String> groups = customCrafting.getRegistries().getRecipes().groups();
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     StringUtil.copyPartialMatches(args[0], groups, results);

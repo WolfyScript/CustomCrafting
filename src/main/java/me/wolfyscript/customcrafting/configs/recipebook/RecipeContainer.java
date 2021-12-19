@@ -23,10 +23,12 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CCRegistry;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.*;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.conditions.EliteWorkbenchCondition;
+import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
@@ -39,6 +41,8 @@ import java.util.*;
 
 public class RecipeContainer implements Comparable<RecipeContainer> {
 
+    private final CustomCrafting customCrafting;
+    private final RegistryRecipes recipes;
     private final List<CustomRecipe<?>> cachedRecipes;
     //private final Map<UUID, List<ICustomRecipe<?, ?>>> cachedPlayerRecipes = new HashMap<>();
     private final Map<UUID, List<ItemStack>> cachedPlayerItemStacks = new HashMap<>();
@@ -46,19 +50,25 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
     private final String group;
     private final NamespacedKey recipe;
 
-    public RecipeContainer(String group) {
+    public RecipeContainer(CustomCrafting customCrafting, String group) {
+        this.customCrafting = customCrafting;
+        this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = group;
         this.recipe = null;
-        this.cachedRecipes = CCRegistry.RECIPES.getGroup(group);
+        this.cachedRecipes = recipes.getGroup(group);
     }
 
-    public RecipeContainer(NamespacedKey recipe) {
+    public RecipeContainer(CustomCrafting customCrafting, NamespacedKey recipe) {
+        this.customCrafting = customCrafting;
+        this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = null;
         this.recipe = recipe;
-        this.cachedRecipes = Collections.singletonList(CCRegistry.RECIPES.get(recipe));
+        this.cachedRecipes = Collections.singletonList(recipes.get(recipe));
     }
 
-    public RecipeContainer(CustomRecipe<?> recipe) {
+    public RecipeContainer(CustomCrafting customCrafting, CustomRecipe<?> recipe) {
+        this.customCrafting = customCrafting;
+        this.recipes = customCrafting.getRegistries().getRecipes();
         this.group = null;
         this.recipe = recipe.getNamespacedKey();
         this.cachedRecipes = Collections.singletonList(recipe);
@@ -69,7 +79,7 @@ public class RecipeContainer implements Comparable<RecipeContainer> {
      * @return The recipes of this container the player has access to.
      */
     public List<CustomRecipe<?>> getRecipes(Player player) {
-        return CCRegistry.RECIPES.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
+        return recipes.getAvailable(cachedRecipes, player); //Possible strict caching in the future?! return cachedPlayerRecipes.computeIfAbsent(player.getUniqueId(), uuid -> Registry.RECIPES.getAvailable(cachedRecipes, player));
     }
 
     /**

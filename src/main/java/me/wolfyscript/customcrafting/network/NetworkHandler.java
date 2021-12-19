@@ -122,7 +122,7 @@ public class NetworkHandler {
     }
 
     public void sendRecipes(Player player) {
-        List<CustomRecipe<?>> recipes = CCRegistry.RECIPES.getAvailable(player);
+        List<CustomRecipe<?>> recipes = customCrafting.getRegistries().getRecipes().getAvailable(player);
         //Send size of recipe list! Client will wait for recipe packets after it receives this packet.
         var mcByteBuf = networkUtil.buffer();
         mcByteBuf.writeVarInt(recipes.size());
@@ -189,7 +189,7 @@ public class NetworkHandler {
 
     public void handlePlaceRecipe(Player player, MCByteBuf byteBuf) {
         var key = byteBuf.readNamespacedKey();
-        var recipe = CCRegistry.RECIPES.get(key);
+        var recipe = customCrafting.getRegistries().getRecipes().get(key);
         if (recipe != null) {
             var inventory = player.getOpenInventory().getTopInventory();
             boolean validInv = switch (recipe.getRecipeType().getType()) {

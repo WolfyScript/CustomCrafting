@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.configs.recipebook;
 
 import me.wolfyscript.customcrafting.CCRegistry;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.cache.EliteWorkbench;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
@@ -53,21 +54,22 @@ public class Category extends CategorySettings {
         this.containers = new ArrayList<>();
     }
 
-    void index(Collection<CategoryFilter> filters) {
+    void index(CustomCrafting customCrafting, Collection<CategoryFilter> filters) {
+        var registry = customCrafting.getRegistries().getRecipes();
         if (auto) {
             this.namespaces.clear();
             this.groups.clear();
-            this.namespaces.addAll(CCRegistry.RECIPES.namespaces());
-            this.groups.addAll(CCRegistry.RECIPES.groups());
+            this.namespaces.addAll(registry.namespaces());
+            this.groups.addAll(registry.groups());
         }
         containers.clear();
         //Construct containers based on settings
         List<RecipeContainer> recipeContainers = new ArrayList<>();
-        recipeContainers.addAll(this.groups.stream().map(RecipeContainer::new).toList());
-        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> CCRegistry.RECIPES.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(RecipeContainer::new)).toList());
+        recipeContainers.addAll(this.groups.stream().map(s -> new RecipeContainer(customCrafting, s)).toList());
+        recipeContainers.addAll(this.namespaces.stream().flatMap(s -> registry.get(s).stream().filter(recipe -> recipe.getGroup().isEmpty() || !groups.contains(recipe.getGroup())).map(customRecipe -> new RecipeContainer(customCrafting, customRecipe))).toList());
         recipeContainers.addAll(this.recipes.stream().map(namespacedKey -> {
-            CustomRecipe<?> recipe = CCRegistry.RECIPES.get(namespacedKey);
-            return recipe == null ? null : new RecipeContainer(recipe);
+            CustomRecipe<?> recipe = registry.get(namespacedKey);
+            return recipe == null ? null : new RecipeContainer(customCrafting, recipe);
         }).filter(Objects::nonNull).toList());
         containers.addAll(recipeContainers.stream().distinct().sorted().toList());
         //Index filters for quick filtering on runtime.

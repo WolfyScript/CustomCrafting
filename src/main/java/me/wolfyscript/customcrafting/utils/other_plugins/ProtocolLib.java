@@ -67,7 +67,7 @@ public class ProtocolLib {
     private void registerServerSide() {
         Function<MinecraftKey, Boolean> recipeFilter = minecraftKey -> {
             if (minecraftKey.getPrefix().equals(NamespacedKeyUtils.NAMESPACE)) {
-                CustomRecipe<?> recipe = CCRegistry.RECIPES.get(NamespacedKeyUtils.toInternal(NamespacedKey.of(minecraftKey.getFullKey())));
+                CustomRecipe<?> recipe = plugin.getRegistries().getRecipes().get(NamespacedKeyUtils.toInternal(NamespacedKey.of(minecraftKey.getFullKey())));
                 if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
                     return !recipe.isHidden() && !recipe.isDisabled();
                 }

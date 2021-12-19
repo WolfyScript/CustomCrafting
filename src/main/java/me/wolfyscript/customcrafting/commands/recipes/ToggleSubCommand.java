@@ -70,7 +70,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
         List<String> results = new ArrayList<>();
         List<String> recipes = customCrafting.getDataHandler().getBukkitNamespacedKeys();
-        recipes.addAll(CCRegistry.RECIPES.get(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
+        recipes.addAll(customCrafting.getRegistries().getRecipes().get(CraftingRecipe.class).stream().map(recipe -> recipe.getNamespacedKey().toString()).collect(Collectors.toSet()));
         StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
         return results;
     }

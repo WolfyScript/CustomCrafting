@@ -93,11 +93,11 @@ public class PlaceHolder extends PlaceholderExpansion {
                         case "vanilla":
                             return String.valueOf(customCrafting.getDataHandler().getMinecraftRecipes().size());
                         case "custom":
-                            return String.valueOf(CCRegistry.RECIPES.size());
+                            return String.valueOf(customCrafting.getRegistries().getRecipes().size());
                         case "available":
                             if (p.isOnline()) {
                                 Player player = Bukkit.getPlayer(p.getUniqueId());
-                                return String.valueOf(CCRegistry.RECIPES.getAvailable(player).size());
+                                return String.valueOf(customCrafting.getRegistries().getRecipes().getAvailable(player).size());
                             }
                             break;
                         default:
@@ -112,7 +112,7 @@ public class PlaceHolder extends PlaceholderExpansion {
                         recipeID.append(args[i]);
                     }
                     NamespacedKey recipeKey = NamespacedKey.of(recipeID.toString());
-                    CustomRecipe<?> recipe = CCRegistry.RECIPES.get(recipeKey);
+                    CustomRecipe<?> recipe = customCrafting.getRegistries().getRecipes().get(recipeKey);
                     switch (args[1]) {
                         case "type":
                             return recipe.getRecipeType().toString();

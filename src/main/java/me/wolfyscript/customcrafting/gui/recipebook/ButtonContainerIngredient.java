@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.gui.recipebook;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -49,13 +48,15 @@ import java.util.*;
 public class ButtonContainerIngredient extends Button<CCCache> {
 
     private static final String KEY = "ingredient.container_";
+    private final CustomCrafting plugin;
 
     public static String key(int slot) {
         return KEY + slot;
     }
 
-    ButtonContainerIngredient(int slot) {
+    ButtonContainerIngredient(CustomCrafting plugin, int slot) {
         super(key(slot), ButtonType.DUMMY);
+        this.plugin = plugin;
     }
 
     private final Map<GuiHandler<CCCache>, List<CustomItem>> variantsMap = new HashMap<>();
@@ -114,7 +115,7 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         if (getTiming(guiHandler) < getVariantsMap(guiHandler).size()) {
             var customItem = getVariantsMap(guiHandler).get(getTiming(guiHandler));
             if (!customItem.equals(book.getResearchItem())) {
-                List<CustomRecipe<?>> recipes = CCRegistry.RECIPES.getAvailable(customItem.create(), player);
+                List<CustomRecipe<?>> recipes = plugin.getRegistries().getRecipes().getAvailable(customItem.create(), player);
                 if (!recipes.isEmpty()) {
                     resetButtons(guiHandler);
                     book.setSubFolderPage(0);

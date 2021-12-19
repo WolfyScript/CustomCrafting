@@ -143,7 +143,7 @@ public class CauldronListener implements Listener {
                                     if (!items.isEmpty()) {
                                         var cauldronBlock = loc.getBlock();
                                         int level = Cauldrons.getLevel(cauldronBlock);
-                                        List<CustomRecipeCauldron> recipes = CCRegistry.RECIPES.get(RecipeType.CAULDRON);
+                                        List<CustomRecipeCauldron> recipes = customCrafting.getRegistries().getRecipes().get(RecipeType.CAULDRON);
                                         recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
                                         for (CustomRecipeCauldron recipe : recipes) {
                                             if (entry.getValue().isEmpty() || entry.getValue().get(0).getRecipe().getNamespacedKey().equals(recipe.getNamespacedKey())) {

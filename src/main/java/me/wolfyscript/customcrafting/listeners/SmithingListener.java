@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmithing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
@@ -71,7 +70,7 @@ public class SmithingListener implements Listener {
             }
         }
         preCraftedRecipes.put(player.getUniqueId(), null);
-        for (CustomRecipeSmithing recipe : CCRegistry.RECIPES.getAvailable(RecipeType.SMITHING, player)) {
+        for (CustomRecipeSmithing recipe : customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.SMITHING, player)) {
             if (recipe.checkConditions(new Conditions.Data(player, event.getInventory().getLocation() != null ? event.getInventory().getLocation().getBlock() : null, event.getView()))) {
                 Optional<CustomItem> optionalBase = recipe.getBase().check(base, recipe.isExactMeta());
                 if (optionalBase.isPresent()) {

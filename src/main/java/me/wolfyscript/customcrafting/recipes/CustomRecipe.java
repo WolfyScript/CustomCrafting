@@ -275,7 +275,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     }
 
     public boolean delete(@Nullable Player player) {
-        Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> CCRegistry.RECIPES.remove(getNamespacedKey()));
+        Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> CustomCrafting.inst().getRegistries().getRecipes().remove(getNamespacedKey()));
         if (CustomCrafting.inst().getDataHandler().getActiveLoader().delete(this)) {
             getAPI().getChat().sendMessage(player, "§aRecipe deleted!");
             return true;

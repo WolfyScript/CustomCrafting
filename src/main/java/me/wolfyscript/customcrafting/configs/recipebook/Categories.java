@@ -125,11 +125,11 @@ public class Categories {
         return filters;
     }
 
-    public void index() {
-        CustomCrafting.inst().getApi().getConsole().info("Indexing Recipe Book...");
+    public void index(CustomCrafting customCrafting) {
+        customCrafting.getApi().getConsole().info("Indexing Recipe Book...");
         Collection<CategoryFilter> filterValues = this.filters.values();
-        this.categoryMap.values().forEach(category -> category.index(filterValues));
-        CustomCrafting.inst().getApi().getConsole().info("Indexed Recipe Book!");
+        this.categoryMap.values().forEach(category -> category.index(customCrafting, filterValues));
+        customCrafting.getApi().getConsole().info("Indexed Recipe Book!");
     }
 
     @Override

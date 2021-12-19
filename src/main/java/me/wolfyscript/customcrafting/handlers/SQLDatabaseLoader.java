@@ -121,7 +121,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
                 CustomRecipe<?> recipe = getRecipe(namespacedKey);
                 if (recipe != null) {
-                    CCRegistry.RECIPES.register(recipe);
+                    customCrafting.getRegistries().getRecipes().register(recipe);
                 }
             }
         } catch (SQLException ex) {

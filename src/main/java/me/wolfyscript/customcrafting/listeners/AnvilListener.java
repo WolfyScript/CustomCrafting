@@ -72,7 +72,7 @@ public class AnvilListener implements Listener {
             event.setResult(null);
             return;
         }
-        List<CustomRecipeAnvil> recipes = CCRegistry.RECIPES.getAvailable(RecipeType.ANVIL, player);
+        List<CustomRecipeAnvil> recipes = customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.ANVIL, player);
         recipes.sort(Comparator.comparing(CustomRecipe::getPriority));
         for (CustomRecipeAnvil recipe : recipes) {
             Optional<CustomItem> finalInputLeft = Optional.empty();
