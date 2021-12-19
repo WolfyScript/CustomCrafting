@@ -27,10 +27,8 @@ import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
-import me.wolfyscript.customcrafting.registry.RegistryItemCreatorTabs;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
 import me.wolfyscript.customcrafting.utils.CraftManager;
-import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Registry;
@@ -38,7 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Deprecated

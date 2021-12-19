@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.utils.cooking;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
@@ -30,7 +29,6 @@ import me.wolfyscript.customcrafting.recipes.CustomRecipeFurnace;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmoking;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
 import me.wolfyscript.customcrafting.recipes.data.*;
-import me.wolfyscript.customcrafting.recipes.items.Result;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
@@ -38,9 +36,7 @@ import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
-import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
-import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;

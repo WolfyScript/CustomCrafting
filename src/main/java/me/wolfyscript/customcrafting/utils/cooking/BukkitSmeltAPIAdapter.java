@@ -28,14 +28,10 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.nms.inventory.RecipeType;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
-import org.bukkit.Keyed;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
-import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.CookingRecipe;
-import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 import java.util.Iterator;

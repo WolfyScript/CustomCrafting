@@ -25,7 +25,6 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ToggleButton;
-import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import org.bukkit.Material;
 
 class ButtonVanillaBook extends ToggleButton<CCCache> {

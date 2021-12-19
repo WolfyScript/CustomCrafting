@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
-import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import org.bukkit.inventory.*;

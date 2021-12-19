@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.placeholderapi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;

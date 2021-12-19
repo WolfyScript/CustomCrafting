@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.data.cauldron;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;

@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.listeners;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBrewing;
 import me.wolfyscript.customcrafting.recipes.RecipeType;

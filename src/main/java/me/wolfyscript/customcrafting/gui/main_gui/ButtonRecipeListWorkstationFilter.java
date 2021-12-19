@@ -27,9 +27,11 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class ButtonRecipeListWorkstationFilter extends ActionButton<CCCache> {
 

@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
-import com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.lang.reflect.InvocationTargetException;

@@ -22,12 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target;
 
-import me.wolfyscript.customcrafting.recipes.data.CraftingData;
-import me.wolfyscript.customcrafting.recipes.data.RecipeData;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
+import me.wolfyscript.customcrafting.recipes.data.CraftingData;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;

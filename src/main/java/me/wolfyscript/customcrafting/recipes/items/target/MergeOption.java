@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target;
 
-import me.wolfyscript.customcrafting.recipes.data.RecipeData;
-import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.customcrafting.recipes.data.RecipeData;
+import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

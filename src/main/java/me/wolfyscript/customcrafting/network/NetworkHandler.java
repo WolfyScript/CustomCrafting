@@ -22,9 +22,7 @@
 
 package me.wolfyscript.customcrafting.network;
 
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.recipebook.Category;
 import me.wolfyscript.customcrafting.configs.recipebook.CategoryFilter;
@@ -43,9 +41,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.block.Smoker;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.plugin.messaging.MessageTooLargeException;
 
-import java.io.IOException;
 import java.util.*;
 
 public class NetworkHandler {

@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;

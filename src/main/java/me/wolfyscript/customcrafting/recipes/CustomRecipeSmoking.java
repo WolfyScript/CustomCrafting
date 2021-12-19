@@ -22,8 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.CustomCrafting;
 import com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Material;
 import org.bukkit.inventory.SmokingRecipe;

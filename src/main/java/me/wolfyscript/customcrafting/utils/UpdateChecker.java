@@ -22,10 +22,10 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
-import com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import net.md_5.bungee.api.chat.ClickEvent;

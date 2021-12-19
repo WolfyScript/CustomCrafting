@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.commands.recipes;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;

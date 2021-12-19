@@ -22,8 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<CraftingRecipeEliteShapeless, EliteRecipeSettings> {

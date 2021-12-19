@@ -29,7 +29,9 @@ import org.bukkit.Color;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
 

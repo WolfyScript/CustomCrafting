@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.data.cache.recipe_creator;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;

@@ -23,7 +23,6 @@
 package me.wolfyscript.customcrafting.registry;
 
 import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.CCClassRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.conditions.Condition;
 import me.wolfyscript.utilities.registry.Registries;

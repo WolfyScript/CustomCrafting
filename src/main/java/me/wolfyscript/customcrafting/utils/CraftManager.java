@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.listeners.customevents.CustomPreCraftEvent;

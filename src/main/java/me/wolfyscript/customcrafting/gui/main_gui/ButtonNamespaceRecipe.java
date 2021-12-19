@@ -22,7 +22,6 @@
 
 package me.wolfyscript.customcrafting.gui.main_gui;
 
-import me.wolfyscript.customcrafting.CCRegistry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
