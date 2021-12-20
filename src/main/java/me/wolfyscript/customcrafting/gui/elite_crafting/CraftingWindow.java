@@ -38,9 +38,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 abstract class CraftingWindow extends CCWindow {
 
     protected static final String RESULT = "result_slot";
+    static final List<Integer> RESULT_SLOTS = List.of(16, 25, 43);
     protected final int gridSize;
 
     protected CraftingWindow(GuiCluster<CCCache> cluster, String namespace, int size, CustomCrafting customCrafting, int gridSize) {
