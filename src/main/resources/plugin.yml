@@ -4,5 +4,8 @@ main: me.wolfyscript.customcrafting.CustomCrafting
 version: ${project.version}
 api-version: "1.16"
 depend: [ WolfyUtilities ]
+loadbefore:
+  - DiSky
+  - EpicWorldGenerator
 softdepend: [ ProtocolLib, MythicMobs, Oraxen, ItemsAdder, PlaceholderAPI ]
 description: Create your own custom recipes for workbenches and furnaces. Disable Vanilla recipes and more.
