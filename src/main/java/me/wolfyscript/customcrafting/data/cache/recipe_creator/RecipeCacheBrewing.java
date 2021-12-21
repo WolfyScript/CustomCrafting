@@ -29,6 +29,7 @@ import org.bukkit.Color;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,14 +66,14 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
         amplifierChange = 0;
         resetEffects = false;
         effectColor = null;
-        effectRemovals = List.of();
+        effectRemovals = new ArrayList<>();
         effectAdditions = new HashMap<>();
         effectUpgrades = new HashMap<>();
         requiredEffects = new HashMap<>();
     }
 
     RecipeCacheBrewing(CustomRecipeBrewing recipe) {
-        super();
+        super(recipe);
         this.allowedItems = recipe.getAllowedItems().clone();
         this.ingredients = recipe.getIngredient().clone();
         this.fuelCost = recipe.getFuelCost();
