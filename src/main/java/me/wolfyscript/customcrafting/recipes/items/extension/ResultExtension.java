@@ -50,19 +50,21 @@ import java.util.stream.Collectors;
 @JsonPropertyOrder(value = {"key", "outerRadius", "innerRadius"})
 public abstract class ResultExtension implements Keyed {
 
-    protected @JsonIgnore
-    Material icon = Material.CHAIN_COMMAND_BLOCK;
-    protected @JsonIgnore
-    String title = "&6&lExtension";
-    protected @JsonIgnore
-    List<String> description;
+    @JsonIgnore
+    protected Material icon = Material.CHAIN_COMMAND_BLOCK;
+    @JsonIgnore
+    protected String title = "&6&lExtension";
+    @JsonIgnore
+    protected List<String> description;
 
     @JsonProperty(value = "key")
+    @JsonInclude
     private final NamespacedKey namespacedKey;
     @JsonAlias(value = "outer_radius")
     protected Vector outerRadius = new Vector(0, 0, 0);
     @JsonAlias(value = "inner_radius")
     protected Vector innerRadius = new Vector(0, 0, 0);
+    protected ExecutionType executionType = ExecutionType.ONCE;
 
     protected ResultExtension(ResultExtension extension) {
         this.namespacedKey = extension.namespacedKey;
@@ -71,6 +73,7 @@ public abstract class ResultExtension implements Keyed {
         this.description = extension.description;
         this.outerRadius = extension.outerRadius;
         this.innerRadius = extension.innerRadius;
+        this.executionType = extension.executionType;
     }
 
     protected ResultExtension(NamespacedKey namespacedKey) {
@@ -157,12 +160,20 @@ public abstract class ResultExtension implements Keyed {
         this.outerRadius = outerRadius;
     }
 
+    public ExecutionType getExecutionType() {
+        return executionType;
+    }
+
+    public void setExecutionType(ExecutionType executionType) {
+        this.executionType = executionType;
+    }
+
     protected <E extends Entity> List<E> getEntitiesInRange(Class<E> entityType, Location location, Vector outerRadius, Vector innerRadius) {
         var world = location.getWorld();
         if (world != null) {
             List<E> outerEntities = world.getNearbyEntities(location, outerRadius.getX(), outerRadius.getZ(), outerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).collect(Collectors.toList());
             if (innerRadius.getX() != 0 || innerRadius.getY() != 0 || innerRadius.getZ() != 0) {
-                List<E> innerEntities = world.getNearbyEntities(location, innerRadius.getX(), innerRadius.getZ(), innerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).collect(Collectors.toList());
+                List<E> innerEntities = world.getNearbyEntities(location, innerRadius.getX(), innerRadius.getZ(), innerRadius.getZ(), entityType::isInstance).stream().map(entityType::cast).toList();
                 outerEntities.removeAll(innerEntities);
             }
             return outerEntities;

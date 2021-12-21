@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
+import me.wolfyscript.customcrafting.recipes.items.extension.ExecutionType;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.ResultTarget;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
@@ -45,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -56,6 +58,8 @@ public class Result extends RecipeItemStack {
     private final Map<Vector, CustomItem> cachedBlockItems = new HashMap<>();
     private ResultTarget target;
     private List<ResultExtension> extensions;
+    @JsonIgnore
+    private List<ResultExtension> bulkExtensions = new ArrayList<>();
 
     public Result() {
         super();
@@ -64,7 +68,7 @@ public class Result extends RecipeItemStack {
 
     public Result(Result result) {
         super(result);
-        this.extensions = result.extensions;
+        setExtensions(result.extensions);
         this.target = result.target;
     }
 
@@ -114,22 +118,27 @@ public class Result extends RecipeItemStack {
     @JsonProperty("extensions")
     private void setExtensions(List<ResultExtension> extensions) {
         this.extensions = extensions;
+        this.bulkExtensions = this.extensions.stream().filter(resultExtension -> resultExtension.getExecutionType().equals(ExecutionType.BULK)).collect(Collectors.toList());
     }
 
     public void addExtension(ResultExtension extension) {
         this.extensions.add(extension);
+        if (extension.getExecutionType().equals(ExecutionType.BULK)) {
+           this.bulkExtensions.add(extension);
+        }
     }
 
     public void removeExtension(ResultExtension extension) {
         this.extensions.remove(extension);
+        this.bulkExtensions.remove(extension);
     }
 
     public void removeExtension(int index) {
-        this.extensions.remove(index);
+        removeExtension(this.extensions.get(index));
     }
 
     public RandomCollection<CustomItem> getRandomChoices(@Nullable Player player) {
-        return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getRarityPercentage(), customItem)));
+        return (player == null ? getChoices() : getChoices(player)).stream().collect(RandomCollection.getCollector((rdmCollection, customItem) -> rdmCollection.add(customItem.getWeight(), customItem)));
     }
 
     /**
@@ -216,6 +225,20 @@ public class Result extends RecipeItemStack {
     }
 
     public void executeExtensions(@NotNull Location location, boolean isWorkstation, @Nullable Player player) {
+        executeExtensions(location, isWorkstation, player, 1);
+    }
+
+    public void executeExtensions(@NotNull Location location, boolean isWorkstation, @Nullable Player player, int amountOfExecutions) {
+        executeExtensions(this.extensions, location, isWorkstation, player);
+        if (amountOfExecutions > 1) {
+            for (int i = 0; i < amountOfExecutions - 1; i++) {
+                executeExtensions(this.bulkExtensions, location, isWorkstation, player);
+            }
+        }
+    }
+
+    private void executeExtensions(List<ResultExtension> extensions, @NotNull Location location, boolean isWorkstation, @Nullable Player player) {
         Bukkit.getScheduler().runTaskLater(CustomCrafting.inst(), () -> extensions.forEach(resultExtension -> resultExtension.onCraft(location, isWorkstation, player)), 2);
     }
+
 }

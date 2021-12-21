@@ -116,7 +116,6 @@ public class CraftManager {
                 Result recipeResult = craftingData.getResult();
                 editStatistics(player, inventory, recipe);
                 setPlayerCraftTime(player, recipe);
-                recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked());
                 calculateClick(player, event, craftingData, recipe, recipeResult);
             }
             remove(event.getWhoClicked().getUniqueId());
@@ -143,9 +142,11 @@ public class CraftManager {
     }
 
     private void calculateClick(Player player, InventoryClickEvent event, CraftingData craftingData, CraftingRecipe<?, ?> recipe, Result recipeResult) {
-        ItemStack result = recipeResult.getItem(craftingData, player, null);
+        var result = recipeResult.getItem(craftingData, player, null);
+        var inventory = event.getClickedInventory();
         int possible = event.isShiftClick() ? Math.min(InventoryUtils.getInventorySpace(player.getInventory(), result) / result.getAmount(), recipe.getAmountCraftable(craftingData)) : 1;
         recipe.removeMatrix(player, event.getClickedInventory(), possible, craftingData);
+        recipeResult.executeExtensions(inventory.getLocation() == null ? event.getWhoClicked().getLocation() : inventory.getLocation(), inventory.getLocation() != null, (Player) event.getWhoClicked(), possible);
         if (event.isShiftClick()) {
             if (possible > 0) {
                 RandomCollection<CustomItem> results = recipeResult.getRandomChoices(player);
