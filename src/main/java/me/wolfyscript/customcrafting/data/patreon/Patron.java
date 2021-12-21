@@ -60,7 +60,7 @@ public class Patron {
                 if (!uuid.isEmpty()) {
                     var url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replace("-", "") + "?unsigned=false");
                     var reader = new InputStreamReader(url.openStream());
-                    var jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                    var jsonObject = new JsonParser().parse(reader).getAsJsonObject();
                     var minecraftName = jsonObject.get("name").getAsString();
                     var properties = jsonObject.get("properties").getAsJsonArray().get(0).getAsJsonObject();
                     this.head = PlayerHeadUtils.getViaValue(properties.get("value").getAsString());
