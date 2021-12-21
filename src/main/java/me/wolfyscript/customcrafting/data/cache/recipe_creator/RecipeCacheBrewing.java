@@ -72,7 +72,7 @@ public class RecipeCacheBrewing extends RecipeCache<CustomRecipeBrewing> {
     }
 
     RecipeCacheBrewing(CustomRecipeBrewing recipe) {
-        super();
+        super(recipe);
         this.allowedItems = recipe.getAllowedItems().clone();
         this.ingredients = recipe.getIngredient().clone();
         this.fuelCost = recipe.getFuelCost();
