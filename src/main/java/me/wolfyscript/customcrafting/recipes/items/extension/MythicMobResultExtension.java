@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.compatibility.plugins.MythicMobsIntegration;
@@ -42,7 +43,7 @@ public class MythicMobResultExtension extends ResultExtension {
     private Vector offset = new Vector(0.5, 1, 0.5);
 
     public MythicMobResultExtension() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "mythicmobs/mob_spawn"));
+        super(new NamespacedKey(CustomCrafting.inst(), "mythicmobs/mob_spawn"));
     }
 
     public MythicMobResultExtension(MythicMobResultExtension extension) {

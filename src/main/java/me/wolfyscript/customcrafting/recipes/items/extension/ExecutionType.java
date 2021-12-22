@@ -22,9 +22,20 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
+/**
+ * Defines the way a {@link ResultExtension} will be executed in recipes.
+ */
 public enum ExecutionType {
 
+    /**
+     * If possible the extension will be executed in bulk.<br>
+     * e.g. in crafting recipes.
+     */
     BULK,
+    /**
+     * The default value.<br>
+     * The extension will always be executed once.
+     */
     ONCE
 
 }

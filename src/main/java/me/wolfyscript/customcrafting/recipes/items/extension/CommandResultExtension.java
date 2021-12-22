@@ -23,7 +23,7 @@
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
@@ -44,7 +44,7 @@ public class CommandResultExtension extends ResultExtension {
     private boolean nearWorkstation = false;
 
     public CommandResultExtension() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "command"));
+        super(new NamespacedKey(CustomCrafting.inst(), "command"));
     }
 
     public CommandResultExtension(CommandResultExtension extension) {
