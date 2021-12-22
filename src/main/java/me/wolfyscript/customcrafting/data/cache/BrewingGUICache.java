@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cache;
 
+import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -29,6 +30,7 @@ import org.bukkit.potion.PotionEffectType;
 public class BrewingGUICache {
 
     private String option;
+    private NamespacedKey parsedOptionKey;
 
     int page;
 
@@ -41,6 +43,7 @@ public class BrewingGUICache {
     public BrewingGUICache() {
         this.page = 0;
         this.option = "";
+        this.parsedOptionKey = null;
         this.potionEffectAddition = null;
         this.replacePotionEffectAddition = false;
         this.upgradePotionEffectType = null;
@@ -61,6 +64,14 @@ public class BrewingGUICache {
 
     public void setOption(String option) {
         this.option = option;
+    }
+
+    public NamespacedKey getParsedOptionKey() {
+        return parsedOptionKey;
+    }
+
+    public void setParsedOptionKey(NamespacedKey parsedOptionKey) {
+        this.parsedOptionKey = parsedOptionKey;
     }
 
     public boolean isReplacePotionEffectAddition() {
