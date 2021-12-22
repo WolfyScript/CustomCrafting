@@ -254,7 +254,7 @@ public class RecipeCreatorBrewing extends RecipeCreator {
         registerButton(new ActionButton<>("effect_additions.remove", Material.RED_CONCRETE, (cache, guiHandler, player, inventory, i, event) -> {
             var brewingRecipe = cache.getRecipeCreatorCache().getBrewingCache();
             var potionEffectCache = cache.getPotionEffectCache();
-            potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectAdditions().remove(potionEffectType));
+            potionEffectCache.setApplyPotionEffectType((cache1, potionEffectType) -> brewingRecipe.getEffectAdditions().keySet().removeIf(potionEffect -> potionEffect.getType().equals(potionEffectType)));
             potionEffectCache.setOpenedFrom(ClusterRecipeCreator.KEY, "brewing_stand");
             guiHandler.openWindow(ClusterPotionCreator.POTION_EFFECT_TYPE_SELECTION);
             return true;
