@@ -25,7 +25,9 @@ package me.wolfyscript.customcrafting.gui.recipe_creator;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
+import me.wolfyscript.customcrafting.data.cache.BrewingGUICache;
 import me.wolfyscript.customcrafting.data.cache.potions.PotionEffects;
+import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCacheBrewing;
 import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -55,6 +57,8 @@ public class RecipeCreatorBrewing extends RecipeCreator {
     private static final String ALLOWED_ITEMS = "allowed_items";
     private static final String DURATION_CHANGE = "duration_change";
     private static final String AMPLIFIER_CHANGE = "amplifier_change";
+
+    private NamespacedKey parsedOptionRecipe;
 
     public RecipeCreatorBrewing(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "brewing_stand", 54, customCrafting);
@@ -390,7 +394,7 @@ public class RecipeCreatorBrewing extends RecipeCreator {
         update.setButton(16, "effect_upgrades.option");
         update.setButton(17, "required_effects.option");
 
-        switch (brewingGUICache.getOption()) {
+        switch (getOption(brewingGUICache, brewingRecipe)) {
             case "result":
                 update.setButton(32, "recipe.result");
                 update.setButton(34, "result.info");
@@ -430,4 +434,44 @@ public class RecipeCreatorBrewing extends RecipeCreator {
         update.setButton(53, ClusterRecipeCreator.SAVE_AS);
     }
 
+    private static String parseOption(RecipeCacheBrewing brewingRecipe) {
+        if (!brewingRecipe.getResult().isEmpty()) {
+            return "result";
+        }
+
+        if (!brewingRecipe.getEffectRemovals().isEmpty()) {
+            return "effect_removals";
+        }
+
+        if (!brewingRecipe.getEffectAdditions().isEmpty()) {
+            return "effect_additions";
+        }
+
+        if (!brewingRecipe.getEffectUpgrades().isEmpty()) {
+            return "effect_upgrades";
+        }
+
+        if (!brewingRecipe.getRequiredEffects().isEmpty()) {
+            return "required_effects";
+        }
+
+        return "";
+    }
+
+    private String getOption(BrewingGUICache brewingGUICache, RecipeCacheBrewing brewingRecipe) {
+        // Ignore cache and parse option from the saved recipe if we're loading it fresh
+        if (
+            brewingRecipe.isSaved() &&
+            parsedOptionRecipe != brewingRecipe.getKey()
+        ) {
+            String option = parseOption(brewingRecipe);
+
+            brewingGUICache.setOption(option);
+            parsedOptionRecipe = brewingRecipe.getKey();
+
+            return option;
+        }
+
+        return brewingGUICache.getOption();
+    }
 }
