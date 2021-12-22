@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Location;
@@ -44,7 +45,7 @@ public class SoundResultExtension extends ResultExtension {
     private boolean onBlock = true;
 
     public SoundResultExtension() {
-        super(new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "sound"));
+        super(new NamespacedKey(CustomCrafting.inst(), "sound"));
     }
 
     public SoundResultExtension(SoundResultExtension extension) {

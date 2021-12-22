@@ -30,10 +30,7 @@ import me.wolfyscript.customcrafting.recipes.CraftingRecipeShaped;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipeShapeless;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
 import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.recipes.items.extension.CommandResultExtension;
-import me.wolfyscript.customcrafting.recipes.items.extension.MythicMobResultExtension;
-import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtensionAdvancement;
-import me.wolfyscript.customcrafting.recipes.items.extension.SoundResultExtension;
+import me.wolfyscript.customcrafting.recipes.items.extension.*;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
@@ -143,7 +140,9 @@ public class ConfigHandler {
             Result result = workbenchCraft.getResult();
             result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE)));
             if (WolfyUtilities.isDevEnv()) {
-                result.addExtension(new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true));
+                var commandExecution = new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true);
+                commandExecution.setExecutionType(ExecutionType.BULK);
+                result.addExtension(commandExecution);
                 result.addExtension(new SoundResultExtension(Sound.BLOCK_ANVIL_USE));
                 result.addExtension(new MythicMobResultExtension("SkeletalKnight", 1));
                 result.addExtension(new ResultExtensionAdvancement(NamespacedKey.minecraft("husbandry/tactical_fishing"), false, null, false, false));

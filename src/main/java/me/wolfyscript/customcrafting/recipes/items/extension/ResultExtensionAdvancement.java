@@ -24,7 +24,7 @@ package me.wolfyscript.customcrafting.recipes.items.extension;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -46,7 +46,7 @@ public class ResultExtensionAdvancement extends ResultExtension {
     private boolean nearWorkstation = false;
 
     public ResultExtensionAdvancement() {
-        super(new me.wolfyscript.utilities.util.NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advancement"));
+        super(new me.wolfyscript.utilities.util.NamespacedKey(CustomCrafting.inst(), "advancement"));
     }
 
     public ResultExtensionAdvancement(ResultExtensionAdvancement extension) {
@@ -90,7 +90,7 @@ public class ResultExtensionAdvancement extends ResultExtension {
 
     @JsonGetter
     private String getAdvancement() {
-        return advancement.toString();
+        return this.advancement.toString();
     }
 
     @JsonSetter
