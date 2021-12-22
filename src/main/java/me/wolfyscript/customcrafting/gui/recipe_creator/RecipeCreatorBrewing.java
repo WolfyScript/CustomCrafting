@@ -58,8 +58,6 @@ public class RecipeCreatorBrewing extends RecipeCreator {
     private static final String DURATION_CHANGE = "duration_change";
     private static final String AMPLIFIER_CHANGE = "amplifier_change";
 
-    private NamespacedKey parsedOptionRecipe;
-
     public RecipeCreatorBrewing(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "brewing_stand", 54, customCrafting);
     }
@@ -462,12 +460,12 @@ public class RecipeCreatorBrewing extends RecipeCreator {
         // Ignore cache and parse option from the saved recipe if we're loading it fresh
         if (
             brewingRecipe.isSaved() &&
-            parsedOptionRecipe != brewingRecipe.getKey()
+            brewingGUICache.getParsedOptionKey() != brewingRecipe.getKey()
         ) {
             String option = parseOption(brewingRecipe);
 
             brewingGUICache.setOption(option);
-            parsedOptionRecipe = brewingRecipe.getKey();
+            brewingGUICache.setParsedOptionKey(brewingRecipe.getKey());
 
             return option;
         }
