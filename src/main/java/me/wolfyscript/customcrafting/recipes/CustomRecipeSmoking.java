@@ -60,7 +60,9 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
     @Override
     public SmokingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            return new SmokingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            var recipe = new SmokingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack(), getRecipeChoice(), getExp(), getCookingTime());
+            recipe.setGroup(group);
+            return recipe;
         }
         return null;
     }
