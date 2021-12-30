@@ -137,15 +137,15 @@
     },
     "recipes": {
       "toggle": {
-        "enabled": "",
-        "disabled": ""
-      },
-      "edit": {
-        "invalid": ""
+        "enabled": "&eEnabled recipe &a%recipe%",
+        "disabled": "&eDisabled recipe &c%recipe%"
       },
       "delete": {
-        "invalid": ""
-      }
+        "confirm": "&eDo you really want to delete &6%recipe%&e? ",
+        "confirmation": "&7[&aYES&7] ",
+        "cancel": "&7[&cNO&7]"
+      },
+      "invalid_recipe": "&cThe recipe &e%recipe%&c does not exist!"
     },
     "database": {
       "invalid_usage": "&cInvalid Usage: &4/cc database <export_items | export_recipes>"
