@@ -82,8 +82,6 @@ public class EditSubCommand extends AbstractSubCommand {
     @Nullable
     @Override
     protected List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
-        List<String> results = new ArrayList<>();
-        StringUtil.copyPartialMatches(args[args.length - 1], customCrafting.getRegistries().getRecipes().keySet().stream().map(NamespacedKey::toString).toList(), results);
-        return results;
+        return NamespacedKeyUtils.getPartialMatches(args[args.length - 1], customCrafting.getRegistries().getRecipes().keySet()).stream().map(NamespacedKey::toString).collect(Collectors.toList());
     }
 }
