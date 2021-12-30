@@ -67,10 +67,7 @@ public class NamespacedKeyUtils {
     }
 
     public static boolean partiallyMatches(String token, NamespacedKey namespacedKey) {
-        if (!token.contains(":")) {
-            return namespacedKey.getKey().startsWith(token);
-        }
-        return namespacedKey.toString().startsWith(token);
+        return (!token.contains(":") && namespacedKey.getKey().startsWith(token)) || namespacedKey.toString().startsWith(token);
     }
 
     public static List<NamespacedKey> getPartialMatches(String token, Collection<NamespacedKey> originals) {
