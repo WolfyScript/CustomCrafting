@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.data.cauldron;
 
+import com.google.common.util.concurrent.AbstractScheduledService;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.listeners.customevents.CauldronCookEvent;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
@@ -38,14 +39,17 @@ import org.bukkit.util.Vector;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.zip.DeflaterOutputStream;
 
 public class Cauldrons {
 
@@ -196,20 +200,24 @@ public class Cauldrons {
         if (customCrafting.getConfigHandler().getConfig().isAutoSaveMessage()) {
             api.getConsole().info("Saving Cauldrons");
         }
-        try (var fos = new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat"); var oos = new BukkitObjectOutputStream(fos)) {
-            Map<String, List<String>> saveMap = new HashMap<>();
-            synchronized (cauldrons) {
-                cauldrons.entrySet().stream().filter(entry -> entry.getKey() != null).forEach(entry -> {
-                    String loc = locationToString(entry.getKey());
-                    if (loc != null) {
-                        saveMap.put(loc, entry.getValue() == null ? new ArrayList<>() : entry.getValue().stream().filter(Objects::nonNull).map(Cauldron::toString).toList());
-                    }
-                });
-            }
-            oos.writeObject(saveMap);
-        } catch (IOException e) {
-            e.printStackTrace();
+        //Still using String conversion?! This should be updated to use compressed json data, similar to player cache in WolfyUtilities!
+        //TODO: json data with compression
+        Map<String, List<String>> cauldronsSnapshot = new HashMap<>();
+        synchronized (cauldrons) {
+            cauldrons.forEach((key, value) -> {
+                String loc = locationToString(key);
+                if (loc != null && value != null) {
+                    cauldronsSnapshot.put(loc, value.stream().filter(Objects::nonNull).map(Cauldron::toString).toList());
+                }
+            });
         }
+        Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
+            try (var fos = new BufferedOutputStream(new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat")); var oos = new BukkitObjectOutputStream(fos)) {
+                oos.writeObject(cauldronsSnapshot);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private Location stringToLocation(String loc) {
