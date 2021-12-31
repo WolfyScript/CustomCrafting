@@ -29,6 +29,7 @@ import me.wolfyscript.customcrafting.gui.Setting;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -36,12 +37,12 @@ import me.wolfyscript.utilities.util.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EditSubCommand extends AbstractSubCommand {
 
@@ -67,10 +68,10 @@ public class EditSubCommand extends AbstractSubCommand {
                             creatorCache.loadRecipeIntoCache(customRecipe);
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey(ClusterRecipeCreator.KEY, creatorCache.getRecipeType().getCreatorID())), 1);
                         } catch (IllegalArgumentException ex) {
-                            api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
+                            api.getChat().sendMessage((Player) sender, "$commands.recipes.edit.invalid_recipe$", new Pair<>("%recipe%", args[0]));
                         }
                     } else {
-                        api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
+                        api.getChat().sendMessage((Player) sender, "$commands.recipes.invalid_recipe$", new Pair<>("%recipe%", args[0]));
                     }
                 }
             }
@@ -81,8 +82,6 @@ public class EditSubCommand extends AbstractSubCommand {
     @Nullable
     @Override
     protected List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
-        List<String> results = new ArrayList<>();
-        StringUtil.copyPartialMatches(args[args.length - 1], customCrafting.getRegistries().getRecipes().keySet().stream().map(NamespacedKey::toString).toList(), results);
-        return results;
+        return NamespacedKeyUtils.getPartialMatches(args[args.length - 1], customCrafting.getRegistries().getRecipes().keySet()).stream().map(NamespacedKey::toString).collect(Collectors.toList());
     }
 }

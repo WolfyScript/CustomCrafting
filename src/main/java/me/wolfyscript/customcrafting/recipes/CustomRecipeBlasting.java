@@ -45,7 +45,9 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
     @Override
     public BlastingRecipe getVanillaRecipe() {
         if (!getSource().isEmpty()) {
-            return new BlastingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getChoices().get(0).create(), getRecipeChoice(), getExp(), getCookingTime());
+            var recipe = new BlastingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getChoices().get(0).create(), getRecipeChoice(), getExp(), getCookingTime());
+            recipe.setGroup(group);
+            return recipe;
         }
         return null;
     }

@@ -30,6 +30,10 @@ import me.wolfyscript.utilities.util.world.WorldUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class NamespacedKeyUtils {
 
     private NamespacedKeyUtils() {
@@ -60,6 +64,14 @@ public class NamespacedKeyUtils {
             }
         }
         return null;
+    }
+
+    public static boolean partiallyMatches(String token, NamespacedKey namespacedKey) {
+        return (!token.contains(":") && namespacedKey.getKey().startsWith(token)) || namespacedKey.toString().startsWith(token);
+    }
+
+    public static List<NamespacedKey> getPartialMatches(String token, Collection<NamespacedKey> originals) {
+        return originals.stream().filter(nKey -> partiallyMatches(token, nKey)).collect(Collectors.toList());
     }
 
     public static CustomItem getCustomItem(Block block) {

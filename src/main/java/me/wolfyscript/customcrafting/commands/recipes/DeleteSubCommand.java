@@ -26,6 +26,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
@@ -39,7 +40,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DeleteSubCommand extends AbstractSubCommand {
 
@@ -55,10 +60,21 @@ public class DeleteSubCommand extends AbstractSubCommand {
             if (key != null) {
                 CustomRecipe<?> customRecipe = customCrafting.getRegistries().getRecipes().get(key);
                 if (customRecipe != null) {
-                    api.getChat().sendMessage(player, "$msg.gui.recipe_editor.delete.confirm$", new Pair<>("%RECIPE%", customRecipe.getNamespacedKey().toString()));
-                    api.getChat().sendActionMessage(player, new ClickData("$msg.gui.recipe_editor.delete.confirmed$", (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player))), new ClickData("$msg.gui.recipe_editor.delete.declined$", (wolfyUtilities, player1) -> api.getChat().sendMessage(player1, "§cCancelled"), new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete ")));
+                    api.getChat().sendMessage(player, "$commands.recipes.delete.confirm$", new Pair<>("%recipe%", customRecipe.getNamespacedKey().toString()));
+                    api.getChat().sendActionMessage(player,
+                            new ClickData("$commands.recipes.delete.confirmation$",
+                                    (wolfyUtilities, player1) -> Bukkit.getScheduler().runTask(customCrafting, () -> customRecipe.delete(player)),
+                                    true
+                            ),
+                            new ClickData(
+                                    "$commands.recipes.delete.cancel$",
+                                    (wolfyUtilities, player1) -> {},
+                                    true,
+                                    new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/recipes delete ")
+                            )
+                    );
                 } else {
-                    api.getChat().sendMessage((Player) sender, "$msg.gui.recipe_editor.not_existing$", new Pair<>("%RECIPE%", args[0] + ":" + args[1]));
+                    api.getChat().sendMessage((Player) sender, "$commands.recipes.invalid_recipe$", new Pair<>("%recipe%", args[0]));
                 }
             }
         }
@@ -68,9 +84,6 @@ public class DeleteSubCommand extends AbstractSubCommand {
     @Override
     protected @Nullable
     List<String> onTabComplete(@NotNull CommandSender var1, @NotNull String var3, @NotNull String[] args) {
-        List<String> results = new ArrayList<>();
-        List<String> recipes = customCrafting.getRegistries().getRecipes().keySet().stream().map(NamespacedKey::toString).toList();
-        StringUtil.copyPartialMatches(args[args.length - 1], recipes, results);
-        return results;
+        return NamespacedKeyUtils.getPartialMatches(args[args.length - 1], customCrafting.getRegistries().getRecipes().keySet()).stream().map(NamespacedKey::toString).collect(Collectors.toList());
     }
 }
