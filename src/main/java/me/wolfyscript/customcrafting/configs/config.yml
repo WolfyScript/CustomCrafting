@@ -15,62 +15,87 @@
 #       - %customcrafting_recipe_permission_[namespaced_key]%   > If the recipe requires a permission
 #       - %customcrafting_recipe_available_[namespaced_key]%    > If the recipe is available for the player
 
-debug: false              # Debug should be disabled! That are a lot of Messages!
+# Debug should be disabled! That are a lot of Messages!
+debug: false
 
-language: en_US           # The language you want use. The context: <language>_<country> Available languages' en_US, de_DE, zh_CN.
+# The language you want use. The context: <language>_<country> Available languages' en_US, de_DE, zh_CN.
 # If you want to edit a language copy it and rename it.
 # After renaming you can just use your language file name instead, and it will also be available in the in-game settings.
 # If you have any language file you would like to add to this plugin, then feel free to contact me.
+language: en_US
 
 creator:
-  reset_after_save: true  # Configure if the stored values and items you put or configured in the GUI should be cleared after saving a recipe.
+  # Configure if the stored values and items you put or configured in the GUI should be cleared after saving a recipe.
+  reset_after_save: true
 
 commands:
-  alias: [ "cc" ]         # Aliases for the main command of the plugin.
+  # Aliases for the main command of the plugin.
   # This is often used to prevent incompatibility with other plugins that use the same alias as ChatClear, etc.
+  alias: [ "cc" ]
 
 local_storage:
-  load: true              # this should always be true if you don't use a database or want to export your data to the database.
+  # this should always be true if you don't use a database or want to export your data to the database.
   # If you use a database you can still load local data, but configure how it loads them with the following settings below.
-
-  before_database: true   # Specifies if the local storage should be loaded before or after the database.
-    # This is useful if you have items/recipes that depend on items in the database or other way around.
+  load: true
+  # Specifies if the local storage should be loaded before or after the database.
+  # This is useful if you have items/recipes that depend on items in the database or other way around.
   # Make sure that the dependencies of items and recipes are loaded in the correct order.
-
-  override_data: false    # Sets if already existing recipes/items with the same namespaced key should be replaced when registered.
-    # Useful if you want to override a database recipe/item with the one from local storage.
-    # Or when "before_database" enabled override local recipes/items with database data.
+  before_database: true
+  # Sets if already existing recipes/items with the same namespaced key should be replaced when registered.
+  # Useful if you want to override a database recipe/item with the one from local storage.
+  # Or when "before_database" enabled override local recipes/items with database data.
   # The recipes can only be replaced in Minecraft 1.15+, because the API pre 1.15 is unstable.
+  override_data: false
 database:
-  enabled: false          # If the database feature should be used or not.
-  type: MYSQL             # The type of the database. Currently, only MYSQL
-  host: "localhost"       # The ip or hostname of the data bank
-  port: 3306              # The port of the data bank
-  schema: "mc_plugins"    # The name of the schema
-  username: "minecraft"   # The username of the user to use for the connection.
-  password: ""            # The users password
+  # If the database feature should be used or not.
+  enabled: false
+  # The type of the database. Currently, only MYSQL
+  type: MYSQL
+  # The ip or hostname of the data bank
+  host: "localhost"
+  # The port of the data bank
+  port: 3306
+  # The name of the schema
+  schema: "mc_plugins"
+  # The username of the user to use for the connection.
+  username: "minecraft"
+  # The users password
+  password: ""
 
 crafting_table:
-  enable: true            # If the advanced crafting table is enabled or not.
-  reset: true             # If the crafting table item should be reset on each server start. This means the config is replaced with a new version.
+  # If the advanced crafting table is enabled or not.
+  enable: true
+  # If the crafting table item should be reset on each server start. This means the config is replaced with a new version.
+  reset: true
 
 recipe_book:
-  reset: true             # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
+  # If the recipe book item should be reset on each server start. This means the config is replaced with a new version.
+  reset: true
 
 custom_items:
-  update: true            # Use this option if you have saved CustomItems and your players got them in their inventory. Each time a Player joins the server it will try to update the CustomItems.
+  # Use this option if you have saved CustomItems and your players got them in their inventory. Each time a Player joins the server it will try to update the CustomItems.
+  update: true
 
 recipes:
-  brewing: false          # Toggle the Brewing Recipes. They are off by default to prevent possible duplication issues
-  lockdown: false         # Used to block any kind of custom recipe. If enabled no one will be able to craft any custom recipe anymore.
-  pretty_printing: true   # If the configs like items or recipes should be saved using formatting or just one continuous String.
-  disabled_recipes: [ ]   # The vanilla or custom recipes that are blocked from crafting.
+  # Toggle the Brewing Recipes. They are off by default to prevent possible duplication issues
+  brewing: false
+  # Used to block any kind of custom recipe. If enabled no one will be able to craft any custom recipe anymore.
+  lockdown: false
+  # If the configs like items or recipes should be saved using formatting or just one continuous String.
+  pretty_printing: true
+  # The vanilla or custom recipes that are blocked from crafting.
+  disabled_recipes: [ ]
 
 data:
-  print_stacktrace: false # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
-  bukkit_version: 0              # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up to date.
-  version: 0                     # Do not change this number! It is used to update configs of recipes and items to new formats!
+  # Toggle if the stacktrace should be printed out if a recipe or item fails to load.
+  print_stacktrace: false
+  # Do not change this number! It is used for internal conversion of items between Bukkit versions to make sure they are up-to-date.
+  bukkit_version: 0
+  # Do not change this number! It is used to update configs of recipes and items to new formats!
+  version: 0
   auto_save:
-    interval: 30          # Interval in minutes to save data.
+    # Interval in minutes to save data.
     # Currently, used to save the data of the placed cauldrons with campfires underneath and the contained items and recipes.
-    message: true         # Save message that is printed into the console.
+    interval: 30
+    # Save message that is printed into the console.
+    message: true
