@@ -68,7 +68,7 @@ public class EditSubCommand extends AbstractSubCommand {
                             creatorCache.loadRecipeIntoCache(customRecipe);
                             Bukkit.getScheduler().runTaskLater(customCrafting, () -> api.getInventoryAPI().openGui(player, new NamespacedKey(ClusterRecipeCreator.KEY, creatorCache.getRecipeType().getCreatorID())), 1);
                         } catch (IllegalArgumentException ex) {
-                            api.getChat().sendMessage((Player) sender, "$commands.recipes.invalid_recipe$", new Pair<>("%recipe%", args[0]));
+                            api.getChat().sendMessage((Player) sender, "$commands.recipes.edit.invalid_recipe$", new Pair<>("%recipe%", args[0]));
                         }
                     } else {
                         api.getChat().sendMessage((Player) sender, "$commands.recipes.invalid_recipe$", new Pair<>("%recipe%", args[0]));

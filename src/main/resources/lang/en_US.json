@@ -140,6 +140,9 @@
         "enabled": "&eEnabled recipe &a%recipe%",
         "disabled": "&eDisabled recipe &c%recipe%"
       },
+      "edit": {
+        "invalid_recipe": "&cUnsupported recipe type!"
+      },
       "delete": {
         "confirm": "&eDo you really want to delete &6%recipe%&e? ",
         "confirmation": "&7[&aYES&7] ",
