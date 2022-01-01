@@ -174,24 +174,27 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         WolfyUtilities api = customCrafting.getApi();
         try {
             CustomRecipe<?> recipe = constructRecipe();
-            recipe.save(player);
-            customCrafting.getRegistries().getRecipes().register(recipe);
-            Bukkit.getScheduler().runTask(customCrafting, () -> {
-                if (player != null) {
-                    api.getChat().sendKey(player, ClusterRecipeCreator.KEY, "loading.success");
-                }
-                if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
-                    guiHandler.getCustomCache().getRecipeCreatorCache().reset();
-                }
-            });
+            if (recipe.save(player)) {
+                customCrafting.getRegistries().getRecipes().register(recipe);
+                Bukkit.getScheduler().runTask(customCrafting, () -> {
+                    if (player != null) {
+                        api.getChat().sendKey(player, ClusterRecipeCreator.KEY, "loading.success");
+                    }
+                    if (customCrafting.getConfigHandler().getConfig().isResetCreatorAfterSave()) {
+                        guiHandler.getCustomCache().getRecipeCreatorCache().reset();
+                    }
+                });
+                return true;
+            }
+            api.getChat().sendMessage(player, "&cError saving recipe! Failed to save recipe.");
+            return false;
         } catch (IllegalArgumentException ex) {
             //Invalid recipe values!
-            api.getChat().sendMessage(player, "&cError saving recipe!");
+            api.getChat().sendMessage(player, "&cError saving recipe! " + ex.getMessage());
             return false;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
-        return true;
     }
 }
