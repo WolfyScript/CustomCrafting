@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import me.wolfyscript.customcrafting.recipes.data.CraftingData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;

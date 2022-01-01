@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.handlers.ResourceLoader;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;

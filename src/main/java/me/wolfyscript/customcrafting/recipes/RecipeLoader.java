@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
 import java.lang.reflect.InvocationTargetException;

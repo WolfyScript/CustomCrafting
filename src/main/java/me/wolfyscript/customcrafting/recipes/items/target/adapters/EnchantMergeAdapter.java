@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items.target.adapters;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.customcrafting.recipes.data.IngredientData;
 import me.wolfyscript.customcrafting.recipes.data.RecipeData;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;

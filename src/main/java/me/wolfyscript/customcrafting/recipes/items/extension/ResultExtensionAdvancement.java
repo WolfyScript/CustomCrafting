@@ -22,8 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes.items.extension;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.configs.recipebook;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
