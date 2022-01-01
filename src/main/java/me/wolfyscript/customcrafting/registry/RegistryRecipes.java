@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.registry;
 
 
+import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CraftingRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
@@ -97,7 +98,9 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     @Override
     public void register(NamespacedKey namespacedKey, CustomRecipe<?> value) {
-        remove(Objects.requireNonNull(namespacedKey, "Not a valid key! The key cannot be null!"));
+        Preconditions.checkArgument(namespacedKey != null, "Invalid NamespacedKey! The namespaced key cannot be null!");
+        Preconditions.checkArgument(!namespacedKey.getNamespace().equalsIgnoreCase("minecraft"), "Invalid NamespacedKey! Cannot register recipe under minecraft namespace!");
+        remove(namespacedKey);
         super.register(namespacedKey, value);
         if (value instanceof ICustomVanillaRecipe vanillaRecipe && !value.isDisabled()) {
             try {
