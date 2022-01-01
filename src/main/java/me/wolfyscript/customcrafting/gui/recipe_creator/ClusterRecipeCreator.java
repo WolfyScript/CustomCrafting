@@ -172,7 +172,7 @@ public class ClusterRecipeCreator extends CCCluster {
                 });
                 recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster(KEY), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
                     var namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
-                    if (namespacedKey != null) {
+                    if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
                         cache.getRecipeCreatorCache().getRecipeCache().setKey(namespacedKey);
                         if (!cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
                             guiHandler.getApi().getChat().sendKey(player, KEY, "save.empty");
