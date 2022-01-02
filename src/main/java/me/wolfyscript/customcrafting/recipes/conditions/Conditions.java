@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.node.ObjectNode;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;

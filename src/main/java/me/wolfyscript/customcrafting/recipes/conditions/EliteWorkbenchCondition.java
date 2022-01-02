@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.EliteWorkbenchData;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;

@@ -22,9 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes.conditions;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
-import com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.*;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.cache.recipe_creator.RecipeCache;

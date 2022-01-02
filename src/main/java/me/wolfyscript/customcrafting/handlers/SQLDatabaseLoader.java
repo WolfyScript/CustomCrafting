@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonProcessingException;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.RecipeLoader;

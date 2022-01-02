@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.handlers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.MainConfig;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;

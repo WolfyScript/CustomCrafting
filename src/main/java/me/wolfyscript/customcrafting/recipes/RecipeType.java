@@ -22,7 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;

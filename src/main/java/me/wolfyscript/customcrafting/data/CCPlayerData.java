@@ -22,11 +22,11 @@
 
 package me.wolfyscript.customcrafting.data;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.DeserializationContext;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
