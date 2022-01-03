@@ -46,7 +46,7 @@ public class ToggleSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.toggle") && args.length > 0) {
+        if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_toggle") && args.length > 0) {
             String id = args[0];
             if (id.contains(":")) {
                 var namespacedKey = me.wolfyscript.utilities.util.NamespacedKey.of(id);

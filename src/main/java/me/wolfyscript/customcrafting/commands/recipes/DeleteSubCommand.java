@@ -54,7 +54,7 @@ public class DeleteSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes.delete") && args.length > 0) {
+        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes_delete") && args.length > 0) {
             WolfyUtilities api = customCrafting.getApi();
             NamespacedKey key = NamespacedKey.of(args[0]);
             if (key != null) {

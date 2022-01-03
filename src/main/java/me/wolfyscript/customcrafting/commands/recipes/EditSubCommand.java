@@ -52,7 +52,7 @@ public class EditSubCommand extends AbstractSubCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
-        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes.edit") && args.length > 0) {
+        if (sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes_edit") && args.length > 0) {
             WolfyUtilities api = customCrafting.getApi();
             if (args[0].contains(":")) {
                 NamespacedKey key = NamespacedKey.of(args[0]);

@@ -47,7 +47,7 @@ public class SaveSubCommand extends AbstractSubCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull String var3, @NotNull String[] args) {
         WolfyUtilities api = customCrafting.getApi();
-        if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes.save")) {
+        if (sender instanceof Player && ChatUtils.checkPerm(sender, "customcrafting.cmd.recipes_save")) {
             api.getRegistries().getCustomItems().entrySet().forEach(entry -> {
                 api.getConsole().info("Saving item: " + entry.getKey().toString());
                 ItemLoader.saveItem(entry.getKey(), entry.getValue());
