@@ -2445,7 +2445,7 @@
               "",
               "&eThe amount xp you get when the recipe is done."
             ],
-            "message": "&3Type in the amount of experience. e.g. 0.5"
+            "message": "&3Type in the amount of experience. e.g. 2"
           },
           "cookingTime": {
             "name": "&6Cooking Time",
