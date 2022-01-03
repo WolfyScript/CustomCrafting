@@ -30,7 +30,7 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
 
     private int cookingTime;
     private int waterLevel;
-    private float xp;
+    private int xp;
     private CustomItem handItem;
     private Ingredient ingredients;
     private boolean dropItems;
@@ -106,11 +106,11 @@ public class RecipeCacheCauldron extends RecipeCache<CustomRecipeCauldron> {
         this.waterLevel = waterLevel;
     }
 
-    public float getXp() {
+    public int getXp() {
         return xp;
     }
 
-    public void setXp(float xp) {
+    public void setXp(int xp) {
         this.xp = xp;
     }
 
