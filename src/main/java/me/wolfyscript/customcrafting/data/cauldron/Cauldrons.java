@@ -211,13 +211,13 @@ public class Cauldrons {
                 }
             });
         }
-        Bukkit.getScheduler().runTaskAsynchronously(customCrafting, () -> {
+        Executors.defaultThreadFactory().newThread(() -> {
             try (var fos = new BufferedOutputStream(new FileOutputStream(customCrafting.getDataFolder() + File.separator + "cauldrons.dat")); var oos = new BukkitObjectOutputStream(fos)) {
                 oos.writeObject(cauldronsSnapshot);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }).start();
     }
 
     private Location stringToLocation(String loc) {
