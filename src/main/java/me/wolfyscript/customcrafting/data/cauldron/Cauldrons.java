@@ -35,6 +35,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Campfire;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.util.Vector;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -112,7 +114,15 @@ public class Cauldrons {
                                                 }
                                                 recipe.getResult().executeExtensions(loc.clone(), true, null);
                                                 if (event.dropItems()) {
-                                                    world.dropItemNaturally(loc.clone().add(0.0, 0.5, 0.0), event.getResult().create());
+                                                    var dropLocation = loc.clone().add(0.0, 0.5, 0.0);
+
+                                                    world.dropItemNaturally(dropLocation, event.getResult().create());
+
+                                                    if (recipe.getXp() > 0) {
+                                                        ExperienceOrb orb = (ExperienceOrb) dropLocation.getWorld().spawnEntity(dropLocation, EntityType.EXPERIENCE_ORB);
+                                                        orb.setExperience(recipe.getXp());
+                                                    }
+
                                                     return true;
                                                 }
                                             }

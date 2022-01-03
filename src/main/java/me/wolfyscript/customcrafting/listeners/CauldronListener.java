@@ -101,11 +101,12 @@ public class CauldronListener implements Listener {
                 for (Cauldron cauldron : cauldrons.getCauldrons().get(block.getLocation())) {
                     if (cauldron.isDone() && !cauldron.dropItems()) {
                         ItemStack handItem = event.getItem();
-                        CustomItem required = cauldron.getRecipe().getHandItem();
+                        CustomRecipeCauldron recipe = cauldron.getRecipe();
+                        CustomItem required = recipe.getHandItem();
                         event.setUseItemInHand(Event.Result.DENY);
                         event.setUseInteractedBlock(Event.Result.DENY);
                         if (!ItemUtils.isAirOrNull(handItem)) {
-                            if (!ItemUtils.isAirOrNull(required) && required.isSimilar(handItem, cauldron.getRecipe().isExactMeta())) {
+                            if (!ItemUtils.isAirOrNull(required) && required.isSimilar(handItem, recipe.isExactMeta())) {
                                 handItem.setAmount(handItem.getAmount() - 1);
                             } else if (!ItemUtils.isAirOrNull(required)) {
                                 return;
@@ -118,6 +119,9 @@ public class CauldronListener implements Listener {
                             player.getInventory().addItem(result);
                         } else {
                             player.getWorld().dropItemNaturally(player.getLocation(), result);
+                        }
+                        if (recipe.getXp() > 0) {
+                            player.giveExp(recipe.getXp());
                         }
                         cauldron.setForRemoval(true);
                     }
