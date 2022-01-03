@@ -102,9 +102,9 @@ public class RecipeCreatorCauldron extends RecipeCreator {
             hashMap.put("%xp%", cache.getRecipeCreatorCache().getCauldronCache().getXp());
             return itemStack;
         }, (guiHandler, player, s, args) -> {
-            float xp;
+            int xp;
             try {
-                xp = Float.parseFloat(args[0]);
+                xp = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
                 api.getChat().sendKey(player, getCluster(), "valid_number");
                 return true;

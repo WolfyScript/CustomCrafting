@@ -50,7 +50,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     private int cookingTime;
     private int waterLevel;
-    private float xp;
+    private int xp;
     private CustomItem handItem;
     private Ingredient ingredients;
     private boolean dropItems;
@@ -59,7 +59,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public CustomRecipeCauldron(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.xp = node.path("exp").floatValue();
+        this.xp = node.path("exp").asInt(0);
         this.cookingTime = node.path("cookingTime").asInt(60);
         this.waterLevel = node.path("waterLevel").asInt(1);
         this.needsWater = node.path("water").asBoolean(true);
@@ -130,11 +130,11 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.needsWater = needsWater;
     }
 
-    public float getXp() {
+    public int getXp() {
         return xp;
     }
 
-    public void setXp(float xp) {
+    public void setXp(int xp) {
         this.xp = xp;
     }
 

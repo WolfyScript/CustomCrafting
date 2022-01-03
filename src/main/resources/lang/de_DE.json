@@ -2148,7 +2148,7 @@
               "",
               "&eDie Menge an Erfahrungspunkte, die du erhältst, wenn das Rezept fertig ist."
             ],
-            "message": "&3Gebe die Menge an Erfahrung ein. Beispielsweise: 0.5"
+            "message": "&3Gebe die Menge an Erfahrung ein. Beispielsweise: 2"
           },
           "cookingTime": {
             "name": "&6Kochzeit",
