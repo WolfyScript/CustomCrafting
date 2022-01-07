@@ -145,7 +145,8 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
 
     @Override
     public boolean isVisibleVanillaBook() {
-        return vanillaBook;
+        // Always return true as the Stonecutter GUI requires clients have the recipe to display in the list
+        return true;
     }
 
     @Override
