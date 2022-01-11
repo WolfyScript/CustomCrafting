@@ -71,4 +71,12 @@ public class MenuSingleRecipe extends CCWindow {
             Bukkit.getScheduler().runTask(customCrafting, () -> update.getGuiHandler().close());
         }
     }
+
+    @Override
+    public boolean onClose(GuiHandler<CCCache> guiHandler, GUIInventory<CCCache> guiInventory, InventoryView transaction) {
+        ButtonContainerIngredient.removeTasks(guiHandler, ClusterRecipeView.KEY);
+        guiHandler.getCustomCache().getCacheRecipeView().setRecipe(null);
+        guiHandler.getHistory(getCluster()).remove(0);
+        return super.onClose(guiHandler, guiInventory, transaction);
+    }
 }
