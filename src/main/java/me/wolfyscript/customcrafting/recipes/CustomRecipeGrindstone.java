@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -128,13 +129,14 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(11, ButtonContainerIngredient.namespacedKey(11));
+        var cluster = guiWindow.getCluster();
+        event.setButton(11, ButtonContainerIngredient.key(cluster, 11));
         event.setButton(12, ClusterMain.GLASS_GREEN);
         event.setButton(21, ClusterMain.GLASS_GREEN);
-        event.setButton(22, new NamespacedKey("recipe_book", "grindstone"));
+        event.setButton(22, new NamespacedKey(ClusterRecipeBook.KEY, "grindstone"));
         event.setButton(23, ClusterMain.GLASS_GREEN);
-        event.setButton(24, ButtonContainerIngredient.namespacedKey(24));
-        event.setButton(29, ButtonContainerIngredient.namespacedKey(29));
+        event.setButton(24, ButtonContainerIngredient.key(cluster, 24));
+        event.setButton(29, ButtonContainerIngredient.key(cluster, 29));
         event.setButton(30, ClusterMain.GLASS_GREEN);
     }
 }

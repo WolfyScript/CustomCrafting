@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -230,20 +231,25 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
+        var cluster = guiWindow.getCluster();
         int invSlot;
         for (int i = 0; i < 6; i++) {
             invSlot = 10 + i + (i / 3) * 6;
-            event.setButton(invSlot, ButtonContainerIngredient.namespacedKey(invSlot));
+            event.setButton(invSlot, ButtonContainerIngredient.key(cluster, invSlot));
         }
         List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getNamespacedKey().equals(PermissionCondition.KEY)).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
         for (Condition<?> condition : conditions) {
-            event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getId()));
+            event.setButton(36 + startSlot + slot, new NamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getId()));
             slot += 2;
         }
-        event.setButton(23, new NamespacedKey("recipe_book", needsWater() ? "cauldron.water.enabled" : "cauldron.water.disabled"));
-        event.setButton(32, new NamespacedKey("recipe_book", needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
-        event.setButton(25, ButtonContainerIngredient.namespacedKey(25));
+        if (needsWater()) {
+            event.setButton(23, new NamespacedKey(cluster.getId(), "cauldron.water.enabled"));
+        } else {
+            event.setButton(23, new NamespacedKey(ClusterRecipeBook.KEY, "cauldron.water.disabled"));
+        }
+        event.setButton(32, new NamespacedKey(ClusterRecipeBook.KEY, needsFire() ? "cauldron.fire.enabled" : "cauldron.fire.disabled"));
+        event.setButton(25, ButtonContainerIngredient.key(cluster, 25));
     }
 }
