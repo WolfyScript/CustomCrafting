@@ -50,10 +50,6 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     private static final String KEY = "ingredient.container_";
     private final CustomCrafting plugin;
 
-    public static String key(int slot) {
-        return KEY + slot;
-    }
-
     ButtonContainerIngredient(CustomCrafting plugin, int slot) {
         super(key(slot), ButtonType.DUMMY);
         this.plugin = plugin;
@@ -65,6 +61,10 @@ public class ButtonContainerIngredient extends Button<CCCache> {
 
     public static NamespacedKey namespacedKey(int slot) {
         return new NamespacedKey(ClusterRecipeBook.KEY, key(slot));
+    }
+
+    public static String key(int slot) {
+        return KEY + slot;
     }
 
     public static NamespacedKey key(GuiCluster<CCCache> cluster, int slot) {
