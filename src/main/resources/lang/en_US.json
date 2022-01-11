@@ -3133,6 +3133,11 @@
         }
       }
     },
+    "recipe_view": {
+      "single_recipe": {
+        "gui_name": "&8&lRecipe Book"
+      }
+    },
     "recipe_book_editor": {
       "global_items": {
         "save": {
