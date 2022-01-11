@@ -38,6 +38,7 @@ import me.wolfyscript.customcrafting.gui.item_creator.tabs.*;
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.gui.potion_creator.ClusterPotionCreator;
 import me.wolfyscript.customcrafting.gui.recipe_creator.ClusterRecipeCreator;
+import me.wolfyscript.customcrafting.gui.recipe_view.ClusterRecipeView;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.customcrafting.gui.recipebook_editor.ClusterRecipeBookEditor;
 import me.wolfyscript.customcrafting.handlers.ConfigHandler;
@@ -349,6 +350,7 @@ public class CustomCrafting extends JavaPlugin {
         invAPI.registerCluster(new ClusterMain(invAPI, this));
         invAPI.registerCluster(new ClusterRecipeCreator(invAPI, this));
         invAPI.registerCluster(new ClusterRecipeBook(invAPI, this));
+        invAPI.registerCluster(new ClusterRecipeView(invAPI, this));
         invAPI.registerCluster(new EliteCraftingCluster(invAPI, this));
         invAPI.registerCluster(new ClusterItemCreator(invAPI, this));
         invAPI.registerCluster(new ClusterPotionCreator(invAPI, this));
