@@ -20,15 +20,21 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.gui.recipe_view;
+package me.wolfyscript.customcrafting.gui.recipebook;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.data.CCPlayerData;
 import me.wolfyscript.customcrafting.gui.CCWindow;
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
+import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
+import me.wolfyscript.utilities.api.nms.inventory.GUIInventory;
+import me.wolfyscript.utilities.util.NamespacedKey;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.InventoryView;
 
 import java.util.Optional;
 
@@ -38,7 +44,6 @@ public class MenuSingleRecipe extends CCWindow {
 
     MenuSingleRecipe(GuiCluster<CCCache> guiCluster, CustomCrafting customCrafting) {
         super(guiCluster, KEY, 54, customCrafting);
-        setForceSyncUpdate(true);
     }
 
     @Override
@@ -51,6 +56,14 @@ public class MenuSingleRecipe extends CCWindow {
         super.onUpdateAsync(update);
         Optional<CustomRecipe<?>> recipeOptional = update.getGuiHandler().getCustomCache().getCacheRecipeView().getRecipe();
         if (recipeOptional.isPresent()) {
+            CCPlayerData playerStore = PlayerUtil.getStore(update.getPlayer());
+            NamespacedKey grayBtnKey = playerStore.getLightBackground();
+            for (int i = 1; i < 9; i++) {
+                update.setButton(i, grayBtnKey);
+            }
+            for (int i = 36; i < 45; i++) {
+                update.setButton(i, grayBtnKey);
+            }
             CustomRecipe<?> customRecipe = recipeOptional.get();
             customRecipe.renderMenu(this, update);
         } else {
