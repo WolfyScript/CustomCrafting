@@ -56,7 +56,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         base = ItemLoader.loadIngredient(node.path(KEY_BASE));
         addition = ItemLoader.loadIngredient(node.path(KEY_ADDITION));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
-        preserveEnchants = node.path("onlyChangeMaterial").asBoolean(false);
+        onlyChangeMaterial = node.path("onlyChangeMaterial").asBoolean(false);
     }
 
     public CustomRecipeSmithing(NamespacedKey key) {
@@ -145,6 +145,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeBooleanField("preserve_enchants", preserveEnchants);
+        gen.writeBooleanField("onlyChangeMaterial", onlyChangeMaterial);
         gen.writeObjectField(KEY_RESULT, result);
         gen.writeObjectField(KEY_BASE, base);
         gen.writeObjectField(KEY_ADDITION, addition);
