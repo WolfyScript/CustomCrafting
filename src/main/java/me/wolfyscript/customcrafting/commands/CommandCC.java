@@ -25,6 +25,10 @@ package me.wolfyscript.customcrafting.commands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.cc_subcommands.*;
 import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.elite_crafting.EliteCraftingCluster;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeView;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
@@ -69,10 +73,13 @@ public class CommandCC extends IndexCommand {
     public void openGUI(Player p, InventoryAPI<CCCache> invAPI) {
         if (ChatUtils.checkPerm(p, "customcrafting.cmd.studio", true)) {
             GuiCluster<CCCache> cluster = invAPI.getGuiHandler(p).getCluster();
-            if (cluster != null && !cluster.getId().equals("recipe_book") && !cluster.getId().equals("crafting")) {
-                invAPI.getGuiHandler(p).openCluster();
-            } else {
-                invAPI.openCluster(p, "none");
+            if (cluster == null) {
+                invAPI.openCluster(p, ClusterMain.KEY);
+                return;
+            }
+            switch (cluster.getId()) {
+                case ClusterRecipeBook.KEY, ClusterRecipeView.KEY, EliteCraftingCluster.KEY -> invAPI.openCluster(p, ClusterMain.KEY);
+                default -> invAPI.getGuiHandler(p).openCluster();
             }
         }
     }

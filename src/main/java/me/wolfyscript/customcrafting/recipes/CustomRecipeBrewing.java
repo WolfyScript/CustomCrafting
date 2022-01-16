@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -415,14 +416,15 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(12, ButtonContainerIngredient.namespacedKey(3));
-        event.setButton(20, new NamespacedKey("recipe_book", "brewing.icon"));
+        var cluster = guiWindow.getCluster();
+        event.setButton(12, ButtonContainerIngredient.key(cluster, 3));
+        event.setButton(20, new NamespacedKey(cluster.getId(), "brewing.icon"));
         event.setButton(21, ClusterMain.GLASS_GREEN);
 
-        event.setButton(30, ButtonContainerIngredient.namespacedKey(0));
+        event.setButton(30, ButtonContainerIngredient.key(cluster, 0));
         event.setButton(31, ClusterMain.GLASS_GREEN);
         event.setButton(32, ClusterMain.GLASS_GREEN);
-        event.setButton(33, ButtonContainerIngredient.namespacedKey(1));
+        event.setButton(33, ButtonContainerIngredient.key(cluster, 1));
 
 
     }

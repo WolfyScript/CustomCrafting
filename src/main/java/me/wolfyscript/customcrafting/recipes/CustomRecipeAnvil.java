@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -273,8 +274,9 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
-        event.setButton(10, ButtonContainerIngredient.namespacedKey(10));
-        event.setButton(13, ButtonContainerIngredient.namespacedKey(13));
+        var cluster = guiWindow.getCluster();
+        event.setButton(10, ButtonContainerIngredient.key(cluster, 10));
+        event.setButton(13, ButtonContainerIngredient.key(cluster, 13));
         NamespacedKey glass = ClusterMain.GLASS_GREEN;
         event.setButton(19, glass);
         event.setButton(22, glass);
@@ -284,13 +286,13 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         event.setButton(32, glass);
         event.setButton(33, glass);
         if (getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
-            event.setButton(31, new NamespacedKey("recipe_book", "anvil.result"));
+            event.setButton(31, new NamespacedKey(ClusterRecipeBook.KEY, "anvil.result"));
         } else if (getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
-            event.setButton(31, new NamespacedKey("recipe_book", "anvil.durability"));
+            event.setButton(31, new NamespacedKey(cluster.getId(), "anvil.durability"));
         } else {
-            event.setButton(31, new NamespacedKey("recipe_book", "anvil.none"));
+            event.setButton(31, new NamespacedKey(ClusterRecipeBook.KEY, "anvil.none"));
         }
-        event.setButton(34, ButtonContainerIngredient.namespacedKey(34));
+        event.setButton(34, ButtonContainerIngredient.key(cluster, 34));
     }
 
     public enum Mode {

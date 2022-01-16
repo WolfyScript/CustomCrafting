@@ -50,10 +50,6 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     private static final String KEY = "ingredient.container_";
     private final CustomCrafting plugin;
 
-    public static String key(int slot) {
-        return KEY + slot;
-    }
-
     ButtonContainerIngredient(CustomCrafting plugin, int slot) {
         super(key(slot), ButtonType.DUMMY);
         this.plugin = plugin;
@@ -67,6 +63,14 @@ public class ButtonContainerIngredient extends Button<CCCache> {
         return new NamespacedKey(ClusterRecipeBook.KEY, key(slot));
     }
 
+    public static String key(int slot) {
+        return KEY + slot;
+    }
+
+    public static NamespacedKey key(GuiCluster<CCCache> cluster, int slot) {
+        return new NamespacedKey(cluster.getId(), key(slot));
+    }
+
     @Override
     public void init(GuiWindow guiWindow) {
         //NOT NEEDED
@@ -78,7 +82,11 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     }
 
     public static void removeTasks(GuiHandler<CCCache> guiHandler) {
-        GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
+        removeTasks(guiHandler, ClusterRecipeBook.KEY);
+    }
+
+    public static void removeTasks(GuiHandler<CCCache> guiHandler, String clusterID) {
+        GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster(clusterID);
         for (int i = 0; i < 54; i++) {
             if (cluster.getButton(key(i)) instanceof ButtonContainerIngredient button) {
                 button.removeTask(guiHandler);
@@ -88,7 +96,11 @@ public class ButtonContainerIngredient extends Button<CCCache> {
     }
 
     public static void resetButtons(GuiHandler<CCCache> guiHandler) {
-        GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster("recipe_book");
+        resetButtons(guiHandler, ClusterRecipeBook.KEY);
+    }
+
+    public static void resetButtons(GuiHandler<CCCache> guiHandler, String clusterID) {
+        GuiCluster<CCCache> cluster = guiHandler.getInvAPI().getGuiCluster(clusterID);
         for (int i = 0; i < 54; i++) {
             if (cluster.getButton(key(i)) instanceof ButtonContainerIngredient button) {
                 button.removeTask(guiHandler);

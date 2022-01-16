@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -140,18 +141,19 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
 
     @Override
     public void renderMenu(GuiWindow<CCCache> guiWindow, GuiUpdate<CCCache> event) {
+        var cluster = guiWindow.getCluster();
         CCPlayerData data = PlayerUtil.getStore(event.getPlayer());
         List<Condition<?>> conditions = getConditions().getValues().stream().filter(condition -> !condition.getNamespacedKey().getKey().equals("permission")).toList();
         int startSlot = 9 / (conditions.size() + 1);
         int slot = 0;
         for (Condition<?> condition : conditions) {
-            event.setButton(36 + startSlot + slot, new NamespacedKey("recipe_book", "conditions." + condition.getNamespacedKey().toString("_")));
+            event.setButton(36 + startSlot + slot, new NamespacedKey(ClusterRecipeBook.KEY, "conditions." + condition.getNamespacedKey().toString("_")));
             slot += 2;
         }
-        event.setButton(13, new NamespacedKey("recipe_book", "cooking.icon"));
+        event.setButton(13, new NamespacedKey(cluster.getId(), "cooking.icon"));
         event.setButton(20, data.getLightBackground());
-        event.setButton(11, ButtonContainerIngredient.namespacedKey(11));
-        event.setButton(24, ButtonContainerIngredient.namespacedKey(24));
+        event.setButton(11, ButtonContainerIngredient.key(cluster, 11));
+        event.setButton(24, ButtonContainerIngredient.key(cluster, 24));
     }
 
     @Override

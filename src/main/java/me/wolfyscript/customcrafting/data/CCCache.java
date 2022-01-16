@@ -48,6 +48,7 @@ public class CCCache extends CustomCache {
 
     private final PotionEffects potionEffectCache = new PotionEffects();
     private final RecipeBookCache recipeBookCache = new RecipeBookCache();
+    private final CacheRecipeView cacheRecipeView = new CacheRecipeView();
     private EliteWorkbench eliteWorkbench = new EliteWorkbench();
     private final ChatLists chatLists = new ChatLists();
     private final ParticleCache particleCache = new ParticleCache();
@@ -88,6 +89,10 @@ public class CCCache extends CustomCache {
 
     public RecipeBookCache getKnowledgeBook() {
         return recipeBookCache;
+    }
+
+    public CacheRecipeView getCacheRecipeView() {
+        return cacheRecipeView;
     }
 
     public Items getItems() {
