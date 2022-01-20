@@ -48,6 +48,7 @@ import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -276,10 +277,10 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     public boolean delete(@Nullable Player player) {
         Bukkit.getScheduler().runTask(CustomCrafting.inst(), () -> CustomCrafting.inst().getRegistries().getRecipes().remove(getNamespacedKey()));
         if (CustomCrafting.inst().getDataHandler().getActiveLoader().delete(this)) {
-            getAPI().getChat().sendMessage(player, "§aRecipe deleted!");
+            getAPI().getChat().sendMessage(player, ChatColor.GREEN + "Recipe deleted!");
             return true;
         }
-        getAPI().getChat().sendMessage(player, "&cCouldn't delete recipe file!");
+        getAPI().getChat().sendMessage(player, ChatColor.RED + "Couldn't delete recipe file!");
         return false;
     }
 

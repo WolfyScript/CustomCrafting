@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -50,7 +51,7 @@ public class DataBaseSubCommand extends AbstractSubCommand {
             var chat = api.getChat();
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
                 if (customCrafting.getDataHandler().getDatabaseLoader() != null) {
-                    chat.sendMessage(p, "&4No Database found!");
+                    chat.sendMessage(p, ChatColor.RED + "Couldn't find any Database!");
                     return true;
                 }
                 if (args.length >= 1) {

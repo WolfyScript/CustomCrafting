@@ -49,6 +49,7 @@ import me.wolfyscript.utilities.compatibility.plugins.oraxen.OraxenRef;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -214,7 +215,7 @@ public class MenuItemCreator extends CCWindow {
             items.setNamespacedKey(namespacedKey);
             sendMessage(player, "save.success");
             var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            api.getChat().sendMessage(player, "&6" + internalKey.getNamespace() + "/items/" + internalKey.getKey());
+            api.getChat().sendMessage(player, ChatColor.YELLOW + internalKey.getNamespace() + "/items/" + internalKey.getKey());
         }
         return true;
     }

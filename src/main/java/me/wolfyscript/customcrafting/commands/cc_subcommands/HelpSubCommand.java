@@ -29,6 +29,7 @@ import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.ClickData;
 import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +60,7 @@ public class HelpSubCommand extends AbstractSubCommand {
     public void printHelp(Player p) {
         WolfyUtilities api = customCrafting.getApi();
         var chat = api.getChat();
-        chat.sendMessage(p, "———————— &3&lCustomCrafting &7————————");
+        chat.sendMessage(p, "———————— " + ChatColor.DARK_AQUA + ChatColor.BOLD + "CustomCrafting" + ChatColor.GRAY + " ————————");
         chat.sendMessage(p, "");
         List<String> help = api.getLanguageAPI().replaceKey("commands.help");
         for (String line : help) {

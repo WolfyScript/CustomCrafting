@@ -30,6 +30,7 @@ import me.wolfyscript.customcrafting.gui.recipebook.MenuRecipeBook;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +41,8 @@ import java.util.List;
 
 public class ReloadSubCommand extends AbstractSubCommand {
 
+    private static final String COMPLETE_MSG = "  - " + ChatColor.GREEN + "Complete";
+
     public ReloadSubCommand(CustomCrafting customCrafting) {
         super("reload", new ArrayList<>(), customCrafting);
     }
@@ -49,24 +52,25 @@ public class ReloadSubCommand extends AbstractSubCommand {
         WolfyUtilities api = customCrafting.getApi();
         if (sender instanceof Player p && ChatUtils.checkPerm(p, "customcrafting.cmd.reload")) {
             InventoryAPI<CCCache> invAPI = api.getInventoryAPI(CCCache.class);
-            api.getChat().sendMessage(p, "&eReloading Config!");
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Config!");
             customCrafting.getConfigHandler().getConfig().load();
-            api.getChat().sendMessage(p, "  - &aComplete");
-            api.getChat().sendMessage(p, "&eReloading Languages!");
+            api.getChat().sendMessage(p, COMPLETE_MSG);
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Languages!");
             customCrafting.getApi().getLanguageAPI().unregisterLanguages();
             customCrafting.getConfigHandler().loadLang();
-            api.getChat().sendMessage(p, "  - &aComplete");
-            api.getChat().sendMessage(p, "&eReloading Recipes/Items!");
+            api.getChat().sendMessage(p, COMPLETE_MSG);
+            api.getChat().sendMessage(p, ChatColor.YELLOW + "Reloading Recipes/Items!");
             customCrafting.getConfigHandler().loadRecipeBookConfig();
             var dataHandler = customCrafting.getDataHandler();
             dataHandler.initCategories();
             dataHandler.load();
             dataHandler.getCategories().index(customCrafting);
-            api.getChat().sendMessage(p, "  - &aComplete");
+            api.getChat().sendMessage(p, COMPLETE_MSG);
             api.getChat().sendMessage(p, "&eReloading GUIs");
             ((MenuRecipeBook) invAPI.getGuiWindow(ClusterRecipeBook.RECIPE_BOOK)).reset();
             invAPI.reset();
-            api.getChat().sendMessage(p, "  - &aComplete");
+            api.getChat().sendMessage(p, COMPLETE_MSG);
+            api.getChat().sendMessage(p, ChatColor.GREEN + "Reload done!");
         }
         return true;
     }

@@ -30,6 +30,7 @@ import me.wolfyscript.utilities.api.chat.ClickEvent;
 import me.wolfyscript.utilities.api.chat.HoverEvent;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
+import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.CommandSender;
@@ -113,7 +114,7 @@ public class ChatUtils {
                 i++;
             }
         } else {
-            api.getChat().sendMessage(player, "&l&cNo Description set yet!");
+            api.getChat().sendMessage(player, ChatColor.BOLD.toString() + ChatColor.RED + "No Description set yet!");
         }
         api.getChat().sendMessage(player, "");
         api.getChat().sendMessage(player, "-------------------------------------------------");
@@ -142,7 +143,7 @@ public class ChatUtils {
                 i++;
             }
         } else {
-            api.getChat().sendMessage(player, "&l&cNo Lore set yet!");
+            api.getChat().sendMessage(player, ChatColor.BOLD.toString() + ChatColor.RED + "No Lore set yet!");
         }
         api.getChat().sendMessage(player, "");
         api.getChat().sendMessage(player, "-------------------------------------------------");
@@ -177,7 +178,7 @@ public class ChatUtils {
                     );
                 }
             } else {
-                api.getChat().sendMessage(player, "&cNo attributes set yet!");
+                api.getChat().sendMessage(player, ChatColor.RED + "No attributes set yet!");
             }
         }
         api.getChat().sendMessage(player, "");
