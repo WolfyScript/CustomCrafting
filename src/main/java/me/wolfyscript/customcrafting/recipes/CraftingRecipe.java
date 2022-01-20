@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -43,6 +44,7 @@ import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
 import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.Nullable;
@@ -227,4 +229,17 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         byteBuf.writeCollection(ingredients, (buf, ingredient) -> buf.writeCollection(ingredient.getChoices(), (buf1, customItem) -> buf1.writeItemStack(customItem.create())));
     }
 
+    @Override
+    public boolean save(@Nullable Player player) {
+        boolean saveSuccessful = super.save(player);
+        if (saveSuccessful) {
+            //We need to delete the old recipe when the type changes between shapeless and shaped, because else it is present in two different folders!
+            CustomRecipe<?> oldRecipe = CustomCrafting.inst().getRegistries().getRecipes().get(getNamespacedKey());
+            if (oldRecipe instanceof CraftingRecipe<?,?> oldCraftingRecipe && oldCraftingRecipe.isShapeless() != isShapeless()) {
+                getAPI().getChat().sendMessage(player, ChatColor.YELLOW + "Recipe Type changed... deleting old recipe!");
+                oldCraftingRecipe.delete(player);
+            }
+        }
+        return saveSuccessful;
+    }
 }
