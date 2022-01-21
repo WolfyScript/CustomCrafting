@@ -23,12 +23,18 @@
 package me.wolfyscript.customcrafting.utils.cooking;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.listeners.FurnaceListener;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeBlasting;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCooking;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeFurnace;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeSmoking;
 import me.wolfyscript.customcrafting.recipes.conditions.Conditions;
-import me.wolfyscript.customcrafting.recipes.data.*;
+import me.wolfyscript.customcrafting.recipes.data.BlastingRecipeData;
+import me.wolfyscript.customcrafting.recipes.data.CookingRecipeData;
+import me.wolfyscript.customcrafting.recipes.data.FurnaceRecipeData;
+import me.wolfyscript.customcrafting.recipes.data.IngredientData;
+import me.wolfyscript.customcrafting.recipes.data.SmokerRecipeData;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Pair;
@@ -37,7 +43,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
+import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Optional;
 
@@ -81,29 +90,46 @@ public abstract class SmeltAPIAdapter {
     public void applyResult(FurnaceSmeltEvent event) {
         var block = event.getBlock();
         if (manager.cachedRecipeData.get(block) != null) {
+            FurnaceInventory inventory = ((Furnace) event.getBlock().getState()).getInventory();
+            ItemStack smelting = inventory.getSmelting();
+            if (ItemUtils.isAirOrNull(smelting)) return;
+
             var data = manager.cachedRecipeData.get(block).getKey();
             var result = data.getResult();
-            var inventory = ((Furnace) event.getBlock().getState()).getInventory();
             var currentResultItem = inventory.getResult();
 
             Bukkit.getScheduler().runTaskLater(customCrafting, () -> manager.clearCache(block), 1); //Clearing the cached data after 1 tick (event should be done).
             ItemStack itemResult = result.getItem(data, null, block);
+            //Need to cancel to bypass the vanilla result computation (See net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity#burn).
+            event.setCancelled(true);
             if (currentResultItem != null) {
-                event.setCancelled(true);
-                if (itemResult.isSimilar(currentResultItem)) {
-                    int nextAmount = currentResultItem.getAmount() + itemResult.getAmount();
-                    if (nextAmount <= currentResultItem.getMaxStackSize() && !ItemUtils.isAirOrNull(inventory.getSmelting())) {
-                        inventory.getSmelting().setAmount(inventory.getSmelting().getAmount() - 1);
-                        currentResultItem.setAmount(nextAmount);
-                        result.executeExtensions(block.getLocation(), true, null);
-                        result.removeCachedItem(block);
-                    }
-                }
+                if (!itemResult.isSimilar(currentResultItem)) return;
+                int nextAmount = currentResultItem.getAmount() + itemResult.getAmount();
+                if (nextAmount > currentResultItem.getMaxStackSize())
+                    return;
+                currentResultItem.setAmount(nextAmount);
             } else {
-                event.setResult(itemResult);
-                result.executeExtensions(block.getLocation(), true, null);
-                result.removeCachedItem(block);
+                inventory.setResult(itemResult);
             }
+            smelting.setAmount(smelting.getAmount() - 1);
+            result.executeExtensions(block.getLocation(), true, null);
+            result.removeCachedItem(block);
+
+            Bukkit.getScheduler().runTask(customCrafting, () -> {
+                var blockState = ((Furnace) event.getBlock().getState());
+                CustomRecipeCooking<?, ?> recipe = data.getRecipe();
+                //Setting the active recipe
+                PersistentDataContainer container = blockState.getPersistentDataContainer();
+                container.set(FurnaceListener.ACTIVE_RECIPE_KEY, PersistentDataType.STRING, recipe.getNamespacedKey().toString());
+                //Increase recipe used counter
+                var usedRecipesContainer = container.getOrDefault(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, container.getAdapterContext().newPersistentDataContainer());
+                var bukkitKey = NamespacedKeyUtils.toInternal(recipe.getNamespacedKey()).toBukkit(customCrafting);
+                int amount = usedRecipesContainer.getOrDefault(bukkitKey, PersistentDataType.INTEGER, 0);
+                usedRecipesContainer.set(bukkitKey, PersistentDataType.INTEGER, ++amount);
+                //Update data
+                container.set(FurnaceListener.RECIPES_USED_KEY, PersistentDataType.TAG_CONTAINER, usedRecipesContainer);
+                blockState.update();
+            });
         }
     }
 
