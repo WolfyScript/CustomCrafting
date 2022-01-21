@@ -57,7 +57,9 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     private final Map<Class<?>, List<CustomRecipe<?>>> BY_CLASS_TYPE = new HashMap<>();
     private final Map<RecipeType<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE = new HashMap<>();
     private final Map<RecipeType.Container<?>, List<CustomRecipe<?>>> BY_RECIPE_TYPE_CONTAINER = new HashMap<>();
+    private final Map<String, Map<String, List<CustomRecipe<?>>>> BY_NAMESPACE_AND_FOLDER = new HashMap<>();
     private final Set<String> NAMESPACES = new HashSet<>();
+    private final Map<String, Set<String>> FOLDERS = new HashMap<>();
     private final Set<String> GROUPS = new HashSet<>();
 
     RegistryRecipes(CustomCrafting customCrafting, Registries registries) {
@@ -89,11 +91,13 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
         BY_NAMESPACE.remove(key.getNamespace());
         BY_GROUP.clear();
         NAMESPACES.clear();
+        FOLDERS.remove(key.getNamespace());
         GROUPS.clear();
         BY_RESULT.clear();
         BY_CLASS_TYPE.clear();
         BY_RECIPE_TYPE.clear();
         BY_RECIPE_TYPE_CONTAINER.clear();
+        BY_NAMESPACE_AND_FOLDER.remove(key.getNamespace());
     }
 
     @Override
@@ -128,6 +132,36 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
     }
 
     /**
+     * Gets the folders available in the specified namespace.<br>
+     * This will return a tree list of the available folders separated by "/".<br>
+     * For example:<br>
+     * A single namespaced key like this:
+     * <pre>&lt;namespace&gt;:&lt;root_folder&gt;/&lt;folder&gt;/&lt;sub_folder&gt;/&lt;recipe_name&gt;</pre>
+     * will result in
+     * <pre>["", "root_folder", "root_folder/folder", "root_folder/folder/sub_folder"]</pre>
+     *
+     * @param namespace The namespace to index the folders for.
+     * @return A list of all available folders and sub folders.
+     */
+    public List<String> folders(String namespace) {
+        return new LinkedList<>(FOLDERS.computeIfAbsent(namespace, s -> {
+            Set<String> folders = new HashSet<>();
+            folders.add("");
+            for (CustomRecipe<?> recipe : get(s)) {
+                String[] parts = recipe.getNamespacedKey().getKey().split("/");
+                if (parts.length > 0) {
+                    StringBuilder path = new StringBuilder(parts[0]);
+                    folders.add(path.toString());
+                    for (int i = 1; i < parts.length - 1; i++) {
+                        folders.add(path.append("/").append(parts[i]).toString());
+                    }
+                }
+            }
+            return folders;
+        }));
+    }
+
+    /**
      * @return A list of all available groups.
      */
     public List<String> groups() {
@@ -145,6 +179,25 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
      */
     public List<CustomRecipe<?>> getGroup(String group) {
         return BY_GROUP.computeIfAbsent(group, s -> values().stream().filter(r -> r.getGroup().equals(s)).collect(Collectors.toList()));
+    }
+
+    /**
+     * Gets all recipes from the specified namespace and folder.
+     *
+     * @param namespace The namespace of the recipes.
+     * @param folder The folder of the recipes.
+     * @return A list of all recipes in the folder inside the namespace.
+     */
+    public List<CustomRecipe<?>> get(String namespace, String folder) {
+        return BY_NAMESPACE_AND_FOLDER.computeIfAbsent(namespace, s -> {
+            Map<String, List<CustomRecipe<?>>> folderIndex = new HashMap<>();
+            get(s).forEach(recipe -> {
+                String key = recipe.getNamespacedKey().getKey();
+                String recipeFolder = key.contains("/") ? key.substring(0, key.lastIndexOf("/")) : "";
+                folderIndex.computeIfAbsent(recipeFolder, s1 -> new LinkedList<>()).add(recipe);
+            });
+            return folderIndex;
+        }).getOrDefault(folder, new LinkedList<>());
     }
 
     /**
