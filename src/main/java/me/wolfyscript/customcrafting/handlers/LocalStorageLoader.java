@@ -147,7 +147,7 @@ public class LocalStorageLoader extends ResourceLoader {
 
     private void loadItems(String subFolder) {
         for (File file : getFiles(subFolder, ITEMS_FOLDER)) {
-            String name = file.getName();
+            var name = file.getName();
             var namespacedKey = new NamespacedKey(customCrafting, subFolder + "/" + name.substring(0, name.lastIndexOf(".")));
             try {
                 customCrafting.getApi().getRegistries().getCustomItems().register(namespacedKey, objectMapper.readValue(file, CustomItem.class));
@@ -178,7 +178,8 @@ public class LocalStorageLoader extends ResourceLoader {
 
     private void loadRecipesFiles(RecipeLoader<?> loader, List<File> files, String namespace) {
         for (File file : files) {
-            var namespacedKey = new NamespacedKey(namespace, file.getName().replace(".json", ""));
+            var name = file.getName();
+            var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
             try {
                 customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
             } catch (IOException | InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
