@@ -41,11 +41,29 @@ public class NamespacedKeyUtils {
 
     public static final String NAMESPACE = "customcrafting";
 
+
+    /**
+     * Converts the given internal namespaced key to the original key.<br>
+     * <pre>&lt;namespace&gt;:&lt;key&gt; -> &lt;customcrafting&gt;:&lt;namespace&gt;/&lt;key&gt;</pre>
+     *
+     * @param internalKey The internal namespaced key.
+     * @return The original namespaced key.
+     */
+    @Deprecated(since = "3.16.1.0")
     public static NamespacedKey fromInternal(NamespacedKey internalKey) {
         if (internalKey == null) return null;
         return new NamespacedKey(NAMESPACE, internalKey.toString("/"));
     }
 
+    /**
+     * Converts the given namespaced key to the internal key.<br>
+     * <pre>&lt;customcrafting&gt;:&lt;namespace&gt;/&lt;key&gt; -> &lt;namespace&gt;:&lt;key&gt;</pre>
+     *
+     * @param namespacedKey The namespaced key to convert.
+     * @return The internal namespaced key in the registry.
+     * @deprecated This is mostly bad design. Recipes should always be registered using the plugin namespace. In the future that will also apply to customcrafting recipes!
+     */
+    @Deprecated(since = "3.16.1.0")
     public static NamespacedKey toInternal(NamespacedKey namespacedKey) {
         if (namespacedKey != null && namespacedKey.getNamespace().equals(NAMESPACE)) {
             String[] values = namespacedKey.getKey().split("/", 2);
