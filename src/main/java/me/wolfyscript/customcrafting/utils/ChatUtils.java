@@ -74,6 +74,7 @@ public class ChatUtils {
      * @param args   The input as separate arguments (split by spaces)
      * @return The {@link NamespacedKey} used internally in CustomCrafting in the format <b><i>namespace</i>:<i>key</i></b>
      */
+    @Deprecated
     public static NamespacedKey getInternalNamespacedKey(Player player, String s, String[] args) {
         try {
             if (args.length > 1) {
@@ -93,7 +94,18 @@ public class ChatUtils {
      * @return The {@link NamespacedKey} used in WolfyUtilities, to identify which plugin it's from, in the format <b>customcrafting:<i>namespace</i>/<i>key</i></b>
      */
     public static NamespacedKey getNamespacedKey(Player player, String s, String[] args) {
-        return NamespacedKeyUtils.fromInternal(getInternalNamespacedKey(player, s, args));
+        try {
+            if (args.length > 1) {
+                return new NamespacedKey(CustomCrafting.inst(), args[0] + "/" + args[1]);
+            } else if (s.contains(":")) {
+                NamespacedKey key = NamespacedKey.of(s);
+                return key != null ? new NamespacedKey(CustomCrafting.inst(), key.toString("/")) : null;
+            }
+            return null;
+        } catch (IllegalArgumentException e) {
+            api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.getChat().sendMessage(player, s1));
+        }
+        return null;
     }
 
     public static void sendCategoryDescription(Player player) {

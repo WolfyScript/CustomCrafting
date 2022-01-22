@@ -26,6 +26,7 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.gui.CCCluster;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
@@ -160,18 +161,18 @@ public class ClusterRecipeCreator extends CCCluster {
                     List<String> results = new ArrayList<>();
                     if (args.length > 0) {
                         if (args.length == 1) {
-                            results.add("<namespace>");
-                            StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().namespaces(), results);
+                            results.add("<folder>");
+                            StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().folders(NamespacedKeyUtils.NAMESPACE), results);
                         } else if (args.length == 2) {
-                            results.add("<key>");
-                            StringUtil.copyPartialMatches(args[1], customCrafting.getRegistries().getRecipes().get(args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
+                            results.add("<recipe_name>");
+                            StringUtil.copyPartialMatches(args[1], customCrafting.getRegistries().getRecipes().get(NamespacedKeyUtils.NAMESPACE, args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
                         }
                     }
                     Collections.sort(results);
                     return results;
                 });
                 recipeCreator.openChat(guiHandler.getInvAPI().getGuiCluster(KEY), "save.input", guiHandler, (guiHandler1, player1, s, args) -> {
-                    var namespacedKey = ChatUtils.getInternalNamespacedKey(player1, s, args);
+                    var namespacedKey = ChatUtils.getNamespacedKey(player1, s, args);
                     if (namespacedKey != null && !namespacedKey.getNamespace().equalsIgnoreCase("minecraft")) {
                         cache.getRecipeCreatorCache().getRecipeCache().setKey(namespacedKey);
                         if (!cache.getRecipeCreatorCache().getRecipeCache().save(customCrafting, player, guiHandler)) {
