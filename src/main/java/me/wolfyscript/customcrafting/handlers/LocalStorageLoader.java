@@ -51,6 +51,18 @@ public class LocalStorageLoader extends ResourceLoader {
 
     @Override
     public void load() {
+        /*
+        New Folder structure:
+
+        CustomCrafting/data
+        |- <namespace>
+           |- recipes
+              |- <folder>
+                 |- <recipe_name>
+           |- items
+              |- <folder>
+                 |- <item_name>
+         */
         api.getConsole().info("- - - - [Local Storage] - - - -");
         api.getConsole().info("Searching for namespaces...");
         String[] dirs = DATA_FOLDER.list();
