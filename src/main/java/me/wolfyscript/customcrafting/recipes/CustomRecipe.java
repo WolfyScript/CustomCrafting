@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAlias;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -70,7 +72,10 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected static final String KEY_HIDDEN = "hidden";
     protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
-    protected final NamespacedKey namespacedKey;
+    @JsonIgnore protected final NamespacedKey namespacedKey;
+    @JsonIgnore protected final WolfyUtilities api;
+    @JsonIgnore protected final ObjectMapper mapper;
+    @JsonAlias({"exactItemMeta", "exactNBT"})
     protected boolean exactMeta;
     protected boolean hidden;
     protected boolean vanillaBook;
@@ -78,8 +83,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected RecipePriority priority;
     protected Conditions conditions;
     protected String group;
-    protected final WolfyUtilities api;
-    protected final ObjectMapper mapper;
     protected Result result;
 
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
@@ -139,6 +142,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @Override
     public abstract C clone();
 
+    @JsonIgnore
     public WolfyUtilities getAPI() {
         return api;
     }
@@ -205,6 +209,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     public abstract RecipeType<C> getRecipeType();
 
+    @JsonIgnore
     public List<CustomItem> getRecipeBookItems() {
         return getResult().getChoices();
     }
@@ -231,6 +236,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         return getConditions().check(id, this, data);
     }
 
+    @JsonIgnore
     public boolean isDisabled() {
         return CustomCrafting.inst().getDisableRecipesHandler().getRecipes().contains(getNamespacedKey());
     }
@@ -292,6 +298,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     public abstract void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster);
 
+    @Deprecated
     public void writeToJson(JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStringField(KEY_GROUP, group);
         gen.writeBooleanField(KEY_HIDDEN, hidden);
@@ -324,6 +331,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
         @Override
         public void serialize(CustomRecipe iCustomRecipe, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
+            //TODO: Finally remove the custom serializer!!!
             gen.writeStartObject();
             iCustomRecipe.writeToJson(gen, serializerProvider);
             gen.writeEndObject();
