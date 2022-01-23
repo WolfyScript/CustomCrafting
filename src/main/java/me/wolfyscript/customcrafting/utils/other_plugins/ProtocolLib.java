@@ -52,6 +52,7 @@ public class ProtocolLib {
 
     private final CustomCrafting plugin;
     private final ProtocolManager protocolManager;
+    private Function<MinecraftKey, Boolean> recipeFilter;
 
     public ProtocolLib(CustomCrafting plugin) {
         this.plugin = plugin;
@@ -64,7 +65,7 @@ public class ProtocolLib {
     }
 
     private void registerServerSide() {
-        Function<MinecraftKey, Boolean> recipeFilter = minecraftKey -> {
+        recipeFilter = minecraftKey -> {
             if (minecraftKey.getPrefix().equals(NamespacedKeyUtils.NAMESPACE)) {
                 CustomRecipe<?> recipe = plugin.getRegistries().getRecipes().get(NamespacedKeyUtils.toInternal(NamespacedKey.of(minecraftKey.getFullKey())));
                 if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
@@ -74,28 +75,31 @@ public class ProtocolLib {
             }
             return true;
         };
+        // Recipe packet that sends the discovered recipes to the client.
         protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.RECIPES) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 StructureModifier<List<MinecraftKey>> lists = packet.getLists(MinecraftKey.getConverter());
-                lists.modify(0, input -> { //Modify the recipes
-                    return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
-                });
-                lists.modify(1, input -> { //Modify Highlighted recipes
-                    return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
-                });
+                //Modify the recipes
+                lists.modify(0, input -> filterAndAddMissingRecipes(input));
+                //Modify Highlighted recipes
+                lists.modify(1, input -> filterAndAddMissingRecipes(input));
             }
         });
+        // Recipe packet that sends the recipe data to the client.
         protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.RECIPE_UPDATE) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
-
                 StructureModifier<List<RecipeWrapper>> lists = packet.getLists(getRecipeKeyConverter());
                 lists.modify(0, input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList()));
             }
         });
+    }
+
+    private List<MinecraftKey> filterAndAddMissingRecipes(List<MinecraftKey> input) {
+        return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
     }
 
     public EquivalentConverter<RecipeWrapper> getRecipeKeyConverter() {
