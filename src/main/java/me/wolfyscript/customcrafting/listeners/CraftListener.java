@@ -41,10 +41,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class CraftListener implements Listener {
@@ -141,5 +143,20 @@ public class CraftListener implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    /**
+     * Automatically discovers available custom recipes for players.
+     *
+     */
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        var player = event.getPlayer();
+        List<org.bukkit.NamespacedKey> discoveredCustomRecipes = player.getDiscoveredRecipes().stream().filter(namespacedKey -> namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)).toList();
+        customCrafting.getRegistries().getRecipes().getAvailable(player).stream()
+                .filter(recipe -> recipe instanceof ICustomVanillaRecipe<?>)
+                .map(recipe -> recipe.getNamespacedKey().toBukkit(customCrafting))
+                .filter(namespacedKey -> !discoveredCustomRecipes.contains(namespacedKey))
+                .forEach(player::discoverRecipe);
     }
 }

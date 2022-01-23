@@ -163,7 +163,7 @@ public final class RegistryRecipes extends RegistrySimple<CustomRecipe<?>> {
 
     @SuppressWarnings("unchecked")
     public <T extends CustomRecipe<?>> List<T> get(Class<T> type) {
-        return (List<T>) BY_CLASS_TYPE.computeIfAbsent(type, aClass -> (List<CustomRecipe<?>>) values().stream().filter(aClass::isInstance).map(aClass::cast).collect(Collectors.toList()));
+        return (List<T>) BY_CLASS_TYPE.computeIfAbsent(type, aClass -> values().stream().filter(aClass::isInstance).map(recipe -> ((Class<T>) aClass).cast(recipe)).collect(Collectors.toList()));
     }
 
     /**
