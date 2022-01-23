@@ -44,7 +44,10 @@ import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,6 +56,8 @@ public class ProtocolLib {
     private final CustomCrafting plugin;
     private final ProtocolManager protocolManager;
     private Function<MinecraftKey, Boolean> recipeFilter;
+    private final Map<UUID, Long> playersLastRecipeBookInteract = new HashMap<>();
+    private static final int RECIPEBOOK_CLICK_DELAY = 100;
 
     public ProtocolLib(CustomCrafting plugin) {
         this.plugin = plugin;
@@ -96,6 +101,28 @@ public class ProtocolLib {
                 lists.modify(0, input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList()));
             }
         });
+
+        //Prevent spam clicking of the recipe book, which might cause lag when players are using auto-clickers
+        if (!plugin.getApi().getCore().getCompatibilityManager().getPlugins().hasIntegration("ItemsAdder")) {
+            //No need to register this listener when ItemsAdder is installed. It has its own listener for this.
+            protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
+                @Override
+                public void onPacketReceiving(PacketEvent event) {
+                    long currentMillis = System.currentTimeMillis();
+                    UUID uuid = event.getPlayer().getUniqueId();
+                    if (playersLastRecipeBookInteract.containsKey(uuid)) {
+                        long lastInteract = playersLastRecipeBookInteract.getOrDefault(uuid, 0L);
+                        if (currentMillis - lastInteract <= RECIPEBOOK_CLICK_DELAY) {
+                            event.setCancelled(true);
+                        } else {
+                            playersLastRecipeBookInteract.put(uuid, currentMillis);
+                        }
+                    } else {
+                        playersLastRecipeBookInteract.put(uuid, currentMillis);
+                    }
+                }
+            });
+        }
     }
 
     private List<MinecraftKey> filterAndAddMissingRecipes(List<MinecraftKey> input) {
