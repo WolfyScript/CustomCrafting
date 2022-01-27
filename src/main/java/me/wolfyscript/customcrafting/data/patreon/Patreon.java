@@ -44,11 +44,8 @@ public class Patreon {
         addPatron(new Patron("Mr_Mint_", Tier.WOLFRAM));
         addPatron(new Patron("Mithran", Tier.WOLFRAM));
         addPatron(new Patron("Jack Bruton", Tier.WOLFRAM));
-        addPatron(new Patron("Stanislav Novotný", Tier.WOLFRAM));
-        addPatron(new Patron("2211kp", Tier.DIAMOND));
-        addPatron(new Patron("Jack", Tier.WOLFRAM));
-        addPatron(new Patron("Fyrk10", Tier.WOLFRAM));
-        addPatron(new Patron("Spencer Combs", Tier.WOLFRAM));
+        addPatron(new Patron("랜디", Tier.WOLFRAM));
+        addPatron(new Patron("AkkLive", Tier.WOLFRAM));
         addPatron(new Patron("Jaden Bautista", Tier.WOLFRAM));
         addPatron(new Patron("Tong Teerasak", Tier.SUPPORTER));
         addPatron(new Patron("Илья Nalurione", Tier.SUPPORTER));

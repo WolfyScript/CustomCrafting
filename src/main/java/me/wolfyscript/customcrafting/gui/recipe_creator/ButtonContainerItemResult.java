@@ -35,10 +35,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 class ButtonContainerItemResult extends ItemInputButton<CCCache> {
 
-    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> {
-        cache.getRecipeCreatorCache().getRecipeCache().getResult().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
-        cache.getRecipeCreatorCache().getRecipeCache().getResult().buildChoices();
-    };
+    private static final ApplyItem APPLY_ITEM = (items, cache, customItem) -> cache.getRecipeCreatorCache().getRecipeCache().getResult().put(items.getVariantSlot(), CustomItem.getReferenceByItemStack(customItem.create()));
 
     ButtonContainerItemResult(int variantSlot) {
         super("variant_container_" + variantSlot, new ButtonState<>("", Material.AIR, (cache, guiHandler, player, inventory, slot, event) -> {

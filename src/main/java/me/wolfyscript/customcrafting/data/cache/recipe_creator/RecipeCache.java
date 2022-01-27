@@ -155,6 +155,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
      * @return The passed in recipe with added settings.
      */
     protected R create(R recipe) {
+        result.buildChoices();
         recipe.setResult(result);
         recipe.setConditions(conditions);
         recipe.setGroup(group);
