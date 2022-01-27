@@ -58,6 +58,7 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
@@ -95,6 +96,7 @@ public class CustomCrafting extends JavaPlugin {
 
     public static final int BUKKIT_VERSION = Bukkit.getUnsafe().getDataVersion();
     public static final int CONFIG_VERSION = 5;
+    private final Component coloredTitle;
 
     //Instance Object to use when no Object was passed!
     private static CustomCrafting instance;
@@ -137,7 +139,8 @@ public class CustomCrafting extends JavaPlugin {
         this.registries = new CCRegistries(this, api.getCore());
 
         this.chat = api.getChat();
-        this.chat.setInGamePrefix("§7[§3CC§7] ");
+        this.chat.setChatPrefix(chat.getMiniMessage().parse("<gray>[<gradient:dark_aqua:aqua>CC</gradient><gray>]"));
+        this.coloredTitle = chat.getMiniMessage().parse("**<gradient:dark_aqua:aqua>CustomCrafting</gradient>**");
         api.setInventoryAPI(new InventoryAPI<>(api.getPlugin(), api, CCCache.class));
         this.chatUtils = new ChatUtils(this);
         this.patreon = new Patreon();
@@ -359,6 +362,10 @@ public class CustomCrafting extends JavaPlugin {
 
     public ConfigHandler getConfigHandler() {
         return configHandler;
+    }
+
+    public Component getColoredTitle() {
+        return coloredTitle;
     }
 
     public WolfyUtilities getApi() {

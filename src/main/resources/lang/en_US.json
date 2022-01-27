@@ -85,7 +85,7 @@
         "incompatible": "Unsupported file type! Ignoring %namespace%:%key% with the config file %key%.%file_type%! "
       }
     },
-    "denied_perm": "&cYou lack the permission &4%PERM%&c!",
+    "denied_perm": "<red>You lack the permission <dark_red>%PERM%</dark_red>!",
     "player": {
       "outdated": {
         "msg": "&cYour version is outdated! A new version is available!",
@@ -101,20 +101,25 @@
   },
   "commands": {
     "help": [
-      "&e/cc &7- &eOpens the GUI",
+      "__Commands:__ ",
+      "<dark_aqua>/cc <gray>- Opens the GUI",
+      "<dark_aqua>/cc <aqua><option>",
+      "  <aqua>info     <gray>- Displays info about this plugin",
+      "  <aqua>give     <gray>- Gives Custom Items to players",
+      "  <aqua>database <gray>- Export specific data to database",
+      "  <aqua>darkmode <gray>- Toggles the darkmode/lightmode of the GUI",
+      "  <aqua>lockdown <gray>- Toggles the LockDown mode of Custom Recipes",
+      "  <aqua>help     <gray>- Displays this list",
       "",
-      "&e/cc &7<option>",
+      "<dark_aqua>/recipes <gray>- Opens the recipe book GUI",
+      "<dark_aqua>/recipes <aqua><option>",
+      "  <aqua>delete <gray>- Deletes a recipe",
+      "  <aqua>edit   <gray>- Edit a recipe (redirects to GUI)",
+      "  <aqua>save   <gray>- Re-saves all recipes & items! Backup recommended!",
+      "  <aqua>toggle <gray>- Toggles a recipe",
+      "  <aqua>lookup <gray>- Shows a recipe in a GUI window.",
       "",
-      "&7Options:",
-      "&einfo       &7- &eDisplays info about this plugin",
-      "&egive       &7- &eGives Custom Items to players",
-      "&edatabase   &7- &eExport specific data to database",
-      "&edarkmode   &7- &eToggles the darkmode/lightmode of the GUI",
-      "&edebug      &7- &eToggles the debug mode. Might spam a lot of messages!",
-      "&elockdown   &7- &eToggles LockDown mode. If enabled no custom recipe can be crafted!",
-      "&ehelp       &7- &eDisplays list of commands",
-      "",
-      "For more info visit the Wiki:"
+      "**For more info visit the** <click:open_url:https://github.com/WolfyScript/CustomCrafting/wiki><dark_aqua>**Wiki**</dark_aqua></click>"
     ],
     "info": "&3type &6\"/cc help\" &3for help!",
     "lockdown": {

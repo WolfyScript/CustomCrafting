@@ -25,6 +25,9 @@ package me.wolfyscript.customcrafting.commands.cc_subcommands;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.commands.AbstractSubCommand;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
+import me.wolfyscript.lib.net.kyori.adventure.text.Component;
+import me.wolfyscript.lib.net.kyori.adventure.text.format.NamedTextColor;
+import me.wolfyscript.lib.net.kyori.adventure.text.format.TextDecoration;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,12 +58,13 @@ public class InfoSubCommand extends AbstractSubCommand {
 
     public void printInfo(Player p) {
         WolfyUtilities api = customCrafting.getApi();
-        api.getChat().sendMessages(p, "—————— &3&lCustomCrafting &7——————",
-                "",
-                "&7Author: &l" + String.join(", ", customCrafting.getDescription().getAuthors()),
-                "",
-                "&7Version: &l" + customCrafting.getDescription().getVersion(),
-                "",
-                "———————————————————————");
+        var chat = api.getChat();
+        chat.sendMessage(p, Component.text("———————— ", NamedTextColor.GRAY).append(customCrafting.getColoredTitle()).append(Component.text(" ————————")));
+        api.getChat().sendMessages(p, Component.empty(),
+                Component.text("    Author: ", NamedTextColor.GRAY).append(Component.text(String.join(", ", customCrafting.getDescription().getAuthors()), null, TextDecoration.BOLD)),
+                Component.empty(),
+                Component.text("    Version: ", NamedTextColor.GRAY).append(Component.text(customCrafting.getDescription().getVersion(), null, TextDecoration.BOLD)),
+                Component.empty(),
+                Component.text("———————————————————————————", NamedTextColor.GRAY));
     }
 }
