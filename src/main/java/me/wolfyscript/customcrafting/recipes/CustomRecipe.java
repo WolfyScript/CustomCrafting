@@ -22,13 +22,18 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -47,6 +52,7 @@ import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -58,7 +64,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@JsonSerialize(using = CustomRecipe.Serializer.class)
+@JsonTypeResolver(RecipeTypeResolver.class)
+@JsonTypeIdResolver(RecipeTypeIdResolver.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "@type")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonPropertyOrder(value = {"@type"})
 public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     protected static final String KEY_RESULT = "result";
@@ -70,16 +80,17 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected static final String KEY_HIDDEN = "hidden";
     protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
-    protected final NamespacedKey namespacedKey;
+    @JsonProperty("@type") protected RecipeType<C> type;
+    @JsonIgnore protected final NamespacedKey namespacedKey;
+    @JsonIgnore protected final WolfyUtilities api;
+    @JsonIgnore protected final ObjectMapper mapper;
+
     protected boolean exactMeta;
     protected boolean hidden;
     protected boolean vanillaBook;
-
     protected RecipePriority priority;
     protected Conditions conditions;
     protected String group;
-    protected final WolfyUtilities api;
-    protected final ObjectMapper mapper;
     protected Result result;
 
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
@@ -203,7 +214,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.result = result;
     }
 
-    public abstract RecipeType<C> getRecipeType();
+    @JsonSetter("result")
+    protected void setResult(JsonNode node) {
+        setResult(ItemLoader.loadResult(node));
+    }
+
+    public RecipeType<C> getRecipeType() {
+        return type;
+    }
 
     public List<CustomItem> getRecipeBookItems() {
         return getResult().getChoices();
@@ -292,6 +310,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     public abstract void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster);
 
+    @Deprecated
     public void writeToJson(JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStringField(KEY_GROUP, group);
         gen.writeBooleanField(KEY_HIDDEN, hidden);
@@ -311,22 +330,4 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
     }
 
-    static class Serializer extends StdSerializer<CustomRecipe<?>> {
-
-        public Serializer() {
-            super((Class<CustomRecipe<?>>) new TypeReference<>() {
-            }.getType());
-        }
-
-        public Serializer(Class<CustomRecipe<?>> vc) {
-            super(vc);
-        }
-
-        @Override
-        public void serialize(CustomRecipe iCustomRecipe, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-            gen.writeStartObject();
-            iCustomRecipe.writeToJson(gen, serializerProvider);
-            gen.writeEndObject();
-        }
-    }
 }
