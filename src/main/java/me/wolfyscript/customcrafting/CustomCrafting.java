@@ -47,6 +47,7 @@ import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.items.extension.*;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -202,6 +203,22 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldNameCondition.KEY, WorldNameCondition.class, new WorldNameCondition.GUIComponent());
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
+
+        var recipeTypes = getRegistries().getRecipeTypes();
+        recipeTypes.register(RecipeType.CRAFTING_SHAPED);
+        recipeTypes.register(RecipeType.CRAFTING_SHAPELESS);
+        recipeTypes.register(RecipeType.ELITE_CRAFTING_SHAPED);
+        recipeTypes.register(RecipeType.ELITE_CRAFTING_SHAPELESS);
+        recipeTypes.register(RecipeType.FURNACE);
+        recipeTypes.register(RecipeType.BLAST_FURNACE);
+        recipeTypes.register(RecipeType.SMOKER);
+        recipeTypes.register(RecipeType.CAMPFIRE);
+        recipeTypes.register(RecipeType.ANVIL);
+        recipeTypes.register(RecipeType.STONECUTTER);
+        recipeTypes.register(RecipeType.CAULDRON);
+        recipeTypes.register(RecipeType.GRINDSTONE);
+        recipeTypes.register(RecipeType.BREWING_STAND);
+        recipeTypes.register(RecipeType.SMITHING);
 
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, resultExtensions);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
