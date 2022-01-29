@@ -24,10 +24,12 @@ package me.wolfyscript.customcrafting.registry;
 
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.registry.Registry;
+import me.wolfyscript.utilities.registry.RegistrySimple;
 import me.wolfyscript.utilities.registry.TypeRegistry;
 import me.wolfyscript.utilities.registry.TypeRegistrySimple;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -39,6 +41,7 @@ public class CCRegistries {
     private final TypeRegistryRecipeConditions recipeConditions;
     private final TypeRegistry<MergeAdapter> recipeMergeAdapters;
     private final TypeRegistry<ResultExtension> recipeResultExtensions;
+    private final Registry<RecipeType<?>> recipeTypes;
 
     public CCRegistries(CustomCrafting customCrafting, WolfyUtilCore core) {
         var registries = core.getRegistries();
@@ -47,6 +50,7 @@ public class CCRegistries {
         this.recipeConditions = new TypeRegistryRecipeConditions(customCrafting, registries);
         this.recipeMergeAdapters = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
         this.recipeResultExtensions = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/result_extensions"), registries);
+        this.recipeTypes = new RegistrySimple<>(new NamespacedKey(customCrafting, "recipe/types"), registries, (Class<RecipeType<?>>)(Object) RecipeType.class);
     }
 
     public TypeRegistryRecipeConditions getRecipeConditions() {
@@ -63,6 +67,10 @@ public class CCRegistries {
 
     public TypeRegistry<ResultExtension> getRecipeResultExtensions() {
         return recipeResultExtensions;
+    }
+
+    public Registry<RecipeType<?>> getRecipeTypes() {
+        return recipeTypes;
     }
 
     public RegistryRecipes getRecipes() {
