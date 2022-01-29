@@ -22,16 +22,20 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.CraftingRecipeSettings;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
+import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
+import me.wolfyscript.utilities.util.json.jackson.annotations.OptionalKeyReference;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
+@OptionalKeyReference(field = "key")
+public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, Keyed {
 
     //Crafting recipes
     RecipeType<CraftingRecipeShaped> CRAFTING_SHAPED = new RecipeTypeImpl<>(Type.CRAFTING_SHAPED, CraftingRecipeShaped.class);
@@ -157,6 +161,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
             public CraftingRecipe<?, S> getInstance(NamespacedKey namespacedKey, JsonNode node) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
                 return !node.path("shapeless").asBoolean() ? types.get(0).getInstance(namespacedKey, node) : types.get(1).getInstance(namespacedKey, node);
             }
+
         }
 
         class ContainerImpl<C extends CustomRecipe<?>> implements Container<C> {
@@ -262,6 +267,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
 
         static final Map<String, RecipeType<? extends CustomRecipe<?>>> values = new HashMap<>();
 
+        private final NamespacedKey key;
         private final String id;
         private final Type type;
         private final String creatorID;
@@ -273,6 +279,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
         }
 
         private RecipeTypeImpl(Type type, Class<C> clazz, String creatorID) {
+            this.key = new NamespacedKey(CustomCrafting.inst(), creatorID);
             this.type = type;
             this.clazz = clazz;
             this.id = type.toString().toLowerCase(Locale.ROOT);
@@ -340,5 +347,9 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C> {
                     '}';
         }
 
+        @Override
+        public NamespacedKey getNamespacedKey() {
+            return key;
+        }
     }
 }
