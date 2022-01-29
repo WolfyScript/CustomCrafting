@@ -32,14 +32,17 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
 
     public CustomRecipeFurnace(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.FURNACE;
     }
 
     public CustomRecipeFurnace(NamespacedKey key) {
         super(key);
+        this.type = RecipeType.FURNACE;
     }
 
     public CustomRecipeFurnace(CustomRecipeFurnace customRecipeFurnace) {
         super(customRecipeFurnace);
+        this.type = RecipeType.FURNACE;
     }
 
     @Override
@@ -50,11 +53,6 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
             return recipe;
         }
         return null;
-    }
-
-    @Override
-    public RecipeType<CustomRecipeFurnace> getRecipeType() {
-        return RecipeType.FURNACE;
     }
 
     @Override

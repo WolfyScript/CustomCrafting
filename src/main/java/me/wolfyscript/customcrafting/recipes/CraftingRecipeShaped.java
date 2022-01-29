@@ -33,19 +33,17 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
 
     public CraftingRecipeShaped(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
+        this.type = RecipeType.CRAFTING_SHAPED;
     }
 
     public CraftingRecipeShaped(NamespacedKey key) {
         super(key, 3, new AdvancedRecipeSettings());
+        this.type = RecipeType.CRAFTING_SHAPED;
     }
 
     public CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {
         super(craftingRecipe);
-    }
-
-    @Override
-    public RecipeType<CraftingRecipeShaped> getRecipeType() {
-        return RecipeType.CRAFTING_SHAPED;
+        this.type = RecipeType.CRAFTING_SHAPED;
     }
 
     @Override

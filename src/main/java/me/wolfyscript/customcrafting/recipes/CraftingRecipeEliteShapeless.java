@@ -30,19 +30,17 @@ public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<Crafti
 
     public CraftingRecipeEliteShapeless(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 6, EliteRecipeSettings.class);
+        this.type = RecipeType.ELITE_CRAFTING_SHAPELESS;
     }
 
     public CraftingRecipeEliteShapeless(NamespacedKey key) {
         super(key, 6, new EliteRecipeSettings());
+        this.type = RecipeType.ELITE_CRAFTING_SHAPELESS;
     }
 
     public CraftingRecipeEliteShapeless(CraftingRecipeEliteShapeless eliteCraftingRecipe) {
         super(eliteCraftingRecipe);
-    }
-
-    @Override
-    public RecipeType<CraftingRecipeEliteShapeless> getRecipeType() {
-        return RecipeType.ELITE_CRAFTING_SHAPELESS;
+        this.type = RecipeType.ELITE_CRAFTING_SHAPELESS;
     }
 
     @Override

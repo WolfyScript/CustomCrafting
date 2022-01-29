@@ -34,19 +34,17 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
 
     public CraftingRecipeShapeless(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
+        this.type = RecipeType.CRAFTING_SHAPELESS;
     }
 
     public CraftingRecipeShapeless(NamespacedKey key) {
         super(key, 3, new AdvancedRecipeSettings());
+        this.type = RecipeType.CRAFTING_SHAPELESS;
     }
 
     public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {
         super(craftingRecipe);
-    }
-
-    @Override
-    public RecipeType<CraftingRecipeShapeless> getRecipeType() {
-        return RecipeType.CRAFTING_SHAPELESS;
+        this.type = RecipeType.CRAFTING_SHAPELESS;
     }
 
     @Override

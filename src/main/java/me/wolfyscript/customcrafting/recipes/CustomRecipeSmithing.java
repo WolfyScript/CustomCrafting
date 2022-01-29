@@ -54,6 +54,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public CustomRecipeSmithing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.SMITHING;
         base = ItemLoader.loadIngredient(node.path(KEY_BASE));
         addition = ItemLoader.loadIngredient(node.path(KEY_ADDITION));
         preserveEnchants = node.path("preserve_enchants").asBoolean(true);
@@ -62,6 +63,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public CustomRecipeSmithing(NamespacedKey key) {
         super(key);
+        this.type = RecipeType.SMITHING;
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
@@ -71,16 +73,12 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public CustomRecipeSmithing(CustomRecipeSmithing customRecipeSmithing) {
         super(customRecipeSmithing);
+        this.type = RecipeType.SMITHING;
         this.result = customRecipeSmithing.getResult();
         this.base = customRecipeSmithing.getBase();
         this.addition = customRecipeSmithing.getAddition();
         this.preserveEnchants = customRecipeSmithing.isPreserveEnchants();
         this.onlyChangeMaterial = customRecipeSmithing.isOnlyChangeMaterial();
-    }
-
-    @Override
-    public RecipeType<CustomRecipeSmithing> getRecipeType() {
-        return RecipeType.SMITHING;
     }
 
     @Override

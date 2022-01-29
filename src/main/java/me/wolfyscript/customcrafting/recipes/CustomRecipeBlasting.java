@@ -32,14 +32,17 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
 
     public CustomRecipeBlasting(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.BLAST_FURNACE;
     }
 
     public CustomRecipeBlasting(NamespacedKey key) {
         super(key);
+        this.type = RecipeType.BLAST_FURNACE;
     }
 
     public CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting) {
         super(customRecipeBlasting);
+        this.type = RecipeType.BLAST_FURNACE;
     }
 
     @Override
@@ -50,11 +53,6 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
             return recipe;
         }
         return null;
-    }
-
-    @Override
-    public RecipeType<CustomRecipeBlasting> getRecipeType() {
-        return RecipeType.BLAST_FURNACE;
     }
 
     @Override

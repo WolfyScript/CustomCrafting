@@ -32,14 +32,17 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
 
     public CustomRecipeCampfire(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.CAMPFIRE;
     }
 
     public CustomRecipeCampfire(NamespacedKey key) {
         super(key);
+        this.type = RecipeType.CAMPFIRE;
     }
 
     public CustomRecipeCampfire(CustomRecipeCampfire customRecipeCampfire) {
         super(customRecipeCampfire);
+        this.type = RecipeType.CAMPFIRE;
     }
 
     @Override
@@ -50,11 +53,6 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
             return recipe;
         }
         return null;
-    }
-
-    @Override
-    public RecipeType<CustomRecipeCampfire> getRecipeType() {
-        return RecipeType.CAMPFIRE;
     }
 
     @Override

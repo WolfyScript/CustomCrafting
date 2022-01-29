@@ -30,19 +30,17 @@ public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingReci
 
     public CraftingRecipeEliteShaped(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 6, EliteRecipeSettings.class);
+        this.type = RecipeType.ELITE_CRAFTING_SHAPED;
     }
 
     public CraftingRecipeEliteShaped(NamespacedKey key) {
         super(key, 6, new EliteRecipeSettings());
+        this.type = RecipeType.ELITE_CRAFTING_SHAPED;
     }
 
     public CraftingRecipeEliteShaped(CraftingRecipeEliteShaped eliteCraftingRecipe) {
         super(eliteCraftingRecipe);
-    }
-
-    @Override
-    public RecipeType<CraftingRecipeEliteShaped> getRecipeType() {
-        return RecipeType.ELITE_CRAFTING_SHAPED;
+        this.type = RecipeType.ELITE_CRAFTING_SHAPED;
     }
 
     @Override

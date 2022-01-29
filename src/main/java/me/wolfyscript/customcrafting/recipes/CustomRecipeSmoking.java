@@ -32,19 +32,17 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
 
     public CustomRecipeSmoking(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.SMOKER;
     }
 
     public CustomRecipeSmoking(NamespacedKey key) {
         super(key);
+        this.type = RecipeType.SMOKER;
     }
 
     public CustomRecipeSmoking(CustomRecipeSmoking customRecipeSmoking) {
         super(customRecipeSmoking);
-    }
-
-    @Override
-    public RecipeType<CustomRecipeSmoking> getRecipeType() {
-        return RecipeType.SMOKER;
+        this.type = RecipeType.SMOKER;
     }
 
     @Override

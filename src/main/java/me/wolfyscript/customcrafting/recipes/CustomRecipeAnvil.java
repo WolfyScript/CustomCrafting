@@ -65,6 +65,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     public CustomRecipeAnvil(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.ANVIL;
         JsonNode modeNode = node.path("mode");
         this.durability = modeNode.path("durability").asInt(0);
         this.mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
@@ -81,6 +82,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     public CustomRecipeAnvil(CustomRecipeAnvil recipe) {
         super(recipe);
+        this.type = RecipeType.ANVIL;
         this.mode = recipe.getMode();
         this.base = recipe.base.clone();
         this.addition = recipe.addition.clone();
@@ -95,6 +97,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     public CustomRecipeAnvil(NamespacedKey key) {
         super(key);
+        this.type = RecipeType.ANVIL;
         this.mode = Mode.RESULT;
         this.durability = 0;
         this.repairCost = 1;
@@ -201,11 +204,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     public void setRepairCostMode(RepairCostMode repairCostMode) {
         this.repairCostMode = repairCostMode;
-    }
-
-    @Override
-    public RecipeType<CustomRecipeAnvil> getRecipeType() {
-        return RecipeType.ANVIL;
     }
 
     public void setBase(@NotNull Ingredient base) {

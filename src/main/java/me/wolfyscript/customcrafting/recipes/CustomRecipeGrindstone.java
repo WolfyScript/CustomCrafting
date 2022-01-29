@@ -50,6 +50,7 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     public CustomRecipeGrindstone(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.GRINDSTONE;
         this.xp = node.path("exp").intValue();
         this.inputTop = ItemLoader.loadIngredient(node.path("input_top"));
         this.inputBottom = ItemLoader.loadIngredient(node.path("input_bottom"));
@@ -57,6 +58,7 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     public CustomRecipeGrindstone(NamespacedKey key) {
         super(key);
+        this.type = RecipeType.GRINDSTONE;
         this.result = new Result();
         this.inputTop = new Ingredient();
         this.inputBottom = new Ingredient();
@@ -65,6 +67,7 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     public CustomRecipeGrindstone(CustomRecipeGrindstone customRecipeGrindstone) {
         super(customRecipeGrindstone);
+        this.type = RecipeType.GRINDSTONE;
         this.inputBottom = customRecipeGrindstone.getInputBottom();
         this.inputTop = customRecipeGrindstone.getInputTop();
         this.xp = customRecipeGrindstone.getXp();

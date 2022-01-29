@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -82,6 +83,12 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     public void setSource(@NotNull Ingredient source) {
         Preconditions.checkArgument(!source.isEmpty(), "Invalid source! Recipe must have non-air source!");
         this.source = source;
+    }
+
+    @JsonSetter("result")
+    @Override
+    protected void setResult(JsonNode node) {
+        setResult(node.has("custom_amount") ? new Result(JacksonUtil.getObjectMapper().convertValue(node, APIReference.class)) : ItemLoader.loadResult(node));
     }
 
     @Override
