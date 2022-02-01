@@ -28,6 +28,7 @@ import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
@@ -44,6 +45,7 @@ public class LocalStorageLoader extends ResourceLoader {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
     private static final String ITEMS_FOLDER = "items";
+    private static final String RECIPES_FOLDER = "recipes";
 
     protected LocalStorageLoader(CustomCrafting customCrafting) {
         super(customCrafting, new NamespacedKey(customCrafting, "local_loader"));
@@ -63,11 +65,17 @@ public class LocalStorageLoader extends ResourceLoader {
             }
             api.getConsole().info("Loading recipes...");
             for (String dir : dirs) {
-                //Required to load the old recipes.
-                loadAndRegisterRecipe(RecipeType.Container.CRAFTING, dir);
-                loadAndRegisterRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
-                for (RecipeType<? extends CustomRecipe<?>> type : RecipeType.values()) {
-                    loadAndRegisterRecipe(type, dir);
+                loadRecipesInNamespace(dir); //Load new recipe format files
+            }
+            for (String dir : dirs) {
+                String[] typeFolders = new File(DATA_FOLDER + "/" + dir).list((dir1, name) -> !name.equals(ITEMS_FOLDER) && !name.equals(RECIPES_FOLDER));
+                if (typeFolders != null && typeFolders.length > 0) {
+                    //Required to load the old recipes.
+                    loadAndRegisterRecipe(RecipeType.Container.CRAFTING, dir);
+                    loadAndRegisterRecipe(RecipeType.Container.ELITE_CRAFTING, dir);
+                    for (RecipeType<? extends CustomRecipe<?>> type : RecipeType.values()) {
+                        loadAndRegisterRecipe(type, dir);
+                    }
                 }
             }
             api.getConsole().info("");
@@ -80,11 +88,11 @@ public class LocalStorageLoader extends ResourceLoader {
 
     @Override
     public boolean save(CustomRecipe<?> recipe) {
-        File file = getFileAt(recipe.getNamespacedKey().getNamespace(), recipe.getRecipeType().getId(), recipe.getNamespacedKey().getKey());
+        File file = getFileAt(recipe.getNamespacedKey().getNamespace(), RECIPES_FOLDER, recipe.getNamespacedKey().getKey());
         if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
             try {
                 if (file.isFile() || file.createNewFile()) {
-                    JacksonUtil.getObjectWriter(CustomCrafting.inst().getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, recipe);
+                    JacksonUtil.getObjectWriter(customCrafting.getConfigHandler().getConfig().isPrettyPrinting()).writeValue(file, recipe);
                     return true;
                 }
             } catch (IOException e) {
@@ -159,15 +167,32 @@ public class LocalStorageLoader extends ResourceLoader {
         }
     }
 
+    private void loadRecipesInNamespace(String namespace) {
+        for (File file : getFiles(namespace, RECIPES_FOLDER)) {
+            var namespacedKey = new NamespacedKey(namespace, file.getName().replace(".json", ""));
+            try {
+                var injectableValues = new InjectableValues.Std();
+                injectableValues.addValue("key", namespacedKey);
+                CustomRecipe<?> recipe = objectMapper.reader(injectableValues).readValue(file, CustomRecipe.class);
+                customCrafting.getLogger().info("Loaded Recipe " + recipe.getNamespacedKey());
+                customCrafting.getRegistries().getRecipes().register(recipe);
+            } catch (IOException e) {
+                ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), "", e);
+            }
+        }
+    }
+
     private void loadAndRegisterRecipe(RecipeLoader<?> loader, String namespace) {
         if (loader instanceof RecipeType.Container<?> container && container.hasLegacy()) {
             //Loading legacy recipes
             String legacyId = container.getLegacyID();
             List<File> legacyFiles = getFiles(namespace, legacyId);
             if (!legacyFiles.isEmpty()) { //If there are no legacy recipes we can skip it.
+                customCrafting.getLogger().info("Loading legacy recipes: type: " + container.getId() + ", namespace: " + namespace);
                 for (RecipeType<?> type : container.getTypes()) {
+                    //Remove the files that are present in new recipe folders
                     List<File> latestFiles = getFiles(namespace, type.getId());
-                    legacyFiles.removeIf(legacyFile -> latestFiles.stream().anyMatch(file -> file.getName().equals(legacyFile.getName()))); //Remove the files that are present in new recipe folders
+                    legacyFiles.removeIf(legacyFile -> latestFiles.stream().anyMatch(file -> file.getName().equals(legacyFile.getName())));
                 }
                 loadRecipesFiles(loader, legacyFiles, namespace);
             }
