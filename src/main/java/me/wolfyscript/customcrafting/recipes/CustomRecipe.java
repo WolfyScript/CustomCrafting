@@ -22,7 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
@@ -99,7 +101,6 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      * @param namespacedKey The namespaced key of the recipe.
      * @param node The json node read from the recipe file.
      */
-    @Deprecated
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
@@ -120,19 +121,9 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         }
     }
 
-    protected CustomRecipe(NamespacedKey key) {
-        this.type = RecipeType.valueOfRecipe(this);
-        this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
-        this.mapper = JacksonUtil.getObjectMapper();
-        this.api = CustomCrafting.inst().getApi();
-        this.result = new Result();
-
-        this.group = "";
-        this.priority = RecipePriority.NORMAL;
-        this.checkNBT = true;
-        this.vanillaBook = false;
-        this.conditions = new Conditions();
-        this.hidden = false;
+    @JsonCreator
+    protected CustomRecipe(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
+        this(key, (RecipeType<C>) null);
     }
 
     protected CustomRecipe(NamespacedKey key, RecipeType<C> type) {

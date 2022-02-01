@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -80,6 +83,19 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.repairCostMode = RepairCostMode.valueOf(repairNode.path("mode").asText("NONE"));
     }
 
+    @JsonCreator
+    public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
+        super(key);
+        this.mode = Mode.RESULT;
+        this.durability = 0;
+        this.repairCost = 1;
+        this.applyRepairCost = false;
+        this.repairCostMode = RepairCostMode.NONE;
+        this.blockEnchant = false;
+        this.blockRename = false;
+        this.blockRepair = false;
+    }
+
     public CustomRecipeAnvil(CustomRecipeAnvil recipe) {
         super(recipe);
         this.mode = recipe.getMode();
@@ -92,18 +108,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.blockEnchant = recipe.blockEnchant;
         this.blockRename = recipe.blockRename;
         this.blockRepair = recipe.blockRepair;
-    }
-
-    public CustomRecipeAnvil(NamespacedKey key) {
-        super(key);
-        this.mode = Mode.RESULT;
-        this.durability = 0;
-        this.repairCost = 1;
-        this.applyRepairCost = false;
-        this.repairCostMode = RepairCostMode.NONE;
-        this.blockEnchant = false;
-        this.blockRename = false;
-        this.blockRepair = false;
     }
 
     private void readInput(JsonNode node) {

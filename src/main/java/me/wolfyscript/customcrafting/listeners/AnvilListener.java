@@ -76,7 +76,7 @@ public class AnvilListener implements Listener {
         for (CustomRecipeAnvil recipe : recipes) {
             Optional<CustomItem> finalInputLeft = Optional.empty();
             Optional<CustomItem> finalInputRight = Optional.empty();
-            if ((recipe.hasInputLeft() && (inputLeft == null || (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isExactMeta())).isEmpty())) || (recipe.hasInputRight() && (inputRight == null || (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isExactMeta())).isEmpty()))) {
+            if ((recipe.hasInputLeft() && (inputLeft == null || (finalInputLeft = recipe.getInputLeft().check(inputLeft, recipe.isCheckNBT())).isEmpty())) || (recipe.hasInputRight() && (inputRight == null || (finalInputRight = recipe.getInputRight().check(inputRight, recipe.isCheckNBT())).isEmpty()))) {
                 continue;
             }
             //Recipe is valid at this point!

@@ -64,7 +64,7 @@ public abstract class SmeltAPIAdapter {
 
     protected Pair<CookingRecipeData<?>, Boolean> processRecipe(ItemStack source, NamespacedKey recipeKey, Block block) {
         if (customCrafting.getRegistries().getRecipes().get(recipeKey) instanceof CustomRecipeCooking<?, ?> cookingRecipe && cookingRecipe.validType(block.getType())) {
-            Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isExactMeta());
+            Optional<CustomItem> customSource = cookingRecipe.getSource().check(source, cookingRecipe.isCheckNBT());
             if (customSource.isPresent()) {
                 if (cookingRecipe.checkConditions(new Conditions.Data(null, block, null))) {
                     var data = new IngredientData(0, cookingRecipe.getSource(), customSource.get(), source);

@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -119,7 +122,8 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         setRequiredEffects(requiredEffects);
     }
 
-    public CustomRecipeBrewing(NamespacedKey key) {
+    @JsonCreator
+    public CustomRecipeBrewing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
         this.ingredients = new Ingredient();
         this.fuelCost = 1;

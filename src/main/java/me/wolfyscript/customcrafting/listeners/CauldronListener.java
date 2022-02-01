@@ -106,7 +106,7 @@ public class CauldronListener implements Listener {
                         event.setUseItemInHand(Event.Result.DENY);
                         event.setUseInteractedBlock(Event.Result.DENY);
                         if (!ItemUtils.isAirOrNull(handItem)) {
-                            if (!ItemUtils.isAirOrNull(required) && required.isSimilar(handItem, recipe.isExactMeta())) {
+                            if (!ItemUtils.isAirOrNull(required) && required.isSimilar(handItem, recipe.isCheckNBT())) {
                                 handItem.setAmount(handItem.getAmount() - 1);
                             } else if (!ItemUtils.isAirOrNull(required)) {
                                 return;

@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -64,7 +67,8 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
         setSource(ItemLoader.loadIngredient(node.path(KEY_SOURCE)));
     }
 
-    public CustomRecipeStonecutter(NamespacedKey key) {
+    @JsonCreator
+    public CustomRecipeStonecutter(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
         this.result = new Result();
         this.source = new Ingredient();
@@ -142,7 +146,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
     @Override
     public StonecuttingRecipe getVanillaRecipe() {
         if (!getResult().isEmpty() && !getSource().isEmpty()) {
-            RecipeChoice choice = isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList());
+            RecipeChoice choice = isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getBukkitChoices()) : new RecipeChoice.MaterialChoice(getSource().getBukkitChoices().stream().map(ItemStack::getType).toList());
             var recipe = new StonecuttingRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getChoices().get(0).create(), choice);
             recipe.setGroup(group);
             return recipe;

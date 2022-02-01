@@ -72,6 +72,7 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
     }
 
     static <C extends CustomRecipe<C>> RecipeType<C> valueOfRecipe(CustomRecipe<C> type) {
+        if (type == null) return null;
         return (RecipeType<C>) values().stream().filter(recipeType -> recipeType.isInstance(type)).findFirst().orElse(null);
     }
 

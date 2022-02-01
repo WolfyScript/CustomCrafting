@@ -121,7 +121,7 @@ public class BrewingStandListener implements Listener {
                         if (!ItemUtils.isAirOrNull(inventory.getItem(0)) || !ItemUtils.isAirOrNull(inventory.getItem(1)) || !ItemUtils.isAirOrNull(inventory.getItem(2))) {
                             //Check for possible recipes and add them to the map
                             customCrafting.getRegistries().getRecipes().getAvailable(RecipeType.BREWING_STAND, player).stream().filter(recipe -> fuelLevel >= recipe.getFuelCost()).forEach(recipe -> {
-                                Optional<CustomItem> optional = recipe.getIngredient().check(ingredient, recipe.isExactMeta());
+                                Optional<CustomItem> optional = recipe.getIngredient().check(ingredient, recipe.isCheckNBT());
                                 if (optional.isPresent()) {
                                     //Ingredient is valid
                                     //Checking for valid item in the bottom 3 slots of the brewing inventory
@@ -129,7 +129,7 @@ public class BrewingStandListener implements Listener {
                                     if (!recipe.getAllowedItems().isEmpty()) {
                                         for (int i = 0; i < 3; i++) {
                                             ItemStack itemStack = inventory.getItem(i);
-                                            if (!ItemUtils.isAirOrNull(itemStack) && !recipe.getAllowedItems().test(itemStack, recipe.isExactMeta())) {
+                                            if (!ItemUtils.isAirOrNull(itemStack) && !recipe.getAllowedItems().test(itemStack, recipe.isCheckNBT())) {
                                                 valid = false;
                                                 break;
                                             }
@@ -191,7 +191,7 @@ public class BrewingStandListener implements Listener {
                                                         ItemStack inputItem = brewerInventory.getItem(i);
                                                         if (!ItemUtils.isAirOrNull(inputItem)) {//is slot not empty?
                                                             //Check if item is contained in recipe before trying to process it
-                                                            if (recipe.getAllowedItems().isEmpty() || recipe.getAllowedItems().test(inputItem, recipe.isExactMeta())) {
+                                                            if (recipe.getAllowedItems().isEmpty() || recipe.getAllowedItems().test(inputItem, recipe.isCheckNBT())) {
                                                                 //Input in that slot is valid, so marking slot as processed
                                                                 processedSlots.add(i);
                                                                 //Process the item in the slot

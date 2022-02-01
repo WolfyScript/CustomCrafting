@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -61,7 +64,8 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
         onlyChangeMaterial = node.path("onlyChangeMaterial").asBoolean(false);
     }
 
-    public CustomRecipeSmithing(NamespacedKey key) {
+    @JsonCreator
+    public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
         this.base = new Ingredient();
         this.addition = new Ingredient();
