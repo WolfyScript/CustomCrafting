@@ -23,6 +23,7 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -52,7 +53,6 @@ import me.wolfyscript.utilities.api.nms.network.MCByteBuf;
 import me.wolfyscript.utilities.util.Keyed;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
-import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -68,7 +68,7 @@ import java.util.Objects;
 @JsonTypeIdResolver(RecipeTypeIdResolver.class)
 @JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "@type")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonPropertyOrder(value = {"@type"})
+@JsonPropertyOrder(value = { "@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions" })
 public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     protected static final String KEY_RESULT = "result";
@@ -85,7 +85,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @JsonIgnore protected final WolfyUtilities api;
     @JsonIgnore protected final ObjectMapper mapper;
 
-    protected boolean exactMeta;
+    protected boolean checkNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
     protected RecipePriority priority;
@@ -100,7 +100,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         //Get fields from JsonNode
         this.group = node.path(KEY_GROUP).asText("");
         this.priority = mapper.convertValue(node.path(KEY_PRIORITY).asText("NORMAL"), RecipePriority.class);
-        this.exactMeta = node.path(KEY_EXACT_META).asBoolean(true);
+        this.checkNBT = node.path(KEY_EXACT_META).asBoolean(true);
         this.conditions = mapper.convertValue(node.path(KEY_CONDITIONS), Conditions.class);
         if (this.conditions == null) {
             this.conditions = new Conditions();
@@ -121,7 +121,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
         this.group = "";
         this.priority = RecipePriority.NORMAL;
-        this.exactMeta = true;
+        this.checkNBT = true;
         this.vanillaBook = false;
         this.conditions = new Conditions();
         this.hidden = false;
@@ -141,7 +141,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.vanillaBook = customRecipe.vanillaBook;
         this.group = customRecipe.group;
         this.priority = customRecipe.priority;
-        this.exactMeta = customRecipe.exactMeta;
+        this.checkNBT = customRecipe.checkNBT;
         this.conditions = customRecipe.conditions;
         this.hidden = customRecipe.hidden;
         this.result = customRecipe.result.clone();
@@ -170,12 +170,24 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.priority = priority;
     }
 
+    @JsonIgnore
+    @Deprecated
     public boolean isExactMeta() {
-        return exactMeta;
+        return checkNBT;
     }
 
+    @JsonIgnore
+    @Deprecated
     public void setExactMeta(boolean exactMeta) {
-        this.exactMeta = exactMeta;
+        this.checkNBT = exactMeta;
+    }
+
+    public void setCheckNBT(boolean checkNBT) {
+        this.checkNBT = checkNBT;
+    }
+
+    public boolean isCheckNBT() {
+        return checkNBT;
     }
 
     public boolean isHidden() {
@@ -219,10 +231,17 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         setResult(ItemLoader.loadResult(node));
     }
 
+    @JsonIgnore
     public RecipeType<C> getRecipeType() {
         return type;
     }
 
+    @JsonGetter("@type")
+    private NamespacedKey getType() {
+        return type.getNamespacedKey();
+    }
+
+    @JsonIgnore
     public List<CustomItem> getRecipeBookItems() {
         return getResult().getChoices();
     }
@@ -249,6 +268,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         return getConditions().check(id, this, data);
     }
 
+    @JsonIgnore
     public boolean isDisabled() {
         return CustomCrafting.inst().getDisableRecipesHandler().getRecipes().contains(getNamespacedKey());
     }
@@ -318,14 +338,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
             gen.writeBooleanField(KEY_VANILLA_BOOK, true);
         }
         gen.writeStringField(KEY_PRIORITY, priority.toString());
-        gen.writeBooleanField(KEY_EXACT_META, exactMeta);
+        gen.writeBooleanField(KEY_EXACT_META, checkNBT);
         gen.writeObjectField(KEY_CONDITIONS, conditions);
     }
 
     public void writeToBuf(MCByteBuf byteBuf) {
         byteBuf.writeUtf(getRecipeType().name());
         byteBuf.writeUtf(namespacedKey.toString());
-        byteBuf.writeBoolean(exactMeta);
+        byteBuf.writeBoolean(checkNBT);
         byteBuf.writeUtf(group);
         byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
     }

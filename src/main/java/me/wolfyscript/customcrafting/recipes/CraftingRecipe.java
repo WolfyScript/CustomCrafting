@@ -24,6 +24,8 @@ package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
 import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -72,8 +74,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         this.ingredients = List.of();
         this.maxGridDimension = gridSize;
         this.maxIngredients = maxGridDimension * maxGridDimension;
-        this.settings = Objects.requireNonNullElseGet(mapper.convertValue(node.path("settings"), new TypeReference<>() {
-        }), () -> {
+        this.settings = Objects.requireNonNullElseGet(mapper.convertValue(node.path("settings"), settingsType), () -> {
             try {
                 return settingsType.getDeclaredConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -103,6 +104,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         return ingredients.get(slot);
     }
 
+    @JsonIgnore
     public abstract boolean isShapeless();
 
     public abstract boolean fitsDimensions(CraftManager.MatrixData matrixData);
@@ -119,6 +121,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     /**
      * @return The max grid dimensions of the crafting recipe type.
      */
+    @JsonIgnore
     public int getMaxGridDimension() {
         return maxGridDimension;
     }
@@ -126,6 +129,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
     /**
      * @return The maximum ingredients of the crafting recipe type. Usually the maxGridDimension squared (9, 16, 25, 36).
      */
+    @JsonIgnore
     public int getMaxIngredients() {
         return maxIngredients;
     }
@@ -216,6 +220,7 @@ public abstract class CraftingRecipe<C extends CraftingRecipe<C, S>, S extends C
         }
     }
 
+    @Deprecated
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);

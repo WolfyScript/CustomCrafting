@@ -22,14 +22,15 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bukkit.inventory.Recipe;
 
 public interface ICustomVanillaRecipe<T extends Recipe> {
 
-    T getVanillaRecipe();
+    @JsonIgnore T getVanillaRecipe();
 
-    boolean isVisibleVanillaBook();
+    @JsonIgnore boolean isVisibleVanillaBook();
 
-    void setVisibleVanillaBook(boolean vanillaBook);
+    @JsonIgnore void setVisibleVanillaBook(boolean vanillaBook);
 
 }

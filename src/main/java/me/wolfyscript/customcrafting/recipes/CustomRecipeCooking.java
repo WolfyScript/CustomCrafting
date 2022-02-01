@@ -156,6 +156,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         event.setButton(24, ButtonContainerIngredient.key(cluster, 24));
     }
 
+    @Deprecated
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);

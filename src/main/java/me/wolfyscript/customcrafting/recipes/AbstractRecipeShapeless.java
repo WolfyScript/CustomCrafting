@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -46,10 +48,10 @@ import java.util.stream.Stream;
 
 public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
-    private List<Integer> indexes;
-    private int combinations = 1;
-    private int nonEmptyIngredientSize;
-    private boolean hasAllowedEmptyIngredient;
+    @JsonIgnore private List<Integer> indexes;
+    @JsonIgnore private int combinations = 1;
+    @JsonIgnore private int nonEmptyIngredientSize;
+    @JsonIgnore private boolean hasAllowedEmptyIngredient;
 
     protected AbstractRecipeShapeless(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
@@ -185,6 +187,7 @@ public abstract class AbstractRecipeShapeless<C extends AbstractRecipeShapeless<
         return true;
     }
 
+    @Deprecated
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
