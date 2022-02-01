@@ -93,6 +93,13 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected String group;
     protected Result result;
 
+    /**
+     *
+     * @deprecated Used only for deserializing recipes from old json files.
+     * @param namespacedKey The namespaced key of the recipe.
+     * @param node The json node read from the recipe file.
+     */
+    @Deprecated
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
         this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
@@ -114,6 +121,23 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     }
 
     protected CustomRecipe(NamespacedKey key) {
+        this.type = RecipeType.valueOfRecipe(this);
+        this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
+        this.mapper = JacksonUtil.getObjectMapper();
+        this.api = CustomCrafting.inst().getApi();
+        this.result = new Result();
+
+        this.group = "";
+        this.priority = RecipePriority.NORMAL;
+        this.checkNBT = true;
+        this.vanillaBook = false;
+        this.conditions = new Conditions();
+        this.hidden = false;
+    }
+
+    protected CustomRecipe(NamespacedKey key, RecipeType<C> type) {
+        this.type = type == null ? RecipeType.valueOfRecipe(this) : type;
+        Preconditions.checkArgument(this.type != null, "Error constructing Recipe Object \"" + getClass().getName() + "\": Missing RecipeType!");
         this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
@@ -133,7 +157,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      *
      * @param customRecipe The other CustomRecipe. Can be from another type, but must have the same ResultTarget.
      */
-    protected CustomRecipe(CustomRecipe<?> customRecipe) {
+    protected CustomRecipe(CustomRecipe<C> customRecipe) {
+        this.type = customRecipe.type;
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = Objects.requireNonNull(customRecipe.namespacedKey, ERROR_MSG_KEY);
@@ -330,6 +355,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     public abstract void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster);
 
+    /**
+     * Writes the recipe to json using the specified generator and provider.
+     *
+     * @param gen The JsonGenerator
+     * @param provider The SerializerProvider
+     * @throws IOException Any exception caused when writing it to json.
+     * @deprecated This is no longer used. Instead, the recipe object can be written to json directly.
+     */
     @Deprecated
     public void writeToJson(JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStringField(KEY_GROUP, group);

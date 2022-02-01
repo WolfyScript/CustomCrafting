@@ -67,7 +67,6 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     public CustomRecipeGrindstone(CustomRecipeGrindstone customRecipeGrindstone) {
         super(customRecipeGrindstone);
-        this.type = RecipeType.GRINDSTONE;
         this.inputBottom = customRecipeGrindstone.getInputBottom();
         this.inputTop = customRecipeGrindstone.getInputTop();
         this.xp = customRecipeGrindstone.getXp();

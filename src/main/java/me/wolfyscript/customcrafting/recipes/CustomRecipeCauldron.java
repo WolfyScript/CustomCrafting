@@ -76,7 +76,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public CustomRecipeCauldron(NamespacedKey key) {
         super(key);
-        this.type = RecipeType.CAULDRON;
         this.result = new Result();
         this.ingredients = new Ingredient();
         this.dropItems = true;
@@ -90,7 +89,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public CustomRecipeCauldron(CustomRecipeCauldron customRecipeCauldron) {
         super(customRecipeCauldron);
-        this.type = RecipeType.CAULDRON;
         this.result = customRecipeCauldron.getResult();
         this.ingredients = customRecipeCauldron.getIngredient();
         this.dropItems = customRecipeCauldron.dropItems();

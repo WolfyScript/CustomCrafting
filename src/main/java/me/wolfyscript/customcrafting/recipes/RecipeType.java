@@ -71,6 +71,10 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         return RecipeTypeImpl.values.get(type.toString().toLowerCase(Locale.ROOT));
     }
 
+    static <C extends CustomRecipe<C>> RecipeType<C> valueOfRecipe(CustomRecipe<C> type) {
+        return (RecipeType<C>) values().stream().filter(recipeType -> recipeType.isInstance(type)).findFirst().orElse(null);
+    }
+
     Type getType();
 
     String getCreatorID();

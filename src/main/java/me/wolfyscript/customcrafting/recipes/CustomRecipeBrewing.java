@@ -121,7 +121,6 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     public CustomRecipeBrewing(NamespacedKey key) {
         super(key);
-        this.type = RecipeType.BREWING_STAND;
         this.ingredients = new Ingredient();
         this.fuelCost = 1;
         this.brewTime = 400;
@@ -140,7 +139,6 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     public CustomRecipeBrewing(CustomRecipeBrewing customRecipeBrewing) {
         super(customRecipeBrewing);
-        this.type = RecipeType.BREWING_STAND;
         this.ingredients = customRecipeBrewing.getIngredient();
         this.fuelCost = customRecipeBrewing.getFuelCost();
         this.brewTime = customRecipeBrewing.getBrewTime();

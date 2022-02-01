@@ -54,7 +54,7 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
 
     @Override
     public org.bukkit.inventory.ShapelessRecipe getVanillaRecipe() {
-        if (!getSettings().isAllowVanillaRecipe() && !getResult().isEmpty()) {
+        if (!getResult().isEmpty()) {
             var shapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
             for (Ingredient value : ingredients) {
                 shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().stream().map(CustomItem::getItemStack).distinct().toList()));

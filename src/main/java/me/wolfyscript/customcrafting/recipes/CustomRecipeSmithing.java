@@ -63,7 +63,6 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public CustomRecipeSmithing(NamespacedKey key) {
         super(key);
-        this.type = RecipeType.SMITHING;
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();
@@ -73,7 +72,6 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     public CustomRecipeSmithing(CustomRecipeSmithing customRecipeSmithing) {
         super(customRecipeSmithing);
-        this.type = RecipeType.SMITHING;
         this.result = customRecipeSmithing.getResult();
         this.base = customRecipeSmithing.getBase();
         this.addition = customRecipeSmithing.getAddition();

@@ -82,7 +82,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     public CustomRecipeAnvil(CustomRecipeAnvil recipe) {
         super(recipe);
-        this.type = RecipeType.ANVIL;
         this.mode = recipe.getMode();
         this.base = recipe.base.clone();
         this.addition = recipe.addition.clone();
@@ -97,7 +96,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     public CustomRecipeAnvil(NamespacedKey key) {
         super(key);
-        this.type = RecipeType.ANVIL;
         this.mode = Mode.RESULT;
         this.durability = 0;
         this.repairCost = 1;
