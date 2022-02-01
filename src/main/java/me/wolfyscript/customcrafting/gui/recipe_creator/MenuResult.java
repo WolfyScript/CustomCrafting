@@ -47,6 +47,7 @@ public class MenuResult extends CCWindow {
             registerButton(new ButtonContainerItemResult(i));
         }
         registerButton(new ActionButton<>("back", new ButtonState<>(ClusterMain.BACK, PlayerHeadUtils.getViaURL("864f779a8e3ffa231143fa69b96b14ee35c16d669e19c75fd1a7da4bf306c"), (cache, guiHandler, player, inventory, slot, event) -> {
+            cache.getRecipeCreatorCache().getRecipeCache().getResult().buildChoices();
             guiHandler.openPreviousWindow();
             return true;
         })));

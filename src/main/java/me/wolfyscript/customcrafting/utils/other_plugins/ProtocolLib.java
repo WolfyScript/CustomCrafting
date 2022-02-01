@@ -44,7 +44,10 @@ import me.wolfyscript.customcrafting.recipes.ICustomVanillaRecipe;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.utilities.util.NamespacedKey;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -52,6 +55,9 @@ public class ProtocolLib {
 
     private final CustomCrafting plugin;
     private final ProtocolManager protocolManager;
+    private Function<MinecraftKey, Boolean> recipeFilter;
+    private final Map<UUID, Long> playersLastRecipeBookInteract = new HashMap<>();
+    private static final int RECIPEBOOK_CLICK_DELAY = 100;
 
     public ProtocolLib(CustomCrafting plugin) {
         this.plugin = plugin;
@@ -64,7 +70,7 @@ public class ProtocolLib {
     }
 
     private void registerServerSide() {
-        Function<MinecraftKey, Boolean> recipeFilter = minecraftKey -> {
+        recipeFilter = minecraftKey -> {
             if (minecraftKey.getPrefix().equals(NamespacedKeyUtils.NAMESPACE)) {
                 CustomRecipe<?> recipe = plugin.getRegistries().getRecipes().get(NamespacedKeyUtils.toInternal(NamespacedKey.of(minecraftKey.getFullKey())));
                 if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook()) {
@@ -74,28 +80,53 @@ public class ProtocolLib {
             }
             return true;
         };
+        // Recipe packet that sends the discovered recipes to the client.
         protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.RECIPES) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 StructureModifier<List<MinecraftKey>> lists = packet.getLists(MinecraftKey.getConverter());
-                lists.modify(0, input -> { //Modify the recipes
-                    return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
-                });
-                lists.modify(1, input -> { //Modify Highlighted recipes
-                    return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
-                });
+                //Modify the recipes
+                lists.modify(0, input -> filterAndAddMissingRecipes(input));
+                //Modify Highlighted recipes
+                lists.modify(1, input -> filterAndAddMissingRecipes(input));
             }
         });
+        // Recipe packet that sends the recipe data to the client.
         protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.RECIPE_UPDATE) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
-
                 StructureModifier<List<RecipeWrapper>> lists = packet.getLists(getRecipeKeyConverter());
                 lists.modify(0, input -> input.stream().filter(recipeWrapper -> recipeFilter.apply(recipeWrapper.getKey())).collect(Collectors.toList()));
             }
         });
+
+        //Prevent spam clicking of the recipe book, which might cause lag when players are using auto-clickers
+        if (!plugin.getApi().getCore().getCompatibilityManager().getPlugins().hasIntegration("ItemsAdder")) {
+            //No need to register this listener when ItemsAdder is installed. It has its own listener for this.
+            protocolManager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Client.AUTO_RECIPE) {
+                @Override
+                public void onPacketReceiving(PacketEvent event) {
+                    long currentMillis = System.currentTimeMillis();
+                    UUID uuid = event.getPlayer().getUniqueId();
+                    if (playersLastRecipeBookInteract.containsKey(uuid)) {
+                        long lastInteract = playersLastRecipeBookInteract.getOrDefault(uuid, 0L);
+                        if (currentMillis - lastInteract <= RECIPEBOOK_CLICK_DELAY) {
+                            event.setCancelled(true);
+                        } else {
+                            playersLastRecipeBookInteract.put(uuid, currentMillis);
+                        }
+                    } else {
+                        playersLastRecipeBookInteract.put(uuid, currentMillis);
+                    }
+                }
+            });
+        }
+    }
+
+    private List<MinecraftKey> filterAndAddMissingRecipes(List<MinecraftKey> input) {
+        return input.stream().filter(recipeFilter::apply).collect(Collectors.toList());
     }
 
     public EquivalentConverter<RecipeWrapper> getRecipeKeyConverter() {
