@@ -264,7 +264,8 @@ public interface RecipeType<C extends CustomRecipe<?>> extends RecipeLoader<C>, 
         CAULDRON,
         GRINDSTONE,
         BREWING_STAND,
-        SMITHING
+        SMITHING,
+        CUSTOM
     }
 
     class RecipeTypeImpl<C extends CustomRecipe<?>> implements RecipeType<C> {
