@@ -166,6 +166,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @Override
     public abstract C clone();
 
+    @JsonIgnore
     public WolfyUtilities getAPI() {
         return api;
     }
