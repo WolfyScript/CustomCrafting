@@ -95,13 +95,26 @@ public class ChatUtils {
      */
     public static NamespacedKey getNamespacedKey(Player player, String s, String[] args) {
         try {
+            String folder;
+            String fileName;
             if (args.length > 1) {
-                return new NamespacedKey(CustomCrafting.inst(), args[0] + "/" + args[1]);
+                folder = args[0];
+                fileName = args[1];
             } else if (s.contains(":")) {
                 NamespacedKey key = NamespacedKey.of(s);
-                return key != null ? new NamespacedKey(CustomCrafting.inst(), key.toString("/")) : null;
+                if (key == null) return null;
+                folder = key.getNamespace();
+                fileName = key.getKey();
+            } else {
+                return null;
             }
-            return null;
+            if (!folder.endsWith("/")) {
+                folder += "/";
+            }
+            if (fileName.startsWith("/")) {
+                fileName = fileName.substring(1);
+            }
+            return new NamespacedKey(CustomCrafting.inst(), folder + fileName);
         } catch (IllegalArgumentException e) {
             api.getLanguageAPI().replaceKey("msg.player.invalid_namespacedkey").forEach(s1 -> api.getChat().sendMessage(player, s1));
         }
