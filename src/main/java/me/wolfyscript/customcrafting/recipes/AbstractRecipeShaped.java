@@ -22,9 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -63,7 +65,6 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String VERTICAL_KEY = "vertical";
     private static final String ROTATION_KEY = "rotation";
 
-    @JsonProperty("ingredients")
     protected Map<Character, Ingredient> mappedIngredients;
     @JsonIgnore private Shape internalShape;
     private String[] shape;
@@ -81,6 +82,11 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             generateMissingShape(List.copyOf(loadedIngredients.keySet()));
         }
         setIngredients(loadedIngredients);
+    }
+
+    protected AbstractRecipeShaped(NamespacedKey key, String[] shape, int gridSize, S settings) {
+        this(key, gridSize, settings);
+        setShape(shape);
     }
 
     protected AbstractRecipeShaped(NamespacedKey key, int gridSize, S settings) {
@@ -145,6 +151,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
      *
      * @param shape The shape of the recipe
      */
+    @JsonSetter
     public void setShape(@NotNull String... shape) {
         Preconditions.checkArgument(shape != null && shape.length > 0, "Shape can not be null!");
         Preconditions.checkArgument(shape.length <= maxGridDimension, "Shape must not have more than " + maxGridDimension + " rows!");
@@ -212,8 +219,16 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         createFlatIngredients();
     }
 
+    @JsonSetter("ingredients")
     public void setIngredients(Map<Character, Ingredient> ingredients) {
-        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> {
+            var ingredient = entry.getValue();
+            if (ingredient != null) {
+                ingredient.buildChoices();
+                return !ingredient.isEmpty();
+            }
+            return false;
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Preconditions.checkArgument(!this.mappedIngredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
         createFlatIngredients();
     }
@@ -227,6 +242,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     /**
      * @return An unmodifiable Map copy of the Ingredients mapped to the character in the shape.
      */
+    @JsonGetter("ingredients")
     public Map<Character, Ingredient> getMappedIngredients() {
         return Map.copyOf(mappedIngredients);
     }

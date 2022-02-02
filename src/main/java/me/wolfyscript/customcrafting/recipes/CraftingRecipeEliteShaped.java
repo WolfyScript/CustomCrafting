@@ -37,7 +37,12 @@ public class CraftingRecipeEliteShaped extends AbstractRecipeShaped<CraftingReci
     }
 
     @JsonCreator
-    public CraftingRecipeEliteShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
+    public CraftingRecipeEliteShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JsonProperty("shape") String[] shape) {
+        super(key, shape, 6, new EliteRecipeSettings());
+        this.type = RecipeType.ELITE_CRAFTING_SHAPED;
+    }
+
+    public CraftingRecipeEliteShaped(NamespacedKey key) {
         super(key, 6, new EliteRecipeSettings());
         this.type = RecipeType.ELITE_CRAFTING_SHAPED;
     }
