@@ -178,7 +178,7 @@ public class LocalStorageLoader extends ResourceLoader {
 
     private void loadItemsInNamespace(String namespace) {
         readFiles(namespace, ITEMS_FOLDER, (relative, file, attrs) -> {
-            var namespacedKey = keyFromFile(relative);
+            var namespacedKey = keyFromFile(namespace, relative);
             try {
                 customCrafting.getApi().getRegistries().getCustomItems().register(namespacedKey, objectMapper.readValue(file.toFile(), CustomItem.class));
             } catch (IOException e) {
@@ -193,7 +193,7 @@ public class LocalStorageLoader extends ResourceLoader {
     private void loadRecipesInNamespace(String namespace) {
         var injectableValues = new InjectableValues.Std();
         readFiles(namespace, RECIPES_FOLDER, (relative, file, attrs) -> {
-            var namespacedKey = keyFromFile(relative);
+            var namespacedKey = keyFromFile(namespace, relative);
             try {
                 injectableValues.addValue("key", namespacedKey);
                 customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
@@ -217,9 +217,9 @@ public class LocalStorageLoader extends ResourceLoader {
         }
     }
 
-    private NamespacedKey keyFromFile(Path path) {
+    private NamespacedKey keyFromFile(String namespace, Path path) {
         String pathString = path.toString();
-        return new NamespacedKey(customCrafting, pathString + "/" + pathString.substring(0, pathString.lastIndexOf(".")));
+        return new NamespacedKey(customCrafting, namespace + "/" + pathString.substring(0, pathString.lastIndexOf(".")));
     }
 
     private void loadAndRegisterRecipe(RecipeLoader<?> loader, String namespace) {
