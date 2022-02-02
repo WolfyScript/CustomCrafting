@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
@@ -313,7 +314,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     public boolean save(ResourceLoader loader, @Nullable Player player) {
         if (loader.save(this)) {
             getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
-            getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
+            getAPI().getChat().sendMessage(player, String.format("§6data/%s/recipes/%s", NamespacedKeyUtils.getKeyRoot(getNamespacedKey()), NamespacedKeyUtils.getKeyObjPath(getNamespacedKey(), false)));
             return true;
         }
         return false;
