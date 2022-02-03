@@ -102,7 +102,7 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private File getFileAt(NamespacedKey namespacedKey, String typeFolder) {
-        return new File(DataHandler.JSON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getKeyObjPath(namespacedKey, false), NamespacedKeyUtils.getKeyObj(namespacedKey)));
+        return new File(DataHandler.JSON_OBJ_PATH.formatted(NamespacedKeyUtils.getKeyRoot(namespacedKey), typeFolder, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey), NamespacedKeyUtils.getKeyObj(namespacedKey)));
     }
 
     @Override

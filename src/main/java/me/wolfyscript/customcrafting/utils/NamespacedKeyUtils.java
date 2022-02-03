@@ -94,6 +94,7 @@ public class NamespacedKeyUtils {
      * In case the key has no folders then an empty String is returned.
      * <pre>
      *     "namespace:root_folder/sub_folder/object" -> "root_folder"
+     *     "namespace:root_folder/object" -> "root_folder"
      *     "namespace:object" -> ""
      * </pre>
      *
@@ -126,46 +127,23 @@ public class NamespacedKeyUtils {
     }
 
     /**
-     * Gets the path to the object of the NamespacedKeys' key.
-     * That means the part between the root folder and object separated by "/", if one is available, is returned.
+     * Gets the path to the object of the NamespacedKeys' key relative to the root (see {@link #getKeyRoot(NamespacedKey)}).<br>
+     * That means the part between the root folder and object.<br>
      * In case the key has no folders then it returns an empty String.
-     * <pre>
-     * "namespace:root_folder/sub_folder/object" -> "sub_folder/object"
-     * "namespace:root_folder/first/another/object" -> "first/another/object"
-     * "namespace:object" -> ""
-     * </pre>
+     * <p>
+     * <code>
+     *     "namespace:root_folder/sub_folder/object" -> "sub_folder/"<br>
+     *     "namespace:root_folder/first/another/object" -> "first/another/"<br>
+     *     "namespace:root_folder/object" -> ""<br>
+     *     "namespace:object" -> ""<br>
+     * </code>
+     * </p>
      *
      * @param namespacedKey The NamespacedKey
      * @return The path to the object, that is separated by "/"; Otherwise if no folder exists, an empty String.
-     * @see #getKeyObjPath(NamespacedKey, boolean)
      */
-    public static String getKeyObjPath(NamespacedKey namespacedKey) {
-        return getKeyObjPath(namespacedKey, true);
-    }
-
-    /**
-     * Gets the path to the object of the NamespacedKeys' key.
-     * That means the part between the root folder and object separated by "/", if one is available, is returned.
-     * In case the key has no folders then it returns an empty String.
-     * <pre>includeObj = true:
-     *  "namespace:root_folder/sub_folder/object" -> "sub_folder/object"
-     *  "namespace:root_folder/first/another/object" -> "first/another/object"
-     *  "namespace:object" -> ""
-     * </pre><pre>includeObj = false:
-     *  "namespace:root_folder/sub_folder/object" -> "sub_folder/"
-     *  "namespace:root_folder/first/another/object" -> "first/another/"
-     *  "namespace:object" -> ""
-     * </pre>
-     *
-     * @param namespacedKey The NamespacedKey
-     * @param includeObj If it should include the object itself in the path.
-     * @return The path to the object, that is separated by "/"; Otherwise if no folder exists, an empty String.
-     */
-    public static String getKeyObjPath(NamespacedKey namespacedKey, boolean includeObj) {
+    public static String getRelativeKeyObjPath(NamespacedKey namespacedKey) {
         String key = namespacedKey.getKey();
-        if (includeObj) {
-            return key.substring(key.indexOf("/") + 1);
-        }
         int firstIndex = key.indexOf("/") + 1;
         if (firstIndex > 0) {
             int lastIndex = key.lastIndexOf("/") + 1;
