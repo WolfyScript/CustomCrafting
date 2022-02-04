@@ -63,7 +63,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public CustomRecipeCauldron(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.CAULDRON;
         this.xp = node.path("exp").asInt(0);
         this.cookingTime = node.path("cookingTime").asInt(60);
         this.waterLevel = node.path("waterLevel").asInt(1);
@@ -79,7 +78,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     @JsonCreator
     public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+        super(key, RecipeType.CAULDRON);
         this.result = new Result();
         this.ingredients = new Ingredient();
         this.dropItems = true;

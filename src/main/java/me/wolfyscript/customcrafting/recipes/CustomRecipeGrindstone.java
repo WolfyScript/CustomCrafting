@@ -61,8 +61,7 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     @JsonCreator
     public CustomRecipeGrindstone(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
-        this.type = RecipeType.GRINDSTONE;
+        super(key, RecipeType.GRINDSTONE);
         this.result = new Result();
         this.inputTop = new Ingredient();
         this.inputBottom = new Ingredient();

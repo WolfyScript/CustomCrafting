@@ -35,18 +35,15 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
 
     public CustomRecipeBlasting(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.BLAST_FURNACE;
     }
 
     @JsonCreator
     public CustomRecipeBlasting(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
-        this.type = RecipeType.BLAST_FURNACE;
     }
 
     public CustomRecipeBlasting(CustomRecipeBlasting customRecipeBlasting) {
         super(customRecipeBlasting);
-        this.type = RecipeType.BLAST_FURNACE;
     }
 
     @Override

@@ -103,6 +103,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      * @param node The json node read from the recipe file.
      */
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        this.type = RecipeType.valueOfRecipe(this);
         this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();

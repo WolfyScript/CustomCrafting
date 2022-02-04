@@ -85,7 +85,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     @JsonCreator
     public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+        super(key, RecipeType.ANVIL);
         this.mode = Mode.RESULT;
         this.durability = 0;
         this.repairCost = 1;

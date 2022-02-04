@@ -66,7 +66,7 @@ public class CustomRecipeSmithing extends CustomRecipe<CustomRecipeSmithing> {
 
     @JsonCreator
     public CustomRecipeSmithing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+        super(key, RecipeType.SMITHING);
         this.base = new Ingredient();
         this.addition = new Ingredient();
         this.result = new Result();

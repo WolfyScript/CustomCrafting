@@ -81,7 +81,6 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     public CustomRecipeBrewing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.BREWING_STAND;
         this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
         this.result = ItemLoader.loadResult(node.path("results"));
         this.fuelCost = node.path("fuel_cost").asInt(1);
@@ -124,7 +123,7 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
     @JsonCreator
     public CustomRecipeBrewing(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+        super(key, RecipeType.BREWING_STAND);
         this.ingredients = new Ingredient();
         this.fuelCost = 1;
         this.brewTime = 400;

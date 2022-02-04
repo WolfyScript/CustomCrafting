@@ -35,18 +35,15 @@ public class CustomRecipeCampfire extends CustomRecipeCooking<CustomRecipeCampfi
 
     public CustomRecipeCampfire(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.CAMPFIRE;
     }
 
     @JsonCreator
     public CustomRecipeCampfire(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
-        this.type = RecipeType.CAMPFIRE;
     }
 
     public CustomRecipeCampfire(CustomRecipeCampfire customRecipeCampfire) {
         super(customRecipeCampfire);
-        this.type = RecipeType.CAMPFIRE;
     }
 
     @Override

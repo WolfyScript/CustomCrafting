@@ -69,7 +69,7 @@ public class CustomRecipeStonecutter extends CustomRecipe<CustomRecipeStonecutte
 
     @JsonCreator
     public CustomRecipeStonecutter(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
-        super(key);
+        super(key, RecipeType.STONECUTTER);
         this.result = new Result();
         this.source = new Ingredient();
     }

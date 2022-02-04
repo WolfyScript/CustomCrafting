@@ -35,18 +35,15 @@ public class CustomRecipeFurnace extends CustomRecipeCooking<CustomRecipeFurnace
 
     public CustomRecipeFurnace(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.FURNACE;
     }
 
     @JsonCreator
     public CustomRecipeFurnace(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
-        this.type = RecipeType.FURNACE;
     }
 
     public CustomRecipeFurnace(CustomRecipeFurnace customRecipeFurnace) {
         super(customRecipeFurnace);
-        this.type = RecipeType.FURNACE;
     }
 
     @Override

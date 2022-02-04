@@ -35,18 +35,15 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
 
     public CustomRecipeSmoking(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.SMOKER;
     }
 
     @JsonCreator
     public CustomRecipeSmoking(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
-        this.type = RecipeType.SMOKER;
     }
 
     public CustomRecipeSmoking(CustomRecipeSmoking customRecipeSmoking) {
         super(customRecipeSmoking);
-        this.type = RecipeType.SMOKER;
     }
 
     @Override

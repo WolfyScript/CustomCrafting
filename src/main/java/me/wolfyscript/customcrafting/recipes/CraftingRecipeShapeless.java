@@ -37,18 +37,15 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
 
     public CraftingRecipeShapeless(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
-        this.type = RecipeType.CRAFTING_SHAPELESS;
     }
 
     @JsonCreator
     public CraftingRecipeShapeless(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key, 3, new AdvancedRecipeSettings());
-        this.type = RecipeType.CRAFTING_SHAPELESS;
     }
 
     public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {
         super(craftingRecipe);
-        this.type = RecipeType.CRAFTING_SHAPELESS;
     }
 
     @Override
