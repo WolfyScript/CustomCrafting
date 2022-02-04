@@ -136,10 +136,9 @@ public class ItemLoader {
 
     public static void saveItem(ResourceLoader loader, NamespacedKey namespacedKey, CustomItem customItem) {
         if (namespacedKey.getNamespace().equals(NamespacedKeyUtils.NAMESPACE)) {
-            var internalKey = NamespacedKeyUtils.toInternal(namespacedKey);
-            customItem.setNamespacedKey(internalKey);
+            customItem.setNamespacedKey(namespacedKey);
             loader.save(customItem);
-            WolfyUtilCore.getInstance().getRegistries().getCustomItems().register(NamespacedKeyUtils.fromInternal(internalKey), customItem);
+            WolfyUtilCore.getInstance().getRegistries().getCustomItems().register(customItem);
         }
     }
 
