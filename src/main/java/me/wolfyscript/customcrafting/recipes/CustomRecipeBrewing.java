@@ -22,11 +22,17 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.recipes.brewing.EffectAddition;
+import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsUpgrade;
+import me.wolfyscript.customcrafting.recipes.brewing.EffectSettingsRequired;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.collect.Streams;
@@ -54,6 +60,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
 
@@ -71,13 +78,19 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
     private Color effectColor; //Alternative to colorChange
 
     //These options are more precise, and you can specify the exact effect you want to edit.
-    private List<PotionEffectType> effectRemovals; //These effects will be removed from the potions
-    private Map<PotionEffect, Boolean> effectAdditions; //These effects will be added with an option if they should be replaced if they are already present
-    private Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the values of these PotionEffects will add to the existing effects and boolean values will be replaced.
     //Instead of all these options you can use a set result.
+    private List<PotionEffectType> effectRemovals; //These effects will be removed from the potions
+    private List<EffectAddition> effectAdditions; //These effects will be added with an option if they should be replaced if they are already present
+    private List<EffectSettingsUpgrade> effectUpgrades; //These effects will be added to the existing potion effects. Meaning that the values of these PotionEffects will add to the existing effects and boolean values will be replaced.
 
     //Conditions for the Potions inside the 3 slots at the bottom
-    private Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects; //The effects that are required with the current Duration and amplitude. Integer values == 0 will be ignored and any value will be allowed.
+    private List<EffectSettingsRequired> requiredEffects; //The effects that are required with the current Duration and amplitude. Integer values == 0 will be ignored and any value will be allowed.
+
+    //Indexed values
+    @JsonIgnore
+    private Map<PotionEffectType, EffectSettingsUpgrade> effectUpgradesByEffectType;
+    @JsonIgnore
+    private Map<PotionEffectType, EffectSettingsRequired> requiredEffectsByEffectType;
 
     public CustomRecipeBrewing(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
@@ -93,32 +106,9 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         setEffectColor(node.has("color") ? mapper.convertValue(node.path("color"), Color.class) : null);
 
         setEffectRemovals(Streams.stream(node.path("effect_removals").elements()).map(n -> mapper.convertValue(n, PotionEffectType.class)).toList());
-        Map<PotionEffect, Boolean> effectAdditions = new HashMap<>();
-        node.path("effect_additions").elements().forEachRemaining(n -> {
-            var potionEffect = mapper.convertValue(n.path("effect"), PotionEffect.class);
-            if (potionEffect != null) {
-                effectAdditions.put(potionEffect, n.path("replace").asBoolean());
-            }
-        });
-        setEffectAdditions(effectAdditions);
-
-        Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades = new HashMap<>();
-        node.path("effect_upgrades").elements().forEachRemaining(n -> {
-            PotionEffectType potionEffect = mapper.convertValue(n.path("effect_type"), PotionEffectType.class);
-            if (potionEffect != null) {
-                effectUpgrades.put(potionEffect, new Pair<>(n.get("amplifier").asInt(), n.path("duration").asInt()));
-            }
-        });
-        setEffectUpgrades(effectUpgrades);
-
-        Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects = new HashMap<>();
-        node.path("required_effects").elements().forEachRemaining(n -> {
-            PotionEffectType potionEffect = mapper.convertValue(n.path("type"), PotionEffectType.class);
-            if (potionEffect != null) {
-                requiredEffects.put(potionEffect, new Pair<>(n.get("amplifier").asInt(), n.path("duration").asInt()));
-            }
-        });
-        setRequiredEffects(requiredEffects);
+        setEffectAdditions(mapper.convertValue(node.path("effect_additions"), new TypeReference<List<EffectAddition>>() {}));
+        setEffectUpgrades(mapper.convertValue(node.path("effect_upgrades"), new TypeReference<List<EffectSettingsUpgrade>>() {}));
+        setRequiredEffects(mapper.convertValue(node.path("required_effects"), new TypeReference<List<EffectSettingsRequired>>() {}));
     }
 
     @JsonCreator
@@ -134,10 +124,10 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         this.resetEffects = false;
         this.effectColor = null;
         this.effectRemovals = new ArrayList<>();
-        this.effectAdditions = new HashMap<>();
-        this.effectUpgrades = new HashMap<>();
+        this.effectAdditions = new ArrayList<>();
+        this.effectUpgradesByEffectType = new HashMap<>();
         this.result = new Result();
-        this.requiredEffects = new HashMap<>();
+        this.requiredEffectsByEffectType = new HashMap<>();
     }
 
     public CustomRecipeBrewing(CustomRecipeBrewing customRecipeBrewing) {
@@ -153,9 +143,9 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         this.resetEffects = customRecipeBrewing.isResetEffects();
         this.effectColor = customRecipeBrewing.getEffectColor();
         this.effectRemovals = customRecipeBrewing.getEffectRemovals();
-        this.effectAdditions = customRecipeBrewing.getEffectAdditions();
-        this.effectUpgrades = customRecipeBrewing.getEffectUpgrades();
-        this.requiredEffects = customRecipeBrewing.getRequiredEffects();
+        setEffectAdditions(customRecipeBrewing.getEffectAdditionSettings());
+        setEffectUpgrades(customRecipeBrewing.getEffectUpgradeSettings());
+        setRequiredEffects(customRecipeBrewing.getRequiredEffectSettings());
     }
 
     @Override
@@ -254,28 +244,104 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         this.effectRemovals = effectRemovals;
     }
 
+    @JsonIgnore
+    @Deprecated
     public Map<PotionEffect, Boolean> getEffectAdditions() {
-        return effectAdditions;
+        return effectAdditions.stream().collect(Collectors.toMap(EffectAddition::getEffect, EffectAddition::isReplace));
     }
 
+    @JsonIgnore
+    @Deprecated
     public void setEffectAdditions(Map<PotionEffect, Boolean> effectAdditions) {
+        this.effectAdditions = effectAdditions.entrySet().stream().map(entry -> new EffectAddition(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+    }
+
+    /**
+     * Sets the effects that are added to the potions in the brewing stand.
+     *
+     * @param effectAdditions A list of the effect additions.
+     */
+    @JsonSetter("effectAdditions")
+    public void setEffectAdditions(List<EffectAddition> effectAdditions) {
         this.effectAdditions = effectAdditions;
     }
 
+    @JsonGetter("effectAdditions")
+    public List<EffectAddition> getEffectAdditionSettings() {
+        return effectAdditions;
+    }
+
+    /**
+     * @deprecated
+     */
+    @JsonIgnore
+    @Deprecated
     public Map<PotionEffectType, Pair<Integer, Integer>> getEffectUpgrades() {
+        return effectUpgradesByEffectType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new Pair<>(entry.getValue().getAmplifier(), entry.getValue().getDuration())));
+    }
+
+    /**
+     *
+     * @deprecated The upgrades are using their own object now. This method converts it to the new format. Use {@link #setEffectUpgrades(List)} instead!
+     */
+    @JsonIgnore
+    @Deprecated
+    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgradesByEffectType) {
+        this.effectUpgradesByEffectType = effectUpgradesByEffectType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsUpgrade(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+    }
+
+    /**
+     * Sets the upgrade settings, that are applied to the existing potion effects.
+     *
+     * @param effectUpgrades The effect type upgrades.
+     */
+    @JsonSetter("effectUpgrades")
+    public void setEffectUpgrades(List<EffectSettingsUpgrade> effectUpgrades) {
+        this.effectUpgrades = effectUpgrades;
+        this.effectUpgradesByEffectType = effectUpgrades.stream().collect(Collectors.toMap(EffectSettingsUpgrade::getEffectType, settings -> settings));
+    }
+
+    /**
+     * Gets the upgrades that are applied to the potion effect types.
+     *
+     * @return The effect type upgrades
+     */
+    @JsonGetter("effectUpgrades")
+    public List<EffectSettingsUpgrade> getEffectUpgradeSettings() {
         return effectUpgrades;
     }
 
-    public void setEffectUpgrades(Map<PotionEffectType, Pair<Integer, Integer>> effectUpgrades) {
-        this.effectUpgrades = effectUpgrades;
-    }
-
+    @JsonIgnore
+    @Deprecated
     public Map<PotionEffectType, Pair<Integer, Integer>> getRequiredEffects() {
-        return requiredEffects;
+        return requiredEffectsByEffectType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new Pair<>(entry.getValue().getAmplifier(), entry.getValue().getDuration())));
     }
 
+    @JsonIgnore
+    @Deprecated
     public void setRequiredEffects(Map<PotionEffectType, Pair<Integer, Integer>> requiredEffects) {
+        this.requiredEffectsByEffectType = requiredEffects.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new EffectSettingsRequired(entry.getKey(), entry.getValue().getKey(), entry.getValue().getValue())));
+    }
+
+    /**
+     * Sets the settings for the required effects, that the potions must have.
+     *
+     * @param requiredEffects A list of the settings for the required effects.
+     */
+    @JsonSetter("requiredEffects")
+    public void setRequiredEffects(List<EffectSettingsRequired> requiredEffects) {
         this.requiredEffects = requiredEffects;
+        this.requiredEffectsByEffectType = requiredEffects.stream().collect(Collectors.toMap(EffectSettingsRequired::getEffectType, settings -> settings));
+    }
+
+    /**
+     * Gets the settings for the required effects, that the potions must have.
+     *
+     * @return A list of the settings for the required effects.
+     */
+    @JsonGetter("requiredEffects")
+    public List<EffectSettingsRequired> getRequiredEffectSettings() {
+        return requiredEffects;
     }
 
     @Override
@@ -308,40 +374,9 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
             gen.writeObject(effectRemoval);
         }
         gen.writeEndArray();
-        gen.writeArrayFieldStart("effect_additions");
-        for (Map.Entry<PotionEffect, Boolean> entry : effectAdditions.entrySet()) {
-            if (entry.getKey() != null) {
-                gen.writeStartObject();
-                gen.writeObjectField("effect", entry.getKey());
-                gen.writeBooleanField("replace", entry.getValue());
-                gen.writeEndObject();
-            }
-        }
-        gen.writeEndArray();
-        gen.writeArrayFieldStart("effect_upgrades");
-        for (Map.Entry<PotionEffectType, Pair<Integer, Integer>> entry : effectUpgrades.entrySet()) {
-            if (entry.getKey() != null) {
-                gen.writeStartObject();
-                gen.writeObjectField("effect_type", entry.getKey());
-                gen.writeNumberField("amplifier", entry.getValue().getKey());
-                gen.writeNumberField("duration", entry.getValue().getValue());
-                gen.writeEndObject();
-            }
-        }
-        gen.writeEndArray();
-
-        //Load input condition options
-        gen.writeArrayFieldStart("required_effects");
-        for (Map.Entry<PotionEffectType, Pair<Integer, Integer>> entry : requiredEffects.entrySet()) {
-            if (entry.getKey() != null) {
-                gen.writeStartObject();
-                gen.writeObjectField("effect_type", entry.getKey());
-                gen.writeNumberField("amplifier", entry.getValue().getKey());
-                gen.writeNumberField("duration", entry.getValue().getValue());
-                gen.writeEndObject();
-            }
-        }
-        gen.writeEndArray();
+        gen.writeObjectField("effect_additions", effectAdditions);
+        gen.writeObjectField("effect_upgrades", effectUpgrades);
+        gen.writeObjectField("required_effects", requiredEffects);
     }
 
     @Override
@@ -392,17 +427,17 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
                     }
                     modifications.addLoreLine("");
                 }
-                if (!effectUpgrades.isEmpty()) {
+                if (!effectUpgradesByEffectType.isEmpty()) {
                     modifications.addLoreLine(ChatColor.convert("&eEffect Modifications:"));
-                    for (Map.Entry<PotionEffectType, Pair<Integer, Integer>> entry : effectUpgrades.entrySet()) {
-                        modifications.addLoreLine(PotionUtils.getPotionEffectLore(entry.getValue().getKey(), entry.getValue().getValue(), entry.getKey()));
+                    for (Map.Entry<PotionEffectType, EffectSettingsUpgrade> entry : effectUpgradesByEffectType.entrySet()) {
+                        modifications.addLoreLine(PotionUtils.getPotionEffectLore(entry.getValue().getAmplifier(), entry.getValue().getDuration(), entry.getKey()));
                     }
                     modifications.addLoreLine("");
                 }
                 if (!effectAdditions.isEmpty()) {
                     modifications.addLoreLine(ChatColor.convert("&eEffect Additions:"));
-                    for (Map.Entry<PotionEffect, Boolean> entry : effectAdditions.entrySet()) {
-                        PotionEffect effect = entry.getKey();
+                    for (EffectAddition addition : effectAdditions) {
+                        PotionEffect effect = addition.getEffect();
                         modifications.addLoreLine(PotionUtils.getPotionEffectLore(effect.getAmplifier(), effect.getDuration(), effect.getType()));
                     }
                     modifications.addLoreLine("");
@@ -429,7 +464,6 @@ public class CustomRecipeBrewing extends CustomRecipe<CustomRecipeBrewing> {
         event.setButton(31, ClusterMain.GLASS_GREEN);
         event.setButton(32, ClusterMain.GLASS_GREEN);
         event.setButton(33, ButtonContainerIngredient.key(cluster, 1));
-
-
     }
+
 }
