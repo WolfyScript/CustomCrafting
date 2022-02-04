@@ -109,13 +109,13 @@ public class ConfigHandler {
             knowledgeBook.addLoreLine(me.wolfyscript.utilities.util.chat.ChatColor.convert("&7Contains some interesting recipes..."));
             knowledgeBook.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             knowledgeBook.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
+            ((RecipeBookData) knowledgeBook.getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).setEnabled(true);
             ItemLoader.saveItem(CustomCrafting.RECIPE_BOOK, knowledgeBook);
 
             var knowledgeBookCraft = new CraftingRecipeShapeless(CustomCrafting.RECIPE_BOOK);
             knowledgeBookCraft.addIngredient(new Ingredient(Material.BOOK));
             knowledgeBookCraft.addIngredient(new Ingredient(Material.CRAFTING_TABLE));
-            knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(NamespacedKeyUtils.fromInternal(CustomCrafting.RECIPE_BOOK))));
+            knowledgeBookCraft.getResult().put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.RECIPE_BOOK)));
             knowledgeBookCraft.save();
         }
 
@@ -138,7 +138,7 @@ public class ConfigHandler {
             workbenchCraft.setIngredient('C', new Ingredient(Material.CRAFTING_TABLE));
             workbenchCraft.setIngredient('D', new Ingredient(Material.GLOWSTONE_DUST));
             Result result = workbenchCraft.getResult();
-            result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.INTERNAL_ADVANCED_CRAFTING_TABLE)));
+            result.put(0, CustomItem.with(new WolfyUtilitiesRef(CustomCrafting.ADVANCED_CRAFTING_TABLE)));
             if (WolfyUtilities.isDevEnv()) {
                 var commandExecution = new CommandResultExtension(Arrays.asList("say hi %player%", "effect give %player% minecraft:strength 100 100"), new ArrayList<>(), true, true);
                 commandExecution.setExecutionType(ExecutionType.BULK);

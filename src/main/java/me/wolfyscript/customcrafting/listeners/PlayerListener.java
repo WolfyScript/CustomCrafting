@@ -64,7 +64,7 @@ public class PlayerListener implements Listener {
         if (event.hasItem() && (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR))) {
             var customItem = CustomItem.getByItemStack(event.getItem());
             if (customItem != null) {
-                RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
+                RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK_DATA);
                 if (knowledgeBook != null && knowledgeBook.isEnabled()) {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);

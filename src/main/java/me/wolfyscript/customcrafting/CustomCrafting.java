@@ -59,6 +59,7 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
@@ -66,6 +67,7 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
@@ -83,12 +85,13 @@ public class CustomCrafting extends JavaPlugin {
 
     //Only used for displaying which version it is.
     private static final boolean PREMIUM = true;
-
-    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
-    public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
-    public static final NamespacedKey ELITE_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
-    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
-    public static final NamespacedKey CAULDRON = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
+    //CustomData keys
+    public static final NamespacedKey ELITE_CRAFTING_TABLE_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
+    public static final NamespacedKey CAULDRON_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
+    //Recipes & Items keys
+    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/advanced_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/recipe_book");
     //Used for backwards compatibility
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
 
@@ -134,6 +137,7 @@ public class CustomCrafting extends JavaPlugin {
         this.otherPlugins = new OtherPlugins(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilCore.getInstance().getAPI(this, false);
+        JacksonUtil.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         this.registries = new CCRegistries(this, api.getCore());
 

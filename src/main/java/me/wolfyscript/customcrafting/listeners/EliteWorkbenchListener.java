@@ -50,7 +50,7 @@ public class EliteWorkbenchListener implements Listener {
             if (block != null && WorldUtils.getWorldCustomItemStore().isStored(block.getLocation())) {
                 var customItem = NamespacedKeyUtils.getCustomItem(block);
                 if (customItem != null) {
-                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
+                    EliteWorkbenchData eliteWorkbench = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
                     if (eliteWorkbench != null && eliteWorkbench.isEnabled()) {
                         event.setCancelled(true);
                         ((CCCache) api.getInventoryAPI().getGuiHandler(event.getPlayer()).getCustomCache()).getEliteWorkbench().setEliteWorkbenchData(eliteWorkbench.clone());
