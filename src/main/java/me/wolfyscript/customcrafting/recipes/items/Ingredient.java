@@ -22,6 +22,8 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.custom_items.references.APIReference;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -46,6 +48,11 @@ public class Ingredient extends RecipeItemStack {
         this.replaceWithRemains = ingredient.replaceWithRemains;
     }
 
+    @JsonCreator
+    public Ingredient(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+        super(items, tags);
+    }
+
     public Ingredient(Material... materials) {
         super(materials);
     }
@@ -60,10 +67,6 @@ public class Ingredient extends RecipeItemStack {
 
     public Ingredient(APIReference... references) {
         super(references);
-    }
-
-    public Ingredient(List<APIReference> references, Set<NamespacedKey> tags) {
-        super(references, tags);
     }
 
     public boolean isReplaceWithRemains() {
