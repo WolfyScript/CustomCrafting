@@ -775,9 +775,9 @@
             "name": "&6Save As...",
             "lore": [
               "&7Save the item with a new namespaced key.",
-              "&7Input: &e<namespace> <key>",
-              "&cThe names must be lowercase alphanumeric",
-              "&cand must only contain [a-z 0-9 _ -]"
+              "&7Input: &e&lfolder item_key",
+              "&cThe folder and key must be lowercase and",
+              "&conly contain letters, numbers, '_', '-', or '/'!"
             ]
           },
           "apply_item": {
@@ -1770,9 +1770,9 @@
           "name": "&6Save As...",
           "lore": [
             "&7Save the recipe with a new namespaced key!",
-            "&7Input: &e<namespace> <key>",
-            "&cThe names must be lowercase alphanumeric",
-            "&cand must only contain [a-z 0-9 _ -]"
+            "&7Input: &e&lfolder recipe_key",
+            "&cThe folder and key must be lowercase and",
+            "&conly contain letters, numbers, '_', '-', or '/'!"
           ]
         },
         "priority": {
@@ -2098,7 +2098,7 @@
                 "lore": [
                   "&8[&aClick&8] &7Add Elite Workbenches"
                 ],
-                "message": "&eType in the namespaced key of the elite crafting table item! Usage: &6<namespace> <key>"
+                "message": "&eType in the namespaced key of the elite crafting table item! Usage: &e&lfolder item_key"
               },
               "list": {
                 "name": "&6&lValues",
