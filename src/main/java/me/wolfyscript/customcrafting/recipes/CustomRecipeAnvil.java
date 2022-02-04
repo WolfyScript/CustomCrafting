@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.recipes;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -152,18 +153,22 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         this.durability = durability;
     }
 
+    @JsonIgnore
     public Ingredient getInputLeft() {
         return getIngredient(0);
     }
 
+    @JsonIgnore
     public Ingredient getInputRight() {
         return getIngredient(1);
     }
 
+    @JsonIgnore
     public boolean hasInputLeft() {
         return !getInputLeft().isEmpty();
     }
 
+    @JsonIgnore
     public boolean hasInputRight() {
         return !getInputRight().isEmpty();
     }
@@ -252,6 +257,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         gen.writeObjectField("addition", this.addition);
     }
 
+    @JsonIgnore
     @Override
     public List<CustomItem> getRecipeBookItems() {
         return getMode().equals(CustomRecipeAnvil.Mode.RESULT) ? getResult().getChoices() : hasInputLeft() ? getInputLeft().getChoices() : getInputRight().getChoices();
