@@ -34,9 +34,7 @@ import me.wolfyscript.utilities.util.inventory.InventoryUtils;
 import me.wolfyscript.utilities.util.inventory.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,7 +42,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.Repairable;
 
 import java.util.*;
@@ -80,64 +77,9 @@ public class AnvilListener implements Listener {
                 continue;
             }
             //Recipe is valid at this point!
-            final CustomItem resultItem;
-            final Result result = recipe.getResult();
             AnvilData anvilData = new AnvilData(recipe, Map.of(0, new IngredientData(0, recipe.getInputLeft(), finalInputLeft.orElse(null), inputLeft), 1, new IngredientData(1, recipe.getInputRight(), finalInputRight.orElse(null), inputRight)));
             //Set the result depending on what is configured!
-            if (recipe.getMode().equals(CustomRecipeAnvil.Mode.RESULT)) {
-                //Recipe has a plain result set that we can use.
-                resultItem = result.getItem(player, block).orElse(new CustomItem(Material.AIR));
-                anvilData.setUsedResult(true);
-            } else {
-                //Either none or durability mode is set.
-                if (ItemUtils.isAirOrNull(event.getResult())) {
-                    resultItem = new CustomItem(inputLeft).clone();
-                    if (!recipe.isBlockRename() && inventory.getRenameText() != null && !inventory.getRenameText().isEmpty()) {
-                        resultItem.setDisplayName(inventory.getRenameText());
-                    }
-                } else {
-                    resultItem = new CustomItem(event.getResult());
-                    ItemStack resultStack = resultItem.getItemStack();
-                    if (resultItem.hasItemMeta()) {
-                        //Further recipe options to block features.
-                        if (recipe.isBlockEnchant() && resultStack.hasItemMeta() && resultItem.getItemMeta().hasEnchants()) {
-                            //Block Enchants
-                            for (Enchantment enchantment : resultStack.getEnchantments().keySet()) {
-                                resultItem.removeEnchantment(enchantment);
-                            }
-                            if (inputLeft != null) {
-                                for (Map.Entry<Enchantment, Integer> entry : inputLeft.getEnchantments().entrySet()) {
-                                    resultItem.addUnsafeEnchantment(entry.getKey(), entry.getValue());
-                                }
-                            }
-                        }
-                        if (recipe.isBlockRename()) {
-                            //Block Renaming
-                            if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta().hasDisplayName()) {
-                                resultItem.setDisplayName(inputLeft.getItemMeta().getDisplayName());
-                            } else {
-                                resultItem.setDisplayName(null);
-                            }
-                        }
-                        if (recipe.isBlockRepair() && resultItem.getItemMeta() instanceof Damageable resultDamageable) {
-                            //Block Repairing
-                            if (inputLeft != null && inputLeft.hasItemMeta() && inputLeft.getItemMeta() instanceof Damageable damageable) {
-                                resultDamageable.setDamage(damageable.getDamage());
-                            }
-                            resultItem.setItemMeta(resultDamageable);
-                        }
-                    }
-                }
-                if (recipe.getMode().equals(CustomRecipeAnvil.Mode.DURABILITY)) {
-                    //Durability mode is set.
-                    if (resultItem.hasCustomDurability()) {
-                        resultItem.setCustomDamage(Math.max(0, resultItem.getCustomDamage() - recipe.getDurability()));
-                    } else if (resultItem.getItemMeta() instanceof Damageable damageable) {
-                        damageable.setDamage(damageable.getDamage() - recipe.getDurability());
-                        resultItem.setItemMeta(damageable);
-                    }
-                }
-            }
+            final CustomItem resultItem = recipe.getRepairTask().computeResult(recipe, event, anvilData, player, inputLeft, inputRight);
 
             int repairCost = Math.max(1, recipe.getRepairCost());
             if (inputLeft != null) {
