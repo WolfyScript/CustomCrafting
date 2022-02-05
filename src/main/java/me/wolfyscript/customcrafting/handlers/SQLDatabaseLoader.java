@@ -29,12 +29,16 @@ import me.wolfyscript.customcrafting.recipes.RecipeLoader;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.ChatUtils;
 import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.InjectableValues;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.network.database.sql.SQLDataBase;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,8 +88,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     @Override
     public boolean save(CustomItem item) {
         if (item.getNamespacedKey() != null) {
-            var internalKey = NamespacedKeyUtils.toInternal(item.getNamespacedKey());
-            updateItem(internalKey, item);
+            updateItem(item.getNamespacedKey(), item);
             return true;
         }
         return false;
@@ -93,14 +96,20 @@ public class SQLDatabaseLoader extends DatabaseLoader {
 
     @Override
     public boolean delete(CustomRecipe<?> recipe) {
-        removeRecipe(recipe.getNamespacedKey().getNamespace(), recipe.getNamespacedKey().getKey());
+        try {
+            PreparedStatement pState = dataBase.open().prepareStatement("DELETE FROM customcrafting_recipes WHERE rNamespace=? AND rKey=?");
+            setNamespacedKey(pState, recipe.getNamespacedKey(), 1, 2);
+            dataBase.executeAsyncUpdate(pState);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
     @Override
     public boolean delete(CustomItem item) {
         if (item != null) {
-            removeItem(NamespacedKeyUtils.toInternal(item.getNamespacedKey()));
+            removeItem(item.getNamespacedKey());
             return true;
         }
         return false;
@@ -116,8 +125,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
             while (resultSet.next()) {
                 String namespace = resultSet.getString("rNamespace");
                 String key = resultSet.getString("rKey");
-                NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
-                CustomRecipe<?> recipe = getRecipe(namespacedKey);
+                CustomRecipe<?> recipe = getRecipe(new NamespacedKey(customCrafting, namespace + "/" + key));
                 if (recipe != null) {
                     customCrafting.getRegistries().getRecipes().register(recipe);
                 }
@@ -168,8 +176,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public ResultSet getRecipeData(NamespacedKey namespacedKey) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("SELECT rType, rData FROM customcrafting_recipes WHERE rNamespace=? AND rKey=?");
-            pState.setString(1, namespacedKey.getNamespace());
-            pState.setString(2, namespacedKey.getKey());
+            setNamespacedKey(pState, namespacedKey, 1, 2);
             return dataBase.executeQuery(pState);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -184,6 +191,9 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String typeID = resultSet.getString("rType");
                 String data = resultSet.getString("rData");
                 try {
+                    if (typeID == null || typeID.isBlank()) {
+                        return objectMapper.reader(new InjectableValues.Std().addValue("key", namespacedKey)).readValue(data, CustomRecipe.class);
+                    }
                     RecipeLoader<?> loader = RecipeType.valueOf(typeID);
                     if (loader == null && RecipeType.Container.valueOf(typeID) instanceof RecipeLoader<?> recipeLoader) {
                         loader = recipeLoader;
@@ -191,7 +201,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                     if (loader != null) {
                         return loader.getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
                     }
-                } catch (JsonProcessingException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | IOException e) {
                     ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), typeID, e);
                 }
             }
@@ -205,9 +215,8 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public void addRecipe(CustomRecipe<?> data) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) VALUES (?, ?, ?, ?)");
-            pState.setString(1, data.getNamespacedKey().getNamespace());
-            pState.setString(2, data.getNamespacedKey().getKey());
-            pState.setString(3, data.getRecipeType().getId());
+            setNamespacedKey(pState, data.getNamespacedKey(), 1, 2);
+            pState.setString(3, "");
             pState.setString(4, JacksonUtil.getObjectMapper().writeValueAsString(data));
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException | JsonProcessingException e) {
@@ -220,8 +229,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
             try {
                 PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_recipes SET rData=? WHERE rNamespace=? AND rKey=?");
                 pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
-                pState.setString(2, data.getNamespacedKey().getNamespace());
-                pState.setString(3, data.getNamespacedKey().getKey());
+                setNamespacedKey(pState, data.getNamespacedKey(), 2, 3);
                 dataBase.executeAsyncUpdate(pState);
             } catch (SQLException | JsonProcessingException e) {
                 e.printStackTrace();
@@ -231,6 +239,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         }
     }
 
+    @Deprecated
     public void removeRecipe(String namespace, String key) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("DELETE FROM customcrafting_recipes WHERE rNamespace=? AND rKey=?");
@@ -255,8 +264,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public ResultSet getItem(NamespacedKey namespacedKey) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("SELECT rData FROM customcrafting_items WHERE rNamespace=? AND rKey=?");
-            pState.setString(1, namespacedKey.getNamespace());
-            pState.setString(2, namespacedKey.getKey());
+            setNamespacedKey(pState, namespacedKey, 1, 1);
             return pState.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -267,8 +275,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public void addItem(NamespacedKey namespacedKey, CustomItem data) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_items (rNamespace, rKey, rData) VALUES (?, ?, ?)");
-            pState.setString(1, namespacedKey.getNamespace());
-            pState.setString(2, namespacedKey.getKey());
+            setNamespacedKey(pState, namespacedKey, 1, 2);
             pState.setString(3, JacksonUtil.getObjectMapper().writeValueAsString(data));
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException | JsonProcessingException e) {
@@ -281,8 +288,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
             try {
                 PreparedStatement pState = dataBase.open().prepareStatement("UPDATE customcrafting_items SET rData=? WHERE rNamespace=? AND rKey=?");
                 pState.setString(1, JacksonUtil.getObjectMapper().writeValueAsString(data));
-                pState.setString(2, namespacedKey.getNamespace());
-                pState.setString(3, namespacedKey.getKey());
+                setNamespacedKey(pState, namespacedKey, 2, 3);
                 dataBase.executeAsyncUpdate(pState);
             } catch (SQLException | JsonProcessingException e) {
                 e.printStackTrace();
@@ -295,11 +301,15 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public void removeItem(NamespacedKey namespacedKey) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("DELETE FROM customcrafting_items WHERE rNamespace=? AND rKey=?");
-            pState.setString(1, namespacedKey.getNamespace());
-            pState.setString(2, namespacedKey.getKey());
+            setNamespacedKey(pState, namespacedKey, 1, 2);
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setNamespacedKey(PreparedStatement stmt, NamespacedKey namespacedKey, int paramNamespace, int paramKey) throws SQLException {
+        stmt.setString(paramNamespace, NamespacedKeyUtils.getKeyRoot(namespacedKey));
+        stmt.setString(paramKey, NamespacedKeyUtils.getRelativeKeyObjPath(namespacedKey));
     }
 }

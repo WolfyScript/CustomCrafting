@@ -70,9 +70,17 @@ public class DataHandler implements Listener {
             //Currently, there is only support for SQL. MongoDB is planned!
             this.databaseLoader = new SQLDatabaseLoader(customCrafting);
             this.databaseLoader.setPriority(2);
+
             if (config.isLocalStorageEnabled()) {
                 this.localStorageLoader = new LocalStorageLoader(customCrafting);
                 this.localStorageLoader.setPriority(config.isLocalStorageBeforeDatabase() ? 3 : 1);
+                if (config.isDataOverride()) {
+                    if (localStorageLoader.getPriority() > databaseLoader.getPriority()) {
+                        databaseLoader.setReplaceData(true);
+                    } else {
+                        localStorageLoader.setReplaceData(true);
+                    }
+                }
             } else {
                 this.localStorageLoader = null;
             }

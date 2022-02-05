@@ -44,6 +44,7 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
     protected final WolfyUtilities api;
     protected final ObjectMapper objectMapper;
     private int priority = 0;
+    private boolean replaceData = false;
 
     protected ResourceLoader(CustomCrafting customCrafting, NamespacedKey key) {
         this.key = key;
@@ -63,6 +64,14 @@ public abstract class ResourceLoader implements Comparable<ResourceLoader>, Keye
             api.getConsole().info("Loading updated Items & Recipes...");
             load();
         }
+    }
+
+    public void setReplaceData(boolean replaceData) {
+        this.replaceData = replaceData;
+    }
+
+    public boolean isReplaceData() {
+        return replaceData;
     }
 
     public void save() {
