@@ -60,9 +60,7 @@ public class LocalStorageLoader extends ResourceLoader {
 
     @Override
     public void load() {
-        /*
-         * New Folder structure:
-         * CustomCrafting/data/<namespace>/
+        /* CustomCrafting/data/<namespace>/
          *   recipes/<folder>/<recipe_name>
          *   items/<folder>/<item_name>
          */
@@ -85,7 +83,6 @@ public class LocalStorageLoader extends ResourceLoader {
 
             api.getConsole().info("Loaded " + customCrafting.getRegistries().getRecipes().values().size() + " recipes");
             api.getConsole().info("");
-
         }
     }
 
@@ -113,14 +110,17 @@ public class LocalStorageLoader extends ResourceLoader {
     }
 
     private void loadItemsInNamespace(String namespace) {
+        var customItems = customCrafting.getApi().getRegistries().getCustomItems();
         readFiles(namespace, ITEMS_FOLDER, (relative, file, attrs) -> {
             var namespacedKey = keyFromFile(namespace, relative);
-            try {
-                customCrafting.getApi().getRegistries().getCustomItems().register(namespacedKey, objectMapper.readValue(file.toFile(), CustomItem.class));
-            } catch (IOException e) {
-                customCrafting.getLogger().severe(String.format("Could not load item '%s':", namespacedKey));
-                e.printStackTrace();
-                customCrafting.getLogger().severe("----------------------");
+            if (isReplaceData() || customItems.has(namespacedKey)) {
+                try {
+                    customItems.register(namespacedKey, objectMapper.readValue(file.toFile(), CustomItem.class));
+                } catch (IOException e) {
+                    customCrafting.getLogger().severe(String.format("Could not load item '%s':", namespacedKey));
+                    e.printStackTrace();
+                    customCrafting.getLogger().severe("----------------------");
+                }
             }
             return FileVisitResult.CONTINUE;
         });
@@ -204,8 +204,6 @@ public class LocalStorageLoader extends ResourceLoader {
 
     private class NewDataLoader extends DataLoader {
 
-        protected final String LOADED_MESSAGE = "[NEW] Loaded %d recipes; skipped: %d error/s";
-
         private NewDataLoader(String[] dirs) {
             super(dirs);
         }
@@ -215,20 +213,24 @@ public class LocalStorageLoader extends ResourceLoader {
             for (String dir : dirs) {
                 loadRecipesInNamespace(dir); //Load new recipe format files
             }
-            api.getConsole().getLogger().info(String.format(LOADED_MESSAGE, loaded.size(), skippedError.size()));
+            api.getConsole().getLogger().info(String.format("[DEFAULT] Loaded %d recipes; skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
         }
 
         private void loadRecipesInNamespace(String namespace) {
             var injectableValues = new InjectableValues.Std();
             readFiles(namespace, RECIPES_FOLDER, (relative, file, attrs) -> {
                 var namespacedKey = keyFromFile(namespace, relative);
-                try {
-                    injectableValues.addValue("key", namespacedKey);
-                    customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
-                    loaded.add(namespacedKey);
-                } catch (IOException e) {
-                    ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), "", e);
-                    skippedError.add(namespacedKey);
+                if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
+                    try {
+                        injectableValues.addValue("key", namespacedKey);
+                        customCrafting.getRegistries().getRecipes().register(objectMapper.reader(injectableValues).readValue(file.toFile(), CustomRecipe.class));
+                        loaded.add(namespacedKey);
+                    } catch (IOException e) {
+                        ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), "", e);
+                        skippedError.add(namespacedKey);
+                    }
+                } else {
+                    skippedAlreadyExisting.add(namespacedKey);
                 }
                 return FileVisitResult.CONTINUE;
             });
@@ -296,7 +298,7 @@ public class LocalStorageLoader extends ResourceLoader {
             for (File file : files) {
                 var name = file.getName();
                 var namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + name.substring(0, name.lastIndexOf(".")));
-                if (!customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
+                if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
                     try {
                         customCrafting.getRegistries().getRecipes().register(loader.getInstance(namespacedKey, objectMapper.readTree(file)));
                         loaded.add(namespacedKey);
@@ -316,6 +318,9 @@ public class LocalStorageLoader extends ResourceLoader {
 
     }
 
+    /**
+     * Used to load data & cache the loaded, skipped errors & already existing keys.
+     */
     private abstract class DataLoader {
 
         protected List<NamespacedKey> loaded;
@@ -334,6 +339,11 @@ public class LocalStorageLoader extends ResourceLoader {
 
     }
 
+    /**
+     * A simple file visitor that that goes through the file tree of the specified namespace using the custom {@link VisitFile<T>} callback.
+     *
+     * @param <T> The type of the path.
+     */
     private static class NamespaceFileVisitor<T extends Path> extends SimpleFileVisitor<T> {
 
         private final Path root;
