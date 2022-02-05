@@ -22,7 +22,18 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import com.google.common.base.Preconditions;
+import me.wolfyscript.customcrafting.data.CCCache;
+import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
+import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
+import me.wolfyscript.customcrafting.recipes.items.Ingredient;
+import me.wolfyscript.customcrafting.recipes.items.Result;
+import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,13 +41,6 @@ import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import com.google.common.base.Preconditions;
-import me.wolfyscript.customcrafting.data.CCCache;
-import me.wolfyscript.customcrafting.gui.main_gui.ClusterMain;
-import me.wolfyscript.customcrafting.gui.recipebook.ButtonContainerIngredient;
-import me.wolfyscript.customcrafting.recipes.items.Ingredient;
-import me.wolfyscript.customcrafting.recipes.items.Result;
-import me.wolfyscript.customcrafting.utils.ItemLoader;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
@@ -58,22 +62,33 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     private boolean blockRename;
     private boolean blockEnchant;
 
-    private Mode mode;
+    private RepairTask repairTask;
     private int repairCost;
     private boolean applyRepairCost;
     private RepairCostMode repairCostMode;
-    private int durability;
 
     private Ingredient base;
     private Ingredient addition;
 
     public CustomRecipeAnvil(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
-        this.type = RecipeType.ANVIL;
+        // Convert old mode settings to new RepairMode
         JsonNode modeNode = node.path("mode");
-        this.durability = modeNode.path("durability").asInt(0);
-        this.mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
-        this.result = ItemLoader.loadResult(modeNode.path("result"));
+        Mode mode = Mode.valueOf(modeNode.get("usedMode").asText("DURABILITY"));
+        repairTask = switch (mode) {
+            case NONE -> new RepairTaskDefault();
+            case RESULT -> {
+                var repairModeResult = new RepairTaskResult();
+                repairModeResult.setResult(ItemLoader.loadResult(modeNode.path("result")));
+                yield repairModeResult;
+            }
+            case DURABILITY -> {
+                var durabilityMode = new RepairTaskDurability();
+                durabilityMode.setDurability(modeNode.path("durability").asInt(0));
+                yield durabilityMode;
+            }
+        };
+        this.result = new Result();
         readInput(node);
         this.blockEnchant = node.path("block_enchant").asBoolean(false);
         this.blockRename = node.path("block_rename").asBoolean(false);
@@ -87,8 +102,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     @JsonCreator
     public CustomRecipeAnvil(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key, RecipeType.ANVIL);
-        this.mode = Mode.RESULT;
-        this.durability = 0;
+        this.repairTask = new RepairTaskDefault();
         this.repairCost = 1;
         this.applyRepairCost = false;
         this.repairCostMode = RepairCostMode.NONE;
@@ -99,10 +113,9 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
 
     public CustomRecipeAnvil(CustomRecipeAnvil recipe) {
         super(recipe);
-        this.mode = recipe.getMode();
+        this.repairTask = recipe.getRepairTask();
         this.base = recipe.base.clone();
         this.addition = recipe.addition.clone();
-        this.durability = recipe.durability;
         this.repairCost = recipe.repairCost;
         this.applyRepairCost = recipe.applyRepairCost;
         this.repairCostMode = recipe.repairCostMode;
@@ -121,23 +134,56 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
         }
     }
 
+    public void setRepairTask(RepairTask repairTask) {
+        this.repairTask = repairTask;
+    }
+
+    public RepairTask getRepairTask() {
+        return repairTask;
+    }
+
+    @JsonIgnore
     @Override
     public void setResult(@NotNull Result result) {
-        if (mode.equals(Mode.RESULT)) {
-            super.setResult(result);
+        if (repairTask instanceof RepairTaskResult modeResult) {
+            modeResult.setResult(result);
         }
     }
 
+    @JsonIgnore
+    @Override
+    public Result getResult() {
+        return repairTask instanceof RepairTaskResult modeResult ? modeResult.getResult() : super.getResult();
+    }
+
+    @JsonIgnore
+    @Deprecated
     public int getDurability() {
-        return durability;
+        return repairTask instanceof RepairTaskDurability modeDurability ? modeDurability.getDurability() : 0;
     }
 
+    @JsonIgnore
+    @Deprecated
+    public void setDurability(int durability) {
+        if (repairTask instanceof RepairTaskDurability modeDurability) {
+            modeDurability.setDurability(durability);
+        }
+    }
+
+    @JsonIgnore
+    @Deprecated
     public Mode getMode() {
-        return mode;
+        return repairTask.getMode();
     }
 
+    @JsonIgnore
+    @Deprecated
     public void setMode(Mode mode) {
-        this.mode = mode;
+        repairTask = switch (mode) {
+            case NONE -> new RepairTaskDefault();
+            case RESULT -> new RepairTaskResult();
+            case DURABILITY -> new RepairTaskDurability();
+        };
     }
 
     public int getRepairCost() {
@@ -147,10 +193,6 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
     public void setRepairCost(int repairCost) {
         Preconditions.checkArgument(repairCost > 0, "Invalid repair cost! Repair cost must be bigger than 0!");
         this.repairCost = repairCost;
-    }
-
-    public void setDurability(int durability) {
-        this.durability = durability;
     }
 
     @JsonIgnore
@@ -246,13 +288,7 @@ public class CustomRecipeAnvil extends CustomRecipe<CustomRecipeAnvil> {
             gen.writeStringField("mode", repairCostMode.toString());
             gen.writeEndObject();
         }
-        {
-            gen.writeObjectFieldStart("mode");
-            gen.writeNumberField("durability", durability);
-            gen.writeStringField("usedMode", mode.toString());
-            gen.writeObjectField("result", result);
-            gen.writeEndObject();
-        }
+        gen.writeObjectField("mode", repairTask);
         gen.writeObjectField("base", this.base);
         gen.writeObjectField("addition", this.addition);
     }
