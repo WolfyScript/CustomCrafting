@@ -48,6 +48,10 @@ import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.items.extension.*;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -224,9 +228,15 @@ public class CustomCrafting extends JavaPlugin {
         recipeTypes.register(RecipeType.BREWING_STAND);
         recipeTypes.register(RecipeType.SMITHING);
 
+        var anvilRecipeRepairTasks = getRegistries().getAnvilRecipeRepairTasks();
+        anvilRecipeRepairTasks.register(RepairTaskDefault.KEY, RepairTaskDefault.class);
+        anvilRecipeRepairTasks.register(RepairTaskResult.KEY, RepairTaskResult.class);
+        anvilRecipeRepairTasks.register(RepairTaskDurability.KEY, RepairTaskDurability.class);
+
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, resultExtensions);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
         KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, recipeConditions);
+        KeyedTypeIdResolver.registerTypeRegistry(RepairTask.class, anvilRecipeRepairTasks);
     }
 
     @Override

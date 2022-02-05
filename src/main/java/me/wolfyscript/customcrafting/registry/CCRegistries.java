@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.registry;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.gui.item_creator.tabs.ItemCreatorTab;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
 import me.wolfyscript.customcrafting.recipes.items.extension.ResultExtension;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
@@ -41,6 +42,7 @@ public class CCRegistries {
     private final TypeRegistryRecipeConditions recipeConditions;
     private final TypeRegistry<MergeAdapter> recipeMergeAdapters;
     private final TypeRegistry<ResultExtension> recipeResultExtensions;
+    private final TypeRegistry<RepairTask> anvilRecipeRepairTasks;
     private final Registry<RecipeType<?>> recipeTypes;
 
     public CCRegistries(CustomCrafting customCrafting, WolfyUtilCore core) {
@@ -51,6 +53,7 @@ public class CCRegistries {
         this.recipeMergeAdapters = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/merge_adapters"), registries);
         this.recipeResultExtensions = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/result_extensions"), registries);
         this.recipeTypes = new RegistrySimple<>(new NamespacedKey(customCrafting, "recipe/types"), registries, (Class<RecipeType<?>>)(Object) RecipeType.class);
+        this.anvilRecipeRepairTasks = new TypeRegistrySimple<>(new NamespacedKey(customCrafting, "recipe/anvil/repair_tasks"), registries);
     }
 
     public TypeRegistryRecipeConditions getRecipeConditions() {
@@ -67,6 +70,10 @@ public class CCRegistries {
 
     public TypeRegistry<ResultExtension> getRecipeResultExtensions() {
         return recipeResultExtensions;
+    }
+
+    public TypeRegistry<RepairTask> getAnvilRecipeRepairTasks() {
+        return anvilRecipeRepairTasks;
     }
 
     public Registry<RecipeType<?>> getRecipeTypes() {
