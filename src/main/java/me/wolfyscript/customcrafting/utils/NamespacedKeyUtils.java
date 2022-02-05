@@ -128,13 +128,13 @@ public class NamespacedKeyUtils {
 
     /**
      * Gets the path to the object of the NamespacedKeys' key relative to the root (see {@link #getKeyRoot(NamespacedKey)}).<br>
-     * That means the part between the root folder and object.<br>
+     * That means the part after the root folder.<br>
      * In case the key has no folders then it returns an empty String.
      * <p>
      * <code>
-     *     "namespace:root_folder/sub_folder/object" -> "sub_folder/"<br>
-     *     "namespace:root_folder/first/another/object" -> "first/another/"<br>
-     *     "namespace:root_folder/object" -> ""<br>
+     *     "namespace:root_folder/sub_folder/object" -> "sub_folder/object"<br>
+     *     "namespace:root_folder/first/another/object" -> "first/another/object"<br>
+     *     "namespace:root_folder/object" -> "object"<br>
      *     "namespace:object" -> ""<br>
      * </code>
      * </p>
@@ -146,11 +146,7 @@ public class NamespacedKeyUtils {
         String key = namespacedKey.getKey();
         int firstIndex = key.indexOf("/") + 1;
         if (firstIndex > 0) {
-            int lastIndex = key.lastIndexOf("/") + 1;
-            if (lastIndex == 0) {
-                lastIndex = key.length();
-            }
-            return key.substring(firstIndex, lastIndex);
+            return key.substring(firstIndex);
         }
         return "";
     }
