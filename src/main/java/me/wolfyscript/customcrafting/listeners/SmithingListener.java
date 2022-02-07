@@ -45,6 +45,7 @@ import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.inventory.meta.Damageable;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -97,6 +98,13 @@ public class SmithingListener implements Listener {
                             //Manual result processing & transferring data.
                             if(recipe.isPreserveEnchants()) {
                                 endResult.addUnsafeEnchantments(base.getEnchantments());
+                            }
+                            if (recipe.isPreserveDamage() && endResult.getItemMeta() instanceof Damageable resultDamageable) {
+                                //Block Repairing
+                                if (base.hasItemMeta() && base.getItemMeta() instanceof Damageable damageable) {
+                                    resultDamageable.setDamage(damageable.getDamage());
+                                }
+                                endResult.setItemMeta(resultDamageable);
                             }
                             event.setResult(endResult);
                         }
