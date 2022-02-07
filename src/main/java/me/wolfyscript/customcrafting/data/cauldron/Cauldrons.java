@@ -64,7 +64,7 @@ public class Cauldrons {
 
     public Cauldrons(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.api = WolfyUtilities.get(customCrafting);
+        this.api = customCrafting.getApi();
         load();
         autosaveTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(api.getPlugin(), this::save, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L, customCrafting.getConfigHandler().getConfig().getAutosaveInterval() * 1200L);
 

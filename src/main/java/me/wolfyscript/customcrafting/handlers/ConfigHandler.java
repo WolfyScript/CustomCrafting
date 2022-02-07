@@ -66,7 +66,7 @@ public class ConfigHandler {
     private RecipeBookConfig recipeBookConfig;
 
     public ConfigHandler(CustomCrafting customCrafting) {
-        this.api = WolfyUtilities.get(customCrafting);
+        this.api = customCrafting.getApi();
         this.customCrafting = customCrafting;
         var configAPI = api.getConfigAPI();
         this.languageAPI = api.getLanguageAPI();
