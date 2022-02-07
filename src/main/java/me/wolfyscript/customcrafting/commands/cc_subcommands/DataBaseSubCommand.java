@@ -50,11 +50,11 @@ public class DataBaseSubCommand extends AbstractSubCommand {
         if (sender instanceof Player p) {
             var chat = api.getChat();
             if (ChatUtils.checkPerm(p, "customcrafting.cmd.database")) {
-                if (customCrafting.getDataHandler().getDatabaseLoader() != null) {
-                    chat.sendMessage(p, ChatColor.RED + "Couldn't find any Database!");
-                    return true;
-                }
                 if (args.length >= 1) {
+                    if (customCrafting.getDataHandler().getDatabaseLoader() == null) {
+                        chat.sendMessage(p, ChatColor.RED + "Couldn't find any Database!");
+                        return true;
+                    }
                     switch (args[0]) {
                         case "export_recipes" -> {
                             chat.sendMessage(p, "Exporting recipes to Database...");

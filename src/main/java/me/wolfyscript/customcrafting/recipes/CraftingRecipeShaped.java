@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.settings.AdvancedRecipeSettings;
@@ -35,17 +38,17 @@ public class CraftingRecipeShaped extends AbstractRecipeShaped<CraftingRecipeSha
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
     }
 
+    @JsonCreator
+    public CraftingRecipeShaped(@JsonProperty("key") @JacksonInject("key") NamespacedKey key, @JsonProperty("shape") String[] shape) {
+        super(key, shape, 3, new AdvancedRecipeSettings());
+    }
+
     public CraftingRecipeShaped(NamespacedKey key) {
         super(key, 3, new AdvancedRecipeSettings());
     }
 
     public CraftingRecipeShaped(CraftingRecipeShaped craftingRecipe) {
         super(craftingRecipe);
-    }
-
-    @Override
-    public RecipeType<CraftingRecipeShaped> getRecipeType() {
-        return RecipeType.CRAFTING_SHAPED;
     }
 
     @Override

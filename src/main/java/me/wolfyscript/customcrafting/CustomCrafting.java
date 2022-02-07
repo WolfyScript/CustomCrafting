@@ -47,6 +47,11 @@ import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.listeners.*;
 import me.wolfyscript.customcrafting.network.NetworkHandler;
 import me.wolfyscript.customcrafting.placeholderapi.PlaceHolder;
+import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTask;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDefault;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskDurability;
+import me.wolfyscript.customcrafting.recipes.anvil.RepairTaskResult;
 import me.wolfyscript.customcrafting.recipes.conditions.*;
 import me.wolfyscript.customcrafting.recipes.items.extension.*;
 import me.wolfyscript.customcrafting.recipes.items.target.MergeAdapter;
@@ -58,6 +63,7 @@ import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.customcrafting.utils.UpdateChecker;
 import me.wolfyscript.customcrafting.utils.cooking.CookingManager;
 import me.wolfyscript.customcrafting.utils.other_plugins.OtherPlugins;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializationFeature;
 import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.chat.Chat;
@@ -65,6 +71,7 @@ import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.Reflection;
 import me.wolfyscript.utilities.util.entity.CustomPlayerData;
+import me.wolfyscript.utilities.util.json.jackson.JacksonUtil;
 import me.wolfyscript.utilities.util.json.jackson.KeyedTypeIdResolver;
 import me.wolfyscript.utilities.util.version.WUVersion;
 import org.bstats.bukkit.Metrics;
@@ -82,12 +89,13 @@ public class CustomCrafting extends JavaPlugin {
 
     //Only used for displaying which version it is.
     private static final boolean PREMIUM = true;
-
-    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "advanced_crafting_table");
-    public static final NamespacedKey INTERNAL_ADVANCED_CRAFTING_TABLE = NamespacedKeyUtils.fromInternal(ADVANCED_CRAFTING_TABLE);
-    public static final NamespacedKey ELITE_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
-    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
-    public static final NamespacedKey CAULDRON = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
+    //CustomData keys
+    public static final NamespacedKey ELITE_CRAFTING_TABLE_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "recipe_book");
+    public static final NamespacedKey CAULDRON_DATA = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "cauldron");
+    //Recipes & Items keys
+    public static final NamespacedKey ADVANCED_CRAFTING_TABLE = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/advanced_crafting_table");
+    public static final NamespacedKey RECIPE_BOOK = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "customcrafting/recipe_book");
     //Used for backwards compatibility
     public static final NamespacedKey ADVANCED_WORKBENCH = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "workbench");
 
@@ -133,6 +141,7 @@ public class CustomCrafting extends JavaPlugin {
         this.otherPlugins = new OtherPlugins(this);
         isPaper = WolfyUtilities.hasClass("com.destroystokyo.paper.utils.PaperPluginLogger");
         api = WolfyUtilCore.getInstance().getAPI(this, false);
+        JacksonUtil.getObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         this.registries = new CCRegistries(this, api.getCore());
 
@@ -203,9 +212,31 @@ public class CustomCrafting extends JavaPlugin {
         recipeConditions.register(WorldTimeCondition.KEY, WorldTimeCondition.class, new WorldTimeCondition.GUIComponent());
         recipeConditions.register(ConditionAdvancement.KEY, ConditionAdvancement.class, new ConditionAdvancement.GUIComponent());
 
+        var recipeTypes = getRegistries().getRecipeTypes();
+        recipeTypes.register(RecipeType.CRAFTING_SHAPED);
+        recipeTypes.register(RecipeType.CRAFTING_SHAPELESS);
+        recipeTypes.register(RecipeType.ELITE_CRAFTING_SHAPED);
+        recipeTypes.register(RecipeType.ELITE_CRAFTING_SHAPELESS);
+        recipeTypes.register(RecipeType.FURNACE);
+        recipeTypes.register(RecipeType.BLAST_FURNACE);
+        recipeTypes.register(RecipeType.SMOKER);
+        recipeTypes.register(RecipeType.CAMPFIRE);
+        recipeTypes.register(RecipeType.ANVIL);
+        recipeTypes.register(RecipeType.STONECUTTER);
+        recipeTypes.register(RecipeType.CAULDRON);
+        recipeTypes.register(RecipeType.GRINDSTONE);
+        recipeTypes.register(RecipeType.BREWING_STAND);
+        recipeTypes.register(RecipeType.SMITHING);
+
+        var anvilRecipeRepairTasks = getRegistries().getAnvilRecipeRepairTasks();
+        anvilRecipeRepairTasks.register(RepairTaskDefault.KEY, RepairTaskDefault.class);
+        anvilRecipeRepairTasks.register(RepairTaskResult.KEY, RepairTaskResult.class);
+        anvilRecipeRepairTasks.register(RepairTaskDurability.KEY, RepairTaskDurability.class);
+
         KeyedTypeIdResolver.registerTypeRegistry(ResultExtension.class, resultExtensions);
         KeyedTypeIdResolver.registerTypeRegistry(MergeAdapter.class, resultMergeAdapters);
         KeyedTypeIdResolver.registerTypeRegistry((Class<Condition<?>>) (Object) Condition.class, recipeConditions);
+        KeyedTypeIdResolver.registerTypeRegistry(RepairTask.class, anvilRecipeRepairTasks);
     }
 
     @Override

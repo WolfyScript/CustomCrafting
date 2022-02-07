@@ -76,6 +76,7 @@ public class RecipeCreatorCache {
             case STONECUTTER -> stonecuttingCache;
             case BREWING_STAND -> brewingCache;
             case ELITE_CRAFTING_SHAPED, ELITE_CRAFTING_SHAPELESS -> eliteCraftingCache;
+            default -> null;
         };
     }
 

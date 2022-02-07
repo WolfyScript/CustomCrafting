@@ -87,7 +87,7 @@ public class CauldronData extends CustomData implements Cloneable {
     public static class Provider extends CustomData.Provider<CauldronData> {
 
         public Provider() {
-            super(CustomCrafting.CAULDRON, CauldronData.class);
+            super(CustomCrafting.CAULDRON_DATA, CauldronData.class);
         }
 
     }

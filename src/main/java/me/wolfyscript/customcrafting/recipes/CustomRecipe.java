@@ -22,13 +22,22 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonAutoDetect;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonTypeInfo;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
-import me.wolfyscript.lib.com.fasterxml.jackson.core.type.TypeReference;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.ObjectMapper;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import me.wolfyscript.lib.com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.annotation.JsonTypeResolver;
 import com.google.common.base.Preconditions;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
@@ -58,7 +67,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@JsonSerialize(using = CustomRecipe.Serializer.class)
+@JsonTypeResolver(RecipeTypeResolver.class)
+@JsonTypeIdResolver(RecipeTypeIdResolver.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CUSTOM, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "@type")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonPropertyOrder(value = { "@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions" })
 public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     protected static final String KEY_RESULT = "result";
@@ -70,26 +83,34 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     protected static final String KEY_HIDDEN = "hidden";
     protected static final String ERROR_MSG_KEY = "Not a valid key! The key cannot be null!";
 
-    protected final NamespacedKey namespacedKey;
-    protected boolean exactMeta;
+    @JsonProperty("@type") protected RecipeType<C> type;
+    @JsonIgnore protected final NamespacedKey namespacedKey;
+    @JsonIgnore protected final WolfyUtilities api;
+    @JsonIgnore protected final ObjectMapper mapper;
+
+    protected boolean checkNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
-
     protected RecipePriority priority;
     protected Conditions conditions;
     protected String group;
-    protected final WolfyUtilities api;
-    protected final ObjectMapper mapper;
     protected Result result;
 
+    /**
+     *
+     * @deprecated Used only for deserializing recipes from old json files.
+     * @param namespacedKey The namespaced key of the recipe.
+     * @param node The json node read from the recipe file.
+     */
     protected CustomRecipe(NamespacedKey namespacedKey, JsonNode node) {
+        this.type = RecipeType.valueOfRecipe(this);
         this.namespacedKey = Objects.requireNonNull(namespacedKey, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         //Get fields from JsonNode
         this.group = node.path(KEY_GROUP).asText("");
         this.priority = mapper.convertValue(node.path(KEY_PRIORITY).asText("NORMAL"), RecipePriority.class);
-        this.exactMeta = node.path(KEY_EXACT_META).asBoolean(true);
+        this.checkNBT = node.path(KEY_EXACT_META).asBoolean(true);
         this.conditions = mapper.convertValue(node.path(KEY_CONDITIONS), Conditions.class);
         if (this.conditions == null) {
             this.conditions = new Conditions();
@@ -102,7 +123,14 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         }
     }
 
-    protected CustomRecipe(NamespacedKey key) {
+    @JsonCreator
+    protected CustomRecipe(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
+        this(key, (RecipeType<C>) null);
+    }
+
+    protected CustomRecipe(NamespacedKey key, RecipeType<C> type) {
+        this.type = type == null ? RecipeType.valueOfRecipe(this) : type;
+        Preconditions.checkArgument(this.type != null, "Error constructing Recipe Object \"" + getClass().getName() + "\": Missing RecipeType!");
         this.namespacedKey = Objects.requireNonNull(key, ERROR_MSG_KEY);
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
@@ -110,7 +138,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
         this.group = "";
         this.priority = RecipePriority.NORMAL;
-        this.exactMeta = true;
+        this.checkNBT = true;
         this.vanillaBook = false;
         this.conditions = new Conditions();
         this.hidden = false;
@@ -122,7 +150,8 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
      *
      * @param customRecipe The other CustomRecipe. Can be from another type, but must have the same ResultTarget.
      */
-    protected CustomRecipe(CustomRecipe<?> customRecipe) {
+    protected CustomRecipe(CustomRecipe<C> customRecipe) {
+        this.type = customRecipe.type;
         this.mapper = JacksonUtil.getObjectMapper();
         this.api = CustomCrafting.inst().getApi();
         this.namespacedKey = Objects.requireNonNull(customRecipe.namespacedKey, ERROR_MSG_KEY);
@@ -130,7 +159,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.vanillaBook = customRecipe.vanillaBook;
         this.group = customRecipe.group;
         this.priority = customRecipe.priority;
-        this.exactMeta = customRecipe.exactMeta;
+        this.checkNBT = customRecipe.checkNBT;
         this.conditions = customRecipe.conditions;
         this.hidden = customRecipe.hidden;
         this.result = customRecipe.result.clone();
@@ -139,6 +168,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     @Override
     public abstract C clone();
 
+    @JsonIgnore
     public WolfyUtilities getAPI() {
         return api;
     }
@@ -159,12 +189,24 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.priority = priority;
     }
 
+    @JsonIgnore
+    @Deprecated
     public boolean isExactMeta() {
-        return exactMeta;
+        return checkNBT;
     }
 
+    @JsonIgnore
+    @Deprecated
     public void setExactMeta(boolean exactMeta) {
-        this.exactMeta = exactMeta;
+        this.checkNBT = exactMeta;
+    }
+
+    public void setCheckNBT(boolean checkNBT) {
+        this.checkNBT = checkNBT;
+    }
+
+    public boolean isCheckNBT() {
+        return checkNBT;
     }
 
     public boolean isHidden() {
@@ -203,8 +245,22 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         this.result = result;
     }
 
-    public abstract RecipeType<C> getRecipeType();
+    @JsonSetter("result")
+    protected void setResult(JsonNode node) {
+        setResult(ItemLoader.loadResult(node));
+    }
 
+    @JsonIgnore
+    public RecipeType<C> getRecipeType() {
+        return type;
+    }
+
+    @JsonGetter("@type")
+    private NamespacedKey getType() {
+        return type.getNamespacedKey();
+    }
+
+    @JsonIgnore
     public List<CustomItem> getRecipeBookItems() {
         return getResult().getChoices();
     }
@@ -231,6 +287,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
         return getConditions().check(id, this, data);
     }
 
+    @JsonIgnore
     public boolean isDisabled() {
         return CustomCrafting.inst().getDisableRecipesHandler().getRecipes().contains(getNamespacedKey());
     }
@@ -258,7 +315,7 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
     public boolean save(ResourceLoader loader, @Nullable Player player) {
         if (loader.save(this)) {
             getAPI().getChat().sendKey(player, "recipe_creator", "save.success");
-            getAPI().getChat().sendMessage(player, String.format("§6data/%s/%s/%s/", getNamespacedKey().getNamespace(), getRecipeType().getId(), getNamespacedKey().getKey()));
+            getAPI().getChat().sendMessage(player, String.format("§6data/%s/recipes/%s", NamespacedKeyUtils.getKeyRoot(getNamespacedKey()), NamespacedKeyUtils.getRelativeKeyObjPath(getNamespacedKey())));
             return true;
         }
         return false;
@@ -292,6 +349,15 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
 
     public abstract void prepareMenu(GuiHandler<CCCache> guiHandler, GuiCluster<CCCache> cluster);
 
+    /**
+     * Writes the recipe to json using the specified generator and provider.
+     *
+     * @param gen The JsonGenerator
+     * @param provider The SerializerProvider
+     * @throws IOException Any exception caused when writing it to json.
+     * @deprecated This is no longer used. Instead, the recipe object can be written to json directly.
+     */
+    @Deprecated
     public void writeToJson(JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStringField(KEY_GROUP, group);
         gen.writeBooleanField(KEY_HIDDEN, hidden);
@@ -299,34 +365,16 @@ public abstract class CustomRecipe<C extends CustomRecipe<C>> implements Keyed {
             gen.writeBooleanField(KEY_VANILLA_BOOK, true);
         }
         gen.writeStringField(KEY_PRIORITY, priority.toString());
-        gen.writeBooleanField(KEY_EXACT_META, exactMeta);
+        gen.writeBooleanField(KEY_EXACT_META, checkNBT);
         gen.writeObjectField(KEY_CONDITIONS, conditions);
     }
 
     public void writeToBuf(MCByteBuf byteBuf) {
         byteBuf.writeUtf(getRecipeType().name());
         byteBuf.writeUtf(namespacedKey.toString());
-        byteBuf.writeBoolean(exactMeta);
+        byteBuf.writeBoolean(checkNBT);
         byteBuf.writeUtf(group);
         byteBuf.writeCollection(result.getChoices(), (mcByteBuf, customItem) -> mcByteBuf.writeItemStack(customItem.create()));
     }
 
-    static class Serializer extends StdSerializer<CustomRecipe<?>> {
-
-        public Serializer() {
-            super((Class<CustomRecipe<?>>) new TypeReference<>() {
-            }.getType());
-        }
-
-        public Serializer(Class<CustomRecipe<?>> vc) {
-            super(vc);
-        }
-
-        @Override
-        public void serialize(CustomRecipe iCustomRecipe, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-            gen.writeStartObject();
-            iCustomRecipe.writeToJson(gen, serializerProvider);
-            gen.writeEndObject();
-        }
-    }
 }

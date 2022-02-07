@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -34,7 +37,8 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
         super(namespacedKey, node);
     }
 
-    public CustomRecipeBlasting(NamespacedKey key) {
+    @JsonCreator
+    public CustomRecipeBlasting(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
     }
 
@@ -50,11 +54,6 @@ public class CustomRecipeBlasting extends CustomRecipeCooking<CustomRecipeBlasti
             return recipe;
         }
         return null;
-    }
-
-    @Override
-    public RecipeType<CustomRecipeBlasting> getRecipeType() {
-        return RecipeType.BLAST_FURNACE;
     }
 
     @Override

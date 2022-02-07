@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 public class DataHandler implements Listener {
 
     public static final File DATA_FOLDER = new File(CustomCrafting.inst().getDataFolder() + File.separator + "data");
+    public static final String JSON_OBJ_PATH = DATA_FOLDER.getPath() + "/%s/%s/%s.json";
     private final CustomCrafting customCrafting;
     private Categories categories;
     private List<Recipe> minecraftRecipes = new ArrayList<>();
@@ -69,9 +70,17 @@ public class DataHandler implements Listener {
             //Currently, there is only support for SQL. MongoDB is planned!
             this.databaseLoader = new SQLDatabaseLoader(customCrafting);
             this.databaseLoader.setPriority(2);
+
             if (config.isLocalStorageEnabled()) {
                 this.localStorageLoader = new LocalStorageLoader(customCrafting);
                 this.localStorageLoader.setPriority(config.isLocalStorageBeforeDatabase() ? 3 : 1);
+                if (config.isDataOverride()) {
+                    if (localStorageLoader.getPriority() > databaseLoader.getPriority()) {
+                        databaseLoader.setReplaceData(true);
+                    } else {
+                        localStorageLoader.setReplaceData(true);
+                    }
+                }
             } else {
                 this.localStorageLoader = null;
             }
@@ -114,6 +123,7 @@ public class DataHandler implements Listener {
     }
 
     public void setSaveDestination(SaveDestination saveDestination) {
+        customCrafting.getLogger().info("Data destination: " + saveDestination.toString());
         this.saveDestination = saveDestination;
     }
 

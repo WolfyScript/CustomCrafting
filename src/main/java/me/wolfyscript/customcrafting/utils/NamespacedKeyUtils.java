@@ -74,6 +74,10 @@ public class NamespacedKeyUtils {
         return namespacedKey;
     }
 
+    /**
+     * @deprecated Use {@link #getKeyRoot(NamespacedKey)} instead!
+     */
+    @Deprecated
     public static String getInternalNamespace(NamespacedKey namespacedKey) {
         if (namespacedKey.getNamespace().equals(NAMESPACE)) {
             String[] values = namespacedKey.getKey().split("/", 2);
@@ -82,6 +86,69 @@ public class NamespacedKeyUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the root of the NamespacedKeys' key.
+     * That means the first folder separated by a "/", if one is available, is returned.
+     * In case the key has no folders then an empty String is returned.
+     * <pre>
+     *     "namespace:root_folder/sub_folder/object" -> "root_folder"
+     *     "namespace:root_folder/object" -> "root_folder"
+     *     "namespace:object" -> ""
+     * </pre>
+     *
+     * @param namespacedKey The NamespacedKey
+     * @return The root folder, that is separated by "/", of the key; Otherwise if no folder exists, an empty String.
+     */
+    public static String getKeyRoot(NamespacedKey namespacedKey) {
+        return namespacedKey.getKey().contains("/") ? namespacedKey.getKey().split("/", 2)[0] : "";
+    }
+
+    /**
+     * Gets the object of the NamespacedKeys' key.
+     * That means the last part separated by a "/", if one is available, is returned.
+     * In case the key has no folders then it returns the key as is.
+     * <pre>
+     *     "namespace:root_folder/sub_folder/object" -> "object"
+     *     "namespace:object" -> "object"
+     * </pre>
+     *
+     * @param namespacedKey The NamespacedKey
+     * @return The root folder, that is separated by "/", of the key; Otherwise if no folder exists, the key as is.
+     */
+    public static String getKeyObj(NamespacedKey namespacedKey) {
+        String key = namespacedKey.getKey();
+        if (key.contains("/")) {
+            String[] parts = key.split("/");
+            return parts[parts.length - 1];
+        }
+        return key;
+    }
+
+    /**
+     * Gets the path to the object of the NamespacedKeys' key relative to the root (see {@link #getKeyRoot(NamespacedKey)}).<br>
+     * That means the part after the root folder.<br>
+     * In case the key has no folders then it returns an empty String.
+     * <p>
+     * <code>
+     *     "namespace:root_folder/sub_folder/object" -> "sub_folder/object"<br>
+     *     "namespace:root_folder/first/another/object" -> "first/another/object"<br>
+     *     "namespace:root_folder/object" -> "object"<br>
+     *     "namespace:object" -> ""<br>
+     * </code>
+     * </p>
+     *
+     * @param namespacedKey The NamespacedKey
+     * @return The path to the object, that is separated by "/"; Otherwise if no folder exists, an empty String.
+     */
+    public static String getRelativeKeyObjPath(NamespacedKey namespacedKey) {
+        String key = namespacedKey.getKey();
+        int firstIndex = key.indexOf("/") + 1;
+        if (firstIndex > 0) {
+            return key.substring(firstIndex);
+        }
+        return "";
     }
 
     public static boolean partiallyMatches(String token, NamespacedKey namespacedKey) {

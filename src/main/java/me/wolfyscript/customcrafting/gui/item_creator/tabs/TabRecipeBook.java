@@ -50,11 +50,11 @@ public class TabRecipeBook extends ItemCreatorTab {
     @Override
     public void register(MenuItemCreator creator, WolfyUtilities api) {
         creator.registerButton(new ButtonOption(Material.KNOWLEDGE_BOOK, this));
-        creator.registerButton(new ToggleButton<>("knowledge_book.toggle", (cache, guiHandler, player, guiInventory, i) -> ((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).isEnabled(), new ButtonState<>("knowledge_book.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(false);
+        creator.registerButton(new ToggleButton<>("knowledge_book.toggle", (cache, guiHandler, player, guiInventory, i) -> ((RecipeBookData) cache.getItems().getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).isEnabled(), new ButtonState<>("knowledge_book.toggle.enabled", Material.GREEN_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
+            ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).setEnabled(false);
             return true;
         }), new ButtonState<>("knowledge_book.toggle.disabled", Material.RED_CONCRETE, (ItemsButtonAction) (cache, items, guiHandler, player, inventory, i, event) -> {
-            ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK)).setEnabled(true);
+            ((RecipeBookData) items.getItem().getCustomData(CustomCrafting.RECIPE_BOOK_DATA)).setEnabled(true);
             return true;
         })));
     }

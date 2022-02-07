@@ -129,7 +129,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
     }
 
     protected RecipeChoice getRecipeChoice() {
-        return isExactMeta() ? new RecipeChoice.ExactChoice(getSource().getChoices().parallelStream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().parallelStream().map(i -> i.create().getType()).toList());
+        return isCheckNBT() ? new RecipeChoice.ExactChoice(getSource().getChoices().parallelStream().map(CustomItem::create).toList()) : new RecipeChoice.MaterialChoice(getSource().getChoices().parallelStream().map(i -> i.create().getType()).toList());
     }
 
     @Override
@@ -156,6 +156,7 @@ public abstract class CustomRecipeCooking<C extends CustomRecipeCooking<C, T>, T
         event.setButton(24, ButtonContainerIngredient.key(cluster, 24));
     }
 
+    @Deprecated
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);

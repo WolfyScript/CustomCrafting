@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.recipes.settings.EliteRecipeSettings;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -32,17 +35,13 @@ public class CraftingRecipeEliteShapeless extends AbstractRecipeShapeless<Crafti
         super(namespacedKey, node, 6, EliteRecipeSettings.class);
     }
 
-    public CraftingRecipeEliteShapeless(NamespacedKey key) {
+    @JsonCreator
+    public CraftingRecipeEliteShapeless(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key, 6, new EliteRecipeSettings());
     }
 
     public CraftingRecipeEliteShapeless(CraftingRecipeEliteShapeless eliteCraftingRecipe) {
         super(eliteCraftingRecipe);
-    }
-
-    @Override
-    public RecipeType<CraftingRecipeEliteShapeless> getRecipeType() {
-        return RecipeType.ELITE_CRAFTING_SHAPELESS;
     }
 
     @Override

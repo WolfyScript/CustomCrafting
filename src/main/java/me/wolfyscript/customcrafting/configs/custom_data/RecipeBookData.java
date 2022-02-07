@@ -87,7 +87,7 @@ public class RecipeBookData extends CustomData implements Cloneable {
     public static class Provider extends CustomData.Provider<RecipeBookData> {
 
         public Provider() {
-            super(CustomCrafting.RECIPE_BOOK, RecipeBookData.class);
+            super(CustomCrafting.RECIPE_BOOK_DATA, RecipeBookData.class);
         }
 
     }

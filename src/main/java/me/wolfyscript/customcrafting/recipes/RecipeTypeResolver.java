@@ -22,15 +22,12 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import org.bukkit.inventory.Recipe;
+import me.wolfyscript.lib.com.fasterxml.jackson.databind.JavaType;
+import me.wolfyscript.utilities.util.json.jackson.KeyedTypeResolver;
 
-public interface ICustomVanillaRecipe<T extends Recipe> {
+public class RecipeTypeResolver extends KeyedTypeResolver {
 
-    @JsonIgnore T getVanillaRecipe();
-
-    @JsonIgnore boolean isVisibleVanillaBook();
-
-    @JsonIgnore void setVisibleVanillaBook(boolean vanillaBook);
-
+    public boolean useForType(JavaType t) {
+        return t.isTypeOrSubTypeOf(CustomRecipe.class);
+    }
 }
