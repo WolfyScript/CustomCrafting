@@ -113,7 +113,7 @@ public class LocalStorageLoader extends ResourceLoader {
         var customItems = customCrafting.getApi().getRegistries().getCustomItems();
         readFiles(namespace, ITEMS_FOLDER, (relative, file, attrs) -> {
             var namespacedKey = keyFromFile(namespace, relative);
-            if (isReplaceData() || customItems.has(namespacedKey)) {
+            if (isReplaceData() || !customItems.has(namespacedKey)) {
                 try {
                     customItems.register(namespacedKey, objectMapper.readValue(file.toFile(), CustomItem.class));
                 } catch (IOException e) {
