@@ -264,7 +264,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     public ResultSet getItem(NamespacedKey namespacedKey) {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("SELECT rData FROM customcrafting_items WHERE rNamespace=? AND rKey=?");
-            setNamespacedKey(pState, namespacedKey, 1, 1);
+            setNamespacedKey(pState, namespacedKey, 1, 2);
             return pState.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
