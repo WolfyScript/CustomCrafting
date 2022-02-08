@@ -49,11 +49,7 @@ public class CommandRecipe extends IndexCommand {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String s, @NotNull String[] args) {
-        if (
-            args.length == 0 &&
-            sender instanceof Player player &&
-            ChatUtils.checkPerm(player, "customcrafting.cmd.recipes")
-        ) {
+        if (args.length == 0 && sender instanceof Player player && ChatUtils.checkPerm(player, "customcrafting.cmd.recipes")) {
             PlayerUtil.openRecipeBook(player);
         }
 
