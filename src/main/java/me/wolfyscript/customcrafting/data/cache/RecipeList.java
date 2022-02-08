@@ -31,6 +31,7 @@ import java.util.List;
 public class RecipeList {
 
     private String namespace;
+    private String folder;
     private int page;
     private RecipeType<?> filterType;
     private Class<? extends Recipe> filterClass;
@@ -54,6 +55,14 @@ public class RecipeList {
 
     public void setNamespace(String namespace) {
         this.namespace = namespace;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
+    public String getFolder() {
+        return folder;
     }
 
     public int getPage(int maxPages) {

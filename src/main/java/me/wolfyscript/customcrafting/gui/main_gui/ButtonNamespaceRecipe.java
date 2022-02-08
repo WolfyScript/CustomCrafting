@@ -42,7 +42,7 @@ public class ButtonNamespaceRecipe extends ActionButton<CCCache> {
     private static final String KEY = "recipe_list.namespace_";
 
     public ButtonNamespaceRecipe(int slot, CustomCrafting customCrafting) {
-        super(key(slot), new ButtonState<>("namespace", Material.CHEST));
+        super(key(slot), new ButtonState<>("namespace", Material.ENDER_CHEST));
         this.customCrafting = customCrafting;
     }
 
