@@ -102,7 +102,7 @@ public class SmithingListener implements Listener {
                                 endResult.addUnsafeEnchantments(base.getEnchantments());
                             }
                             if (recipe.isPreserveDamage() && endResult.getItemMeta() instanceof Damageable resultDamageable) {
-                                //Block Repairing
+                                //Copy damage from base item to result
                                 if (base.hasItemMeta() && base.getItemMeta() instanceof Damageable damageable) {
                                     resultDamageable.setDamage(damageable.getDamage());
                                 }

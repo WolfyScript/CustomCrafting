@@ -33,6 +33,8 @@ import org.bukkit.Material;
 public class RecipeCreatorSmithing extends RecipeCreator {
 
     private static final String CHANGE_MATERIAL = "change_material";
+    private static final String PRESERVE_ENCHANTS = "preserve_enchants";
+    private static final String PRESERVE_DAMAGE = "preserve_damage";
 
     public RecipeCreatorSmithing(GuiCluster<CCCache> cluster, CustomCrafting customCrafting) {
         super(cluster, "smithing", 45, customCrafting);
@@ -45,11 +47,25 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         registerButton(new ButtonRecipeIngredient(0));
         registerButton(new ButtonRecipeIngredient(1));
         registerButton(new ButtonRecipeResult());
-        registerButton(new ToggleButton<>(CHANGE_MATERIAL, (cache, guiHandler, player, guiInventory, i) -> cache.getRecipeCreatorCache().getSmithingCache().isOnlyChangeMaterial(), new ButtonState<>(CHANGE_MATERIAL + ".enabled", Material.LIME_CONCRETE, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        registerButton(new ToggleButton<>(CHANGE_MATERIAL, (cache, guiHandler, player, guiInv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isOnlyChangeMaterial(), new ButtonState<>(CHANGE_MATERIAL + ".enabled", Material.PAPER, (customCache, guiHandler, player, guiInv, i, event) -> {
             customCache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(false);
             return true;
-        }), new ButtonState<>(CHANGE_MATERIAL + ".disabled", Material.RED_CONCRETE, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+        }), new ButtonState<>(CHANGE_MATERIAL + ".disabled", Material.WRITABLE_BOOK, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             customCache.getRecipeCreatorCache().getSmithingCache().setOnlyChangeMaterial(true);
+            return true;
+        })));
+        registerButton(new ToggleButton<>(PRESERVE_ENCHANTS, (cache, guiHandler, player, guiInv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveEnchants(), new ButtonState<>(PRESERVE_ENCHANTS + ".enabled", Material.ENCHANTED_BOOK, (customCache, guiHandler, player, guiInv, i, event) -> {
+            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(false);
+            return true;
+        }), new ButtonState<>(PRESERVE_ENCHANTS + ".disabled", Material.BOOK, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveEnchants(true);
+            return true;
+        })));
+        registerButton(new ToggleButton<>(PRESERVE_DAMAGE, (cache, guiHandler, player, guiInv, i) -> cache.getRecipeCreatorCache().getSmithingCache().isPreserveDamage(), new ButtonState<>(PRESERVE_DAMAGE + ".enabled", Material.LIME_CONCRETE, (customCache, guiHandler, player, guiInv, i, event) -> {
+            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(false);
+            return true;
+        }), new ButtonState<>(PRESERVE_DAMAGE + ".disabled", Material.RED_CONCRETE, (customCache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
+            customCache.getRecipeCreatorCache().getSmithingCache().setPreserveDamage(true);
             return true;
         })));
     }
@@ -68,7 +84,9 @@ public class RecipeCreatorSmithing extends RecipeCreator {
         event.setButton(22, "recipe.ingredient_1");
         event.setButton(25, "recipe.result");
 
-        event.setButton(39, CHANGE_MATERIAL);
+        event.setButton(37, PRESERVE_ENCHANTS);
+        event.setButton(38, PRESERVE_DAMAGE);
+        event.setButton(40, CHANGE_MATERIAL);
 
         event.setButton(42, ClusterRecipeCreator.GROUP);
         if (smithingRecipe.isSaved()) {
