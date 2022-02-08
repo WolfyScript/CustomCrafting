@@ -70,7 +70,12 @@ public class EnchantMergeAdapter extends MergeAdapter {
         for (IngredientData data : recipeData.getBySlots(slots)) {
             var item = data.itemStack();
             item.getEnchantments().forEach((enchantment, level) -> {
-                if (!blackListedEnchants.contains(enchantment) && !result.containsEnchantment(enchantment) && result.getEnchantmentLevel(enchantment) < level) {
+                if (
+                    !blackListedEnchants.contains(enchantment) && (
+                        !result.containsEnchantment(enchantment) ||
+                        result.getEnchantmentLevel(enchantment) < level
+                    )
+                ) {
                     var meta = result.getItemMeta();
                     if (meta != null && meta.addEnchant(enchantment, level, ignoreEnchantLimit)) {
                         result.setItemMeta(meta);
