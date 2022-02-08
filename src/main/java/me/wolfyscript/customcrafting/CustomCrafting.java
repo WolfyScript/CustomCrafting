@@ -255,7 +255,6 @@ public class CustomCrafting extends JavaPlugin {
         configHandler.loadDefaults();
         disableRecipesHandler = new DisableRecipesHandler(this);
 
-        writeSeparator();
         registerListeners();
         registerCommands();
         registerInventories();
@@ -296,7 +295,6 @@ public class CustomCrafting extends JavaPlugin {
         getLogger().info("|    |  | [__   |  |  | |\\/| |    |__/ |__| |___  |  | |\\ | | __ ");
         getLogger().info("|___ |__| ___]  |  |__| |  | |___ |  \\ |  | |     |  | | \\| |__]");
         getLogger().info(() -> "    v" + currentVersion + " " + (PREMIUM ? "Premium" : "Free"));
-        getLogger().info(" ");
     }
 
     public void writeSeparator() {

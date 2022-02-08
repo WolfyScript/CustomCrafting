@@ -43,8 +43,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SQLDatabaseLoader extends DatabaseLoader {
+
+    private static final String PREFIX = "[MYSQL] ";
+    protected List<NamespacedKey> loaded;
+    protected List<NamespacedKey> skippedError;
+    protected List<NamespacedKey> skippedAlreadyExisting;
 
     private final SQLDataBase dataBase;
 
@@ -52,6 +59,9 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         super(customCrafting, new NamespacedKey(customCrafting, "database_loader"));
         this.dataBase = new SQLDataBase(api, config.getDatabaseHost(), config.getDatabaseSchema(), config.getDatabaseUsername(), config.getDatabasePassword(), config.getDatabasePort());
         init();
+        this.loaded = new LinkedList<>();
+        this.skippedError = new LinkedList<>();
+        this.skippedAlreadyExisting = new LinkedList<>();
     }
 
     public void init() {
@@ -116,7 +126,10 @@ public class SQLDatabaseLoader extends DatabaseLoader {
     }
 
     public void loadRecipes() {
-        api.getConsole().info("$msg.startup.recipes.recipes$");
+        loaded.clear();
+        skippedError.clear();
+        skippedAlreadyExisting.clear();
+        api.getConsole().info(PREFIX + "$msg.startup.recipes.recipes$");
         try (PreparedStatement recipesQuery = dataBase.open().prepareStatement("SELECT * FROM customcrafting_recipes")) {
             ResultSet resultSet = recipesQuery.executeQuery();
             if (resultSet == null) {
@@ -125,9 +138,17 @@ public class SQLDatabaseLoader extends DatabaseLoader {
             while (resultSet.next()) {
                 String namespace = resultSet.getString("rNamespace");
                 String key = resultSet.getString("rKey");
-                CustomRecipe<?> recipe = getRecipe(new NamespacedKey(customCrafting, namespace + "/" + key));
-                if (recipe != null) {
-                    customCrafting.getRegistries().getRecipes().register(recipe);
+                NamespacedKey namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + key);
+                if (isReplaceData() || !customCrafting.getRegistries().getRecipes().has(namespacedKey)) {
+                    CustomRecipe<?> recipe = getRecipe(namespacedKey);
+                    if (recipe != null) {
+                        customCrafting.getRegistries().getRecipes().register(recipe);
+                        loaded.add(namespacedKey);
+                    } else {
+                        skippedError.add(namespacedKey);
+                    }
+                } else {
+                    skippedAlreadyExisting.add(namespacedKey);
                 }
             }
         } catch (SQLException ex) {
@@ -135,10 +156,11 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         } finally {
             dataBase.close();
         }
+        api.getConsole().getLogger().info(String.format(PREFIX + "Loaded %d recipes; Skipped: %d error/s, %d already existing", loaded.size(), skippedError.size(), skippedAlreadyExisting.size()));
     }
 
     public void loadItems() {
-        api.getConsole().info("$msg.startup.recipes.items$");
+        api.getConsole().info(PREFIX + "$msg.startup.recipes.items$");
         try (PreparedStatement itemsQuery = dataBase.open().prepareStatement("SELECT * FROM customcrafting_items")) {
             ResultSet resultSet = itemsQuery.executeQuery();
             if (resultSet == null) return;
@@ -147,13 +169,16 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                 String key = resultSet.getString("rKey");
                 String data = resultSet.getString("rData");
                 if (namespace != null && key != null && data != null && !data.equals("{}")) {
-                    try {
-                        api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
-                    } catch (JsonProcessingException e) {
-                        api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
+                    NamespacedKey namespacedKey = new NamespacedKey(customCrafting, namespace + "/" + key);
+                    if (isReplaceData() || !api.getRegistries().getCustomItems().has(namespacedKey)) {
+                        try {
+                            api.getRegistries().getCustomItems().register(new NamespacedKey(customCrafting, namespace + "/" + key), JacksonUtil.getObjectMapper().readValue(data, CustomItem.class));
+                        } catch (JsonProcessingException e) {
+                            api.getConsole().info(PREFIX + "Error loading item \"" + namespace + ":" + key + "\": " + e.getMessage());
+                        }
                     }
                 } else {
-                    api.getConsole().info("Error loading item \"" + namespace + ":" + key + "\". Invalid namespacedkey or data!");
+                    api.getConsole().info(PREFIX + "Error loading item \"" + namespace + ":" + key + "\". Invalid namespacedkey or data!");
                 }
             }
         } catch (SQLException ex) {
@@ -202,7 +227,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
                         return loader.getInstance(namespacedKey, JacksonUtil.getObjectMapper().readTree(data));
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException | IOException e) {
-                    ChatUtils.sendRecipeItemLoadingError(namespacedKey.getNamespace(), namespacedKey.getKey(), typeID, e);
+                    ChatUtils.sendRecipeItemLoadingError(PREFIX, namespacedKey.getNamespace(), namespacedKey.getKey(), e);
                 }
             }
             resultSet.getStatement().close();
@@ -216,7 +241,7 @@ public class SQLDatabaseLoader extends DatabaseLoader {
         try {
             PreparedStatement pState = dataBase.open().prepareStatement("INSERT INTO customcrafting_recipes (rNamespace, rKey, rType, rData) VALUES (?, ?, ?, ?)");
             setNamespacedKey(pState, data.getNamespacedKey(), 1, 2);
-            pState.setString(3, "");
+            pState.setString(3, ""); //No longer save the type. The type is contained in the json data now.
             pState.setString(4, JacksonUtil.getObjectMapper().writeValueAsString(data));
             dataBase.executeAsyncUpdate(pState);
         } catch (SQLException | JsonProcessingException e) {
