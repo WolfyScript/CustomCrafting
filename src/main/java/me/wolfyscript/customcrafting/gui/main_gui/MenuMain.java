@@ -33,7 +33,6 @@ import me.wolfyscript.customcrafting.recipes.RecipeType;
 import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.gui.GuiCluster;
 import me.wolfyscript.utilities.api.inventory.gui.GuiUpdate;
-import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import me.wolfyscript.utilities.util.inventory.PlayerHeadUtils;
 import me.wolfyscript.utilities.util.inventory.item_builder.ItemBuilder;
 import org.bukkit.Material;
@@ -66,6 +65,7 @@ public class MenuMain extends CCWindow {
 
     @Override
     public void onInit() {
+        var builder = getButtonBuilder();
         registerButton(new ButtonRecipeType(CRAFTING, RecipeType.CRAFTING_SHAPED, Material.CRAFTING_TABLE));
         registerButton(new ButtonRecipeType(FURNACE, RecipeType.FURNACE, Material.FURNACE));
         registerButton(new ButtonRecipeType(ANVIL, RecipeType.ANVIL, Material.ANVIL));
@@ -79,23 +79,22 @@ public class MenuMain extends CCWindow {
         registerButton(new ButtonRecipeType(CAULDRON, RecipeType.CAULDRON, Material.CAULDRON));
         registerButton(new ButtonRecipeType(SMITHING, RecipeType.SMITHING, Material.SMITHING_TABLE));
 
-        registerButton(new ActionButton<>(ITEM_EDITOR, Material.CHEST, (cache, guiHandler, player, inventory, slot, event) -> {
+        builder.action(ITEM_EDITOR).state(state -> state.icon(Material.CHEST).action((cache, guiHandler, player, guiInventory, i, event) -> {
             cache.setSetting(Setting.ITEMS);
             cache.getItems().setRecipeItem(false);
             cache.getItems().setSaved(false);
             cache.getItems().setNamespacedKey(null);
             guiHandler.openCluster(ClusterItemCreator.KEY);
             return true;
-        }));
-
-        registerButton(new ActionButton<>(SETTINGS, PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164"), (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        builder.action(SETTINGS).state(state -> state.icon(PlayerHeadUtils.getViaURL("b3f293ebd0911bb8133e75802890997e82854915df5d88f115de1deba628164")).action((cache, guiHandler, player, guiInventory, i, event) -> {
             guiHandler.openWindow(SETTINGS);
             return true;
-        }));
-        registerButton(new ActionButton<>(RECIPE_BOOK_EDITOR, Material.KNOWLEDGE_BOOK, (cache, guiHandler, player, inventory, slot, event) -> {
+        })).register();
+        builder.action(RECIPE_BOOK_EDITOR).state(state -> state.icon(Material.KNOWLEDGE_BOOK).action((cache, guiHandler, player, guiInventory, i, inventoryInteractEvent) -> {
             guiHandler.openCluster(ClusterRecipeBookEditor.KEY);
             return true;
-        }));
+        })).register();
     }
 
     @Override
