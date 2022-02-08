@@ -75,7 +75,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
             if (data.getBlock() != null) {
                 CustomItem customItem = NamespacedKeyUtils.getCustomItem(data.getBlock());
                 if (customItem != null && customItem.getApiReference() instanceof WolfyUtilitiesRef wolfyUtilsRef) {
-                    return eliteWorkbenches.contains(wolfyUtilsRef.getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE)).isEnabled();
+                    return eliteWorkbenches.contains(wolfyUtilsRef.getNamespacedKey()) && ((EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA)).isEnabled();
                 }
             }
             return false;
@@ -123,7 +123,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                                         menu.sendMessage(player, "error");
                                         return true;
                                     }
-                                    EliteWorkbenchData data = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
+                                    EliteWorkbenchData data = (EliteWorkbenchData) customItem.getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
                                     if (data != null && !data.isEnabled()) {
                                         menu.sendMessage(player, "not_elite_workbench");
                                         return true;
@@ -136,7 +136,7 @@ public class EliteWorkbenchCondition extends Condition<EliteWorkbenchCondition> 
                             return true;
                         }, (guiHandler, player, args) -> {
                             Set<NamespacedKey> entries = api.getRegistries().getCustomItems().entrySet().stream().filter(entry -> {
-                                EliteWorkbenchData data = (EliteWorkbenchData) entry.getValue().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE);
+                                EliteWorkbenchData data = (EliteWorkbenchData) entry.getValue().getCustomData(CustomCrafting.ELITE_CRAFTING_TABLE_DATA);
                                 return data != null && data.isEnabled();
                             }).map(entry -> NamespacedKeyUtils.toInternal(entry.getKey())).collect(Collectors.toSet());
                             List<String> results = new ArrayList<>();

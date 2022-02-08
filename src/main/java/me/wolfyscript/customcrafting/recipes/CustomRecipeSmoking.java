@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.utilities.util.NamespacedKey;
@@ -34,17 +37,13 @@ public class CustomRecipeSmoking extends CustomRecipeCooking<CustomRecipeSmoking
         super(namespacedKey, node);
     }
 
-    public CustomRecipeSmoking(NamespacedKey key) {
+    @JsonCreator
+    public CustomRecipeSmoking(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key);
     }
 
     public CustomRecipeSmoking(CustomRecipeSmoking customRecipeSmoking) {
         super(customRecipeSmoking);
-    }
-
-    @Override
-    public RecipeType<CustomRecipeSmoking> getRecipeType() {
-        return RecipeType.SMOKER;
     }
 
     @Override

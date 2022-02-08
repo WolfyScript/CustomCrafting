@@ -139,7 +139,7 @@ public class CategorySettings {
     public ItemStack createItemStack(CustomCrafting customCrafting) {
         var categoryItem = new ItemStack(getIcon());
         var itemMeta = categoryItem.getItemMeta();
-        var languageAPI = WolfyUtilities.get(customCrafting).getLanguageAPI();
+        var languageAPI = customCrafting.getApi().getLanguageAPI();
         itemMeta.setDisplayName(languageAPI.replaceColoredKeys(getName()));
         itemMeta.setLore(languageAPI.replaceColoredKeys(getDescription()));
         categoryItem.setItemMeta(itemMeta);

@@ -25,6 +25,7 @@ package me.wolfyscript.customcrafting.listeners;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.configs.custom_data.RecipeBookData;
 import me.wolfyscript.customcrafting.utils.ItemLoader;
+import me.wolfyscript.customcrafting.utils.PlayerUtil;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -64,12 +65,13 @@ public class PlayerListener implements Listener {
         if (event.hasItem() && (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR))) {
             var customItem = CustomItem.getByItemStack(event.getItem());
             if (customItem != null) {
-                RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK);
+                RecipeBookData knowledgeBook = (RecipeBookData) customItem.getCustomData(CustomCrafting.RECIPE_BOOK_DATA);
                 if (knowledgeBook != null && knowledgeBook.isEnabled()) {
                     event.setUseItemInHand(Event.Result.DENY);
                     event.setUseInteractedBlock(Event.Result.DENY);
                     event.getPlayer().closeInventory();
-                    CustomCrafting.inst().getApi().getInventoryAPI().openCluster(event.getPlayer(), "recipe_book");
+
+                    PlayerUtil.openRecipeBook(event.getPlayer());
                 }
             }
         }

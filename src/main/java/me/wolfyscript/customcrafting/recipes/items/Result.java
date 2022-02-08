@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.recipes.items;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonInclude;
@@ -92,8 +93,9 @@ public class Result extends RecipeItemStack {
         this.extensions = new ArrayList<>();
     }
 
-    public Result(List<APIReference> references, Set<NamespacedKey> tags) {
-        super(references, tags);
+    @JsonCreator
+    public Result(@JsonProperty("items") List<APIReference> items, @JsonProperty("tags") Set<NamespacedKey> tags) {
+        super(items, tags);
         this.extensions = new ArrayList<>();
     }
 

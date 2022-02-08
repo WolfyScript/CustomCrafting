@@ -22,6 +22,7 @@
 
 package me.wolfyscript.customcrafting.configs.custom_data;
 
+import me.wolfyscript.customcrafting.utils.NamespacedKeyUtils;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.DeserializationContext;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
@@ -35,6 +36,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class EliteWorkbenchData extends CustomData implements Cloneable {
+
+    public static final NamespacedKey KEY = new NamespacedKey(NamespacedKeyUtils.NAMESPACE, "elite_crafting_table");
 
     private boolean advancedRecipes;
     private boolean enabled;
@@ -151,7 +154,7 @@ public class EliteWorkbenchData extends CustomData implements Cloneable {
     public static class Provider extends CustomData.Provider<EliteWorkbenchData> {
 
         public Provider() {
-            super(CustomCrafting.ELITE_CRAFTING_TABLE, EliteWorkbenchData.class);
+            super(CustomCrafting.ELITE_CRAFTING_TABLE_DATA, EliteWorkbenchData.class);
         }
 
     }

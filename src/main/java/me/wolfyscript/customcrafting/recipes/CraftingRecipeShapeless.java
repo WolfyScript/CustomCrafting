@@ -22,6 +22,9 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.recipes.items.Ingredient;
@@ -36,17 +39,13 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
         super(namespacedKey, node, 3, AdvancedRecipeSettings.class);
     }
 
-    public CraftingRecipeShapeless(NamespacedKey key) {
+    @JsonCreator
+    public CraftingRecipeShapeless(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
         super(key, 3, new AdvancedRecipeSettings());
     }
 
     public CraftingRecipeShapeless(CraftingRecipeShapeless craftingRecipe) {
         super(craftingRecipe);
-    }
-
-    @Override
-    public RecipeType<CraftingRecipeShapeless> getRecipeType() {
-        return RecipeType.CRAFTING_SHAPELESS;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class CraftingRecipeShapeless extends AbstractRecipeShapeless<CraftingRec
 
     @Override
     public org.bukkit.inventory.ShapelessRecipe getVanillaRecipe() {
-        if (!getSettings().isAllowVanillaRecipe() && !getResult().isEmpty()) {
+        if (!getResult().isEmpty()) {
             var shapelessRecipe = new org.bukkit.inventory.ShapelessRecipe(getNamespacedKey().toBukkit(CustomCrafting.inst()), getResult().getItemStack());
             for (Ingredient value : ingredients) {
                 shapelessRecipe.addIngredient(new RecipeChoice.ExactChoice(value.getChoices().stream().map(CustomItem::getItemStack).distinct().toList()));

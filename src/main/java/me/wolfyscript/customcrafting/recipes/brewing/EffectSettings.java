@@ -20,17 +20,44 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.wolfyscript.customcrafting.recipes;
+package me.wolfyscript.customcrafting.recipes.brewing;
 
-import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.potion.PotionEffectType;
 
-public interface ICustomVanillaRecipe<T extends Recipe> {
+public abstract class EffectSettings {
 
-    @JsonIgnore T getVanillaRecipe();
+    private PotionEffectType effectType;
+    private int amplifier;
+    private int duration;
 
-    @JsonIgnore boolean isVisibleVanillaBook();
+    protected EffectSettings(PotionEffectType effectType, int amplifier, int duration) {
+        this.effectType = effectType;
+        this.amplifier = amplifier;
+        this.duration = duration;
+    }
 
-    @JsonIgnore void setVisibleVanillaBook(boolean vanillaBook);
+    public PotionEffectType getEffectType() {
+        return effectType;
+    }
+
+    public void setEffectType(PotionEffectType effectType) {
+        this.effectType = effectType;
+    }
+
+    public int getAmplifier() {
+        return amplifier;
+    }
+
+    public void setAmplifier(int amplifier) {
+        this.amplifier = amplifier;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 
 }

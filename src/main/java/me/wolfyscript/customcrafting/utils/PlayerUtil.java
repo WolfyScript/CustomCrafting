@@ -22,7 +22,11 @@
 
 package me.wolfyscript.customcrafting.utils;
 
+import me.wolfyscript.customcrafting.CustomCrafting;
+import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.data.CCPlayerData;
+import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.utilities.api.inventory.gui.InventoryAPI;
 import me.wolfyscript.utilities.util.NamespacedKey;
 import me.wolfyscript.utilities.util.entity.PlayerUtils;
 import org.bukkit.entity.Player;
@@ -42,6 +46,24 @@ public class PlayerUtil {
 
     public static CCPlayerData getStore(UUID uuid) {
         return PlayerUtils.getStore(uuid).getData(CC_DATA, CCPlayerData.class);
+    }
+
+    public static void openRecipeBook(Player player) {
+        CustomCrafting customCrafting = CustomCrafting.inst();
+        InventoryAPI<CCCache> invAPI = customCrafting.getApi().getInventoryAPI(CCCache.class);
+        var categories = customCrafting.getDataHandler().getCategories();
+
+        // Open directly to the category if we only have one
+        if (categories.getSortedCategories().size() == 1) {
+            invAPI.getGuiHandler(player).getCustomCache().getKnowledgeBook().setCategory(categories.getCategory(0));
+            invAPI.openGui(player, ClusterRecipeBook.RECIPE_BOOK);
+
+            return;
+        }
+
+        if (!categories.getSortedCategories().isEmpty()) {
+            invAPI.openCluster(player, ClusterRecipeBook.KEY);
+        }
     }
 
 }

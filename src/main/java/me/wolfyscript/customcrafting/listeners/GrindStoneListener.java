@@ -242,14 +242,14 @@ public class GrindStoneListener implements Listener {
         ) {
             Ingredient input = slot == 0 ? customRecipeGrindstone.getInputTop() : customRecipeGrindstone.getInputBottom();
             Ingredient otherInput = slot == 0 ? customRecipeGrindstone.getInputBottom() : customRecipeGrindstone.getInputTop();
-            Optional<CustomItem> optional = input.check(item, customRecipeGrindstone.isExactMeta());
+            Optional<CustomItem> optional = input.check(item, customRecipeGrindstone.isCheckNBT());
             if (!optional.isPresent()) {
                 //Item is invalid! Go to next recipe!
                 continue;
             }
             if (!ItemUtils.isAirOrNull(itemOther)) {
                 //Another item exists in the other slot! Check if current and other item are a valid recipe
-                Optional<CustomItem> optionalOther = otherInput.check(itemOther, customRecipeGrindstone.isExactMeta());
+                Optional<CustomItem> optionalOther = otherInput.check(itemOther, customRecipeGrindstone.isCheckNBT());
                 if (!optionalOther.isPresent()) {
                     //Other existing Item is invalid!
                     continue;

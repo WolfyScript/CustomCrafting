@@ -29,6 +29,7 @@ import me.wolfyscript.customcrafting.listeners.customevents.CauldronPreCookEvent
 import me.wolfyscript.customcrafting.recipes.CustomRecipe;
 import me.wolfyscript.customcrafting.recipes.CustomRecipeCauldron;
 import me.wolfyscript.customcrafting.recipes.RecipeType;
+import me.wolfyscript.utilities.api.WolfyUtilCore;
 import me.wolfyscript.utilities.api.WolfyUtilities;
 import me.wolfyscript.utilities.api.inventory.custom_items.CustomItem;
 import me.wolfyscript.utilities.util.inventory.InventoryUtils;
@@ -58,7 +59,7 @@ public class CauldronListener implements Listener {
 
     public CauldronListener(CustomCrafting customCrafting) {
         this.customCrafting = customCrafting;
-        this.api = WolfyUtilities.get(customCrafting);
+        this.api = customCrafting.getApi();
     }
 
     @EventHandler
@@ -106,7 +107,7 @@ public class CauldronListener implements Listener {
                         event.setUseItemInHand(Event.Result.DENY);
                         event.setUseInteractedBlock(Event.Result.DENY);
                         if (!ItemUtils.isAirOrNull(handItem)) {
-                            if (!ItemUtils.isAirOrNull(required) && required.isSimilar(handItem, recipe.isExactMeta())) {
+                            if (!ItemUtils.isAirOrNull(required) && required.isSimilar(handItem, recipe.isCheckNBT())) {
                                 handItem.setAmount(handItem.getAmount() - 1);
                             } else if (!ItemUtils.isAirOrNull(required)) {
                                 return;

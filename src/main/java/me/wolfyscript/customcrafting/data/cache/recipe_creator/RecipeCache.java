@@ -40,7 +40,7 @@ import org.bukkit.entity.Player;
 public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
     protected NamespacedKey key;
-    protected boolean exactMeta;
+    protected boolean checkNBT;
     protected boolean hidden;
     protected boolean vanillaBook;
 
@@ -51,7 +51,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
     protected RecipeCache() {
         this.key = null;
-        this.exactMeta = true;
+        this.checkNBT = true;
         this.hidden = false;
         this.vanillaBook = false;
         this.priority = RecipePriority.NORMAL;
@@ -62,7 +62,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
 
     protected RecipeCache(R customRecipe) {
         this.key = customRecipe.getNamespacedKey();
-        this.exactMeta = customRecipe.isExactMeta();
+        this.checkNBT = customRecipe.isCheckNBT();
         this.hidden = customRecipe.isHidden();
         this.vanillaBook = customRecipe instanceof ICustomVanillaRecipe<?> vanillaRecipe && vanillaRecipe.isVisibleVanillaBook();
         this.priority = customRecipe.getPriority();
@@ -83,12 +83,22 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         this.key = key;
     }
 
+    @Deprecated
     public boolean isExactMeta() {
-        return exactMeta;
+        return checkNBT;
     }
 
-    public void setExactMeta(boolean exactMeta) {
-        this.exactMeta = exactMeta;
+    @Deprecated
+    public void setExactMeta(boolean checkNBT) {
+        this.checkNBT = checkNBT;
+    }
+
+    public void setCheckNBT(boolean checkNBT) {
+        this.checkNBT = checkNBT;
+    }
+
+    public boolean isCheckNBT() {
+        return checkNBT;
     }
 
     public boolean isHidden() {
@@ -160,7 +170,7 @@ public abstract class RecipeCache<R extends CustomRecipe<?>> {
         recipe.setConditions(conditions);
         recipe.setGroup(group);
         recipe.setHidden(hidden);
-        recipe.setExactMeta(exactMeta);
+        recipe.setCheckNBT(checkNBT);
         recipe.setPriority(priority);
         if (recipe instanceof ICustomVanillaRecipe<?> vanillaRecipe) {
             vanillaRecipe.setVisibleVanillaBook(vanillaBook);

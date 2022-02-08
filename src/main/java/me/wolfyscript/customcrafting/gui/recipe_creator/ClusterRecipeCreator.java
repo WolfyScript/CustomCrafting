@@ -160,12 +160,13 @@ public class ClusterRecipeCreator extends CCCluster {
                 guiHandler.setChatTabComplete((guiHandler1, player1, args) -> {
                     List<String> results = new ArrayList<>();
                     if (args.length > 0) {
+                        var registryRecipes = customCrafting.getRegistries().getRecipes();
                         if (args.length == 1) {
                             results.add("<folder>");
-                            StringUtil.copyPartialMatches(args[0], customCrafting.getRegistries().getRecipes().folders(NamespacedKeyUtils.NAMESPACE), results);
+                            StringUtil.copyPartialMatches(args[0], registryRecipes.folders(NamespacedKeyUtils.NAMESPACE), results);
                         } else if (args.length == 2) {
                             results.add("<recipe_name>");
-                            StringUtil.copyPartialMatches(args[1], customCrafting.getRegistries().getRecipes().get(NamespacedKeyUtils.NAMESPACE, args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
+                            StringUtil.copyPartialMatches(args[1], registryRecipes.get(NamespacedKeyUtils.NAMESPACE, args[0]).stream().filter(recipe -> cache.getRecipeCreatorCache().getRecipeType().isInstance(recipe)).map(recipe -> recipe.getNamespacedKey().getKey()).toList(), results);
                         }
                     }
                     Collections.sort(results);

@@ -22,6 +22,11 @@
 
 package me.wolfyscript.customcrafting.recipes;
 
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonGetter;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonIgnore;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonSetter;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -51,6 +56,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@JsonPropertyOrder(value = { "@type", "group", "hidden", "vanillaBook", "priority", "checkNBT", "conditions", "symmetry", "shape", "ingredients" })
 public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>, S extends CraftingRecipeSettings<S>> extends CraftingRecipe<C, S> {
 
     private static final String SHAPE_KEY = "shape";
@@ -60,18 +66,13 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
     private static final String ROTATION_KEY = "rotation";
 
     protected Map<Character, Ingredient> mappedIngredients;
+    @JsonIgnore private Shape internalShape;
     private String[] shape;
-    private Shape internalShape;
-    private boolean mirrorHorizontal;
-    private boolean mirrorVertical;
-    private boolean mirrorRotation;
+    private final Symmetry symmetry;
 
     protected AbstractRecipeShaped(NamespacedKey namespacedKey, JsonNode node, int gridSize, Class<S> settingsType) {
         super(namespacedKey, node, gridSize, settingsType);
-        JsonNode mirrorNode = node.path(MIRROR_KEY);
-        this.mirrorHorizontal = mirrorNode.path(HORIZONTAL_KEY).asBoolean(true);
-        this.mirrorVertical = mirrorNode.path(VERTICAL_KEY).asBoolean(false);
-        this.mirrorRotation = mirrorNode.path(ROTATION_KEY).asBoolean(false);
+        this.symmetry = Symmetry.ofLegacy(node.path(MIRROR_KEY));
         this.mappedIngredients = Map.of();
 
         Map<Character, Ingredient> loadedIngredients = Streams.stream(node.path(INGREDIENTS_KEY).fields()).collect(Collectors.toMap(entry -> entry.getKey().charAt(0), entry -> ItemLoader.loadIngredient(entry.getValue())));
@@ -83,46 +84,57 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         setIngredients(loadedIngredients);
     }
 
+    protected AbstractRecipeShaped(NamespacedKey key, String[] shape, int gridSize, S settings) {
+        this(key, gridSize, settings);
+        setShape(shape);
+    }
+
     protected AbstractRecipeShaped(NamespacedKey key, int gridSize, S settings) {
         super(key, gridSize, settings);
-        this.mirrorHorizontal = true;
-        this.mirrorVertical = false;
-        this.mirrorRotation = false;
+        this.symmetry = new Symmetry();
         this.mappedIngredients = new HashMap<>();
     }
 
     protected AbstractRecipeShaped(AbstractRecipeShaped<C, S> recipe) {
         super(recipe);
-        this.mirrorHorizontal = recipe.mirrorHorizontal;
-        this.mirrorVertical = recipe.mirrorVertical;
-        this.mirrorRotation = recipe.mirrorRotation;
+        this.symmetry = recipe.symmetry.copy();
         this.mappedIngredients = new HashMap<>();
         setShape(recipe.shape.clone());
         setIngredients(recipe.mappedIngredients.entrySet().stream().map(entry -> Map.entry(entry.getKey(), entry.getValue().clone())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
+    @Deprecated
     public void setMirrorHorizontal(boolean mirrorHorizontal) {
-        this.mirrorHorizontal = mirrorHorizontal;
+        symmetry.setHorizontal(mirrorHorizontal);
     }
 
+    @Deprecated
     public void setMirrorVertical(boolean mirrorVertical) {
-        this.mirrorVertical = mirrorVertical;
+        symmetry.setVertical(mirrorVertical);
     }
 
+    @Deprecated
     public void setMirrorRotation(boolean mirrorRotation) {
-        this.mirrorRotation = mirrorRotation;
+        symmetry.setRotate(mirrorRotation);
     }
 
+    @Deprecated
     public boolean mirrorHorizontal() {
-        return mirrorHorizontal;
+        return symmetry.isHorizontal();
     }
 
+    @Deprecated
     public boolean mirrorVertical() {
-        return mirrorVertical;
+        return symmetry.isVertical();
     }
 
+    @Deprecated
     public boolean mirrorRotation() {
-        return mirrorRotation;
+        return symmetry.isRotate();
+    }
+
+    public Symmetry getSymmetry() {
+        return symmetry;
     }
 
     public String[] getShape() {
@@ -139,6 +151,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
      *
      * @param shape The shape of the recipe
      */
+    @JsonSetter
     public void setShape(@NotNull String... shape) {
         Preconditions.checkArgument(shape != null && shape.length > 0, "Shape can not be null!");
         Preconditions.checkArgument(shape.length <= maxGridDimension, "Shape must not have more than " + maxGridDimension + " rows!");
@@ -206,15 +219,30 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         createFlatIngredients();
     }
 
+    @JsonSetter("ingredients")
     public void setIngredients(Map<Character, Ingredient> ingredients) {
-        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty()).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.mappedIngredients = ingredients.entrySet().stream().filter(entry -> {
+            var ingredient = entry.getValue();
+            if (ingredient != null) {
+                ingredient.buildChoices();
+                return !ingredient.isEmpty();
+            }
+            return false;
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Preconditions.checkArgument(!this.mappedIngredients.isEmpty(), "Invalid ingredients! Recipe must have non-air ingredients!");
         createFlatIngredients();
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Ingredient> getIngredients() {
+        return super.getIngredients();
     }
 
     /**
      * @return An unmodifiable Map copy of the Ingredients mapped to the character in the shape.
      */
+    @JsonGetter("ingredients")
     public Map<Character, Ingredient> getMappedIngredients() {
         return Map.copyOf(mappedIngredients);
     }
@@ -242,7 +270,7 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
                 if (recipeSlot >= 0) {
                     var ingredient = ingredients.get(recipeSlot);
                     if (ingredient != null) {
-                        Optional<CustomItem> item = ingredient.check(invItem, this.exactMeta);
+                        Optional<CustomItem> item = ingredient.check(invItem, this.checkNBT);
                         if (item.isPresent()) {
                             dataMap.put(recipeSlot, new IngredientData(recipeSlot, ingredient, item.get(), invItem));
                             i++;
@@ -280,14 +308,15 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
         }
     }
 
+    @Deprecated
     @Override
     public void writeToJson(JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
         super.writeToJson(gen, serializerProvider);
         gen.writeObjectField(SHAPE_KEY, shape);
         gen.writeObjectFieldStart(MIRROR_KEY);
-        gen.writeBooleanField(HORIZONTAL_KEY, this.mirrorHorizontal);
-        gen.writeBooleanField(VERTICAL_KEY, this.mirrorVertical);
-        gen.writeBooleanField(ROTATION_KEY, this.mirrorRotation);
+        gen.writeBooleanField(HORIZONTAL_KEY, symmetry.horizontal);
+        gen.writeBooleanField(VERTICAL_KEY, symmetry.vertical);
+        gen.writeBooleanField(ROTATION_KEY, symmetry.rotate);
         gen.writeEndObject();
         gen.writeObjectField(INGREDIENTS_KEY, this.mappedIngredients);
     }
@@ -332,20 +361,18 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             this.height = original2d.length;
             this.width = original2d[0].length;
             apply(shapeEntryList, original2d);
-
-            if (mirrorHorizontal) {
+            if (symmetry.horizontal) {
                 final int[][] flippedHorizontally2d = original2d.clone();
                 for (int[] ints : flippedHorizontally2d) {
                     ArrayUtils.reverse(ints);
                 }
                 apply(shapeEntryList, flippedHorizontally2d);
             }
-
-            if (mirrorVertical) {
+            if (symmetry.vertical) {
                 final int[][] flippedVertically2d = original2d.clone();
                 ArrayUtils.reverse(flippedVertically2d);
                 apply(shapeEntryList, flippedVertically2d);
-                if (mirrorRotation) {
+                if (symmetry.rotate) {
                     int[][] rotated = flippedVertically2d.clone();
                     for (int[] ints : rotated) {
                         ArrayUtils.reverse(ints);
@@ -397,6 +424,62 @@ public abstract class AbstractRecipeShaped<C extends AbstractRecipeShaped<C, S>,
             byteBuf.writeInt(height);
             byteBuf.writeVarInt(entries.size());
             entries.forEach(byteBuf::writeVarIntArray);
+        }
+
+    }
+
+    public static class Symmetry {
+
+        private boolean horizontal;
+        private boolean vertical;
+        private boolean rotate;
+
+        private Symmetry() {
+            this.horizontal = false;
+            this.vertical = false;
+            this.rotate = false;
+        }
+
+        private Symmetry(Symmetry other) {
+            this.horizontal = other.horizontal;
+            this.vertical = other.vertical;
+            this.rotate = other.rotate;
+        }
+
+        private static Symmetry ofLegacy(JsonNode node) {
+            var symmetry = new Symmetry();
+            symmetry.horizontal = node.path(HORIZONTAL_KEY).asBoolean(false);
+            symmetry.vertical = node.path(VERTICAL_KEY).asBoolean(false);
+            symmetry.rotate = node.path(ROTATION_KEY).asBoolean(false);
+            return symmetry;
+        }
+
+        public void setHorizontal(boolean horizontal) {
+            this.horizontal = horizontal;
+        }
+
+        public boolean isHorizontal() {
+            return horizontal;
+        }
+
+        public void setVertical(boolean vertical) {
+            this.vertical = vertical;
+        }
+
+        public boolean isVertical() {
+            return vertical;
+        }
+
+        public void setRotate(boolean rotate) {
+            this.rotate = rotate;
+        }
+
+        public boolean isRotate() {
+            return rotate;
+        }
+
+        public Symmetry copy() {
+            return new Symmetry(this);
         }
 
     }

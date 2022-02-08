@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -73,8 +76,9 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         this.ingredients = ItemLoader.loadIngredient(node.path("ingredients"));
     }
 
-    public CustomRecipeCauldron(NamespacedKey key) {
-        super(key);
+    @JsonCreator
+    public CustomRecipeCauldron(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
+        super(key, RecipeType.CAULDRON);
         this.result = new Result();
         this.ingredients = new Ingredient();
         this.dropItems = true;
@@ -151,7 +155,7 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
         List<Item> validItems = new ArrayList<>();
         for (CustomItem customItem : getIngredient().getChoices()) {
             for (Item item : items) {
-                if (customItem.isSimilar(item.getItemStack(), isExactMeta()) && customItem.getAmount() == item.getItemStack().getAmount()) {
+                if (customItem.isSimilar(item.getItemStack(), isCheckNBT()) && customItem.getAmount() == item.getItemStack().getAmount()) {
                     validItems.add(item);
                     break;
                 }
@@ -169,11 +173,6 @@ public class CustomRecipeCauldron extends CustomRecipe<CustomRecipeCauldron> {
 
     public void setHandItem(CustomItem handItem) {
         this.handItem = handItem;
-    }
-
-    @Override
-    public RecipeType<CustomRecipeCauldron> getRecipeType() {
-        return RecipeType.CAULDRON;
     }
 
     public Ingredient getIngredient() {

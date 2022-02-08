@@ -23,6 +23,9 @@
 package me.wolfyscript.customcrafting.recipes;
 
 import me.wolfyscript.customcrafting.gui.recipebook.ClusterRecipeBook;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JacksonInject;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonCreator;
+import me.wolfyscript.lib.com.fasterxml.jackson.annotation.JsonProperty;
 import me.wolfyscript.lib.com.fasterxml.jackson.core.JsonGenerator;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.JsonNode;
 import me.wolfyscript.lib.com.fasterxml.jackson.databind.SerializerProvider;
@@ -50,13 +53,15 @@ public class CustomRecipeGrindstone extends CustomRecipe<CustomRecipeGrindstone>
 
     public CustomRecipeGrindstone(NamespacedKey namespacedKey, JsonNode node) {
         super(namespacedKey, node);
+        this.type = RecipeType.GRINDSTONE;
         this.xp = node.path("exp").intValue();
         this.inputTop = ItemLoader.loadIngredient(node.path("input_top"));
         this.inputBottom = ItemLoader.loadIngredient(node.path("input_bottom"));
     }
 
-    public CustomRecipeGrindstone(NamespacedKey key) {
-        super(key);
+    @JsonCreator
+    public CustomRecipeGrindstone(@JsonProperty("key") @JacksonInject("key") NamespacedKey key) {
+        super(key, RecipeType.GRINDSTONE);
         this.result = new Result();
         this.inputTop = new Ingredient();
         this.inputBottom = new Ingredient();
