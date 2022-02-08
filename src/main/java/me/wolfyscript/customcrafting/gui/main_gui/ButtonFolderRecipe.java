@@ -26,14 +26,10 @@ import me.wolfyscript.customcrafting.CustomCrafting;
 import me.wolfyscript.customcrafting.data.CCCache;
 import me.wolfyscript.customcrafting.handlers.DisableRecipesHandler;
 import me.wolfyscript.customcrafting.registry.RegistryRecipes;
-import me.wolfyscript.utilities.api.inventory.gui.GuiHandler;
-import me.wolfyscript.utilities.api.inventory.gui.GuiWindow;
 import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import java.util.HashMap;
 
 public class ButtonFolderRecipe extends ActionButton<CCCache> {
 
@@ -52,7 +48,7 @@ public class ButtonFolderRecipe extends ActionButton<CCCache> {
                     RegistryRecipes recipes = customCrafting.getRegistries().getRecipes();
                     if(clickEvent.isLeftClick()) {
                         recipes.get(namespace, folder).forEach(disableRecipesHandler::disableRecipe);
-                    } else {
+                    } else if (clickEvent.isRightClick()) {
                         recipes.get(namespace, folder).forEach(disableRecipesHandler::enableRecipe);
                     }
                 }

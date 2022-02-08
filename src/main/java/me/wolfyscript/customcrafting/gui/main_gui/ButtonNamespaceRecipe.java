@@ -31,23 +31,20 @@ import me.wolfyscript.utilities.api.inventory.gui.button.ButtonState;
 import me.wolfyscript.utilities.api.inventory.gui.button.buttons.ActionButton;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Recipe;
 
 import java.util.HashMap;
 
 public class ButtonNamespaceRecipe extends ActionButton<CCCache> {
 
     private static final String KEY = "recipe_list.namespace_";
+    private final CustomCrafting customCrafting;
+    private final HashMap<GuiHandler<CCCache>, String> namespaces = new HashMap<>();
 
     public ButtonNamespaceRecipe(int slot, CustomCrafting customCrafting) {
         super(key(slot), new ButtonState<>("namespace", Material.ENDER_CHEST));
         this.customCrafting = customCrafting;
     }
-
-    private final CustomCrafting customCrafting;
-    private final HashMap<GuiHandler<CCCache>, String> namespaces = new HashMap<>();
 
     static String key(int slot) {
         return KEY + slot;
@@ -66,22 +63,14 @@ public class ButtonNamespaceRecipe extends ActionButton<CCCache> {
                 } else {
                     DisableRecipesHandler disableRecipesHandler = customCrafting.getDisableRecipesHandler();
                     if (namespace.equalsIgnoreCase("minecraft")) {
-                        if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
-                            for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
-                                if (recipe instanceof Keyed keyed) {
-                                    disableRecipesHandler.disableBukkitRecipe(keyed.getKey());
-                                }
-                            }
-                        } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
-                            for (Recipe recipe : customCrafting.getDataHandler().getMinecraftRecipes()) {
-                                if (recipe instanceof Keyed keyed) {
-                                    disableRecipesHandler.enableBukkitRecipe(keyed.getKey());
-                                }
-                            }
+                        if (clickEvent.isLeftClick()) {
+                            customCrafting.getDataHandler().getMinecraftRecipes().forEach(recipe -> disableRecipesHandler.disableBukkitRecipe(((Keyed) recipe).getKey()));
+                        } else if (clickEvent.isRightClick()) {
+                            customCrafting.getDataHandler().getMinecraftRecipes().forEach(recipe -> disableRecipesHandler.enableBukkitRecipe(((Keyed) recipe).getKey()));
                         }
-                    } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_LEFT)) {
+                    } else if (clickEvent.isLeftClick()) {
                         customCrafting.getRegistries().getRecipes().get(namespace).forEach(disableRecipesHandler::disableRecipe);
-                    } else if (((InventoryClickEvent) event).getClick().equals(ClickType.SHIFT_RIGHT)) {
+                    } else if (clickEvent.isRightClick()) {
                         customCrafting.getRegistries().getRecipes().get(namespace).forEach(disableRecipesHandler::enableRecipe);
                     }
                 }
